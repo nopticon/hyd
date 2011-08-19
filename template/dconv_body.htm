@@ -5,9 +5,6 @@
 <!-- BEGIN dc_total -->
 <div class="cols5_left rows5_top_1 high"><strong>{dc_total.TOTAL}</strong> <!-- IF dc_total.TOTAL == 1 -->{L_DCONV_READ}<!-- ELSE -->{L_DCONVS_READ}<!-- ENDIF --></div>
 <!-- END dc_total -->
-<!-- BEGIN conv -->
-<div class="cols5_left"><h1 class="uunique username">{conv.SUBJECT}</h1></div>
-<!-- END conv -->
 <!-- BEGIN back_dc -->
 <div class="cols5_left rows5_top_1"><a href="{back_dc.URL}">{L_INBOX}</a></div>
 <!-- END back_dc -->
@@ -25,7 +22,9 @@
 	</div>
 	<div class="float_right col75">
 		<!-- BEGIN conv -->
-		<div class="a_right">
+		<div class="g2"><h1 class="uunique username">{conv.SUBJECT}</h1></div>
+		
+		<div class="rows5_top_2 a_right">
 		<form action="{S_ACTION}" method="post">{S_HIDDEN_FIELDS}<input class="submit" type="submit" name="delete" value="{L_DELETE_DC}" /></form>
 		</div>
 		<!-- END conv -->

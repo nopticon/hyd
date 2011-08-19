@@ -344,7 +344,7 @@ a.submitd {
 .row_temp { background: #996600; }
 .z_center { width: 200px; margin: 0 auto; }
 
-.section, .g1 {
+.section, .g1, .g2 {
 	background: url(images/curve.png) no-repeat bottom left;
 	display: block;
 	min-width: 148px;
@@ -355,15 +355,19 @@ a.submitd {
 	margin-bottom: 5px;
 	text-shadow: 1px 1px 1px #222;
 }
-.section h1, .section h1 a, .g1 h1, .g1 h1 a {
+.section h1, .section h1 a, .g1 h1, .g1 h1 a, .g2 h1, .g2 h1 a {
 	font-family: 'Ubuntu', Arial, Helvetica, sans-serif !important;
 	font-size: 15px;
 	color: #F5B800;
 }
 .g1 {
 	min-width: 250px;
-	width: 300px;
+	width: 50%;
 }
+.g2 {
+	width: 95%;
+}
+
 .section_e {
 	background: url(images/blocke.png) no-repeat;
 	display: block;
