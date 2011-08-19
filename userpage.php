@@ -430,7 +430,7 @@ switch ($mode)
 		$gender = $user->lang[$gender];
 		
 		$user_fields = array(
-			'JOINED' => ($profiledata['user_regdate'] && (!$profiledata['user_hideuser'] || $epbi2)) ? $user->format_date($profiledata['user_regdate']) . sprintf($user->lang['JOINED_SINCE'], $memberdays) : '',
+			//'JOINED' => ($profiledata['user_regdate'] && (!$profiledata['user_hideuser'] || $epbi2)) ? $user->format_date($profiledata['user_regdate']) . sprintf($user->lang['JOINED_SINCE'], $memberdays) : '',
 			'LAST_LOGON' => ($profiledata['user_lastvisit'] && (!$profiledata['user_hideuser'] || $epbi2)) ? $user->format_date($profiledata['user_lastvisit']) : '',
 			'GENDER' => $gender,
 			'AGE' => $age,

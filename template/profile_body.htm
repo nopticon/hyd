@@ -1,6 +1,8 @@
 <!-- INCLUDE page_header.htm -->
 
-<div class="section"><h1>{L_PREFERENCES}</h1></div>
+<!-- BEGIN hide -->
+<div class="g1"><h1>{L_PREFERENCES}</h1></div>
+<!-- END hide -->
 
 <!-- BEGIN error -->
 <a name="e"></a>
@@ -10,27 +12,27 @@
 <form action="{S_ACTION}" enctype="multipart/form-data" method="post">
 <div class="ie-widthfix float-holder a_fix">
 	<div class="col49 float_left">
-		<div class="section"><h1>{L_AVATAR}</h1></div>
+		<div class="g1"><h1>{L_AVATAR}</h1></div>
 		<!-- BEGIN current_avatar -->
 		<div class="a_center"><img src="{current_avatar.IMAGE}" alt="" /><br />{L_CURRENT_AVATAR}</div>
 		<!-- END current_avatar -->
 		<div class="rows5_top"><label for="avatar">{L_AVATAR_EXPLAIN}</label></div>
 		<div class="rows5_top"><input type="hidden" name="MAX_FILE_SIZE" value="{AVATAR_MAXSIZE}" /><input type="file" name="avatar" id="avatar" size="20" /></div>
 		
-		<div class="rows5_top_2"><div class="section"><h1>{L_RANK}</h1></div></div>
+		<div class="rows5_top_2"><div class="g1"><h1>{L_RANK}</h1></div></div>
 		<div class="rows5_top"><label for="sig">{L_RANK_EXPLAIN}</label></div>
 		<div class="rows5_top"><input type="text" id="rank" name="rank" size="45" value="" /></div>
 		
 		<script language="JavaScript" type="text/javascript" src="{S_SERVER}/home/style/js/color.js"></script>
-		<div class="rows5_top_2"><div class="section"><h1>{L_USERCOLOR}</h1></div></div>
+		<div class="rows5_top_2"><div class="g1"><h1>{L_USERCOLOR}</h1></div></div>
 		<div class="rows5_top"><label for="sig">{L_USERCOLOR_EXPLAIN}</label></div>
 		<div class="rows5_top"><input type="hidden" class="color" id="color" name="color" value="#{COLOR}" /></div>
 		
-		<div class="rows5_top_2"><div class="section"><h1>{L_SIGNATURE}</h1></div></div>
+		<div class="rows5_top_2"><div class="g1"><h1>{L_SIGNATURE}</h1></div></div>
 		<div class="rows5_top"><label for="sig">{L_SIGNATURE_EXPLAIN}</label></div>
 		<div class="rows5_top"><textarea id="sig" name="sig" rows="3" cols="60">{SIG}</textarea></div>
 		
-		<div class="rows5_top_2"><div class="section"><h1>{L_MEMBER_OPTIONS}</h1></div></div>
+		<div class="rows5_top_2"><div class="g1"><h1>{L_MEMBER_OPTIONS}</h1></div></div>
 		<div class="rows5_top">
 			<div class="ie-widthfix float-holder">
 				<div class="col50 float_left"><label for="dateformat">{L_MEMBER_DATE_FORMAT}:</label></div>
@@ -47,7 +49,7 @@
 		</div>
 	</div>
 	<div class="col49 float_right cols5_left">
-		<div class="section"><h1>{L_MEMBER_INFO}</h1></div>
+		<div class="g1"><h1>{L_MEMBER_INFO}</h1></div>
 		<div class="ie-widthfix float-holder rows5_top">
 			<div class="col40 float_left"><label for="favbands">{L_FAV_BANDS}:</label></div>
 			<div class="col60 float_right"><input type="text" id="favbands" name="fav_artists" class="col90" size="20" maxlength="255" value="{FAV_ARTISTS}" /></div>
@@ -85,7 +87,7 @@
 		</div>
 		<!-- END birthday -->
 		
-		<div class="rows5_top_2"><div class="section"><h1>{L_CONTACT_INFO}</h1></div></div>
+		<div class="rows5_top_2"><div class="g1"><h1>{L_CONTACT_INFO}</h1></div></div>
 		<!-- BEGIN hidden -->
 		<div class="ie-widthfix float-holder rows5_top">
 			<div class="col40 float_left"><label for="email">{L_EMAIL}:</label></div>

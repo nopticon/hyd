@@ -41,7 +41,7 @@
 	<div class="float_left col49">
 		<!-- BEGIN general -->
 		<div class="">
-		<div class="section"><h1 style="color: #{USERNAME_COLOR};">Informaci&oacute;n</h1></div>	
+		<div class="g1"><h1 style="color: #{USERNAME_COLOR};">Informaci&oacute;n</h1></div>	
 		<ul class="ul_none nowraptext">
 			<!-- BEGIN item -->
 			<li class="rows5_top_6"><strong>{item.KEY}:</strong> {item.VALUE}</li>
@@ -52,7 +52,7 @@
 		
 		<!-- BEGIN lastfm -->
 		<div class="rows5_top_2 float-holder ie-widthfix item_block_3">
-		<div class="section"><h1 style="color: #{USERNAME_COLOR};">Canciones recientes en Last.FM</h1></div>	
+		<div class="g1"><h1 style="color: #{USERNAME_COLOR};">Canciones en Last.FM</h1></div>	
 		<ul class="ul_none">
 			<!-- BEGIN row -->
 			<li class="rows5_top_6"><strong>{row.TIME}</strong>: <a href="{row.URL}" title="{row.ALBUM}" target="_blank">{row.ARTIST} - {row.NAME}</a></li>
@@ -64,7 +64,7 @@
 		
 		<!-- BEGIN thumbnails -->
 		<div class="<!-- IF !(thumbnails.S_ROW_COUNT) -->rows5_top_2 <!-- ENDIF -->float-holder ie-widthfix">
-			<div class="section"><h1 style="color: #{USERNAME_COLOR};">{thumbnails.L_TITLE}</h1></div>
+			<div class="g1"><h1 style="color: #{USERNAME_COLOR};">{thumbnails.L_TITLE}</h1></div>
 			<ul class="ul_none">
 				<!-- BEGIN row -->
 				<!-- BEGIN col -->
@@ -78,7 +78,7 @@
 	<div class="float_right col49">
 		<!-- BEGIN post_comment_box -->
 		<div class="post_comment">
-		<div class="section"><h1 style="color: #{USERNAME_COLOR};">Env&iacute;a tu mensaje</h1></div>
+		<div class="g1"><h1 style="color: #{USERNAME_COLOR};">Env&iacute;a tu mensaje</h1></div>
 		<form action="{S_COMMENTS}" method="post" name="m-messages">
 		<input type="hidden" name="ref" value="{post_comment_box.REF}" />
 		<div><a onclick="return popup('{S_EMOTICONS}', '_emoticons', 300, 450);" href="{S_EMOTICONS}" target="_blank">{L_EMOTICONS}</a></div>
@@ -90,7 +90,7 @@
 		
 		<!-- BEGIN lastboard -->
 		<div class="rows5_top_2 float-holder ie-widthfix item_block_3">
-		<div class="section"><h1 style="color: #{USERNAME_COLOR};">&Uacute;ltimos mensajes del foro</h1></div>	
+		<div class="g1"><h1 style="color: #{USERNAME_COLOR};">&Uacute;ltimos mensajes del foro</h1></div>	
 		<ul class="ul_none">
 			<!-- BEGIN row -->
 			<li class="rows5_top_6"><strong>{row.TIME}</strong>: <a href="{row.URL}">{row.TITLE}</a></li>
@@ -101,7 +101,7 @@
 		
 		<!-- BEGIN viewers -->
 		<div class="rows5_top_3">
-			<div class="section"><h1 style="color: #{USERNAME_COLOR};">Visitantes</h1></div>
+			<div class="g1"><h1 style="color: #{USERNAME_COLOR};">Visitantes</h1></div>
 			<ul class="ul_none">
 				<!-- BEGIN row -->
 				<!-- BEGIN col -->
@@ -134,7 +134,7 @@
 <!-- BEGIN messages -->
 <!-- BEGIN box -->
 <div class="rows5_top_2 post_comment">
-<div class="section"><h1 style="color: #{USERNAME_COLOR};">{L_SEND_POST}</h1></div>
+<div class="g1"><h1 style="color: #{USERNAME_COLOR};">{L_SEND_POST}</h1></div>
 <form action="{S_COMMENTS}" method="post">
 <input type="hidden" name="ref" value="{box.REF}" />
 <div><label for="comment">{L_POST}</label> - <a class="relevant" onclick="return popup('{S_EMOTICONS}', '_emoticons', 300, 450);" href="{S_EMOTICONS}" target="_blank">{L_EMOTICONS}</a></div>
