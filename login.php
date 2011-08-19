@@ -1,0 +1,82 @@
+<?php
+// -------------------------------------------------------------
+// $Id: login.php,v 1.2 2006/02/16 04:47:53 Psychopsia Exp $
+//
+// STARTED   : Sat May 22, 2004
+// COPYRIGHT : � 2006 Rock Republik
+// -------------------------------------------------------------
+
+define('IN_NUCLEO', true);
+require('./interfase/common.php');
+
+$user->init(false);
+
+$mode = request_var('mode', '');
+switch ($mode)
+{
+	case 'login':
+		if ($user->data['is_member'] && !isset($_POST['admin']))
+		{
+			redirect(s_link());
+		}
+		
+		if (isset($_POST['login']) && (!$user->data['is_member'] || isset($_POST['admin'])))
+		{
+			$username = phpbb_clean_username(request_var('username', ''));
+			$password = request_var('password', '');
+			$ref = request_var('ref', '');
+			$adm = (isset($_POST['admin'])) ? 1 : 0;
+			
+			if (!empty($username) && !empty($password))
+			{
+				$sql = "SELECT user_id, username, user_password, user_type, user_return_unread, user_upw, user_country, user_avatar, user_location, user_gender, user_birthday
+					FROM _members
+					WHERE username = '" . $db->sql_escape($username) . "'";
+				$result = $db->sql_query($sql);
+				
+				if ($row = $db->sql_fetchrow($result))
+				{
+					if ((user_password($password) == $row['user_password']) && ($row['user_type'] != USER_INACTIVE && $row['user_type'] != USER_IGNORE))
+					{
+						$user->session_create($row['user_id'], $adm);
+						
+						$ref = ($ref == '' || ($row['user_return_unread'] && preg_match('#' . $config['server_name'] . '/$#', $ref))) ? s_link('new') : $ref;
+						
+						if (!$row['user_country'] || !$row['user_location'] || !$row['user_gender'] || !$row['user_birthday'] || !$row['user_avatar']) {
+							$ref = s_link('my', 'profile');
+						}
+						
+						redirect($ref);
+					}
+				}
+			}
+			
+			do_login('', $adm);
+		}
+		
+		redirect(s_link());
+		break;
+	case 'logout':
+		if ($user->data['is_member'])
+		{
+			$user->session_kill();
+		}
+		
+		if ($user->data['is_founder'])
+		{
+			redirect(s_link());
+		}
+		
+		$user->setup();
+		
+		$ref = s_link();
+		$message = $user->lang['LOGOUT_THANKS'] . '<br /><br />' . sprintf($user->lang['CLICK_RETURN_COVER'], '<a href="' . $ref . '">', '</a>');
+		
+		meta_refresh(15, $ref);
+		trigger_error($message);
+		break;
+}
+
+redirect(s_link());
+
+?>

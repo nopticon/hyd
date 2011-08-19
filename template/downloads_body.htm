@@ -1,0 +1,78 @@
+<!-- INCLUDE page_header.htm -->
+<div class="box2b ie-widthfix" align="center">
+<div class="pad12"><h1 class="red">{L_DOWNLOADS}</h1></div>
+
+<div class="pad4"><div class="ie-widthfix">
+<table cellpadding="0" cellspacing="5" border="0">
+	<tr>
+		<td width="125" class="user-toolbar">
+		<div class="session box3 sub-color logout"><a href="{URL_AUDIO}"><img src="/net/icons/audio.gif" width="18" height="18" alt="" />{L_AUDIO}</a></div>
+		</td>
+		<td width="125" class="user-toolbar">
+		<div class="session box3 sub-color logout"><a href="{URL_VIDEO}"><img src="/net/icons/video.gif" width="18" height="18" alt="" />{L_VIDEO}</a></div>
+		</td>
+		<td>&nbsp;</td>
+	</tr>
+</table>
+</div></div>
+
+</div>
+</div>
+
+<div class="m6-top box2t">
+<div class="pad12 color">
+
+<!-- BEGIN item -->
+<!-- BEGIN selected -->
+<a name="{item.DOWNLOAD_ID}"></a>
+<!-- IF item.S_ROW_COUNT --><div class="sep3-top"><!-- ENDIF -->
+<div class="sep-left">
+<div class="pad6 box <!-- IF item.S_ROW_COUNT % 2 -->dark-color<!-- ELSE -->color<!-- ENDIF --> ie-widthfix">
+<table width="100%" class="t-collapse">
+	<tr>
+		<!-- BEGIN image -->
+		<td valign="top" width="1%"><a href="{image.A_URL}"><img class="box" src="{image.IMAGE}" /></a></td>
+		<td width="3" nowrap="nowrap">&nbsp;</td>
+		<!-- END image -->
+		<td valign="top">
+		<form action="{selected.S_ACTION}" method="post" onSubmit="_.glob.in_timed_disable(download);">
+		<h1>{selected.A_NAME}</h1>
+		<div class="sep-top"><h1 class="red">{item.D_TITLE}</h1></div>
+		
+		<!-- IF selected.D_ALBUM != '' || selected.D_YEAR != '' -->
+		<div class="sep-top">{selected.D_ALBUM}<!-- IF selected.D_ALBUM != '' && selected.D_YEAR != '' --> | <!-- ENDIF -->{selected.D_YEAR}</div>
+		<!-- ENDIF -->
+		<div class="sep-top">{selected.D_DURATION}m | {selected.D_FILESIZE}</div>
+		<div class="sep-top sep2">{selected.D_STATS}</div>
+		<div class="pad6 sep2-top download"><input class="w150p bold" type="submit" id="download" name="download" value="{L_UE_DOWNLOAD}" /></div>
+		<!-- BEGIN fav -->
+		<div class="pad3 sep3-top sep"><a class="bold red" href="{dl_fav.URL}">{L_DL_FAV}</a></div>
+		<!-- END fav -->
+		</form>
+		</td>
+		<td><!-- <embed src="{selected.S_DIRECT}" width="320" height="240" autostart="false" loop="false" align="right"></embed> --></td>
+	</tr>
+</table>
+</div>
+</div>
+<!-- IF item.S_ROW_COUNT --></div><!-- ENDIF -->
+<!-- END selected -->
+<!-- BEGIN header -->
+<a name="{item.DOWNLOAD_ID}"></a>
+<!-- IF item.S_ROW_COUNT --><div class="sep3-top"><!-- ENDIF -->
+<div class="<!-- IF item.S_ROW_COUNT % 2 -->dark-color<!-- ELSE -->color<!-- ENDIF --> box pad6 ie-widthfix" onClick="window.location='{header.U_DOWNLOAD_ID}'">
+<table width="100%" class="t-collapse">
+	<tr>
+		<td width="75%"><a href="{header.U_DOWNLOAD_ID}"><strong>{header.A_NAME}</strong> | <span class="orange">{item.D_TITLE}</span></a></td>
+		<td align="right"><a class="red" href="{header.U_DOWNLOAD_ID}">{L_PLAY_FILE}</a></td>
+	</tr>
+</table>
+<!-- IF item.S_ROW_COUNT --></div><!-- ENDIF -->
+</div>
+<!-- END header -->
+<!-- END item -->
+
+</div>
+</div>
+
+<!-- INCLUDE page_footer.htm -->

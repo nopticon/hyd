@@ -1,0 +1,38 @@
+<!-- INCLUDE page_header.htm -->
+<div class="boxb pad12 ie-widthfix float-holder">
+<div class="head-float-left">
+<h1>{L_CHAT}</h1>
+<div class="sep-top"><a class="bold red fnt12" href="{U_CHAT}rk/">{L_CHAT_NOW}</a> <span class="soft">|</span> <a class="bold orange fnt12" href="{CREATE_CHAT}">{L_CHAT_CREATE}</a></div>
+</div>
+<div class="head-float-right">
+<div><h1>{CHATTERS} {L_CHATTERS}</h1></div>
+</div>
+</div>
+</div>
+
+<div class="m6-top m6-bottom float-holder ie-widthfix">
+<div class="content">
+<!-- BEGIN cat -->
+<div class="<!-- IF cat.S_ROW_COUNT -->m6-top <!-- ENDIF -->box3nl color">
+<div class="head" align="center"><h1 class="orange">{cat.NAME}</h1></div>
+<!-- BEGIN item -->
+<div class="<!-- IF item.S_ROW_COUNT % 2 -->dark-color <!-- ENDIF -->pad6 ie-widthfix float-holder">
+	<div class="float-left-perc"><a href="{item.U_CHANNEL}" class="fnt12 red bold">#{item.CH_NAME}</a> <span class="soft">|</span> {item.CH_USERS}m<br /><small class="sgray">{item.CH_DESC}</small><br /></div>
+	<div class="float-right-perc" align="right"><a style="color:#{item.USER_COLOR}; font-weight: bold" href="{item.U_USERNAME}">{item.USERNAME}</a></div>
+</div>
+<!-- END item -->
+<!-- BEGIN no_rooms -->
+<div class="pad2"><div class="pad6 bold red" align="center">{L_CHAT_NOCH}</div></div>
+<!-- END no_rooms -->
+</div>
+<!-- END cat -->
+</div> <!-- content -->
+
+<div class="sidebar">
+<!-- INCLUDE sidebar/last_event.htm -->
+<!-- INCLUDE sidebar/a.htm -->
+
+</div> <!-- sidebar -->
+</div>
+
+<!-- INCLUDE page_footer.htm -->

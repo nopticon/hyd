@@ -1,0 +1,16 @@
+<!-- INCLUDE page_header.htm -->
+
+<!-- BEGIN error -->
+<a name="e"></a><div class="rows5_top_2"><div class="error_block"><h2>{L_ERROR}</h2><p>{error.MESSAGE}</p></div></div>
+<!-- END error -->
+
+<form action="{S_UPLOAD_ACTION}" method="post" enctype="multipart/form-data" name="post">
+<div>Los archivos deben ser formato WMA, tama&ntilde;o de archivo <strong>{MAX_FILESIZE2}</strong> MB m&aacute;ximo.</div>
+<div class="rows5_top_1"><input type="hidden" name="MAX_FILE_SIZE" value="{MAX_FILESIZE}" /><input type="file" name="add_dl[]" size="50" /></div>
+
+<br /><br />Artista: <select name="artist">{SELECT_A}</select>
+
+<div class="rows5_top_1 a_center">{S_HIDDEN}<input type="submit" class="submit" name="submit" value="{L_SUBMIT}" /></div>
+</form>
+
+<!-- INCLUDE page_footer.htm -->

@@ -1,0 +1,24 @@
+<!-- INCLUDE page_header.htm -->
+
+<!-- BEGIN error -->
+<a name="e"></a><div class="rows5_top_2"><div class="error_block"><h2>{L_ERROR}</h2><p>{error.MESSAGE}</p></div></div>
+<!-- END error -->
+
+<form action="{S_ACTION}" method="post">
+<div>Modo<br />
+<select name="post_mode">
+	<option value="1">Todos</option>
+	<option value="2">Artistas</option>
+	<option value="3">Amigos</option>
+</select></div>
+<div class="rows5_top_1"><label for="comment_np">{L_TOPIC_TITLE}</label></div>
+<div class="rows5_top_1"><input id="comment_title" name="post_subject" size="150" value="" /></div>
+<div class="rows5_top_1"><label for="comment">{L_POST}</label> - <a class="relevant" onclick="return popup('{S_EMOTICONS}', '_emoticons', 300, 450);" href="{S_EMOTICONS}" target="_blank">{L_EMOTICONS}</a></div>
+<div class="rows5_top_1"><textarea id="comment" name="post_message" cols="150" rows="10"></textarea></div>
+<div class="rows5_top_1"><label for="excl">Excluir</label></div>
+<div class="rows5_top_1"><textarea id="excl" name="post_skip" cols="150" rows="10"></textarea></div>
+<div class="rows5_top_1">&iquest;Puede responder? <input type="checkbox" name="post_reply" value="1" /></div>
+<div class="rows5_top_1 a_center"><input class="submit" type="submit" name="submit" value="{L_SUBMIT}" /></div>
+</form>
+
+<!-- INCLUDE page_footer.htm -->

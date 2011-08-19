@@ -1,0 +1,102 @@
+<!-- INCLUDE page_header.htm -->
+
+<div class="section"><h1>{L_RADIO}</h1></div>
+
+<div id="radio_listen">
+<ul class="ul_none">
+	<li><a class="winamp" href="http://www.rockrepublik.net/home/radio/player/listen.pls">Winamp</a></li>
+	<li><a class="windowsmedia" href="http://www.rockrepublik.net/home/radio/player/wmp.asx">Windows Media</a></li>
+	<li><a class="itunes" href="http://www.rockrepublik.net/home/radio/player/itunes.m3u">iTunes</a></li>
+	<li><a class="realplayer" href="http://www.rockrepublik.net/home/radio/player/realplayer.ram">Real Player</a></li>
+	<li><a class="vlc" href="http://www.rockrepublik.net/home/radio/player/vlc.pls">VLC</a></li>
+</ul>
+</div>
+
+<div id="player" class="rows5_top_4 rows5_bot_1 a_center">
+	<!-- BEGIN hidden -->
+	<object id="radioplayer" width="350" height="61" classid="CLSID:6BF52A52-394A-11d3-B153-00C04F79FAA6" type="application/x-oleobject">
+	<param name="url" value="http://216.66.69.4:9594/">
+	<param name="SendPlayStateChangeEvents" VALUE="True">
+	<param name="AutoStart" value="False">
+	<param name="stretchToFit" value="True">
+	<param name="uiMode" value="full">
+	<param name="PlayCount" value="1">
+	<param name="AutoRewind" value="0">
+	<embed type="application/x-mplayer2" pluginspage="http://www.microsoft.com/Windows/MediaPlayer/" name="radioplayere" autostart="false" width="350" height="51" transparentstart="1" showstatusbar="1" loop="0" controller="true" src="http://216.66.69.4:9594/" stretchToFit="true"></embed>
+	</object>
+	<!-- END hidden -->
+</div>
+
+<div class="rows5_top dark_box a_center">
+	<h2>&iquest;Qu&eacute; est&aacute; sonando?</h2>
+	<div id="now" class="now_auto a_center">Cargando...</div>
+</div>
+<script type="text/javascript">
+//<![CDATA[
+var v = {
+	asynchronous: true,
+	frequency: 30,
+	postBody: 'a=1&hash='
+}
+new Ajax.PeriodicalUpdater('now', '{S_SERVER}/now', v);
+//]]>
+</script>
+
+<div id="msninfo">
+	<p>Agreganos a tus contactos de <strong>Live Messenger</strong> para solicitar tus canciones: <strong>radio&#64;rockrepublik.net</strong>.</p>
+	<p>&iquest;Te gustar&iacute;a tener tu programa en Rock Republik Radio? Env&iacute;anos tu propuesta: <strong>info&#64;rkradio.net</strong>.</p>
+</div>
+
+<div id="special">
+	<h1>Programas especiales</h1>
+</div>
+
+<div class="section"><h1>Programas en vivo</h1></div>
+
+<div id="radio_container" class="float-holder ie-widthfix">
+	<div id="radio_list">
+	<ul>
+	<!-- BEGIN day -->
+	<li><div><a href="{day.V_LINK}">{day.V_NAME}</a></div><!-- BEGIN row --><!-- IF !(row.S_ROW_COUNT) --><ul><!-- ENDIF --><li><a href="{row.V_LINK}">{row.V_NAME}</a></li><!-- IF row.S_ROW_COUNT + 1 == row.S_NUM_ROWS --></ul><!-- ENDIF --><!-- END row --></li>
+	<!-- END day -->
+	</ul>
+	</div>
+</div>
+
+<div class="section"><h1>Informaci&oacute;n</h1></div>
+
+<div class="col_fr a_left">
+	<p>Rock Republik Radio fue fundada en Guatemala en junio 2006. Podr&aacute;s escucharnos las 24 horas y encontrar&aacute;s m&uacute;sica de todos los sub-g&eacute;neros de rock y metal por medio de nuestros programas en vivo.</p>
+	<p><strong>&iquest;Quieres que tu banda suene en RK Radio?</strong><br />
+	Env&iacute;anos a <span class="red">music&#64;rkradio.net</span> tu m&uacute;sica junto con biograf&iacute;a, direcci&oacute;n de contacto y direcci&oacute;n de correo electr&oacute;nico para estar en comunicaci&oacute;n.</p>
+	
+	<p><strong>&iquest;Quieres formar parte de nuestro equipo de locutores?</strong><br />
+	Para ser locutor necesitas tener computadora y micr&oacute;fono en buen estado y conexi&oacute;n de 512kbps.<br />
+	Si cumples con lo anterior, env&iacute;anos tu propuesta junto con tus datos a <span class="red">info&#64;rkradio.net</span>, la analizaremos y te enviaremos una respuesta con m&aacute;s informaci&oacute;n.</p>
+	
+	<p><strong>&iquest;Quieres ser patrocinador de RK Radio?</strong><br />
+	Buscamos gente que tenga un sitio, banda, empresa, negocio u otro y desea promocionarse y puede pagar por publicidad.<br />
+	Env&iacute;anos tu propuesta a <span class="red">sponsor&#64;rkradio.net</span> y nos pondremos en contacto.</p>
+</div>
+
+<!-- BEGIN active -->
+<!-- BEGIN songs -->
+<div id="s_playlist">
+<h1>{L_RADIO_SONGS}</h1>
+<ul id="playlist">
+<!-- BEGIN item -->
+<li id="{item.TIMESTAMP}">{item.TIME} <strong>{item.TITLE}</strong></li>
+<!-- END item -->
+</ul>
+</div>
+<script type="text/javascript">
+//<![CDATA[
+radio.config('playlist', '{songs.U_PLAYLIST}');
+radio.playlist.timer();
+radio.listener.start();
+//]]>
+</script>
+<!-- END songs -->
+<!-- END active -->
+
+<!-- INCLUDE page_footer.htm -->

@@ -1,0 +1,47 @@
+<!-- INCLUDE page_header.htm -->
+
+<div class="rows5_top <!-- IF category.S_ROW_COUNT -->rows5_top_1 <!-- ENDIF -->">
+	<div class="section"><h1>Rock Republik Networks</h1></div>
+	<ul class="ul_none">
+		<li class="pad_2 high"><a href="mailto:info&#64;rockrepublik.net">info&#64;rockrepublik.net</a></li>
+		<li class="pad_2 high">Fundado el <strong>{START_DATE}</strong></li>
+		<li class="pad_2 high">{MEMBERS_COUNT} {L_MEMBERS_ALL}</li>
+	</ul>
+</div>
+
+<div class="rows5_top_2">
+<div class="col_1 float_left">
+	<div id="online"><!-- INCLUDE community_online.htm --></div>
+	<script type="text/javascript">
+	//<![CDATA[
+	_.frame.call('commol', 'online', 10);
+	//]]>
+	</script>
+</div>
+
+<div class="col_3 float_right">
+<div class="ie-widthfix float-holder">
+	<div class="section"><h1>Administraci&oacute;n</h1></div>
+	<ul class="ul_none">
+		<!-- BEGIN founders -->
+		<li class="row_3 col_1f2 float_left <!-- IF row.S_ROW_COUNT > 0 -->li_lines_1<!-- ENDIF --> pad_2 a_center"><a class="relevant uunique" href="{founders.PROFILE}">{founders.USERNAME}</a><br />{founders.REALNAME}<br /><br /><a href="{founders.PROFILE}"><img src="{founders.AVATAR}" alt="" /></a></li>
+		<!-- END founders -->
+	</ul>
+</div>
+
+<!-- BEGIN team -->
+<div class="rows5_top_1 ie-widthfix float-holder">
+	<div class="section"><h1>{team.TEAM_NAME}</h1></div>
+	<ul class="ul_none">
+		<!-- BEGIN row -->
+		<!-- BEGIN member -->
+		<li class="row_3 col_1f2 float_left <!-- IF row.S_ROW_COUNT > 0 -->li_lines_1<!-- ENDIF --> pad_2 a_center"><a class="relevant uunique" href="{member.PROFILE}">{member.USERNAME}</a><br /><!-- IF member.REALNAME != '' -->{member.REALNAME}<!-- ELSE -->--<!-- ENDIF --><br /><br /><a href="{member.PROFILE}"><img src="{member.AVATAR}" alt="" /></a></li>
+		<!-- END member -->
+		<!-- END row -->
+	</ul>
+</div>
+<!-- END team -->
+</div>
+</div>
+
+<!-- INCLUDE page_footer.htm -->

@@ -1,0 +1,54 @@
+<!-- INCLUDE page_header.htm -->
+
+<!-- BEGIN gallery -->
+<div class="section"><h1>{L_UE_GALLERY}</h1></div>
+<div class="ie-widthfix float-holder">
+<ul class="ul_none">
+	<!-- BEGIN item -->
+	<li class="row_5 col_1f float_left pad_2 a_center"><a class="relevant" href="{item.URL}">{item.TITLE}</a><br />{item.DATETIME}<br /><br /><a href="{item.URL}"><img src="{item.IMAGE}" alt="{item.TITLE}" /></a></li>
+	<!-- END item -->
+</ul>
+</div>
+<!-- IF PAGES_NUMS != '' --><div class="pagination">{PAGES_NUMS}</div><!-- ENDIF -->
+<!-- END gallery -->
+
+
+<div id="aevent"  align="center">
+<script type="text/javascript"><!--
+google_ad_client = "pub-5371491382621943";
+/* 728x90, creado 21/03/10 */
+google_ad_slot = "4769966849";
+google_ad_width = 728;
+google_ad_height = 90;
+//-->
+</script>
+<script type="text/javascript"
+src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</div>
+
+<!-- BEGIN future -->
+<div class="rows5_top_2"><div class="section"><h1>{L_EVENTS_NEXT}</h1></div></div>
+
+<div class="col_1 float_left">
+	<!-- BEGIN set -->
+	<ul class="ul_none">
+	<!-- BEGIN item -->
+		<li class="a_center rows5_top"><a href="#{item.ITEM_ID}"><img src="{item.THUMBNAIL}" alt="" /></a></li>
+	<!-- END item -->
+	</ul>
+	<!-- END set -->
+</div>
+<div class="col_3 float_right">
+	<!-- BEGIN set -->
+	<div<!-- IF set.S_ROW_COUNT --> class="rows5_top rows5_top_3"<!-- ENDIF -->><div class="section"><h1>{set.L_TITLE}</h1></div></div>
+	<ul class="ul_none">
+		<!-- BEGIN item -->
+		<li class="a_center<!-- IF item.S_ROW_COUNT --> rows5_top_3<!-- ENDIF -->"><a name="{item.ITEM_ID}"></a><span class="relevant">{item.TITLE}</span><br />{item.DATE}<br /><br /><!-- IF item.U_TOPIC != '' --><a href="{item.U_TOPIC}"><!-- ENDIF --><img src="{item.SRC}" alt="" /><!-- IF item.U_TOPIC != '' --></a><!-- ENDIF --></li>
+		<!-- END item -->
+	</ul>
+	<!-- END set -->
+</div>
+<!-- END future -->
+
+<!-- INCLUDE page_footer.htm -->

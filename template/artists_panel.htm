@@ -1,0 +1,149 @@
+<!-- INCLUDE page_header.htm -->
+		
+		<div align="center">
+			<script type="text/javascript"><!--
+			google_ad_client = "pub-5371491382621943";
+			/* 728x90, creado 12/11/09 */
+			google_ad_slot = "8783292401";
+			google_ad_width = 728;
+			google_ad_height = 90;
+			//-->
+			</script>
+			<script type="text/javascript"
+			src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+			</script>
+		</div>
+
+<div class="float-holder ie-widthfix">
+	<div class="float_left col50">
+		<div class="section"><h1>{UNAME}</h1></div>
+		<ul class="ul_none">
+			<li class="high">{LOCATION}</li>
+			<li class="high">{GENRE}</li>
+		</ul>
+	</div>
+	<div class="float_right col50 a">
+		<div class="rows5_top_1 rows5_bot_1 a_controls a_right">
+		<ul class="ul_none">
+		<!-- BEGIN contact -->
+		<!-- IF contact.EMAIL -->
+		<li><a href="{contact.EMAIL}">{L_EMAIL}</a></li>
+		<!-- ENDIF -->
+		<!-- IF contact.WWW -->
+		<li><a href="{contact.WWW}" target="_blank">{L_WEBSITE}</a></li>
+		<!-- ENDIF -->
+		<!-- IF contact.FAV_LANG -->
+		<li><a class="bold" href="{contact.FAV_URL}">{contact.FAV_LANG}</a></li>
+		<!-- ENDIF -->
+		<!-- END contact -->
+		</ul>
+		</div>
+	</div>
+</div>
+
+<div class="rows5_top_2 rows5_bot_2 a_controls a_right float-holder ie-widthfix">
+<h2 class="z">Secciones</h2>
+<ul class="ul_none left">
+	<!-- BEGIN nav -->
+	<!-- BEGIN strong -->
+	<li class="relevant"><span>{nav.LANG}</span></li>
+	<!-- END strong -->
+	<!-- BEGIN a -->
+	<li><a href="{a.URL}">{nav.LANG}</a></li>
+	<!-- END a -->
+	<!-- END nav -->
+</ul>
+</div>
+
+<!-- IF INACTIVE -->
+<div class="rows5_bot_1"><div class="black_box a_center">
+	<h2>{L_ARTIST_INACTIVE}</h2>
+	<p>{L_ARTIST_INACTIVE_DESC}</p>
+</div></div>
+<!-- ENDIF -->
+
+<div class="col_3 float_left">
+{UB_BODY}
+</div>
+<div class="col_1 float_right">
+	<!-- BEGIN ud_block -->
+	<div class="<!-- IF ud_block.S_ROW_COUNT -->rows5_top_1<!-- ENDIF -->">
+		<div class="section"><h1>{ud_block.LANG}</h1></div>
+		<ul class="ul_none">
+			<!-- BEGIN item -->
+			<li class="pad_2<!-- BEGIN strong --> relevant<!-- END strong -->"><!-- BEGIN a --><a href="{a.URL}"><!-- END a -->{item.TITLE}<!-- BEGIN a --></a><!-- END a --></li>
+			<!-- END item -->
+		</ul>
+	</div>
+	<!-- END ud_block -->
+	
+	<!-- BEGIN events_gallery -->
+	<div class="rows5_top_1">
+		<div class="section"><h1>Galer&iacute;a</h1></div>
+		<ul class="ul_none">
+			<!-- BEGIN item -->
+			<li class="pad_2"><a href="{item.URL}" title="{item.DATETIME}">{item.TITLE}</a></li>
+			<!-- END item -->
+		</ul>
+	</div>
+	<!-- END events_gallery -->
+	
+	<!-- BEGIN posts -->
+	<div class="rows5_top_1">
+		<div class="section"><h1>{L_POSTS}: {POSTS}m</h1></div>
+		<div class="comments">
+		<ul class="ul_none">
+			<!-- BEGIN item -->
+			<li class="clear <!-- IF item.S_ROW_COUNT -->rows5_top_1<!-- ENDIF -->">
+			<div class="rows5_bot_1"><!-- BEGIN username --><a class="relevant uunique" href="{item.PROFILE}"><!-- END username --><!-- BEGIN guestuser --><span class="relevant"><!-- END guestuser -->{item.USERNAME}<!-- BEGIN guestuser --></span><!-- END guestuser --><!-- BEGIN username --></a><!-- END username --><br />{item.DATETIME}</div>
+			<div class="nowraptext">{item.MESSAGE}</div>
+			<!-- BEGIN controls --><div class="a_controls rows5_top_4 rows5_bot_1 a_right"><!-- BEGIN reply --><a href="{reply.REPLY}">{L_CMT_REPLY}</a><!-- END reply --><!-- BEGIN hidden_report --> <a href="{report.REPORT}">{L_CMT_REPORT}</a><!-- END hidden_report --><!-- BEGIN auth --><!-- IF isset(auth.EDIT) --> <a href="{auth.EDIT}">{L_CMT_EDIT}</a><!-- ENDIF --> <!-- IF isset(auth.DELETE) --> <a href="{auth.DELETE}">{L_CMT_DELETE}</a><!-- ENDIF --><!-- END auth --></div><!-- END controls -->
+			</li>
+			<!-- END item -->
+		</ul>
+		</div>
+		<!-- IF MSG_PAGES_NUMS != ' <strong>1</strong>' --><div class="rows5_top pagination">{MSG_PAGES_NUMS}</div><!-- ENDIF -->
+	</div>
+	<!-- END posts -->
+	
+	<!-- BEGIN post_box -->
+	<div class="rows5_top_2 post_comment">
+	<div class="section"><h1>{L_COMMENTS}</h1></div>
+	<form action="{S_COMMENTS}" method="post">
+	<input type="hidden" name="ref" value="{post_box.REF}" />
+	<div><label for="comment">{L_POST}</label> - <a class="relevant" onclick="return popup('{S_EMOTICONS}', '_emoticons', 300, 450);" href="{S_EMOTICONS}" target="_blank">{L_EMOTICONS}</a></div>
+	<div class="rows5_top_1"><textarea id="comment" name="message" cols="150" rows="10"></textarea></div>
+	<div class="rows5_top_1 a_center"><input class="submit" type="submit" name="post" value="{L_SUBMIT}" /></div>
+	</form>
+	</div>
+	<!-- END post_box -->
+	<!-- BEGIN no_post_auth -->
+	<div class="rows5_top_2">
+	<div class="section"><h1>{L_COMMENTS}</h1></div>
+	<div class="dark_box a_center">{L_UB_BAN_POST}<!-- BEGIN until --><br /><br />{L_UB_BAN_POST_UNTIL}:<br /><span class="relevant">{until.UNTIL_DATETIME}</span><!-- END until --></div>
+	</div>
+	<!-- END no_post_auth -->
+	
+	<!-- BEGIN no_guest_posting -->
+	<div class="rows5_top_2">
+	<div class="section"><h1>{L_COMMENTS}</h1></div>
+	<div class="dark_box a_center">{no_guest_posting.LEGEND}</div>
+	</div>
+	<!-- END no_guest_posting -->
+	
+	<!-- BEGIN mods -->
+	<div class="rows5_top_4 item_block_3">
+		<div class="section"><h1>{L_UB_AUTH_MEMBERS}</h1></div>
+		<ul class="ul_none">
+			<!-- BEGIN item -->
+			<li class="a_center"><a class="relevant uunique" href="{item.PROFILE}">{item.USERNAME}</a></li>
+			<!-- END item -->
+		</ul>
+		<!-- BEGIN manage -->
+	<div class="rows5_top_1 a_center"><a href="{manage.URL}">{L_UB_MANAGE_MODS}</a></div>
+	<!-- END manage -->
+	</div>
+	<!-- END mods -->
+</div>
+
+<!-- INCLUDE page_footer.htm -->

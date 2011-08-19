@@ -1,0 +1,81 @@
+Options +FollowSymlinks
+Options -Indexes
+RewriteEngine on
+SetEnv PHPRC /home/rknet
+
+RewriteCond %{HTTP_HOST} ^radio.(rock|metal|rk) [OR]
+RewriteCond %{HTTP_HOST} ^www.radio.(rock|metal|rk)
+RewriteRule ^(.*)$ http://216.66.69.4/9594/ [R=301,L]
+
+RewriteCond %{HTTP_HOST} ^live.(rock|metal|rk) [OR]
+RewriteCond %{HTTP_HOST} ^www.live.(rock|metal|rk)
+RewriteRule ^(.*)$ http://216.66.69.4:9594 [R=301,L]
+
+RewriteCond %{HTTP_HOST} ^w3.rockrepublik
+RewriteRule ^(.*)$ http://www.rockrepublik.net/$1 [R=301,L]
+
+RewriteCond %{HTTP_HOST} !^www\.(rock|metal|rk)
+RewriteCond %{HTTP_HOST} ^(www\.)?([a-z0-9]+)\.(rock|metal|rk)
+RewriteRule ^([0-9]+)/ps([0-9]+)/$ orion/artists.php?id=%2&layout=$1&ps=$2 [L]
+
+RewriteCond %{HTTP_HOST} !^www\.(rock|metal|rk)
+RewriteCond %{HTTP_HOST} ^(www\.)?([a-z0-9]+)\.(rock|metal|rk)
+RewriteRule ^([^.]+)?$ orion/artists.php?id=%2&layout=$1 [L]
+
+RewriteCond %{HTTP_HOST} ^(rockguatemala|metalguatemala|metalmov|rockrepublica|rockrepublick) [OR]
+RewriteCond %{HTTP_HOST} ^www.(rockguatemala|metalguatemala|metalmov|rockrepublica|rockrepublick)
+RewriteRule ^(.*)$ http://www.rockrepublik.net/$1 [R=301,L]
+
+RewriteRule ^$ orion/cover.php [nc]
+RewriteRule ^home/style/([a-z]+)\.css$ orion/css.php?filename=$1 [nc]
+RewriteRule ^ajax/([a-z]+)/?$ orion/ajax/call.php?filename=$1 [nc]
+#RewriteRule ^bounce/?((f|u)/([0-9]+)/)?$ orion/bounce.php?mode=$2&id=$3 [nc]
+RewriteRule ^(cover|awards|board|emoticons|community|comments|search|ssv|tos|now)/?$ orion/$1.php [nc]
+RewriteRule ^(kick)/?$ orion/shoutcast_$1.php [nc]
+RewriteRule ^(login|logout)/?$ orion/login.php?mode=$1 [nc]
+RewriteRule ^dl/?((audio|video)/(([0-9]+)/)?)?$ orion/downloads.php?mode=$2&download_id=$4 [nc]
+RewriteRule ^events/g([0-9]+)/$ orion/events.php?gallery_offset=$1 [nc]
+RewriteRule ^events/([0-9]+)/([0-9]+)/(view|save|fav)/$ orion/events.php?id=$1&download_id=$2&mode=$3 [nc]
+RewriteRule ^events/?(([0-9]+)/?(s([0-9]+)/)?(ps([0-9]+)/)?)?$ orion/events.php?id=$2&offset=$4&ps=$6 [nc]
+RewriteRule ^forum/([a-z0-9]+)/?(s([0-9]+)/)?$ orion/topics.php?f=$1&offset=$3 [nc]
+RewriteRule ^help/([0-9]+)/?$ orion/help.php?help=$1 [nc]
+RewriteRule ^help/?(([0-9a-z]+)/?)?$ orion/help.php?module=$2 [nc]
+RewriteRule ^news/?(([0-9]+)/?(ps([0-9]+)/)?)?$ orion/news.php?id=$2&ps=$4 [nc]
+RewriteRule ^news/([a-z]+)/?$ orion/news.php?cat=$1 [nc]
+RewriteRule ^new/?(([0-9]+)/([0-9]+)/)?$ orion/unread.php?elem=$2&item=$3 [nc]
+RewriteRule ^post/([0-9]+)/reply/$ orion/topic.php?p=$1&reply=1 [nc]
+RewriteRule ^post/([0-9]+)/?$ orion/topic.php?p=$1 [nc]
+RewriteRule ^report/([a-z0-9]+)/([0-9]+)/$ orion/report.php?module=$1&id=$2 [nc]
+RewriteRule ^topic/([0-9]+)/?(s([0-9]+)/?)?$ orion/topic.php?t=$1&offset=$3 [nc]
+RewriteRule ^mcp/(edit|post|topic|merge|move|editforum|ucm|feature|points)/([0-9]+)/$ orion/mcp.php?mode=$1&msg_id=$2 [nc]
+RewriteRule ^rss/(artists|events|forum|news)/?$ orion/rss.php?mode=$1 [nc]
+RewriteRule ^ref/?([0-9a-z\_\-]+)/?$ orion/ref.php?member=$1 [nc]
+RewriteRule ^radio/?$ http://www.rkradio.net/ [R]
+RewriteRule ^data/events/banners/([0-9]+)\.jpg$ /data/events/future/$1.jpg [R=301,L]
+RewriteRule ^home/downloads/([a-z0-9\.]+)$ orion/files.php?filename=$1 [nc]
+RewriteRule ^xtmp/s/(.*)$ /home/images/$1 [R=301,L]
+
+RewriteRule ^a/?(_([0-9]+)/?)?$ orion/artists.php?alphabet=$2 [nc]
+RewriteRule ^a/([0-9a-z]+)/(4|6)/([0-9]+)/(view|save)/$ orion/artists.php?id=$1&layout=$2&download_id=$3&mode=$4 [nc]
+RewriteRule ^a/([0-9a-z]+)/9/([0-9]+)/((([a-z]+)/)?(dps([0-9]+)/)?)?$ orion/artists.php?id=$1&layout=9&download_id=$2&dl_mode=$5&dps=$7 [nc]
+RewriteRule ^a/([0-9a-z]+)/12/([0-9]+)/(([a-z]+)/)?(rs([0-9]+)/)?$ orion/artists.php?id=$1&layout=12&post_id=$2&mode=$4&rs=$6 [nc]
+RewriteRule ^a/([0-9a-z]+)/16/(t|p)([0-9]+)/$ orion/artists.php?id=$1&layout=16&$2=$3 [nc]
+RewriteRule ^a/([0-9a-z]+)/((([0-9]+)/)?((gs|ps)([0-9]+)/)?)?$ orion/artists.php?id=$1&layout=$4&$6=$7 [nc]
+RewriteRule ^a/([0-9a-z]+)(/?([0-9]+)/?)?$ orion/artists.php?id=$1&layout=$3 [nc]
+
+RewriteRule ^m/([0-9a-z\_\-]+)/?((main|friend|friends|friendof|messages|ban)/?)?$ orion/userpage.php?member=$1&mode=$3 [nc]
+RewriteRule ^my/(profile|password)/?$ orion/profile.php?mode=$1 [nc]
+RewriteRule ^my/(confirm|verify)/([a-z0-9]+)/$ orion/profile.php?mode=$1&code=$2 [nc]
+RewriteRule ^my/register/a/([0-9a-z]+)/?$ orion/subscribe.php?invite=$1 [nc]
+RewriteRule ^my/register/?((created)/)?$ orion/subscribe.php?mode=$2 [nc]
+RewriteRule ^my/dc/start/?(([0-9a-zA-Z\_\-]+)/)?$ orion/dc.php?mode=start&member=$2 [nc]
+RewriteRule ^my/dc/([a-z]+)/([0-9]+)/$ orion/dc.php?mode=$1&p=$2 [nc]
+RewriteRule ^my/dc/?(s([0-9]+)/)?$ orion/dc.php?offset=$2 [nc]
+
+RewriteRule ^acp/([a-z\_]+)/$ orion/acp.php?module=$1 [nc]
+RewriteRule ^control/_([0-9a-z]+)/(([a-z]+)/)?$ orion/control.php?module=a&params=a-$1.mode-$3 [nc]
+RewriteRule ^control/(([0-9a-z]+)/(([0-9a-z\_\.\-]+)/)?)?$ orion/control.php?module=$2&params=$4 [nc]
+
+AddType audio/x-scpls pls
+AddType audio/x-mpegurl m3u
+AddType application/vnd.ms-asf asx

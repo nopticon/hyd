@@ -1,0 +1,70 @@
+<!-- INCLUDE html_head.htm -->
+
+<!-- IF JS_KEEPALIVE -->
+<script type="text/javascript">
+//<![CDATA[
+_.frame.alive();
+//]]>
+</script>
+<!-- ENDIF -->
+</head>
+
+<body>
+
+<a name="top"></a>
+
+<div id="container-1">
+<div id="container-2">
+
+<div id="header">
+<div id="header_in" class="float-holder ie-widthfix">
+	<h1><a href="{U_COVER}" title="Rock Republik">Rock Republik</a></h1>
+	<h2>La comunidad m&aacute;s grande de Rock en Guatemala</h2>
+	
+	<div id="search" class="col100 cols5_left_2 float_left">
+	<h2 class="z">B&uacute;squeda</h2>
+	<form action="http://www.google.com/cse" id="cse-search-box" target="_blank">
+		<input type="hidden" name="cx" value="011451472206911963378:6mdnbpfkyi8" />
+		<input type="hidden" name="ie" value="UTF-8" />
+		<input type="text" name="q" size="20" class="normal" /> <input type="submit" name="sa" value="&gt;&gt;" class="submit" />
+	</form>	
+	</div>
+	<div id="menu">
+		<h2 class="z">Navegaci&oacute;n</h2>
+		<ul>
+			<li id="menu_1"><a href="{U_WHATS_NEW}" title="{S_UNREAD_ITEMS}">{S_UNREAD_ITEMS}</a></li>
+			<li id="menu_2"><a href="{U_RADIO}" title="{L_RADIO}">{L_RADIO}</a></li>			
+			<li id="menu_3"><a href="{U_ARTISTS}" title="{L_UB}">{L_UB}</a></li>
+			<li id="menu_4"><a href="{U_EVENTS}" title="{L_UE}">{L_UE}</a></li>
+			<li id="menu_5"><a href="{U_NEWS}" title="{L_NEWS}">{L_NEWS}</a></li>
+			<li id="menu_6"><a href="{U_FORUM}" title="{L_FORUM}">{L_FORUM}</a></li>
+			<li id="menu_7"><a href="{U_ALLIES}" title="{L_ALLIES}">{L_ALLIES}</a></li>
+			<li id="menu_8"><a href="{U_COMMUNITY}" title="{L_COMMUNITY}">{L_COMMUNITY}</a></li>
+		</ul>
+	</div>
+</div>
+</div>
+
+<div id="container-3" class="ie-widthfix float-holder">
+
+<div class="section"><h1>{L_LOGIN_PAGETITLE}</h1></div>
+
+<form action="{U_SESSION}" method="post">
+<input type="hidden" name="ref" value="{S_REDIRECT}" />{S_HIDDEN_FIELDS}
+<!-- BEGIN error -->
+<div>
+	<div class="z"><h2>{L_ERROR}</h2></div>
+	<ul class="ul_none">
+		<li class="a_center relevant">{L_LOGIN_ERROR}</li>
+	</ul>
+</div>
+<!-- END error -->
+
+<div class="a_center<!-- BEGIN error --> rows5_top_3<!-- END error -->"><!-- IF IS_NEED_AUTH -->{L_LOGIN_ADM}<!-- ELSEIF IS_LOGIN -->{L_LOGINBOX_PAGE}<!-- ELSEIF CUSTOM_MESSAGE -->{CUSTOM_MESSAGE}<!-- ELSE  -->{L_LOGIN_PAGE}<!-- ENDIF --></div>
+<!-- IF !(IS_NEED_AUTH) --><div class="a_center rows5_top_1">{L_LOGIN_PAGE_REGISTER}</div><!-- ENDIF -->
+<div class="a_center rows5_top_2">{L_USERNAME}: <input type="text" name="username" size="20" maxlength="20" /> &nbsp; {L_PASSWORD}: <input type="password" name="password" size="20" maxlength="32" value="" /></div>
+<div class="a_center rows5_top_1"><input class="submit" type="submit" name="login" value="{L_LOGIN}" /></div>
+<div class="a_center rows5_top_2"><a class="relevant" href="{U_SPASSWORD}">&iquest;Has olvivado tu contrase&ntilde;a?<br />Visita la secci&oacute;n para recuperaci&oacute;n.</a></div>
+</form>
+
+<!-- INCLUDE page_footer.htm -->

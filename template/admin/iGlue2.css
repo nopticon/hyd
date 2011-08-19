@@ -1,0 +1,199 @@
+/*
+	Rock Republik System Style
+	
+	http://www.rockrepublik.net
+	psychopsia@rockrepublik.net
+	
+	$Id: iGlue2.css,v 1.2 2006/02/19 19:00:54 Psychopsia Exp $
+*/
+
+body {
+	background-color: #292B2B;
+	margin: 0px;
+	scrollbar-face-color: #444242;
+	scrollbar-highlight-color: #4F4D4E;
+	scrollbar-shadow-color: #444242;
+	scrollbar-3dlight-color: #605F60;
+	scrollbar-arrow-color:  #8E8A8C;
+	scrollbar-track-color: #525353;
+	scrollbar-darkshadow-color: #454245;
+	cursor: default;
+	}
+font,th,td,p, a:link,a:active,a:visited {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	color: #A0A0A0;
+	text-decoration: none;
+	}
+a:link,a:active,a:visited {
+	cursor: hand;
+	}
+a:hover {
+	text-decoration: none;
+	color: #BBBBBB;
+	}
+.bodyline	{
+	background-color: #444242;
+}
+.forumline {
+	background-color: #4A4A49;
+	border: 2px #818180 groove;
+	}
+td.rowpic {
+	background-color: #4A4A49;
+	}
+th {
+	color: #A0A0A0;
+	font-size: 10px;
+	font-weight: bold;
+	height: 28px;
+	background-image: url(../images/grad_gen3.gif);
+	}
+td.cat,td.catHead,.catHead, .catHeadB, .catHeadBS {
+	background-image: url(../images/grad_gen3.gif);
+	background-color:#292B2B;
+	height: 28px;
+	border-width: 0px 0px 0px 0px;
+	}
+.catHeadB, .catHeadBS {
+	color: #A0A0A0;
+}
+.catHeadB {
+	font-weight: bold;
+}
+.catHeadBS {
+	font-weight: normal;
+}
+th.thHead,th.thSides,th.thTop,th.thLeft,th.thRight,th.thBottom,th.thCornerL,th.thCornerR {
+	font-weight: bold; border-style: none; height: 28px;
+}
+td.row3Right,td.spaceRow {
+	border: 2px groove #666666;
+	background-color:#4A4A49;
+}
+
+th.thHead,td.catHead { font-size: 10px; border-width: 1px 1px 0px 1px; }
+th.thSides,td.catSides,td.spaceRow	 { border-width: 0px 1px 0px 1px; }
+th.thRight,td.catRight,td.row3Right	 { border-width: 0px 1px 0px 0px; }
+
+.maintitle,h1,h2	{
+	font-weight: bold; font-size: 14px; font-family: "Trebuchet MS",Verdana, Arial, Helvetica, sans-serif;
+	text-decoration: none; line-height: 120%; color: #000000;
+}
+.gen, .genmed, .gensmall {
+	color: #A0A0A0;
+	font-size: 10px;
+}
+a.gen,a.genmed,a.gensmall { text-decoration: none; }
+a.gen:hover,a.genmed:hover,a.gensmall:hover	{ color: #BBBBBB; text-decoration: underline; }
+.mainmenu		{ font-size: 10px; color: #A0A0A0 }
+a.mainmenu		{ text-decoration: none; color: #A0A0A0;  }
+a.mainmenu:hover{ text-decoration: underline; color: #BBBBBB; }
+.cattitle		{ font-weight: bold; font-size: 10px ; letter-spacing: 1px; color: #A0A0A0}
+a.cattitle		{ text-decoration: none; color: #A0A0A0; }
+a.cattitle:hover{ text-decoration: underline; }
+.forumlink		{ font-weight: bold; font-size: 10px; color: #AAAAAA; }
+a.forumlink 	{ text-decoration: none; color: #A0A0A0; }
+a.forumlink:hover{ text-decoration: underline; color: #BBBBBB; }
+.nav			{ font-weight: bold; font-size: 10px; color: #AAAAAA;}
+a.nav			{ text-decoration: none; color: #A0A0A0; }
+a.nav:hover		{ text-decoration: underline; }
+.topictitle			{ font-weight: bold; font-size: 10px; color: #A0A0A0; }
+a.topictitle:link   { text-decoration: none; color: #A0A0A0; }
+a.topictitle:visited { text-decoration: none; color: #A0A0A0; }
+a.topictitle:hover	{ text-decoration: underline; color: #BBBBBB; }
+.name			{ font-size: 10px; color: #A0A0A0;}
+.postdetails		{ font-size: 10px; color: #A0A0A0; }
+.postbody { font-size: 10px;}
+a.postlink:link	{ text-decoration: none; color: #A0A0A0 }
+a.postlink:visited { text-decoration: none; color: #A0A0A0; }
+a.postlink:hover { text-decoration: underline; color: #BBBBBB}
+.code {
+	font-family: Courier, 'Courier New', sans-serif; font-size: 10px; color: #A7A7A7;
+	background-color: #444444;
+	border: 2px groove #666666;
+}
+.quote {
+	font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 10px; color: #000000; line-height: 125%;
+	background-color: #636060;
+	border: 2px groove #666666;
+}
+.copyright		{ font-size: 10px; font-family: Verdana, Arial, Helvetica, sans-serif; color: #A0A0A0; letter-spacing: -1px;}
+a.copyright		{ color: #A0A0A0; text-decoration: none;}
+a.copyright:hover { color: #BBBBBB; text-decoration: underline;}
+
+input, textarea, select {
+	color: #000000;
+	font: normal 10px Verdana, Arial, Helvetica, sans-serif;
+	border: 2px groove #666666;
+	background-color: #777777;
+}
+input.post, textarea.post, select {
+	border: 2px groove #666666;
+}
+input { text-indent: 2px; }
+input.button {
+	background-color: #777777;
+	color: #000000;
+	font-size: 10px; font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+input.bold {
+	background-color: #777777;
+	font-weight: bold;
+}
+input.liteoption {
+	background-color: #777777;
+	font-weight: normal;
+}
+.helpline {
+	background-color: #4A4A49;
+	border: 2px groove #666666;
+	color: #A0A0A0;
+	cursor: default;
+}
+
+/*-- mod : profile cp --*/
+.foundercolor, a.foundercolor, a.foundercolor:link, a.foundercolor:active, a.foundercolor:visited {
+	color: #4986A6;
+	font-weight: bold;
+}
+a.foundercolor:hover {
+	color:	#3C7C9D;
+	text-decoration: none;
+}
+
+.admincolor, a.admincolor, a.admincolor:link, a.admincolor:active, a.admincolor:visited {
+	color: #B46936;
+	font-weight: bold;
+}
+a.admincolor:hover {
+	color:	#985E37;
+	text-decoration: none;
+}
+
+.modcolor, a.modcolor, a.modcolor:link, a.modcolor:active, a.modcolor:visited {
+	color: #779D3C;
+	font-weight: bold;
+}
+a.modcolor:hover {
+	color:	#62862A;
+	text-decoration: none;
+}
+
+.usercolor, a.usercolor, a.usercolor:link, a.usercolor:active, a.usercolor:visited {
+	color : #84A1A6;
+	font-weight: bold;
+}
+a.usercolor:hover {
+	color: #75969C;
+	text-decoration: none;
+}
+/*-- fin mod : profile cp --*/
+
+.mmb, td.row1, td.row2, td.row3 {
+	border: 2px groove #666666;
+	background-color:#4A4A49;
+}
+
+/* Import the fancy styles for IE only (NS4.x doesn't use the @import function) */
+@import url("formIE.css");

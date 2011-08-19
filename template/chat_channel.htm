@@ -1,0 +1,44 @@
+<!-- INCLUDE html_head.htm -->
+<script language="JavaScript" type="text/javascript" src="/net/scripts/chat.js"></script>
+
+<base target="_blank" />
+</head>
+
+<body{S_CONTEXT_MENU}>
+<!-- INCLUDE html_header.htm -->
+
+<div class="pad6 box2t boxb dark-color ie-widthfix float-holder">
+<div class="head-float-left">
+	<div class="sep"><h1><span class="red">{L_CHAT}</span> <span class="sgray">&bull;</span> <span class="orange">#{CH_NAME}</span></h1></div>
+	<div>{L_MEMBER}: <a style="color:#{MEMBER_COLOR};" class="bold" href="{U_PROFILE}">{S_USERNAME}</a></div>
+</div>
+<div class="head-float-right">
+	<table align="right" width="135" cellpadding="0" cellspacing="5" border="0">
+		<tr>
+			<td width="135" class="user-toolbar">
+			<div class="session box3 sub-color logout"><a target="_top" href="{U_CHAT}{CH_INT_NAME}/logout/{CH_SID}/0/"><img src="/net/images/logout.png" width="18" height="18" alt="" />{L_CHAT_LOGOUT}</a></div>
+			</td>
+		</tr>
+	</table>
+	<!-- BEGIN ch_manage --><a class="bold sgray" href="/chat/{CH_INT_NAME}/manage/" target="_manage_{CH_NAME}">{L_CHAT_MANAGE_CHANNEL}</a> <span class="soft">|</span> <!-- END ch_manage --><!--<a class="bold sgray" href="{U_CHAT}">{L_CHAT_CHANNEL_LISTING}</a> -->
+</div>
+</div>
+
+<div id="window" class="pad6">
+<div id="chatArea"></div>
+<noscript><h1 align="center" class="pad6">Para accesar al chat, debes tener soporte para Javascript</h1></noscript>
+</div>
+<script type="text/javascript">
+//<![CDATA[
+
+sbtn_value = '{L_SUBMIT}';
+intitializeChat('chatArea', '{CH_INT_NAME}', '{CH_SID}');
+
+//]]>
+</script>
+
+</div>
+</div>
+
+</body>
+</html>

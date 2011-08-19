@@ -1,0 +1,258 @@
+<!-- INCLUDE page_header.htm -->
+<div class="box2b pad12">
+<h1 class="red">{L_CONTROL_PANEL}</h1>
+<!-- IF TOP_NAV != '' -->
+<div class="m6-top"><a href="{S_CONTROLPANEL}">{L_HOME}</a> &raquo; {TOP_NAV}</div>
+<!-- ENDIF -->
+</div>
+</div>
+
+<!-- BEGIN error -->
+<a name="e"></a>
+<div class="pad12">
+<div class="box color">
+<div class="head">{L_ERROR}</div>
+<div align="center" class="pad12"><div class="sep"><img class="icon" src="/net/images/logout.png" width="18" height="18" /></div>{error.MESSAGE}</div>
+</div>
+</div>
+<!-- END error -->
+
+<div class="sep3-top">
+<div class="box2t color pad12 ie-widthfix">
+
+<!-- IF MODE == 'home' -->
+<div class="box3">
+<!-- BEGIN menu -->
+<div class="dark-color">
+<!-- BEGIN item -->
+<div class="pad6<!-- IF item.S_ROW_COUNT % 2 == 0 --> color<!-- ENDIF -->"><a href="{item.URL}">{item.NAME}</a></div>
+<!-- END item -->
+</div>
+<!-- END menu -->
+
+<!-- BEGIN select_a -->
+<div class="sep-top">
+<div class="box2t color pad6 ie-widthfix">
+<table width="100%" cellpadding="10" class="t-collapse">
+<!-- BEGIN row -->
+<tr>
+	<!-- BEGIN col -->
+	<td align="center" valign="bottom"><a href="{col.URL}"><img class="box" src="{col.IMAGE}" title="{col.GENRE}" /></a><br /><div class="sep2-top"><a class="bold" href="{col.URL}">{col.NAME}</a></div><div><small>{col.LOCATION}</small></div></td>
+	<!-- END col -->
+</tr>
+<!-- END row -->
+</table>
+</div>
+</div>
+<!-- END select_a -->
+</div>
+
+<!-- ELSEIF MODE == 'news' -->
+<div class="sep2"><h1>{L_CONTROL_A_NEWS}</h1></div>
+
+<a name="create"></a>
+<div class="post-box">
+<div class="box color">
+<div class="head"><!-- IF MANAGE == 'edit' -->{L_CONTROL_A_NEWS_EDIT}<!-- ELSE -->{L_CONTROL_A_NEWS_ADD}<!-- ENDIF --></div>
+<form action="{S_CONTROL}" method="post" name="post">{S_HIDDEN}
+<div class="pad6">
+<div class="legend"><label for="t-title">{L_TOPIC_TITLE}</label></div>
+<div class="sep"><input id="t-title" name="title" size="139" maxlength="50" value="{TOPIC_TITLE}" /></div>
+<div class="legend"><label for="t-message">{L_POST}</label> | <a onclick="return popup('{S_EMOTICONS}', '_emoticons', 300, 450);" href="{S_EMOTICONS}" target="_blank">{L_EMOTICONS}</a><!-- BEGIN addpoll --><script type="text/javascript">document.write(' | <a class="orange" href="javascript:addpoll(\'addpollbox\');">{L_ADD_POLL}</a>');</script><!-- END addpoll --></div>
+<div class="sep"><textarea id="t-message" name="message" cols="136" rows="15" />{MESSAGE}</textarea></div>
+<div class="sep3"><input class="w50 bold" type="submit" name="submit" value="{L_SUBMIT}" /></div>
+</div>
+</form>
+</div>
+</div>
+<!-- ELSEIF MODE == 'aposts' || MODE == 'dposts' || MODE == 'arposts' -->
+<div class="sep2"><h1>{L_CONTROL_A_APOSTS}</h1></div>
+
+<a name="create"></a>
+<div class="post-box">
+<div class="box color">
+<div class="head">{L_CONTROL_A_NEWS_EDIT}</div>
+<form action="{S_CONTROL}" method="post" name="post">{S_HIDDEN}
+<div class="pad6">
+<div class="legend"><label>{L_MEMBER}</label></div>
+<div class="sep"><input type="text" value="{P_MEMBER}" size="35" disabled /></div>
+<div class="legend"><label for="t-message">{L_POST}</label> | <a onclick="return popup('{S_EMOTICONS}', '_emoticons', 300, 450);" href="{S_EMOTICONS}" target="_blank">{L_EMOTICONS}</a><!-- BEGIN addpoll --><script type="text/javascript">document.write(' | <a class="orange" href="javascript:addpoll(\'addpollbox\');">{L_ADD_POLL}</a>');</script><!-- END addpoll --></div>
+<div class="sep"><textarea id="t-message" name="message" cols="136" rows="10">{MESSAGE}</textarea></div>
+<div class="sep3"><input class="w50 bold" type="submit" name="submit" value="{L_SUBMIT}" /></div>
+</div>
+</form>
+</div>
+</div>
+<!-- ELSEIF MODE == 'auth' -->
+<form action="{S_CONTROL}" method="post">{S_HIDDEN}
+<div class="sep2"><h1>{L_CONTROL_A_AUTH} &raquo; <a class="orange bold" href="{ADD_MEMBER_URL}">{L_CONTROL_A_AUTH_ADD}</a></h1></div>
+
+<!-- IF MANAGE == 'add' -->
+<!-- IF SHOW_INPUT --><label for="member">{L_MEMBER}</label>: <input  type="text" id="member" name="s_member" size="35" maxlength="20" /><br />
+<div class="sep3-top"><small>{L_CONTROL_A_AUTH_ADD_LEGEND}</small></div>
+<!-- ELSE --><div class="sep3-top"><small>{L_CONTROL_A_AUTH_ADD_LEGEND2}</small></div><!-- ENDIF --><br />
+<!-- ENDIF -->
+<!-- BEGIN members -->
+<div class="pad6 ie-widthfix">
+<table width="100%" cellpadding="6" class="t-collapse">
+<!-- BEGIN row -->
+	<tr>
+	<!-- BEGIN col -->
+	<td class="<!-- IF col.S_ROW_COUNT -->box2l<!-- ENDIF -->" align="center" valign="bottom" width="25%"><a href="{col.PROFILE}"><img src="{col.AVATAR}" title="{col.USERNAME}" /></a><div class="sep-top"><a style="color:#{col.COLOR}; font-weight: bold" href="{col.PROFILE}">{col.USERNAME}</a></div><input type="checkbox" class="none" name="s_members[]" value="{col.USER_ID}"<!-- IF !(col.DELETE) --> disabled="true"<!-- ENDIF --><!-- IF col.CHECK --> checked="true"<!-- ENDIF --> /></td>
+	<!-- END col -->
+	<!-- BEGIN blank -->
+	<td class="box2l" width="25%">&nbsp;</td>
+	<!-- END blank -->
+</tr>
+<!-- END row -->
+</table>
+</div>
+<!-- END members -->
+<!-- BEGIN no_members -->
+<div class="box2 dark-color"><div class="pad12" align="center"><div class="sep"><img class="icon" src="/net/images/logout.png" width="18" height="18" /></div>{no_members.MESSAGE}</div></div>
+<!-- END no_members -->
+<!-- IF (MANAGE == 'home' && RESULTS) || (MANAGE == 'add') --><div align="center" class="sep2-top"><input type="submit" class="bold <!-- IF MANAGE == 'add' -->w100p<!-- ELSE -->w150p<!-- ENDIF -->" name="submit" value="<!-- IF MANAGE == 'add' -->{L_SUBMIT}<!-- ELSE -->{L_DELETE_MARKED}<!-- ENDIF -->" /></div><!-- ENDIF -->
+</form>
+<!-- ELSEIF MODE == 'log' -->
+<div class="sep2"><h1>{L_CONTROL_A_LOG}<!-- IF MEMBER --> &raquo; <a style="color:#{USER_COLOR}; font-weight: bold" href="{PROFILE}">{USERNAME}</a><!-- ENDIF --></h1></div>
+<!-- BEGIN members -->
+<div class="pad6 ie-widthfix">
+<table width="100%" cellpadding="6" class="t-collapse">
+<!-- BEGIN row -->
+	<tr>
+	<!-- BEGIN col -->
+	<td class="<!-- IF col.S_ROW_COUNT -->box2l<!-- ENDIF -->" align="center" valign="bottom" width="25%">
+	<a href="{col.U_VIEWLOG}"><img src="{col.AVATAR}" title="{col.USERNAME}" /></a><div class="sep-top"><a style="color:#{col.COLOR}; font-weight: bold" href="{col.U_VIEWLOG}">{col.USERNAME}</a></div><div class="sep3-top"><small><strong>{col.TOTAL}</strong> {col.ACTION}</small></div>
+	</td>
+	<!-- END col -->
+	<!-- BEGIN blank -->
+	<td class="box2l" width="25%">&nbsp;</td>
+	<!-- END blank -->
+</tr>
+<!-- END row -->
+</table>
+</div>
+<!-- END members -->
+<!-- BEGIN no_members -->
+<div class="box2 dark-color"><div class="pad12" align="center"><div class="sep"><img class="icon" src="/net/images/logout.png" width="18" height="18" /></div>{no_members.MESSAGE}</div></div>
+<!-- END no_members -->
+<!-- ELSEIF MODE == 'biography' -->
+<div class="sep2"><h1>{L_CONTROL_A_BIOGRAPHY}</h1></div>
+
+<!-- BEGIN updated -->
+<div class="sep"><div class="box2 dark-color"><div class="pad12" align="center"><div class="sep"><img class="icon" src="/net/images/check.png" width="12" height="12" /></div>{L_CONTROL_A_BIOGRAPHY_UPDATED}</div></div></div>
+<!-- END updated -->
+
+<div class="post-box">
+<div class="box color">
+<div class="head">{L_CONTROL_A_NEWS_EDIT}</div>
+<form action="{S_CONTROL}" method="post" name="post">{S_HIDDEN}
+<div class="pad6">
+<div class="legend"><label for="t-message">{L_POST}</label> | <a onclick="return popup('{S_EMOTICONS}', '_emoticons', 300, 450);" href="{S_EMOTICONS}" target="_blank">{L_EMOTICONS}</a><!-- BEGIN addpoll --><script type="text/javascript">document.write(' | <a class="orange" href="javascript:addpoll(\'addpollbox\');">{L_ADD_POLL}</a>');</script><!-- END addpoll --></div>
+<div class="sep"><textarea id="t-message" name="message" cols="139" rows="35" style="width: 100% " />{MESSAGE}</textarea></div>
+<div class="sep3"><input class="w50 bold" type="submit" name="submit" value="{L_SUBMIT}" /></div>
+</div>
+</form>
+</div>
+</div>
+<!-- ELSEIF MODE == 'gallery' -->
+<div class="sep2"><h1>{L_CONTROL_A_GALLERY}<!-- IF MANAGE == 'home' --> &raquo; <a class="orange bold" href="{ADD_IMAGE_URL}">{L_CONTROL_A_GALLERY_ADD}</a><!-- ENDIF --></h1></div>
+<form action="{S_CONTROL}" method="post"<!-- IF MANAGE == 'add' --> enctype="multipart/form-data"<!-- ENDIF --> name="post">
+<!-- IF MANAGE == 'add' -->
+<div>{L_CONTROL_A_GALLERY_ADD_LEGEND}</div>
+<div class="sep2-top"><input type="hidden" name="MAX_FILE_SIZE" value="{MAX_FILESIZE}" /><input type="file" name="add_image" size="25" /></div>
+<div class="sep2-top"><input type="checkbox" name="allow_dl" value="1" checked="checked" /> {L_CONTROL_A_GALLERY_ALLOW_DL}</div>
+<div align="center" class="sep2-top">{S_HIDDEN}<input type="submit" class="bold w100p" name="submit" value="{L_SUBMIT}" /></div>
+<!-- ENDIF -->
+<!-- BEGIN gallery -->
+<div class="pad6 ie-widthfix">
+<table width="100%" class="t-collapse">
+<!-- BEGIN row -->
+<tr>
+	<!-- BEGIN col -->
+	<td align="center" valign="bottom">
+	<div class="sep2-top">
+	<a href="{col.URL}" target="_blank"><img class="box" src="{col.IMAGE}" /></a><div class="sep3-top">{col.WIDTH} x {col.HEIGHT}</div><div class="sep3 sgreen">{col.VIEWS}v | {col.DOWNLOADS}d</div>
+	<input type="checkbox" class="none" name="s_images[]" value="{col.ITEM}" />
+	</div>
+	</td>
+	<!-- END col -->
+</tr>
+<!-- END row -->
+</table>
+</div>
+<div align="center" class="sep2-top">{S_HIDDEN}<input type="submit" class="bold <!-- IF MANAGE == 'add' -->w100p<!-- ELSE -->w150p<!-- ENDIF -->" name="submit" value="<!-- IF MANAGE == 'add' -->{L_SUBMIT}<!-- ELSE -->{L_DELETE_MARKED}<!-- ENDIF -->" /></div>
+<!-- END gallery -->
+<!-- BEGIN empty -->
+<div class="box2 dark-color"><div class="pad12" align="center"><div class="sep"><img class="icon" src="/net/images/logout.png" width="18" height="18" /></div>{empty.MESSAGE}</div></div>
+<!-- END empty -->
+</form>
+<!-- ELSEIF MODE == 'downloads' -->
+<div class="sep2"><h1>{L_CONTROL_A_DOWNLOADS}<!-- IF MANAGE == 'home' --> &raquo; <a class="orange bold" href="{ADD_DOWNLOAD_URL}">{L_CONTROL_A_DOWNLOADS_ADD}</a><!-- ENDIF --></h1></div>
+<form action="{S_CONTROL}" method="post"<!-- IF MANAGE == 'add' --> enctype="multipart/form-data"<!-- ENDIF --> name="post">
+<!-- IF MANAGE == 'add' -->
+<div>{L_CONTROL_A_GALLERY_ADD_LEGEND}</div>
+<div class="sep2-top"><input type="hidden" name="MAX_FILE_SIZE" value="{MAX_FILESIZE}" /><input type="file" name="add_image" size="25" /></div>
+<div class="sep2-top"><input type="checkbox" name="allow_dl" value="1" checked="checked" /> {L_CONTROL_A_GALLERY_ALLOW_DL}</div>
+<div align="center" class="sep2-top">{S_HIDDEN}<input type="submit" class="bold w100p" name="submit" value="{L_SUBMIT}" /></div>
+<!-- ENDIF -->
+<!-- BEGIN downloads -->
+<div class="pad6 ie-widthfix">
+<table width="100%" class="t-collapse">
+<!-- BEGIN row -->
+<tr>
+	<!-- BEGIN col -->
+	<td width="33%" align="center" valign="bottom">
+	<div class="sep2-top">
+	<a href="{col.URL}"><img class="box" src="{col.IMAGE_TYPE}" /></a><div class="sep3-top bold"><a href="{col.URL}">{col.DOWNLOAD_TITLE}</a></div><div class="sep3-top">{col.VIEWS}v <span class="soft">|</span> {col.DOWNLOADS}d <span class="soft">|</span> <!-- IF col.POSTS --><a class="red" href="{col.POSTS_URL}" target="_blank"><!-- ENDIF -->{col.POSTS}m<!-- IF col.POSTS --></a><!-- ENDIF --></div>
+	<input type="checkbox" class="none" name="s_downloads[]" value="{col.ITEM}" />
+	</div>
+	</td>
+	<!-- END col -->
+</tr>
+<!-- END row -->
+</table>
+</div>
+<div align="center" class="sep2-top">{S_HIDDEN}<input type="submit" class="bold <!-- IF MANAGE == 'add' -->w100p<!-- ELSE -->w150p<!-- ENDIF -->" name="submit" value="<!-- IF MANAGE == 'add' -->{L_SUBMIT}<!-- ELSE -->{L_DELETE_MARKED}<!-- ENDIF -->" /></div>
+<!-- END downloads -->
+<!-- BEGIN empty -->
+<div class="box2 dark-color"><div class="pad12" align="center"><div class="sep"><img class="icon" src="/net/images/logout.png" width="18" height="18" /></div>{empty.MESSAGE}</div></div>
+<!-- END empty -->
+</form>
+<!-- ELSEIF MODE == 'stats' -->
+<div class="sep2"><h1>{L_CONTROL_A_STATS}</h1></div>
+
+<div class="sep2"><div class="box2 pad6 sub-color">
+<h1 class="red"><span class="sgray">{L_VISITS_COUNT}:</span> {BEFORE_VIEWS} {L_MEMBERS_TOTAL}</h1>
+<!-- IF SHOW_VIEWS_LEGEND --><br />{L_CONTROL_A_STATS_LEGEND}<!-- ENDIF -->
+</div></div>
+
+<!-- BEGIN year -->
+<!-- IF year.S_NUM_ROWS > 1 -->
+<!-- IF year.S_ROW_COUNT == 0 --><div class="sep2"><h1><!-- ENDIF -->
+<!-- IF year.S_ROW_COUNT --><span class="soft"> | </span><!-- ENDIF --><a class="orange" href="#{year.YEAR}">{year.YEAR}</a>
+<!-- IF year.S_ROW_COUNT == year.S_NUM_ROWS - 1 --></h1></div><!-- ENDIF -->
+<!-- ENDIF -->
+<!-- END year -->
+
+<!-- BEGIN year -->
+<a name="{year.YEAR}"></a>
+<div class="box2 pad6 dark-color sep2-top">
+<h1 class="red">{year.YEAR}</h1>
+<hr class="margin" />
+<div class="pad12"><div class="pollresult100">
+<!-- BEGIN month -->
+<div class="ie-widthfix float-holder<!-- IF month.S_ROW_COUNT --> sep-top<!-- ENDIF -->"><div class="head-float-left sep3 bold">{month.NAME}</div><div class="head-float-right"><span class="orange"><strong>{month.TOTAL}</strong> {L_MEMBERS_TOTAL}</span> <span class="soft">|</span> <strong>{month.MEMBERS}</strong> <!-- IF month.MEMBERS == 1 -->{L_MEMBERS_VISIBLE}<!-- ELSE -->{L_MEMBERS_VISIBLE2}<!-- ENDIF --> <span class="soft">|</span> <strong>{month.GUESTS}</strong> <!-- IF month.GUESTS == 1 -->{L_MEMBERS_GUESTS}<!-- ELSE -->{L_MEMBERS_GUESTS2}<!-- ENDIF --></div></div>
+<div class="box sub-color bar"><div class="small dark2-color" style="width: {month.PERCENT}%;" title="{month.TOTAL} {L_MEMBERS_TOTAL}">&nbsp;</div></div>
+<!-- END month -->
+</div></div>
+
+</div>
+<!-- END year -->
+
+<!-- ENDIF -->
+
+</div>
+</div>
+
+<!-- INCLUDE page_footer.htm -->

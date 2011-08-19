@@ -1,0 +1,30 @@
+<!-- INCLUDE page_header.htm -->
+
+<div class="section"><h1>{TOTAL_A} {L_UB}<!-- IF SELECTED_LETTER --> <span>&raquo;</span> {SELECTED_LETTER}<!-- ENDIF --></h1></div>
+
+<div class="section"><h1>
+<!-- BEGIN alphabet_item -->
+<!-- IF alphabet_item.S_ROW_COUNT --> &nbsp; <!-- ENDIF --><!-- IF SELECTED_LETTER == alphabet_item.CHAR --><strong class="red">{alphabet_item.CHAR}</strong><!-- ELSE --><a href="{alphabet_item.URL}">{alphabet_item.CHAR}</a><!-- ENDIF -->
+<!-- END alphabet_item -->
+</h1></div>
+
+<!-- BEGIN search_match -->
+<div id="ajx-thumbnails">
+<ul class="ul_none">
+	<!-- BEGIN row -->
+	<!-- BEGIN col -->
+	<li class="row_1f col_1f float_left<!-- IF row.S_ROW_COUNT > 0 --> li_lines_1<!-- ENDIF --> pad_2 a_center"><a class="relevant_artist" href="{col.URL}">{col.NAME}</a><br />{col.GENRE}<br /><br />{col.LOCATION}<br /><br /><a href="{col.URL}"><img src="{col.IMAGE}" alt="{col.NAME}" /></a></li>
+	<!-- END col -->
+	<!-- END row -->
+</ul>
+</div>
+<!-- BEGIN ajx -->
+<script type="text/javascript">
+<!--
+//_.frame.call('athumbs', 'ajx-thumbnails', 60);
+-->
+</script>
+<!-- END ajx -->
+<!-- END search_match -->
+
+<!-- INCLUDE page_footer.htm -->

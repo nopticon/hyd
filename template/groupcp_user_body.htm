@@ -1,0 +1,104 @@
+<!-- INCLUDE page_header.htm -->
+
+<table width="100%" cellpadding="5" cellspacing="0" border="0" align="center">
+	<tr>
+		<td width="100%">
+			<table width="100%" cellpadding="0" cellspacing="0" border="0">
+				<tr>
+					<td>
+						<table width="100%" cellpadding="3" cellspacing="0" border="0" class="forumline">
+							<tr>
+								<td class="catHead" align="center"><span class="genmed"><b>{L_GROUP_MEMBERSHIP_DETAILS}</b></span></td>
+							</tr>
+							<tr>
+								<td height="1" bgcolor="2E2E2C"></td>
+							</tr>
+							<tr>
+								<td>
+									<table width="100%" cellpadding="4" cellspacing="1" border="0">
+										<!-- BEGIN switch_groups_joined -->
+										<!-- BEGIN switch_groups_member -->
+										<tr> 
+										<td class="mmb"><span class="gen">{L_YOU_BELONG_GROUPS}</span></td>
+										<td class="mmb" align="right"> 
+											<table width="90%" cellspacing="0" cellpadding="0" border="0">
+											<tr><form method="get" action="{S_USERGROUP_ACTION}">
+												<td width="40%"><span class="gensmall">{GROUP_MEMBER_SELECT}</span></td>
+												<td align="center" width="30%"> 
+													<input type="submit" value="{L_VIEW_INFORMATION}" class="liteoption" />{S_HIDDEN_FIELDS}
+												</td>
+											</form></tr>
+											</table>
+										</td>
+										</tr>
+										<!-- END switch_groups_member -->
+										<!-- BEGIN switch_groups_pending -->
+										<tr> 
+										<td class="mmb"><span class="gen">{L_PENDING_GROUPS}</span></td>
+										<td class="mmb" align="right"> 
+											<table width="90%" cellspacing="0" cellpadding="0" border="0">
+											<tr><form method="get" action="{S_USERGROUP_ACTION}">
+												<td width="40%"><span class="gensmall">{GROUP_PENDING_SELECT}</span></td>
+												<td align="center" width="30%"> 
+													<input type="submit" value="{L_VIEW_INFORMATION}" class="liteoption" />{S_HIDDEN_FIELDS}
+												</td>
+											</form></tr>
+											</table>
+										</td>
+										</tr>
+										<!-- END switch_groups_pending -->
+										<!-- END switch_groups_joined -->
+									</table>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+
+<!-- BEGIN switch_groups_remaining -->
+<table width="100%" cellpadding="2" cellspacing="0" border="0" align="center">
+	<tr>
+		<td width="100%">
+			<table width="100%" cellpadding="6" cellspacing="0" border="0">
+				<tr>
+					<td>
+						<table width="100%" cellpadding="4" cellspacing="1" border="0" class="forumline">
+							<tr>
+								<td class="catHead" align="center"><span class="genmed"><b>{L_JOIN_A_GROUP}</b></span></td>
+							</tr>
+							<tr>
+								<td height="1" bgcolor="2E2E2C"></td>
+							</tr>
+							<tr>
+								<td>
+									<table width="100%" cellpadding="4" cellspacing="1" border="0">
+										<tr> 
+											<td class="mmb"><span class="gen">{L_SELECT_A_GROUP}</span></td>
+											<td class="mmb" align="right"> 
+												<table width="90%" cellspacing="0" cellpadding="0" border="0">
+												<tr><form method="get" action="{S_USERGROUP_ACTION}">
+													<td width="40%"><span class="gensmall">{GROUP_LIST_SELECT}</span></td>
+													<td align="center" width="30%"> 
+														<input type="submit" value="{L_VIEW_INFORMATION}" class="liteoption" />{S_HIDDEN_FIELDS}
+													</td>
+												</form></tr>
+												</table>
+											</td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+<!-- END switch_groups_remaining -->
+
+<!-- INCLUDE page_footer.htm -->

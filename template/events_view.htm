@@ -1,0 +1,91 @@
+<!-- INCLUDE page_header.htm -->
+
+<div class="section"><h1>{TITLE} // {DATE}</h1><div class="dtposted float_right">{VIEWS} &raquo; Visitas</div></div>
+
+<!-- BEGIN selected -->
+<div class="ie-widthfix float-holder a_right a_controls"><!-- BEGIN download --><a href="{download.URL}">{L_UE_DOWNLOAD}</a><!-- END download --><!-- BEGIN fav --> <a href="{fav.URL}">{L_UB_FAV_ADD}</a><!-- END fav --></div>
+
+<div class="rows5_top a_center">
+	<div><!-- BEGIN download --><a href="{download.URL}"><!-- END download --><img class="border" src="{selected.IMAGE}" width="{selected.WIDTH}" height="{selected.HEIGHT}" alt="" /><!-- BEGIN download --></a><!-- END download --></div>
+	<div id="footer" class="rows5_top legend a_center"><!-- IF selected.FOOTER != '' -->{selected.FOOTER}<!-- ENDIF --></div>
+	<!-- BEGIN update -->
+	<script type="text/javascript">
+	//<![CDATA[
+	new Ajax.InPlaceEditor('footer', '{update.URL}', {callback: function(form, value) { return 'ajax=1&event_id={update.EID}&image_id={update.PID}&image_footer=' + escape(value) }, cols:55,okText:"Aceptar",cancelText:"Cancelar",clickToEditText:"Editar",emptyText:"Editar",highlightcolor:"#e8e8e8",highlightendcolor:"#e8e8e8"});
+	//]]>
+	</script>
+	<!-- END update -->
+</div>
+<!-- END selected -->
+
+<!-- BEGIN thumbnails -->
+<div class="rows5_top ie-widthfix float-holder">
+<ul class="ul_none">
+	<!-- BEGIN item -->
+	<li class="row_3 col_1f float_left pad_2 a_center"><a href="{item.RIMAGE}" title="{item.FOOTER}"><img src="{item.IMAGE}" alt="" /></a></li>
+	<!-- END item -->
+</ul>
+</div>
+<script type="text/javascript">
+//<![CDATA[
+setupZoom();
+//]]>
+</script>
+<!-- END thumbnails -->
+
+<!-- IF COLAB != '' -->
+<div class="rows5_top dark_box a_center">Fotos gracias a: {COLAB}</div>
+<!-- ENDIF -->
+
+<br /><div align="center"><a name="fb_share" type="button_count" href="http://www.facebook.com/sharer.php">Share</a><script src="http://static.ak.fbcdn.net/connect.php/js/FB.Share" type="text/javascript"></script></div>
+
+<!-- BEGIN thumbnails --><!-- IF IMG_PAGES_NUMS != ' <strong>1</strong>' --><div class="pagination">{IMG_PAGES_NUMS}</div><!-- ENDIF --><!-- END thumbnails -->
+
+<!-- BEGIN posts -->
+<div class="section"><h1>{POSTS} <!-- IF POSTS == 1 -->{L_POST}<!-- ELSE -->{L_POSTS}<!-- ENDIF --></h1></div>
+<div class="comments">
+<!-- BEGIN item -->
+<a name="{item.POST_ID}"></a>
+<div id="comment-{item.S_ROW_COUNT}">
+<h3><strong>{item.S_ROW_COUNT}</strong><span>.</span> <em><!-- BEGIN username --><a href="{item.PROFILE}"><!-- END username --><img src="{item.USER_AVATAR}" alt="{item.USERNAME}'s Avatar" /><!-- BEGIN username --></a><!-- END username --></em><cite><!-- BEGIN username --><a href="{item.PROFILE}"><!-- END username -->{item.USERNAME}<!-- BEGIN username --></a><!-- END username --></cite> <span>dijo:</span></h3>
+<blockquote>
+<p>{item.MESSAGE}</p>
+<p class="dtposted">{item.DATETIME}</p>
+</blockquote>
+<hr /></div>
+<!-- END item -->
+</div>
+<!-- IF MSG_PAGES_NUMS != ' <strong>1</strong>' --><div class="pagination">{MSG_PAGES_NUMS}</div><!-- ENDIF -->
+<script type="text/javascript">
+//<![CDATA[
+_.signature([<!-- BEGIN item --><!-- IF item.S_ROW_COUNT -->, <!-- ENDIF -->'{item.POST_ID}'<!-- END item -->]);
+//]]>
+</script>
+<!-- END posts -->
+
+<!-- BEGIN posting_box -->
+<a name="post"></a>
+<div class="rows5_top_2 post_comment">
+<div class="section"><h1>{L_SEND_POST}</h1></div>
+<!-- BEGIN box -->
+<form action="{S_COMMENTS}" method="post" name="post"><input type="hidden" name="ref" value="{box.REF}" />
+<div><label for="comment">{L_POST}</label> - <a class="relevant" onclick="return popup('{S_EMOTICONS}', '_emoticons', 300, 450);" href="{S_EMOTICONS}" target="_blank">{L_EMOTICONS}</a></div>
+<div class="rows5_top_1"><textarea id="comment" name="message" cols="150" rows="10"></textarea></div>
+<div class="rows5_top_1"><input class="submit" type="submit" name="post" value="{L_SUBMIT}" /></div>
+</form>
+<!-- END box -->
+<!-- BEGIN only_registered -->
+<div class="black_box a_center">{only_registered.LEGEND}</div>
+<!-- END only_registered -->
+</div>
+<!-- END posting_box -->
+
+<div id="cache" class="z">
+	<!-- BEGIN thumbnails -->
+	<!-- BEGIN item -->
+	<div><img src="{item.RIMAGE}" alt="" /></div>
+	<!-- END item -->
+	<!-- END thumbnails -->
+</div>
+
+<!-- INCLUDE page_footer.htm -->

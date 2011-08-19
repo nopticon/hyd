@@ -1,0 +1,84 @@
+
+Config
+	Manage
+		Edit | Update
+Forum
+	Categories
+		Manage
+			Create | Edit | Delete | Move
+	Forums
+		Manage
+			Create | Edit | Delete | Move
+	Topics
+		Manage
+			Edit | Delete | Move | Lock | Unlock | Merge | Split
+Members
+	Ban
+	Manage
+		Edit
+	Auth
+	Ranks
+	Disallow
+Comments
+	Emoticons
+		Add | Edit | Delete
+	Help
+		Add | Edit | Delete
+Chat
+	Categories
+		Add | Edit | Delete
+	Channels
+		Add | Edit | Delete
+	Message Log
+	Auth
+		Add | Edit | Delete
+Artists
+	Manage
+		News
+			Add | Edit | Delete
+		Messages
+			Edit | Delete
+		Log
+		Auth
+			Add | Delete
+		Gallery
+			Add | Delete
+		Biography
+		Lyrics
+			Add | Edit | Delete
+		Stats
+		Voters
+	Downloads
+		Manage
+			Add | Edit | Delete
+		Messages
+			Edit | Delete
+Events
+	Manage
+		Add | Edit | Delete
+	Messages
+		Edit | Delete
+	Images
+		Add | Edit | Delete
+Links
+	Manage
+		Add | Edit | Delete
+	Site Referers
+		View
+Art
+	Manage
+		Add | Edit | Delete
+	Messages
+		Edit | Delete
+News
+	Manage
+		Add | Edit | Delete
+	Messages
+		Edit | Delete
+Poll
+	Voters
+Team
+	Groups
+		Add | Edit | Delete
+	Members
+		Promote | Demote

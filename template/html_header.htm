@@ -1,0 +1,55 @@
+<a name="top"></a>
+
+<div id="container-1">
+<div id="container-2">
+
+<div id="header">
+<div id="header_in" class="float-holder ie-widthfix">
+	<h1><a href="{U_COVER}" title="Rock Republik">Rock Republik</a></h1>
+	<h2>La comunidad m&aacute;s grande de Rock en Guatemala</h2>
+	
+	<div id="search" class="cols5_left_2 float_left">
+	<h2 class="z">B&uacute;squeda</h2>
+	<form action="http://www.google.com/cse" id="cse-search-box" target="_blank">
+		<input type="hidden" name="cx" value="011451472206911963378:6mdnbpfkyi8" />
+		<input type="hidden" name="ie" value="UTF-8" />
+		<input type="text" name="q" size="20" class="normal" /> <input type="submit" name="sa" value="&gt;&gt;" />
+	</form>	
+	</div>
+	<div id="menu">
+		<h2 class="z">Navegaci&oacute;n</h2>
+		<ul>
+			<li id="menu_1"><a href="{U_WHATS_NEW}" title="{S_UNREAD_ITEMS}">{S_UNREAD_ITEMS}</a></li>
+			<li id="menu_2"><a href="{U_RADIO}" title="{L_RADIO}">{L_RADIO}</a></li>			
+			<li id="menu_3"><a href="{U_ARTISTS}" title="{L_UB}">{L_UB}</a></li>
+			<li id="menu_4"><a href="{U_EVENTS}" title="{L_UE}">{L_UE}</a></li>
+			<li id="menu_5"><a href="{U_NEWS}" title="{L_NEWS}">{L_NEWS}</a></li>
+			<li id="menu_6"><a href="{U_FORUM}" title="{L_FORUM}">{L_FORUM}</a></li>
+			<li id="menu_7"><a href="{U_ALLIES}" title="{L_ALLIES}">{L_ALLIES}</a></li>
+			<li id="menu_8"><a href="{U_COMMUNITY}" title="{L_COMMUNITY}">{L_COMMUNITY}</a></li>
+		</ul>
+	</div>
+	
+	<div id="mcontrols">
+		<h2 class="z">Control de usuario</h2>
+		<!-- IF IS_MEMBER -->
+		<ul>
+			<li><a class="relevant uunique" href="{U_PROFILE}">{S_USERNAME}</a></li>
+			<li><a href="{U_EDITPROFILE}">{L_PREFERENCES}</a></li>
+			<!-- IF S_CONTROLPANEL != '' --><li><a href="{S_CONTROLPANEL}">{L_CONTROL_PANEL}</a></li><!-- ENDIF -->
+			<li id="logout"><a href="{U_SESSION}">{L_LOGOUT2}</a></li>
+		</ul>
+		<!-- ELSE -->
+		<form action="{U_SESSION}" method="post">
+		<input type="hidden" name="ref" value="{S_REDIRECT}" />
+		<a class="submitd" href="{U_REGISTER}">{L_REGISTER}</a>&nbsp;&nbsp;
+		{L_USERNAME}: <input class="normal" type="text" name="username" size="15" maxlength="25" value="" /> 
+		{L_PASSWORD}: <input type="password" name="password" size="15" maxlength="32" value="" /> 
+		<input class="submitd" type="submit" name="login" value="{L_LOGIN}" />
+		</form>
+		<!-- ENDIF -->
+	</div>
+</div>
+</div>
+
+<div id="container-3" class="ie-widthfix float-holder">

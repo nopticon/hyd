@@ -1,0 +1,172 @@
+<!-- INCLUDE page_header.htm -->
+
+<div class="float-holder ie-widthfix">
+	<div class="float_left col50">
+		<div class="cols5_left"><h1 class="username" style="color: #{USERNAME_COLOR};">{USERNAME}</h1></div>
+		<div class="cols5_left rows5_top">{POSTER_RANK}</div>
+		
+		<div class="rows5_top_2 a_controls">
+		<ul class="ul_none left">
+			<!-- BEGIN selected_panel -->
+			<!-- BEGIN strong -->
+			<li class="relevant"><span>{selected_panel.LANG}</span></li>
+			<!-- END strong -->
+			<!-- BEGIN a -->
+			<li><a href="{a.URL}">{selected_panel.LANG}</a></li>
+			<!-- END a -->
+			<!-- END selected_panel -->
+		</ul>
+		</div>
+	</div>
+	<div class="float_right col50">
+		<div class="float_left col75 rows5_top a_right item_block_3">
+		<ul class="ul_none">
+			<li><a href="{PM}">{L_DCONV_START}</a></li>
+			<!-- BEGIN block_member --><li><a href="{block_member.URL}">{block_member.LANG}</a></li><!-- END block_member -->
+			<!-- BEGIN friend --><li><a href="{friend.U_FRIEND}">{friend.L_FRIENDS_ADD}</a></li><!-- END friend -->
+			<!-- IF WEBSITE --><li><a href="{WEBSITE}">Sitio web</a></li><!-- ENDIF -->
+			<!-- IF EMAIL --><li><a href="mailto:{EMAIL}">{L_SEND_EMAIL}</a></li><!-- ENDIF -->
+			<!-- IF MSN --><li><a href="mailto:{MSN}">MSN</a></li><!-- ENDIF -->
+			<!-- IF YIM --><li><a href="{YIM}">Yahoo!</a></li><!-- ENDIF -->
+			<!-- IF AIM --><li><a href="{AIM}">AIM</a></li><!-- ENDIF -->
+			<!-- IF ICQ --><li><a href="{ICQ}">ICQ</a></li><!-- ENDIF -->
+		</ul>
+		</div>
+		<div class="rows5_top_4 float_right col25 a_center"><img src="{AVATAR_IMG}" alt="{USERNAME}" /></div>
+	</div>
+</div>
+
+<!-- BEGIN main -->
+<div class="rows5_top_4 float-holder ie-widthfix">
+	<div class="float_left col49">
+		<!-- BEGIN general -->
+		<div class="">
+		<div class="section"><h1 style="color: #{USERNAME_COLOR};">Informaci&oacute;n</h1></div>	
+		<ul class="ul_none nowraptext">
+			<!-- BEGIN item -->
+			<li class="rows5_top_6"><strong>{item.KEY}:</strong> {item.VALUE}</li>
+			<!-- END item -->
+		</ul>
+		</div>
+		<!-- END general -->
+		
+		<!-- BEGIN lastfm -->
+		<div class="rows5_top_2 float-holder ie-widthfix item_block_3">
+		<div class="section"><h1 style="color: #{USERNAME_COLOR};">Canciones recientes en Last.FM</h1></div>	
+		<ul class="ul_none">
+			<!-- BEGIN row -->
+			<li class="rows5_top_6"><strong>{row.TIME}</strong>: <a href="{row.URL}" title="{row.ALBUM}" target="_blank">{row.ARTIST} - {row.NAME}</a></li>
+			<!-- END row -->
+		</ul>
+		<div class="rows5_top_4 nowraptext"><a href="{lastfm.URL}" target="_blank">Visitar perfil de {lastfm.NAME}</a></div>
+		</div>
+		<!-- END lastfm -->
+		
+		<!-- BEGIN thumbnails -->
+		<div class="<!-- IF !(thumbnails.S_ROW_COUNT) -->rows5_top_2 <!-- ENDIF -->float-holder ie-widthfix">
+			<div class="section"><h1 style="color: #{USERNAME_COLOR};">{thumbnails.L_TITLE}</h1></div>
+			<ul class="ul_none">
+				<!-- BEGIN row -->
+				<!-- BEGIN col -->
+				<li class="a_center float_left row_5 col33"><div><a class="relevant_artist" href="{col.URL}">{col.NAME}</a><br />{col.GENRE}</div><div class="rows5_top"><a href="{col.URL}"><img src="{col.IMAGE}" alt="{col.LOCATION}" /></a></div></li>
+				<!-- END col -->
+				<!-- END row -->
+			</ul>
+		</div>
+		<!-- END thumbnails -->
+	</div>
+	<div class="float_right col49">
+		<!-- BEGIN post_comment_box -->
+		<div class="post_comment">
+		<div class="section"><h1 style="color: #{USERNAME_COLOR};">Env&iacute;a tu mensaje</h1></div>
+		<form action="{S_COMMENTS}" method="post" name="m-messages">
+		<input type="hidden" name="ref" value="{post_comment_box.REF}" />
+		<div><a onclick="return popup('{S_EMOTICONS}', '_emoticons', 300, 450);" href="{S_EMOTICONS}" target="_blank">{L_EMOTICONS}</a></div>
+		<div class="rows5_top_1"><textarea id="a-comments" name="message" cols="78" rows="6"></textarea></div>
+		<div class="rows5_top_1 a_center"><input class="submit" type="submit" name="submit" value="Enviar mensaje" /></div>
+		</form>
+		</div>
+		<!-- END post_comment_box -->
+		
+		<!-- BEGIN lastboard -->
+		<div class="rows5_top_2 float-holder ie-widthfix item_block_3">
+		<div class="section"><h1 style="color: #{USERNAME_COLOR};">&Uacute;ltimos mensajes del foro</h1></div>	
+		<ul class="ul_none">
+			<!-- BEGIN row -->
+			<li class="rows5_top_6"><strong>{row.TIME}</strong>: <a href="{row.URL}">{row.TITLE}</a></li>
+			<!-- END row -->
+		</ul>
+		</div>
+		<!-- END lastboard -->
+		
+		<!-- BEGIN viewers -->
+		<div class="rows5_top_3">
+			<div class="section"><h1 style="color: #{USERNAME_COLOR};">Visitantes</h1></div>
+			<ul class="ul_none">
+				<!-- BEGIN row -->
+				<!-- BEGIN col -->
+				<!-- IF (row.S_ROW_COUNT < 3) || (row.S_ROW_COUNT == 2 && col.S_ROW_COUNT < 1) -->
+				<li class="a_center float_left row_7 col33"><div><a class="relevant uunique" href="{col.PROFILE}">{col.USERNAME}</a><br />{col.DATETIME}</div><div class="rows5_top"><a href="{col.PROFILE}"><img src="{col.AVATAR}" alt="{col.USERNAME}" /></a></div></li>
+				<!-- ENDIF -->
+				<!-- END col -->
+				<!-- END row -->
+			</ul>
+		</div>
+		<!-- END viewers -->
+	</div>
+</div>
+<!-- END main -->
+
+<!-- BEGIN friends -->
+<div class="rows5_top_4 float-holder ie-widthfix">
+	<ul class="ul_none">
+		<!-- BEGIN row -->
+		<!-- BEGIN col -->
+		<li class="a_center float_left row_7 col24">
+			<div><a class="relevant uunique" href="{col.PROFILE}">{col.USERNAME}</a><br />{col.DATETIME}</div>
+			<div class="rows5_top"><a href="{col.PROFILE}"><img src="{col.AVATAR}" alt="{col.USERNAME}" /></a></div></li>
+		<!-- END col -->
+		<!-- END row -->
+	</ul>
+</div>
+<!-- END friends -->
+
+<!-- BEGIN messages -->
+<!-- BEGIN box -->
+<div class="rows5_top_2 post_comment">
+<div class="section"><h1 style="color: #{USERNAME_COLOR};">{L_SEND_POST}</h1></div>
+<form action="{S_COMMENTS}" method="post">
+<input type="hidden" name="ref" value="{box.REF}" />
+<div><label for="comment">{L_POST}</label> - <a class="relevant" onclick="return popup('{S_EMOTICONS}', '_emoticons', 300, 450);" href="{S_EMOTICONS}" target="_blank">{L_EMOTICONS}</a></div>
+<div class="rows5_top_1"><textarea id="comment" name="message" cols="150" rows="10"></textarea></div>
+<div class="rows5_top_1 a_center"><input class="submit" type="submit" name="post" value="{L_SUBMIT}" /></div>
+</form>
+</div>
+<!-- END box -->
+
+<!-- BEGIN posts -->
+<div class="comments rows5_top_2">
+<a name="first"></a>
+<!-- BEGIN item -->
+<a name="{item.POST_ID}"></a>
+<div id="comment-{item.S_ROW_COUNT}">
+<h3><strong>{item.S_ROW_COUNT}</strong><span>.</span> <em><!-- BEGIN username --><a href="{item.PROFILE}"><!-- END username --><img src="{item.USER_AVATAR}" alt="{item.USERNAME}'s Avatar" /><!-- BEGIN username --></a><!-- END username --></em><cite><!-- BEGIN username --><a href="{item.PROFILE}"><!-- END username -->{item.USERNAME}<!-- BEGIN username --></a><!-- END username --></cite> <span>dijo:</span></h3>
+<blockquote>
+<!-- IF item.S_DELETE -->
+<div class="rows5_bot_1 rows5_top a_controls a_right"><a class="red" href="{item.S_DELETE}">{L_DELETE}</a></div>
+<!-- ENDIF -->
+<div class="col_fr nowraptext">{item.MESSAGE}</div>
+<p class="dtposted">{item.DATETIME}</p>
+</blockquote>
+<hr /></div>
+<!-- END item -->
+</div>
+<script type="text/javascript">
+//<![CDATA[
+_.signature([<!-- BEGIN item --><!-- IF item.S_ROW_COUNT -->, <!-- ENDIF -->'{item.POST_ID}'<!-- END item -->]);
+//]]>
+</script>
+<!-- END posts -->
+<!-- END messages -->
+
+<!-- INCLUDE page_footer.htm -->

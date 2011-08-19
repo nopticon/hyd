@@ -1,0 +1,39 @@
+<!-- INCLUDE page_header.htm -->
+</div>
+
+<div class="m6 ie-widthfix float-holder">
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+	<!-- BEGIN block -->
+	<tr>
+		<td class="box color">
+			<table width="100%" cellpadding="0" cellspacing="0" border="0">
+				<tr>
+					<td><div class="head">{block.LANG}</div></td>
+				</tr>
+				<tr>
+					<td style="PADDING: 4px;">
+						<table width="100%" cellpadding="4" cellspacing="0" border="0" style="border-collapse: collapse;">
+							<!-- BEGIN item -->
+							<tr>
+								<td>
+								<!-- BEGIN image --><a href="{item.U_GOTO}" target="_blank"><img class="box" src="{image.SRC}" alt="" /></a><br /><!-- END image -->
+								<!-- BEGIN name --><a class="{name.CLASS}" href="{name.URL}"<!-- IF isset(name.BLANK) --> target="_blank"<!-- ENDIF -->>{name.TEXT}</a> [ <!-- END name --><!-- IF item.TEXT != '' --><a href="{item.U_GOTO}" target="_blank">{item.TEXT}</a><!-- ENDIF --><!-- BEGIN name --> ]<!-- END name -->
+								</td>
+							</tr>
+							<!-- END item -->
+						</table>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<!-- IF block.S_ROW_COUNT < 2 -->
+	<tr>
+		<td class="sep2"></td>
+	</tr>
+	<!-- ENDIF -->
+	<!-- END block -->
+</table>
+</div>
+
+<!-- INCLUDE page_footer.htm -->

@@ -1,0 +1,42 @@
+<div class="m6-top float-holder ie-widthfix">
+<div class="content">
+
+<!-- BEGIN banners -->
+<div class="m6-top box3nl color">
+<div class="head"><img src="/net/icons/announce.png" alt="" />{L_ANNOUNCES}</div>
+<div class="pad6">
+<!-- BEGIN item -->
+<div <!-- IF item.S_ROW_COUNT -->class="m6-top" <!-- ENDIF -->align="center">{item.START}<img src="{item.IMAGE}" width="525" height="75" alt="{item.ALT}" />{item.END}</div>
+<!-- END item -->
+</div>
+</div>
+<!-- END banners -->
+</div>
+<div class="sidebar">
+<!-- BEGIN next_event -->
+<div class="box3nr color">
+<div class="head"><img src="/net/icons/events.png" alt="" /><a href="{next_event.URL}">{L_NEXT_EVENT}</a></div>
+<div class="pad6" align="center">
+<!-- BEGIN image -->
+<div class="sep"><a href="{next_event.URL}"><img class="box" src="{image.IMAGE}" alt="" /></a></div>
+<!-- END image -->
+<!-- BEGIN noimage -->
+<div class="sep"><a href="{next_event.URL}">{L_VIEW_INFO}</a></div>
+<!-- END noimage -->
+<div><a href="{next_event.URL}">{next_event.TITLE}</a></div>
+</div>
+</div>
+<!-- END next_event -->
+
+<!-- BEGIN last_event -->
+<div class="m6-top box3nr color">
+<div class="head"><img src="/net/icons/events.png" alt="" /><a href="{last_event.URL}">{L_LAST_EVENT}</a></div>
+<div class="pad6" align="center">
+<div class="sep"><a href="{last_event.URL}"><img class="box" src="{last_event.IMAGE}" alt="" /></a></div>
+<div><a href="{last_event.URL}">{last_event.TITLE}</a></div>
+</div>
+</div>
+<!-- END last_event -->
+
+</div>
+</div>

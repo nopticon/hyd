@@ -1,0 +1,106 @@
+<!-- INCLUDE page_header.htm -->
+
+<div class="section"><h1>{L_CONV}</h1></div>
+
+<!-- BEGIN dc_total -->
+<div class="cols5_left rows5_top_1 high"><strong>{dc_total.TOTAL}</strong> <!-- IF dc_total.TOTAL == 1 -->{L_DCONV_READ}<!-- ELSE -->{L_DCONVS_READ}<!-- ENDIF --></div>
+<!-- END dc_total -->
+<!-- BEGIN conv -->
+<div class="cols5_left"><h1 class="uunique username">{conv.SUBJECT}</h1></div>
+<!-- END conv -->
+<!-- BEGIN back_dc -->
+<div class="cols5_left rows5_top_1"><a href="{back_dc.URL}">{L_INBOX}</a></div>
+<!-- END back_dc -->
+
+<div class="rows5_top_5 float-holder ie-widthfix">
+	<div class="float_left col25">
+		<!-- BEGIN sdc_friends -->
+		<div class="section"><a class="relevant_artist" href="{sdc_friends.DC_START}">{L_START_DC}</a></div>
+		<ul class="ul_none">
+		<!-- BEGIN item -->
+		<li class="pad_1"><a class="relevant uunique" href="{item.URL}">{item.USERNAME}</a></li>
+		<!-- END item -->
+		</ul>
+		<!-- END sdc_friends -->
+	</div>
+	<div class="float_right col75">
+		<!-- BEGIN conv -->
+		<div class="a_right">
+		<form action="{S_ACTION}" method="post">{S_HIDDEN_FIELDS}<input class="submit" type="submit" name="delete" value="{L_DELETE_DC}" /></form>
+		</div>
+		<!-- END conv -->
+		
+		<form action="{S_ACTION}" method="post">{S_HIDDEN_FIELDS}
+		<!-- BEGIN error -->
+		<a name="e"></a><div class="rows5_top_2"><div class="error_block"><h2>{L_ERROR}</h2><p>{error.MESSAGE}</p></div></div>
+		<!-- END error -->
+		
+		<!-- BEGIN dc_start -->
+		<a name="reply"></a>
+		<div class="post_comment">
+		<div class="section"><h1>{L_DCONV_START}</h1></div>
+		<div><label for="comment_member">{L_DCS_MEMBER}</label></div>
+		<div class="rows5_top_1"><input id="comment_member" name="member" size="35" maxlength="20" value="{dc_start.MEMBER}" /></div>
+		<div class="rows5_top_1"><label for="comment_title">{L_DCS_SUBJECT}</label></div>
+		<div class="rows5_top_1"><input id="comment_title" name="subject" size="100" maxlength="50" value="{dc_start.SUBJECT}" /></div>
+		<div class="rows5_top_1"><label for="comment">{L_POST}</label> - <a class="relevant" onclick="return popup('{S_EMOTICONS}', '_emoticons', 300, 450);" href="{S_EMOTICONS}" target="_blank">{L_EMOTICONS}</a></div>
+		<div class="rows5_top_1"><textarea id="comment" name="message" cols="150" rows="10"></textarea></div>
+		<div class="rows5_top_1 a_center"><input class="submit" type="submit" name="post" value="{L_SUBMIT}" /></div>
+		</div>
+		<!-- END dc_start -->
+		
+		<!-- BEGIN messages -->
+		<!-- IF PAGES_NUMS != ' <strong>1</strong>' --><div class="rows5_top pagination">{PAGES_NUMS}</div><!-- ENDIF -->
+		<div class="rows5_top_2 float-holder ie-widthfix item_block_3">
+			<ul class="ul_none">
+				<!-- BEGIN item -->
+				<li><div class="float-holder ie-widthfix"><div class="float_left col75"><input type="checkbox" class="none" name="mark[]2" value="{item.S_MARK_ID}" /> <a class="relevant" href="{item.U_READ}">{item.SUBJECT}</a> ({item.ROOT_CONV})</div><div class="float_right col25 a_right"><a class="relevant uunique" href="{item.DC_PROFILE}">{item.DC_USERNAME}</a><br />{item.POST_DATE}</div></div></li>
+				<!-- END item -->
+			</ul>
+		</div>
+		<div class="rows5_top_2"><input class="submit" type="submit" name="delete" value="{L_DELETE_MARKED}" /></div>
+		<!-- IF PAGES_NUMS != ' <strong>1</strong>' --><div class="rows5_top pagination">{PAGES_NUMS}</div><!-- ENDIF -->
+		<!-- END messages -->
+		<!-- BEGIN no_messages -->
+		<div class="error_block"><p>{L_EMPTY_DC}</p></div>
+		<!-- END no_messages -->
+		
+		<!-- BEGIN conv -->
+		<!-- BEGIN item -->
+		<!-- BEGIN message -->
+		<a name="{message.POST_ID}"></a>
+		<div class="rows5_top_2 comments">
+		<div id="comment-{item.S_ROW_COUNT}">
+		<h3><strong>1</strong><span>.</span> <em><a href="{message.PROFILE}"><img src="{message.AVATAR}" alt="{message.USERNAME}'s Avatar" /></a></em><cite><a href="{message.PROFILE}">{message.USERNAME}</a></cite> <span>dijo:</span></h3>
+		<blockquote>
+		<div class="nowraptext">{message.MESSAGE}</div>
+		<!-- IF message.SIGNATURE != '' -->
+		<div class="nowraptext"><p>--<div>{message.SIGNATURE}</div></p></div>
+		<!-- ENDIF -->
+		<p class="dtposted">{message.POST_DATE}</p>
+		</blockquote>
+		<hr /></div>
+		</div>
+		
+		<!-- IF message.CAN_REPLY -->
+		<a name="reply"></a>
+		<div class="post_comment">
+		<div class="section"><h1>{L_SEND_REPLY}</h1></div>
+		<div><label for="comment">{L_POST}</label> - <a class="relevant" onclick="return popup('{S_EMOTICONS}', '_emoticons', 300, 450);" href="{S_EMOTICONS}" target="_blank">{L_EMOTICONS}</a></div>
+		<div class="rows5_top_1"><textarea id="comment" name="message" cols="150" rows="10"></textarea></div>
+		<div class="rows5_top_1 a_center"><input class="submit" type="submit" name="post" value="{L_SUBMIT}" /></div>
+		</div>
+		<!-- ENDIF -->
+		<!-- END message -->
+		
+		<!-- BEGIN header -->
+		<a name="{header.POST_ID}"></a>
+		<div class="rows5_top_1 item_block_3"><ul class="ul_none"><li onclick="window.location='{header.READ_MESSAGE}'"><div class="float-holder ie-widthfix"><div class="float_left col50"><a class="relevant" href="{header.READ_MESSAGE}">+ {L_DC_READ_MESSAGE}</a>: <a class="relevant uunique" href="{header.READ_MESSAGE}">{header.USERNAME}</a></div><div class="float_right col50 a_right">{header.POST_DATE}</div></div></li></ul></div>
+		<!-- END header -->
+		<!-- END item -->
+		<!-- END conv -->
+		</form>
+	</div>
+</div>
+
+<!-- INCLUDE page_footer.htm -->

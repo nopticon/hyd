@@ -1,0 +1,29 @@
+<!-- INCLUDE page_header.htm -->
+
+<div class="col_3 float_left">
+	<!-- BEGIN category -->
+	<div class="rows5_top <!-- IF category.S_ROW_COUNT -->rows5_top_1 <!-- ENDIF -->item_block_1">
+		<div class="section_e" align="center"><h1>{category.DESCRIPTION}</h1></div>
+		<ul class="ul_none">
+			<!-- BEGIN forums -->
+			<li><a class="relevant high" href="{forums.U_FORUM}">{forums.FORUM_NAME}</a><br />{forums.FORUM_DESC}</li>
+			<!-- END forums -->
+		</ul>
+	</div>
+	<!-- END category -->
+</div>
+
+<div class="col_1 float_right">
+	<!-- BEGIN top_posters -->
+	<div class="rows5_top item_block_1">
+		<div class="section"><h1>{L_TODAY_BIRTHS}</h1></div>
+		<ul class="ul_none">
+			<!-- BEGIN item -->
+			<li class="a_center"><a class="relevant uunique" href="{item.PROFILE}">{item.USERNAME}</a><br />{item.POSTS} {L_POSTS}<br /><br /><a href="{item.PROFILE}"><img src="{item.AVATAR}" alt="{item.USERNAME}" /></a></li>
+			<!-- END item -->
+		</ul>
+	</div>
+	<!-- END top_posters -->
+</div>
+
+<!-- INCLUDE page_footer.htm -->
