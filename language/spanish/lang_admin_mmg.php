@@ -1,16 +1,21 @@
 <?php
-// -------------------------------------------------------------
-//
-// $Id: lang_admin_mmg.php,v 1.1.1.1 2006/01/06 03:36:47 Psychopsia Exp $
-//
-// FILENAME  : lang_admin_mmg.php
-// STARTED   : Thr Mar 10, 2005
-// COPYRIGHT : © 2005 Rock Republik NET
-// WWW       : http://www.rockrepublik.net/
-// LICENCE   : GPL vs2.0 [ see /docs/COPYING ] 
-// 
-// -------------------------------------------------------------
+/*
+<Orion, a web development framework for RK.>
+Copyright (C) <2011>  <Orion>
 
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 $lang += array(
 	// MENU
 	// 'M_' => '',
@@ -21,7 +26,7 @@ $lang += array(
 	'M_UD' => 'Bandas [ Descargas ]',
 	'M_CACHE' => 'Cache',
 	'M_UC' => 'Chat',
-	'M_CONFIG' => 'Configuración',
+	'M_CONFIG' => 'Configuraciï¿½n',
 	'M_UL' => 'Enlaces',
 	'M_UE' => 'Eventos',
 	'M_UN' => 'Noticias',
@@ -34,18 +39,18 @@ $lang += array(
 	'Click_return_musicmod' => 'Click %sAQUI%s para regresar al Panel de Rock Republik',
 	
 	// UB
-	'ADD_UB' => 'Agregar Información de Banda',
-	'UPDATE_UB' => 'Actualizar Información de Banda',
-	'DELETE_UB' => 'Eliminar Información de Banda',
-	'CONFIRM_DELETE_UB' => '¿Realmente deseas eliminar TODA la información de <b>%s</b>?',
-	'CONFIRM_DELETE_UD' => '¿Realmente deseas eliminar la descarga:<br /><b>%s</b> de <b>%s</b>?',
-	'UPDATED_UB' => 'La información de la banda fué actualizada correctamente.',
-	'DELETED_UB' => 'La información de la banda fué eliminada correctamente.',
-	'DELETED_UD' => 'La descarga fué eliminada correctamente.',
+	'ADD_UB' => 'Agregar Informaciï¿½n de Banda',
+	'UPDATE_UB' => 'Actualizar Informaciï¿½n de Banda',
+	'DELETE_UB' => 'Eliminar Informaciï¿½n de Banda',
+	'CONFIRM_DELETE_UB' => 'ï¿½Realmente deseas eliminar TODA la informaciï¿½n de <b>%s</b>?',
+	'CONFIRM_DELETE_UD' => 'ï¿½Realmente deseas eliminar la descarga:<br /><b>%s</b> de <b>%s</b>?',
+	'UPDATED_UB' => 'La informaciï¿½n de la banda fuï¿½ actualizada correctamente.',
+	'DELETED_UB' => 'La informaciï¿½n de la banda fuï¿½ eliminada correctamente.',
+	'DELETED_UD' => 'La descarga fuï¿½ eliminada correctamente.',
 	'UB_AEXISTS' => 'El identificador de banda seleccionado ya existe, escoge otro!',
 	
 	'GUB_UD_OO' => 'Solo se puede instalar una descarga por banda.',
-	'GUB_UD_OK' => 'La descarga de la banda invitada fué instalada.',
+	'GUB_UD_OK' => 'La descarga de la banda invitada fuï¿½ instalada.',
 	'GUB_UD_NOUDS' => 'No hay descargas disponibles para esta banda invitada.',
 	
 	// 'UBCP_' => '',
@@ -58,14 +63,14 @@ $lang += array(
 	// UE
 	'ADM_UE_REQD' => 'Los campos: <b>Titulo</b>, <b>Archivo</b>, <b>Imagen</b> son requeridos.',
 	'ADM_UE_EDIT_REQD' => 'Los campos: <b>Titulo</b>, <b>Archivo</b>, <b>Imagen</b> son requeridos.',
-	'ADM_UE_DELETED' => 'El evento fué eliminado correctamente.',
+	'ADM_UE_DELETED' => 'El evento fuï¿½ eliminado correctamente.',
 	'ADM_UE_NODEL' => 'No se puede eliminar el evento.',
 	
-	'CACHE_DELETED' => 'El cache de <b>%s</b> fué eliminado.',
+	'CACHE_DELETED' => 'El cache de <b>%s</b> fuï¿½ eliminado.',
 	
 	// CHAT
 	'CHAT_DELETED_MSGS' => '%s Mensajes fueron eliminados',
-	'CHAT_DELETED_MSG' => '%s Mensaje fué borrado',
+	'CHAT_DELETED_MSG' => '%s Mensaje fuï¿½ borrado',
 	'MM_BLOCK' => 'Bloquear',
 	'MM_BLOCK_IP' => 'Bloquear IP',
 	'MM_IP' => 'IP',

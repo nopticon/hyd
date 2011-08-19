@@ -1,23 +1,28 @@
 <?php
-// -------------------------------------------------------------
-//
-// $Id: lang_mmg.php,v 1.1.1.1 2006/01/06 03:36:47 Psychopsia Exp $
-//
-// FILENAME  : lang_mmc.php
-// STARTED   : Wed Jun 30, 2004
-// COPYRIGHT : © 2004 Rock Republik NET
-// WWW       : http://www.rockrepublik.net/
-// LICENCE   : GPL vs2.0 [ see /docs/COPYING ] 
-// 
-// -------------------------------------------------------------
+/*
+<Orion, a web development framework for RK.>
+Copyright (C) <2011>  <Orion>
 
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 $lang += array(
 	// ARTISTS
 	
 	'UB_FAVS' => 'Bandas Favoritas',
 	'ENTER_TO_BAND' => 'Click para entrar a:&nbsp;',
 	
-	'UB_RETURN_UB' => 'Click <a href="%s">AQUI</a> para volver a la información de <b>%s</b>',
+	'UB_RETURN_UB' => 'Click <a href="%s">AQUI</a> para volver a la informaciï¿½n de <b>%s</b>',
 	'UB_RETURN_UD' => 'Click <a href="%s">AQUI</a> para volver a la descarga, <b>%s</b>',
 	'UB_RETURN_MAIN' => 'Click <a href="%s">AQUI</a> para volver a Bandas',
 	
@@ -26,12 +31,12 @@ $lang += array(
 	
 	// DOWNLOADS
 	'UB_UD' => 'Descargas',
-	'UB_WMA' => 'Música',
+	'UB_WMA' => 'Mï¿½sica',
 	'UB_WMV' => 'Videos',
 	'UB_UD_DL_GET' => 'Descargar',
-	'UB_UD_RATE' => 'Valoración',
-	'UB_UD_RATE_USER' => 'Opinión de usuarios',
-	'UB_UD_POINTS' => 'Puntuación',
+	'UB_UD_RATE' => 'Valoraciï¿½n',
+	'UB_UD_RATE_USER' => 'Opiniï¿½n de usuarios',
+	'UB_UD_POINTS' => 'Puntuaciï¿½n',
 	
 	'NO_SEL_DOWNLOAD' => 'Debes seleccionar una descarga de esta banda.',
 	'NO_DOWNLOAD' => 'La descarga seleccionada no existe.',
@@ -46,12 +51,12 @@ $lang += array(
 	
 	// ADDED TIME
 	'UD_ADDED_SINCE' => 'Agregada hace',
-	'UD_ADDED_X0' => 'año',
-	'UD_ADDED_X0S' => 'años',
+	'UD_ADDED_X0' => 'aï¿½o',
+	'UD_ADDED_X0S' => 'aï¿½os',
 	'UD_ADDED_X1' => 'mes',
 	'UD_ADDED_X1S' => 'meses',
-	'UD_ADDED_X2' => 'día',
-	'UD_ADDED_X2S' => 'días',
+	'UD_ADDED_X2' => 'dï¿½a',
+	'UD_ADDED_X2S' => 'dï¿½as',
 	'UD_ADDED_X3' => 'hora',
 	'UD_ADDED_X3S' => 'horas',
 	'UD_ADDED_X4' => 'minuto',
@@ -62,73 +67,73 @@ $lang += array(
 	'UB_UD_RATE_ADD' => 'Agregar',
 	'UB_UD_RATE_INVITE' => 'Invitar',
 	'UB_UD_RATE_EDIT' => 'Editar',
-	'UB_UD_RATE_TEXT' => 'Crítica',
-	'UB_UD_RATE_DESC' => 'Desde esta pantalla podrás escribir tu crítica y puntuación sobre <b>%s</b>.<br /><br />La crítica debe ser imparcial y la puntuación puede ser entre 1 y %s.',
-	'UB_UD_RATE_SEND' => 'Enviar Valoración',
+	'UB_UD_RATE_TEXT' => 'Crï¿½tica',
+	'UB_UD_RATE_DESC' => 'Desde esta pantalla podrï¿½s escribir tu crï¿½tica y puntuaciï¿½n sobre <b>%s</b>.<br /><br />La crï¿½tica debe ser imparcial y la puntuaciï¿½n puede ser entre 1 y %s.',
+	'UB_UD_RATE_SEND' => 'Enviar Valoraciï¿½n',
 	'UB_UD_RATE_INVITE2' => 'Invitar a usuario para valorar esta descarga',
-	'UB_UD_RATE_INV_SEND' => 'Enviar Invitación',
-	'UB_UD_RATE_INV_DESC' => 'Desde esta pantalla podrás invitar a un usuario de Rock Republik NET, para que publique su valoración sobre:<br /><br /><b>%s</b><br /><br />Luego de ingresar su nombre de usuario, se le enviará un <b>E-mail automático</b>, con un enlace para publicar su comentario. Se enviará un E-mail por cada invitación.',
-	'UB_UD_RATE_INV_EUSER' => 'Debes especificar a qué usuario se dará autorización para valorar esta descarga.',
+	'UB_UD_RATE_INV_SEND' => 'Enviar Invitaciï¿½n',
+	'UB_UD_RATE_INV_DESC' => 'Desde esta pantalla podrï¿½s invitar a un usuario de Rock Republik NET, para que publique su valoraciï¿½n sobre:<br /><br /><b>%s</b><br /><br />Luego de ingresar su nombre de usuario, se le enviarï¿½ un <b>E-mail automï¿½tico</b>, con un enlace para publicar su comentario. Se enviarï¿½ un E-mail por cada invitaciï¿½n.',
+	'UB_UD_RATE_INV_EUSER' => 'Debes especificar a quï¿½ usuario se darï¿½ autorizaciï¿½n para valorar esta descarga.',
 	'UB_UD_RATE_INV_NOUSER' => 'El usuario especificado no existe',
 	'UB_UD_RATE_INV_ISADMIN' => 'No se puede invitar a un administrador a valorar esta descarga. El lo puede hacer directamente sin ser invitado.',
-	'UB_UD_RATE_NOPOINT' => 'La puntuación debe ser entre 1 y %s.',
-	'UB_UD_RATE_NOPOST' => 'Debes escribir una crítica para esta descarga.',
+	'UB_UD_RATE_NOPOINT' => 'La puntuaciï¿½n debe ser entre 1 y %s.',
+	'UB_UD_RATE_NOPOST' => 'Debes escribir una crï¿½tica para esta descarga.',
 	
 	// 'FCCP_' => '',
 	'FCCP_WLCM' => 'Bienvenid%s%s, este es el Club de Fans de <b>%s</b>.',
-	'FCCP_GUEST' => 'Al suscribirte, podrás recibir noticias en tu cuenta de e-mail, participar en promociones especiales y obtener muchos beneficios más.<br /><br />Para ser miembro de este club de fans, debes ser usuario de Rock Republik NET (click %s<b>AQUI</b>%s).<br /><br />Luego de registrarte o iniciar sesión, podrás suscribirte a todos los club de fans que desees.',
-	'FCCP_JOIN' => '<span style="color:#FFBF00"><b>Suscríbete a este club de fans.</b></span><br /><br />Al suscribirte podrás recibir noticias en tu cuenta de e-mail, participar en promociones especiales y obtener muchos beneficios más.',
-	'FCCP_MEMBER' => '<span style="color:#FFBF00"><b>Eres miembro de este club de fans.</b></span><br /><br />Podrás recibir noticias en tu cuenta de e-mail, participar en promociones especiales y obtener muchos beneficios más.',
-	'FCCP_ADM' => '<span style="color:#FFBF00"><b>Eres administrador de Rock Republik NET.</b></span><br /><br />Puedes administrar los miembros y mensajes de este club de fans.<br /><br />Cuando envies un mensaje, los miembros lo recibirán en cuenta de e-mail, y quedará guardado Rock Republik NET, para que los miembros puedan leerlos y opinar.',
-	'FCCP_MOD' => '<span style="color:#FFBF00"><b>Eres miembro de esta banda.</b></span><br /><br />Puedes administrar los miembros y mensajes de este club de fans.<br /><br />Cuando envies un mensaje, los miembros lo recibirán en cuenta de e-mail, y quedará guardado Rock Republik NET, para que los miembros puedan leerlos y opinar.',
-	'FCCP_MS' => 'Membresía',
-	'FCCP_MS_ADD' => 'Agregar Suscripción',
-	'FCCP_MS_DEL' => 'Cancelar Suscripción',
+	'FCCP_GUEST' => 'Al suscribirte, podrï¿½s recibir noticias en tu cuenta de e-mail, participar en promociones especiales y obtener muchos beneficios mï¿½s.<br /><br />Para ser miembro de este club de fans, debes ser usuario de Rock Republik NET (click %s<b>AQUI</b>%s).<br /><br />Luego de registrarte o iniciar sesiï¿½n, podrï¿½s suscribirte a todos los club de fans que desees.',
+	'FCCP_JOIN' => '<span style="color:#FFBF00"><b>Suscrï¿½bete a este club de fans.</b></span><br /><br />Al suscribirte podrï¿½s recibir noticias en tu cuenta de e-mail, participar en promociones especiales y obtener muchos beneficios mï¿½s.',
+	'FCCP_MEMBER' => '<span style="color:#FFBF00"><b>Eres miembro de este club de fans.</b></span><br /><br />Podrï¿½s recibir noticias en tu cuenta de e-mail, participar en promociones especiales y obtener muchos beneficios mï¿½s.',
+	'FCCP_ADM' => '<span style="color:#FFBF00"><b>Eres administrador de Rock Republik NET.</b></span><br /><br />Puedes administrar los miembros y mensajes de este club de fans.<br /><br />Cuando envies un mensaje, los miembros lo recibirï¿½n en cuenta de e-mail, y quedarï¿½ guardado Rock Republik NET, para que los miembros puedan leerlos y opinar.',
+	'FCCP_MOD' => '<span style="color:#FFBF00"><b>Eres miembro de esta banda.</b></span><br /><br />Puedes administrar los miembros y mensajes de este club de fans.<br /><br />Cuando envies un mensaje, los miembros lo recibirï¿½n en cuenta de e-mail, y quedarï¿½ guardado Rock Republik NET, para que los miembros puedan leerlos y opinar.',
+	'FCCP_MS' => 'Membresï¿½a',
+	'FCCP_MS_ADD' => 'Agregar Suscripciï¿½n',
+	'FCCP_MS_DEL' => 'Cancelar Suscripciï¿½n',
 	'FCCP_MS_OK' => '<b>Ahora eres miembro de este club de fans.</b>',
-	'FCCP_MS_NO' => '<b>Has cancelado tu suscripción a este club de fans.</b>',
+	'FCCP_MS_NO' => '<b>Has cancelado tu suscripciï¿½n a este club de fans.</b>',
 	'FCC_MS_BCK' => '<br /><br />Click %sAQUI%s para regresar a la pantalla anterior.',
 	'FCC_NO_MEMBERS' => 'No hay miembros en este club de fans.',
 	// FC MESSAGES
-	'FCC_NO_MEMBER' => '<span style="color:#FFBF00"><b>No eres miembro de este club de fans.</b></span><br /><br />Haz click en <b>Agregar Suscripción</b> para opinar sobre los mensajes.',
+	'FCC_NO_MEMBER' => '<span style="color:#FFBF00"><b>No eres miembro de este club de fans.</b></span><br /><br />Haz click en <b>Agregar Suscripciï¿½n</b> para opinar sobre los mensajes.',
 	'FCC_NO_POSTS' => 'No hay mensajes enviados a este club de fans.',
 	'FCC_NEWTOPIC' => 'Publicar Mensaje',
-	'FCC_NEWREPLY' => 'Publicar Opinión',
+	'FCC_NEWREPLY' => 'Publicar Opiniï¿½n',
 	'FCC_MESSAGE_STORED_WU' => 'El mensaje ha sido enviado a todos los miembros del club de fans por email.',
-	'FCC_MESSAGE_STORED_NU' => 'El mensaje ha sido enviado, pero no fué enviado a ningún usuario.',
+	'FCC_MESSAGE_STORED_NU' => 'El mensaje ha sido enviado, pero no fuï¿½ enviado a ningï¿½n usuario.',
 	'FCC_MESSAGE_STORED_BACK' => 'Click <a href="%s">AQUI</a> para regresar al mensaje',
 	'FCC_MESSAGE_USER_STORED' => 'Gracias por publicar tu comentario.',
 	'FCC_MAIL_SUBJECT' => 'Rock Republik NET [ Club de Fans ]',
 	
 	// 'UBCP_' => '',
-	'UBCP_PANEL' => 'Administración',
-	'UBCP_PANEL_TITLE' => 'Administración',
-	'UBCP_MEMBER' => 'Eres miembro de esta banda y/o has sido autorizado para administrar la información de esta banda.<br /><br />En todas las áreas donde puedas editar la información, aparecerán iconos especiales. Esta es la lista de tu autorización:<ul><li>Publicar, editar y borrar noticias<li>Publicar, editar y borrar letras de canciones<li>Editar y borrar mensajes de usuarios<li>Editar y borrar mensajes en las descargas (Música/Videos)<li>Editar la biografía<li>Editar el enlace a tu sitio web</ul>NOTA: Todas los cambios que realizes serán monitoreados.<br /><br />Si deseas informar de algún error o tienes dudas o sugerencias, por favor contacta al Administrador %sAQUI%s, o envia un correo electrónico a %s.',
+	'UBCP_PANEL' => 'Administraciï¿½n',
+	'UBCP_PANEL_TITLE' => 'Administraciï¿½n',
+	'UBCP_MEMBER' => 'Eres miembro de esta banda y/o has sido autorizado para administrar la informaciï¿½n de esta banda.<br /><br />En todas las ï¿½reas donde puedas editar la informaciï¿½n, aparecerï¿½n iconos especiales. Esta es la lista de tu autorizaciï¿½n:<ul><li>Publicar, editar y borrar noticias<li>Publicar, editar y borrar letras de canciones<li>Editar y borrar mensajes de usuarios<li>Editar y borrar mensajes en las descargas (Mï¿½sica/Videos)<li>Editar la biografï¿½a<li>Editar el enlace a tu sitio web</ul>NOTA: Todas los cambios que realizes serï¿½n monitoreados.<br /><br />Si deseas informar de algï¿½n error o tienes dudas o sugerencias, por favor contacta al Administrador %sAQUI%s, o envia un correo electrï¿½nico a %s.',
 	'UBCP_RETURN' => 'Click <a href="%s">AQUI</a> para volver al Panel de Control de <b>%s</b>',
 	'UBCP_PREVIEW' => 'Vista Previa',
 	
 	'UBCP_UBM_EDITED' => 'El mensaje fue editado correctamente.',
 	'UBCP_UBM_EDIT_ADMIN' => 'El mensaje fue publicado por un Administrador, no se puede editar.',
-	'UBCP_UBM_CONFIRM_DELETE' => '¿Realmente deseas borrar este mensaje?',
+	'UBCP_UBM_CONFIRM_DELETE' => 'ï¿½Realmente deseas borrar este mensaje?',
 	'UBCP_UBM_DELETED' => 'El mensaje fue eliminado correctamente.',
 	'UBCP_UBM_DELETE_ADMIN' => 'El mensaje fue publicado por un Administrador, no se puede borrar.',
 	'UBCP_UBM_NO_MESSAGE' => 'El mensaje ya fue eliminado.',
 	
-	'UBCP_CFG' => 'Configuración',
-	'UBCP_CFG_EDITED' => 'La configuración fue editada correctamente.',
-	'UBCP_CFG_NO_EDITED' => 'No se hicieron cambios en la configuración.',
-	'UBCP_CFG_ADL_IMAGES' => 'Permitir descarga de fotografías',
+	'UBCP_CFG' => 'Configuraciï¿½n',
+	'UBCP_CFG_EDITED' => 'La configuraciï¿½n fue editada correctamente.',
+	'UBCP_CFG_NO_EDITED' => 'No se hicieron cambios en la configuraciï¿½n.',
+	'UBCP_CFG_ADL_IMAGES' => 'Permitir descarga de fotografï¿½as',
 	
 	'UBCP_UBN_POST' => 'Publicar Noticia',
 	'UBCP_UBN_EDIT' => 'Editar noticia',
 	'UBCP_UBN_DELETE' => 'Eliminar noticia',
 	'UBCP_UBN_POSTED' => 'La noticia fue publicada correctamente.',
 	'UBCP_UBN_EDITED' => 'La noticia fue editada correctamente.',
-	'UBCP_UBN_CONFIRM_DELETE' => '¿Realmente deseas borrar esta noticia?',
+	'UBCP_UBN_CONFIRM_DELETE' => 'ï¿½Realmente deseas borrar esta noticia?',
 	'UBCP_UBN_DELETED' => 'La noticia fue eliminada correctamente.',
 	
-	'UBCP_BIO' => 'Biografía',
-	'UBCP_UBB_EDIT' => 'Editar biografía',
-	'UBCP_UBB_EDITED' => 'La biografía fue editada correctamente.',
+	'UBCP_BIO' => 'Biografï¿½a',
+	'UBCP_UBB_EDIT' => 'Editar biografï¿½a',
+	'UBCP_UBB_EDITED' => 'La biografï¿½a fue editada correctamente.',
 	
 	'UBCP_MINI' => 'Portada Mini',
 	'UBCP_MINI_EDIT' => 'Editar Portada Mini',
@@ -136,38 +141,38 @@ $lang += array(
 	
 	'UBCP_WWW' => 'Sitio Web',
 	'UBCP_WWW_EDIT' => 'Editar Sitio Web',
-	'UBCP_WWW_CHECK' => 'Comprobar Dirección',
-	'UBCP_WWW_OK' => 'La dirección web [ <b>%s</b> ] es correcta, puedes continuar.',
-	'UBCP_WWW_AWC' => 'No verificar conexión al visitar sitio web',
-	'UBCP_WWW_ERROR' => 'Hubo un error en la conexión a la dirección web [ <b>%s</b> ]. Por favor verificala e intenta de nuevo.',
+	'UBCP_WWW_CHECK' => 'Comprobar Direcciï¿½n',
+	'UBCP_WWW_OK' => 'La direcciï¿½n web [ <b>%s</b> ] es correcta, puedes continuar.',
+	'UBCP_WWW_AWC' => 'No verificar conexiï¿½n al visitar sitio web',
+	'UBCP_WWW_ERROR' => 'Hubo un error en la conexiï¿½n a la direcciï¿½n web [ <b>%s</b> ]. Por favor verificala e intenta de nuevo.',
 	'UBCP_WWW_EDITED' => 'El Sitio Web fue editado correctamente.',
 	
-	'UBCP_UBL' => 'Líricas',
-	'UBCP_UBL_POST' => 'Publicar Lírica',
-	'UBCP_UBL_EDIT' => 'Editar Lírica',
-	'UBCP_UBL_TITLE' => 'Título',
+	'UBCP_UBL' => 'Lï¿½ricas',
+	'UBCP_UBL_POST' => 'Publicar Lï¿½rica',
+	'UBCP_UBL_EDIT' => 'Editar Lï¿½rica',
+	'UBCP_UBL_TITLE' => 'Tï¿½tulo',
 	'UBCP_UBL_AUTHOR' => 'Autor',
-	'UBCP_UBL_E_TITLE' => 'Debes escribir el título de esta lírica',
-	'UBCP_UBL_E_AUTHOR' => 'Debes escribir el autor de esta lírica',
-	'UBCP_UBL_POSTED' => 'La lírica fue publicada correctamente.',
-	'UBCP_UBL_EDITED' => 'La lírica fue editada correctamente.',
-	'UBCP_UBL_CONFIRM_DELETE' => '¿Realmente deseas eliminar esta lírica?<br /><br /><b>%s</b>',
-	'UBCP_UBL_DELETED' => 'La lírica fue eliminada correctamente.',
+	'UBCP_UBL_E_TITLE' => 'Debes escribir el tï¿½tulo de esta lï¿½rica',
+	'UBCP_UBL_E_AUTHOR' => 'Debes escribir el autor de esta lï¿½rica',
+	'UBCP_UBL_POSTED' => 'La lï¿½rica fue publicada correctamente.',
+	'UBCP_UBL_EDITED' => 'La lï¿½rica fue editada correctamente.',
+	'UBCP_UBL_CONFIRM_DELETE' => 'ï¿½Realmente deseas eliminar esta lï¿½rica?<br /><br /><b>%s</b>',
+	'UBCP_UBL_DELETED' => 'La lï¿½rica fue eliminada correctamente.',
 	
 	// 'PROMO_' => '',
 	'PROMO' => 'Promociones',
 	'PROMO_FIELD_EMPTY' => 'Debes completar el siguiente campo: ',
-	'PROMO_INVALID_FIELD' => 'Los datos del siguiente campo son inválidos: ',
-	'PROMO_INVALID_FIELD_NAME' => 'Tu <b>Nombre</b> no puede contener números, ni otros caracteres.',
-	'PROMO_INVALID_FIELD_MAIL' => 'Tu <b>Email</b> es inválido.',
-	'PROMO_INVALID_FIELD_NOC' => 'Tu <b>Número de Cédula</b> es inválido.',
-	'PROMO_INVALID_FIELD_TEL' => 'Tu <b>Número de Teléfono</b> es inválido.',
+	'PROMO_INVALID_FIELD' => 'Los datos del siguiente campo son invï¿½lidos: ',
+	'PROMO_INVALID_FIELD_NAME' => 'Tu <b>Nombre</b> no puede contener nï¿½meros, ni otros caracteres.',
+	'PROMO_INVALID_FIELD_MAIL' => 'Tu <b>Email</b> es invï¿½lido.',
+	'PROMO_INVALID_FIELD_NOC' => 'Tu <b>Nï¿½mero de Cï¿½dula</b> es invï¿½lido.',
+	'PROMO_INVALID_FIELD_TEL' => 'Tu <b>Nï¿½mero de Telï¿½fono</b> es invï¿½lido.',
 	
-	'PROMO_THANKS' => 'Gracias por participar en esta promoción.<br /><br />Click %sAQUI%s para regresar a la Portada.',
-	'PROMO_CANT_VIEW' => 'Ya has participado en esta promoción. Sólo puedes participar una vez.<br /><br />Click %sAQUI%s para regresar a la Portada.',
-	'PROMO_FLOOD' => 'No puedes participar de nuevo tan rápido después de tu última participación.',
+	'PROMO_THANKS' => 'Gracias por participar en esta promociï¿½n.<br /><br />Click %sAQUI%s para regresar a la Portada.',
+	'PROMO_CANT_VIEW' => 'Ya has participado en esta promociï¿½n. Sï¿½lo puedes participar una vez.<br /><br />Click %sAQUI%s para regresar a la Portada.',
+	'PROMO_FLOOD' => 'No puedes participar de nuevo tan rï¿½pido despuï¿½s de tu ï¿½ltima participaciï¿½n.',
 	'PROMO_AREQD_FIELDS' => 'Todos los datos son obligatorios.',
-	'PROMO_REQD_FIELDS' => 'Los datos marcados con [ <b>*</b> ] son obligatorios, los demás son opcionales.',
+	'PROMO_REQD_FIELDS' => 'Los datos marcados con [ <b>*</b> ] son obligatorios, los demï¿½s son opcionales.',
 	'PROMO_JOIN' => 'Participar',
 	'PROMO_FILL_FORM' => 'Completa el formulario'
 );

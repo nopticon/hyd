@@ -1,26 +1,21 @@
 <?php
-/***************************************************************************
- *						lang_extend_profile_control_panel.php [Spanish]
- *						-----------------------------------------------
- *	begin				: 28/09/2003
- *	copyright		: Ptirhiik
- *	email				: ptirhiik@clanmckeen.com
- *
- *	version			: 1.0.2 - 28/09/2003
- *
- *	Translator:  Psychopsia <psychopsia@rockrepublik.net> http://www.rockrepublik.net/
- *
- ***************************************************************************/
- 
-/***************************************************************************
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
+/*
+<Orion, a web development framework for RK.>
+Copyright (C) <2011>  <Orion>
 
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 if ( !defined('IN_NUCLEO') )
 {
 	die('Rock Republik &copy; 2006');
@@ -41,12 +36,12 @@ $lang['Add_to_friend_list']								= 'Agregar a tu lista de amigos';
 $lang['Remove_from_friend_list']					= 'Quitar de tu lista de amigos';
 $lang['Add_to_ignore_list']								= 'Agregar a tu lista de ignorados';
 $lang['Remove_from_ignore_list']					= 'Quitar de tu lista de ignorados';
-$lang['Happy_birthday']										= 'Feliz Cumpleaños!';
+$lang['Happy_birthday']										= 'Feliz Cumpleaï¿½os!';
 $lang['Ignore_choosed']										= 'Has seleccionado ignorar a este usuario';
 $lang['Online']														= 'Conectado';
 $lang['Offline']													= 'Desconectado';
 $lang['Hidden']														= 'Oculto';
-$lang['Gender']														= 'Género';
+$lang['Gender']														= 'Gï¿½nero';
 $lang['Male']															= 'Masculino';
 $lang['Female']														= 'Femenino';
 $lang['No_gender_specify']								= 'Desconocido';
@@ -58,8 +53,8 @@ $lang['Ignore']														= 'Ignorar';
 $lang['Click_return_profilcp']						= 'Click %sAqui%s para regresar al perfil';
 
 // birthday popup (profile_birthday.php)
-$lang['Birthday']													= 'Cumpleaños';
-$lang['birthday_msg']											= 'Hola %s, <br /><br /><br /> %s te desea feliz cumpleaños,<br>gracias por visitarnos!';
+$lang['Birthday']													= 'Cumpleaï¿½os';
+$lang['birthday_msg']											= 'Hola %s, <br /><br /><br /> %s te desea feliz cumpleaï¿½os,<br>gracias por visitarnos!';
 
 // home panel (profilcp_home.php)
 $lang['profilcp_index_shortcut']					= 'Principal';
@@ -72,7 +67,7 @@ $lang['Ignore_list']											= 'Lista de Ignorados';
 $lang['Ignore_list_of']										= 'Ignorado por';
 $lang['Nobody']														= 'Ninguno';
 $lang['Always_visible']										= 'Siempre visible para este usuario';
-$lang['Not_always_visible']								= 'Este usuario no te verá cuando estés en modo oculto';
+$lang['Not_always_visible']								= 'Este usuario no te verï¿½ cuando estï¿½s en modo oculto';
 
 // home panel : watched topics (functions_profile.php)
 $lang['Stop_watching_selected_topics']		= 'Dejar de observar los temas seleccionados';
@@ -90,9 +85,9 @@ $lang['profilcp_buddy_list_shortcut']			= 'Todos los miembros';
 $lang['profilcp_buddy_list_pagetitle']		= 'Lista de Miembros';
 $lang['Click_return_privmsg']							= 'Click %sAqui%s para regresar al mensaje privado';
 $lang['profilcp_buddy_could_not_add_user']= 'El usuario seleccionado no existe';
-$lang['profilcp_buddy_could_not_anon_user']= 'No puedes hacer a Anónino tu amigo';
+$lang['profilcp_buddy_could_not_anon_user']= 'No puedes hacer a Anï¿½nino tu amigo';
 $lang['profilcp_buddy_add_yourself']			= 'No puedes auto hacerte tu amigo';
-$lang['profilcp_buddy_already']						= 'El usuario ya está en tus listas';
+$lang['profilcp_buddy_already']						= 'El usuario ya estï¿½ en tus listas';
 $lang['profilcp_buddy_ignore']						= 'No se puede agregar: el usuario te ha ignorado';
 $lang['profilcp_buddy_you_admin']					= 'Un Administrador o Moderador no puede ignorar usuarios';
 $lang['profilcp_buddy_admin']							= 'No puedes ignorar Administradores, Moderadores';
@@ -119,54 +114,54 @@ $lang['profilcp_avatar_pagetitle']				= 'Avatar';
 
 // update profile : preferences - functions (mod_profile_control_panel.php)
 $lang['Other']														= 'Otros';
-$lang['Friend_only']											= 'Sólo Amigos';
+$lang['Friend_only']											= 'Sï¿½lo Amigos';
 
 // update profile : public informations : web info (mod_profile_control_public_web.php)
-$lang['profilcp_profil_base_shortcut']		= 'Información Pública';
-$lang['Web_info']													= 'Información Web';
+$lang['profilcp_profil_base_shortcut']		= 'Informaciï¿½n Pï¿½blica';
+$lang['Web_info']													= 'Informaciï¿½n Web';
 
 // update profile : public informations : real info (mod_profile_control_public_real.php)
-$lang['Real_info']												= 'Información Personal';
+$lang['Real_info']												= 'Informaciï¿½n Personal';
 $lang['Realname']													= 'Nombre Real';
-$lang['Date_error']												= 'día %d, mes %d, año %d no es una fecha válida';
+$lang['Date_error']												= 'dï¿½a %d, mes %d, aï¿½o %d no es una fecha vï¿½lida';
 
 // update profile : public informations : messengers info (mod_profile_control_public_messengers.php)
 $lang['Messangers']												= 'Mensajeros';
 
 // update profile : public informations : contact info (mod_profile_control_public_contact.php)
-$lang['Home_phone']												= 'Teléfono de Casa';
+$lang['Home_phone']												= 'Telï¿½fono de Casa';
 $lang['Home_fax']													= 'FAX de Casa';
-$lang['Work_phone']												= 'Teléfono del trabajo';
+$lang['Work_phone']												= 'Telï¿½fono del trabajo';
 $lang['Work_fax']													= 'FAX del trabajo';
-$lang['Cellular']													= 'Teléfono Celular';
+$lang['Cellular']													= 'Telï¿½fono Celular';
 $lang['Pager']														= 'Localizador';
 
 // update profile : preferences - preferences panel ("Your profile")
 $lang['Profile_control_panel']						= 'Opciones de Perfil';
 
 // update profile : preferences - i18n panel (mod_profile_control_panel_international.php)
-$lang['Profile_control_panel_i18n']				= 'Internacionalización';
-$lang['summer_time']											= 'Estás en una zona de horario de verano?';
+$lang['Profile_control_panel_i18n']				= 'Internacionalizaciï¿½n';
+$lang['summer_time']											= 'Estï¿½s en una zona de horario de verano?';
 
 // update profile : preferences - notification panel (mod_profile_control_panel_notification.php)
-$lang['Profile_control_panel_notification']	= 'Notificación';
+$lang['Profile_control_panel_notification']	= 'Notificaciï¿½n';
 
 // update profile : preferences - posting panel (mod_profile_control_panel_posting.php)
-$lang['Profile_control_panel_posting']		= 'Publicación';
+$lang['Profile_control_panel_posting']		= 'Publicaciï¿½n';
 
 // update profile : preferences - privacy panel (mod_profile_control_panel_privacy.php)
 $lang['Profile_control_panel_privacy']		= 'Privacidad';
 $lang['View_user']												= 'Mostrarme conectado';
 $lang['Public_view_pm']										= 'Aceptar mensajes privados';
-$lang['Public_view_website']							= 'Mostrar mi información Web';
+$lang['Public_view_website']							= 'Mostrar mi informaciï¿½n Web';
 $lang['Public_view_messengers']						= 'Mostrar mis Mensajeros';
-$lang['Public_view_real_info']						= 'Mostrar mi Información Personal';
+$lang['Public_view_real_info']						= 'Mostrar mi Informaciï¿½n Personal';
 
 // update profile : preferences - reading panel (mod_profile_control_panel_reading.php)
 $lang['Profile_control_panel_reading']		= 'Lectura';
 $lang['Public_view_avatar']								= 'Mostrar Avatars';
 $lang['Public_view_sig']									= 'Mostrar Firmas';
-$lang['Public_view_img']									= 'Mostrar Imágenes';
+$lang['Public_view_img']									= 'Mostrar Imï¿½genes';
 
 // update profile : preferences - profile preferences
 $lang['profile_prefer']										= 'Opciones de Perfil';
@@ -177,18 +172,18 @@ $lang['summer_time_set']									= 'Es horario de verano? (agregar +1 hora a la 
 $lang['Forum_rules']											= 'Tema de reglas de registro';
 
 // update profile : preferences - admin part (mod_profile_control_panel_admin.php)
-$lang['profilcp_admin_shortcut']					= 'Administración';
+$lang['profilcp_admin_shortcut']					= 'Administraciï¿½n';
 $lang['User_deleted']											= 'Usuario se ha borrado correctamente';
 $lang['User_special']											= 'Campos especiales para Administradores';
-$lang['User_special_explain']							= 'Estos campos no pueden ser modificados por usuarios. Aquí puedes seleccionar su estado y otras opciones de los usuarios.';
-$lang['User_status']											= 'Usuario está activo';
+$lang['User_special_explain']							= 'Estos campos no pueden ser modificados por usuarios. Aquï¿½ puedes seleccionar su estado y otras opciones de los usuarios.';
+$lang['User_status']											= 'Usuario estï¿½ activo';
 $lang['User_allow_email']									= 'Puede enviar emails';
 $lang['User_allow_pm']										= 'Puede enviar Mensajes Privados';
-$lang['User_allow_website']								= 'Puede mostrar su información Web';
+$lang['User_allow_website']								= 'Puede mostrar su informaciï¿½n Web';
 $lang['User_allow_messanger']							= 'Puede mostrar sus direcciones de mensajeros';
-$lang['User_allow_real']									= 'Puede mostrar su información personal';
+$lang['User_allow_real']									= 'Puede mostrar su informaciï¿½n personal';
 $lang['User_allow_sig']										= 'Puede mostrar su firma';
-$lang['Rank_title']												= 'Título del Rango';
+$lang['Rank_title']												= 'Tï¿½tulo del Rango';
 $lang['User_delete']											= 'Borrar este usuario';
 $lang['User_delete_explain']							= 'Click aqui para borrar este usuario; esto no puede deshacerse.';
 $lang['No_assigned_rank']									= 'No se ha seleccionado un rango especial';
@@ -198,10 +193,10 @@ $lang['User_self_delete']									= 'Puedes borrar tu cuenta sin el Administrado
 $lang['profilcp_sig_preview']							= 'Vista previa de la firma';
 
 // display profile (profilcp_public.php)
-$lang['profilcp_public_shortcut']					= 'Público';
-$lang['profilcp_public_pagetitle']				= 'Mostrar información pública';
-$lang['profilcp_public_base_shortcut']		= 'Información';
-$lang['profilcp_public_base_pagetitle']		= 'Información del Perfil';
+$lang['profilcp_public_shortcut']					= 'Pï¿½blico';
+$lang['profilcp_public_pagetitle']				= 'Mostrar informaciï¿½n pï¿½blica';
+$lang['profilcp_public_base_shortcut']		= 'Informaciï¿½n';
+$lang['profilcp_public_base_pagetitle']		= 'Informaciï¿½n del Perfil';
 $lang['profilcp_public_groups_shortcut']	= 'Grupos';
 $lang['profilcp_public_groups_pagetitle']	= 'Grupos a los que pertenece este usuario';
 
@@ -214,33 +209,33 @@ $lang['Buddy_friend_of_display']					= 'Mostrar "Amigo de" en el panel principal
 $lang['Buddy_ignored_by_display']					= 'Mostrar "Ignorado por" en el panel principal';
 
 $lang['Profile_control_panel_home_privmsg']	= 'Mensajes Privados';
-$lang['Privmsgs_per_page']								= 'Número de Mensajes Privados mostrados por página en el panel principal';
+$lang['Privmsgs_per_page']								= 'Nï¿½mero de Mensajes Privados mostrados por pï¿½gina en el panel principal';
 
 $lang['Profile_control_panel_home_wtopics']	= 'Temas Observados';
-$lang['Watched_topics_per_page']					= 'Número de temas observados mostrados por página en el panel principal';
+$lang['Watched_topics_per_page']					= 'Nï¿½mero de temas observados mostrados por pï¿½gina en el panel principal';
 
 // display profile : base info (profilcp_public_base.php)
 $lang['Unavailable']											= 'No Disponible';
 $lang['Last_visit']												= 'Ultima visita';
 $lang['User_posts']												= 'Mensajes del usuario';
-$lang['User_post_stats']									= '<b>%s</b> mensajes, %.2f%% del total, %.2f mensajes por día';
-$lang['Most_active_topic']								= 'Tema más activo';
+$lang['User_post_stats']									= '<b>%s</b> mensajes, %.2f%% del total, %.2f mensajes por dï¿½a';
+$lang['Most_active_topic']								= 'Tema mï¿½s activo';
 $lang['Most_active_topic_stat']						= '%s mensajes, %.2f%% del tema, %.2f%% del foro';
-$lang['Most_active_forum']								= 'Foro más activo';
+$lang['Most_active_forum']								= 'Foro mï¿½s activo';
 $lang['Most_active_forum_stat']						= '%s mensajes, %.2f%% del foro, %.2f%% del total';
 
 // register (profilcp_register.php)
 $lang['profilcp_register_shortcut']				= 'Registro';
-$lang['profilcp_register_pagetitle']			= 'Información de Registro';
-$lang['profilcp_email_title']							= 'Dirección de Email';
-$lang['profilcp_email_confirm']						= 'Confirma tu dirección de Email';
+$lang['profilcp_register_pagetitle']			= 'Informaciï¿½n de Registro';
+$lang['profilcp_email_title']							= 'Direcciï¿½n de Email';
+$lang['profilcp_email_confirm']						= 'Confirma tu direcciï¿½n de Email';
 $lang['anti_robotic']											= 'Imagen de Control';
-$lang['anti_robotic_explain']							= 'Este control está diseñado para prevenir registros masivos por robot';
-$lang['profilcp_password_explain']				= 'Debes confirmar la contraseña actual si deseas cambiarla';
-$lang['Agree_rules']											= 'Chequeando aqui, estás declarando que estás de acuerdo con los términos';
+$lang['anti_robotic_explain']							= 'Este control estï¿½ diseï¿½ado para prevenir registros masivos por robot';
+$lang['profilcp_password_explain']				= 'Debes confirmar la contraseï¿½a actual si deseas cambiarla';
+$lang['Agree_rules']											= 'Chequeando aqui, estï¿½s declarando que estï¿½s de acuerdo con los tï¿½rminos';
 $lang['profilcp_username_missing']				= 'Debes ingresar un nombre de usuario';
 $lang['profilcp_email_not_matching']			= 'Los Emails ingresados no coinciden';
 $lang['Robot_flood_control']							= 'La imagen de control no coincide con la que has ingresado';
-$lang['Disagree_rules']										= 'Has especificado que no estás de acuerdo con los términos de uso de Rock Republik, así que no podrás registrarte.';
+$lang['Disagree_rules']										= 'Has especificado que no estï¿½s de acuerdo con los tï¿½rminos de uso de Rock Republik, asï¿½ que no podrï¿½s registrarte.';
 
 ?>

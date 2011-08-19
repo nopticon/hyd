@@ -1,26 +1,21 @@
 <?php
-/***************************************************************************
- *						lang_extend_mods_settings.php [English]
- *						---------------------------------------
- *	begin				: 28/09/2003
- *	copyright			: Ptirhiik
- *	email				: ptirhiik@clanmckeen.com
- *
- *	version				: 1.1.9 - 18/10/2003
- *
- *	Translator:  Rock Republik <info@rockrepublik.net> http://www.rockrepublik.net
- *
- ***************************************************************************/
- 
-/***************************************************************************
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- ***************************************************************************/
+/*
+<Orion, a web development framework for RK.>
+Copyright (C) <2011>  <Orion>
 
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 if ( !defined('IN_NUCLEO') )
 {
 	die('Rock Republik &copy; 2006');
@@ -29,11 +24,11 @@ if ( !defined('IN_NUCLEO') )
 // admin part
 if ( $lang_extend_admin )
 {
-	$lang['Lang_extend_mods_settings'] = 'Configuración de Lenguajes';
-	$lang['Configuration_extend']	= 'Configuración +';
+	$lang['Lang_extend_mods_settings'] = 'Configuraciï¿½n de Lenguajes';
+	$lang['Configuration_extend']	= 'Configuraciï¿½n +';
 	$lang['Override_user_choices']	= 'Reescribir preferencias de usuario';
 }
 
-$lang['Click_return_preferences'] = 'Click %sAquí%s para regresar a preferencias';
+$lang['Click_return_preferences'] = 'Click %sAquï¿½%s para regresar a preferencias';
 
 ?>

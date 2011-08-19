@@ -1,10 +1,21 @@
 <?php
-// -------------------------------------------------------------
-// $Id: radio_add.php,v 1.0 2008/03/10 20:48:00 Psychopsia Exp $
-//
-// STARTED   : Mon Mar 10, 2008
-// COPYRIGHT : © 2008 Rock Republik
-// -------------------------------------------------------------
+/*
+<Orion, a web development framework for RK.>
+Copyright (C) <2011>  <Orion>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 if (!defined('IN_NUCLEO'))
 {
 	exit();
@@ -105,7 +116,7 @@ if ($submit)
 <form action="<?php echo $u; ?>" method="post">
 Nombre: <input type="text" name="name" size="100" /><br />
 Nombre base: <input type="text" name="base" size="100" /><br />
-Géneros: <input type="text" name="genre" size="100" /><br />
+Gï¿½neros: <input type="text" name="genre" size="100" /><br />
 Inicio UTC -6: <input type="text" name="start" size="100" /><br />
 Final UTC -6: <input type="text" name="end" size="100" /><br />
 D&iacute;a: <select name="day">

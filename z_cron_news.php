@@ -1,10 +1,21 @@
 <?php
-// -------------------------------------------------------------
-// $Id: _acp.cron_news.php,v 1.0 2007/07/02 21:11:00 Psychopsia Exp $
-//
-// STARTED   : Mon Jul 02, 2007
-// COPYRIGHT : © 2007 Rock Republik
-// -------------------------------------------------------------
+/*
+<Orion, a web development framework for RK.>
+Copyright (C) <2011>  <Orion>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 define('IN_NUCLEO', true);
 require('./interfase/common.php');
 require('./interfase/mail.php');
@@ -190,15 +201,15 @@ for ($i = 1; $i <= $count; $i++)
 		
 		$email_subject = 'Noticia publicada';
 		$email_message = 'Gracias por enviarnos la noticia "' . $post_subject . '".
-Puedes verla en la sección de Noticias, categoría: ' . $post_category . '
+Puedes verla en la secciï¿½n de Noticias, categorï¿½a: ' . $post_category . '
 
-Puedes revisar la noticia en esta dirección: ' . s_link('news', $post_id);
+Puedes revisar la noticia en esta direcciï¿½n: ' . s_link('news', $post_id);
 	}
 	else
 	{
 		$email_subject = 'Error en noticia';
 		$email_message = "La noticia enviada hace unos minutos \"" . $post_subject . "\" tiene un error y no se pudo publicar.
-La contraseña no coincide. Debes escribir la contraseña de tu usuario en Rock Republik en la primera línea del mensaje.
+La contraseï¿½a no coincide. Debes escribir la contraseï¿½a de tu usuario en Rock Republik en la primera lï¿½nea del mensaje.
 
 Intenta enviar la noticia nuevamente.";
 		
