@@ -52,7 +52,7 @@ class sql_db
 	{
 		if (!is_array($d))
 		{
-			$da_path = '../.htda';
+			$da_path = ROOT . '../.htda';
 			
 			if (!@file_exists($da_path) || !$a = @file($da_path)) exit;
 			

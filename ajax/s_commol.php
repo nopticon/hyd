@@ -18,8 +18,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 define('IN_NUCLEO', true);
 define('ROOT', './../');
-require('./../interfase/common.php');
-require('./../interfase/community.php');
+
+require_once('./../interfase/common.php');
+require_once('./../interfase/community.php');
 
 $user->init(false);
 $user->setup();
