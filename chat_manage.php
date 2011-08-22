@@ -23,8 +23,7 @@ require('./interfase/chat.php');
 $user->init();
 $user->setup('chat');
 
-if (!$user->data['is_member'])
-{
+if (!$user->data['is_member']) {
 	do_login('LOGIN_TO_CHAT');
 }
 
@@ -32,8 +31,7 @@ $mode = request_var('mode', '');
 $submit = (isset($_POST['submit'])) ? TRUE : FALSE;
 $error = array();
 
-switch ($mode)
-{
+switch ($mode) {
 	case 'create':
 		$template_vars = array();
 		
@@ -41,51 +39,42 @@ switch ($mode)
 		$ch_type = 1;
 		$ch_cat = 2;
 		
-		if ($submit)
-		{
+		if ($submit) {
 			$ch_name = request_var('ch_name', '');
 			$ch_desc = request_var('ch_desc', '');
 			$ch_auth = request_var('ch_auth', 0);
 			
-			if ($user->data['is_founder'])
-			{
+			if ($user->data['is_founder']) {
 				$ch_type = request_var('ch_type', 0);
 				$ch_cat = request_var('ch_cat', 1);
 			}
 			
-			if (empty($ch_name))
-			{
+			if (empty($ch_name)) {
 				$error[] = 'CHAT_CREATE_EMPTY';
-			}
-			else if (!preg_match('#^([a-z0-9\-]+)$#is', $ch_name))
-			{
+			} else if (!preg_match('#^([a-z0-9\-]+)$#is', $ch_name)) {
 				$error[] = 'CHAT_CREATE_INVALID_NAME';
 			}
 			
 			$ch_int_name = strtolower($ch_name);
 			
-			if (!sizeof($error))
-			{
+			if (!sizeof($error)) {
 				$sql = "SELECT *
 					FROM _chat_ch
 					WHERE ch_int_name = '" . $db->sql_escape($ch_int_name) . "'
 						OR ch_name = '" . $db->sql_escape($ch_name) . "'";
 				$result = $db->sql_query($sql);
 				
-				if ($row = $db->sql_fetchrow($result))
-				{
+				if ($row = $db->sql_fetchrow($result)) {
 					$error[] = 'CHAT_ALREADY_CREATED';
 				}
 				$db->sql_freeresult($result);
 			}
 			
-			if (empty($ch_desc))
-			{
+			if (empty($ch_desc)) {
 				$error[] = 'CHAT_CREATE_EMPTY_DESC';
 			}
 			
-			if (!sizeof($error))
-			{
+			if (!sizeof($error)) {
 				$insert_data = array(
 					'cat_id' => (int) $ch_cat,
 					'ch_int_name' => $ch_int_name,
@@ -103,9 +92,7 @@ switch ($mode)
 				$db->sql_query('INSERT INTO _chat_ch' . $db->sql_build_array('INSERT', $insert_data));
 				
 				redirect(s_link('chat', $ch_int_name));
-			}
-			else
-			{
+			} else {
 				$template_vars += array(
 					'CH_NAME' => $ch_name,
 					'CH_DESC' => $ch_desc
@@ -113,15 +100,12 @@ switch ($mode)
 			}
 		} // IF $submit
 		
-		if ($user->data['is_founder'])
-		{
+		if ($user->data['is_founder']) {
 			$chat = new _chat();
 			
-			if ($cat = $chat->get_cats())
-			{
+			if ($cat = $chat->get_cats()) {
 				$cat_list = '';
-				foreach ($cat as $cat_data)
-				{
+				foreach ($cat as $cat_data) {
 					$cat_list .= '<option value="' . $cat_data['cat_id'] . '"' . (($cat_data['cat_id'] == $ch_cat) ? ' selected' : '') . '>' . $cat_data['cat_name'] . '</option>';
 				}
 				
@@ -144,8 +128,7 @@ switch ($mode)
 		
 		$select_auth = '';
 		$auth_ary = array('CHAT_CH_ALL', /*'CHAT_CH_PRIVATE', */'FRIENDS');
-		foreach ($auth_ary as $i => $langkey)
-		{
+		foreach ($auth_ary as $i => $langkey) {
 			$select_auth .= '<option value="' . $i . '"' . (($i == $ch_auth) ? ' selected' : '') . '>' . $user->lang[$langkey] . '</option>';
 		}
 		
@@ -154,8 +137,7 @@ switch ($mode)
 			'S_ACTION' => s_link('chat-create')
 		);
 		
-		if (sizeof($error))
-		{
+		if (sizeof($error)) {
 			$template->assign_block_vars('error', array(
 				'MESSAGE' => parse_error($error))
 			);

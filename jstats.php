@@ -46,14 +46,10 @@ $sql = 'SELECT user_hideuser, COUNT(*) AS count
 	GROUP BY user_hideuser';
 $result = $db->sql_query($sql);
 
-while ($reg_count = $db->sql_fetchrow ($result))
-{
-	if (!$reg_count['user_hideuser'])
-	{
+while ($reg_count = $db->sql_fetchrow ($result)) {
+	if (!$reg_count['user_hideuser']) {
 		$logged_visible_today = $reg_count['count'];
-	}
-	else
-	{
+	} else {
 		$logged_hidden_today = $reg_count['count'];
 	}
 }
@@ -64,8 +60,7 @@ $sql = "UPDATE _site_stats
 	WHERE date = " . intval($hour_now);
 $db->sql_query($sql);
 
-if (!$db->sql_affectedrows())
-{
+if (!$db->sql_affectedrows()) {
 	$db->sql_query("INSERT IGNORE INTO _site_stats (date, reg, hidden, guests) VALUES ('" . $hour_now . "', '" . $logged_visible_today . "', '" . $logged_hidden_today . "', '" . $guest_count['guests_today'] . "')");
 }
 

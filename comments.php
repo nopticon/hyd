@@ -19,18 +19,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 define('IN_NUCLEO', true);
 require('./interfase/common.php');
 
-if ($config['request_method'] != 'post' || !isset($_POST))
-{
+if ($config['request_method'] != 'post' || !isset($_POST)) {
 	redirect(s_link());
 }
 
 // Init member
 $user->init();
 
-if (!$user->data['is_member'])
-{
-	if ($user->data['is_bot'])
-	{
+if (!$user->data['is_member']) {
+	if ($user->data['is_bot']) {
 		redirect(s_link());
 	}
 	do_login();
@@ -41,8 +38,7 @@ $comments = new _comments;
 
 $comments->ref = (isset($_POST['ref']) && !empty($_POST['ref'])) ? request_var('ref', '', true) : $user->data['session_page'];
 
-if (!preg_match('#\/\/www\.rockrepublik\.net(.*?)#is', $comments->ref) && preg_match('#\/\/(.*?)\.rockrepublik\.net(.*?)#is', $comments->ref, $preg_a))
-{
+if (!preg_match('#\/\/www\.rockrepublik\.net(.*?)#is', $comments->ref) && preg_match('#\/\/(.*?)\.rockrepublik\.net(.*?)#is', $comments->ref, $preg_a)) {
 	$comments->ref = 'http://www.rockrepublik.net/a/' . $preg_a[1] . '/' . $preg_a[2];
 }
 

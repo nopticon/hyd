@@ -35,28 +35,24 @@ $stats_get_line.= "User-Agent: StreamSolutions  (Mozilla Compatible)\r\n\r\n";
 
 // Open Connection
 $fp = fsockopen($scl['host'] , $scl['host_port'], $errno, $errstr, 30);
-if (!$fp)
-{
+if (!$fp) {
 	die($scl['down']);
 }
 
 $data = '';
 fputs($fp, $stats_get_line);
-while (!feof($fp))
-{
+while (!feof($fp)) {
 	$data .= fgets($fp, 1000);
 }
 fclose($fp);
 
 $lines = array_slice(split("\n", trim($data)), 8);
-foreach ($lines as $line)
-{
+foreach ($lines as $line) {
 	$e = explode('<SSTAG>', $line);
 	$scl['data'][$e[0]] = $e[1];
 }
 
-if ($scl['data']['server_status'] == $scl['value'])
-{
+if ($scl['data']['server_status'] == $scl['value']) {
 	die($scl['down']);
 }
 
@@ -64,13 +60,11 @@ if ($scl['data']['server_status'] == $scl['value'])
 $song = array_map('trim', explode('-', $scl['data']['current_song']));
 $song[1] = array_pop($song);
 
-if (!empty($scl['data']['stream_title']) && $scl['data']['stream_title'] != 'Rock Republik Radio')
-{
+if (!empty($scl['data']['stream_title']) && $scl['data']['stream_title'] != 'Rock Republik Radio') {
 	echo '<div class="live">Al Aire</div><div class="livetitle"><span>' . $scl['data']['stream_title'] . '</span></div>';
 }
 
-foreach ($song as $row)
-{
+foreach ($song as $row) {
 	echo '<div>' . $row . '</div>';
 }
 

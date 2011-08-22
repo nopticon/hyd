@@ -30,16 +30,14 @@ $sql = 'SELECT username, user_birthday
 $result = $db->sql_query($sql);
 
 $u = array();
-while ($row = $db->sql_fetchrow($result))
-{
+while ($row = $db->sql_fetchrow($result)) {
 	$p = array(
 		(int) substr($row['user_birthday'], 4, 2),
 		(int) substr($row['user_birthday'], 6, 2),
 		(int) substr($row['user_birthday'], 0, 4)
 	);
 	
-	if ($cm != $p[0])
-	{
+	if ($cm != $p[0]) {
 		continue;
 	}
 	
@@ -49,16 +47,14 @@ $db->sql_freeresult($result);
 
 $a = $b = array();
 $i = 0;
-foreach ($u as $n => $d)
-{
+foreach ($u as $n => $d) {
 	$a[$i] = $d[1];
 	$b[$i] = $n;
 	$i++;
 }
 
 asort($a);
-foreach ($a as $i => $d)
-{
+foreach ($a as $i => $d) {
 	echo $d . ' > :i' . $b[$i] . ':<br />';
 }
 

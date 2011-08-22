@@ -29,15 +29,13 @@ $mail = new _mail();
 $pop3 = new POP3();
 $emailer = new emailer();
 
-if (!$pop3->connect($config['mailserver_url'], $config['mailserver_port']))
-{
+if (!$pop3->connect($config['mailserver_url'], $config['mailserver_port'])) {
 	_die($pop3->ERROR);
 }
 
 $count = $pop3->login($config['mailserver_news_login'], $config['mailserver_news_pass']);
-if (!$count)
-{
-	_die('There doesn&#8217;t seem to be any new mail.');
+if (!$count) {
+	_die('There does not seem to be any new mail.');
 }
 
 if (!$emails = $cache->get('team_email'))

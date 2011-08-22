@@ -22,10 +22,8 @@ require('./interfase/common.php');
 $user->init(false);
 $user->setup();
 
-function etag($filename, $quote = true)
-{
-	if (!file_exists($filename) || !($info = stat($filename)))
-	{
+function etag($filename, $quote = true) {
+	if (!file_exists($filename) || !($info = stat($filename))) {
 		return false;
 	}
 	$q = ($quote) ? '"' : '';
@@ -33,16 +31,12 @@ function etag($filename, $quote = true)
 }
 
 $filename = request_var('filename', '');
-if (empty($filename) || !preg_match('#[a-z\_]+#i', $filename))
-{
-	die('aaa');
+if (empty($filename) || !preg_match('#[a-z\_]+#i', $filename)) {
 	fatal_error();
 }
 
 $filepath = ROOT . 'template/css/' . $filename . '.css';
-if (!@file_exists($filepath))
-{
-	die('bbb');
+if (!@file_exists($filepath)) {
 	fatal_error();
 }
 
@@ -59,8 +53,7 @@ $etag_client = str_replace('-gzip', '', $http_if_none_match);
 header('Last-Modified: ' . $f_last_modified);
 header('ETag: ' . $etag_server);
 
-if ($etag_client == $etag_server && $f_last_modified == $http_if_modified_since)
-{
+if ($etag_client == $etag_server && $f_last_modified == $http_if_modified_since) {
 	header('HTTP/1.0 304 Not Modified');
 	header('Content-Length: 0');
 	exit;
@@ -69,8 +62,7 @@ if ($etag_client == $etag_server && $f_last_modified == $http_if_modified_since)
 $is_firefox = (strstr($user->browser, 'Gecko')) ? true : false;
 $is_ie = (strstr($user->browser, 'IE')) ? true : false;
 
-if (strstr($user->browser, 'compatible') || $is_firefox)
-{
+if (strstr($user->browser, 'compatible') || $is_firefox) {
 	ob_start('ob_gzhandler');
 }
 

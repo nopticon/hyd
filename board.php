@@ -27,8 +27,7 @@ $board = new board();
 $cat = $board->categories();
 $forums = $board->forums();
 
-if (!$cat || !$forums)
-{
+if (!$cat || !$forums) {
 	fatal_error();
 }
 

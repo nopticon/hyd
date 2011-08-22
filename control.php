@@ -24,17 +24,14 @@ $user->init();
 //
 // Check if member is logged in
 //
-if (!$user->data['is_member'])
-{
-	if ($user->data['is_bot'])
-	{
+if (!$user->data['is_member']) {
+	if ($user->data['is_bot']) {
 		redirect(s_link());
 	}
 	do_login();
 }
 
-if (!$user->data['user_auth_control'])
-{
+if (!$user->data['user_auth_control']) {
 	fatal_error();
 }
 
@@ -46,8 +43,7 @@ $control = new control(request_var('module', ''));
 
 $user->setup('control');
 
-if (!empty($control->module_path))
-{
+if (!empty($control->module_path)) {
 	require('./control/common.php');
 	require($control->module_path);
 	
@@ -64,8 +60,7 @@ if (!empty($control->module_path))
 	$module->check_manage();
 	$module->check_method();
 	
-	if (!($module->auth_access($user->data)))
-	{
+	if (!($module->auth_access($user->data))) {
 		redirect(s_link('control'));
 	}
 	
@@ -81,9 +76,7 @@ if (!empty($control->module_path))
 		'MODE' => $module->mode,
 		'MANAGE' => $module->manage,
 	);
-}
-else
-{
+} else {
 	$control->panel();
 }
 
@@ -91,13 +84,11 @@ else
 // Output template
 //
 $page_title = $user->lang['CONTROL_PANEL'];
-if ($control->module != '')
-{
+if ($control->module != '') {
 	$page_title .= ' | ' . $user->lang['CONTROL_' . strtoupper($control->module)];
 }
 
-if (!isset($template_vars))
-{
+if (!isset($template_vars)) {
 	$template_vars = array();
 }
 $template_vars += array(

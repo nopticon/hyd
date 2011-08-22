@@ -30,8 +30,7 @@ $sql = 'SELECT *
 $result = $db->sql_query($sql);
 
 $a_topics = array();
-while ($row = $db->sql_fetchrow($result))
-{
+while ($row = $db->sql_fetchrow($result)) {
 	$a_topics[$row['topic_id']] = $row;
 }
 $db->sql_freeresult($result);
@@ -48,17 +47,13 @@ $topics = array(
 	3482 => $a_topics[3482]
 );
 
-if (time() >= 1197093599)
-{
+if (time() >= 1197093599) {
 	$template->assign_block_vars('expired', array());
-}
-else
-{
+} else {
 	//
 	// Get data for all polls
 	//
-	foreach ($topics as $topic_id => $row)
-	{
+	foreach ($topics as $topic_id => $row) {
 		$topic_url = s_link('topic', $topic_id);
 		
 		$sql = 'SELECT vd.vote_id, vd.vote_text, vd.vote_start, vd.vote_length, vr.vote_option_id, vr.vote_option_text, vr.vote_result
@@ -68,8 +63,7 @@ else
 			ORDER BY vr.vote_option_order, vr.vote_option_id ASC';
 		$result = $db->sql_query($sql);
 	
-		if ($vote_info = $db->sql_fetchrowset($result))
-		{
+		if ($vote_info = $db->sql_fetchrowset($result)) {
 			$db->sql_freeresult($result);
 			$vote_options = sizeof($vote_info);
 			
@@ -86,18 +80,14 @@ else
 				'POLL_TITLE' => $vote_info[0]['vote_text'])
 			);
 			
-			if ($user_voted)
-			{
+			if ($user_voted) {
 				$template->assign_block_vars('poll.results', array());
-			}
-			else
-			{
+			} else {
 				$template->assign_block_vars('poll.options', array(
 					'S_VOTE_ACTION' => $topic_url)
 				);
 	
-				for ($i = 0; $i < $vote_options; $i++)
-				{
+				for ($i = 0; $i < $vote_options; $i++) {
 					$subdomain = 'http://' . get_username_base($vote_info[$i]['vote_option_text']) . '.rockrepublik.net/';
 					
 					$template->assign_block_vars('poll.options.item', array(

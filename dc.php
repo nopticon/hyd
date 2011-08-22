@@ -22,8 +22,7 @@ require('./interfase/common.php');
 //
 // Cancel 
 //
-if (isset($_POST['cancel']))
-{
+if (isset($_POST['cancel'])) {
 	redirect(s_link('my', 'dc'));
 }
 
@@ -35,10 +34,8 @@ $user->init();
 //
 // Check if member is logged in
 //
-if (!$user->data['is_member'])
-{
-	if ($user->data['is_bot'])
-	{
+if (!$user->data['is_member']) {
+	if ($user->data['is_bot']) {
 		redirect(s_link());
 	}
 	do_login();
@@ -52,19 +49,14 @@ $comments = new _comments();
 //
 $mark	= request_var('mark', array(0));
 
-if (isset($_POST['delete']) && $mark)
-{
-	if (isset($_POST['confirm']))
-	{
+if (isset($_POST['delete']) && $mark) {
+	if (isset($_POST['confirm'])) {
 		$comments->dc_delete($mark);
-	}
-	else
-	{
+	} else {
 		$s_hidden = array('delete' => true);
 		
 		$i = 0;
-		foreach ($mark as $item)
-		{
+		foreach ($mark as $item) {
 			$s_hidden += array('mark[' . $i++ . ']' => $item);
 		}
 		
@@ -101,16 +93,13 @@ $msg_id = intval(request_var('p', 0));
 $mode = request_var('mode', '');
 $error = array();
 
-if ($submit || $mode == 'start' || $mode == 'reply')
-{
+if ($submit || $mode == 'start' || $mode == 'reply') {
 	$member = '';
 	$dc_subject = '';
 	$dc_message = '';
 	
-	if ($submit)
-	{
-		if ($mode == 'reply')
-		{
+	if ($submit) {
+		if ($mode == 'reply') {
 			$parent_id = request_var('parent', 0);
 			
 			$sql = 'SELECT *
@@ -119,60 +108,47 @@ if ($submit || $mode == 'start' || $mode == 'reply')
 					AND (privmsgs_to_userid = ' . $user->data['user_id'] . ' OR privmsgs_from_userid = ' . $user->data['user_id'] . ')';
 			$result = $db->sql_query($sql);
 			
-			if (!$to_userdata = $db->sql_fetchrow($result))
-			{
+			if (!$to_userdata = $db->sql_fetchrow($result)) {
 				fatal_error();
 			}
 			$db->sql_freeresult($result);
 			
 			$privmsgs_to_userid = ($user->data['user_id'] == $to_userdata['privmsgs_to_userid']) ? 'privmsgs_from_userid' : 'privmsgs_to_userid';
 			$to_userdata['user_id'] = $to_userdata[$privmsgs_to_userid];
-		}
-		else
-		{
+		} else {
 			$member = request_var('member', '');
-			if (!empty($member))
-			{
+			if (!empty($member)) {
 				$member = get_username_base(phpbb_clean_username($member), true);
-				if ($member !== false)
-				{
+				if ($member !== false) {
 					$sql = "SELECT user_id, username, username_base, user_email
 						FROM _members
 						WHERE username_base = '" . $db->sql_escape($member) . "'
 							AND user_type <> " . USER_IGNORE;
 					$result = $db->sql_query($sql);
 					
-					if (!$to_userdata = $db->sql_fetchrow($result))
-					{
+					if (!$to_userdata = $db->sql_fetchrow($result)) {
 						$error[] = 'NO_SUCH_USER';
 					}
 					$db->sql_freeresult($result);
 
-					if (!sizeof($error) && $to_userdata['user_id'] == $user->data['user_id'])
-					{
+					if (!sizeof($error) && $to_userdata['user_id'] == $user->data['user_id']) {
 						$error[] = 'NO_AUTO_DC';
 					}
-				}
-				else
-				{
+				} else {
 					$error[] = 'NO_SUCH_USER';
 					$member = '';
 				}
-			}
-			else
-			{
+			} else {
 				$error[] = 'EMPTY_USER';
 			}
 			
 			$dc_subject = request_var('subject', '');
-			if (empty($dc_subject))
-			{
+			if (empty($dc_subject)) {
 				$error[] = 'EMPTY_DC_SUBJECT';
 			}
 		}
 		
-		if (isset($to_userdata) && isset($to_userdata['user_id']))
-		{
+		if (isset($to_userdata) && isset($to_userdata['user_id'])) {
 			// Check blocked member
 			$sql = 'SELECT ban_id
 				FROM _members_ban
@@ -180,21 +156,18 @@ if ($submit || $mode == 'start' || $mode == 'reply')
 					AND banned_user = ' . (int) $user->data['user_id'];
 			$result = $db->sql_query($sql);
 			
-			if ($ban_profile = $db->sql_fetchrow($result))
-			{
+			if ($ban_profile = $db->sql_fetchrow($result)) {
 				$error[] = 'BLOCKED_MEMBER';
 			}
 			$db->sql_freeresult($result);
 		}
 		
 		$dc_message = request_var('message', '');
-		if (empty($dc_message))
-		{
+		if (empty($dc_message)) {
 			$error[] = 'EMPTY_MESSAGE';
 		}
 		
-		if (!sizeof($error))
-		{
+		if (!sizeof($error)) {
 			$dc_id = $comments->store_dc($mode, $to_userdata, $user->data, $dc_subject, $dc_message, true, true);
 			
 			redirect(s_link('my', array('dc', 'read', $dc_id)) . '#' . $dc_id);
@@ -205,33 +178,28 @@ if ($submit || $mode == 'start' || $mode == 'reply')
 //
 // Start error handling
 //
-if (sizeof($error))
-{
+if (sizeof($error)) {
 	$error = preg_replace('#^([A-Z_]+)$#e', "(!empty(\$user->lang['\\1'])) ? \$user->lang['\\1'] : '\\1'", $error);
 	
 	$template->assign_block_vars('error', array(
 		'MESSAGE' => implode('<br />', $error))
 	);
 	
-	if ($mode == 'reply')
-	{
+	if ($mode == 'reply') {
 		$mode = 'read';
 	}
 }
 
 $s_hidden_fields = array();
 
-switch ($mode)
-{
+switch ($mode) {
 	//
 	// Start new conversation
 	//
 	case 'start':
-		if (!$submit)
-		{
+		if (!$submit) {
 			$member = request_var('member', '');
-			if ($member != '')
-			{
+			if ($member != '') {
 				$member = get_username_base(phpbb_clean_username($member));
 				
 				$sql = "SELECT user_id, username, username_base
@@ -257,8 +225,7 @@ switch ($mode)
 	// Show selected conversation
 	//
 	case 'read':
-		if (!$msg_id)
-		{
+		if (!$msg_id) {
 			fatal_error();
 		}
 		
@@ -269,8 +236,7 @@ switch ($mode)
 				AND msg_deleted <> ' . (int) $user->data['user_id'];
 		$result = $db->sql_query($sql);
 		
-		if (!$msg_data = $db->sql_fetchrow($result))
-		{
+		if (!$msg_data = $db->sql_fetchrow($result)) {
 			fatal_error();
 		}
 		$db->sql_freeresult($result);
@@ -285,18 +251,15 @@ switch ($mode)
 			ORDER BY c.privmsgs_date';
 		$result = $db->sql_query($sql);
 		
-		if ($row = $db->sql_fetchrow($result))
-		{
+		if ($row = $db->sql_fetchrow($result)) {
 			$template->assign_block_vars('conv', array(
 				'SUBJECT' => $row['privmsgs_subject'])
 			);
 			
-			do
-			{
+			do{
 				$template->assign_block_vars('conv.item', array());
 				
-				if ($msg_id == $row['msg_id'])
-				{
+				if ($msg_id == $row['msg_id']) {
 					$block = 'message';
 					$user_profile = $comments->user_profile($row);
 					
@@ -310,9 +273,7 @@ switch ($mode)
 						'MESSAGE' => $comments->parse_message($row['privmsgs_text'], 'bold orange'),
 						'CAN_REPLY' => $row['msg_can_reply']
 					);
-				}
-				else
-				{
+				} else {
 					$block = 'header';
 					
 					$dc_messages = array(
@@ -331,9 +292,7 @@ switch ($mode)
 			}
 			while ($row = $db->sql_fetchrow($result));
 			$db->sql_freeresult($result);
-		}
-		else
-		{
+		} else {
 			fatal_error();
 		}
 		
@@ -367,15 +326,12 @@ switch ($mode)
 			LIMIT ' . (int) $offset . ', ' . (int) $config['posts_per_page'];
 		$result = $db->sql_query($sql);
 		
-		if ($row = $db->sql_fetchrow($result))
-		{
+		if ($row = $db->sql_fetchrow($result)) {
 			$template->assign_block_vars('messages', array());
 			
-			do
-			{
+			do {
 				$dc_with = ($user->data['user_id'] == $row['user_id']) ? '2' : '';
-				if (!$row['last_msg_id'])
-				{
+				if (!$row['last_msg_id']) {
 					$row['last_msg_id'] = $row['msg_id'];
 					$row['last_privmsgs_date'] = $row['privmsgs_date'];
 				}
@@ -396,13 +352,9 @@ switch ($mode)
 			$db->sql_freeresult($result);
 			
 			build_num_pagination(s_link('my', array('dc', 's%d')), $total_conv, $config['posts_per_page'], $offset);
-		}
-		else if ($total_conv)
-		{
+		} else if ($total_conv) {
 			redirect(s_link('my', 'dc'));
-		}
-		else
-		{
+		} else {
 			$template->assign_block_vars('no_messages', array());
 		}
 		
@@ -412,8 +364,7 @@ switch ($mode)
 		break;
 }
 
-if ($mode != '')
-{
+if ($mode != '') {
 	$template->assign_block_vars('back_dc', array(
 		'URL' => s_link('my', 'dc'))
 	);
@@ -433,10 +384,8 @@ $template->assign_block_vars('sdc_friends', array(
 	'DC_START' => s_link('my', array('dc', 'start')))
 );
 
-if ($row = $db->sql_fetchrow($result))
-{
-	do
-	{
+if ($row = $db->sql_fetchrow($result)) {
+	do {
 		$template->assign_block_vars('sdc_friends.item', array(
 			'USERNAME' => $row['username'],
 			'URL' => s_link('my', array('dc', 'start', $row['username_base'])),

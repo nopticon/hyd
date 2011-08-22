@@ -24,17 +24,14 @@ $user->init();
 $user->setup();
 
 $smilies = array();
-if (!$smilies = $cache->get('smilies'))
-{
+if (!$smilies = $cache->get('smilies')) {
 	$sql = 'SELECT *
 		FROM _smilies
 		ORDER BY LENGTH(code) DESC';
 	$result = $db->sql_query($sql);
 	
-	if ($row = $db->sql_fetchrow($result))
-	{
-		do
-		{
+	if ($row = $db->sql_fetchrow($result)) {
+		do {
 			$smilies[] = $row;
 		}
 		while ($row = $db->sql_fetchrow($result));
@@ -44,8 +41,7 @@ if (!$smilies = $cache->get('smilies'))
 	}
 }
 
-foreach ($smilies as $smile_url => $data)
-{
+foreach ($smilies as $smile_url => $data) {
 	$template->assign_block_vars('smilies_row', array(
 		'CODE' => $data['code'],
 		'IMAGE' => $config['smilies_path'] . '/' . $data['smile_url'],

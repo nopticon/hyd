@@ -25,15 +25,12 @@ $user->setup();
 require('./interfase/events.php');
 $events = new _events();
 
-if ($events->_setup())
-{
+if ($events->_setup()) {
 	$events->view();
 	
 	$pagehtml = 'events_view';
 	$page_title = $user->lang['UE'] . ' | ' . $events->data['title'];
-}
-else
-{
+} else {
 	$events->home();
 	
 	$pagehtml = 'events_body';

@@ -22,29 +22,24 @@ require('./interfase/common.php');
 $user->init();
 $user->setup('control');
 
-if (!$user->data['is_member'])
-{
-	if ($user->data['is_bot'])
-	{
+if (!$user->data['is_member']) {
+	if ($user->data['is_bot']) {
 		redirect(s_link());
 	}
 	do_login();
 }
 
-if (!$user->_team_auth('all'))
-{
+if (!$user->_team_auth('all')) {
 	fatal_error();
 }
 
 $module = request_var('module', '');
-if (empty($module) || !preg_match('#[a-z\_]+#i', $module))
-{
+if (empty($module) || !preg_match('#[a-z\_]+#i', $module)) {
 	fatal_error();
 }
 
 $filepath = ROOT . 'interfase/acp/' . $module . '.php';
-if (!@file_exists($filepath))
-{
+if (!@file_exists($filepath)) {
 	fatal_error();
 }
 
@@ -54,12 +49,10 @@ $u = s_link('acp', $module);
 include($filepath);
 
 // Functions
-function _auth($a)
-{
+function _auth($a) {
 	global $user;
 	
-	if (!$user->_team_auth($a))
-	{
+	if (!$user->_team_auth($a)) {
 		fatal_error();
 	}
 }

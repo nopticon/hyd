@@ -23,14 +23,12 @@ $user->init();
 $user->setup();
 
 $filename = request_var('filename', '');
-if (empty($filename) || !preg_match('#([a-z0-9\.])#is', $filename))
-{
+if (empty($filename) || !preg_match('#([a-z0-9\.])#is', $filename)) {
 	fatal_error();
 }
 
 $filepath = '../home/downloads/' . $filename;
-if (!@file_exists($filepath))
-{
+if (!@file_exists($filepath)) {
 	fatal_error();
 }
 
@@ -39,8 +37,7 @@ $sql = "UPDATE _downloads
 	WHERE download_filename = '" . $db->sql_escape($filename) . "'";
 $result = $db->sql_query($sql);
 
-if (!$db->sql_affectedrows())
-{
+if (!$db->sql_affectedrows()) {
 	$insert = array(
 		'download_filename' => $filename,
 		'download_count' => 1

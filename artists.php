@@ -25,17 +25,14 @@ $user->setup();
 require('./interfase/artists.php');
 $artists = new _artists();
 
-if ($artists->_setup())
-{
+if ($artists->_setup()) {
 	include('./interfase/comments.php');
 	$artists->msg = new _comments();
 		
 	$method = 'panel';
 	$page_title = $artists->data['name'];
 	$pagehtml = 'artists_panel';
-}
-else
-{
+} else {
 	$method = 'list';
 	$page_title = 'UB';
 	$pagehtml = 'artists_body';

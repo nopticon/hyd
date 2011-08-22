@@ -27,10 +27,8 @@ $user->init();
 $bounce_id = intval(request_var('id', 0));
 $bounce_mode = request_var('mode', '');
 
-if ($bounce_id && $bounce_mode)
-{
-	switch ($bounce_mode)
-	{
+if ($bounce_id && $bounce_mode) {
+	switch ($bounce_mode) {
 		case 'f':
 			$sql = 'SELECT *
 				FROM _links
@@ -48,32 +46,27 @@ if ($bounce_id && $bounce_mode)
 	}
 	$result = $db->sql_query($sql);
 	
-	if (!$bounce_data = $db->sql_fetchrow($result))
-	{
+	if (!$bounce_data = $db->sql_fetchrow($result)) {
 		fatal_error();
 	}
 	$db->sql_freeresult($result);
 	
-	switch ($bounce_mode)
-	{
+	switch ($bounce_mode) {
 		case 'f':
 			$bounce_data['redirect_url'] = 'http://' . $bounce_data['url'];
 			break;
 		case 'u':
-			if ($bounce_data['user_website'] != '')
-			{
+			if ($bounce_data['user_website'] != '') {
 				$bounce_data['redirect_url'] = $bounce_data['user_website'];
 			}
 			break;
 	}
 	
-	if ($bounce_data['redirect_url'] == '')
-	{
+	if ($bounce_data['redirect_url'] == '') {
 		redirect(s_link('bounce'));
 	}
 	
-	if ($bounce_mode == 'f')
-	{
+	if ($bounce_mode == 'f') {
 		$db->sql_query('UPDATE _links SET views = views + 1 WHERE id = ' . (int) $bounce_id);
 	}
 	
@@ -104,10 +97,8 @@ $sql = "SELECT *
 	ORDER BY image ASC";
 $result = $db->sql_query($sql);
 
-if ($row = $db->sql_fetchrow($result))
-{
-	do
-	{
+if ($row = $db->sql_fetchrow($result)) {
+	do {
 		$links[] = $row;
 		$f_total++;
 	}
@@ -122,10 +113,8 @@ $sql = "SELECT *
 	ORDER BY text ASC";
 $result = $db->sql_query($sql);
 
-if ($row = $db->sql_fetchrow($result))
-{
-	do
-	{
+if ($row = $db->sql_fetchrow($result)) {
+	do {
 		$links[] = $row;
 		$f_total++;
 	}
@@ -134,14 +123,12 @@ if ($row = $db->sql_fetchrow($result))
 	$db->sql_freeresult($result);
 }
 
-if ($f_total)
-{
+if ($f_total) {
 	$template->assign_block_vars('block', array(
 		'LANG' => $user->lang['LINKS_FRIENDS'])
 	);
 	
-	for ($i = 0; $i < $f_total; $i++)
-	{
+	for ($i = 0; $i < $f_total; $i++) {
 		$image_exists = (($links[$i]['image'] != '') && @file_exists('../data/web/' . $links[$i]['image'])) ? TRUE : FALSE;
 		$url = s_link('bounce', array('f', $links[$i]['id']));
 		
@@ -150,14 +137,11 @@ if ($f_total)
 			'U_GOTO' => $url)
 		);
 		
-		if ($image_exists)
-		{
+		if ($image_exists) {
 			$template->assign_block_vars('block.item.image', array(
 				'SRC' => '/data/web/' . $links[$i]['image']
 			));
-		}
-		else
-		{
+		} else {
 			$template->assign_block_vars('block.item.name', array(
 				'CLASS' => 'bold',
 				'URL' => $url,
@@ -177,14 +161,12 @@ $sql = 'SELECT subdomain, name, www
 	ORDER BY name';
 $result = $db->sql_query($sql);
 
-if ($row = $db->sql_fetchrow($result))
-{
+if ($row = $db->sql_fetchrow($result)) {
 	$template->assign_block_vars('block', array(
-		'LANG' => $user->lang['UB']
-	));
+		'LANG' => $user->lang['UB'])
+	);
 	
-	do
-	{
+	do {
 		$template->assign_block_vars('block.item', array(
 			'TEXT' => $row['www'],
 			'U_GOTO' => s_link('a', array($row['subdomain'], 14)))
@@ -193,8 +175,8 @@ if ($row = $db->sql_fetchrow($result))
 		$template->assign_block_vars('block.item.name', array(
 			'CLASS' => 'bold',
 			'URL' => s_link('a', $row['subdomain']),
-			'TEXT' => $row['name']
-		));
+			'TEXT' => $row['name'])
+		);
 	}
 	while ($row = $db->sql_fetchrow($result));
 }
@@ -208,24 +190,22 @@ $sql = "SELECT user_id, username, username_base, user_color, user_website
 	ORDER BY username";
 $result = $db->sql_query($sql);
 
-if ($row = $db->sql_fetchrow($result))
-{
+if ($row = $db->sql_fetchrow($result)) {
 	$template->assign_block_vars('block', array(
-		'LANG' => $user->lang['USERS']
-	));
+		'LANG' => $user->lang['USERS'])
+	);
 	
-	do
-	{
+	do {
 		$template->assign_block_vars('block.item', array(
 			'TEXT' => $row['user_website'],
-			'U_GOTO' => s_link('bounce', array('u', $row['user_id']))
-		));
+			'U_GOTO' => s_link('bounce', array('u', $row['user_id'])))
+		);
 		
 		$template->assign_block_vars('block.item.name', array(
 			'COLOR' => $row['user_color'],
 			'URL' => s_link('m', $row['username_base']),
-			'TEXT' => $row['username']
-		));
+			'TEXT' => $row['username'])
+		);
 	}
 	while ($row = $db->sql_fetchrow($result));
 }

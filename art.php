@@ -3,7 +3,7 @@
 // $Id: art.php,v 1.6 2006/02/16 04:58:14 Psychopsia Exp $
 //
 // STARTED   : Mon Dec 20, 2004
-// COPYRIGHT : © 2006 Rock Republik
+// COPYRIGHT : ï¿½ 2006 Rock Republik
 // -------------------------------------------------------------
 
 define('IN_NUCLEO', true);
@@ -15,19 +15,15 @@ $user->setup();
 require('./interfase/art.php');
 $art = new _art();
 
-if ($art->_setup())
-{
+if ($art->_setup()) {
 	$mode = request_var('mode', '');
 	
-	if (!in_array($mode, array('save', 'fav')))
-	{
+	if (!in_array($mode, array('save', 'fav'))) {
 		$mode = 'view';
 		$pagehtml = 'art_view';
 		$page_title = $user->lang['ART'] . ' | ' . $art->data['title'];
 	}
-}
-else
-{
+} else {
 	$mode = 'home';
 	$pagehtml = 'art_body';
 	$page_title = 'ART';

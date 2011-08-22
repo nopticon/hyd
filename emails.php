@@ -30,8 +30,7 @@ $sql = 'SELECT *
 $result = $db->sql_query($sql);
 
 $a_topics = array();
-while ($row = $db->sql_fetchrow($result))
-{
+while ($row = $db->sql_fetchrow($result)) {
 	$topic_id = $row['topic_id'];
 	
 	echo '<strong>' . $row['topic_title'] . '</strong><br /><blockquote>';
@@ -43,12 +42,10 @@ while ($row = $db->sql_fetchrow($result))
 		ORDER BY vr.vote_option_order, vr.vote_option_id ASC';
 	$result2 = $db->sql_query($sql);
 	
-	if ($vote_info = $db->sql_fetchrowset($result2))
-	{
+	if ($vote_info = $db->sql_fetchrowset($result2)) {
 		$vote_options = sizeof($vote_info);
 		
-		for ($i = 0; $i < $vote_options; $i++)
-		{
+		for ($i = 0; $i < $vote_options; $i++) {
 			$subdomain = get_username_base($vote_info[$i]['vote_option_text']);
 			
 			echo '<h1>' . ucwords($subdomain) . '</h1><br /><blockquote>';
@@ -69,8 +66,7 @@ while ($row = $db->sql_fetchrow($result))
 			$result4 = $db->sql_query($sql);
 			
 			$ii = 0;
-			while ($row4 = $db->sql_fetchrow($result4))
-			{
+			while ($row4 = $db->sql_fetchrow($result4)) {
 				echo (($ii) ? ', ' : '') . $row4['username'] . ' &lt;' . $row4['user_email'] . '&gt;';
 				$ii++;
 			}

@@ -22,32 +22,26 @@ require('./interfase/common.php');
 $user->init(false);
 
 $mode = request_var('mode', '');
-switch ($mode)
-{
+switch ($mode) {
 	case 'login':
-		if ($user->data['is_member'] && !isset($_POST['admin']))
-		{
+		if ($user->data['is_member'] && !isset($_POST['admin'])) {
 			redirect(s_link());
 		}
 		
-		if (isset($_POST['login']) && (!$user->data['is_member'] || isset($_POST['admin'])))
-		{
+		if (isset($_POST['login']) && (!$user->data['is_member'] || isset($_POST['admin']))) {
 			$username = phpbb_clean_username(request_var('username', ''));
 			$password = request_var('password', '');
 			$ref = request_var('ref', '');
 			$adm = (isset($_POST['admin'])) ? 1 : 0;
 			
-			if (!empty($username) && !empty($password))
-			{
+			if (!empty($username) && !empty($password)) {
 				$sql = "SELECT user_id, username, user_password, user_type, user_return_unread, user_upw, user_country, user_avatar, user_location, user_gender, user_birthday
 					FROM _members
 					WHERE username = '" . $db->sql_escape($username) . "'";
 				$result = $db->sql_query($sql);
 				
-				if ($row = $db->sql_fetchrow($result))
-				{
-					if ((user_password($password) == $row['user_password']) && ($row['user_type'] != USER_INACTIVE && $row['user_type'] != USER_IGNORE))
-					{
+				if ($row = $db->sql_fetchrow($result)) {
+					if ((user_password($password) == $row['user_password']) && ($row['user_type'] != USER_INACTIVE && $row['user_type'] != USER_IGNORE)) {
 						$user->session_create($row['user_id'], $adm);
 						
 						$ref = ($ref == '' || ($row['user_return_unread'] && preg_match('#' . $config['server_name'] . '/$#', $ref))) ? s_link('new') : $ref;
@@ -67,13 +61,11 @@ switch ($mode)
 		redirect(s_link());
 		break;
 	case 'logout':
-		if ($user->data['is_member'])
-		{
+		if ($user->data['is_member']) {
 			$user->session_kill();
 		}
 		
-		if ($user->data['is_founder'])
-		{
+		if ($user->data['is_founder']) {
 			redirect(s_link());
 		}
 		

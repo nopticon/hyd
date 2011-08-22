@@ -25,55 +25,46 @@ $keepalive = true;
 $user->init();
 $chat = new _chat();
 
-if ($chat->_setup())
-{
+if ($chat->_setup()) {
 	$mode = request_var('mode', '');
 	$csid = request_var('csid', '');
 	
 	$s_process = in_array($mode, array('logout', 'send', 'get'));
 	
-	if ($config['request_method'] == 'post' && !$s_process)
-	{
+	if ($config['request_method'] == 'post' && !$s_process) {
 		redirect(s_link('chat', $chat->data['ch_int_name']));
 	}
 	
-	if (!$user->data['is_member'])
-	{
+	if (!$user->data['is_member']) {
 		do_login('LOGIN_TO_CHAT');
 	}
 	
-	if (!$chat->auth())
-	{
+	if (!$chat->auth()) {
 		trigger_error('CHAT_NO_ACCESS');
 	}
 	
 	$user->setup('chat');
 	
-	if ($s_process && $mode == 'logout')
-	{
+	if ($s_process && $mode == 'logout') {
 		return $chat->process_data($csid, $mode);
 	}
 	
 	$chat->session($csid);
 	
-	if ($s_process)
-	{
+	if ($s_process) {
 		return $chat->process_data($csid, $mode);
 	}
 	
-//	$chat->sys_clean();
+	//$chat->sys_clean();
 	$chat->window();
 	
 	$keepalive = false;
 	$htmlpage = 'chat_channel';
 	$page_title = $user->lang['CHAT'] . ' | ' . $chat->data['ch_name'];
-}
-else
-{
+} else {
 	$cat = $chat->get_cats();
 	
-	if (!sizeof($cat))
-	{
+	if (!sizeof($cat)) {
 		trigger_error('NO_CHAT_CATS');
 	}
 	

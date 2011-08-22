@@ -25,17 +25,14 @@ $help_modules = array();
 $help_cat = array();
 $help_faq = array();
 
-if (!$help_modules = $cache->get('help_modules'))
-{
+if (!$help_modules = $cache->get('help_modules')) {
 	$sql = 'SELECT *
 		FROM _help_modules
 		ORDER BY module_name';
 	$result = $db->sql_query($sql);
 	
-	if ($row = $db->sql_fetchrow($result))
-	{
-		do
-		{
+	if ($row = $db->sql_fetchrow($result)) {
+		do {
 			$help_modules[$row['module_name']] = $row['module_id'];
 		}
 		while ($row = $db->sql_fetchrow($result));
@@ -45,17 +42,14 @@ if (!$help_modules = $cache->get('help_modules'))
 	}
 }
 
-if (!$help_cat = $cache->get('help_cat'))
-{
+if (!$help_cat = $cache->get('help_cat')) {
 	$sql = 'SELECT *
 		FROM _help_cat
 		ORDER BY help_order';
 	$result = $db->sql_query($sql);
 	
-	if ($row = $db->sql_fetchrow($result))
-	{
-		do
-		{
+	if ($row = $db->sql_fetchrow($result)) {
+		do {
 			$help_cat[$row['help_id']] = $row;
 		}
 		while ($row = $db->sql_fetchrow($result));
@@ -65,17 +59,14 @@ if (!$help_cat = $cache->get('help_cat'))
 	}
 }
 
-if (!$help_faq = $cache->get('help_faq'))
-{
+if (!$help_faq = $cache->get('help_faq')) {
 	$sql = 'SELECT *
 		FROM _help_faq
 		ORDER BY faq_question_es';
 	$result = $db->sql_query($sql);
 	
-	if ($row = $db->sql_fetchrow($result))
-	{
-		do
-		{
+	if ($row = $db->sql_fetchrow($result)) {
+		do {
 			$help_faq[$row['faq_id']] = $row;
 		}
 		while ($row = $db->sql_fetchrow($result));
@@ -85,28 +76,23 @@ if (!$help_faq = $cache->get('help_faq'))
 	}
 }
 
-if (!sizeof($help_modules) || !sizeof($help_cat) || !sizeof($help_faq))
-{
+if (!sizeof($help_modules) || !sizeof($help_cat) || !sizeof($help_faq)) {
 	fatal_error();
 }
 
 $module = request_var('module', '');
 $help = request_var('help', 0);
 
-if ($module != '')
-{
+if ($module != '') {
 	$module_id = (int) $help_modules[$module];
 	
-	if (!$module_id)
-	{
+	if (!$module_id) {
 		fatal_error();
 	}
 }
 
-if ($help)
-{
-	if (!isset($help_faq[$help]))
-	{
+if ($help) {
+	if (!isset($help_faq[$help])) {
 		fatal_error();
 	}
 	
@@ -124,8 +110,7 @@ $user->setup();
 $hm_flip = array_flip($help_modules);
 $template->assign_block_vars('cat', array());
 
-foreach ($help_cat as $cat_id => $data)
-{
+foreach ($help_cat as $cat_id => $data) {
 	$template->assign_block_vars('cat.item', array(
 		'URL' => s_link('help', array($hm_flip[$data['help_module']])),
 		'TITLE' => $data['help_es'])
@@ -135,25 +120,19 @@ foreach ($help_cat as $cat_id => $data)
 //
 // Selected category
 //
-if ($module_id || $help)
-{
-	if (!$help)
-	{
+if ($module_id || $help) {
+	if (!$help) {
 		$this_cat = array();
-		foreach ($help_faq as $data)
-		{
-			if ($data['help_id'] == $module_id)
-			{
+		foreach ($help_faq as $data) {
+			if ($data['help_id'] == $module_id) {
 				$this_cat[] = $data;
 			}
 		}
 	}
 	
 	$help_name = '';
-	foreach ($help_cat as $data)
-	{
-		if ($data['help_module'] == $module_id)
-		{
+	foreach ($help_cat as $data) {
+		if ($data['help_module'] == $module_id) {
 			$help_name = $data['help_es'];
 			break;
 		}
@@ -163,27 +142,20 @@ if ($module_id || $help)
 		'HELP' => $help_name)
 	);
 	
-	if (!$help)
-	{
-		if (sizeof($this_cat))
-		{
+	if (!$help) {
+		if (sizeof($this_cat)) {
 			$template->assign_block_vars('module.main', array());
 			
-			foreach ($this_cat as $data)
-			{
+			foreach ($this_cat as $data) {
 				$template->assign_block_vars('module.main.item', array(
 					'URL' => s_link('help', $data['faq_id']),
 					'FAQ' => $data['faq_question_es'])
 				);
 			}
-		}
-		else
-		{
+		} else {
 			$template->assign_block_vars('module.empty', array());
 		}
-	}
-	else
-	{
+	} else {
 		$dhelp = $help_faq[$help];
 		
 		include('./interfase/comments.php');

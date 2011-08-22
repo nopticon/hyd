@@ -25,15 +25,12 @@ $user->setup();
 require('./interfase/news.php');
 $news = new _news();
 
-if ($news->_setup())
-{
+if ($news->_setup()) {
 	$news->_view();
 	
 	$pagehtml = 'news_read';
 	$page_title = $user->lang['NEWS'] . ' | ' . $news->data['post_subject'];
-}
-else
-{
+} else {
 	$news->_main();
 	
 	$pagehtml = 'news_body';
