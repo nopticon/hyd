@@ -343,32 +343,26 @@ if ($submit_reply || $submit_vote)
 	}
 }
 
-if (!$is_auth['auth_view'] || !$is_auth['auth_read'])
-{
-	if (!$user->data['is_member'])
-	{
+if (!$is_auth['auth_view'] || !$is_auth['auth_read']) {
+	if (!$user->data['is_member']) {
 		do_login();
 	}
 	
 	fatal_error();
 }
 
-if ($post_id)
-{
+if ($post_id) {
 	$start = floor(($topic_data['prev_posts'] - 1) / (int) $config['posts_per_page']) * (int) $config['posts_per_page'];
 	$user->data['user_topic_order'] = 0;
 }
 
-if ($user->data['is_member'])
-{
+if ($user->data['is_member']) {
 	//
 	// Topic posts order
 	//
-	if (isset($_POST['topicorder']))
-	{
+	if (isset($_POST['topicorder'])) {
 		$topicorder = request_var('topicorder', 0);
-		if ($topicorder != $user->data['user_topic_order'])
-		{
+		if ($topicorder != $user->data['user_topic_order']) {
 			$topicorder = ($topicorder == 1) ? 1 : 0;
 			$db->sql_query('UPDATE _members SET user_topic_order = ' . (int) $topicorder . ' WHERE user_id = ' . (int) $user->data['user_id']);
 			
@@ -385,10 +379,8 @@ if ($user->data['is_member'])
 			AND user_id = ' . (int) $user->data['user_id'];
 	$result = $db->sql_query($sql);
 
-	if (!$row = $db->sql_fetchrow($result))
-	{
-		if (isset($_POST['watch']) )
-		{
+	if (!$row = $db->sql_fetchrow($result)) {
+		if (isset($_POST['watch']) ) {
 			$sql = 'INSERT LOW_PRIORITY INTO _forum_topics_fav (user_id, topic_id, notify_status)
 				VALUES (' . $user->data['user_id'] . ', ' . (int) $topic_id . ', 0)';
 			$db->sql_query($sql);
@@ -399,9 +391,7 @@ if ($user->data['is_member'])
 		$template->assign_block_vars('watch_topic', array());
 	}
 	$db->sql_freeresult($result);
-}
-else
-{
+} else {
 	$user->data['user_topic_order'] = 0;
 }
 
@@ -410,8 +400,7 @@ else
 //
 $get_post_id = ($reply) ? 'post_id' : 'topic_id';
 $get_post_data['p.' . $get_post_id] = $$get_post_id;
-if (!$user->data['is_founder'])
-{
+if (!$user->data['is_founder']) {
 	$get_post_data['p.post_deleted'] = 0;
 }
 
@@ -424,20 +413,15 @@ $sql = 'SELECT p.*, u.user_id, u.username, u.username_base, u.user_color, u.user
 	((!$reply) ? ' LIMIT ' . (int) $start . ', ' . (int) $config['posts_per_page'] : '');
 $result = $db->sql_query($sql);
 
-if ($row = $db->sql_fetchrow($result))
-{
+if ($row = $db->sql_fetchrow($result)) {
 	$messages = array();
-	do
-	{
+	do {
 		$messages[] = $row;
 	}
 	while ($row = $db->sql_fetchrow($result));
 	$db->sql_freeresult($result);
-}
-else 
-{
-	if ($topic_data['topic_replies'] + 1)
-	{
+} else {
+	if ($topic_data['topic_replies'] + 1) {
 		fatal_error();
 	}
 	
@@ -447,8 +431,7 @@ else
 //
 // Re-count topic replies
 //
-if ($user->data['is_founder'])
-{
+if ($user->data['is_founder']) {
 	$sql = 'SELECT COUNT(p.post_id) AS total
 		FROM _forum_posts p, _members u 
 		WHERE p.topic_id = ' . (int) $topic_id . '
@@ -460,11 +443,9 @@ if ($user->data['is_founder'])
 	$db->sql_freeresult($result);
 }
 
-if ($user->data['is_member'])
-{
+if ($user->data['is_member']) {
 	$select_order = '';
-	foreach (array(0 => 'OLDEST_FIRST', 1 => 'NEWEST_FIRST') as $option => $value)
-	{
+	foreach (array(0 => 'OLDEST_FIRST', 1 => 'NEWEST_FIRST') as $option => $value) {
 		$select_order .= '<option value="' . $option . '"' . (($user->data['user_topic_order'] == $option) ? ' selected="selected"' : '') . '>' . $user->lang[$value] . '</option>';
 	}
 	
@@ -476,8 +457,7 @@ if ($user->data['is_member'])
 //
 // Update the topic views
 //
-if (!$start && $user->data['user_id'] != 2)
-{
+if (!$start && $user->data['user_id'] != 2) {
 	$sql = 'UPDATE _forum_topics
 		SET topic_views = topic_views + 1
 		WHERE topic_id = ' . (int) $topic_id;
@@ -487,8 +467,7 @@ if (!$start && $user->data['user_id'] != 2)
 //
 // If the topic contains a poll, then process it
 //
-if ($topic_data['topic_vote'])
-{
+if ($topic_data['topic_vote']) {
 	$sql = 'SELECT vd.vote_id, vd.vote_text, vd.vote_start, vd.vote_length, vr.vote_option_id, vr.vote_option_text, vr.vote_result
 		FROM _poll_options vd, _poll_results vr
 		WHERE vd.topic_id = ' . (int) $topic_id . '
@@ -496,8 +475,7 @@ if ($topic_data['topic_vote'])
 		ORDER BY vr.vote_option_order, vr.vote_option_id ASC';
 	$result = $db->sql_query($sql);
 
-	if ($vote_info = $db->sql_fetchrowset($result))
-	{
+	if ($vote_info = $db->sql_fetchrowset($result)) {
 		$db->sql_freeresult($result);
 		$vote_options = sizeof($vote_info);
 		
@@ -516,18 +494,15 @@ if ($topic_data['topic_vote'])
 			'POLL_TITLE' => $vote_info[0]['vote_text'])
 		);
 
-		if ($user_voted || $poll_expired || !$is_auth['auth_vote'] || $topic_data['topic_locked'])
-		{
+		if ($user_voted || $poll_expired || !$is_auth['auth_vote'] || $topic_data['topic_locked']) {
 			$vote_results_sum = 0;
-			for($i = 0; $i < $vote_options; $i++)
-			{
+			for($i = 0; $i < $vote_options; $i++) {
 				$vote_results_sum += $vote_info[$i]['vote_result'];
 			}
 			
 			$template->assign_block_vars('poll.results', array());
 
-			for ($i = 0; $i < $vote_options; $i++)
-			{
+			for ($i = 0; $i < $vote_options; $i++) {
 				$vote_percent = ($vote_results_sum > 0) ? $vote_info[$i]['vote_result'] / $vote_results_sum : 0;
 
 				$template->assign_block_vars('poll.results.item', array(
@@ -536,15 +511,12 @@ if ($topic_data['topic_vote'])
 					'PERCENT' => sprintf("%.1d", ($vote_percent * 100)))
 				);
 			}
-		}
-		else
-		{
+		} else {
 			$template->assign_block_vars('poll.options', array(
 				'S_VOTE_ACTION' => $topic_url)
 			);
 
-			for ($i = 0; $i < $vote_options; $i++)
-			{
+			for ($i = 0; $i < $vote_options; $i++) {
 				$template->assign_block_vars('poll.options.item', array(
 					'POLL_OPTION_ID' => $vote_info[$i]['vote_option_id'],
 					'POLL_OPTION_CAPTION' => $vote_info[$i]['vote_option_text'])
