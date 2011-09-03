@@ -952,11 +952,11 @@ else
 		WHERE group_single_user <> " . TRUE . " 
 			$ignore_group_sql 
 		ORDER BY g.group_name";
-	$result = $db->sql_query($sql);
+	$result = $db->query($sql);
 	unset($sql);
 
 	$s_group_list_opt = '';
-	while( $row = $db->sql_fetchrow($result) )
+	while( $row = $db->fetchrow($result) )
 	{
 $is_autogroup_enable = ($row['group_count'] <= $userdata['user_posts'] && $row['group_count_max'] > $userdata['user_posts']) ? true : false;
 

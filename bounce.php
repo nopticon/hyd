@@ -44,12 +44,9 @@ if ($bounce_id && $bounce_mode) {
 			fatal_error();
 			break;
 	}
-	$result = $db->sql_query($sql);
-	
-	if (!$bounce_data = $db->sql_fetchrow($result)) {
+	if (!$bounce_data = sql_fieldrow($sql)) {
 		fatal_error();
 	}
-	$db->sql_freeresult($result);
 	
 	switch ($bounce_mode) {
 		case 'f':
@@ -95,33 +92,15 @@ $sql = "SELECT *
 	FROM _links
 	WHERE image <> '' 
 	ORDER BY image ASC";
-$result = $db->sql_query($sql);
-
-if ($row = $db->sql_fetchrow($result)) {
-	do {
-		$links[] = $row;
-		$f_total++;
-	}
-	while ($row = $db->sql_fetchrow($result));
-	
-	$db->sql_freeresult($result);
-}
+$links = sql_rowset($sql);
+$f_total = sizeof($links);
 
 $sql = "SELECT * 
 	FROM _links
 	WHERE image = '' 
 	ORDER BY text ASC";
-$result = $db->sql_query($sql);
-
-if ($row = $db->sql_fetchrow($result)) {
-	do {
-		$links[] = $row;
-		$f_total++;
-	}
-	while ($row = $db->sql_fetchrow($result));
-	
-	$db->sql_freeresult($result);
-}
+$links = sql_rowset($sql);
+$f_total = sizeof($links);
 
 if ($f_total) {
 	$template->assign_block_vars('block', array(
@@ -155,30 +134,29 @@ if ($f_total) {
 //
 // ARTISTS
 //
-$sql = 'SELECT subdomain, name, www
+$sql = "SELECT subdomain, name, www
 	FROM _artists
-	WHERE www <> \'\'
-	ORDER BY name';
-$result = $db->sql_query($sql);
+	WHERE www <> ''
+	ORDER BY name";
+$artists = sql_rowset($sql);
 
-if ($row = $db->sql_fetchrow($result)) {
-	$template->assign_block_vars('block', array(
-		'LANG' => $user->lang['UB'])
-	);
-	
-	do {
-		$template->assign_block_vars('block.item', array(
-			'TEXT' => $row['www'],
-			'U_GOTO' => s_link('a', array($row['subdomain'], 14)))
-		);
-		
-		$template->assign_block_vars('block.item.name', array(
-			'CLASS' => 'bold',
-			'URL' => s_link('a', $row['subdomain']),
-			'TEXT' => $row['name'])
+foreach ($artists as $i => $row) {
+	if (!$i) {
+		$template->assign_block_vars('block', array(
+			'LANG' => $user->lang['UB'])
 		);
 	}
-	while ($row = $db->sql_fetchrow($result));
+	
+	$template->assign_block_vars('block.item', array(
+		'TEXT' => $row['www'],
+		'U_GOTO' => s_link('a', array($row['subdomain'], 14)))
+	);
+	
+	$template->assign_block_vars('block.item.name', array(
+		'CLASS' => 'bold',
+		'URL' => s_link('a', $row['subdomain']),
+		'TEXT' => $row['name'])
+	);
 }
 
 //
@@ -188,31 +166,27 @@ $sql = "SELECT user_id, username, username_base, user_color, user_website
 	FROM _members
 	WHERE user_website <> '' 
 	ORDER BY username";
-$result = $db->sql_query($sql);
+$members = sql_rowset($sql);
 
-if ($row = $db->sql_fetchrow($result)) {
-	$template->assign_block_vars('block', array(
-		'LANG' => $user->lang['USERS'])
-	);
-	
-	do {
-		$template->assign_block_vars('block.item', array(
-			'TEXT' => $row['user_website'],
-			'U_GOTO' => s_link('bounce', array('u', $row['user_id'])))
-		);
-		
-		$template->assign_block_vars('block.item.name', array(
-			'COLOR' => $row['user_color'],
-			'URL' => s_link('m', $row['username_base']),
-			'TEXT' => $row['username'])
+foreach ($members as $i => $row) {
+	if (!$i) {
+		$template->assign_block_vars('block', array(
+			'LANG' => $user->lang['USERS'])
 		);
 	}
-	while ($row = $db->sql_fetchrow($result));
+	
+	$template->assign_block_vars('block.item', array(
+		'TEXT' => $row['user_website'],
+		'U_GOTO' => s_link('bounce', array('u', $row['user_id'])))
+	);
+	
+	$template->assign_block_vars('block.item.name', array(
+		'COLOR' => $row['user_color'],
+		'URL' => s_link('m', $row['username_base']),
+		'TEXT' => $row['username'])
+	);
 }
 
-//
-// OUTPUT THE PAGE
-//
 page_layout('LINKS_FRIENDS', 'bounce_body');
 
 ?>

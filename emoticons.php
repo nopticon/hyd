@@ -28,15 +28,7 @@ if (!$smilies = $cache->get('smilies')) {
 	$sql = 'SELECT *
 		FROM _smilies
 		ORDER BY LENGTH(code) DESC';
-	$result = $db->sql_query($sql);
-	
-	if ($row = $db->sql_fetchrow($result)) {
-		do {
-			$smilies[] = $row;
-		}
-		while ($row = $db->sql_fetchrow($result));
-		$db->sql_freeresult($result);
-		
+	if ($smilies = sql_rowset($sql)) {
 		$cache->save('smilies', $smilies);
 	}
 }

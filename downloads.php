@@ -37,18 +37,16 @@ if ($download_id)
 {
 	$sql = 'SELECT d.*
 		FROM _dl d, _artists a
-		WHERE d.id = ' . (int) $download_id . '
-			AND d.ud = ' . (int) $mode_id . '
+		WHERE d.id = ?
+			AND d.ud = ?
 			AND d.ub = a.ub';
-	$result = $db->sql_query($sql);
-	
-	if (!$ddata = $db->sql_fetchrow($result))
-	{
+	if (!$ddata = sql_fieldrow(sql_filter($sql, $download_id, $mode_id))) {
 		fatal_error();
 	}
-	$db->sql_freeresult($result);
 	
-	$db->sql_query('UPDATE _dl SET views = views + 1 WHERE id = ' . (int) $ddata['id']);
+	$sql = 'UPDATE _dl SET views = views + 1
+		WHERE id = ?';
+	sql_query(sql_filter($sql, $ddata['id']));
 }
 
 //
@@ -56,23 +54,10 @@ if ($download_id)
 //
 $sql = 'SELECT d.*, a.name, a.subdomain
 	FROM _dl d, _artists a
-	WHERE d.ud = ' . (int) $mode_id . '
+	WHERE d.ud = ?
 		AND d.ub = a.ub
 	ORDER BY a.name, d.title';
-$result = $db->sql_query($sql);
-
-if ($row = $db->sql_fetchrow($result))
-{
-	$dlist = array();
-	do
-	{
-		$dlist[$row['id']] = $row;
-	}
-	while ($row = $db->sql_fetchrow($result));
-	$db->sql_freeresult($result);
-}
-else
-{
+if (!$dlist = sql_rowset(sql_filter($sql, $mode_id), 'id')) {
 	fatal_error();
 }
 
@@ -116,19 +101,15 @@ foreach ($dlist as $id => $data)
 		
 		$sql = 'SELECT image
 			FROM _artists_images
-			WHERE ub = ' . (int) $data['ub'] . '
+			WHERE ub = ?
 			ORDER BY RAND()
 			LIMIT 1';
-		$result = $db->sql_query($sql);
-		
-		if ($imagedata = $db->sql_fetchrow($result))
-		{
+		if ($imagedata = sql_field(sql_filter($sql, $data['ub']), 'image', 0)) {
 			$template->assign_block_vars('item.selected.image', array(
 				'A_URL' => $a_url,
-				'IMAGE' => '/data/artists/' . $data['ub'] . '/thumbnails/' . $imagedata['image'] . '.jpg')
+				'IMAGE' => '/data/artists/' . $data['ub'] . '/thumbnails/' . $imagedata . '.jpg')
 			);
 		}
-		$db->sql_freeresult($result);
 	}
 	else
 	{

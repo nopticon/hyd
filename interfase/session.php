@@ -56,14 +56,11 @@ class session
 		// Is session_id is set
 		if (!empty($this->session_id))
 		{
-			$sql = "SELECT m.*, s.*
+			$sql = 'SELECT m.*, s.*
 				FROM _sessions s, _members m
-				WHERE s.session_id = '" . $db->sql_escape($this->session_id) . "'
-					AND m.user_id = s.session_user_id";
-			$result = $db->sql_query($sql);
-
-			$this->data = $db->sql_fetchrow($result);
-			$db->sql_freeresult($result);
+				WHERE s.session_id = ?
+					AND m.user_id = s.session_user_id';
+			$this->data = sql_fieldrow(sql_filter($sql, $this->session_id));
 
 			// Did the session exist in the DB?
 			if (isset($this->data['user_id']))
@@ -77,9 +74,9 @@ class session
 					if ($this->time - $this->data['session_time'] > 60 || $this->data['session_page'] != $this->page)
 					{
 						$sql = "UPDATE _sessions
-							SET session_time = $this->time" . (($update_page) ? ", session_page = '" . $db->sql_escape($this->page) . "'" : '') . " 
-							WHERE session_id = '" . $db->sql_escape($this->session_id) . "'";
-						$db->sql_query($sql);
+							SET session_time = $this->time" . (($update_page) ? ", session_page = '" . $db->escape($this->page) . "'" : '') . " 
+							WHERE session_id = '" . $db->escape($this->session_id) . "'";
+						$db->query($sql);
 					}
 					
 					if ($update_page)
@@ -186,11 +183,8 @@ class session
 
 			$sql = 'SELECT *
 				FROM _members
-				WHERE user_id = ' . (int) $this->cookie_data['u'];
-			$result = $db->sql_query($sql);
-
-			$this->data = $db->sql_fetchrow($result);
-			$db->sql_freeresult($result);
+				WHERE user_id = ?';
+			$this->data = sql_fieldrow(sql_filter($sql, $this->cookie_data['u']));
 		}
 		
 		if ($this->data['user_id'] != GUEST)
@@ -253,7 +247,7 @@ class session
 			$this->data['session_page'] = $sql_ary['session_page'];
 		}
 
-		$sql = 'UPDATE _sessions SET ' . $db->sql_build_array('UPDATE', $sql_ary) . "
+		$sql = 'UPDATE _sessions SET ' . sql_build('UPDATE', $sql_ary) . "
 			WHERE session_id = '" . $db->sql_escape($this->session_id) . "'";
 		if (!$this->session_id || !$db->sql_query($sql) || !$db->sql_affectedrows())
 		{
@@ -384,45 +378,39 @@ class session
 		// Get expired sessions, only most recent for each user
 		$sql = 'SELECT session_id, session_user_id, session_page, MAX(session_time) AS recent_time
 			FROM _sessions
-			WHERE session_time < ' . ($this->time - $config['session_length']) . '
-			GROUP BY session_user_id, session_page';
-		$result = $db->sql_query_limit($sql, 5);
+			WHERE session_time < ?
+			GROUP BY session_user_id, session_page
+			LIMIT 5';
+		$result = sql_rowset(sql_filter($sql, ($this->time - $config['session_length'])));
 		
 		$del_user_id = '';
 		$del_sessions = 0;
-		if ($row = $db->sql_fetchrow($result))
-
-		{
-			do
+		
+		foreach ($result as $row) {
+			if ($row['session_user_id'] != GUEST)
 			{
-				if ($row['session_user_id'] != GUEST)
-				{
-					$sql = 'UPDATE _members
-						SET user_lastvisit = ' . (int) $row['recent_time'] . ", user_lastpage = '" . $db->sql_escape($row['session_page']) . "'
-						WHERE user_id = " . (int) $row['session_user_id'];
-					$db->sql_query($sql);
-					
-					$sql = 'UPDATE _members_iplog SET log_endtime = ' . (int) $row['recent_time'] . "
-						WHERE log_session = '" . $db->sql_escape($row['session_id']) . "'
-							AND log_user_id = " . (int) $row['session_user_id'];
-					$db->sql_query($sql);
-				}
+				$sql = 'UPDATE _members
+					SET user_lastvisit = ?, user_lastpage = ?
+					WHERE user_id = ?';
+				sql_query(sql_filter($sql, $row['recent_time'], $row['session_page'], $row['session_user_id']));
 				
-				$del_user_id .= (($del_user_id != '') ? ', ' : '') . (int) $row['session_user_id'];
-				$del_sessions++;
+				$sql = 'UPDATE _members_iplog SET log_endtime = ?
+					WHERE log_session = ?
+						AND log_user_id = ?';
+				sql_query(sql_filter($sql, $row['recent_time'], $row['session_id'], $row['session_user_id']));
 			}
-			while ($row = $db->sql_fetchrow($result));
 			
-			$db->sql_freeresult($result);
+			$del_user_id .= (($del_user_id != '') ? ', ' : '') . (int) $row['session_user_id'];
+			$del_sessions++;
 		}
 		
 		if ($del_user_id)
 		{
 			// Delete expired sessions
 			$sql = 'DELETE FROM _sessions
-				WHERE session_user_id IN (' . $del_user_id . ')
-					AND session_time < ' . (int) ($this->time - $config['session_length']);
-			$db->sql_query($sql);
+				WHERE session_user_id IN (??)
+					AND session_time < ?';
+			sql_query(sql_filter($sql, $del_user_id, ($this->time - $config['session_length'])));
 		}
 
 		if ($del_sessions < 5)
@@ -474,32 +462,23 @@ class session
 
 		$sql = 'SELECT ban_ip, ban_userid, ban_email, ban_exclude, ban_give_reason, ban_end
 			FROM _banlist
-			WHERE ban_end >= ' . time() . '
+			WHERE ban_end >= ?
 				OR ban_end = 0';
-		$result = $db->sql_query($sql);
-
-		if ($row = $db->sql_fetchrow($result))
-		{
-			do
+		$result = sql_rowset(sql_filter($sql, time()));
+		
+		foreach ($result as $row) {
+			if ((!empty($row['ban_userid']) && intval($row['ban_userid']) == $user_id) ||
+				(!empty($row['ban_ip']) && preg_match('#^' . str_replace('*', '.*?', $row['ban_ip']) . '$#i', $user_ip)) ||
+				(!empty($row['ban_email']) && preg_match('#^' . str_replace('*', '.*?', $row['ban_email']) . '$#i', $user_email)))
 			{
-				if ((!empty($row['ban_userid']) && intval($row['ban_userid']) == $user_id) ||
-					(!empty($row['ban_ip']) && preg_match('#^' . str_replace('*', '.*?', $row['ban_ip']) . '$#i', $user_ip)) ||
-					(!empty($row['ban_email']) && preg_match('#^' . str_replace('*', '.*?', $row['ban_email']) . '$#i', $user_email)))
-				{
-					if (!empty($row['ban_exclude']))
-					{
-						$banned = false;
-						break;
-					}
-					else
-					{
-						$banned = true;
-					}
+				if (!empty($row['ban_exclude'])) {
+					$banned = false;
+					break;
+				} else {
+					$banned = true;
 				}
 			}
-			while ($row = $db->sql_fetchrow($result));
 		}
-		$db->sql_freeresult($result);
 
 		if ($banned)
 		{

@@ -1,8 +1,0 @@
-_report:
-
-report_id
-report_type (a, d, p, n, e)
-report_time
-report_by
-report_post_id
-report_text

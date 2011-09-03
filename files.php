@@ -32,20 +32,19 @@ if (!@file_exists($filepath)) {
 	fatal_error();
 }
 
-$sql = "UPDATE _downloads
+$sql = 'UPDATE _downloads
 	SET download_count = download_count + 1
-	WHERE download_filename = '" . $db->sql_escape($filename) . "'";
-$result = $db->sql_query($sql);
+	WHERE download_filename = ?';
+sql_query(sql_filter($sql, $filename));
 
-if (!$db->sql_affectedrows()) {
+if (!sql_affectedrows()) {
 	$insert = array(
 		'download_filename' => $filename,
 		'download_count' => 1
 	);
-	$sql = 'INSERT INTO _downloads' . $db->sql_build_array('INSERT', $insert);
-	$db->sql_query($sql);
+	$sql = 'INSERT INTO _downloads' . sql_build('INSERT', $insert);
+	sql_query($sql);
 }
-$db->sql_freeresult($result);
 
 //
 require('./interfase/downloads.php');

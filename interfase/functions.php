@@ -128,21 +128,35 @@ function _utf8(&$a)
 	}
 }
 
+function decode_ht($path)
+{
+	$da_path = ROOT . '../' . $path;
+	
+	if (!@file_exists($da_path) || !$a = @file($da_path)) exit;
+	
+	return explode(',', _decode($a[0]));
+}
+
 //
 // Set or create config value
 //
 function set_config($config_name, $config_value)
 {
-	global $db, $config;
+	global $config;
 
-	$sql = "UPDATE _config
-		SET config_value = '" . $db->sql_escape($config_value) . "'
-		WHERE config_name = '" . $db->sql_escape($config_name) . "'";
-	$db->sql_query($sql);
+	$sql = 'UPDATE _config
+		SET config_value = ?
+		WHERE config_name = ?';
+	sql_query(sql_filter($sql, $config_value, $config_name));
 
-	if (!$db->sql_affectedrows() && !isset($config[$config_name]))
+	if (!sql_affectedrows() && !isset($config[$config_name]))
 	{
-		$db->sql_query("INSERT INTO _config (config_name, config_value) VALUES ('" . $db->sql_escape($config_name) . "', '" . $db->sql_escape($config_value) . "')");
+		$sql_insert = array(
+			'config_name' => $config_name,
+			'config_value' => $config_value
+		);
+		$sql = 'INSERT INTO _config' . sql_build('INSERT', $sql_insert);
+		sql_query($sql);
 	}
 
 	$config[$config_name] = $config_value;
@@ -311,8 +325,6 @@ function get_subdomain($str)
 //
 function get_userdata($user, $force_str = false)
 {
-	global $db;
-
 	if (!is_numeric($user) || $force_str)
 	{
 		$user = phpbb_clean_username($user);
@@ -326,9 +338,9 @@ function get_userdata($user, $force_str = false)
 		FROM _members
 		WHERE ';
 	$sql .= ((is_integer($user)) ? 'user_id = ' . (int) $user : "username = '" .  $user . "'" ) . ' AND user_id <> ' . GUEST;
-	$result = $db->sql_query($sql);
+	$result = sql_query($sql);
 
-	return ($row = $db->sql_fetchrow($result)) ? $row : false;
+	return ($row = sql_fetchrow($result)) ? $row : false;
 }
 
 function _substr($a, $k, $r = '...')
@@ -546,21 +558,14 @@ function build_num_pagination ($url_format, $total_items, $per_page, $offset, $p
 //
 function obtain_bots(&$bots)
 {
-	global $db, $cache;
+	global $cache;
 	
 	if (!$bots = $cache->get('bots'))
 	{
 		$sql = 'SELECT user_id, bot_agent, bot_ip 
 			FROM _bots
 			WHERE bot_active = 1';
-		$result = $db->sql_query($sql);
-		
-		while ($row = $db->sql_fetchrow($result))
-		{
-			$bots[] = $row;
-		}
-		$db->sql_freeresult($result);
-
+		$bots = sql_rowset($sql);
 		$cache->save('bots', $bots);
 	}
 	
@@ -605,6 +610,88 @@ function do_login($box_text = '', $need_auth = FALSE)
 	);
 	
 	page_layout('LOGIN2', 'login_body', $template_vars);
+}
+
+function get_file($f)
+{
+	if (!f($f)) return false;
+	
+	if (!@file_exists($f))
+	{
+		return w();
+	}
+	
+	return array_map('trim', @file($f));
+}
+
+function hook($name, $args = array(), $arr = false)
+{
+	switch ($name)
+	{
+		case 'isset':
+			eval('$a = ' . $name . '($args' . ((is_array($args)) ? '[0]' . $args[1] : '') . ');');
+			return $a;
+			break;
+		case 'in_array':
+			if (is_array($args[1]))
+			{
+				if (hook('isset', array($args[1][0], $args[1][1])))
+				{
+					eval('$a = ' . $name . '($args[0], $args[1][0]' . $args[1][1] . ');');
+				}
+			} else {
+				eval('$a = ' . $name . '($args[0], $args[1]);');
+			}
+			
+			return (isset($a)) ? $a : false;
+			break;
+	}
+	
+	$f = 'call_user_func' . ((!$arr) ? '_array' : '');
+	return $f($name, $args);
+}
+
+function _pre($a, $d = false)
+{
+	echo '<pre>';
+	print_r($a);
+	echo '</pre>';
+	
+	if ($d === true)
+	{
+		exit;
+	}
+}
+
+function entity_decode($s, $compat = true)
+{
+	if ($compat)
+	{
+		return html_entity_decode($s, ENT_COMPAT, 'UTF-8');
+	}
+	return html_entity_decode($s);
+}
+
+function f($s)
+{
+	return !empty($s);
+}
+
+function w($a = '', $d = false)
+{
+	if (!f($a) || !is_string($a)) return array();
+	
+	$e = explode(' ', $a);
+	if ($d !== false)
+	{
+		foreach ($e as $i => $v)
+		{
+			$e[$v] = $d;
+			unset($e[$i]);
+		}
+	}
+	
+	return $e;
 }
 
 function kernel_function($mode, $name, $param = false, $return_on_error = false)
@@ -668,7 +755,7 @@ function fatal_error_tables($msg)
 
 function fatal_error($mode = '404', $bp_message = '')
 {
-	global $db, $user, $config;
+	global $user, $config;
 	
 	$current_page = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 	$error = 'La p&aacute;gina <strong>' . $current_page . '</strong> ';
@@ -682,7 +769,7 @@ function fatal_error($mode = '404', $bp_message = '')
 			if (isset($config['default_lang']) && isset($user->lang))
 			{
 				// Send email notification
-				require('./interfase/emailer.php');
+				require_once('./interfase/emailer.php');
 				$emailer = new emailer();
 				
 				$emailer->from('info@rockrepublik.net');
@@ -739,10 +826,7 @@ function fatal_error($mode = '404', $bp_message = '')
 		$code = '<strong>' . $title . '</strong><br /><br />' . $error;
 	}
 	
-	if (isset($db))
-	{
-		$db->sql_close();
-	}
+	sql_close();
 	
 	echo $code;
 	exit();
@@ -750,7 +834,7 @@ function fatal_error($mode = '404', $bp_message = '')
 
 function msg_handler($errno, $msg_text, $errfile, $errline)
 {
-	global $db, $template, $config, $user, $auth, $cache, $starttime;
+	global $template, $config, $user, $auth, $cache, $starttime;
 
 	switch ($errno)
 	{
@@ -759,10 +843,7 @@ function msg_handler($errno, $msg_text, $errfile, $errline)
 			//echo '<b>PHP Notice</b>: in file <b>' . $errfile . '</b> on line <b>' . $errline . '</b>: <b>' . $msg_text . '</b><br>';
 			break;
 		case E_USER_ERROR:
-			if (isset($db))
-			{
-				$db->sql_close();
-			}
+			sql_close();
 			
 			fatal_error('mysql', $msg_text);
 			break;
@@ -792,12 +873,9 @@ function msg_handler($errno, $msg_text, $errfile, $errline)
 
 function redirect($url, $moved = false)
 {
-	global $db, $config;
-
-	if (!empty($db))
-	{
-		$db->sql_close();
-	}
+	global $config;
+	
+	sql_close();
 	
 	// If relative path, prepend board url
 	if (strpos($url, '://') === false)
@@ -815,7 +893,7 @@ function redirect($url, $moved = false)
 }
 
 // Meta refresh assignment
-function meta_refresh ($time, $url)
+function meta_refresh($time, $url)
 {
 	global $template;
 
@@ -826,30 +904,26 @@ function meta_refresh ($time, $url)
 
 function topic_feature($topic_id, $value)
 {
-	global $db;
-	
 	$sql = 'UPDATE _forum_topics
-		SET topic_featured = ' . (int) $value . '
-		WHERE topic_id = ' . (int) $topic_id;
-	$db->sql_query($sql);
+		SET topic_featured = ?
+		WHERE topic_id = ?';
+	sql_query(sql_filter($sql, $value, $topic_id));
 	
 	return;
 }
 function topic_arkane($topic_id, $value)
 {
-	global $db;
-	
 	$sql = 'UPDATE _forum_topics
-		SET topic_points = ' . (int) $value . '
-		WHERE topic_id = ' . (int) $topic_id;
-	$db->sql_query($sql);
+		SET topic_points = ?
+		WHERE topic_id = ?';
+	sql_query(sql_filter($sql, $value, $topic_id));
 	
 	return;
 }
 
 function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive = true)
 {
-	global $db, $config, $user, $cache, $starttime, $template;
+	global $config, $user, $cache, $starttime, $template;
 	
 	define('HEADER_INC', TRUE);
 	
@@ -875,14 +949,7 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 			$sql = 'SELECT name
 				FROM _artists
 				ORDER BY name';
-			$result = $db->sql_query($sql);
-			
-			while ($row = $db->sql_fetchrow($result))
-			{
-				$ub_meta[] = $row['name'];
-			}
-			$db->sql_freeresult($result);
-			
+			$ub_meta = sql_rowset($sql, false, 'name');
 			$cache->save('ub_list', $ub_meta);
 		}
 	}
@@ -890,15 +957,8 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 	// Get unread items count
 	$sql = 'SELECT COUNT(element) AS total
 		FROM _members_unread
-		WHERE user_id = ' . (int) $user->d('user_id');
-	$result = $db->sql_query($sql);
-	
-	$unread_items = 0;
-	if ($row = $db->sql_fetchrow($result))
-	{
-		$unread_items = (int) $row['total'];
-	}
-	$db->sql_freeresult($result);
+		WHERE user_id = ?';
+	$unread_items = sql_field(sql_filter($sql, $user->d('user_id')), 'total', 0);
 	
 	// Context Menu Blocking
 	$s_context_menu = '';
@@ -962,7 +1022,7 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 		'S_UNREAD_ITEMS' => (($unread_items == 1) ? sprintf($user->lang['UNREAD_ITEM_COUNT'], $unread_items) : sprintf($user->lang['UNREAD_ITEMS_COUNT'], $unread_items)),
 		'S_AP_POINTS' => (($user->d('user_points') == 1) ? sprintf($user->lang['AP_POINT'], $user->d('user_points')) : sprintf($user->lang['AP_POINTS'], $user->d('user_points'))),
 		
-		'F_SQL' => ($user->d('is_founder')) ? $db->sql_num_queries() . 'q | ' : '',
+		'F_SQL' => ($user->d('is_founder')) ? sql_queries() . 'q | ' : '',
 		'JS_KEEPALIVE' => $js_keepalive
 	);
 	
@@ -985,8 +1045,8 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 	);
 	$template->pparse('body');
 	
-	$db->sql_close();
-	exit();
+	sql_close();
+	exit;
 }
 
 function sidebar()
@@ -1131,12 +1191,7 @@ function check_www($url)
 
 function _die($str)
 {
-	global $db;
-	
-	if (isset($db))
-	{
-		$db->sql_close();
-	}
+	sql_close();
 	
 	echo $str;
 	exit();

@@ -64,17 +64,13 @@ foreach ($fields as $k => $v)
 
 if (!empty($code_invite))
 {
-	$sql = "SELECT i.invite_email, m.user_email
+	$sql = 'SELECT i.invite_email, m.user_email
 		FROM _members_ref_invite i, _members m
-		WHERE i.invite_code = '" . $db->sql_escape($code_invite) . "'
-			AND i.invite_uid = m.user_id";
-	$result = $db->sql_query($sql);
-	
-	if (!$code_invite_row = $db->sql_fetchrow($result))
-	{
+		WHERE i.invite_code = ?
+			AND i.invite_uid = m.user_id';
+	if (!$code_invite_row = sql_fetchrow(sql_filter($sql, $code_invite))) {
 		fatal_error();
 	}
-	$db->sql_freeresult($result);
 	
 	$v_fields['refop'] = 1;
 	$v_fields['refby'] = $code_invite_row['user_email'];
@@ -87,116 +83,82 @@ if (!empty($code_invite))
 //
 $error = array();
 
-if (isset($_POST['submit']))
-{
+if (isset($_POST['submit'])) {
 	include('./interfase/functions_validate.php');
 	
-	foreach ($fields as $k => $v)
-	{
+	foreach ($fields as $k => $v) {
 		$v_fields[$k] = request_var($k, $v);
 	}
 	
 	//
-	if (empty($v_fields['username']))
-	{
+	if (empty($v_fields['username'])) {
 		$error['username'] = 'EMPTY_USERNAME';
-	}
-	else 
-	{
+	} else {
 		$len_username = strlen($v_fields['username']);
-		if (($len_username < 2) || ($len_username > 20) || !get_username_base($v_fields['username'], true))
-		{
+		if (($len_username < 2) || ($len_username > 20) || !get_username_base($v_fields['username'], true)) {
 			$error['username'] = 'USERNAME_INVALID';
 		}
 		
-		if (!sizeof($error))
-		{
+		if (!sizeof($error)) {
 			$result = validate_username($v_fields['username']);
-			if ($result['error'])
-			{
+			if ($result['error']) {
 				$error['username'] = $result['error_msg'];
 			}
 		}
 		
-		if (!sizeof($error))
-		{
+		if (!sizeof($error)) {
 			$v_fields['username_base'] = get_username_base($v_fields['username']);
 			
-			$sql = "SELECT *
+			$sql = 'SELECT user_id
 				FROM _members
-				WHERE username_base = '" . $db->sql_escape($v_fields['username_base']) . "'";
-			$result = $db->sql_query($sql);
-			
-			if ($row = $db->sql_fetchrow($result))
-			{
+				WHERE username_base = ?';
+			if (sql_field(sql_filter($sql, $v_fields['username_base']), 'user_id', 0)) {
 				$error['username'] = 'USERNAME_TAKEN';
 			}
-			$db->sql_freeresult($result);
 		}
 		
-		if (!sizeof($error))
-		{
-			$sql = "SELECT *
+		if (!sizeof($error)) {
+			$sql = 'SELECT ub
 				FROM _artists
-				WHERE subdomain = '" . $db->sql_escape($v_fields['username_base']) . "'";
-			$result = $db->sql_query($sql);
-			
-			if ($row = $db->sql_fetchrow($result))
-			{
+				WHERE subdomain = ?';
+			if (sql_field(sql_filter($sql, $v_fields['username_base']), 'ub', 0)) {
 				$error['username'] = 'USERNAME_TAKEN';
 			}
-			$db->sql_freeresult($result);
 		}
 	}
 	
-	if (!empty($v_fields['email']))
-	{
+	if (!empty($v_fields['email'])) {
 		$result = validate_email($v_fields['email']);
-		if ($result['error'])
-		{
+		if ($result['error']) {
 			$error['email'] = $result['error_msg'];
 		}
-	}
-	else
-	{
+	} else {
 		$error['email'] = 'EMPTY_EMAIL';
 	}
 	
-	if (!empty($v_fields['key']) && !empty($v_fields['key_confirm']))
-	{
-		if ($v_fields['key'] != $v_fields['key_confirm'])
-		{
+	if (!empty($v_fields['key']) && !empty($v_fields['key_confirm'])) {
+		if ($v_fields['key'] != $v_fields['key_confirm']) {
 			$error['key'] = 'PASSWORD_MISMATCH';
-		}
-		else if (strlen($v_fields['key']) > 32)
-		{
+		} else if (strlen($v_fields['key']) > 32) {
 			$error['key'] = 'PASSWORD_LONG';
 		}
-	}
-	else
-	{
-		if (empty($v_fields['key']))
-		{
+	} else {
+		if (empty($v_fields['key'])) {
 			$error['key'] = 'EMPTY_PASSWORD';
-		}
-		elseif (empty($v_fields['key_confirm']))
-		{
+		} elseif (empty($v_fields['key_confirm'])) {
 			$error['key_confirm'] = 'EMPTY_PASSWORD_CONFIRM';
 		}
 	}
 	
-	if (!$v_fields['birthday_month'] || !$v_fields['birthday_day'] || !$v_fields['birthday_year'])
-	{
+	if (!$v_fields['birthday_month'] || !$v_fields['birthday_day'] || !$v_fields['birthday_year']) {
 		$error['birthday'] = 'EMPTY_BIRTH_MONTH';
 	}
 	
-	if (!$v_fields['tos'])
-	{
+	if (!$v_fields['tos']) {
 		$error['tos'] = 'AGREETOS_ERROR';
 	}
 	
-	if (!sizeof($error))
-	{
+	if (!sizeof($error)) {
 		$v_fields['birthday'] = leading_zero($v_fields['birthday_year']) . leading_zero($v_fields['birthday_month']) . leading_zero($v_fields['birthday_day']);
 		
 		$member_data = array(
@@ -234,8 +196,8 @@ if (isset($_POST['submit']))
 			'user_topic_order' => 0,
 			'user_email_dc' => 1
 		);
-		$db->sql_query('INSERT INTO _members' . $db->sql_build_array('INSERT', $member_data));
-		$user_id = $db->sql_nextid();
+		$sql = 'INSERT INTO _members' . sql_build('INSERT', $member_data);
+		$user_id = sql_query_nextid($sql);
 		
 		set_config('max_users', $config['max_users'] + 1);
 		
@@ -247,8 +209,8 @@ if (isset($_POST['submit']))
 			'crypt_code' => $verification_code,
 			'crypt_time' => $user->time
 		);
-		$sql = 'INSERT INTO _crypt_confirm' . $db->sql_build_array('INSERT', $insert);
-		$db->sql_query($sql);
+		$sql = 'INSERT INTO _crypt_confirm' . sql_build('INSERT', $insert);
+		sql_query($sql);
 		
 		// Emailer
 		require('./interfase/emailer.php');
@@ -262,30 +224,34 @@ if (isset($_POST['submit']))
 		
 		if ($v_fields['refop'] == 1 && !empty($v_fields['refby']))
 		{
-			$sql = "SELECT *
+			$sql = 'SELECT user_id
 				FROM _members
-				WHERE user_email = '" . $db->sql_escape($v_fields['refby']) . "'";
-			$result = $db->sql_query($sql);
+				WHERE user_email = ?';
 			
 			$send_invite = true;
-			if ($ref_friend = $db->sql_fetchrow($result))
-			{
+			if ($ref_friend = sql_field(sql_filter($sql, $v_fields['refby']), 'user_id', 0)) {
 				$send_invite = false;
 				
-				$sql = 'INSERT INTO _members_ref_assoc (ref_uid, ref_orig)
-					VALUES (' . (int) $user_id . ', ' . (int) $ref_friend['user_id'] . ')';
-				$db->sql_query($sql);
+				$sql_insert = array(
+					'ref_uid' => $user_id,
+					'ref_orig' => $ref_friend
+				);
+				$sql = 'INSERT INTO _members_ref_assoc' . sql_build('INSERT', $sql_insert);
+				sql_query($sql);
 			}
-			$db->sql_freeresult($result);
 			
 			if ($send_invite)
 			{
 				$invite_user = explode('@', $v_fields['refby']);
 				$invite_code = substr(md5(unique_id()), 0, 6);
 				
-				$sql = "INSERT INTO _members_ref_invite (invite_code, invite_email, invite_uid)
-					VALUES ('" . $db->sql_escape($invite_code) . "', '" . $db->sql_escape($v_fields['refby']) . "', " . (int) $user_id . ")";
-				$db->sql_query($sql);
+				$sql_insert = array(
+					'invite_code' => $invite_code,
+					'invite_email' => $v_fields['refby'],
+					'invite_uid' => $user_id
+				);
+				$sql = 'INSERT INTO _members_ref_invite' . sql_build('INSERT', $sql_insert);
+				sql_query($sql);
 				
 				$emailer->from('info@rockrepublik.net');
 				$emailer->use_template('user_invite');
@@ -302,10 +268,9 @@ if (isset($_POST['submit']))
 		}
 		
 		// Update ref
-		$sql = "UPDATE _members
-			SET user_refop = " . (int) $v_fields['refop'] . ", user_refby = '" . $db->sql_escape($v_fields['refby']) . "'
-			WHERE user_id = " . (int) $user_id;
-		$db->sql_query($sql);
+		$sql = 'UPDATE _members SET user_refop = ?, user_refby = ?
+			WHERE user_id = ?';
+		sql_query(sql_filter($sql, $v_fields['refop'], $v_fields['refby'], $user_id));
 		
 		// Send confirm email
 		$emailer->from('info@rockrepublik.net');
@@ -331,14 +296,7 @@ if (!$members_refop = $cache->get('members_refop'))
 	$sql = 'SELECT *
 		FROM _members_ref_options
 		ORDER BY option_order';
-	$result = $db->sql_query($sql);
-	
-	$members_refop = array();
-	while ($row = $db->sql_fetchrow($result))
-	{
-		$members_refop[$row['option_id']] = $row;
-	}
-	$db->sql_freeresult($result);
+	$members_refop = sql_rowset($sql, 'option_id');
 	
 	$cache->save('members_refop', $members_refop);
 }
@@ -348,14 +306,7 @@ if (!$country = $cache->get('country'))
 	$sql = 'SELECT *
 		FROM _countries
 		ORDER BY country_name';
-	$result = $db->sql_query($sql);
-	
-	$country = array();
-	while ($row = $db->sql_fetchrow($result))
-	{
-		$country[$row['country_id']] = $row;
-	}
-	$db->sql_freeresult($result);
+	$country = sql_rowset($sql, 'country_id');
 	
 	$cache->save('country', $country);
 }
@@ -464,7 +415,7 @@ page_layout('NEW_ACCOUNT_SUBJECT', 'subscribe_body', $tv);
 //
 // FUNCTIONS
 //
-function leading_zero ($number)
+function leading_zero($number)
 {
 	return (($number < 10) ? '0' : '') . $number;
 }

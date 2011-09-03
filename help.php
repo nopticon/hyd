@@ -26,18 +26,10 @@ $help_cat = array();
 $help_faq = array();
 
 if (!$help_modules = $cache->get('help_modules')) {
-	$sql = 'SELECT *
+	$sql = 'SELECT module_id, module_name
 		FROM _help_modules
 		ORDER BY module_name';
-	$result = $db->sql_query($sql);
-	
-	if ($row = $db->sql_fetchrow($result)) {
-		do {
-			$help_modules[$row['module_name']] = $row['module_id'];
-		}
-		while ($row = $db->sql_fetchrow($result));
-		$db->sql_freeresult($result);
-		
+	if ($help_modules = sql_rowset($sql, 'module_name', 'module_id')) {
 		$cache->save('help_modules', $help_modules);
 	}
 }
@@ -46,15 +38,7 @@ if (!$help_cat = $cache->get('help_cat')) {
 	$sql = 'SELECT *
 		FROM _help_cat
 		ORDER BY help_order';
-	$result = $db->sql_query($sql);
-	
-	if ($row = $db->sql_fetchrow($result)) {
-		do {
-			$help_cat[$row['help_id']] = $row;
-		}
-		while ($row = $db->sql_fetchrow($result));
-		$db->sql_freeresult($result);
-		
+	if ($help_cat = sql_rowset($sql, 'help_id')) {
 		$cache->save('help_cat', $help_cat);
 	}
 }
@@ -63,17 +47,9 @@ if (!$help_faq = $cache->get('help_faq')) {
 	$sql = 'SELECT *
 		FROM _help_faq
 		ORDER BY faq_question_es';
-	$result = $db->sql_query($sql);
-	
-	if ($row = $db->sql_fetchrow($result)) {
-		do {
-			$help_faq[$row['faq_id']] = $row;
-		}
-		while ($row = $db->sql_fetchrow($result));
-		$db->sql_freeresult($result);
-		
+	if ($help_faq = sql_rowset($sql, 'faq_id')) {
 		$cache->save('help_faq', $help_faq);
-	}
+	} 
 }
 
 if (!sizeof($help_modules) || !sizeof($help_cat) || !sizeof($help_faq)) {

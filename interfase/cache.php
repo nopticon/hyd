@@ -40,17 +40,9 @@ class cache
 		
 		$sql = 'SELECT *
 			FROM _config';
-		$result = $db->sql_query($sql);
-		
-		$config = array();
-		while ($row = $db->sql_fetchrow($result))
-		{
-			$config[$row['config_name']] = $row['config_value'];
-		}
-		$db->sql_freeresult($result);
+		$config = sql_rowset($sql, 'config_name', 'config_value');
 		
 		$config['request_method'] = strtolower($_SERVER['REQUEST_METHOD']);
-		//$config['server_name'] .= '/orion';
 		
 		return $config;
 	}

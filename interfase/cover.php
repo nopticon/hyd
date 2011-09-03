@@ -39,13 +39,7 @@ class cover
 				WHERE n.cat_id = c.cat_id
 				ORDER BY n.post_time DESC
 				LIMIT 3';
-			$result = $db->sql_query($sql);
-			
-			while ($row = $db->sql_fetchrow($result))
-			{
-				$news[] = $row;
-			}
-			$db->sql_freeresult($result);
+			$news = sql_rowset($sql);
 			
 			if (sizeof($news))
 			{
@@ -58,7 +52,7 @@ class cover
 			return;
 		}
 		
-		include('./interfase/comments.php');
+		include_once(ROOT . 'interfase/comments.php');
 		$comments = new _comments();
 		$images_dir = SDATA . 'news/';
 		
@@ -82,8 +76,12 @@ class cover
 		
 		return;
 	}
+
+	function twitter() {
+		
+	}
 	
-	function twitter()
+	function _twitter()
 	{
 		global $template;
 		

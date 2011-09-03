@@ -35,12 +35,10 @@ switch ($mode) {
 			$adm = (isset($_POST['admin'])) ? 1 : 0;
 			
 			if (!empty($username) && !empty($password)) {
-				$sql = "SELECT user_id, username, user_password, user_type, user_return_unread, user_upw, user_country, user_avatar, user_location, user_gender, user_birthday
+				$sql = 'SELECT user_id, username, user_password, user_type, user_return_unread, user_country, user_avatar, user_location, user_gender, user_birthday
 					FROM _members
-					WHERE username = '" . $db->sql_escape($username) . "'";
-				$result = $db->sql_query($sql);
-				
-				if ($row = $db->sql_fetchrow($result)) {
+					WHERE username = ?';
+				if ($row = sql_fieldrow(sql_filter($sql, $username))) {
 					if ((user_password($password) == $row['user_password']) && ($row['user_type'] != USER_INACTIVE && $row['user_type'] != USER_IGNORE)) {
 						$user->session_create($row['user_id'], $adm);
 						

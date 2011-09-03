@@ -48,55 +48,40 @@ switch ($mode)
 	case 'password':
 		$template_vars = array();
 		
-		if ($submit)
-		{
+		if ($submit) {
 			$email = request_var('address', '');
-			if (empty($email))
-			{
+			if (empty($email)) {
 				fatal_error();
 			}
 			
-			if (!preg_match('/^[a-z0-9&\'\.\-_\+]+@[a-z0-9\-]+\.([a-z0-9\-]+\.)*?[a-z]+$/is', $email))
-			{
+			if (!preg_match('/^[a-z0-9&\'\.\-_\+]+@[a-z0-9\-]+\.([a-z0-9\-]+\.)*?[a-z]+$/is', $email)) {
 				fatal_error();
 			}
 			
 			$process = false;
 			
-			$sql = "SELECT *
+			$sql = 'SELECT *
 				FROM _members
-				WHERE user_email = '" . $db->sql_escape($email) . "'
-					AND user_type NOT IN (" . USER_INACTIVE . ", " . USER_IGNORE . ", " . USER_FOUNDER . ")
-					AND user_active = 1";
-			$result = $db->sql_query($sql);
-			
-			if ($userdata = $db->sql_fetchrow($result))
-			{
+				WHERE user_email = ?
+					AND user_type NOT IN (??, ??, ??)
+					AND user_active = 1';
+			if ($userdata = sql_fieldrow(sql_filter($sql, $email, USER_INACTIVE, USER_IGNORE, USER_FOUNDER))) {
 				$process = true;
 			}
-			$db->sql_freeresult($result);
 			
 			$sql = 'SELECT *
 				FROM _crypt_confirm
-				WHERE crypt_userid = ' . (int) $userdata['user_id'];
-			$result = $db->sql_query($sql);
-			
-			if ($void = $db->sql_fetchrow($result))
-			{
+				WHERE crypt_userid = ?';
+			if (sql_fieldrow($sql, $userdata['user_id'])) {
 				fatal_error();
 			}
-			$db->sql_freeresult($result);
 			
 			$sql = 'SELECT *
 				FROM _banlist
-				WHERE ban_userid = ' . (int) $userdata['user_id'];
-			$result = $db->sql_query($sql);
-			
-			if ($ban_data = $db->sql_fetchrow($result))
-			{
+				WHERE ban_userid = ?';
+			if ($ban_data = sql_fieldrow($sql, $userdata['user_id'])) {
 				fatal_error();
 			}
-			$db->sql_freeresult($result);
 			
 			if ($process)
 			{
@@ -110,8 +95,8 @@ switch ($mode)
 					'crypt_code' => $verification_code,
 					'crypt_time' => $user->time
 				);
-				$sql = 'INSERT INTO _crypt_confirm' . $db->sql_build_array('INSERT', $insert);
-				$db->sql_query($sql);
+				$sql = 'INSERT INTO _crypt_confirm' . sql_build('INSERT', $insert);
+				sql_query($sql);
 				
 				// Send email
 				$emailer->from('info@rockrepublik.net');
@@ -136,40 +121,33 @@ switch ($mode)
 		break;
 	case 'verify':
 		$code = request_var('code', '');
-		if (!preg_match('#([a-z0-9]+)#is', $code))
-		{
+		if (!preg_match('#([a-z0-9]+)#is', $code)) {
 			fatal_error();
 		}
 		
-		$sql = "SELECT c.*, m.user_id, m.username, m.username_base, m.user_email
+		$sql = 'SELECT c.*, m.user_id, m.username, m.username_base, m.user_email
 			FROM _crypt_confirm c, _members m
-			WHERE c.crypt_code = '" . $db->sql_escape($code) . "'
-				AND c.crypt_userid = m.user_id";
-		$result = $db->sql_query($sql);
-		
-		if (!$crypt_data = $db->sql_fetchrow($result))
-		{
+			WHERE c.crypt_code = ?
+				AND c.crypt_userid = m.user_id';
+		if (!$crypt_data = sql_fieldrow(sql_filter($sql, $code))) {
 			fatal_error();
 		}
-		$db->sql_freeresult($result);
 		
-		if ($submit)
-		{
+		if ($submit) {
 			$password = request_var('newkey', '');
 			
 			if (!empty($password))
 			{
 				$crypt_password = user_password($password);
 				
-				$sql = "UPDATE _members
-					SET user_password = '" . $db->sql_escape($crypt_password) . "'
-					WHERE user_id = " . (int) $crypt_data['user_id'];
-				$db->sql_query($sql);
+				$sql = 'UPDATE _members SET user_password = ?
+					WHERE user_id = ?';
+				sql_query(sql_filter($sql, $crypt_password, $crypt_data['user_id']));
 				
-				$sql = "DELETE FROM _crypt_confirm
-					WHERE crypt_code = '" . $db->sql_escape($code) . "'
-						AND crypt_userid = " . (int) $crypt_data['user_id'];
-				$db->sql_query($sql);
+				$sql = 'DELETE FROM _crypt_confirm
+					WHERE crypt_code = ?
+						AND crypt_userid = ?';
+				sql_query(sql_filter($sql, $code, $crypt_data['user_id']));
 				
 				// Send email
 				require('./interfase/emailer.php');
@@ -203,34 +181,28 @@ switch ($mode)
 		break;
 	case 'confirm':
 		$code = request_var('code', '');
-		if (!preg_match('#([a-z0-9]+)#is', $code))
-		{
+		if (!preg_match('#([a-z0-9]+)#is', $code)) {
 			fatal_error();
 		}
 		
-		$sql = "SELECT c.*, m.user_id, m.username, m.username_base, m.user_email
+		$sql = 'SELECT c.*, m.user_id, m.username, m.username_base, m.user_email
 			FROM _crypt_confirm c, _members m
-			WHERE c.crypt_code = '" . $db->sql_escape($code) . "'
-				AND c.crypt_userid = m.user_id";
-		$result = $db->sql_query($sql);
-		
-		if (!$crypt_data = $db->sql_fetchrow($result))
-		{
+			WHERE c.crypt_code = ?
+				AND c.crypt_userid = m.user_id';
+		if (!$crypt_data = sql_fieldrow(sql_filter($sql, $code))) {
 			fatal_error();
 		}
-		$db->sql_freeresult($result);
 		
 		$user_id = $crypt_data['user_id'];
 		
-		$sql = 'UPDATE _members
-			SET user_type = ' . USER_NORMAL . '
-			WHERE user_id = ' . (int) $user_id;
-		$db->sql_query($sql);
+		$sql = 'UPDATE _members SET user_type = ?
+			WHERE user_id = ?';
+		sql_query(sql_filter($sql, USER_NORMAL, $user_id));
 		
-		$sql = "DELETE FROM _crypt_confirm
-			WHERE crypt_code = '" . $db->sql_escape($code) . "'
-				AND crypt_userid = " . (int) $user_id;
-		$db->sql_query($sql);
+		$sql = 'DELETE FROM _crypt_confirm
+			WHERE crypt_code = ?
+				AND crypt_userid = ?';
+		sql_query(sql_filter($sql, $code, $user_id));
 		
 		// Unread
 		$u_topics = array(288, 1455, 2524, 3168, 4121);
@@ -244,44 +216,44 @@ switch ($mode)
 		//
 		$sql = 'SELECT *
 			FROM _members_ref_assoc
-			WHERE ref_uid = ' . (int) $user_id;
-		$result = $db->sql_query($sql);
-		
-		if ($ref_assoc = $db->sql_fetchrow($result))
-		{
-			if ($user_id != $ref_assoc['ref_orig'])
-			{
+			WHERE ref_uid = ?';
+		if ($ref_assoc = sql_fieldrow(sql_filter($sql, $user_id))) {
+			if ($user_id != $ref_assoc['ref_orig']) {
 				$user->points_add(3, $ref_assoc['ref_orig']);
-			
-				$sql = 'INSERT INTO _members_friends (user_id, buddy_id, friend_time) 
-					VALUES (' . (int) $user_id . ', ' . (int) $ref_assoc['ref_orig'] . ', ' . time() . ')';
-				$db->sql_query($sql);
-				$sql = 'INSERT INTO _members_friends (user_id, buddy_id, friend_time) 
-					VALUES (' . (int) $ref_assoc['ref_orig'] . ', ' . (int) $user_id . ', ' . time() . ')';
-				$db->sql_query($sql);
+				
+				$sql_insert = array(
+					'user_id' => $user_id,
+					'buddy_id' => $ref_assoc['ref_orig'],
+					'friend_time' => time()
+				);
+				$sql = 'INSERT INTO _members_friends' . sql_build('INSERT', $sql_insert);
+				sql_query($sql);
+				
+				$sql_insert = array(
+					'user_id' => $ref_assoc['ref_orig'],
+					'buddy_id' => $user_id,
+					'friend_time' => time()
+				);
+				$sql = 'INSERT INTO _members_friends' . sql_build('INSERT', $sql_insert);
+				sql_query($sql);
 			
 				$user->save_unread(UH_FRIEND, $user_id, 0, $ref_assoc['ref_orig']);
 			}
 			
 			$sql = 'DELETE FROM _members_ref_assoc
-				WHERE ref_id = ' . (int) $ref_assoc['ref_id'];
-			$db->sql_query($sql);
+				WHERE ref_id = ?';
+			sql_query(sql_filter($sql, $ref_assoc['ref_id']));
 		}
-		$db->sql_freeresult($result);
 		
 		//
-		$sql = "SELECT *
+		$sql = 'SELECT *
 			FROM _members_ref_invite
-			WHERE invite_email = '" . $db->sql_escape($crypt_data['user_email']) . "'";
-		$result = $db->sql_query($sql);
-		
-		if ($row = $db->sql_fetchrow($result))
-		{
-			$sql = "DELETE FROM _members_ref_invite
-				WHERE invite_code = '" . $db->sql_escape($row['invite_code']) . "'";
-			$db->sql_query($sql);
+			WHERE invite_email = ?';
+		if ($row = sql_fieldrow(sql_filter($sql, $crypt_data['user_email']))) {
+			$sql = 'DELETE FROM _members_ref_invite
+				WHERE invite_code = ?';
+			sql_query(sql_filter($sql, $row['invite_code']));
 		}
-		$db->sql_freeresult($result);
 		
 		//
 		require('./interfase/emailer.php');
@@ -298,12 +270,10 @@ switch ($mode)
 		$emailer->reset();
 		
 		//
-		if (empty($user->data))
-		{
+		if (empty($user->data)) {
 			$user->init();
 		}
-		if (empty($user->lang))
-		{
+		if (empty($user->lang)) {
 			$user->setup();
 		}
 		
@@ -319,8 +289,7 @@ switch ($mode)
 //
 // Check user session
 //
-if (!$user->data['is_member'])
-{
+if (!$user->data['is_member']) {
 	do_login();
 }
 
@@ -517,30 +486,18 @@ switch ($mode)
 			// Rank
 			if (!empty($rank) && !sizeof($error))
 			{
-				$sql = "SELECT *
+				$sql = 'SELECT rank_id
 					FROM _ranks
-					WHERE rank_title = '" . $db->sql_escape($rank) . "'";
-				$result_rank = $db->sql_query($sql);
-				
-				$rank_id = 0;
-				if ($row_rank = $db->sql_fetchrow($result_rank))
-				{
-					$rank_id = $row_rank['rank_id'];
-				}
-				$db->sql_freeresult($result_rank);
-				
-				if (!$rank_id)
-				{
+					WHERE rank_title = ?';
+				if (!$rank_id = sql_field(sql_filter($sql, $rank), 'rank_id', 0)) {
 					$insert = array(
 						'rank_title' => $rank,
 						'rank_min' => -1,
 						'rank_max' => -1,
 						'rank_special' => 1
 					);
-					$sql = 'INSERT INTO _ranks' . $db->sql_build_array('INSERT', $insert);
-					$db->sql_query($sql);
-					
-					$rank_id = $db->sql_nextid();
+					$sql = 'INSERT INTO _ranks' . sql_build('INSERT', $insert);
+					$rank_id = sql_query_nextid($sql);
 				}
 				
 				$old_rank = $userdata['user_rank'];
@@ -548,88 +505,62 @@ switch ($mode)
 				{
 					$sql = 'SELECT user_id
 						FROM _members
-						WHERE user_rank = ' . (int) $old_rank;
-					$result_by = $db->sql_query($sql);
-					
-					$by = array();
-					while ($row_by = $db->sql_fetchrow($result_by))
-					{
-						$by[] = $row_by['user_id'];
-					}
-					$db->sql_freeresult($result_by);
+						WHERE user_rank = ?';
+					$by = sql_rowset(sql_filter($sql, $old_rank), false, 'user_id');
 					
 					if (sizeof($by) == 1)
 					{
 						$sql = 'DELETE FROM _ranks
-							WHERE rank_id = ' . (int) $old_rank;
-						$db->sql_query($sql);
+							WHERE rank_id = ?';
+						sql_query(sql_filter($sql, $old_rank));
 					}
 				}
 				
 				$rank = $rank_id;
-				
 				$cache->delete('ranks');
 			}
 			
-			//if (!$user->data['user_birthday'])
-			{
-				if (!$birthday_month || !$birthday_day || !$birthday_year)
-				{
-					$error[] = 'EMPTY_BIRTH_MONTH';
-				}
+			if (!$birthday_month || !$birthday_day || !$birthday_year) {
+				$error[] = 'EMPTY_BIRTH_MONTH';
 			}
 			
-			if (!sizeof($error))
-			{
+			if (!sizeof($error)) {
 				require('./interfase/functions_avatar.php');
 				
-				if ($xavatar->process())
-				{
+				if ($xavatar->process()) {
 					$avatar = $xavatar->file();
 				}
 			}
 			
-			if (!sizeof($error))
-			{
+			if (!sizeof($error)) {
 				require('./interfase/comments.php');
 				$comments = new _comments();
 				
-				if ($sig != '')
-				{
+				if (!empty($sig)) {
 					$sig = $comments->prepare($sig);
 				}
 				
-				//if (!$user->data['user_birthday'])
-				{
-					unset($user_fields['birthday_day'], $user_fields['birthday_month'], $user_fields['birthday_year']);
-				}
+				unset($user_fields['birthday_day'], $user_fields['birthday_month'], $user_fields['birthday_year']);
 				
 				$dateformat = $dateset[$dateformat];
 				$user_fields['hideuser'] = $user->data['user_hideuser'];
 				$user_fields['email_dc'] = $user->data['user_email_dc'];
 				
 				$member_data = array();
-				foreach ($user_fields as $name => $value)
-				{
-					if ($value != $$name)
-					{
+				foreach ($user_fields as $name => $value) {
+					if ($value != $$name) {
 						$member_data['user_' . $name] = $$name;
 					}
 				}
 				
-				//if (!$user->data['user_gender'])
-				{
-					$member_data['user_gender'] = $gender;
-				}
+				$member_data['user_gender'] = $gender;
 				
-				//if (!$user->data['user_birthday'])
-				{
-					$member_data['user_birthday'] = (string) (leading_zero($birthday_year) . leading_zero($birthday_month) . leading_zero($birthday_day));
-				}
+				$member_data['user_birthday'] = (string) (leading_zero($birthday_year) . leading_zero($birthday_month) . leading_zero($birthday_day));
 				
-				if (sizeof($member_data))
-				{
-					$db->sql_query('UPDATE _members SET ' . $db->sql_build_array('UPDATE', $member_data) . ' WHERE user_id = ' . (int) $user->data['user_id']);
+				if (sizeof($member_data)) {
+					$sql = 'UPDATE _members SET ' . sql_build('UPDATE', $member_data) . sql_filter(' 
+						WHERE user_id = ?', $user->data['user_id']);
+					sql_query($sql);
 				}
 				
 				redirect(s_link('m', $user->data['username_base']));
@@ -641,8 +572,7 @@ switch ($mode)
 		
 		//unset($user_fields['gender'], $user_fields['birthday_day'], $user_fields['birthday_month'], $user_fields['birthday_year']);
 		
-		if (sizeof($error))
-		{
+		if (sizeof($error)) {
 			$error = preg_replace('#^([0-9A-Z_]+)$#e', "(isset(\$user->lang['\\1'])) ? \$user->lang['\\1'] : '\\1'", $error);
 			
 			$template->assign_block_vars('error', array(
@@ -650,63 +580,50 @@ switch ($mode)
 			);
 		}
 		
-		if ($user->data['user_avatar'])
-		{
+		if ($user->data['user_avatar']) {
 			$template->assign_block_vars('current_avatar', array(
 				'IMAGE' => $config['avatar_path'] . '/' . $user->data['user_avatar'])
 			);
 		}
 		
-		//if (!$user->data['user_gender'])
-		{
-			$s_genders_select = '';
-			foreach (array(1 => 'MALE', 2 => 'FEMALE') as $id => $value)
-			{
-				$s_genders_select .= '<option value="' . $id . '"' . (($gender == $id) ? ' selected="true"' : '') . '>' . $user->lang[$value] . '</option>';
-			}
-
-			$template->assign_block_vars('gender', array(
-				'GENDER_SELECT' => $s_genders_select)
-			);
+		$s_genders_select = '';
+		foreach (array(1 => 'MALE', 2 => 'FEMALE') as $id => $value) {
+			$s_genders_select .= '<option value="' . $id . '"' . (($gender == $id) ? ' selected="true"' : '') . '>' . $user->lang[$value] . '</option>';
 		}
 		
-		//if (!$user->data['user_birthday'])
-		{
-			$s_day_select = '<option value="">&nbsp;</option>';
-			for ($i = 1; $i < 32; $i++)
-			{
-				$s_day_select .= '<option value="' . $i . '"' . (($birthday_day == $i) ? ' selected="true"' : '') . '>' . $i . '</option>';
-			}
-			
-			$s_month_select = '<option value="">&nbsp;</option>';
-			$months = array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
-			foreach ($months as $id => $value)
-			{
-				$s_month_select .= '<option value="' . ($id + 1) . '"' . (($birthday_month == ($id + 1)) ? ' selected="true"' : '') . '>' . $user->lang['datetime'][$value] . '</option>';
-			}
-			
-			$s_year_select = '<option value="">&nbsp;</option>';
-			for ($i = 2005; $i > 1899; $i--)
-			{
-				$s_year_select .= '<option value="' . $i . '"' . (($birthday_year == $i) ? ' selected="true"' : '') . '>' . $i . '</option>';
-			}
-			
-			$template->assign_block_vars('birthday', array(
-				'DAY' => $s_day_select,
-				'MONTH' => $s_month_select,
-				'YEAR' => $s_year_select)
-			);
+		$template->assign_block_vars('gender', array(
+			'GENDER_SELECT' => $s_genders_select)
+		);
+		
+		$s_day_select = '<option value="">&nbsp;</option>';
+		for ($i = 1; $i < 32; $i++) {
+			$s_day_select .= '<option value="' . $i . '"' . (($birthday_day == $i) ? ' selected="true"' : '') . '>' . $i . '</option>';
 		}
+		
+		$s_month_select = '<option value="">&nbsp;</option>';
+		$months = array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
+		foreach ($months as $id => $value) {
+			$s_month_select .= '<option value="' . ($id + 1) . '"' . (($birthday_month == ($id + 1)) ? ' selected="true"' : '') . '>' . $user->lang['datetime'][$value] . '</option>';
+		}
+		
+		$s_year_select = '<option value="">&nbsp;</option>';
+		for ($i = 2005; $i > 1899; $i--) {
+			$s_year_select .= '<option value="' . $i . '"' . (($birthday_year == $i) ? ' selected="true"' : '') . '>' . $i . '</option>';
+		}
+		
+		$template->assign_block_vars('birthday', array(
+			'DAY' => $s_day_select,
+			'MONTH' => $s_month_select,
+			'YEAR' => $s_year_select)
+		);
 		
 		$dateformat_select = '';
-		foreach ($dateset as $id => $value)
-		{
+		foreach ($dateset as $id => $value) {
 			$dateformat_select .= '<option value="' . $id . '"' . (($value == $dateformat) ? ' selected="selected"' : '') . '>' . $user->format_date($current_time, $value) . '</option>';
 		}
 		
 		$timezone_select = '';
-		foreach ($user->lang['zones'] as $id => $value)
-		{
+		foreach ($user->lang['zones'] as $id => $value) {
 			$timezone_select .= '<option value="' . $id . '"' . (($id == $timezone) ? ' selected="selected"' : '') . '>' . $value . '</option>';
 		}
 		
@@ -720,8 +637,7 @@ switch ($mode)
 			'EMAIL_DC_SELECTED' => ($email_dc) ? ' checked="checked"' : ''
 		);
 		
-		foreach ($user_fields as $name => $value)
-		{
+		foreach ($user_fields as $name => $value) {
 			$output_vars[strtoupper($name)] = $$name;
 		}
 		
