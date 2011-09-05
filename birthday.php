@@ -27,10 +27,10 @@ $cm = (int) date('m');
 $sql = 'SELECT username, user_birthday
 	FROM _members
 	ORDER BY username_base';
-$result = $db->sql_query($sql);
+$members = sql_rowset($sql);
 
 $u = array();
-while ($row = $db->sql_fetchrow($result)) {
+foreach ($members as $row) {
 	$p = array(
 		(int) substr($row['user_birthday'], 4, 2),
 		(int) substr($row['user_birthday'], 6, 2),
@@ -43,7 +43,6 @@ while ($row = $db->sql_fetchrow($result)) {
 	
 	$u[$row['username']] = $p;
 }
-$db->sql_freeresult($result);
 
 $a = $b = array();
 $i = 0;

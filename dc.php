@@ -104,14 +104,11 @@ if ($submit || $mode == 'start' || $mode == 'reply') {
 			
 			$sql = 'SELECT *
 				FROM _dc
-				WHERE msg_id = ' . (int) $parent_id . '
-					AND (privmsgs_to_userid = ' . $user->data['user_id'] . ' OR privmsgs_from_userid = ' . $user->data['user_id'] . ')';
-			$result = $db->sql_query($sql);
-			
-			if (!$to_userdata = $db->sql_fetchrow($result)) {
+				WHERE msg_id = ?
+					AND (privmsgs_to_userid = ? OR privmsgs_from_userid = ?)';
+			if (!$to_userdata = sql_fieldrow(sql_filter($sql, $parent_id, $user->data['user_id'], $user->data['user_id']))) {
 				fatal_error();
 			}
-			$db->sql_freeresult($result);
 			
 			$privmsgs_to_userid = ($user->data['user_id'] == $to_userdata['privmsgs_to_userid']) ? 'privmsgs_from_userid' : 'privmsgs_to_userid';
 			$to_userdata['user_id'] = $to_userdata[$privmsgs_to_userid];
@@ -120,16 +117,13 @@ if ($submit || $mode == 'start' || $mode == 'reply') {
 			if (!empty($member)) {
 				$member = get_username_base(phpbb_clean_username($member), true);
 				if ($member !== false) {
-					$sql = "SELECT user_id, username, username_base, user_email
+					$sql = 'SELECT user_id, username, username_base, user_email
 						FROM _members
-						WHERE username_base = '" . $db->sql_escape($member) . "'
-							AND user_type <> " . USER_IGNORE;
-					$result = $db->sql_query($sql);
-					
-					if (!$to_userdata = $db->sql_fetchrow($result)) {
+						WHERE username_base = ?
+							AND user_type <> ?';
+					if (!$to_userdata = sql_fieldrow(sql_filter($sql, $member, USER_IGNORE))) {
 						$error[] = 'NO_SUCH_USER';
 					}
-					$db->sql_freeresult($result);
 
 					if (!sizeof($error) && $to_userdata['user_id'] == $user->data['user_id']) {
 						$error[] = 'NO_AUTO_DC';
@@ -152,14 +146,11 @@ if ($submit || $mode == 'start' || $mode == 'reply') {
 			// Check blocked member
 			$sql = 'SELECT ban_id
 				FROM _members_ban
-				WHERE user_id = ' . (int) $to_userdata['user_id'] . '
-					AND banned_user = ' . (int) $user->data['user_id'];
-			$result = $db->sql_query($sql);
-			
-			if ($ban_profile = $db->sql_fetchrow($result)) {
+				WHERE user_id = ?
+					AND banned_user = ?';
+			if ($ban_profile = sql_fieldrow(sql_filter($sql, $to_userdata['user_id'], $user->data['user_id']))) {
 				$error[] = 'BLOCKED_MEMBER';
 			}
-			$db->sql_freeresult($result);
 		}
 		
 		$dc_message = request_var('message', '');
@@ -202,14 +193,11 @@ switch ($mode) {
 			if ($member != '') {
 				$member = get_username_base(phpbb_clean_username($member));
 				
-				$sql = "SELECT user_id, username, username_base
+				$sql = 'SELECT user_id, username, username_base
 					FROM _members
-					WHERE username_base = '" . $db->sql_escape($member) . "'
-						AND user_type <> " . USER_IGNORE;
-				$result = $db->sql_query($sql);
-				
-				$row = $db->sql_fetchrow($result);
-				$db->sql_freeresult($result);
+					WHERE username_base = ?
+						AND user_type <> ?';
+				$row = sql_fieldrow(sql_filter($sql, $member, USER_IGNORE));
 			}
 		}
 		
@@ -231,32 +219,27 @@ switch ($mode) {
 		
 		$sql = 'SELECT *
 			FROM _dc
-			WHERE msg_id = ' . (int) $msg_id . '
-				AND (privmsgs_to_userid = ' . $user->data['user_id'] . ' OR privmsgs_from_userid = ' . $user->data['user_id'] . ')
-				AND msg_deleted <> ' . (int) $user->data['user_id'];
-		$result = $db->sql_query($sql);
-		
-		if (!$msg_data = $db->sql_fetchrow($result)) {
+			WHERE msg_id = ?
+				AND (privmsgs_to_userid = ? OR privmsgs_from_userid = ?)
+				AND msg_deleted <> ?';
+		if (!$msg_data = sql_fieldrow(sql_filter($sql, $msg_id, $user->data['user_id'], $user->data['user_id'], $user->data['user_id']))) {
 			fatal_error();
 		}
-		$db->sql_freeresult($result);
 		
 		//
 		// Get all messages for this conversation
 		//
 		$sql = 'SELECT c.*, m.user_id, m.username, m.username_base, m.user_color, m.user_avatar, m.user_sig, m.user_rank, m.user_gender, m.user_posts
 			FROM _dc c, _members m
-			WHERE c.parent_id = ' . (int) $msg_data['parent_id'] . '
+			WHERE c.parent_id = ?
 				AND c.privmsgs_from_userid = m.user_id
 			ORDER BY c.privmsgs_date';
-		$result = $db->sql_query($sql);
-		
-		if ($row = $db->sql_fetchrow($result)) {
+		if ($result = sql_rowset(sql_filter($sql, $msg_data['parent_id']))) {
 			$template->assign_block_vars('conv', array(
 				'SUBJECT' => $row['privmsgs_subject'])
 			);
 			
-			do{
+			foreach ($result as $row) {
 				$template->assign_block_vars('conv.item', array());
 				
 				if ($msg_id == $row['msg_id']) {
@@ -290,11 +273,9 @@ switch ($mode) {
 				
 				$template->assign_block_vars('conv.item.' . $block, $dc_messages);
 			}
-			while ($row = $db->sql_fetchrow($result));
-			$db->sql_freeresult($result);
 		} else {
 			fatal_error();
-		}
+		} 
 		
 		$s_hidden_fields = array('mark[]' => $msg_data['parent_id'], 'p' => $msg_id, 'parent' => $msg_data['parent_id'], 'mode' => 'reply');
 		break;
@@ -306,30 +287,25 @@ switch ($mode) {
 		
 		$sql_tot = 'SELECT COUNT(msg_id) AS total
 			FROM _dc
-			WHERE (privmsgs_to_userid = ' . $user->data['user_id'] . ' OR privmsgs_from_userid = ' . $user->data['user_id'] . ')
+			WHERE (privmsgs_to_userid = ? OR privmsgs_from_userid = ?)
 				AND msg_id = parent_id
-				AND msg_deleted <> ' . (int) $user->data['user_id'];
-		$result = $db->sql_query($sql_tot);
-		
-		$total_conv = ($row = $db->sql_fetchrow($result)) ? $row['total'] : 0;
-		$db->sql_freeresult($result);
+				AND msg_deleted <> ?';
+		$total_conv = sql_field(sql_filter($sql, $user->data['user_id'], $user->data['user_id'], $user->data['user_id']), 'total', 0);
 		
 		$sql = 'SELECT c.msg_id, c.parent_id, c.last_msg_id, c.root_conv, c.privmsgs_date, c.privmsgs_subject, c2.privmsgs_date as last_privmsgs_date, m.user_id, m.username, m.username_base, m.user_color, m2.user_id as user_id2, m2.username as username2, m2.username_base as username_base2, m2.user_color as user_color2
 			FROM _dc c, _dc c2, _members m, _members m2
-			WHERE (c.privmsgs_to_userid = ' . $user->data['user_id'] . ' OR c.privmsgs_from_userid = ' . $user->data['user_id'] . ')
+			WHERE (c.privmsgs_to_userid = ? OR c.privmsgs_from_userid = ?)
 				AND c.msg_id = c.parent_id
-				AND c.msg_deleted <> ' . (int) $user->data['user_id'] . '
+				AND c.msg_deleted <> ?
 				AND c.privmsgs_from_userid = m.user_id
 				AND c.privmsgs_to_userid = m2.user_id
 				AND (IF(c.last_msg_id,c.last_msg_id,c.msg_id) = c2.msg_id)
 			ORDER BY c2.privmsgs_date DESC 
-			LIMIT ' . (int) $offset . ', ' . (int) $config['posts_per_page'];
-		$result = $db->sql_query($sql);
-		
-		if ($row = $db->sql_fetchrow($result)) {
+			LIMIT ??, ??';
+		if ($result = sql_rowset(sql_filter($sql, $user->data['user_id'], $user->data['user_id'], $user->data['user_id'], $offset, $config['posts_per_page']))) {
 			$template->assign_block_vars('messages', array());
 			
-			do {
+			foreach ($result as $row) {
 				$dc_with = ($user->data['user_id'] == $row['user_id']) ? '2' : '';
 				if (!$row['last_msg_id']) {
 					$row['last_msg_id'] = $row['msg_id'];
@@ -348,9 +324,7 @@ switch ($mode) {
 					'DC_COLOR' => $row['user_color'.$dc_with])
 				);
 			}
-			while ($row = $db->sql_fetchrow($result));
-			$db->sql_freeresult($result);
-			
+
 			build_num_pagination(s_link('my', array('dc', 's%d')), $total_conv, $config['posts_per_page'], $offset);
 		} else if ($total_conv) {
 			redirect(s_link('my', 'dc'));
@@ -375,25 +349,21 @@ if ($mode != '') {
 //
 $sql = 'SELECT DISTINCT m.user_id, m.username, m.username_base, m.user_color
 	FROM _members_friends f, _members m
-	WHERE (f.user_id = ' . (int) $user->data['user_id'] . ' AND f.buddy_id = m.user_id)
-		OR (f.buddy_id = ' . (int) $user->data['user_id'] . ' AND f.user_id = m.user_id)
+	WHERE (f.user_id = ? AND f.buddy_id = m.user_id)
+		OR (f.buddy_id = ? AND f.user_id = m.user_id)
 	ORDER BY m.username';
-$result = $db->sql_query($sql);
-
-$template->assign_block_vars('sdc_friends', array(
-	'DC_START' => s_link('my', array('dc', 'start')))
-);
-
-if ($row = $db->sql_fetchrow($result)) {
-	do {
+if ($result = sql_rowset(sql_filter($sql, $user->data['user_id'], $user->data['user_id']))) {
+	$template->assign_block_vars('sdc_friends', array(
+		'DC_START' => s_link('my', array('dc', 'start')))
+	);
+	
+	foreach ($result as $row) {
 		$template->assign_block_vars('sdc_friends.item', array(
 			'USERNAME' => $row['username'],
 			'URL' => s_link('my', array('dc', 'start', $row['username_base'])),
 			'USER_COLOR' => $row['user_color'])
 		);
 	}
-	while ($row = $db->sql_fetchrow($result));
-	$db->sql_freeresult($result);
 }
 
 //

@@ -498,82 +498,59 @@ class _comments
 						$data[$key] = ($value != '') ? '<div' . ((isset($row['post_id'])) ? ' id="_sig_' . $row['post_id'] . '" ' : '') . 'class="lsig">' . $this->parse_message($value, $a_class) . '</div>' : '';
 						break;
 					case 'user_avatar':
-						if ($row['user_id'] != GUEST)
-						{
-							if ($value != '')
-							{
+						if ($row['user_id'] != GUEST) {
+							if ($value != '') {
 								$value = $config['avatar_path'] . '/' . $value;
-							}
-							else
-							{
+							} else {
 								$value = $config['default_avatar_users_url'];
 							}
-						}
-						else
-						{
+						} else {
 							$value = $config['default_avatar_guests_url'];
 						}
 						
 						$data[$key] = $value;
 						break;
 					case 'user_rank':
-						if (!isset($all_ranks))
-						{
+						if (!isset($all_ranks)) {
 							$all_ranks = $user->init_ranks();
 						}
 						
-						if ($row['user_id'] != GUEST)
-						{
-							if ($value)
-							{
-								for ($i = 0, $end = sizeof($all_ranks); $i < $end; $i++)
-								{
-									if (($row['user_rank'] == $all_ranks[$i]['rank_id']) && $all_ranks[$i]['rank_special'])
-									{
+						if ($row['user_id'] != GUEST) {
+							if ($value) {
+								for ($i = 0, $end = sizeof($all_ranks); $i < $end; $i++) {
+									if (($row['user_rank'] == $all_ranks[$i]['rank_id']) && $all_ranks[$i]['rank_special']) {
 										$ranks_e = explode('|', $all_ranks[$i]['rank_title']);
 										$value = (isset($ranks_e[$row['user_gender']]) && ($ranks_e[$row['user_gender']] != '')) ? $ranks_e[$row['user_gender']] : $ranks_e[0];
 									}
 								}
-							}
-							else
-							{
-								if (isset($row['user_gender']) && isset($row['user_posts']))
-								{
-									for ($i = 0, $end = sizeof($all_ranks); $i < $end; $i++)
-									{
-										if (($row['user_posts'] >= $all_ranks[$i]['rank_min']) && !$all_ranks[$i]['rank_special'])
-										{
+							} else {
+								if (isset($row['user_gender']) && isset($row['user_posts'])) {
+									for ($i = 0, $end = sizeof($all_ranks); $i < $end; $i++) {
+										if (($row['user_posts'] >= $all_ranks[$i]['rank_min']) && !$all_ranks[$i]['rank_special']) {
 											$ranks_e = explode('|', $all_ranks[$i]['rank_title']);
 											$value = (isset($ranks_e[$row['user_gender']]) && ($ranks_e[$row['user_gender']] != '')) ? $ranks_e[$row['user_gender']] : $ranks_e[0];
 										}
 									}
-								}
-								else
-								{
+								} else {
 									$value = '';
 								}
 							}
-						}
-						else
-						{
+						} else {
 							$value = $user->lang['GUEST'];
 						}
 						
 						$data[$key] = $value;
 						break;
 					default:
-						if ($value != '')
-						{
+						if ($value != '') {
 							$data[$key] = $value;
 						}
 						break;
 				}
 			}
 			
-			if ($unset_fields !== false)
-			{
-				foreach ($unset_fields as $field)
-				{
+			if ($unset_fields !== false) {
+				foreach ($unset_fields as $field) {
 					unset($data[$field]);
 				}
 			}

@@ -16,8 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-if (!defined('IN_NUCLEO'))
-{
+if (!defined('IN_NUCLEO')) {
 	die('Rock Republik');
 }
 
@@ -80,7 +79,7 @@ if (!defined('REQC')) {
 }
 
 require(ROOT.'interfase/constants.php');
-require(ROOT.'interfase/mysql.php');
+require(ROOT.'interfase/db.mysql.php');
 require(ROOT.'interfase/template.php');
 require(ROOT.'interfase/session.php');
 require(ROOT.'interfase/functions.php');
@@ -88,9 +87,7 @@ require(ROOT.'interfase/cache.php');
 
 set_error_handler('msg_handler');
 
-// Make the database connection
-$db = new sql_db();
-
+$db = new database();
 $user = new user();
 $auth	= new auth();
 $cache = new cache();

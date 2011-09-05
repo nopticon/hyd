@@ -58,16 +58,13 @@ switch ($mode) {
 			$ch_int_name = strtolower($ch_name);
 			
 			if (!sizeof($error)) {
-				$sql = "SELECT *
+				$sql = 'SELECT *
 					FROM _chat_ch
-					WHERE ch_int_name = '" . $db->sql_escape($ch_int_name) . "'
-						OR ch_name = '" . $db->sql_escape($ch_name) . "'";
-				$result = $db->sql_query($sql);
-				
-				if ($row = $db->sql_fetchrow($result)) {
+					WHERE ch_int_name = ?
+						OR ch_name = ?';
+				if (sql_fieldrow(sql_filter($sql, $ch_int_name, $ch_name))) {
 					$error[] = 'CHAT_ALREADY_CREATED';
 				}
-				$db->sql_freeresult($result);
 			}
 			
 			if (empty($ch_desc)) {
@@ -88,8 +85,8 @@ switch ($mode) {
 					'ch_ip' => $user->ip,
 					'ch_locked' => 0
 				);
-				
-				$db->sql_query('INSERT INTO _chat_ch' . $db->sql_build_array('INSERT', $insert_data));
+				$sql = 'INSERT INTO _chat_ch' . sql_build('INSERT', $insert_data);
+				sql_query($sql);
 				
 				redirect(s_link('chat', $ch_int_name));
 			} else {

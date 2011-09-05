@@ -33,35 +33,39 @@ $sql = 'SELECT COUNT(DISTINCT session_ip) AS guests_today
 	WHERE session_user_id = ' . GUEST . '
 		AND session_time >= ' . $timetoday . '
 		AND session_time < ' . ($timetoday + 86399);
-$result = $db->sql_query($sql);
-
-$guest_count = $db->sql_fetchrow($result);
-$db->sql_freeresult($result);
+$guests_today = sql_field(sql_filter($sql, $timetoday, ($timetoday + 86399)), 'guests_today', 0);
 
 $sql = 'SELECT user_hideuser, COUNT(*) AS count
 	FROM _members
-	WHERE user_id <> ' . GUEST . '
-		AND user_session_time >= ' . $timetoday . '
-		AND user_session_time < ' . ( $timetoday + 86399 ) . '
+	WHERE user_id <> ?
+		AND user_session_time >= ?
+		AND user_session_time < ?
 	GROUP BY user_hideuser';
-$result = $db->sql_query($sql);
+$reg_count = sql_rowset(sql_filter($sql, GUEST, $timetoday, ($timetoday + 86399)));
 
-while ($reg_count = $db->sql_fetchrow ($result)) {
-	if (!$reg_count['user_hideuser']) {
-		$logged_visible_today = $reg_count['count'];
+foreach ($reg_count as $row) {
+	if (!$row['user_hideuser']) {
+		$logged_visible_today = $row['count'];
 	} else {
-		$logged_hidden_today = $reg_count['count'];
+		$logged_hidden_today = $row['count'];
 	}
 }
-$db->sql_freeresult($result);
 
-$sql = "UPDATE _site_stats
-	SET reg = " . intval($logged_visible_today) . ", hidden = " . intval($logged_hidden_today) . ", guests = " . intval($guest_count['guests_today']) . "
-	WHERE date = " . intval($hour_now);
-$db->sql_query($sql);
+$sql = 'UPDATE _site_stats
+	SET reg = ?, hidden = ?, guests = ?
+	WHERE date = ?';
+sql_query(sql_filter($sql, $logged_visible_today, $logged_hidden_today, $guests_today, $hour_now));
 
-if (!$db->sql_affectedrows()) {
-	$db->sql_query("INSERT IGNORE INTO _site_stats (date, reg, hidden, guests) VALUES ('" . $hour_now . "', '" . $logged_visible_today . "', '" . $logged_hidden_today . "', '" . $guest_count['guests_today'] . "')");
+if (!sql_affectedrows()) {
+	$sql_insert = array(
+		'date' => $hour_now,
+		'reg' => $logged_visible_today,
+		'hidden' => $logged_hidden_today,
+		'guests' => $guests_today
+	);
+	
+	$sql = 'INSERT IGNORE INTO _site_stats' . sql_build('INSERT', $sql_insert);
+	sql_query($sql);
 }
 
 ?>

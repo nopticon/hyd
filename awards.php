@@ -26,14 +26,8 @@ $forum_id = 22;
 
 $sql = 'SELECT *
 	FROM _forum_topics
-	WHERE forum_id = ' . (int) $forum_id;
-$result = $db->sql_query($sql);
-
-$a_topics = array();
-while ($row = $db->sql_fetchrow($result)) {
-	$a_topics[$row['topic_id']] = $row;
-}
-$db->sql_freeresult($result);
+	WHERE forum_id = ?';
+$a_topics = sql_rowset(sql_filter($sql, $forum_id), 'topic_id');
 
 $topics = array(
 	3454 => $a_topics[3454],
@@ -61,20 +55,20 @@ if (time() >= 1197093599) {
 			WHERE vd.topic_id = ' . (int) $topic_id . '
 				AND vr.vote_id = vd.vote_id
 			ORDER BY vr.vote_option_order, vr.vote_option_id ASC';
-		$result = $db->sql_query($sql);
+		$result = sql_query($sql);
 	
-		if ($vote_info = $db->sql_fetchrowset($result)) {
-			$db->sql_freeresult($result);
+		if ($vote_info = sql_fetchrowset($result)) {
+			sql_freeresult($result);
 			$vote_options = sizeof($vote_info);
 			
 			$sql = 'SELECT vote_id
 				FROM _poll_voters
 				WHERE vote_id = ' . (int) $vote_info[0]['vote_id'] . '
 					AND vote_user_id = ' . (int) $user->data['user_id'];
-			$result = $db->sql_query($sql);
+			$result = sql_query($sql);
 	
-			$user_voted = ( $row = $db->sql_fetchrow($result) ) ? TRUE : 0;
-			$db->sql_freeresult($result);
+			$user_voted = ( $row = sql_fetchrow($result) ) ? TRUE : 0;
+			sql_freeresult($result);
 	
 			$template->assign_block_vars('poll', array(
 				'POLL_TITLE' => $vote_info[0]['vote_text'])
@@ -101,10 +95,6 @@ if (time() >= 1197093599) {
 	}
 }
 
-
-//
-// Send vars to template
-//
 $template_vars = array(
 	'S_TOPIC_ACTION' => $topic_url . (($start) ? 's' . $start . '/' : ''),
 	'U_VIEW_FORUM' => s_link('forum', $forum_id)

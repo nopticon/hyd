@@ -1,7 +1,7 @@
 <?php
 /*
-<Orion, a web development framework for RK.>
-Copyright (C) <2011>  <Orion>
+<NPT, a web development framework.>
+Copyright (C) <2009>  <NPT>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -16,27 +16,34 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-define('IN_NUCLEO', true);
-require('./interfase/common.php');
+if (!defined('IN_NUCLEO')) exit;
 
-$user->init();
-$user->setup();
+require_once(ROOT . 'interfase/db.call.php');
 
-$mode = request_var('mode', '');
-if (empty($mode)) {
-	fatal_error();
-}
-
-require('./interfase/rss.php');
-$rss = new _rss();
-
-$method = '_' . $mode;
-if (!method_exists($rss, $method)) {
-	fatal_error();
-}
-
-$rss->smode($mode);
-$rss->$method();
-$rss->output();
+class dcom {
+	protected $connect;
+	protected $result;
+	protected $history;
+	protected $row;
+	protected $rowset;
+	protected $queries;
+	protected $noerror;
 	
+	protected $_access = array();
+	
+	final protected function access($d) {
+		if ($d === false) {
+			$d = decode_ht('.htda');
+		}
+		
+		foreach (w('server login secret database') as $i => $k)
+		{
+			$this->_access[$k] = _decode($d[$i]);
+		}
+		unset($d);
+		
+		return;
+	}
+}
+
 ?>
