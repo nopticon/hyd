@@ -50,7 +50,7 @@ class xavatar
 	
 	function process()
 	{
-		global $db, $user, $config, $error;
+		global $user, $config, $error;
 		
 		$this->info = $_FILES['avatar'];
 		

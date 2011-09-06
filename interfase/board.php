@@ -155,8 +155,7 @@ class board
 	
 	function birthdays()
 	{
-		global $db, $template;
-		
+		global $template;
 		
 		$sql = "SELECT user_id, username, username_base, user_color, user_avatar, user_posts
 			FROM _members
@@ -191,7 +190,7 @@ class board
 	
 	function top_posters()
 	{
-		global $db, $template;
+		global $template;
 		
 		$sql = 'SELECT user_id, username, username_base, user_color, user_avatar, user_posts
 			FROM _members

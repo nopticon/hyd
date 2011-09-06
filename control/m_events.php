@@ -63,7 +63,7 @@ class events extends common
 	
 	function home()
 	{
-		global $db, $user, $template;
+		global $user, $template;
 		
 		if ($this->setup())
 		{

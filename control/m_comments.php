@@ -104,7 +104,7 @@ class comments extends common
 	
 	function _help_home()
 	{
-		global $db, $user, $template;
+		global $user, $template;
 		
 		include('./interfase/comments.php');
 		$comments = new _comments();
@@ -214,7 +214,7 @@ class comments extends common
 	
 	function _help_add()
 	{
-		global $db, $user, $cache, $template;
+		global $user, $cache, $template;
 		
 		$error = array();
 		$sub = $this->control->get_var('sub', '');
@@ -423,7 +423,7 @@ class comments extends common
 	
 	function _help_edit()
 	{
-		global $db, $user, $cache, $template;
+		global $user, $cache, $template;
 		
 		$error = array();
 		$sub = $this->control->get_var('sub', '');

@@ -142,7 +142,7 @@ class cover
 
 	function banners()
 	{
-		global $db, $cache, $user, $template;
+		global $cache, $user, $template;
 		
 		$banners = array();
 		if (!$banners = $cache->get('banners'))
@@ -186,7 +186,7 @@ class cover
 		$founders = array();
 		if (!$founders = $cache->get('founders'))
 		{
-			global $db, $config;
+			global $config;
 			
 			$sql = 'SELECT user_id, username, username_base, user_color, user_email, user_avatar
 				FROM _members
@@ -245,7 +245,7 @@ class cover
 	//
 	function board()
 	{
-		global $db, $user, $config, $template;
+		global $user, $config, $template;
 		
 		$sql = 'SELECT t.topic_id, t.topic_title, t.forum_id, t.topic_replies, t.topic_color, f.forum_alias, f.forum_name, p.post_id, p.post_username, p.post_time, u.user_id, u.username, u.username_base, u.user_color
 			FROM _forums f, _forum_topics t, _forum_posts p, _members u
@@ -295,7 +295,7 @@ class cover
 	//
 	function poll()
 	{
-		global $db, $user, $auth, $config, $cache, $template;
+		global $user, $auth, $config, $cache, $template;
 		
 		if (!$topic_id = $cache->get('last_poll_id'))
 		{

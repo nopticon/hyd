@@ -23,7 +23,7 @@ class __kick extends common
 	
 	function home()
 	{
-		global $db, $nucleo, $user;
+		global $nucleo, $user;
 		
 		$v = $this->control->__(array('a' => array('default' => 0)));
 		if (!$v['a'])

@@ -28,27 +28,19 @@ $image_id = request_var('image_id', 0);
 
 $sql = 'SELECT *
 	FROM _events_images
-	WHERE event_id = ' . (int) $event_id . '
-		AND image = ' . (int) $image_id;
-$result = $db->sql_query($sql);
-
-if (!$imaged = $db->sql_fetchrow($result))
-{
+	WHERE event_id = ?
+		AND image = ?';
+if (!$imaged = sql_fieldrow(sql_filter($sql, $event_id, $image_id))) {
 	fatal_error();
 }
-$db->sql_freeresult($result);
-
 $image_footer = request_var('image_footer', '', true);
 
-$sql = "UPDATE _events_images
-	SET image_footer = '" . $db->sql_escape($image_footer) . "'
-	WHERE event_id = " . (int) $event_id . '
-		AND image = ' . (int) $image_id;
-$db->sql_query($sql);
+$sql = 'UPDATE _events_images SET image_footer = ?
+	WHERE event_id = ?
+		AND image = ?';
+sql_query(sql_filter($sql, $image_footer, $event_id, $image_id));
 
 echo $image_footer;
-
-$db->sql_close();
-die();
+exit;
 
 ?>

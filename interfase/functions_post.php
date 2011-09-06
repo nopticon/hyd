@@ -160,7 +160,7 @@ function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on,
 //
 function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_id, &$post_id, &$poll_id, &$topic_type, &$bbcode_on, &$html_on, &$smilies_on, &$attach_sig, &$bbcode_uid, &$post_username, &$post_subject, &$post_message, &$post_np, &$poll_title, &$poll_options, &$poll_length, $ub = '')
 {
-	global $config, $lang, $db, $userdata, $user_ip, $tree;
+	global $config, $lang, $userdata, $user_ip, $tree;
 	
 	$current_time = time();
 	
@@ -440,7 +440,7 @@ function update_post_stats(&$mode, &$post_data, &$forum_id, &$topic_id, &$post_i
 //
 function delete_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_id, &$post_id, &$poll_id)
 {
-	global $config, $lang, $db, $userdata, $user_ip;
+	global $config, $lang, $userdata, $user_ip;
 
 	if ($mode != 'poll_delete')
 	{
@@ -502,7 +502,7 @@ function delete_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 //
 function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topic_id, &$post_id, &$notify_user)
 {
-	global $config, $lang, $db, $userdata, $user_ip;
+	global $config, $lang, $userdata, $user_ip;
 
 	$current_time = time();
 
@@ -682,7 +682,7 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 //
 function username_search($search_match)
 {
-	global $db, $config, $template, $lang, $images, $themeset;
+	global $config, $template, $lang, $images, $themeset;
 	global $starttime, $gen_simple_header;
 //-- mod : profile cp ------------------------------------------------------------------------------
 //-- add

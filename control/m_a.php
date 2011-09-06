@@ -50,7 +50,7 @@ class a extends common
 	
 	function setup()
 	{
-		global $db, $user;
+		global $user;
 		
 		$a = $this->control->get_var('a', '');
 		if (empty($a))
@@ -58,30 +58,22 @@ class a extends common
 			return false;
 		}
 		
-		$sql = "SELECT *
+		$sql = 'SELECT *
 			FROM _artists
-			WHERE subdomain = '" . $db->sql_escape($a) . "'";
-		$result = $db->sql_query($sql);
-		
-		if (!$a_data = $db->sql_fetchrow($result))
-		{
+			WHERE subdomain = ?';
+		if (!$a_data = sql_fieldrow(sql_filter($sql, $a))) {
 			return false;
 		}
-		$db->sql_freeresult($result);
 		
 		if ($user->data['user_type'] == USER_ARTIST)
 		{
 			$sql = 'SELECT *
 				FROM _artists_auth
-				WHERE ub = ' . (int) $a_data['ub'] . '
-					AND user_id = ' . (int) $user->data['user_id'];
-			$auth_result = $db->sql_query($sql);
-			
-			if (!$auth_row = $db->sql_fetchrow($auth_result))
-			{
+				WHERE ub = ?
+					AND user_id = ?';
+			if (!sql_fieldrow(sql_filter($sql, $a_data['ub'], $user->data['user_id']))) {
 				fatal_error();
 			}
-			$db->sql_freeresult($auth_result);
 		}
 		
 		$this->data = $a_data;
@@ -102,7 +94,7 @@ class a extends common
 	
 	function home()
 	{
-		global $db, $user, $template;
+		global $user, $template;
 		
 		if ($this->setup())
 		{
@@ -126,69 +118,41 @@ class a extends common
 					FROM _artists_auth au, _artists a, _members m
 					WHERE au.ub = a.ub
 						AND au.user_id = m.user_id
-						AND m.user_id = ' . (int) $user->data['user_id'] . '
-						AND m.user_type = ' . USER_ARTIST . '
+						AND m.user_id = ?
+						AND m.user_type = ?
 					ORDER BY m.username';
-				$result = $db->sql_query($sql);
-				
-				if ($row = $db->sql_fetchrow($result))
-				{
-					$mod_ary = array();
-					do
-					{
-						$mod_ary[] = $row['ub'];
-					}
-					while ($row = $db->sql_fetchrow($result));
-					
-					$sql_where = 'WHERE ub IN (' . implode(',', array_map('intval', $mod_ary)) . ')';
+				if ($mod_ary = sql_rowset(sql_filter($sql, $user->data['user_id'], USER_ARTIST), false, 'ub')) {
+					$sql_where = sql_filter('WHERE ub IN (??)', implode(',', array_map('intval', $mod_ary)));
 				}
-				$db->sql_freeresult($result);
 			}
 			
 			$sql = 'SELECT *
 				FROM _artists
 				' . $sql_where . '
 				ORDER BY name';
-			$result = $db->sql_query($sql);
-			
-			if ($row = $db->sql_fetchrow($result))
-			{
-				$selected_artists = array();
-				do
-				{
-					$selected_artists[$row['ub']] = $row;
-				}
-				while ($row = $db->sql_fetchrow($result));
-				$db->sql_freeresult($result);
-				
+			if ($selected_artists = sql_rowset($sql, 'ub')) {
 				//
 				// Get artists images
-				//
 				$sql = 'SELECT *
 					FROM _artists_images
-					WHERE ub IN (' . implode(',', array_keys($selected_artists)) . ')
+					WHERE ub IN (??)
 					ORDER BY RAND()';
-				$result = $db->sql_query($sql);
+				$result = sql_rowset(sql_filter($sql, implode(',', array_keys($selected_artists))));
 				
 				$random_images = array();
-				while ($row = $db->sql_fetchrow($result))
-				{
-					if (!isset($random_images[$row['ub']]))
-					{
+				foreach ($result as $row) {
+					if (!isset($random_images[$row['ub']])) {
 						$random_images[$row['ub']] = $row['image'];
 					}
 				}
-				$db->sql_freeresult($result);
 				
 				$template->assign_block_vars('select_a', array());
 				
 				$tcol = 0;
-				foreach ($selected_artists as $ub => $data)
-				{
+				foreach ($selected_artists as $ub => $data) {
 					$image = ($data['images']) ? $ub . '/thumbnails/' . $random_images[$ub] . '.jpg' : 'default/shadow.gif';
 					
-					if (!$tcol)
-					{
+					if (!$tcol) {
 						$template->assign_block_vars('select_a.row', array());
 					}
 					
@@ -203,7 +167,6 @@ class a extends common
 					$tcol = ($tcol == 4) ? 0 : $tcol + 1;
 				}
 			}
-			// $db->sql_freeresult($result);
 		}
 		
 		return;
@@ -245,7 +208,7 @@ class a extends common
 			redirect(s_link_control('a', array('a' => $this->data['subdomain'], 'mode' => 'news')));
 		}
 		
-		global $db, $user, $config, $template;
+		global $user, $config, $template;
 		
 		$post_title = $this->control->get_var('title', '');
 		$message = $this->control->get_var('message', '', true);
@@ -273,17 +236,12 @@ class a extends common
 		{
 			$sql = 'SELECT MAX(post_time) AS last_post_time
 				FROM _forum_posts
-				WHERE poster_id = ' . $user->data['user_id'];
-			$result = $db->sql_query($sql);
-			
-			if ($row = $db->sql_fetchrow($result))
-			{
-				if (intval($row['last_post_time']) > 0 && ($current_time - intval($row['last_post_time'])) < intval($config['flood_interval']))
-				{
+				WHERE poster_id = ?';
+			if ($last_post_time = sql_field(sql_filter($sql, $user->data['user_id']), 'last_post_time', 0)) {
+				if (intval($last_post_time) > 0 && ($current_time - intval($last_post_time)) < intval($config['flood_interval'])) {
 					$error[] = 'FLOOD_ERROR';
 				}
 			}
-			$db->sql_freeresult($result);
 		}
 		
 		if (!sizeof($error))
@@ -300,8 +258,8 @@ class a extends common
 				'topic_important' => 0,
 				'topic_vote' => 0
 			);
-			$db->sql_query('INSERT INTO _forum_topics' . $db->sql_build_array('INSERT', $insert_data['TOPIC']));
-			$topic_id = $db->sql_nextid();
+			$sql = 'INSERT INTO _forum_topics' . sql_build('INSERT', $insert_data['TOPIC']);
+			$topic_id = sql_query_nextid($sql);
 			
 			$insert_data['POST'] = array(
 				'topic_id' => (int) $topic_id,
@@ -311,28 +269,24 @@ class a extends common
 				'poster_ip' => $user->ip,
 				'post_text' => $message
 			);
-			$db->sql_query('INSERT INTO _forum_posts' . $db->sql_build_array('INSERT', $insert_data['POST']));
-			$post_id = $db->sql_nextid();
+			$sql = 'INSERT INTO _forum_posts' . sql_build('INSERT', $insert_data['POST']);
+			$post_id = sql_query_nextid($sql);
 			
-			$sql = 'UPDATE _forums
-				SET forum_posts = forum_posts + 1, forum_topics = forum_topics + 1, forum_last_topic_id = ' . $topic_id . '
-				WHERE forum_id = ' . $config['ub_fans_f'];
-			$db->sql_query($sql);
+			$sql = 'UPDATE _forums SET forum_posts = forum_posts + 1, forum_topics = forum_topics + 1, forum_last_topic_id = ?
+				WHERE forum_id = ?';
+			sql_query(sql_filter($sql, $topic_id, $config['ub_fans']));
 			
-			$sql = 'UPDATE _forum_topics
-				SET topic_first_post_id = ' . $post_id . ', topic_last_post_id = ' . $post_id . '
-				WHERE topic_id = ' . $topic_id;
-			$db->sql_query($sql);
+			$sql = 'UPDATE _forum_topics SET topic_first_post_id = ?, topic_last_post_id = ?
+				WHERE topic_id = ?';
+			sql_query(sql_filter($sql, $post_id, $post_id, $topic_id));
 			
-			$sql = 'UPDATE _members
-				SET user_posts = user_posts + 1
-				WHERE user_id = ' . $user->data['user_id'];
-			$db->sql_query($sql);
+			$sql = 'UPDATE _members SET user_posts = user_posts + 1
+				WHERE user_id = ?';
+			sql_query(sql_filter($sql, $user->data['user_id']));
 			
-			$sql = 'UPDATE _artists
-				SET news = news + 1
-				WHERE ub = ' . (int) $this->data['ub'];
-			$db->sql_query($sql);
+			$sql = 'UPDATE _artists SET news = news + 1
+				WHERE ub = ?';
+			sql_query(sql_filter($sql, $this->data['ub']));
 			
 			topic_feature($topic_id, 0);
 			set_config('max_posts', $config['max_posts'] + 1);
@@ -358,7 +312,7 @@ class a extends common
 	
 	function _news_edit()
 	{
-		global $db, $user, $config, $template;
+		global $user, $config, $template;
 		
 		$submit = isset($_POST['submit']) ? TRUE : FALSE;
 		$id = $this->control->get_var('id', 0);
@@ -369,29 +323,21 @@ class a extends common
 		
 		$sql = 'SELECT *
 			FROM _forum_topics
-			WHERE topic_id = ' . (int) $id . '
-				AND forum_id = ' . (int) $config['ub_fans_f'] . '
-				AND topic_ub = ' . (int) $this->data['ub'];
-		$result = $db->sql_query($sql);
-		
-		if (!$nsdata = $db->sql_fetchrow($result))
-		{
+			WHERE topic_id = ?
+				AND forum_id = ?
+				AND topic_ub = ?';
+		if (!$nsdata = sql_fieldrow(sql_filter($sql, $id, $config['ub_fans_f'], $this->data['ub']))) {
 			fatal_error();
 		}
-		$db->sql_freeresult($result);
 		
 		$sql = 'SELECT *
 			FROM _forum_posts
-			WHERE post_id = ' . (int) $nsdata['topic_first_post_id'] . '
-				AND topic_id = ' . (int) $nsdata['topic_id'] . '
-				AND forum_id = ' . (int) $nsdata['forum_id'];
-		$result = $db->sql_query($sql);
-		
-		if (!$nsdata2 = $db->sql_fetchrow($result))
-		{
+			WHERE post_id = ?
+				AND topic_id = ?
+				AND forum_id = ?';
+		if (!$nsdata2 = sql_fieldrow(sql_filter($sql, $nsdata['topic_first_post_id'], $nsdata['topic_id'], $nsdata['forum_id']))) {
 			fatal_error();
 		}
-		$db->sql_freeresult($result);
 		
 		$post_title = preg_replace('#(.*?): (.*?)#', '\\2', $nsdata['topic_title']);
 		$message = $nsdata2['post_text'];
@@ -432,8 +378,13 @@ class a extends common
 						)
 					);
 					
-					$db->sql_query('UPDATE _forum_topics SET ' . $db->sql_build_array('UPDATE', $update_data['TOPIC']) . ' WHERE topic_id = ' . (int) $nsdata['topic_id']);
-					$db->sql_query('UPDATE _forum_posts SET ' . $db->sql_build_array('UPDATE', $update_data['POST']) . ' WHERE post_id = ' . (int) $nsdata['topic_first_post_id']);
+					$sql = 'UPDATE _forum_topics SET ??
+						WHERE topic_id = ?';
+					sql_query(sql_filter($sql, sql_build('UPDATE', $update_data['TOPIC']), $nsdata['topic_id']));
+					
+					$sql = 'UPDATE _forum_posts SET ??
+						WHERE post_id = ?';
+					sql_query(sql_filter($sql, sql_build('UPDATE', $update_data['POST']), $nsdata['topic_first_post_id']));
 					
 					$user->save_unread(UH_N, $nsdata['topic_id']);
 				}
@@ -469,7 +420,7 @@ class a extends common
 			redirect(s_link('a', $this->data['subdomain']));
 		}
 		
-		global $db, $config, $user;
+		global $config, $user;
 		
 		$id = $this->control->get_var('id', 0);
 		
@@ -480,16 +431,12 @@ class a extends common
 		
 		$sql = 'SELECT *
 			FROM _forum_topics
-			WHERE topic_id = ' . (int) $id . '
-				AND forum_id = ' . (int) $config['ub_fans_f'] . '
-				AND topic_ub = ' . (int) $this->data['ub'];
-		$result = $db->sql_query($sql);
-		
-		if (!$nsdata = $db->sql_fetchrow($result))
-		{
+			WHERE topic_id = ?
+				AND forum_id = ?
+				AND topic_ub = ?';
+		if (!$nsdata = sql_fieldrow(sql_filter($sql, $id, $config['ub_fans_f'], $this->data['ub']))) {
 			fatal_error();
 		}
-		$db->sql_freeresult($result);
 		
 		if (isset($_POST['confirm']))
 		{
@@ -499,24 +446,22 @@ class a extends common
 			
 			$sql = 'SELECT poster_id, COUNT(post_id) AS posts
 				FROM _forum_posts
-				WHERE topic_id = ' . (int) $id . '
+				WHERE topic_id = ?
 				GROUP BY poster_id';
-			$result = $db->sql_query($sql);
+			$result = sql_rowset(sql_filter($sql, $id));
 			
-			while ($row = $db->sql_fetchrow($result))
-			{
-				$sql_a[] = 'UPDATE _members SET user_posts = user_posts - ' . (int) $row['posts'] . '
-					WHERE user_id = ' . (int) $row['poster_id'];
+			foreach ($result as $row) {
+				$sql = 'UPDATE _members SET user_posts = user_posts - ??
+					WHERE user_id = ?';
+				$sql_a[] = sql_filter($sql, $row['posts'], $row['poster_id']);
 			}
-			$db->sql_freeresult($result);
 			
-			$sql_a += array(
-				'DELETE FROM _forum_topics WHERE topic_id = ' . (int) $id,
-				'DELETE FROM _forum_posts WHERE topic_id = ' . (int) $id,
-				'DELETE FROM _forum_topics_fav WHERE topic_id = ' . (int) $id,
-				'UPDATE _artists SET news = news - 1 WHERE ub = ' . (int) $this->data['ub']
-			);
-			$db->sql_query($sql_a);
+			$sql_a[] = sql_filter('DELETE FROM _forum_topics WHERE topic_id = ?', $id);
+			$sql_a[] = sql_filter('DELETE FROM _forum_posts WHERE topic_id = ?', $id);
+			$sql_a[] = sql_filter('DELETE FROM _forum_topics_fav WHERE topic_id = ?', $id);
+			$sql_a[] = sql_filter('UPDATE _artists SET news = news - 1 WHERE ub = ?', $this->data['ub']);
+			
+			sql_query($sql_a);
 			
 			sync('forum', $config['ub_fans_f']);
 			set_config('max_posts', $config['max_posts'] - 1);
@@ -567,7 +512,7 @@ class a extends common
 	
 	function _aposts_edit()
 	{
-		global $db, $user, $config, $template;
+		global $user, $config, $template;
 		
 		$submit = isset($_POST['submit']) ? TRUE : FALSE;
 		
@@ -580,16 +525,12 @@ class a extends common
 		
 		$sql = 'SELECT p.*, m.user_id, m.username, m.username_base, m.user_color
 			FROM _artists_posts p, _members m
-			WHERE p.post_id = ' . (int) $id . '
-				AND p.post_ub = ' . (int) $this->data['ub'] . '
+			WHERE p.post_id = ?
+				AND p.post_ub = ?
 				AND p.poster_id = m.user_id';
-		$result = $db->sql_query($sql);
-		
-		if (!$pdata = $db->sql_fetchrow($result))
-		{
+		if (!$pdata = sql_fieldrow(sql_filter($sql, $id, $this->data['ub']))) {
 			fatal_error();
 		}
-		$db->sql_freeresult($result);
 		
 		$message = $pdata['post_text'];
 		
@@ -608,16 +549,14 @@ class a extends common
 			{
 				$message = $this->comments->prepare($message);
 				
-				$sql = "UPDATE _artists_posts
-					SET post_text = '" . $db->sql_escape($message) . "'
-					WHERE post_id = " . (int) $pdata['post_id'];
-				$db->sql_query($sql);
+				$sql = 'UPDATE _artists_posts SET post_text = ?
+					WHERE post_id = ?';
+				sql_query(sql_filter($sql, $message, $pdata['post_id']));
 				
 				redirect(s_link('a', array($this->data['subdomain'], 12, $pdata['post_id'])));
 			}
 			
-			if (sizeof($error))
-			{
+			if (sizeof($error)) {
 				$template->assign_block_vars('error', array(
 					'MESSAGE' => parse_error($error))
 				);
@@ -644,7 +583,7 @@ class a extends common
 			redirect(s_link('a', $this->data['subdomain']));
 		}
 		
-		global $db, $config, $user;
+		global $config, $user;
 		
 		$id = $this->control->get_var('id', 0);
 		
@@ -657,34 +596,33 @@ class a extends common
 		
 		$sql = 'SELECT p.*, m.user_id, m.username, m.username_base, m.user_color
 			FROM _artists_posts p, _members m
-			WHERE p.post_id = ' . (int) $id . '
-				AND p.post_ub = ' . (int) $this->data['ub'] . '
+			WHERE p.post_id = ?
+				AND p.post_ub = ?
 				AND p.poster_id = m.user_id';
-		$result = $db->sql_query($sql);
-		
-		if (!$pdata = $db->sql_fetchrow($result))
-		{
+		if (!$pdata = sql_fieldrow(sql_filter($sql, $id, $this->data['ub']))) {
 			fatal_error();
 		}
-		$db->sql_freeresult($result);
 		
 		if (isset($_POST['confirm']))
 		{
 			$delete_forever = ($user->data['is_founder'] && $delete_forever) ? TRUE : FALSE;
 			
-			if ($delete_forever)
-			{
-				$db->sql_query('DELETE FROM _artists_posts WHERE post_id = ' . (int) $id);
-			}
-			else
-			{
-				$db->sql_query('UPDATE _artists_posts SET post_active = 0 WHERE post_id = ' . (int) $id);
+			if ($delete_forever) {
+				$sql = 'DELETE FROM _artists_posts
+					WHERE post_id = ?';
+				sql_query(sql_filter($sql, $id));
+			} else {
+				$sql = 'UPDATE _artists_posts SET post_active = 0
+					WHERE post_id = ?';
+				sql_query(sql_filter($sql, $id));
 				
-				// LOG THIS ACTION: $this->control->log
+				// TODO: LOG THIS ACTION: $this->control->log
 			}
 			
-			$db->sql_query('UPDATE _artists SET posts = posts - 1 WHERE ub = ' . (int) $this->data['ub']);
-			
+			$sql = 'UPDATE _artists SET posts = posts - 1
+				WHERE ub = ?';
+			sql_query(sql_filter($sql, $this->data['ub']));
+		
 			$user->delete_all_unread(UH_C, $id);
 			
 			redirect(s_link('a', $this->data['subdomain']));
@@ -727,7 +665,7 @@ class a extends common
 	
 	function _log_home()
 	{
-		global $db, $user, $template;
+		global $user, $template;
 		
 		$member = $this->control->get_var('m', 0);
 		$no_results = TRUE;
@@ -736,14 +674,10 @@ class a extends common
 		{
 			$sql = 'SELECT user_id, username, username_base, user_color
 				FROM _members
-				WHERE user_id = ' . (int) $member;
-			$result = $db->sql_query($sql);
-			
-			if (!$memberdata = $db->sql_fetchrow($result))
-			{
+				WHERE user_id = ?';
+			if (!$memberdata = sql_fieldrow(sql_filter($sql, $member))) {
 				$member = 0;
 			}
-			$db->sql_freeresult($result);
 			
 			$template->assign_vars(array(
 				'USERNAME' => $memberdata['username'],
@@ -756,37 +690,31 @@ class a extends common
 			//
 			$sql = 'SELECT *
 				FROM _artists_log
-				WHERE ub = ' . (int) $this->data['ub'] . '
-					AND user_id = ' . (int) $member . '
+				WHERE ub = ?
+					AND user_id = ?
 				ORDER BY datetime DESC';
-			$result = $db->sql_query($sql);
-			
-			if ($row = $db->sql_fetchrow($result))
-			{
-				$no_results = FALSE;
+			if ($result = sql_rowset(sql_filter($sql, $this->data['ub'], $member))) {
+				$no_results = false;
 				
 				$data = array();
-				do
-				{
+				foreach ($result as $row) {
 					$data['orig'][$row['module']][$row['item_id']] = $row;
 				}
-				while ($row = $db->sql_fetchrow($result));
-				$db->sql_freeresult($result);
 				
-				foreach ($data['orig'] as $module => $rowdata)
-				{
+				foreach ($data['orig'] as $module => $rowdata) {
 					$sql = '';
-					switch ($module)
-					{
+					switch ($module) {
 						case UH_C:
 							$sql = 'SELECT *
 								FROM _artists_posts
-								WHERE post_id IN (' . implode(',', array_keys($rowdata)) . ')';
+								WHERE post_id IN (??)';
+							$sql = sql_filter($sql, implode(',', array_keys($rowdata)));
 							break;
 						case UH_M:
 							$sql = 'SELECT *
 								FROM _dl_posts
-								WHERE post_id IN (' . implode(',', array_keys($rowdata)) . ')';
+								WHERE post_id IN (??)';
+							$sql = sql_filter($sql, implode(',', array_keys($rowdata)));
 							break;
 						case UH_F;
 							$sql = 'SELECT *
@@ -801,52 +729,46 @@ class a extends common
 						case UH_LY:
 							$sql = 'SELECT *
 								FROM _artists_lyrics
-								WHERE id IN (' . implode(',', array_keys($rowdata)) . ')';
+								WHERE id IN (??)';
+							$sql = sql_filter($sql, implode(',', array_keys($rowdata)));
 							break;
 					}
 					
 					if ($sql != '')
 					{
-						$result = $db->sql_query($sql);
+						$result = sql_rowset($sql);
 						
-						while ($row = $db->sql_fetchrow($result))
-						{
+						foreach ($result as $row) {
 							$data['repl'][$module][$row[0]] = $row;
 						}
-						$db->sql_freeresult($result);
 					}
 					
-					die(print_r($data));
+					print_r($data);
+					exit;
 				}
 			}
-		}
-		else
-		{
+		} else {
 			$sql = 'SELECT COUNT(l.id) AS total, m.user_id, m.username, m.user_color, m.user_avatar
 				FROM _artists_log l, _members m
-				WHERE l.ub = ' . (int) $this->data['ub'] . '
+				WHERE l.ub = ?
 					AND l.user_id = m.user_id
 				GROUP BY m.user_id
 				ORDER BY m.username';
-			$result = $db->sql_query($sql);
-			
-			if ($row = $db->sql_fetchrow($result))
-			{
+			if ($result = sql_rowset(sql_filter($sql, $this->data['ub']))) {
 				include('./interfase/comments.php');
 				$comments = new _comments();
 				
-				$no_results = FALSE;
+				$no_results = false;
 				$tcol = 0;
 				
 				$template->assign_block_vars('members', array());
-				do
-				{
-					$profile = $comments->user_profile($row);
-					
-					if (!$tcol)
-					{
+				
+				foreach ($result as $row) {
+					if (!$tcol) {
 						$template->assign_block_vars('members.row', array());
 					}
+					
+					$profile = $comments->user_profile($row);
 					
 					$template->assign_block_vars('members.row.col', array(
 						'USER_ID' => $row['user_id'],
@@ -860,13 +782,10 @@ class a extends common
 					
 					$tcol = ($tcol == 3) ? 0 : $tcol + 1;
 				}
-				while ($row = $db->sql_fetchrow($result));
 			}
-			$db->sql_freeresult($result);
 		}
 		
-		if ($no_results)
-		{
+		if ($no_results) {
 			$template->assign_block_vars('no_members', array(
 				'MESSAGE' => $user->lang['CONTROL_A_LOG_EMPTY'])
 			);
@@ -877,8 +796,7 @@ class a extends common
 		);
 	}
 	
-	function _log_delete()
-	{
+	function _log_delete() {
 		die('default: log @ delete');
 	}
 	
@@ -896,9 +814,9 @@ class a extends common
 		$this->call_method();
 	}
 	
-	function __auth_table($row, $result, $check_unique = false)
+	function __auth_table($row, $check_unique = false)
 	{
-		global $db, $user, $template;
+		global $user, $template;
 		
 		include('./interfase/comments.php');
 		$comments = new _comments();
@@ -907,15 +825,14 @@ class a extends common
 		$total = $db->sql_numrows($result);
 		
 		$template->assign_block_vars('members', array());
-		do
-		{
-			$auth_profile = $comments->user_profile($row);
-			
-			if (!$tcol)
-			{
+		
+		foreach ($row as $_row) {
+			if (!$tcol) {
 				$template->assign_block_vars('members.row', array());
 				$trow++;
 			}
+			
+			$auth_profile = $comments->user_profile($row);
 			
 			$template->assign_block_vars('members.row.col', array(
 				'USER_ID' => $auth_profile['user_id'],
@@ -930,12 +847,9 @@ class a extends common
 			$tcol = ($tcol == 3) ? 0 : $tcol + 1;
 			$items++;
 		}
-		while ($row = $db->sql_fetchrow($result));
 		
-		if ($trow > 1)
-		{
-			for ($i = 0, $end = ((4 * $trow) - $items); $i < $end; $i++)
-			{
+		if ($trow > 1) {
+			for ($i = 0, $end = ((4 * $trow) - $items); $i < $end; $i++) {
 				$template->assign_block_vars('members.row.blank', array());
 			}
 		}
@@ -945,29 +859,23 @@ class a extends common
 	
 	function _auth_home()
 	{
-		global $db, $user, $template;
+		global $user, $template;
 		
 		$results = FALSE;
 		
 		$sql = 'SELECT u.user_id, u.user_type, u.username, u.username_base, u.user_color, u.user_avatar
 			FROM _artists_auth a, _members u
-			WHERE a.ub = ' . (int) $this->data['ub'] . '
+			WHERE a.ub = ?
 				AND a.user_id = u.user_id
 			ORDER BY u.username';
-		$result = $db->sql_query($sql);
-		
-		if ($row = $db->sql_fetchrow($result))
-		{
-			$results = TRUE;
-			$this->__auth_table($row, $result);
-		}
-		else
-		{
+		if ($result = sql_fieldrow(sql_filter($sql, $this->data['ub']))) {
+			$results = true;
+			$this->__auth_table($result);
+		} else {
 			$template->assign_block_vars('no_members', array(
 				'MESSAGE' => $user->lang['CONTROL_A_AUTH_NOMEMBERS'])
 			);
 		}
-		$db->sql_freeresult($result);
 		
 		$s_hidden = array('module' => $this->control->module, 'a' => $this->data['subdomain'], 'mode' => $this->mode, 'manage' => 'delete');
 		
@@ -980,7 +888,7 @@ class a extends common
 	
 	function _auth_add()
 	{
-		global $db, $config, $user, $template;
+		global $config, $user, $template;
 		
 		$submit = isset($_POST['submit']) ? TRUE : FALSE;
 		$no_results = TRUE;
@@ -1193,7 +1101,7 @@ class a extends common
 		
 		if ($submit || $confirm)
 		{
-			global $db, $config, $user, $template;
+			global $config, $user, $template;
 			
 			$s_members = $this->control->get_var('s_members', array(0));
 			$s_members_i = array();
@@ -1362,7 +1270,7 @@ class a extends common
 	
 	function _gallery_home()
 	{
-		global $db, $user, $template;
+		global $user, $template;
 		
 		$sql = 'SELECT g.*
 			FROM _artists a, _artists_images g
@@ -1435,7 +1343,7 @@ class a extends common
 	
 	function _gallery_add()
 	{
-		global $db, $user, $template;
+		global $user, $template;
 		
 		$filesize = 3000 * 1024;
 		if (isset($_POST['submit']) && isset($_FILES['add_image']))
@@ -1522,7 +1430,7 @@ class a extends common
 	
 	function _gallery_delete()
 	{
-		global $db, $user, $template;
+		global $user, $template;
 		
 		$error = false;
 		if (isset($_POST['submit']))
@@ -1577,7 +1485,7 @@ class a extends common
 	
 	function _gallery_footer()
 	{
-		global $db, $user, $template;
+		global $user, $template;
 		
 		$a = $this->control->get_var('image', '');
 		$t = $this->control->get_var('value', '');
@@ -1619,7 +1527,7 @@ class a extends common
 	
 	function _biography_home()
 	{
-		global $db, $user, $template;
+		global $user, $template;
 		
 		$sql = 'SELECT bio
 			FROM _artists
@@ -1644,7 +1552,7 @@ class a extends common
 	
 	function _biography_edit()
 	{
-		global $db, $user;
+		global $user;
 		
 		if (isset($_POST['submit']))
 		{
@@ -1699,7 +1607,7 @@ class a extends common
 	
 	function _video_home()
 	{
-		global $db, $user, $template;
+		global $user, $template;
 		
 		$sql = 'SELECT *
 			FROM _artists_video
@@ -1732,7 +1640,7 @@ class a extends common
 	
 	function _video_add()
 	{
-		global $db, $user, $template;
+		global $user, $template;
 		
 		if (isset($_POST['submit']))
 		{
@@ -1788,7 +1696,7 @@ class a extends common
 	
 	function _video_delete()
 	{
-		global $db, $user, $template;
+		global $user, $template;
 	}
 	
 	//
@@ -1807,7 +1715,7 @@ class a extends common
 	
 	function _stats_home()
 	{
-		global $db, $user, $template;
+		global $user, $template;
 		
 		$sql = 'SELECT *, SUM(members + guests) AS total
 			FROM _artists_stats
@@ -1924,7 +1832,7 @@ class a extends common
 	
 	function _downloads_home()
 	{
-		global $db, $user, $template;
+		global $user, $template;
 		
 		$sql = 'SELECT *
 			FROM _dl
@@ -2011,7 +1919,7 @@ class a extends common
 	
 	function _dposts_edit()
 	{
-		global $db, $user, $config, $template;
+		global $user, $config, $template;
 		
 		$submit = isset($_POST['submit']) ? TRUE : FALSE;
 		
@@ -2083,7 +1991,7 @@ class a extends common
 	
 	function _dposts_delete()
 	{
-		global $db, $config, $user;
+		global $config, $user;
 		
 		$id = $this->control->get_var('id', 0);
 		

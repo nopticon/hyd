@@ -92,7 +92,7 @@ class _events extends downloads
 	
 	function _nextevent()
 	{
-		global $db, $user, $template;
+		global $user, $template;
 		
 		$nevent = array();
 		$sql = 'SELECT *
@@ -124,7 +124,7 @@ class _events extends downloads
 	
 	/*function _nextevent()
 	{
-		global $db, $user, $template;
+		global $user, $template;
 		
 		$sql = 'SELECT *
 			FROM _events
@@ -148,7 +148,7 @@ class _events extends downloads
 	
 	function _lastevent($start = 0)
 	{
-		global $db, $template;
+		global $template;
 		
 		$sql = 'SELECT *
 			FROM _events
@@ -182,7 +182,7 @@ class _events extends downloads
 	
 	function view()
 	{
-		global $db, $user, $config, $template;
+		global $user, $config, $template;
 		
 		$mode = request_var('mode', '');
 		
@@ -480,7 +480,7 @@ class _events extends downloads
 	
 	function home()
 	{
-		global $db, $config, $template, $user;
+		global $config, $template, $user;
 		
 		$timezone = $config['board_timezone'] * 3600;
 

@@ -32,7 +32,7 @@ class mm_promo
 	
 	function submit_data ()
 	{
-		global $db, $userdata, $template, $user_ip, $lang;
+		global $userdata, $template, $user_ip, $lang;
 		
 		if (isset($_POST['submit']))
 		{
@@ -131,7 +131,7 @@ class mm_promo
 	
 	function show_promo ()
 	{
-		global $userdata, $db, $template, $lang;
+		global $userdata, $template, $lang;
 		
 		if (($userdata['user_id'] != GUEST) && $userdata['session_logged_in'])
 		{

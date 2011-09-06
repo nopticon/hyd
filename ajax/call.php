@@ -16,23 +16,18 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-if (strtolower($_SERVER['REQUEST_METHOD']) == 'post')
-{
+if (strtolower($_SERVER['REQUEST_METHOD']) == 'post') {
 	$filename = $_GET['filename'];
-	if (!empty($filename))
-	{
+	if (!empty($filename)) {
 		$filename = 's_' . $filename . '.php';
-		if (@file_exists('./' . $filename))
-		{
-			
+		if (@file_exists('./' . $filename)) {
 			@include('./' . $filename);
 			return;
 		}
 	}
 }
 
-if (!$file_content = @file('../../404.shtml'))
-{
+if (!$file_content = @file('../../404.shtml')) {
 	$file_content = @file('../../not_found.html');
 }
 

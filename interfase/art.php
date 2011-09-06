@@ -153,7 +153,7 @@ class _art extends downloads
 	
 	function view()
 	{
-		global $db, $user, $config, $template;
+		global $user, $config, $template;
 		
 		$this->filename = $this->data['art_id'] . '.jpg';
 		$this->filepath = '/data/art/full/' . $this->filename;
@@ -285,7 +285,7 @@ class _art extends downloads
 	
 	function fav()
 	{
-		global $db, $user;
+		global $user;
 		
 		if (!$user->data['is_member'])
 		{

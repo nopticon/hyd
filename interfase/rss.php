@@ -98,7 +98,7 @@ class _rss
 	
 	function output()
 	{
-		global $db, $user;
+		global $user;
 		
 		$umode = strtoupper($this->mode);
 		

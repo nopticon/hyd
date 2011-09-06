@@ -26,7 +26,7 @@ class session {
 	public $time = 0;
 	
 	public function init($update_page = true, $bypass_empty_ip = false) {
-		global $db, $config;
+		global $config;
 		
 		$this->time = time();
 		$this->browser = (!empty($_SERVER['HTTP_USER_AGENT'])) ? $_SERVER['HTTP_USER_AGENT'] : '';
@@ -106,7 +106,7 @@ class session {
 	*/
 	function session_create($user_id = false, $set_admin = false, $update_page = true)
 	{
-		global $db, $config;
+		global $config;
 
 		$this->data = array();
 		
@@ -301,7 +301,7 @@ class session {
 	*/
 	function session_kill()
 	{
-		global $db, $config;
+		global $config;
 
 		$sql = 'DELETE FROM _sessions
 			WHERE session_id = ?
@@ -350,7 +350,7 @@ class session {
 	*/
 	function session_gc()
 	{
-		global $config, $db;
+		global $config;
 		
 		// Get expired sessions, only most recent for each user
 		$sql = 'SELECT session_id, session_user_id, session_page, MAX(session_time) AS recent_time
@@ -422,7 +422,7 @@ class session {
 	* execution.
 	*/
 	function check_ban($user_id = false, $user_ip = false, $user_email = false) {
-		global $config, $db;
+		global $config;
 		
 		$user_id = ($user_id === false) ? $this->data['user_id'] : $user_id;
 		$user_ip = ($user_ip === false) ? $this->ip : $user_ip;
@@ -510,7 +510,7 @@ class user extends session
 
 	function setup($lang_set = false, $style = false)
 	{
-		global $db, $template, $config, $auth, $cache;
+		global $template, $config, $auth, $cache;
 
 		if ($this->data['user_id'] != GUEST)
 		{
@@ -678,7 +678,7 @@ class user extends session
 	}
 
 	function get_iso_lang_id() {
-		global $config, $db;
+		global $config;
 
 		if (isset($this->lang_id)) {
 			return $this->lang_id;
@@ -714,7 +714,7 @@ class user extends session
 
 	function _team_auth_list($mode = '')
 	{
-		global $db, $cache;
+		global $cache;
 		
 		switch ($mode)
 		{
@@ -777,7 +777,7 @@ class user extends session
 	
 	function _team_auth($mode = '', $user_id = false)
 	{
-		global $db, $cache;
+		global $cache;
 		
 		if ($user_id === false)
 		{
@@ -1006,7 +1006,7 @@ class user extends session
 	
 	function update_unread($cat, $el)
 	{
-		global $db, $user;
+		global $user;
 		
 		$sql = 'UPDATE _members_unread SET datetime = ' . $user->time . '
 			WHERE element = ' . (int) $cat . '
@@ -1094,7 +1094,7 @@ class user extends session
 	//
 	function points_add($n, $uid = false)
 	{
-		global $db, $user;
+		global $user;
 		
 		if ($uid === false)
 		{
@@ -1151,7 +1151,7 @@ class user extends session
 	
 	function check_ref($block_ud = FALSE, $auto_block = FALSE)
 	{
-		global $config, $db;
+		global $config;
 		
 		$url = (getenv('HTTP_REFERER')) ? trim(getenv('HTTP_REFERER')) : trim($_SERVER['HTTP_REFERER']);
 		$url = $this->clean_value($url);
@@ -1356,7 +1356,7 @@ class auth
 	
 	function forum($type, $forum_id, $f_access = false)
 	{
-		global $db, $config, $user;
+		global $config, $user;
 		
 		switch ($type)
 		{

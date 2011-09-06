@@ -101,7 +101,7 @@ class downloads
 	
 	function dl_view ()
 	{
-		global $db, $user, $config, $template;
+		global $user, $config, $template;
 		
 		if (!$this->auth['adm'] && !$this->auth['mod'])
 		{
@@ -339,7 +339,7 @@ class downloads
 			do_login();
 		}
 		
-		global $db, $user;
+		global $user;
 		
 		$option_id = intval(request_var('vote_id', 0));
 		$url = s_link('a', array($this->data['subdomain'], 9, $this->dl_data['id']));
@@ -392,7 +392,7 @@ class downloads
 			do_login();
 		}
 		
-		global $db, $user;
+		global $user;
 		
 		$is_fav = FALSE;
 		$sql = 'SELECT dl_id

@@ -62,7 +62,7 @@ class _comments
 	//
 	function store()
 	{
-		global $db, $user, $config;
+		global $user, $config;
 		
 		$ref = $this->ref;
 		$this->ref = str_replace('http://' . $config['server_name'], '', $this->ref);
@@ -359,7 +359,7 @@ class _comments
 	//
 	function view($start, $start_field, $total_items, $items_pp, $tpl_prefix = '', $pag_prefix = '', $pag_lang_prefix = '', $simple_pagination = false)
 	{
-		global $db, $config, $user, $template;
+		global $config, $user, $template;
 		
 		if ($tpl_prefix == '')
 		{
@@ -571,7 +571,7 @@ class _comments
 	//
 	function prepare($message)
 	{
-		global $config, $db, $user;
+		global $config, $user;
 		
 		// Do some general 'cleanup' first before processing message,
 		// e.g. remove excessive newlines(?), smilies(?)
@@ -651,7 +651,7 @@ class _comments
 	//
 	function store_dc($mode, $to, $from, $subject, $message, $can_reply = true, $can_email = false)
 	{
-		global $db, $user;
+		global $user;
 		
 		if ($mode == 'reply')
 		{
@@ -740,7 +740,7 @@ class _comments
 			return;
 		}
 		
-		global $db, $user;
+		global $user;
 		
 		$sql_member = '((privmsgs_to_userid = ' . $user->data['user_id'] . ') OR (privmsgs_from_userid = ' . $user->data['user_id'] . '))';
 		
@@ -827,7 +827,7 @@ class _comments
 	
 	function parse_html($message)
 	{
-		global $db, $user, $cache;
+		global $user, $cache;
 		
 		/*
 		
@@ -1032,7 +1032,7 @@ class _comments
 	{
 		if (!isset($this->options['a']))
 		{
-			global $cache, $db;
+			global $cache;
 			
 			if (!$this->options['a']['match'] = $cache->get('ub_list'))
 			{

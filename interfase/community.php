@@ -25,7 +25,7 @@ class community
 {
 	function team()
 	{
-		global $cache, $db, $template;
+		global $cache, $template;
 		
 		$team = array();
 		$team_members = array();
@@ -156,7 +156,7 @@ class community
 	
 	function online($sql, $block, $block_title, $unset_legend = false)
 	{
-		global $db, $user, $template;
+		global $user, $template;
 		static $user_bots;
 		
 		if (!isset($user_bots))
@@ -272,7 +272,7 @@ class community
 	
 	function recent_members()
 	{
-		global $db, $user, $template;
+		global $user, $template;
 		
 		$sql = 'SELECT username, username_base, user_color
 			FROM _members

@@ -22,7 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 function make_forum_select($box_name, $ignore_forum = false, $select_forum = '')
 {
-	global $db, $userdata;
+	global $userdata;
 
 	$is_auth_ary = auth(AUTH_READ, AUTH_LIST_ALL, $userdata);
 
@@ -30,19 +30,17 @@ function make_forum_select($box_name, $ignore_forum = false, $select_forum = '')
 		FROM _forum_categories c, _forums f
 		WHERE f.cat_id = c.cat_id 
 		ORDER BY c.cat_order, f.forum_order';
-	$result = $db->sql_query($sql);
-
+	$result = sql_rowset($sql);
+	
 	$forum_list = '';
-	while( $row = $db->sql_fetchrow($result) )
-	{
-		if ( $is_auth_ary[$row['forum_id']]['auth_read'] && $ignore_forum != $row['forum_id'] )
-		{
+	foreach ($result as $row) {
+		if ($is_auth_ary[$row['forum_id']]['auth_read'] && $ignore_forum != $row['forum_id']) {
 			$selected = ( $select_forum == $row['forum_id'] ) ? ' selected="selected"' : '';
 			$forum_list .= '<option value="' . $row['forum_id'] . '"' . $selected .'>' . $row['forum_name'] . '</option>';
 		}
 	}
-
-	$forum_list = ( $forum_list == '' ) ? '<option value="-1">-- ! No Forums ! --</option>' : '<select name="' . $box_name . '">' . $forum_list . '</select>';
+	
+	$forum_list = ($forum_list == '') ? '<option value="-1">-- ! No Forums ! --</option>' : '<select name="' . $box_name . '">' . $forum_list . '</select>';
 
 	return $forum_list;
 }
@@ -50,106 +48,69 @@ function make_forum_select($box_name, $ignore_forum = false, $select_forum = '')
 //
 // Synchronise functions for forums/topics
 //
-function sync($type, $id = false)
-{
-	global $db;
-
-	switch($type)
-	{
+function sync($type, $id = false) {
+	switch($type) {
 		case 'all forums':
 			$sql = "SELECT forum_id
 				FROM _forums";
-			$result = $db->sql_query($sql);
-
-			while( $row = $db->sql_fetchrow($result) )
-			{
+			$result = sql_rowset($sql);
+			
+			foreach ($result as $row) {
 				sync('forum', $row['forum_id']);
 			}
 	   	break;
-
 		case 'all topics':
-			$sql = "SELECT topic_id
-				FROM _forum_topics";
-			$result = $db->sql_query($sql);
-
-			while( $row = $db->sql_fetchrow($result) )
-			{
+			$sql = 'SELECT topic_id
+				FROM _forum_topics';
+			$result = sql_rowset($sql);
+			
+			foreach ($result as $row) {
 				sync('topic', $row['topic_id']);
 			}
 			break;
-
   	case 'forum':
 			$sql = 'SELECT COUNT(post_id) AS total
 				FROM _forum_posts
-				WHERE forum_id = ' . (int) $id;
-			$result = $db->sql_query($sql);
-
-			$row = $db->sql_fetchrow($result);
-			$total_posts = ($row['total']) ? $row['total'] : 0;
+				WHERE forum_id = ?';
+			$total_posts = sql_field(sql_filter($sql, $id), 'total', 0);
 
 			//
 			$sql = 'SELECT MAX(topic_id) AS last_topic, COUNT(topic_id) AS total
 				FROM _forum_topics
-				WHERE forum_id = ' . (int) $id;
-			$result = $db->sql_query($sql);
-
-			$row = $db->sql_fetchrow($result);
-			$total_topics = ($row['total']) ? $row['total'] : 0;
-			$last_topic = ($row['last_topic']) ? $row['last_topic'] : 0;
+				WHERE forum_id = ?';
+			if ($row = sql_fieldrow(sql_filter($sql, $id))) {
+				$total_topics = ($row['total']) ? $row['total'] : 0;
+				$last_topic = ($row['last_topic']) ? $row['last_topic'] : 0;
+			}
 
 			$sql = 'UPDATE _forums
-				SET forum_last_topic_id = ' . (int) $last_topic . ', forum_posts = ' . (int) $total_posts . ', forum_topics = ' . (int) $total_topics . '
-				WHERE forum_id = ' . (int) $id;
-			$db->sql_query($sql);
+				SET forum_last_topic_id = ?, forum_posts = ?, forum_topics = ?
+				WHERE forum_id = ?';
+			sql_query(sql_filter($sql, $last_topic, $total_posts, $total_topics, $id));
 			break;
-
 		case 'topic':
-			$sql = "SELECT MAX(post_id) AS last_post, MIN(post_id) AS first_post, COUNT(post_id) AS total_posts
+			$sql = 'SELECT MAX(post_id) AS last_post, MIN(post_id) AS first_post, COUNT(post_id) AS total_posts
 				FROM _forum_posts
-				WHERE topic_id = $id";
-			$result = $db->sql_query($sql);
-
-			if ( $row = $db->sql_fetchrow($result) )
-			{
+				WHERE topic_id = ?';
+			if ($row = sql_fieldrow(sql_filter($sql, $id))) {
 				if ($row['total_posts'])
 				{
 					// Correct the details of this topic
-					$sql = 'UPDATE _forum_topics
-						SET topic_replies = ' . ($row['total_posts'] - 1) . ', topic_first_post_id = ' . $row['first_post'] . ', topic_last_post_id = ' . $row['last_post'] . "
-						WHERE topic_id = $id";
-
-					if (!$db->sql_query($sql))
-					{
-						message_die(GENERAL_ERROR, 'Could not update topic', '', __LINE__, __FILE__, $sql);
-					}
-				}
-				else
-				{
+					$sql = 'UPDATE _forum_topics SET topic_replies = ?, topic_first_post_id = ?, topic_last_post_id = ?
+						WHERE topic_id = ?';
+					sql_query(sql_filter($sql, ($row['total_posts'] - 1), $row['first_post'], $row['last_post'], $id));
+				} else {
 					// There are no replies to this topic
 					// Check if it is a move stub
 					$sql = 'SELECT topic_moved_id
 						FROM _forum_topics
-						WHERE topic_id = ' . (int) $id;
-
-					if (!($result = $db->sql_query($sql)))
-					{
-						message_die(GENERAL_ERROR, 'Could not get topic ID', '', __LINE__, __FILE__, $sql);
-					}
-
-					if ($row = $db->sql_fetchrow($result))
-					{
-						if (!$row['topic_moved_id'])
-						{
-							$sql = 'DELETE FROM _forum_topics WHERE topic_id = ' . (int) $id;
-			
-							if (!$db->sql_query($sql))
-							{
-								message_die(GENERAL_ERROR, 'Could not remove topic', '', __LINE__, __FILE__, $sql);
-							}
+						WHERE topic_id = ?';
+					if ($row = sql_fieldrow(sql_filter($sql, $id))) {
+						if (!$row['topic_moved_id']) {
+							$sql = 'DELETE FROM _forum_topics WHERE topic_id = ?';
+							sql_query(sql_filter($sql, $id));
 						}
 					}
-
-					$db->sql_freeresult($result);
 				}
 			}
 			break;

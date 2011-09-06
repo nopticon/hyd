@@ -33,7 +33,7 @@ class layout extends downloads
 	//
 	function _1()
 	{
-		global $db, $user, $config, $template;
+		global $user, $config, $template;
 		
 		//
 		// Gallery
@@ -334,7 +334,7 @@ class layout extends downloads
 	//
 	function _4()
 	{
-		global $db, $config, $template;
+		global $config, $template;
 		
 		$mode = request_var('mode', '');
 		$download_id = intval(request_var('download_id', 0));
@@ -469,7 +469,7 @@ class layout extends downloads
 	//
 	function _6()
 	{
-		global $db, $config, $template, $lang;
+		global $config, $template, $lang;
 		
 		$mode = request_var('mode', '');
 		$download_id = intval(request_var('download_id', 0));
@@ -613,7 +613,7 @@ class layout extends downloads
 	//
 	function _12()
 	{
-		global $db, $user, $config, $template;
+		global $user, $config, $template;
 		
 		$post_id = request_var('post_id', 0);
 		if (!$post_id)
@@ -756,7 +756,7 @@ class layout extends downloads
 			do_login();
 		}
 		
-		global $db, $user, $config, $template;
+		global $user, $config, $template;
 		
 		$error_msg = '';
 		$subject = '';
@@ -832,7 +832,7 @@ class layout extends downloads
 			redirect(s_link('a', $this->data['subdomain']));
 		}
 		
-		global $db, $user;
+		global $user;
 		
 		if (!$this->data['www_awc'] && !check_www($this->data['www']))
 		{
@@ -850,7 +850,7 @@ class layout extends downloads
 	//
 	function _15()
 	{
-		global $db, $user;
+		global $user;
 		
 		if (!$this->auth['user'])
 		{
@@ -922,7 +922,7 @@ class layout extends downloads
 			redirect($url);
 		}
 		
-		global $db, $user;
+		global $user;
 		
 		$sql = 'SELECT user_id
 			FROM _artists_voters
@@ -952,7 +952,7 @@ class layout extends downloads
 	
 	function _18()
 	{
-		global $db, $user, $template;
+		global $user, $template;
 		
 		$sql = 'SELECT *
 			FROM _artists_video
@@ -1038,7 +1038,7 @@ class _artists extends layout
 	
 	function _setup()
 	{
-		global $db, $user;
+		global $user;
 		
 		$_a = request_var('id', '');
 		if (!empty($_a))
@@ -1070,7 +1070,7 @@ class _artists extends layout
 	
 	function _auth ()
 	{
-		global $user, $db;
+		global $user;
 		
 		$this->auth['user'] = ($user->data['is_member']) ? TRUE : FALSE;
 		$this->auth['adm'] = (($user->data['user_type'] == USER_FOUNDER) && $this->auth['user']) ? TRUE : FALSE;
@@ -1200,7 +1200,7 @@ class _artists extends layout
 	
 	function last_records()
 	{
-		global $db, $user, $cache, $template;
+		global $user, $cache, $template;
 		
 		if (!$a_records = $cache->get('a_records'))
 		{
@@ -1331,7 +1331,7 @@ class _artists extends layout
 	
 	function thumbnails()
 	{
-		global $db, $cache, $template;
+		global $cache, $template;
 		
 		if (!$a_recent = $cache->get('a_recent'))
 		{
@@ -1522,7 +1522,7 @@ class _artists extends layout
 	
 	function _list()
 	{
-		global $db, $user, $config, $template;
+		global $user, $config, $template;
 		
 		$sql = 'SELECT *
 			FROM _artists
@@ -1648,7 +1648,7 @@ class _artists extends layout
 	
 	function _panel()
 	{
-		global $user, $db, $config, $template;
+		global $user, $config, $template;
 		
 		$this->data['layout'] = request_var('layout', 0);
 		$this->_auth();
@@ -2073,7 +2073,7 @@ class _artists extends layout
 	
 	function a_sidebar()
 	{
-		global $db, $template;
+		global $template;
 		
 		$sql = 'SELECT *
 			FROM _artists

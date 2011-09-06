@@ -105,7 +105,7 @@ class _chat
 			return;
 		}
 		
-		global $db, $user, $config, $template;
+		global $user, $config, $template;
 		
 		$sql = 'SELECT *
 			FROM _chat_ch
@@ -164,7 +164,7 @@ class _chat
 			return;
 		}
 		
-		global $db, $template;
+		global $template;
 		
 		$sql = 'SELECT ch.*, m.username, m.username_base, m.user_color
 			FROM _chat_ch ch, _members m
@@ -219,7 +219,7 @@ class _chat
 	
 	function get_cats()
 	{
-		global $cache, $db;
+		global $cache;
 		
 		$cat = array();
 		if (!$cat = $cache->get('chat_cat'))
@@ -243,7 +243,7 @@ class _chat
 	
 	function _setup()
 	{
-		global $db, $user;
+		global $user;
 		
 		$ch = request_var('ch', '');
 		if (!empty($ch))
@@ -275,7 +275,7 @@ class _chat
 	
 	function process_data($csid, $mode)
 	{
-		global $db, $user, $config;
+		global $user, $config;
 		
 		if (empty($csid))
 		{
@@ -455,7 +455,7 @@ class _chat
 	
 	function auth()
 	{
-		global $user, $db;
+		global $user;
 		
 		if ($user->data['is_founder'] || ($this->data['ch_founder'] == $user->data['user_id']))
 		{
@@ -522,7 +522,7 @@ class _chat
 	
 	function session($sid)
 	{
-		global $db, $user, $config;
+		global $user, $config;
 		
 		/*
 		SESSION_ID				VARCHAR(32)
@@ -595,7 +595,7 @@ class _chat
 	
 	function _message($ch, $ignore, $message)
 	{
-		global $db, $user;
+		global $user;
 		
 		$insert_data = array(
 			'msg_ch' => (int) $ch,
@@ -612,7 +612,7 @@ class _chat
 	
 	function window()
 	{
-		global $db, $user, $config, $template;
+		global $user, $config, $template;
 		
 		$template->assign_vars(array(
 			'CH_SID' => $this->data['session_id'],

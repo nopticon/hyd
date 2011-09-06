@@ -76,7 +76,7 @@ class _news
 	
 	function _main()
 	{
-		global $db, $user, $cache, $template;
+		global $user, $cache, $template;
 		
 		$cat = request_var('cat', '');
 		if (!empty($cat))
@@ -159,7 +159,7 @@ class _news
 	
 	function _view ()
 	{
-		global $db, $user, $config, $template;
+		global $user, $config, $template;
 		
 		$offset = intval(request_var('ps', 0));
 		

@@ -24,7 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 function validate_username($username)
 {
-	global $db, $user;
+	global $user;
 
 	// Remove doubled up spaces
 	$username = preg_replace('#\s+#', ' ', trim($username)); 
@@ -90,7 +90,7 @@ function validate_username($username)
 //
 function validate_email($email)
 {
-	global $db, $user;
+	global $user;
 
 	if ($email != '')
 	{

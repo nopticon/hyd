@@ -16,56 +16,43 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-if (!defined('IN_NUCLEO'))
-{
-	die('Rock Republik &copy; 2006');
-}
+if (!defined('IN_NUCLEO')) exit;
 
-class common
-{
+class common {
 	var $mode;
 	var $manage;
 	var $control;
 	var $auth;
 	
-	function import_control()
-	{
+	function import_control() {
 		global $control;
 		
 		$this->control = $control;
 		return;
 	}
 	
-	function export_control()
-	{
+	function export_control() {
 		global $control;
 		
 		$control = $this->control;
 		return;
 	}
 	
-	function auth_access($member)
-	{
-		global $db, $user;
+	function auth_access($member) {
+		global $user;
 		
-		if ($user->data['user_type'] == USER_FOUNDER)
-		{
+		if ($user->data['user_type'] == USER_FOUNDER) {
 			return true;
 		}
 		
-		if ($user->data['user_type'] == USER_ARTIST && $this->control->module == 'a')
-		{
+		if ($user->data['user_type'] == USER_ARTIST && $this->control->module == 'a') {
 			$sql = 'SELECT *
 				FROM _artists_auth
-				WHERE user_id = ' . (int) $user->data['user_id'];
-			$result = $db->sql_query($sql);
-			
+				WHERE user_id = ?';
 			$access = false;
-			if ($row = $db->sql_fetchrow($result))
-			{
+			if (sql_fieldrow(sql_filter($sql, $user->data['user_id']))) {
 				$access = true;
 			}
-			$db->sql_freeresult($result);
 			
 			return $access;
 		}
@@ -73,36 +60,28 @@ class common
 		return false;
 	}
 	
-	function check_method()
-	{
-		if (!in_array($this->mode, array_keys($this->methods)))
-		{
+	function check_method() {
+		if (!in_array($this->mode, array_keys($this->methods))) {
 			$this->mode = 'home';
 		}
 	}
 	
-	function check_manage()
-	{
-		if (empty($this->methods[$this->mode]) || /*!method_exists($this, $this->manage) || */!in_array($this->manage, $this->methods[$this->mode]))
-		{
+	function check_manage() {
+		if (empty($this->methods[$this->mode]) || /*!method_exists($this, $this->manage) || */!in_array($this->manage, $this->methods[$this->mode])) {
 			$this->manage = 'home';
 		}
 	}
 	
-	function call_method()
-	{
+	function call_method() {
 		return $this->{'_' . $this->mode . '_' . $this->manage}();
 	}
 	
-	function e($msg = '')
-	{
-		global $db, $user;
+	function e($msg = '') {
+		global $user;
 		
 		// GZip
-		if (!isset($this->config['ob_gz']))
-		{
-			if (strstr($user->browser, 'compatible') || strstr($user->browser, 'Gecko'))
-			{
+		if (!isset($this->config['ob_gz'])) {
+			if (strstr($user->browser, 'compatible') || strstr($user->browser, 'Gecko')) {
 				ob_start('ob_gzhandler');
 				$this->config['ob_gz'] = true;
 			}
@@ -114,14 +93,13 @@ class common
 		header('Pragma: no-cache');
 		
 		//
-		if (isset($user->lang[$msg]))
-		{
+		if (isset($user->lang[$msg])) {
 			$msg = $user->lang[$msg];
 		}
-		$db->sql_close();
+		sql_close();
 		
 		echo $msg;
-		die();
+		exit;
 	}
 }
 
