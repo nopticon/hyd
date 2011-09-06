@@ -38,8 +38,7 @@ class cover
 				LIMIT 3';
 			$news = sql_rowset($sql);
 			
-			if (sizeof($news))
-			{
+			if (sizeof($news)) {
 				$cache->save('news', $news);
 			}
 		}
@@ -75,68 +74,20 @@ class cover
 	}
 
 	function twitter() {
-		
-	}
-	
-	function _twitter()
-	{
-		global $template;
-		
-		require_once('./interfase/twitter/gagawa-1.0.php');
-		require_once('./interfase/twitter/son.php');
-		require_once('./interfase/twitter/tcache.php');
-		
-		$json = new Services_JSON();
-		
-		$tc = new TwitterCacher("username", "password", 'json', './cache/');
-		$tc->setUserAgent("Mozilla/5.0 (compatible; Rock Republik; +http://www.rockrepublik.net)");
-		
-		$timeline = $json->decode($tc->getUserTimeline());
-		
-		$count = 1;
-		$ul = new Ul();
-		
-		foreach ($timeline as $tweet)
-		{
-			// Only show original posts, not my replies to
-			// other tweets.
-			//if(!empty($tweet->in_reply_to_user_id)){
-			//	continue;
-			//}
-			
-			$text = $tweet->text;
+		/*
+		foreach ($timeline as $tweet) {
 			$date = '<br /><a href="http://www.twitter.com/rock_republik/status/' . $tweet->id . '">' . date('d.m.y, g:i a', strtotime($tweet->created_at)) . '</a>';
 			//$date = date('M j @ H:i', strtotime($tweet->created_at));
-			$source = $tweet->source;
-			
-			$li = new Li();
-			$ul->appendChild($li);
 			
 			// Turn links into links
 			$text = eregi_replace('(((f|ht){1}tp://)[-a-zA-Z0-9@:%_\+.~#?&//=]+)', '<a href="\\1" target="_blank">\\1</a>', $text); 
 			
 			// Turn twitter @username into links to the users Twitter page
 			$text = eregi_replace('@([-a-zA-Z0-9_]+)', '@<a href="http://twitter.com/\\1" target="_blank">\\1</a>', $text); 
-			
-			$li->appendChild( new Text($text));
-			
-			$em = new Em();
-			$em->appendChild( new Text($date) );
-			$li->appendChild($em);
-			
-			$count += 1;
 		}
-		
-		if (count($timeline))
-		{
-			$template->assign_block_vars('twitter_timeline', array(
-				'TWEET' => $ul->write())
-			);
-		}
-		
-		return;
+		*/
 	}
-
+	
 	function banners()
 	{
 		global $cache, $user, $template;

@@ -39,7 +39,6 @@ function twitter()
 	$channel = $twitter->load(Twitter::ME, 10);
 	
 	foreach ($channel->status as $status) {
-		
 		$in_reply = (int) $status->in_reply_to_user_id; 
 		
 		if ($in_reply) {
@@ -94,60 +93,5 @@ function twitter()
 		</li>
 	 * */
 }
-
-/*
-
-$d = getdate();
-$start_1 = mktime(0, 0, 0, $d['mon'], ($d['mday'] - 7), $d['year']);
-$start_2 = mktime(0, 0, 0, $d['mon'], ($d['mday'] - 14), $d['year']);
-
-//
-// Banners
-$banner_end = mktime(23, 59, 0, $d['mon'], $d['mday'], $d['year']);
-
-$sql = 'SELECT *
-	FROM _banners
-	WHERE banner_end > ' . (int) $_end . '
-	ORDER BY banner_end';
-$result = $db->sql_query($sql);
-
-$deleted = array();
-while ($row = $db->sql_fetchrow($result))
-{
-	$deleted[] = $row['banner_id'];
-}
-$db->sql_freeresult($result);
-
-if (count($deleted))
-{
-	$sql = 'DELETE FROM _banners
-		WHERE banner_id IN (' . implode(',', $deleted) . ')';
-	$db->sql_query($sql);
-	
-	$cache->delete('banners');
-}
-
-//
-// Optimize
-set_config('board_disable', 1);
-
-$sql = 'SHOW TABLES';
-$result = $db->sql_query($sql);
-
-$tables = array();
-while ($row = $db->sql_fetchrow($result))
-{
-	$tables[] = $row[0];
-}
-$db->sql_freeresult($result);
-
-$sql = 'OPTIMIZE TABLE ' . implode(', ', $tables);
-$db->sql_query($sql);
-
-set_config('board_disable', 0);
-
-_die('Done.');
- 
-*/
 
 ?>

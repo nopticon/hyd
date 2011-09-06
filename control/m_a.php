@@ -819,7 +819,7 @@ class a extends common
 		$comments = new _comments();
 		
 		$tcol = $trow = $items = 0;
-		$total = $db->sql_numrows($result);
+		$total = count($row);
 		
 		$template->assign_block_vars('members', array());
 		
@@ -865,7 +865,7 @@ class a extends common
 			WHERE a.ub = ?
 				AND a.user_id = u.user_id
 			ORDER BY u.username';
-		if ($result = sql_fieldrow(sql_filter($sql, $this->data['ub']))) {
+		if ($result = sql_rowset(sql_filter($sql, $this->data['ub']))) {
 			$results = true;
 			$this->__auth_table($result);
 		} else {
@@ -899,39 +899,23 @@ class a extends common
 			{
 				$sql = 'SELECT user_id
 					FROM _members
-					WHERE user_id IN (' . implode(',', $s_members) . ')
-					AND user_type NOT IN (' . USER_IGNORE . ((!$user->data['is_founder']) ? ', ' . USER_FOUNDER : '') . ')';
-				$result = $db->sql_query($sql);
-				
-				if ($row = $db->sql_fetchrow($result))
-				{
-					$s_members = array();
+					WHERE user_id IN (??)
+					AND user_type NOT IN (??)';
+				if ($s_members = sql_rowset(sql_filter($sql, implode(',', $s_members), USER_IGNORE . ((!$user->data['is_founder']) ? ', ' . USER_FOUNDER : '')), false, 'user_id')) {
 					$s_members_a = array();
 					$s_members_i = array();
 					
-					do
-					{
-						$s_members[] = $row['user_id'];
-					}
-					while ($row = $db->sql_fetchrow($result));
-					
-					$db->sql_freeresult($result);
-					
 					$sql = 'SELECT user_id
 						FROM _artists_auth
-						WHERE ub = ' . (int) $this->data['ub'];
-					$result = $db->sql_query($sql);
+						WHERE ub = ?';
+					$result = sql_rowset(sql_filter($sql, $this->data['ub']));
 					
-					while ($row = $db->sql_fetchrow($result))
-					{
+					foreach ($result as $row) {
 						$s_members_a[$row['user_id']] = TRUE;
 					}
-					$db->sql_freeresult($result);
 					
-					foreach ($s_members as $m)
-					{
-						if (!isset($s_members_a[$m]))
-						{
+					foreach ($s_members as $m) {
+						if (!isset($s_members_a[$m])) {
 							$s_members_i[] = $m;
 						}
 					}
@@ -940,19 +924,22 @@ class a extends common
 					{
 						$sql = 'SELECT user_id, user_color, user_rank
 							FROM _members
-							WHERE user_id IN (' . implode(',', $s_members_i) . ')';
-						$result = $db->sql_query($sql);
+							WHERE user_id IN (??)';
+						$result = sql_rowset(sql_filter($sql, implode(',', $s_members_i)));
 						
 						$sd_members = array();
-						while ($row = $db->sql_fetchrow($result))
-						{
+						foreach ($result as $row) {
 							$sd_members[$row['user_id']] = $row;
 						}
-						$db->sql_freeresult($result);
 						
 						foreach ($s_members_i as $m)
 						{
-							$db->sql_query('INSERT INTO _artists_auth (ub, user_id) VALUES (' . $this->data['ub'] . ', ' . $m .')');
+							$sql_insert = array(
+								'ub' => $this->data['ub'],
+								'user_id' => $m
+							);
+							$sql = 'INSERT INTO _artists_auth' . sql_build('INSERT', $sql_insert);
+							sql_query($sql);
 						}
 						
 						foreach ($sd_members as $user_id => $item)
@@ -962,34 +949,28 @@ class a extends common
 								'user_auth_control' => 1
 							);
 							
-							if ($item['user_color'] == '4D5358')
-							{
+							if ($item['user_color'] == '4D5358') {
 								$update['user_color'] = '3DB5C2';
 							}
 							
-							if (!$item['user_rank'])
-							{
+							if (!$item['user_rank']) {
 								$update['user_rank'] = (int) $config['default_a_rank'];
 							}
 							
-							$sql = 'UPDATE _members SET ' . $db->sql_build_array('UPDATE', $update) . '
-								WHERE user_id = ' . (int) $user_id . '
+							$sql = 'UPDATE _members SET ??
+								WHERE user_id = ?
 									AND user_type NOT IN (' . USER_INACTIVE . ', ' . USER_IGNORE . ', ' . USER_FOUNDER . ')';
-							$db->sql_query($sql);
+							sql_query(sql_filter($sql, sql_build('UPDATE', $update), $user_id));
 							
 							$sql = 'SELECT fan_id
 								FROM _artists_fav
-								WHERE ub = ' . (int) $this->data['ub'] . '
-									AND user_id = ' . (int) $user_id;
-							$result = $db->sql_query($sql);
-							
-							if ($row = $db->sql_fetchrow($result))
-							{
+								WHERE ub = ?
+									AND user_id = ?';
+							if ($fan_id = sql_field(sql_filter($sql, $this->data['ub'], $user_id), 'fan_id', 0)) {
 								$sql = 'DELETE FROM _artists_fav
-									WHERE fan_id = ' . (int) $row['fan_id'];
-								$db->sql_query($sql);
+									WHERE fan_id = ?';
+								sql_query(sql_filter($sql, $fan_id));
 							}
-							$db->sql_freeresult($result);
 						}
 						
 						//
@@ -1006,15 +987,12 @@ class a extends common
 				);
 			}
 			
-			if (!empty($s_member))
-			{
-				if ($s_member == '*')
-				{
+			if (!empty($s_member)) {
+				if ($s_member == '*') {
 					$s_member = '';
 				}
 				
-				if (preg_match_all('#\*#', $s_member, $st) > 1)
-				{
+				if (preg_match_all('#\*#', $s_member, $st) > 1) {
 					$s_member = str_replace('*', '', $s_member);
 				}
 			}
@@ -1025,22 +1003,25 @@ class a extends common
 				
 				$sql = 'SELECT user_id
 					FROM _artists_auth
-					WHERE ub = ' . (int) $this->data['ub'];
-				$result = $db->sql_query($sql);
+					WHERE ub = ?';
+				$result = sql_rowset(sql_filter($sql, $this->data['ub']));
 				
 				$s_auth = array(GUEST);
-				while ($row = $db->sql_fetchrow($result))
-				{
+				foreach ($result as $row) {
 					$s_auth[] = $row['user_id'];
 				}
-				$db->sql_freeresult($result);
 				
 				$sql = "SELECT user_id, user_type, username, username_base, user_color, user_avatar
 					FROM _members
-					WHERE username LIKE '" . $db->sql_escape($s_member) . "'
-						AND user_id NOT IN (" . implode(',', $s_auth) . ")
-						AND user_type NOT IN (" . USER_IGNORE . ((!$user->data['is_founder']) ? ", " . USER_FOUNDER : '') . ")
+					WHERE username LIKE ?
+						AND user_id NOT IN (??)
+						AND user_type NOT IN (??)
 					ORDER BY username";
+				if ($row = sql_fieldrow(sql_filter($sql, $s_member, implode(',', $s_auth), USER_IGNORE . ((!$user->data['is_founder']) ? ", " . USER_FOUNDER : '')))) {
+					
+				}
+				
+				
 				$result = $db->sql_query($sql);
 				
 				if ($row = $db->sql_fetchrow($result))
