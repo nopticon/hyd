@@ -26,7 +26,7 @@ $lang += array(
 	'M_UD' => 'Bandas [ Descargas ]',
 	'M_CACHE' => 'Cache',
 	'M_UC' => 'Chat',
-	'M_CONFIG' => 'Configuraci�n',
+	'M_CONFIG' => 'Configuraci&oacute;n',
 	'M_UL' => 'Enlaces',
 	'M_UE' => 'Eventos',
 	'M_UN' => 'Noticias',
@@ -39,18 +39,18 @@ $lang += array(
 	'Click_return_musicmod' => 'Click %sAQUI%s para regresar al Panel de Rock Republik',
 	
 	// UB
-	'ADD_UB' => 'Agregar Informaci�n de Banda',
-	'UPDATE_UB' => 'Actualizar Informaci�n de Banda',
-	'DELETE_UB' => 'Eliminar Informaci�n de Banda',
-	'CONFIRM_DELETE_UB' => '�Realmente deseas eliminar TODA la informaci�n de <b>%s</b>?',
-	'CONFIRM_DELETE_UD' => '�Realmente deseas eliminar la descarga:<br /><b>%s</b> de <b>%s</b>?',
-	'UPDATED_UB' => 'La informaci�n de la banda fu� actualizada correctamente.',
-	'DELETED_UB' => 'La informaci�n de la banda fu� eliminada correctamente.',
-	'DELETED_UD' => 'La descarga fu� eliminada correctamente.',
+	'ADD_UB' => 'Agregar Informaci&oacute;n de Banda',
+	'UPDATE_UB' => 'Actualizar Informaci&oacute;n de Banda',
+	'DELETE_UB' => 'Eliminar Informaci&oacute;n de Banda',
+	'CONFIRM_DELETE_UB' => '&iquest;Realmente deseas eliminar toda la informaci&oacute;n de <b>%s</b>?',
+	'CONFIRM_DELETE_UD' => '&iquest;Realmente deseas eliminar la descarga:<br /><b>%s</b> de <b>%s</b>?',
+	'UPDATED_UB' => 'La informaci&oacute;n de la banda fue actualizada correctamente.',
+	'DELETED_UB' => 'La informaci&oacute;n de la banda fue eliminada correctamente.',
+	'DELETED_UD' => 'La descarga fue eliminada correctamente.',
 	'UB_AEXISTS' => 'El identificador de banda seleccionado ya existe, escoge otro!',
 	
 	'GUB_UD_OO' => 'Solo se puede instalar una descarga por banda.',
-	'GUB_UD_OK' => 'La descarga de la banda invitada fu� instalada.',
+	'GUB_UD_OK' => 'La descarga de la banda invitada fue instalada.',
 	'GUB_UD_NOUDS' => 'No hay descargas disponibles para esta banda invitada.',
 	
 	// 'UBCP_' => '',
@@ -63,14 +63,14 @@ $lang += array(
 	// UE
 	'ADM_UE_REQD' => 'Los campos: <b>Titulo</b>, <b>Archivo</b>, <b>Imagen</b> son requeridos.',
 	'ADM_UE_EDIT_REQD' => 'Los campos: <b>Titulo</b>, <b>Archivo</b>, <b>Imagen</b> son requeridos.',
-	'ADM_UE_DELETED' => 'El evento fu� eliminado correctamente.',
+	'ADM_UE_DELETED' => 'El evento fue eliminado correctamente.',
 	'ADM_UE_NODEL' => 'No se puede eliminar el evento.',
 	
-	'CACHE_DELETED' => 'El cache de <b>%s</b> fu� eliminado.',
+	'CACHE_DELETED' => 'El cache de <b>%s</b> fue eliminado.',
 	
 	// CHAT
 	'CHAT_DELETED_MSGS' => '%s Mensajes fueron eliminados',
-	'CHAT_DELETED_MSG' => '%s Mensaje fu� borrado',
+	'CHAT_DELETED_MSG' => '%s Mensaje fue borrado',
 	'MM_BLOCK' => 'Bloquear',
 	'MM_BLOCK_IP' => 'Bloquear IP',
 	'MM_IP' => 'IP',

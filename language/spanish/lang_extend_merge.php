@@ -16,14 +16,10 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-if ( !defined('IN_NUCLEO') )
-{
-	die('Rock Republik &copy; 2006');
-}
+if (!defined('IN_NUCLEO')) exit;
 
 // admin part
-if ( $lang_extend_admin )
-{
+if ($lang_extend_admin) {
 	$lang['Lang_extend_merge'] = 'Simply Merge Threads';
 }
 
