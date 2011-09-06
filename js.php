@@ -91,7 +91,8 @@ $template->assign_var_from_handle('EXT', 'body');
 $db->sql_close();
 
 $code = JSMin::minify($template->vars['EXT']);
+
 echo $code;
-exit();
+exit;
 
 ?>

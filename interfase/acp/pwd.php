@@ -16,10 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-if (!defined('IN_NUCLEO'))
-{
-	exit();
-}
+if (!defined('IN_NUCLEO')) exit;
 
 _auth('founder');
 
@@ -39,7 +36,7 @@ if ($submit)
 	$userdata = array();
 	if (!$userdata = $db->sql_fetchrow($result))
 	{
-		exit();
+		exit;
 	}
 	$db->sql_freeresult($result);
 	
@@ -49,7 +46,7 @@ if ($submit)
 	$db->sql_query($sql);
 	
 	echo 'La contrase&ntilde;a de ' . $userdata['username'] . ' fue actualizada.';
-	die();
+	exit;
 }
 
 ?>

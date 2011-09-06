@@ -16,10 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-if (!defined('IN_NUCLEO'))
-{
-	die('Rock Republik &copy; 2006');
-}
+if (!defined('IN_NUCLEO')) exit;
 
 include(ROOT.'interfase/downloads.php');
 
@@ -842,7 +839,7 @@ class layout extends downloads
 		$db->sql_query('UPDATE _artists SET www_views = www_views + 1 WHERE ub = ' . (int) $this->data['ub']);
 		
 		header('Location: http://' . $this->data['www']);
-		exit();
+		exit;
 	}
 	
 	//

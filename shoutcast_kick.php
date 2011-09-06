@@ -25,7 +25,7 @@ if (!isset($config['kick_script']))
 	$user->setup();
 	
 	redirect(s_link('forum', 'djs'));
-	exit();
+	exit;
 }
 
 $scl = array(

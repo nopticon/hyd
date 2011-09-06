@@ -64,7 +64,9 @@ if ($bounce_id && $bounce_mode) {
 	}
 	
 	if ($bounce_mode == 'f') {
-		$db->sql_query('UPDATE _links SET views = views + 1 WHERE id = ' . (int) $bounce_id);
+		$sql = 'UPDATE _links SET views = views + 1
+			WHERE id = ?';
+		sql_query(sql_filter($sql, $bounce_id));
 	}
 	
 	redirect($bounce_data['redirect_url']);

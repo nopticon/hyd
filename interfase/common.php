@@ -16,16 +16,13 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-if (!defined('IN_NUCLEO')) {
-	die('Rock Republik');
-}
+if (!defined('IN_NUCLEO')) exit;
 
 $starttime = explode(' ', microtime());
 $starttime = $starttime[1] + $starttime[0];
 
 //error_reporting(E_ERROR | E_WARNING | E_PARSE);
 error_reporting(E_ALL);
-//set_magic_quotes_runtime(0);
 
 // Protect against GLOBALS tricks
 if (isset($_REQUEST['GLOBALS']) || isset($_FILES['GLOBALS'])) {
@@ -63,14 +60,12 @@ if (@ini_get('register_globals') == '1' || strtolower(@ini_get('register_globals
 
 //
 // Set the root path
-//
 if (!defined('ROOT')) {
 	define('ROOT', './');
 }
 
 //
 // Start the main system
-//
 define('USE_CACHE', true);
 define('STRIP', (get_magic_quotes_gpc()) ? true : false);
 

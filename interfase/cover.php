@@ -16,10 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-if (!defined('IN_NUCLEO'))
-{
-	die('Rock Republik &copy; 2006');
-}
+if (!defined('IN_NUCLEO')) exit;
 
 class cover
 {
@@ -91,7 +88,7 @@ class cover
 		
 		$json = new Services_JSON();
 		
-		$tc = new TwitterCacher("info@rockrepublik.net", "93624739", 'json', './cache/');
+		$tc = new TwitterCacher("username", "password", 'json', './cache/');
 		$tc->setUserAgent("Mozilla/5.0 (compatible; Rock Republik; +http://www.rockrepublik.net)");
 		
 		$timeline = $json->decode($tc->getUserTimeline());

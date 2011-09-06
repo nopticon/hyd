@@ -199,15 +199,15 @@ for ($i = 1; $i <= $count; $i++)
 		
 		$email_subject = 'Noticia publicada';
 		$email_message = 'Gracias por enviarnos la noticia "' . $post_subject . '".
-Puedes verla en la secci�n de Noticias, categor�a: ' . $post_category . '
+Puedes verla en la secci&oacute;n de Noticias, categor&iacute;a: ' . $post_category . '
 
-Puedes revisar la noticia en esta direcci�n: ' . s_link('news', $post_id);
+Puedes revisar la noticia en esta direcci&ooacute;n: ' . s_link('news', $post_id);
 	}
 	else
 	{
 		$email_subject = 'Error en noticia';
 		$email_message = "La noticia enviada hace unos minutos \"" . $post_subject . "\" tiene un error y no se pudo publicar.
-La contrase�a no coincide. Debes escribir la contrase�a de tu usuario en Rock Republik en la primera l�nea del mensaje.
+La contrase&ntilde;a no coincide. Debes escribir la contrase&ntilde;a de tu usuario en Rock Republik en la primera l&iacute;nea del mensaje.
 
 Intenta enviar la noticia nuevamente.";
 		

@@ -742,7 +742,7 @@ function kernel_function($mode, $name, $param = false, $return_on_error = false)
 		}
 		
 		echo('<u>ERROR</u><br /><br />@ ~' . $fe . '( ' . $name . ' )<br /><br /><strong>info&#64;rockrepublik.net</strong>');
-		exit();
+		exit;
 	}
 	
 	return true;
@@ -829,7 +829,7 @@ function fatal_error($mode = '404', $bp_message = '')
 	sql_close();
 	
 	echo $code;
-	exit();
+	exit;
 }
 
 function msg_handler($errno, $msg_text, $errfile, $errline)
@@ -889,7 +889,7 @@ function redirect($url, $moved = false)
 	}
 	
 	header('Location: ' . $url);
-	exit();
+	exit;
 }
 
 // Meta refresh assignment
@@ -1194,7 +1194,7 @@ function _die($str)
 	sql_close();
 	
 	echo $str;
-	exit();
+	exit;
 }
 
 function _shoutcast()

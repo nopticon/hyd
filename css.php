@@ -80,12 +80,11 @@ $template->assign_vars(array(
 
 $template->set_filenames(array('body' => 'css/' . $filename . '.css'));
 $template->assign_var_from_handle('EXT', 'body');
-//$template->pparse('body');
 
-$db->sql_close();
+sql_close();
 
 $code = str_replace(array("\r\n", "\n", "\t"), '', $template->vars['EXT']);
 echo $code;
-exit();
+exit;
 
 ?>

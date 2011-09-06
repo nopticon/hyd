@@ -598,7 +598,7 @@ class user extends session
 			$db->sql_close();
 			
 			echo $page_html;
-			exit();
+			exit;
 		}
 
 		return;
