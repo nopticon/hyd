@@ -27,47 +27,39 @@ if ($submit || $user_id)
 	$username = request_var('username', '');
 	$user_email = request_var('user_email', '');
 	
-	if ($user_id)
-	{
-		$sql = "SELECT *
+	if ($user_id) {
+		$sql = 'SELECT *
 			FROM _members
-			WHERE user_id = " . (int) $user_id;
-	}
-	else if (!empty($username))
-	{
+			WHERE user_id = ';
+		$sql = sql_filter($sql, $user_id);
+	} else if (!empty($username)) {
 		$username = get_username_base($username);
 		
-		$sql = "SELECT *
+		$sql = 'SELECT *
 			FROM _members
-			WHERE username_base = '" . $db->sql_escape($username) . "'";
-	}
-	else
-	{
-		$sql = "SELECT *
+			WHERE username_base = ?';
+		$sql = sql_filter($sql, $username);
+	} else {
+		$sql = 'SELECT *
 			FROM _members
-			WHERE user_email = '" . $db->sql_escape($user_email) . "'";
+			WHERE user_email = ?';
+		$sql = sql_filter($sql, $user_email);
 	}
 	
-	$result = $db->sql_query($sql);
-	
-	$userdata = array();
-	if (!$userdata = $db->sql_fetchrow($result)) {
+	if (!$userdata = sql_fieldrow($sql)) {
 		exit;
 	}
-	$db->sql_freeresult($result);
 	
 	//
 	$user_id = $userdata['user_id'];
 	
-	$sql = 'UPDATE _members
-		SET user_type = ' . USER_NORMAL . '
-		WHERE user_id = ' . (int) $user_id;
-	$db->sql_query($sql);
+	$sql = 'UPDATE _members SET user_type = ?
+		WHERE user_id = ?';
+	sql_query(sql_filter($sql, USER_NORMAL, $user_id));
 	
-	$sql = "DELETE FROM _crypt_confirm
-		WHERE crypt_code = '" . $db->sql_escape($code) . "'
-			AND crypt_userid = " . (int) $user_id;
-	$db->sql_query($sql);
+	$sql = 'DELETE FROM _crypt_confirm WHERE crypt_code = ?
+			AND crypt_userid = ?';
+	sql_query(sql_filter($sql, $code, $user_id));
 	
 	// Unread
 	$user->save_unread(UH_T, 288, 0, $user_id);
@@ -107,10 +99,9 @@ $sql = 'SELECT *
 	FROM _members
 	WHERE user_type = 1
 	ORDER BY username';
-$result = $db->sql_query($sql);
+$result = sql_rowset($sql);
 
-while ($row = $db->sql_fetchrow($result))
-{
+foreach ($result as $row) {
 	echo '<a href="/nucleo/acp.php?module=activate&amp;uid=' . $row['user_id'] . '">Activar</a> -- ' . $row['username'] . ' -- ' . $row['user_email'] . ' -- ' . $user->format_date($row['user_regdate']) . ' -- ' . $row['user_regip'] . '<br />';
 }
 

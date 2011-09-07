@@ -20,10 +20,15 @@ if (!defined('IN_NUCLEO')) exit;
 
 _auth('founder');
 
+$limit = 225;
+$steps = 0;
+$items = 0;
+$trash = array();
+
 //
-$sql = "SELECT *
+$sql = 'SELECT *
 	FROM _members
-	WHERE user_type NOT IN (" . USER_IGNORE . ", " . USER_INACTIVE . ")
+	WHERE user_type NOT IN (' . USER_IGNORE . ", " . USER_INACTIVE . ")
 		AND user_email <> ''
 		AND user_id NOT IN (
 			SELECT ban_userid
@@ -31,23 +36,15 @@ $sql = "SELECT *
 			WHERE ban_userid <> 0
 		)
 	ORDER BY username";
-$result = $db->sql_query($sql);
+$result = sql_rowset($sql);
 
-$limit = 225;
-$steps = 0;
-$items = 0;
-$trash = array();
-
-while ($row = $db->sql_fetchrow($result))
-{
-	if (!preg_match('/^[a-z0-9&\'\.\-_\+]+@[a-z0-9\-]+\.([a-z0-9\-]+\.)*?[a-z]+$/is', $row['user_email']))
-	{
+foreach ($result as $row) {
+	if (!preg_match('/^[a-z0-9&\'\.\-_\+]+@[a-z0-9\-]+\.([a-z0-9\-]+\.)*?[a-z]+$/is', $row['user_email'])) {
 		$trash[] = $row['user_email'];
 		continue;
 	}
 	
-	if (!$items || $items == $limit)
-	{
+	if (!$items || $items == $limit) {
 		$items = 0;
 		$steps++;
 		
@@ -63,7 +60,6 @@ while ($row = $db->sql_fetchrow($result))
 
 	$items++;
 }
-$db->sql_freeresult($result);
 
 page_layout('ACP', 'acp_address');
 

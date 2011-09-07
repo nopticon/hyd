@@ -119,25 +119,11 @@ class comments extends common
 			FROM _help_cat c, _help_modules m
 			WHERE c.help_module = m.module_id
 			ORDER BY c.help_order';
-		$result = $db->sql_query($sql);
-		
-		$cat = array();
-		while ($row = $db->sql_fetchrow($result))
-		{
-			$cat[$row['help_id']] = $row;
-		}
-		$db->sql_freeresult($result);
+		$cat = sql_rowset($sql, 'help_id');
 		
 		$sql = 'SELECT *
 			FROM _help_faq';
-		$result = $db->sql_query($sql);
-		
-		$faq = array();
-		while ($row = $db->sql_fetchrow($result))
-		{
-			$faq[$row['faq_id']] = $row;
-		}
-		$db->sql_freeresult($result);
+		$faq = sql_rowset($sql, 'faq_id');
 		
 		//
 		// Loop
@@ -272,7 +258,7 @@ class comments extends common
 							'help_en' => $help_en
 						);
 						
-						$sql = 'INSERT INTO _help_cat' . $db->sql_build_array('INSERT', $sql_insert);
+						$sql = 'INSERT INTO _help_cat' . sql_build('INSERT', $sql_insert);
 					}
 					break;
 				case 'faq':
@@ -296,7 +282,7 @@ class comments extends common
 							'faq_answer_es' => $answer_es,
 							'faq_answer_en' => $answer_en
 						);
-						$sql = 'INSERT INTO _help_faq' . $db->sql_build_array('INSERT', $sql_insert);
+						$sql = 'INSERT INTO _help_faq' . sql_build('INSERT', $sql_insert);
 					}
 					break;
 				case 'module':
@@ -312,14 +298,14 @@ class comments extends common
 						$sql_insert = array(
 							'module_name' => $module_name
 						);
-						$sql = 'INSERT INTO _help_modules' . $db->sql_build_array('INSERT', $sql_insert);
+						$sql = 'INSERT INTO _help_modules' . sql_build('INSERT', $sql_insert);
 					}
 					break;
 			}
 			
 			if (!sizeof($error))
 			{
-				$db->sql_query($sql);
+				sql_query($sql);
 				
 				$cache->delete('help_cat', 'help_faq', 'help_modules');
 				
@@ -348,15 +334,13 @@ class comments extends common
 				$sql = 'SELECT *
 					FROM _help_modules
 					ORDER BY module_id';
-				$result = $db->sql_query($sql);
+				$result = sql_rowset($sql);
 				
 				$select_mod = '';
-				while ($row = $db->sql_fetchrow($result))
-				{
+				foreach ($result as $row) {
 					$selected = ($row['module_id'] == $module_id);
 					$select_mod .= '<option' . (($selected) ? ' class="bold"' : '') . ' value="' . $row['module_id'] . '"' . (($selected) ? ' selected' : '') . '>' . $row['module_name'] . '</option>';
 				}
-				$db->sql_freeresult($result);
 				
 				$template_vars += array(
 					'MODULE' => $select_mod,
@@ -368,15 +352,13 @@ class comments extends common
 				$sql = 'SELECT *
 					FROM _help_cat
 					ORDER BY help_id';
-				$result = $db->sql_query($sql);
+				$result = sql_rowset($sql);
 				
 				$select_cat = '';
-				while ($row = $db->sql_fetchrow($result))
-				{
+				foreach ($result as $row) {
 					$selected = ($row['help_id'] == $help_id);
 					$select_cat .= '<option' . (($selected) ? ' class="bold"' : '') . ' value="' . $row['help_id'] . '"' . (($selected) ? ' selected' : '') . '>' . $row['help_es'] . ' | ' . $row['help_en'] . '</option>';
 				}
-				$db->sql_freeresult($result);
 				
 				$template_vars += array(
 					'CATEGORY' => $select_cat,
@@ -398,24 +380,21 @@ class comments extends common
 	
 	function _help_edit_move()
 	{
-		global $db;
-		
 		$sql = 'SELECT *
 			FROM _help_cat
 			ORDER BY help_order';
-		$result = $db->sql_query($sql);
+		$result = sql_rowset($sql);
 		
 		$i = 10;
-		while ($row = $db->sql_fetchrow($result))
-		{
-			$sql = 'UPDATE _help_cat
-				SET help_order = ' . (int) $i . '
-				WHERE help_id = ' . (int) $row['help_id'];
-			$db->sql_query($sql);
+		foreach ($result as $row) {
+			$sql = 'UPDATE _help_cat SET help_order = ?
+				WHERE help_id = ?';
+			sql_query(sql_filter($sql, $i, $row['help_id']));
 			
 			$i += 10;
 		}
-		$db->sql_freeresult($result);
+		
+		return;
 	}
 	
 	function _help_edit()
@@ -432,33 +411,24 @@ class comments extends common
 			case 'cat':
 				$sql = 'SELECT c.*, m.*
 					FROM _help_cat c, _help_modules m
-					WHERE c.help_id = ' . (int) $id . '
+					WHERE c.help_id = ?
 						AND c.help_module = m.module_id';
-				$result = $db->sql_query($sql);
-				
-				if (!$cat_data = $db->sql_fetchrow($result))
-				{
+				if (!$cat_data = sql_fieldrow(sql_filter($sql, $id))) {
 					fatal_error();
 				}
-				$db->sql_freeresult($result);
 				
 				$order = $this->control->get_var('order', '');
-				if (!empty($order))
-				{
-					if (preg_match('/_([0-9]+)/', $order))
-					{
+				if (!empty($order)) {
+					if (preg_match('/_([0-9]+)/', $order)) {
 						$sig = '-';
 						$order = str_replace('_', '', $order);
-					}
-					else
-					{
+					} else {
 						$sig = '+';
 					}
 					
-					$sql = 'UPDATE _help_cat
-						SET help_order = help_order ' . $sig . ' ' . (int) $order . '
-						WHERE help_id = ' . (int) $id;
-					$db->sql_query($sql);
+					$sql = 'UPDATE _help_cat SET help_order = help_order ?? ??
+						WHERE help_id = ?';
+					sql_query(sql_filter($sql, $sig, $order, $id));
 					
 					$this->_help_edit_move();
 					
@@ -474,14 +444,10 @@ class comments extends common
 			case 'faq':
 				$sql = 'SELECT *
 					FROM _help_faq
-					WHERE faq_id = ' . (int) $id;
-				$result = $db->sql_query($sql);
-				
-				if (!$faq_data = $db->sql_fetchrow($result))
-				{
+					WHERE faq_id = ?';
+				if (!$faq_data = sql_fieldrow(sql_filter($sql, $id))) {
 					fatal_error();
 				}
-				$db->sql_freeresult($result);
 				
 				$question_es = $faq_data['faq_question_es'];
 				$question_en = $faq_data['faq_question_en'];
@@ -518,10 +484,9 @@ class comments extends common
 							'help_module' => (int) $module_id
 						);
 						
-						$sql = 'UPDATE _help_cat
-							SET ' . $db->sql_build_array('UPDATE', $sql_update) . '
-							WHERE help_id = ' . (int) $id;
-						$db->sql_query($sql);
+						$sql = 'UPDATE _help_cat SET ??
+							WHERE help_id = ?';
+						sql_query(sql_filter($sql, sql_build('UPDATE', $sql_update), $id));
 						
 						$cache->delete('help_cat');
 						
@@ -544,11 +509,8 @@ class comments extends common
 					{
 						$sql = 'SELECT *
 							FROM _help_cat
-							WHERE help_id = ' . (int) $help_id;
-						$result = $db->sql_query($sql);
-						
-						if (!$cat_data = $db->sql_fetchrow($result))
-						{
+							WHERE help_id = ?';
+						if (!$cat_data = sql_fieldrow(sql_filter($sql, $help_id))) {
 							$error[] = 'CONTROL_COMMENTS_HELP_NOCAT';
 						}
 					}
@@ -564,10 +526,9 @@ class comments extends common
 							'faq_answer_en' => $answer_en
 						);
 						
-						$sql = 'UPDATE _help_faq
-							SET ' . $db->sql_build_array('UPDATE', $sql_update) . '
-							WHERE faq_id = ' . (int) $id;
-						$db->sql_query($sql);
+						$sql = 'UPDATE _help_faq SET ??
+							WHERE faq_id = ?';
+						sql_query(sql_filter($sql, sql_build('UPDATE', $sql_update), $id));
 						
 						$cache->delete('help_faq');
 						
@@ -598,15 +559,13 @@ class comments extends common
 				$sql = 'SELECT *
 					FROM _help_modules
 					ORDER BY module_id';
-				$result = $db->sql_query($sql);
+				$result = sql_rowset($sql);
 				
 				$select_mod = '';
-				while ($row = $db->sql_fetchrow($result))
-				{
+				foreach ($result as $row) {
 					$selected = ($row['module_id'] == $module_id);
 					$select_mod .= '<option' . (($selected) ? ' class="bold"' : '') . ' value="' . $row['module_id'] . '"' . (($selected) ? ' selected' : '') . '>' . $row['module_name'] . '</option>';
 				}
-				$db->sql_freeresult($result);
 				
 				$template_vars += array(
 					'MODULE' => $select_mod,
@@ -618,15 +577,13 @@ class comments extends common
 				$sql = 'SELECT *
 					FROM _help_cat
 					ORDER BY help_id';
-				$result = $db->sql_query($sql);
+				$result = sql_rowset($sql);
 				
 				$select_cat = '';
-				while ($row = $db->sql_fetchrow($result))
-				{
+				foreach ($result as $row) {
 					$selected = ($row['help_id'] == $help_id);
 					$select_cat .= '<option' . (($selected) ? ' class="bold"' : '') . ' value="' . $row['help_id'] . '"' . (($selected) ? ' selected' : '') . '>' . $row['help_es'] . ' | ' . $row['help_en'] . '</option>';
 				}
-				$db->sql_freeresult($result);
 				
 				$template_vars += array(
 					'CATEGORY' => $select_cat,

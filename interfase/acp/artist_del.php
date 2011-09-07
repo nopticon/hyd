@@ -24,134 +24,104 @@ if ($submit)
 {
 	$name = request_var('name', '');
 	
-	$sql = "SELECT *
+	$sql = 'SELECT *
 		FROM _artists
-		WHERE name = '" . $db->sql_escape($name) . "'";
-	$result = $db->sql_query($sql);
-	
-	if (!$a_data = $db->sql_fetchrow($result))
-	{
+		WHERE name = ?';
+	if (!$a_data = sql_fieldrow(sql_filter($sql, $name))) {
 		fatal_error();
 	}
-	$db->sql_freeresult($result);
 	
 	$emails = array();
-	if (!empty($a_data['email']))
-	{
+	if (!empty($a_data['email'])) {
 		$emails[] = $a_data['email'];
 	}
 	
 	$sql = 'SELECT m.user_id, m.user_email
 		FROM _artists_auth a, _members m
-		WHERE a.ub = ' . (int) $a_data['ub'] . '
+		WHERE a.ub = ?
 			AND a.user_id = m.user_id';
-	$result = $db->sql_query($sql);
+	$result = sql_rowset(sql_filter($sql, $a_data['ub']));
 	
 	$mods = array();
-	while ($row = $db->sql_fetchrow($result))
-	{
+	foreach ($result as $row) {
 		$emails[] = $row['user_email'];
 		$mods[] = $row['user_id'];
 	}
-	$db->sql_freeresult($result);
 	
 	if (count($mods))
 	{
 		foreach ($mods as $i => $each)
 		{
-			$sql = 'SELECT user_id
+			$sql = 'SELECT COUNT(user_id) AS total
 				FROM _artists_auth
-				WHERE user_id = ' . $each;
-			$result = $db->sql_query($sql);
+				WHERE user_id = ?';
+			$total = sql_field(sql_filter($sql, $each), 'total', 0);
 			
-			if ($db->sql_numrows($result) > 1)
-			{
+			if ($total > 1) {
 				unset($mods[$i]);
 			}
-			$db->sql_freeresult($result);
 		}
 	}
 	
 	if (count($mods))
 	{
-		$d_sql[] = 'UPDATE _members
-			SET user_auth_control = 0
-			WHERE user_id IN (' . implode(',', $mods) . ')';
+		$sql = 'UPDATE _members SET user_auth_control = 0
+			WHERE user_id IN (??)';
+		$d_sql[] = sql_filter($sql, implode(',', $mods));
 	}
 	
 	$d_sql = array();
 	
-	$d_sql[] = 'DELETE FROM _artists_auth
-		WHERE ub = ' . (int) $a_data['ub'];
-	$d_sql[] = 'DELETE FROM _artists_fav
-		WHERE ub = ' . (int) $a_data['ub'];
-	$d_sql[] = 'DELETE FROM _artists_images
-		WHERE ub = ' . (int) $a_data['ub'];
-	$d_sql[] = 'DELETE FROM _artists_log
-		WHERE ub = ' . (int) $a_data['ub'];
-	$d_sql[] = 'DELETE FROM _artists_lyrics
-		WHERE ub = ' . (int) $a_data['ub'];
-	$d_sql[] = 'DELETE FROM _artists_posts
-		WHERE post_ub = ' . (int) $a_data['ub'];
-	$d_sql[] = 'DELETE FROM _artists_stats
-		WHERE ub = ' . (int) $a_data['ub'];
-	$d_sql[] = 'DELETE FROM _artists_viewers
-		WHERE ub = ' . (int) $a_data['ub'];
-	$d_sql[] = 'DELETE FROM _artists_voters
-		WHERE ub = ' . (int) $a_data['ub'];
-	$d_sql[] = 'DELETE FROM _artists_votes
-		WHERE ub = ' . (int) $a_data['ub'];
-	$d_sql[] = 'DELETE FROM _forum_topics
-		WHERE topic_ub = ' . (int) $a_data['ub'];
-	$d_sql[] = 'DELETE FROM _dl
-		WHERE ub = ' . (int) $a_data['ub'];
+	$ary_sql = array(
+		'DELETE FROM _artists_auth WHERE ub = ?',
+		'DELETE FROM _artists_fav WHERE ub = ?',
+		'DELETE FROM _artists_images WHERE ub = ?',
+		'DELETE FROM _artists_log WHERE ub = ?',
+		'DELETE FROM _artists_lyrics WHERE ub = ?',
+		'DELETE FROM _artists_posts WHERE post_ub = ?',
+		'DELETE FROM _artists_stats WHERE ub = ?',
+		'DELETE FROM _artists_viewers WHERE ub = ?',
+		'DELETE FROM _artists_voters WHERE ub = ?',
+		'DELETE FROM _artists_votes WHERE ub = ?',
+		'DELETE FROM _forum_topics WHERE topic_ub = ?',
+		'DELETE FROM _dl WHERE ub = ?'
+	);
+	
+	foreach ($ary_sql as $row) {
+		$d_sql[] = sql_filter($sql, $a_data['ub']);
+	}
 	
 	$sql = 'SELECT topic_id
 		FROM _forum_topics
-		WHERE topic_ub = ' . (int) $a_data['ub'];
-	$result = $db->sql_query($sql);
-	
-	$topics = array();
-	while ($row = $db->sql_fetchrow($result))
-	{
-		$topics[] = $row['topic_id'];
-	}
-	$db->sql_freeresult($result);
+		WHERE topic_ub = ?';
+	$topics = sql_rowset(sql_filter($sql, $a_data['ub']), false, 'topic_id');
 	
 	if (count($topics))
 	{
-		$d_sql[] = 'DELETE FROM _forum_posts
-			WHERE topic_id IN (' . implode(',', $topics) . ')';
+		$d_sql[] = sql_filter('DELETE FROM _forum_posts
+			WHERE topic_id IN (??)', implode(',', $topics));
 	}
 	
 	$sql = 'SELECT id
 		FROM _dl
-		WHERE ub = ' . (int) $a_data['ub'];
-	$result = $db->sql_query($sql);
-	
-	$downloads = array();
-	while ($row = $db->sql_fetchrow($result))
-	{
-		$downloads[] = $row['id'];
-	}
-	$db->sql_freeresult($result);
-	
-	if (count($downloads))
-	{
+		WHERE ub = ?';
+	if ($downloads = sql_rowset(sql_filter($sql, $a_data['ub']), false, 'id')) {
 		$s_downloads = implode(',', $downloads);
 		
-		$d_sql[] = 'DELETE FROM _dl_fav
-			WHERE dl_id IN (' . $s_downloads . ')';
-		$d_sql[] = 'DELETE FROM _dl_posts
-			WHERE download_id IN (' . $s_downloads . ')';
-		$d_sql[] = 'DELETE FROM _dl_vote
-			WHERE ud IN (' . $s_downloads . ')';
-		$d_sql[] = 'DELETE FROM _dl_voters
-			WHERE ud IN (' . $s_downloads . ')';
+		$ary_sql = array(
+			'DELETE FROM _dl_fav WHERE dl_id IN (??)',
+			'DELETE FROM _dl_posts WHERE download_id IN (??)',
+			'DELETE FROM _dl_vote WHERE ud IN (??)',
+			'DELETE FROM _dl_voters WHERE ud IN (??)'
+		);
+		
+		foreach ($ary_sql as $row) {
+			$d_sql[] = sql_filter($row, $s_downloads);
+		}
 	}
 	
-	$d_sql[] = 'DELETE FROM _artists
-		WHERE ub = ' . (int) $a_data['ub'];
+	$d_sql[] = sql_filter('DELETE FROM _artists
+		WHERE ub = ?', $a_data['ub']);
 	
 	if (!s_dir('../data/artists/' . $a_data['ub']))
 	{
@@ -159,7 +129,7 @@ if ($submit)
 		return;
 	}
 	
-	$db->sql_query($d_sql);
+	sql_query($d_sql);
 	
 	//
 	// Send email
@@ -202,39 +172,32 @@ if ($submit)
 	die();
 }
 
-function s_dir($path)
-{
-	if (!@file_exists($path))
-	{
+function s_dir($path) {
+	if (!@file_exists($path)) {
 		echo 'No folder ' . $path;
 		return false;
 	}
 	
 	$fp = @opendir($path);
-	while ($file = @readdir($fp))
-	{
-		if ($file == '.' || $file == '..')
-		{
+	while ($file = @readdir($fp)) {
+		if ($file == '.' || $file == '..') {
 			continue;
 		}
 		
 		$current_full_path = $path . '/' . $file;
 		
-		if (is_dir($current_full_path))
-		{
+		if (is_dir($current_full_path)) {
 			s_dir($current_full_path);
 			continue;
 		}
 		
-		if (!unlink($current_full_path))
-		{
+		if (!unlink($current_full_path)) {
 			return false;
 		}
 	}
 	@closedir($fp);
 	
-	if (!rmdir($path))
-	{
+	if (!rmdir($path)) {
 		return false;
 	}
 	

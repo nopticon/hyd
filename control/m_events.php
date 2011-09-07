@@ -41,15 +41,9 @@ class events extends common
 		{
 			$sql = 'SELECT *
 				FROM _events
-				WHERE id = ' . (int) $event_id;
-			$result = $db->sql_query($sql);
-			
-			if ($row = $db->sql_fetchrow($result))
-			{
-				$row['id'] = (int) $row['id'];
+				WHERE id = ?';
+			if ($row = sql_fieldrow(sql_filter($sql, $event_id))) {
 				$this->data = $row;
-				
-				$db->sql_freeresult($result);
 				
 				return true;
 			}
