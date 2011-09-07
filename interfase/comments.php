@@ -77,9 +77,10 @@ class _comments
 				{
 					$sql = 'SELECT *
 						FROM _dl d, _artists a
-						WHERE d.id = ' . $id . "
-							AND a.subdomain = '" . $db->sql_escape($this->param[1]) . "' 
-							AND d.ub = a.ub";
+						WHERE d.id = ?
+							AND a.subdomain = ? 
+							AND d.ub = a.ub';
+					$sql = sql_filter($sql, $id, $this->param[1]);
 					
 					$this->data = array(
 						'DATA_TABLE' => '_dl',
@@ -89,9 +90,10 @@ class _comments
 				}
 				else
 				{
-					$sql = "SELECT *
+					$sql = 'SELECT *
 						FROM _artists
-						WHERE subdomain = '" . $db->sql_escape($this->param[1]) . "'";
+						WHERE subdomain = ?';
+					$sql = sql_filter($sql, $this->param[1]);
 					
 					$this->data = array(
 						'DATA_TABLE' => '_artists',
@@ -103,7 +105,8 @@ class _comments
 			case 'events':
 				$sql = 'SELECT *
 					FROM _events
-					WHERE id = ' . (int) $this->param[1];
+					WHERE id = ?';
+				$sql = sql_filter($sql, $this->param[1]);
 				
 				$this->data = array(
 					'DATA_TABLE' => '_events',
@@ -114,18 +117,20 @@ class _comments
 			case 'news':
 				$sql = 'SELECT *
 					FROM _news
-					WHERE news_id = ' . (int) $this->param[1];
+					WHERE news_id = ?';
+				$sql = sql_filter($sql, $this->param[1]);
 					
-					$this->data = array(
-						'DATA_TABLE' => '_news',
-						'POST_TABLE' => '_news_posts',
-						'HISTORY' => UH_NP
-					);
+				$this->data = array(
+					'DATA_TABLE' => '_news',
+					'POST_TABLE' => '_news_posts',
+					'HISTORY' => UH_NP
+				);
 				break;
 			case 'art':
 				$sql = 'SELECT *
 					FROM _art
-					WHERE art_id = ' . (int) $this->param[1];
+					WHERE art_id = ?';
+				$sql = sql_filter($sql, $this->param[1]);
 				
 				$this->data = array(
 					'DATA_TABLE' => '_art',
@@ -134,9 +139,10 @@ class _comments
 				);
 				break;
 			case 'm':
-				$sql = "SELECT *
+				$sql = 'SELECT *
 					FROM _members
-					WHERE username_base = '" . $db->sql_escape($this->param[1]) . "'";
+					WHERE username_base = ?';
+				$sql = sql_filter($sql, $this->param[1]);
 				
 				$this->data = array(
 					'DATA_TABLE' => '_members',
@@ -149,17 +155,13 @@ class _comments
 				break;
 		}
 		
-		if (empty($sql))
-		{
+		if (empty($sql)) {
 			fatal_error();
 		}
 		
-		$result = $db->sql_query($sql);
-		if (!$post_data = $db->sql_fetchrow($result))
-		{
+		if (!$post_data = sql_fieldrow($sql)) {
 			fatal_error();
 		}
-		$db->sql_freeresult($result);
 		
 		$post_reply = 0;
 		$error = array();
@@ -994,16 +996,10 @@ class _comments
 			
 			if (!$smilies = $cache->get('smilies'))
 			{
-				global $db;
-				
 				$sql = 'SELECT *
 					FROM _smilies
 					ORDER BY LENGTH(code) DESC';
-				$result = $db->sql_query($sql);
-				
-				$smilies = $db->sql_fetchrowset($result);
-				$db->sql_freeresult($result);
-				
+				$smilies = sql_rowset($sql);
 				$cache->save('smilies', $smilies);
 			}
 			
@@ -1036,13 +1032,11 @@ class _comments
 				$sql = 'SELECT name
 					FROM _artists
 					ORDER BY name';
-				$result = $db->sql_query($sql);
+				$result = sql_rowset($sql);
 				
-				while ($row = $db->sql_fetchrow($result))
-				{
+				foreach ($result as $row) {
 					$this->options['a']['match'][] = $row['name'];
 				}
-				$db->sql_freeresult($result);
 				
 				$cache->save('ub_list', $this->options['a']['match']);
 			}
