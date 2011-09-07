@@ -26,19 +26,19 @@ $start_1 = mktime(0, 0, 0, $d['mon'], ($d['mday'] - 7), $d['year']);
 $start_2 = mktime(0, 0, 0, $d['mon'], ($d['mday'] - 14), $d['year']);
 
 $sql = 'DELETE FROM _members_unread
-	WHERE element = ' . UH_T . '
-		AND datetime < ' . (int) $start_1 . '
+	WHERE element = ?
+		AND datetime < ??
 		AND item NOT IN (
 			SELECT topic_id
 			FROM _forum_topics
 			WHERE topic_announce = 1
 		)';
-$db->sql_query($sql);
+sql_query(sql_filter($sql, UH_T, $start_1));
 
 $sql = 'DELETE FROM _members_unread
-	WHERE element = ' . UH_N . '
-		AND datetime < ' . (int) $start_2;
-$db->sql_query($sql);
+	WHERE element = ?
+		AND datetime < ??';
+sql_query(sql_filter($sql, UH_N, $start_2));
 
 _die('Done.');
 

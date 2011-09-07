@@ -23,31 +23,21 @@ _auth('founder');
 if ($submit)
 {
 	$artista = request_var('artista', '');
-	if (empty($artista))
-	{
+	if (empty($artista)) {
 		fatal_error();
 	}
-	else
-	{
-		$artista = get_subdomain($artista);
-		
-		$sql = "SELECT *
-			FROM _artists
-			WHERE subdomain = '" . $db->sql_escape($artista) . "'";
-	}
 	
-	$result = $db->sql_query($sql);
+	$artista = get_subdomain($artista);
 	
-	if (!$userdata = $db->sql_fetchrow($result))
-	{
+	$sql = 'SELECT *
+		FROM _artists
+		WHERE subdomain = ?';
+	if (!$userdata = sql_fieldrow(sql_filter($sql, $artista))) {
 		fatal_error();
 	}
-	$db->sql_freeresult($result);
 	
-	foreach ($userdata as $k => $void)
-	{
-		if (preg_match('#\d+#is', $k))
-		{
+	foreach ($userdata as $k => $void) {
+		if (preg_match('#\d+#is', $k)) {
 			unset($userdata[$k]);
 		}
 	}

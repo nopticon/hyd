@@ -55,10 +55,8 @@ if ($submit)
 		'email' => $email,
 		'www' => str_replace('http://', '', $www)
 	);
-	$sql = 'INSERT INTO _artists' . $db->sql_build_array('INSERT', $insert);
-	$db->sql_query($sql);
-	
-	$artist_id = $db->sql_nextid();
+	$sql = 'INSERT INTO _artists' . sql_build('INSERT', $insert);
+	$artist_id = sql_query_nextid($sql);
 	
 	// Cache
 	$cache->delete('ub_list', 'a_records', 'ai_records', 'a_recent');
@@ -74,29 +72,28 @@ if ($submit)
 	$ftp->ftp_quit();
 	
 	// Mods
-	if (!empty($mods))
-	{
+	if (!empty($mods)) {
 		$usernames = array();
 		
 		$a_mods = explode("\n", $mods);
-		foreach ($a_mods as $each)
-		{
+		foreach ($a_mods as $each) {
 			$username_base = get_username_base($each);
 			
 			$sql = "SELECT *
 				FROM _members
-				WHERE username_base = '" . $db->sql_escape($username_base) . "'
+				WHERE username_base = ?
 					AND user_type NOT IN (" . USER_IGNORE . ", " . USER_INACTIVE . ")
 					AND user_id <> 1";
-			$result = $db->sql_query($sql);
-			
-			if (!$userdata = $db->sql_fetchrow($result))
-			{
+			if (!$userdata = sql_fieldrow(sql_filter($sql, $username_base))) {
 				continue;
 			}
-			$db->sql_freeresult($result);
 			
-			$db->sql_query('INSERT INTO _artists_auth (ub, user_id) VALUES (' . $artist_id . ', ' . $userdata['user_id'] .')');
+			$sql_insert = array(
+				'ub' => $artist_id,
+				'user_id' => $userdata['user_id']
+			);
+			$sql = 'INSERT INTO _artists_auth' . sql_build('INSERT', $sql_insert);
+			sql_query($sql);
 			
 			//
 			$update = array('user_type' => USER_ARTIST, 'user_auth_control' => 1);
@@ -111,22 +108,18 @@ if ($submit)
 				$update['user_rank'] = (int) $config['default_a_rank'];
 			}
 			
-			$sql = 'UPDATE _members SET ' . $db->sql_build_array('UPDATE', $update) . '
-				WHERE user_id = ' . (int) $userdata['user_id'] . '
+			$sql = 'UPDATE _members SET ??
+				WHERE user_id = ?
 					AND user_type NOT IN (' . USER_INACTIVE . ', ' . USER_IGNORE . ', ' . USER_FOUNDER . ')';
-			$db->sql_query($sql);
+			sql_query(sql_filter($sql, sql_build('UPDATE', $update), $userdata['user_id']));
 		}
-		// Loop end
 	}
 	
 	// Alice notify
 	$sql = 'SELECT *
 		FROM _forum_posts
 		WHERE post_id = 82553';
-	$result = $db->sql_query($sql);
-	
-	if ($row = $db->sql_fetchrow($result))
-	{
+	if ($row = sql_fieldrow($sql)) {
 		$a_intro = 'En esta secci&oacute;n encontrar&aacute;s la actualizaci&oacute;n de las &uacute;ltimas bandas y artistas que tienen su espacio en Rock Republik.' . "\n\n";
 		$a_format = "[sb] <strong> %s </strong>\n%s\n%s\n\nhttp://www.rockrepublik.net" . SDATA . "artists/%d/gallery/1.jpg [/sb]";
 		$a_location = ($local) ? ((($location != '') ? $location . ', ' : '') . 'Guatemala') : $location;
@@ -135,43 +128,34 @@ if ($submit)
 		$row['post_text'] = str_replace("\r", '', $row['post_text']);
 		$a_post = $a_intro . $a_data . str_replace($a_intro, '', $row['post_text']);
 		
-		$sql = "UPDATE _forum_posts
-			SET post_text = '" . $db->sql_escape($a_post) . "', post_time = " . time() . "
-			WHERE post_id = " . (int) $row['post_id'];
-		$db->sql_query($sql);
+		$sql = 'UPDATE _forum_posts SET post_text = ?, post_time = ?
+			WHERE post_id = ?';
+		sql_query(sql_filter($sql, $a_post, time(), $row['post_id']));
 		
-		$sql = 'UPDATE _forum_topics
-			SET topic_time = ' . time() . '
-			WHERE topic_id = ' . (int) $row['topic_id'];
-		$db->sql_query($sql);
+		$sql = 'UPDATE _forum_topics SET topic_time = ?
+			WHERE topic_id = ?';
+		sql_query(sql_filter($sql, time(), $row['topic_id']));
 	}
-	$db->sql_freeresult($result);
 	
 	$user->save_unread(UH_T, $row['topic_id']);
 	
 	redirect(s_link('a', $subdomain));
 }
 
-function a_mkdir($path, $folder)
-{
+function a_mkdir($path, $folder) {
 	global $ftp;
 	
 	$result = false;
-	if (!empty($path))
-	{
+	if (!empty($path)) {
 		$path = $ftp->dfolder() . 'data' . $path;
 		$ftp->ftp_chdir($path);
 	}
 	
-	if ($ftp->ftp_mkdir($folder))
-	{
-		if ($ftp->ftp_site('CHMOD 0777 ' . $folder))
-		{
+	if ($ftp->ftp_mkdir($folder)) {
+		if ($ftp->ftp_site('CHMOD 0777 ' . $folder)) {
 			$result = folder;
 		}
-	}
-	else
-	{
+	} else {
 		_die('Can not create: ' . $folder);
 	}
 	

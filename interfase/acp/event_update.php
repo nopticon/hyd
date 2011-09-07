@@ -24,8 +24,7 @@ $i_size = intval(ini_get('upload_max_filesize'));
 $i_size *= 1048576;
 $error = array();
 
-if ($submit)
-{
+if ($submit) {
 	require('./interfase/upload.php');
 	$upload = new upload();
 	
@@ -35,22 +34,17 @@ if ($submit)
 	
 	$f = $upload->process($filepath_1, $_FILES['add_image'], array('jpg', 'jpeg'), $i_size);
 	
-	if (!sizeof($upload->error) && $f !== false)
-	{
-		foreach ($f as $row)
-		{
+	if (!sizeof($upload->error) && $f !== false) {
+		foreach ($f as $row) {
 			$xa = $upload->resize($row, $filepath_1, $filepath_1, $event_id, array(600, 400), false, false, true);
-			if ($xa === false)
-			{
+			if ($xa === false) {
 				continue;
 			}
 			$xb = $upload->resize($row, $filepath_1, $filepath_2, $event_id, array(100, 75), false, false);
 		}
 		
 		redirect(s_link('events') . '#' . $event_id);
-	}
-	else
-	{
+	} else {
 		$template->assign_block_vars('error', array(
 			'MESSAGE' => parse_error($upload->error))
 		);
@@ -59,19 +53,17 @@ if ($submit)
 
 $sql = 'SELECT *
 	FROM _events
-	WHERE date > ' . time() . '
+	WHERE date > ?
 	ORDER BY date DESC';
-$result = $db->sql_query($sql);
+$result = sql_rowset(sql_filter($sql,time()));
 
-while ($row = $db->sql_fetchrow($result))
-{
+foreach ($result as $row) {
 	$template->assign_block_vars('event_list', array(
 		'EVENT_ID' => $row['id'],
 		'EVENT_TITLE' => $row['title'],
 		'EVENT_DATE' => $user->format_date($row['date']))
 	);
 }
-$db->sql_freeresult($result);
 
 $template_vars = array(
 	'S_UPLOAD_ACTION' => $u,

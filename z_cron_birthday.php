@@ -62,10 +62,9 @@ $db->sql_freeresult($result);
 
 if (count($done))
 {
-	$sql = 'UPDATE _members
-		SET user_birthday_last = ' . (int) date('Y') . '
-		WHERE user_id IN (' . implode(',', $done) . ')';
-	$db->sql_query($sql);
+	$sql = 'UPDATE _members SET user_birthday_last = ?
+		WHERE user_id IN (??)';
+	sql_query(sql_filter($sql, date('Y'), implode(',', $done)));
 }
 
 _die('Done. @ ' . implode(', ', $usernames));

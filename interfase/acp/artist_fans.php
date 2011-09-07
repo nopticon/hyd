@@ -24,30 +24,25 @@ if ($submit)
 {
 	$name = request_var('name', '');
 	
-	$sql = "SELECT *
+	$sql = 'SELECT *
 		FROM _artists
-		WHERE name = '" . $db->sql_escape($name) . "'";
-	$result = $db->sql_query($sql);
-	
-	if (!$a_data = $db->sql_fetchrow($result))
-	{
+		WHERE name = ?';
+	if (!$a_data = sql_fieldrow(sql_filter($sql, $name))) {
 		fatal_error();
 	}
-	$db->sql_freeresult($result);
 	
 	$sql = 'SELECT v.*, u.user_id, u.username, u.username_base, u.user_color
 		FROM _artists_fav v, _members u
-		WHERE v.ub = ' . (int) $a_data['ub'] . '
+		WHERE v.ub = ?
 			AND v.user_id = u.user_id
 		ORDER BY u.username';
-	$result = $db->sql_query($sql);
+	$result = sql_rowset(sql_filter($sql, $a_data['ub']));
 	
 	echo '<ul type="1">';
-	while ($row = $db->sql_fetchrow($result))
-	{
+	
+	foreach ($result as $row) {
 		echo '<li>' . $row['username'] . '</li>';
 	}
-	$db->sql_freeresult($result);
 	
 	echo '</ul>';
 }

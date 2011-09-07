@@ -34,8 +34,6 @@ class events extends common
 	
 	function setup()
 	{
-		global $db;
-		
 		$event_id = $this->control->get_var('id', 0);
 		if ($event_id)
 		{

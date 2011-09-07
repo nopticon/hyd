@@ -24,15 +24,13 @@ $sql = 'SELECT d.*, m.username, m.username_base
 	FROM _radio_dj_log d, _members m
 	WHERE d.log_uid = m.user_id
 	ORDER BY log_time DESC';
-$result = $db->sql_query($sql);
+$result = sql_rowset($sql);
 
 echo '<ul>';
 
-while ($row = $db->sql_fetchrow($result))
-{
+foreach ($result as $row) {
 	echo '<li><a href="' . s_link('m', $row['username_base']) . '">' . $row['username'] . '</a> - ' . $user->format_date($row['log_time']) . '</li>';
 }
-$db->sql_freeresult($result);
 
 echo '</ul>';
 
