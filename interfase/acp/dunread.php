@@ -25,26 +25,20 @@ $comments = new _comments();
 
 $sql = 'SELECT *
 	FROM _members_unread
-	WHERE element = ' . UH_T . '
+	WHERE element = ?
 	GROUP BY item';
-$result = $db->sql_query($sql);
+$result = sql_rowset(sql_filter($sql, UH_T));
 
-while ($row = $db->sql_fetchrow($result))
-{
+foreach ($result as $row) {
 	$sql2 = 'SELECT topic_id
 		FROM _forum_topics
-		WHERE topic_id = ' . (int) $row['item'];
-	$result2 = $db->sql_query($sql2);
-	
-	if (!$row2 = $db->sql_fetchrow($result2))
-	{
+		WHERE topic_id = ?';
+	if (!sql_field(sql_filter($sql, $row['item']), 'topic_id', 0)) {
 		$user->delete_all_unread(UH_T, $row['item']);
 		echo $row['item'] . '<br />';
 	}
-	$db->sql_freeresult($result2);
 }
-$db->sql_freeresult($result);
 
-die();
+exit;
 
 ?>

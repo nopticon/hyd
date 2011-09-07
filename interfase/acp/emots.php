@@ -22,24 +22,20 @@ if (!defined('IN_NUCLEO')) {
 
 _auth('founder');
 
-if ($submit)
-{
+if ($submit) {
 	$folder = request_var('folder', '');
 	$list = request_var('list', '');
 	
 	//
 	// Folder
-	if (!empty($folder))
-	{
+	if (!empty($folder)) {
 		$real_path = '../net/smiles/' . $folder;
 		
 		$images = array();
 		
 		$fp = @opendir($real_path);
-		while ($file = @readdir($fp))
-		{
-			if (preg_match('#([a-z0-9]+)\.(gif|png)#is', $file, $split))
-			{
+		while ($file = @readdir($fp)) {
+			if (preg_match('#([a-z0-9]+)\.(gif|png)#is', $file, $split)) {
 				$images[] = $split;
 			}
 		}
@@ -52,21 +48,13 @@ if ($submit)
 		$sql = 'SELECT *
 			FROM _smilies
 			ORDER BY code';
-		$result = $db->sql_query($sql);
-		
-		while ($row = $db->sql_fetchrow($result))
-		{
-			$emots[$row['code']] = $row;
-		}
-		$db->sql_freeresult($result);
+		$emots = sql_rowset($sql, 'code');
 		
 		//
-		foreach ($images as $each)
-		{
+		foreach ($images as $each) {
 			$code = ':' . $each[1] . ':';
 			
-			if (isset($emots[$code]))
-			{
+			if (isset($emots[$code])) {
 				$skip[] = $code;
 				continue;
 			}
@@ -77,8 +65,8 @@ if ($submit)
 				'code' => $code,
 				'smile_url' => $path
 			);
-			$sql = 'INSERT INTO _smilies' . $db->sql_build_array('INSERT', $insert);
-			$db->sql_query($sql);
+			$sql = 'INSERT INTO _smilies' . sql_build('INSERT', $insert);
+			sql_query($sql);
 			
 			$process[] = $insert;
 		}
