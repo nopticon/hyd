@@ -18,33 +18,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-class cover
-{
+class cover {
 	var $msg;
 	
-	function news()
-	{
+	function news() {
 		global $cache, $user, $template;
 		
 		$news = array();
-		if (!$news = $cache->get('news'))
-		{
-			global $db;
-			
+		if (!$news = $cache->get('news')) {
 			$sql = 'SELECT n.news_id, n.post_time, n.poster_id, n.post_subject, n.post_desc, c.*
 				FROM _news n, _news_cat c
 				WHERE n.cat_id = c.cat_id
 				ORDER BY n.post_time DESC
 				LIMIT 3';
-			$news = sql_rowset($sql);
-			
-			if (sizeof($news)) {
+			if ($news = sql_rowset($sql)) {
 				$cache->save('news', $news);
 			}
 		}
 		
-		if (!sizeof($news))
-		{
+		if (!sizeof($news)) {
 			return;
 		}
 		
@@ -98,16 +90,7 @@ class cover
 			$sql = 'SELECT *
 				FROM _banners
 				ORDER BY banner_order';
-			$result = $db->sql_query($sql);
-			
-			while ($row = $db->sql_fetchrow($result))
-			{
-				$banners[$row['banner_id']] = $row;
-			}
-			$db->sql_freeresult($result);
-			
-			if (sizeof($banners))
-			{
+			if ($banners = sql_rowset($sql, 'banner_id')) {
 				$cache->save('banners', $banners);
 			}
 		}
@@ -140,17 +123,15 @@ class cover
 				FROM _members
 				WHERE user_id IN (2,3)
 				ORDER BY user_id';
-			$result = $db->sql_query($sql);
+			$result = sql_rowset($sql);
 			
-			while ($row = $db->sql_fetchrow($result))
-			{
+			foreach ($result as $row) {
 				$row['realname'] = ($row['user_id'] == 2) ? 'Guillermo Azurdia' : 'Gerardo Medina';
 				$row['user_avatar'] = $config['avatar_path'] . '/' . $row['user_avatar'];
 				$row['user_profile'] = s_link('m', $row['username_base']);
 				
 				$founders[$row['user_id']] = $row;
 			}
-			$db->sql_freeresult($result);
 			
 			$cache->save('founders', $founders);
 		}
@@ -161,7 +142,6 @@ class cover
 				'REALNAME' => $data['realname'],
 				'USERNAME' => $data['username'],
 				'RANK' => $user->lang['COMM_FOUNDER'],
-//				'RANK' => ($data['user_id'] == 2) ? $user->lang['COMM_FOUNDER'] : $user->lang['COMM_ADMIN'],
 				'COLOR' => $data['user_color'],
 				'AVATAR' => $data['user_avatar'],
 				'PROFILE' => $data['user_profile'])
@@ -203,19 +183,15 @@ class cover
 				AND p.poster_id = u.user_id
 				AND t.topic_featured = 1
 			ORDER BY t.topic_announce DESC, p.post_time DESC
-			LIMIT ' . $config['main_topics'];
-		$result = $db->sql_query($sql);
-		
-		if ($row = $db->sql_fetchrow($result))
-		{
+			LIMIT ?';
+		if ($result = sql_rowset(sql_filter($sql, $config['main_topics']))) {
 			$template->assign_block_vars('forum', array(
-				'L_TOP_POSTS' => sprintf($user->lang['TOP_FORUM'], $db->sql_numrows($result)),
+				'L_TOP_POSTS' => sprintf($user->lang['TOP_FORUM'], count($result)),
 				'POSTS' => $config['max_posts'],
 				'TOPICS' => $config['max_topics'])
 			);
 			
-			do
-			{
+			foreach ($result as $row) {
 				$username = ($row['user_id'] != GUEST) ? $row['username'] : (($row['post_username'] != '') ? $row['post_username'] : $user->lang['GUEST']);
 				
 				$template->assign_block_vars('forum.item', array(
@@ -233,9 +209,9 @@ class cover
 					'PROFILE' => s_link('m', $row['username_base']))
 				);
 			}
-			while ($row = $db->sql_fetchrow($result));
 		}
-		$db->sql_freeresult($result);
+		
+		return true;
 	}
 	
 	//
@@ -250,112 +226,94 @@ class cover
 			$sql = 'SELECT t.topic_id
 				FROM _forum_topics t
 				LEFT JOIN _poll_options v ON t.topic_id = v.topic_id
-				WHERE t.forum_id = ' . (int) $config['main_poll_f'] . '
+				WHERE t.forum_id = ?
 					AND t.topic_locked = 0
 					AND t.topic_vote = 1 
 				ORDER BY t.topic_time DESC 
 				LIMIT 1';
-			$result = $db->sql_query($sql);
-			
-			if ($row = $db->sql_fetchrow($result))
-			{
+			if ($row = sql_fieldrow(sql_filter($sql, $config['main_poll_f']))) {
 				$topic_id = $row['topic_id'];
 				$cache->save('last_poll_id', $topic_id);
 			}
-			$db->sql_freeresult($result);
 		}
+		
 		$topic_id = (int) $topic_id;
 		
-		if (!$topic_id)
-		{
+		if (!$topic_id) {
 			return;
 		}
 		
 		$sql = 'SELECT t.topic_id, t.topic_locked, t.topic_time, t.topic_replies, t.topic_important, t.topic_vote, f.forum_locked, f.forum_id, f.auth_view, f.auth_read, f.auth_post, f.auth_reply, f.auth_announce, f.auth_pollcreate, f.auth_vote
 			FROM _forum_topics t, _forums f
-			WHERE t.topic_id = ' . (int) $topic_id . '
+			WHERE t.topic_id = ?
 				AND f.forum_id = t.forum_id';
-		$result = $db->sql_query($sql);
-
-		if (!$topic_data = $db->sql_fetchrow($result))
-		{
-			return;
+		if (!$topic_data = sql_fieldrow(sql_filter($sql, $topic_id))) {
+			return false;
 		}
-		$db->sql_freeresult($result);
 		
 		$forum_id = (int) $topic_data['forum_id'];
 		
 		$sql = 'SELECT vd.*, vr.*
 			FROM _poll_options vd, _poll_results vr
-			WHERE vd.topic_id = ' . $topic_id . '
+			WHERE vd.topic_id = ?
 				AND vr.vote_id = vd.vote_id 
 			ORDER BY vr.vote_option_id ASC';
-		$result = $db->sql_query($sql);
+		if (!$vote_info = sql_rowset(sql_filter($sql, $topic_id))) {
+			return false;
+		}
 		
-		if ($vote_info = $db->sql_fetchrowset($result))
-		{
-			$db->sql_freeresult($result);
-			$vote_options = sizeof($vote_info);
+		if ($user->data['is_member']) {
+			$is_auth = array();
+			$is_auth = $auth->forum(AUTH_VOTE, $forum_id, $topic_data);
 			
-			if ($user->data['is_member'])
-			{
-				$is_auth = array();
-				$is_auth = $auth->forum(AUTH_VOTE, $forum_id, $topic_data);
-				
-				$sql = 'SELECT *
-					FROM _poll_voters
-					WHERE vote_id = ' . (int) $vote_info[0]['vote_id'] . '
-						AND vote_user_id = ' . (int) $user->data['user_id'];
-				$result2 = $db->sql_query($sql);
-				
-				$user_voted = ($row = $db->sql_fetchrow($result2)) ? TRUE : FALSE;
-				$db->sql_freeresult($result2);
+			$sql = 'SELECT vote_user_id
+				FROM _poll_voters
+				WHERE vote_id = ?
+					AND vote_user_id = ?';
+			$user_voted = (sql_field(sql_filter($sql, $vote_info[0]['vote_id'], $user->data['user_id']), 'vote_user_id', false)) ? true : false;
+		}
+		
+		$poll_expired = ($vote_info[0]['vote_length']) ? (($vote_info[0]['vote_start'] + $vote_info[0]['vote_length'] < $current_time) ? TRUE : 0) : 0;
+		
+		$template->assign_block_vars('poll', array(
+			'U_POLL_TOPIC' => s_link('topic', $topic_id),
+			'S_REPLIES' => $topic_data['topic_replies'],
+			'U_POLL_FORUM' => s_link('forum', $config['main_poll_f']),
+			'POLL_TITLE' => $vote_info[0]['vote_text'])
+		);
+		
+		if (!$user->data['is_member'] || $user_voted || $poll_expired || !$is_auth['auth_vote'] || $topic_data['topic_locked'])
+		{
+			$vote_results_sum = 0;
+			foreach ($vote_info as $row) {
+				$vote_results_sum += $row['vote_result'];
 			}
 			
-			$poll_expired = ($vote_info[0]['vote_length']) ? (($vote_info[0]['vote_start'] + $vote_info[0]['vote_length'] < $current_time) ? TRUE : 0) : 0;
+			$template->assign_block_vars('poll.results', array());
 			
-			$template->assign_block_vars('poll', array(
-				'U_POLL_TOPIC' => s_link('topic', $topic_id),
-				'S_REPLIES' => $topic_data['topic_replies'],
-				'U_POLL_FORUM' => s_link('forum', $config['main_poll_f']),
-				'POLL_TITLE' => $vote_info[0]['vote_text'])
+			foreach ($vote_info as $row) {
+				$vote_percent = ($vote_results_sum) ? $row['vote_result'] / $vote_results_sum : 0;
+				
+				$template->assign_block_vars('poll.results.item', array(
+					'CAPTION' => $row['vote_option_text'],
+					'RESULT' => $row['vote_result'],
+					'PERCENT' => sprintf("%.1d", ($vote_percent * 100)))
+				);
+			}
+		} else {
+			$template->assign_block_vars('poll.options', array(
+				'S_VOTE_ACTION' => s_link('topic', $topic_id))
 			);
 			
-			if (!$user->data['is_member'] || $user_voted || $poll_expired || !$is_auth['auth_vote'] || $topic_data['topic_locked'])
-			{
-				$vote_results_sum = 0;
-				for ($i = 0; $i < $vote_options; $i++)
-				{
-					$vote_results_sum += $vote_info[$i]['vote_result'];
-				}
-				
-				$template->assign_block_vars('poll.results', array());
-				for ($i = 0; $i < $vote_options; $i++)
-				{
-					$vote_percent = ($vote_results_sum) ? $vote_info[$i]['vote_result'] / $vote_results_sum : 0;
-
-					$template->assign_block_vars('poll.results.item', array(
-						'CAPTION' => $vote_info[$i]['vote_option_text'],
-						'RESULT' => $vote_info[$i]['vote_result'],
-						'PERCENT' => sprintf("%.1d", ($vote_percent * 100)))
-					);
-				}
-			}
-			else
-			{
-				$template->assign_block_vars('poll.options', array(
-					'S_VOTE_ACTION' => s_link('topic', $topic_id))
+			foreach ($vote_info as $row) {
+				$template->assign_block_vars('poll.options.item', array(
+					'POLL_OPTION_ID' => $row['vote_option_id'],
+					'POLL_OPTION_CAPTION' => $row['vote_option_text'])
 				);
-
-				for ($i = 0; $i < $vote_options; $i++)
-				{
-					$template->assign_block_vars('poll.options.item', array(
-						'POLL_OPTION_ID' => $vote_info[$i]['vote_option_id'],
-						'POLL_OPTION_CAPTION' => $vote_info[$i]['vote_option_text'])
-					);
-				} // FOR
-			} // IF
-		} // IF
+			}
+		}
+		
+		return true;
 	}
 }
 

@@ -16,10 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-if (!defined('IN_NUCLEO'))
-{
-	die('Hacking attempt');
-}
+if (!defined('IN_NUCLEO')) exit;
 
 $html_entities_match = array('#&(?!(\#[0-9]+;))#', '#<#', '#>#');
 $html_entities_replace = array('&amp;', '&lt;', '&gt;');
@@ -180,9 +177,9 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 		$sql = "SELECT MAX(post_time) AS last_post_time
 			FROM _forum_posts
 			WHERE $where_sql";
-		if ($result = $db->sql_query($sql))
+		if ($result = sql_query($sql))
 		{
-			if ($row = $db->sql_fetchrow($result))
+			if ($row = sql_fetchrow($result))
 			{
 				if (intval($row['last_post_time']) > 0 && ($current_time - intval($row['last_post_time'])) < intval($config['flood_interval']))
 				{
@@ -196,23 +193,77 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 	if ($mode == 'newtopic' || ($mode == 'editpost' && $post_data['first_post']))
 	{
 		$topic_vote = (!empty($poll_title) && count($poll_options) >= 2) ? 1 : 0;
+		
+		if ($mode != 'editpost') {
+			$sql_insert = array(
+				'topic_title' => $post_subject,
+				'topic_poster' => $userdata['user_id'],
+				'topic_time' => $current_time,
+				'forum_id' => $forum_id,
+				'topic_status' => TOPIC_UNLOCKED,
+				'topic_important' => $topic_type,
+				'topic_vote' => $topic_vote
+			);
+			
+			if (!empty($ub)) {
+				$sql_insert['ub'] = $ub;
+			}
+			
+			$sql = 'INSERT INTO _forum_topics' . sql_build('INSERT', $sql_insert);
+		} else {
+			$sql_update = array(
+				'topic_title' => $post_subject,
+				'topic_important' => $topic_type
+			);
+			
+			if ($post_data['edit_vote'] || !empty($poll_title)) {
+				$sql_update['topic_vote'] = $topic_vote;
+			}
+			
+			$sql = 'UPDATE _forum_topics SET ??
+				WHERE topic_id = ?';
+			$sql = sql_filter($sql, sql_build('UPDATE', $sql_update), $topic_id);
+		}
+		
+		sql_query($sql);
 
-		$sql  = ($mode != "editpost") ? "INSERT INTO _forum_topics (" . (($ub != '') ? 'topic_ub, ' : '') . "topic_title, topic_poster, topic_time, forum_id, topic_status, topic_important, topic_vote) VALUES (" . (($ub != '') ? "'$ub', " : '') . "'$post_subject', " . $userdata['user_id'] . ", $current_time, $forum_id, " . TOPIC_UNLOCKED . ", $topic_type, $topic_vote)" : "UPDATE _forum_topics SET topic_title = '$post_subject', topic_important = $topic_type " . (($post_data['edit_vote'] || !empty($poll_title)) ? ", topic_vote = " . $topic_vote : "") . " WHERE topic_id = $topic_id";
-		!$db->sql_query($sql);
-
-		if ($mode == 'newtopic')
-		{
-			$topic_id = $db->sql_nextid();
+		if ($mode == 'newtopic') {
+			$topic_id = sql_nextid();
 		}
 	}
 
-	$edited_sql = ($mode == 'editpost' && !$post_data['last_post'] && $post_data['poster_post']) ? "" : "";
-	$sql = ($mode != "editpost") ? "INSERT INTO _forum_posts (topic_id, forum_id, poster_id, post_username, post_time, poster_ip, post_subject, post_text, post_np) VALUES ($topic_id, $forum_id, " . $userdata['user_id'] . ", '$post_username', $current_time, '$user_ip', '$post_subject', '$post_message', '$post_np')" : "UPDATE _forum_posts SET post_username = '$post_username', post_subject = '$post_subject', post_text = '$post_text', post_np = '$post_np'" . $edited_sql . " WHERE post_id = $post_id";
-	$db->sql_query($sql, BEGIN_TRANSACTION);
-
-	if ($mode != 'editpost')
-	{
-		$post_id = $db->sql_nextid();
+	$edited_sql = ($mode == 'editpost' && !$post_data['last_post'] && $post_data['poster_post']) ? '' : '';
+	
+	if ($mode != 'editpost') {
+		$sql_insert = array(
+			'topic_id' => $topic_id,
+			'forum_id' => $forum_id,
+			'poster_id' => $userdata['user_id'],
+			'post_username' => $post_username,
+			'post_time' => $current_time,
+			'poster_ip' => $user_ip,
+			'post_subject' => $post_subject,
+			'post_text' => $post_message,
+			'post_np' => $post_np
+		);
+		$sql = 'INSERT INTO _forum_posts' . sql_build('INSERT', $sql_insert);
+	} else {
+		$sql_update = array(
+			'post_username' => $post_username,
+			'post_subject' => $post_subject,
+			'post_text' => $post_text,
+			'post_np' => $post_np
+		);
+		
+		$sql = 'UPDATE _forum_posts SET ??
+			WHERE post_id = ?';
+		$sql = sql_filter($sql, sql_build('UPDATE', $sql_update), $post_id); 
+	}
+	
+	sql_query($sql);
+	
+	if ($mode != 'editpost') {
+		$post_id = sql_nextid();
 	}
 
 	//
@@ -220,35 +271,46 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 	// 
 	if (($mode == 'newtopic' || ($mode == 'editpost' && $post_data['edit_poll'])) && !empty($poll_title) && count($poll_options) >= 2)
 	{
-		$sql = (!$post_data['has_poll']) ? "INSERT INTO _poll_options (topic_id, vote_text, vote_start, vote_length) VALUES ($topic_id, '$poll_title', $current_time, " . ($poll_length * 86400) . ")" : "UPDATE _poll_options SET vote_text = '$poll_title', vote_length = " . ($poll_length * 86400) . " WHERE topic_id = $topic_id";
-		$db->sql_query($sql);
-
+		if ($post_data['has_poll']) {
+			$sql_update = array(
+				'vote_text' => $poll_title,
+				'vote_length' => ($poll_length * 86400)
+			);
+			
+			$sql = 'UPDATE _poll_options SET ??
+				WHERE topic_id = ?';
+			$sql = sql_filter($sql, sql_build('UPDATE', $sql_update), $topic_id);
+		} else {
+			$sql_insert = array(
+				'topic_id' => $topic_id,
+				'vote_text' => $poll_title,
+				'vote_start' => $current_time,
+				'vote_length' => ($poll_length * 86400)
+			);
+			$sql = 'INSERT INTO _poll_options' . sql_build('INSERT', $sql_insert);
+		}
+		
+		sql_query($sql);
+		
 		$delete_option_sql = '';
 		$old_poll_result = array();
-		if ($mode == 'editpost' && $post_data['has_poll'])
-		{
-			$sql = "SELECT vote_option_id, vote_result
+		if ($mode == 'editpost' && $post_data['has_poll']) {
+			$sql = 'SELECT vote_option_id, vote_result
 				FROM _poll_results
-				WHERE vote_id = $poll_id
-				ORDER BY vote_option_id ASC";
-			$result = $db->sql_query($sql);
-
-			while ($row = $db->sql_fetchrow($result))
-			{
+				WHERE vote_id = ?
+				ORDER BY vote_option_id ASC';
+			$result = sql_rowset(sql_filter($sql, $poll_id));
+			
+			foreach ($result as $row) {
 				$old_poll_result[$row['vote_option_id']] = $row['vote_result'];
 
-				if (!isset($poll_options[$row['vote_option_id']]))
-				{
+				if (!isset($poll_options[$row['vote_option_id']])) {
 					$delete_option_sql .= ($delete_option_sql != '') ? ', ' . $row['vote_option_id'] : $row['vote_option_id'];
 				}
 			}
+		} else {
+			$poll_id = sql_nextid();
 		}
-		else
-		{
-			$poll_id = $db->sql_nextid();
-		}
-
-		@reset($poll_options);
 
 		$poll_option_id = 1;
 		while (list($option_id, $option_text) = each($poll_options))
@@ -257,20 +319,37 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 			{
 				$option_text = str_replace("\'", "''", htmlspecialchars($option_text));
 				$poll_result = ($mode == "editpost" && isset($old_poll_result[$option_id])) ? $old_poll_result[$option_id] : 0;
-
-				$sql = ($mode != "editpost" || !isset($old_poll_result[$option_id])) ? "INSERT INTO _poll_results (vote_id, vote_option_id, vote_option_text, vote_result) VALUES ($poll_id, $poll_option_id, '$option_text', $poll_result)" : "UPDATE _poll_results SET vote_option_text = '$option_text', vote_result = $poll_result WHERE vote_option_id = $option_id AND vote_id = $poll_id";
-				$db->sql_query($sql);
-
+				
+				if ($mode != 'editpost' || !isset($old_poll_result[$option_id])) {
+					$sql_insert = array(
+						'vote_id' => $poll_id,
+						'vote_option_id' => $poll_option_id,
+						'vote_option_text' => $option_text,
+						'vote_result' => $poll_result
+					);
+					$sql = 'INSERT INTO _poll_results' . sql_build('INSERT', $sql_insert);
+				} else {
+					$sql_update = array(
+						'vote_option_text' => $option_text,
+						'vote_result' => $poll_result
+					);
+					$sql = 'UPDATE _poll_results SET ??
+						WHERE vote_option_id = ?
+							AND vote_id = ?';
+					$sql = sql_filter($sql, sql_build('UPDATE', $sql_update), $option_id, $poll_id);
+				}
+				
+				sql_query($sql);
 				$poll_option_id++;
 			}
 		}
 
-		if ($delete_option_sql != '')
+		if (!empty($delete_option_sql))
 		{
-			$sql = "DELETE FROM _poll_results
-				WHERE vote_option_id IN ($delete_option_sql)
-					AND vote_id = $poll_id";
-			$db->sql_query($sql);
+			$sql = 'DELETE FROM _poll_results
+				WHERE vote_option_id IN (??)
+					AND vote_id = ?';
+			sql_query(sql_filter($sql, $delete_option_sql, $poll_id));
 		}
 	}
 	
@@ -384,7 +463,7 @@ function update_post_stats(&$mode, &$post_data, &$forum_id, &$topic_id, &$post_i
 		WHERE date = ' . intval($hour_now);
 	if (!$db->sql_affectedrows())
 	{
-		$sql = 'INSERT IGNORE INTO _site_stats (date, '.(($mode == 'newtopic' || $post_data['first_post']) ? 'new_topics': 'new_posts').') 
+		$sql = 'INSERT INTO _site_stats (date, '.(($mode == 'newtopic' || $post_data['first_post']) ? 'new_topics': 'new_posts').') 
 			VALUES ('.$hour_now.', 1)';
 		$db->sql_query($sql);
 	}
@@ -577,20 +656,6 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 					$update_watched_sql .= ($update_watched_sql != '') ? ', ' . $row['user_id'] : $row['user_id'];
 				}
 				while ($row = $db->sql_fetchrow($result));
-
-				//
-				// Let's do some checking to make sure that mass mail functions
-				// are working in win32 versions of php.
-				//
-				if (preg_match('/[c-z]:\\\.*/i', getenv('PATH')) && !$config['smtp_delivery'])
-				{
-					$ini_val = (@phpversion() >= '4.0.0') ? 'ini_get' : 'get_cfg_var';
-
-					// We are running on windows, force delivery to use our smtp functions
-					// since php's are broken by default
-					//$config['smtp_delivery'] = 1;
-					//$config['smtp_host'] = @$ini_val('SMTP');
-				}
 
 				if (sizeof($bcc_list_ary))
 				{

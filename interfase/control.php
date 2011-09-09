@@ -18,8 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-class control
-{
+class control {
 	var $vars = array();
 	var $modules = array();
 	var $data = array();
@@ -33,15 +32,12 @@ class control
 	//
 	// Constructor
 	//
-	function control($module)
-	{
-		if ($module != '')
-		{
+	function control($module) {
+		if ($module != '') {
 			$this->module = $module;
 			$this->module_path = './control/m_' . $this->module . '.php';
 			
-			if (!kernel_function('a', $this->module_path, false, false))
-			{
+			if (!kernel_function('a', $this->module_path, false, false)) {
 				redirect(s_link('control'));
 			}
 		}
@@ -54,8 +50,7 @@ class control
 	//
 	// Get value of control var
 	//
-	function get_var($var_name, $default, $multibyte = false)
-	{
+	function get_var($var_name, $default, $multibyte = false) {
 		if (!isset($this->vars[$var_name]) || (is_array($this->vars[$var_name]) && !is_array($default)) || (is_array($default) && !is_array($this->vars[$var_name])))
 		{
 			return (is_array($default)) ? array() : $default;

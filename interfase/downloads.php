@@ -34,19 +34,13 @@ class downloads
 	{
 		global $db;
 		
-		$sql_ub = ($ub != '') ? ' WHERE ub = ' . (int) $ub . ' ' : '';
+		$sql_ub = ($ub != '') ? sql_filter(' WHERE ub = ?', $ub) . ' ' : '';
 		$sql_order = ($order != '') ? ' ORDER BY ' . $order : '';
 		
 		$sql = 'SELECT *
 			FROM _dl' . 
 			$sql_ub . $sql_order;
-		$result = $db->sql_query($sql);
-		
-		while ($row = $db->sql_fetchrow($result))
-		{
-			$this->ud_song[$row['ud']][] = $row;
-		}
-		$db->sql_freeresult($result);
+		$this->ud_song = sql_rowset($sql, 'ud');
 		
 		return;
 	}
@@ -81,15 +75,11 @@ class downloads
 		$sql = 'SELECT d.*
 			FROM _dl d
 			LEFT JOIN _artists a ON d.ub = a.ub 
-			WHERE d.id = ' . (int) $download_id . '
-				AND d.ub = ' . (int) $this->data['ub'];
-		$result = $db->sql_query($sql);
-		
-		if (!$this->dl_data = $db->sql_fetchrow($result))
-		{
+			WHERE d.id = ?
+				AND d.ub = ?';
+		if (!$this->dl_data = sql_fieldrow(sql_filter($sql, $download_id, $this->data['ub']))) {
 			fatal_error();
 		}
-		$db->sql_freeresult($result);
 		
 		$this->dl_data += $this->dl_type($this->dl_data['ud']);
 		return;
@@ -99,9 +89,10 @@ class downloads
 	{
 		global $user, $config, $template;
 		
-		if (!$this->auth['adm'] && !$this->auth['mod'])
-		{
-			$db->sql_query('UPDATE _dl SET views = views + 1 WHERE id = ' . (int) $this->dl_data['id']);
+		if (!$this->auth['adm'] && !$this->auth['mod']) {
+			$sql = 'UPDATE _dl SET views = views + 1
+				WHERE id = ?';
+			sql_query(sql_filter($sql, $this->dl_data['id']));
 		}
 		
 		$stats_text = '';
@@ -129,21 +120,16 @@ class downloads
 		//
 		// FAV
 		//
-		$is_fav = FALSE;
+		$is_fav = false;
 		$sql = 'SELECT dl_id
 			FROM _dl_fav
 			WHERE dl_id = ' . $this->dl_data['id'] . '
 				AND user_id = ' . $user->data['user_id'];
-		$result = $db->sql_query($sql);
-		
-		if ($row = $db->sql_fetchrow($result))
-		{
-			$is_fav = TRUE;
+		if (sql_field(sql_filter($sql, $this->dl_data['id'], $user->data['user_id']), 'dl_id', 0)) {
+			$is_fav = true;
 		}
-		$db->sql_freeresult($result);
 		
-		if (!$is_fav)
-		{
+		if (!$is_fav) {
 			$template->assign_block_vars('dl_fav', array(
 				'URL' => s_link('a', array($this->data['subdomain'], 9, $this->dl_data['id'], 'fav')))
 			);
@@ -152,20 +138,16 @@ class downloads
 		//
 		// UD POLL
 		//
-		$user_voted = FALSE;
+		$user_voted = false;
 		if ($this->dl_data['votes'] && $this->auth['user'] && !$this->auth['adm'] && !$this->auth['mod'])
 		{
-			$sql = 'SELECT *
+			$sql = 'SELECT user_id
 				FROM _dl_voters
-				WHERE ud = ' . (int) $this->dl_data['id'] . '
-					AND user_id = ' . (int) $user->data['user_id'];
-			$result = $db->sql_query($sql);
-			
-			if ($row = $db->sql_fetchrow($result))
-			{
-				$user_voted = TRUE;
+				WHERE ud = ?
+					AND user_id = ?';
+			if (sql_field(sql_filter($sql, $this->dl_data['id'], $user->data['user_id']), 'user_id', 0)) {
+				$user_voted = true;
 			}
-			$db->sql_freeresult($result);
 		}
 		
 		$template->assign_block_vars('ud_poll', array());
@@ -174,16 +156,9 @@ class downloads
 		{
 			$sql = 'SELECT option_id, vote_result
 				FROM _dl_vote
-				WHERE ud = ' . (int) $this->dl_data['id'] . '
+				WHERE ud = ?
 				ORDER BY option_id';
-			$result = $db->sql_query($sql);
-			
-			$results = array();
-			while ($row = $db->sql_fetchrow($result))
-			{
-				$results[$row['option_id']] = $row['vote_result'];
-			}
-			$db->sql_freeresult($result);
+			$results = sql_rowset(sql_filter($sql, $this->dl_data['id']), 'option_id', 'vote_result');
 			
 			$template->assign_block_vars('ud_poll.results', array());
 			
@@ -225,18 +200,20 @@ class downloads
 			$this->msg->ref = $comments_ref;
 			$this->msg->auth = $this->auth;
 			
+			$sql = 'SELECT p.*, u.user_id, u.username, u.username_base, u.user_color, u.user_avatar
+				FROM _dl d, _dl_posts p, _artists a, _members u
+				WHERE d.id = ?
+					AND d.ub = ?
+					AND d.id = p.download_id 
+					AND d.ub = a.ub 
+					AND p.post_active = 1 
+					AND p.poster_id = u.user_id 
+				ORDER BY p.post_time DESC 
+				LIMIT ??, ??';
+			
 			$this->msg->data = array(
 				'A_LINKS_CLASS' => 'bold orange',
-				'SQL' => 'SELECT p.*, u.user_id, u.username, u.username_base, u.user_color, u.user_avatar
-					FROM _dl d, _dl_posts p, _artists a, _members u
-					WHERE d.id = ' . (int) $this->dl_data['id'] . '
-						AND d.ub = ' . (int) $this->data['ub'] . '
-						AND d.id = p.download_id 
-						AND d.ub = a.ub 
-						AND p.post_active = 1 
-						AND p.poster_id = u.user_id 
-					ORDER BY p.post_time DESC 
-					LIMIT ' . (int) $start . ', ' . $config['s_posts']
+				'SQL' => sql_filter($sql, $this->dl_data['id'], $this->data['ub'], $start, $config['s_posts'])
 			);
 			
 			if ($this->auth['user'])
@@ -312,13 +289,17 @@ class downloads
 		return;
 	}
 	
-	function dl_save ()
+	function dl_save()
 	{
 		global $db;
 		
-		$db->sql_query('UPDATE _dl SET downloads = downloads + 1 WHERE id = ' . (int) $this->dl_data['id']);
+		$sql = 'UPDATE _dl SET downloads = downloads + 1
+			WHERE id = ?';
+		$db->sql_query(sql_filter($sql, $this->dl_data['id']));
 		
-		$orig = array('�', '�', '.');
+		// TODO: Fix enie letters.
+		
+		$orig = array('&ntilde;', '&Ntilde;', '.');
 		$repl = array('n', 'N', '');
 		
 		$this->filename = str_replace($orig, $repl, $this->data['name']) . '_' . str_replace($orig, $repl, $this->dl_data['title']) . '.' . $this->dl_data['extension'];
@@ -328,10 +309,9 @@ class downloads
 		return;
 	}
 	
-	function dl_vote ()
+	function dl_vote()
 	{
-		if (!$this->auth['user'])
-		{
+		if (!$this->auth['user']) {
 			do_login();
 		}
 		
@@ -345,38 +325,47 @@ class downloads
 			redirect($url);
 		}
 		
-		$user_voted = FALSE;
-		$sql = 'SELECT *
-			FROM _dl_voters
-			WHERE ud = ' . (int) $this->dl_data['id'] . '
-				AND user_id = ' . (int) $user->data['user_id'];
-		$result = $db->sql_query($sql);
+		$user_voted = false;
 		
-		if ($row = $db->sql_fetchrow($result))
-		{
-			$user_voted = TRUE;
-			
-			$db->sql_freeresult($result);
+		$sql = 'SELECT user_id
+			FROM _dl_voters
+			WHERE ud = ?
+				AND user_id = ?';
+		if (sql_field(sql_filter($sql, $this->dl_data['id'], $user->data['user_id']), 'user_id', 0)) {
+			$user_voted = true;
 		}
 		
-		if ($user_voted)
-		{
+		if ($user_voted) {
 			redirect($url);
 		}
 		
-		$sql = 'UPDATE _dl_vote
-			SET vote_result = vote_result + 1
-			WHERE ud = ' . (int) $this->dl_data['id'] . '
-				AND option_id = ' . (int) $option_id;
-		$db->sql_query($sql);
+		$sql = 'UPDATE _dl_vote SET vote_result = vote_result + 1
+			WHERE ud = ?
+				AND option_id = ?';
+		sql_query(sql_filter($sql, $this->dl_data['id'], $option_id));
 		
-		if (!$db->sql_affectedrows())
+		if (!sql_affectedrows())
 		{
-			$db->sql_query('INSERT INTO _dl_vote (ud, option_id, vote_result) VALUES (' . (int) $this->dl_data['id'] . ', ' . (int) $option_id . ', 1)');
+			$sql_insert = array(
+				'ud' => $this->dl_data['id'],
+				'option_id' => $option_id,
+				'vote_result' => 1
+			);
+			$sql = 'INSERT INTO _dl_vote' . sql_build('INSERT', $sql_insert);
+			sql_query($sql);
 		}
 		
-		$db->sql_query('INSERT INTO _dl_voters (ud, user_id, user_option) VALUES (' . (int) $this->dl_data['id'] . ', ' . $user->data['user_id'] . ', ' . (int) $option_id . ')');
-		$db->sql_query('UPDATE _dl SET votes = votes + 1 WHERE id = ' . (int) $this->dl_data['id']);
+		$sql_insert = array(
+			'ud' => $this->dl_data['id'],
+			'user_id' => $user->data['user_id'],
+			'user_option' => $option_id
+		);
+		$sql = 'INSERT INTO _dl_voters' . sql_build('INSERT', $sql_insert);
+		sql_query($sql);
+		
+		$sql = 'UPDATE _dl SET votes = votes + 1
+			WHERE id = ?';
+		sql_query(sql_filter($sql, $this->dl_data['id']));
 		
 		redirect($url);
 	}
@@ -390,18 +379,15 @@ class downloads
 		
 		global $user;
 		
-		$is_fav = FALSE;
+		$is_fav = false;
+		
 		$sql = 'SELECT dl_id
 			FROM _dl_fav
-			WHERE dl_id = ' . $this->dl_data['id'] . '
-				AND user_id = ' . $user->data['user_id'];
-		$result = $db->sql_query($sql);
-		
-		if ($row = $db->sql_fetchrow($result))
-		{
-			$is_fav = TRUE;
+			WHERE dl_id = ?
+				AND user_id = ?';
+		if (sql_field(sql_filter($sql, $this->dl_data['id'], $user->data['user_id']), 'dl_id', 0)) {
+			$is_fav = true;
 		}
-		$db->sql_freeresult($result);
 		
 		$url = s_link('a', array($this->data['subdomain'], 9, $this->dl_data['id']));
 		
@@ -410,22 +396,24 @@ class downloads
 			redirect($url);
 		}
 		
-		$db->sql_query('INSERT INTO _dl_fav (dl_id, user_id, favtime) VALUES (' . (int) $this->dl_data['id'] . ', ' . $user->data['user_id'] . ', ' . time() . ')');
-		$db->sql_query('UPDATE _members SET user_dl_favs = user_dl_favs + 1 WHERE user_id = ' . (int) $user->data['user_id']);
+		$sql_insert = array(
+			'dl_id' => $this->dl_data['id'],
+			'user_id' => $user->data['user_id'],
+			'favtime' => time()
+		);
+		$sql = 'INSERT INTO _dl_fav' . sql_build('INSERT', $sql_insert);
+		sql_query($sql);
 		
-		redirect($url);
+		$sql = 'UPDATE _members SET user_dl_favs = user_dl_favs + 1
+			WHERE user_id = ?';
+		sql_query(sql_filter($sql, $user->data['user_id']));
 		
-		return;
+		return redirect($url);
 	}
 	
-	function dl_file ($name = '', $path = '', $data = '', $content_type = 'application/octet-stream', $disposition = 'attachment')
+	function dl_file($name = '', $path = '', $data = '', $content_type = 'application/octet-stream', $disposition = 'attachment')
 	{
-		global $db;
-		
-		if (isset($db))
-		{
-			$db->sql_close();
-		}
+		sql_close();
 		
 		$bad_chars = array("'", "\\", ' ', '/', ':', '*', '?', '"', '<', '>', '|');
 		
@@ -444,15 +432,12 @@ class downloads
 		header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
 		header('Content-transfer-encoding: binary');
 		
-		if ($data == '')
-		{
+		if ($data == '') {
 			$this->filepath = '../' . $this->filepath;
 			
 			header('Content-length: ' . @filesize($this->filepath));
 			@readfile($this->filepath);
-		}
-		else
-		{
+		} else {
 			print($data);
 		}
 		
@@ -460,7 +445,7 @@ class downloads
 		exit;
 	}
 	
-	function format_filesize ($filesize)
+	function format_filesize($filesize)
 	{
 		$mb = ($filesize >= 1048576) ? TRUE : FALSE;
 		$div = ($mb) ? 1048576 : 1024;

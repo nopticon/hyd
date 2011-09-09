@@ -32,17 +32,7 @@ class community
 			$sql = 'SELECT *
 				FROM _team
 				ORDER BY team_order';
-			$result = $db->sql_query($sql);
-			
-			if ($row = $db->sql_fetchrow($result))
-			{
-				do
-				{
-					$team[$row['team_id']] = $row;
-				}
-				while ($row = $db->sql_fetchrow($result));
-				$db->sql_freeresult($result);
-				
+			if ($team = sql_rowset($sql)) {
 				$cache->save('team', $team);
 			}
 		}
@@ -53,17 +43,7 @@ class community
 				FROM _team_members t, _members m
 				WHERE t.member_id = m.user_id
 				ORDER BY m.username';
-			$result = $db->sql_query($sql);
-			
-			if ($row = $db->sql_fetchrow($result))
-			{
-				do
-				{
-					$team_members[] = $row;
-				}
-				while ($row = $db->sql_fetchrow($result));
-				$db->sql_freeresult($result);
-				
+			if ($team_members = sql_rowset($sql)) {
 				$cache->save('team_members', $team_members);
 			}
 		}
@@ -86,21 +66,12 @@ class community
 		//
 		$sql = 'SELECT user_id, username, username_base, user_color, user_avatar
 			FROM _members
-			WHERE user_id IN (' . implode(',', $sql_members) . ')
+			WHERE user_id IN (??)
 			ORDER BY user_id';
-		$result = $db->sql_query($sql);
+		$members_data = sql_rowset(sql_filter($sql, implode(',', $sql_members)), 'user_id');
 		
-		$members_data = array();
-		while ($row = $db->sql_fetchrow($result))
-		{
-			$members_data[$row['user_id']] = $row;
-		}
-		$db->sql_freeresult($result);
-		
-		foreach ($team as $t_data)
-		{
-			if (!$t_data['team_show'])
-			{
+		foreach ($team as $t_data) {
+			if (!$t_data['team_show']) {
 				continue;
 			}
 			
@@ -109,15 +80,12 @@ class community
 			);
 			
 			$tcol = 0;
-			foreach ($team_members as $tm_data)
-			{
-				if ($t_data['team_id'] != $tm_data['team_id'])
-				{
+			foreach ($team_members as $tm_data) {
+				if ($t_data['team_id'] != $tm_data['team_id']) {
 					continue;
 				}
 				
-				if (!$tcol)
-				{
+				if (!$tcol) {
 					$template->assign_block_vars('team.row', array());
 				}
 				
@@ -129,8 +97,8 @@ class community
 					'REALNAME' => $tm_data['real_name'],
 					'PROFILE' => $up['profile'],
 					'COLOR' => $up['user_color'],
-					'AVATAR' => $up['user_avatar']
-				));
+					'AVATAR' => $up['user_avatar'])
+				);
 				
 				$tcol = ($tcol == 2) ? 0 : $tcol + 1;
 			}
@@ -139,8 +107,7 @@ class community
 		return;
 	}
 	
-	function vars()
-	{
+	function vars() {
 		global $user, $config, $template;
 		
 		$template->assign_vars(array(
@@ -174,60 +141,44 @@ class community
 		$template->assign_block_vars($block, array('L_TITLE' => $user->lang[$block_title]));
 		$template->assign_block_vars($block . '.members', array());
 		
-		$result = $db->sql_query($sql);
-		if ($row = $db->sql_fetchrow($result))
-		{
-			do
-			{
-				if ($row['user_id'] != GUEST)
-				{
-					if ($row['user_id'] != $last_user_id)
-					{
-						$is_bot = isset($user_bots[$row['user_id']]);
+		$result = sql_rowset($sql);
+		
+		foreach ($result as $row) {
+			if ($row['user_id'] != GUEST) {
+				if ($row['user_id'] != $last_user_id) {
+					$is_bot = isset($user_bots[$row['user_id']]);
+					
+					if (!$row['user_hideuser']) {
+						$username = $row['username'];
 						
-						if (!$row['user_hideuser'])
-						{
-							$username = $row['username'];
-							if ($is_bot)
-							{
-								$users_bots++;
-							}
-							else
-							{
-								$users_visible++;
-							}
+						if ($is_bot) {
+							$users_bots++;
+						} else {
+							$users_visible++;
 						}
-						else
-						{
-							$username = '*' . $row['username'];
-							$users_hidden++;
-						}
-						
-						if (((!$row['user_hideuser'] || $user->data['is_founder']) && !$is_bot) || ($is_bot && $user->data['is_founder']))
-						{
-							$template->assign_block_vars($block . '.members.item', array(
-								'USERNAME' => $username,
-								'PROFILE' => s_link('m', $row['username_base']),
-								'USER_COLOR' =>  $row['user_color'])
-							);
-						}
+					} else {
+						$username = '*' . $row['username'];
+						$users_hidden++;
 					}
 					
-					$last_user_id = $row['user_id'];
-				}
-				else
-				{
-					if ($row['session_ip'] != $last_ip)
-					{
-						$users_guests++;
+					if (((!$row['user_hideuser'] || $user->data['is_founder']) && !$is_bot) || ($is_bot && $user->data['is_founder'])) {
+						$template->assign_block_vars($block . '.members.item', array(
+							'USERNAME' => $username,
+							'PROFILE' => s_link('m', $row['username_base']),
+							'USER_COLOR' =>  $row['user_color'])
+						);
 					}
-					
-					$last_ip = $row['session_ip'];
 				}
+				
+				$last_user_id = $row['user_id'];
+			} else {
+				if ($row['session_ip'] != $last_ip) {
+					$users_guests++;
+				}
+				
+				$last_ip = $row['session_ip'];
 			}
-			while ($row = $db->sql_fetchrow($result));
 		}
-		$db->sql_freeresult($result);
 		
 		$users_total = (int) $users_visible + $users_hidden + $users_guests + $users_bots;
 		
@@ -250,16 +201,16 @@ class community
 			'MEMBERS_HIDDEN' => $users_hidden,
 			'MEMBERS_BOT' => $users_bots
 		);
-		if ($unset_legend !== false)
-		{
+		
+		if ($unset_legend !== false) {
 			unset($online_ary[$unset_legend]);
 		}
-		foreach ($online_ary as $lk => $vk)
-		{
-			if (!$vk && $lk != 'MEMBERS_TOTAL')
-			{
+		
+		foreach ($online_ary as $lk => $vk) {
+			if (!$vk && $lk != 'MEMBERS_TOTAL') {
 				continue;
 			}
+			
 			$template->assign_block_vars($block . '.legend.item', array(
 				'L_MEMBERS' => $user->lang[$lk . (($vk != 1) ? '2' : '')],
 				'ONLINE_VALUE' => $vk)
@@ -273,21 +224,21 @@ class community
 		
 		$sql = 'SELECT username, username_base, user_color
 			FROM _members
-			WHERE user_type NOT IN (' . USER_INACTIVE . ', ' . USER_IGNORE . ')
+			WHERE user_type NOT IN (??, ??)
 			ORDER BY user_regdate DESC';
-		$result = $db->sql_query_limit($sql, 5);
+		$result = sql_rowset(sql_filter($sql, USER_INACTIVE, USER_IGNORE));
 		
 		$template->assign_block_vars('recent_members', array());
 		
-		while ($row = $db->sql_fetchrow($result))
-		{
+		foreach ($result as $row) {
 			$template->assign_block_vars('recent_members.item', array(
 				'USERNAME' => $row['username'],
 				'USER_COLOR' => $row['user_color'],
 				'PROFILE' => s_link('m', $row['username_base']))
 			);
 		}
-		$db->sql_freeresult($result);
+		
+		return true;
 	}
 }
 

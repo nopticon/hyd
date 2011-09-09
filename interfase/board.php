@@ -30,28 +30,15 @@ class board
 		
 		if (!$this->cat_data = $cache->get('forum_categories'))
 		{
-			global $db;
-			
 			$sql = 'SELECT cat_id, cat_title
 				FROM _forum_categories
 				ORDER BY cat_order';
-			$result = $db->sql_query($sql);
-			
-			if ($row = $db->sql_fetchrow($result))
-			{
-				do
-				{
-					$this->cat_data[] = $row;
-				}
-				while ($row = $db->sql_fetchrow($result));
-				$db->sql_freeresult($result);
-				
+			if ($this->cat_data = sql_rowset($sql)) {
 				$cache->save('forum_categories', $this->cat_data);
 			}
 		}
 		
-		if (!sizeof($this->cat_data))
-		{
+		if (!sizeof($this->cat_data)) {
 			return false;
 		}
 		
@@ -68,20 +55,7 @@ class board
 			LEFT JOIN _forum_posts p ON p.post_id = t.topic_last_post_id)
 			LEFT JOIN _members u ON u.user_id = p.poster_id)
 			ORDER BY f.cat_id, f.forum_order';
-		$result = $db->sql_query($sql);
-		
-		if ($row = $db->sql_fetchrow($result))
-		{
-			do
-			{
-				$this->forum_data[] = $row;
-			}
-			while ($row = $db->sql_fetchrow($result));
-			$db->sql_freeresult($result);
-		}
-		
-		if (!sizeof($this->forum_data))
-		{
+		if (!$this->forum_data = sql_rowset($sql)) {
 			return false;
 		}
 		
@@ -156,33 +130,28 @@ class board
 		
 		$sql = "SELECT user_id, username, username_base, user_color, user_avatar, user_posts
 			FROM _members
-			WHERE user_birthday LIKE '%" . date('md') . "'
-				AND user_type NOT IN (" . USER_INACTIVE . ", " . USER_IGNORE . ")
-				/*AND user_lastvisit > 1167631200*/
+			WHERE user_birthday LIKE ?
+				AND user_type NOT IN (??, ??)
 			ORDER BY user_posts DESC, username";
-		$result = $db->sql_query($sql);
-		
-		if ($row = $db->sql_fetchrow($result))
-		{
-			$template->assign_block_vars('top_posters', array());
-			
-			do
-			{
-				$profile = $this->msg->user_profile($row);
-				
-				$template->assign_block_vars('top_posters.item', array(
-					'USERNAME' => $profile['username'],
-					'PROFILE' => $profile['profile'],
-					'COLOR' => $profile['user_color'],
-					'AVATAR' => $profile['user_avatar'],
-					'POSTS' => $profile['user_posts'])
-				);
-			}
-			while ($row = $db->sql_fetchrow($result));
+		if (!$result = sql_rowset(sql_filter($sql, '%' . date('md'), USER_INACTIVE, USER_IGNORE))) {
+			return false;
 		}
-		$db->sql_freeresult($result);
 		
-		return;
+		$template->assign_block_vars('top_posters', array());
+		
+		foreach ($result as $row) {
+			$profile = $this->msg->user_profile($row);
+			
+			$template->assign_block_vars('top_posters.item', array(
+				'USERNAME' => $profile['username'],
+				'PROFILE' => $profile['profile'],
+				'COLOR' => $profile['user_color'],
+				'AVATAR' => $profile['user_avatar'],
+				'POSTS' => $profile['user_posts'])
+			);
+		}
+
+		return true;
 	}
 	
 	function top_posters()
@@ -191,30 +160,28 @@ class board
 		
 		$sql = 'SELECT user_id, username, username_base, user_color, user_avatar, user_posts
 			FROM _members
-			WHERE user_id <> ' . GUEST . '
+			WHERE user_id <> ?
 			ORDER BY user_posts DESC
 			LIMIT 8';
-		$result = $db->sql_query($sql);
-		
-		if ($row = $db->sql_fetchrow($result))
-		{
-			$template->assign_block_vars('top_posters', array());
-			
-			do
-			{
-				$profile = $this->msg->user_profile($row);
-				
-				$template->assign_block_vars('top_posters.item', array(
-					'USERNAME' => $profile['username'],
-					'PROFILE' => $profile['profile'],
-					'COLOR' => $profile['user_color'],
-					'AVATAR' => $profile['user_avatar'],
-					'POSTS' => $profile['user_posts'])
-				);
-			}
-			while ($row = $db->sql_fetchrow($result));
+		if (!$result = sql_rowset(sql_filter($sql, GUEST))) {
+			return false;
 		}
-		$db->sql_freeresult($result);
+		
+		$template->assign_block_vars('top_posters', array());
+		
+		foreach ($result as $row) {
+			$profile = $this->msg->user_profile($row);
+			
+			$template->assign_block_vars('top_posters.item', array(
+				'USERNAME' => $profile['username'],
+				'PROFILE' => $profile['profile'],
+				'COLOR' => $profile['user_color'],
+				'AVATAR' => $profile['user_avatar'],
+				'POSTS' => $profile['user_posts'])
+			);
+		}
+		
+		return true;
 	}
 }
 

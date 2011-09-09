@@ -42,14 +42,12 @@ class _art extends downloads
 				FROM _art
 				WHERE ub = 0 
 				ORDER BY art_datetime DESC, downloads DESC';
-			$result = $db->sql_query($sql);
+			$result = sql_rowset($sql);
 			
-			while ($row = $db->sql_fetchrow($result))
-			{
+			foreach ($result as $row) {
 				$rowset[$row['art_id']]['title'] = $row['title'];
 				$rowset[$row['art_id']]['image'] = $row['image'];
 			}
-			$db->sql_freeresult($result);
 			
 			$cache->save('art', $rowset);
 		}
@@ -66,14 +64,10 @@ class _art extends downloads
 		{
 			$sql = 'SELECT *
 				FROM _art
-				WHERE art_id = ' . (int) $art_id;
-			$result = $db->sql_query($sql);
-			
-			if (!$data = $db->sql_fetchrow($result))
-			{
+				WHERE art_id = ?';
+			if (!$data = sql_fieldrow(sql_filter($sql, $art_id))) {
 				fatal_error();
 			}
-			$db->sql_freeresult($result);
 			
 			$data['art_id'] = (int) $data['art_id'];
 			$this->data = $data;
@@ -162,7 +156,10 @@ class _art extends downloads
 		
 		if ($user->data['user_type'] != USER_FOUNDER && $user->data['user_id'] != $this->data['user_id'])
 		{
-			$db->sql_query('UPDATE _art SET views = views + 1 WHERE art_id = ' . (int) $this->data['art_id']);
+			$sql = 'UPDATE _art SET views = views + 1
+				WHERE art_id = ?';
+			sql_query(sql_filter($sql, $this->data['art_id']));
+			
 			$this->data['views']++;
 		}
 		
@@ -172,11 +169,8 @@ class _art extends downloads
 		
 		$sql = 'SELECT user_id, username, username_base, user_color, user_avatar
 			FROM _members
-			WHERE user_id = ' . (int) $this->data['user_id'];
-		$result = $db->sql_query($sql);
-		
-		$userinfo = $db->sql_fetchrow($result);
-		$db->sql_freeresult($result);
+			WHERE user_id = ?';
+		$userinfo = sql_fieldrow(sql_filter($sql, $this->data['user_id']));
 		
 		$profile = $comments->user_profile($userinfo);
 		
@@ -189,16 +183,18 @@ class _art extends downloads
 			$start = intval(request_var('aps', 0));
 			$comments->ref = $comments_ref;
 			
+			$sql = 'SELECT p.*, m.user_id, m.username, m.username_base, m.user_color, m.user_avatar, m.user_rank, m.user_posts, m.user_gender, m.user_sig
+				FROM _art_posts p, _members m
+				LEFT JOIN _art a ON p.art_id = a.art_id
+				WHERE p.art_id = ?
+					AND p.post_active = 1
+					AND p.poster_id = m.user_id
+				ORDER BY p.post_time DESC
+				LIMIT ??, ??';
+			
 			$comments->data = array(
 				'A_LINKS_CLASS' => 'bold red',
-				'SQL' => 'SELECT p.*, m.user_id, m.username, m.username_base, m.user_color, m.user_avatar, m.user_rank, m.user_posts, m.user_gender, m.user_sig
-					FROM _art_posts p, _members m
-					LEFT JOIN _art a ON p.art_id = a.art_id
-					WHERE p.art_id = ' . (int) $this->data['art_id'] . '
-						AND p.post_active = 1
-						AND p.poster_id = m.user_id
-					ORDER BY p.post_time DESC
-					LIMIT ' . (int) $start . ', ' . (int) $config['s_posts']
+				'SQL' => sql_filter($sql, $this->data['art_id'], $start, $config['s_posts'])
 			);
 			
 			$comments->view($start, 'aps', $this->data['posts'], 10);
@@ -227,15 +223,11 @@ class _art extends downloads
 		{
 			$sql = 'SELECT *
 				FROM _art_fav
-				WHERE art_id = ' . (int) $this->data['art_id'] . '
-					AND member_id = ' . (int) $user->data['user_id'];
-			$result = $db->sql_query($sql);
-			
-			if ($row = $db->sql_fetchrow($result))
-			{
+				WHERE art_id = ?
+					AND member_id = ?';
+			if (fieldrow(sql_filter($sql, $this->data['art_id'], $user->data['user_id']))) {
 				$is_fav = true;
 			}
-			$db->sql_freeresult($result);
 		}
 		
 		if (!$is_fav || !$user->data['is_member'])
@@ -275,7 +267,9 @@ class _art extends downloads
 		$this->filename = $this->data['title'] . '.jpg';
 		$this->filepath = 'data/art/full/' . $this->data['art_id'] . '.jpg';
 		
-		$db->sql_query('UPDATE _art SET downloads = downloads + 1 WHERE art_id = ' . (int) $this->data['art_id']);
+		$sql = 'UPDATE _art SET downloads = downloads + 1
+			WHERE art_id = ?';
+		sql_query(sql_filter($sql, $this->data['art_id']));
 		
 		$this->dl_file();
 	}
@@ -284,30 +278,30 @@ class _art extends downloads
 	{
 		global $user;
 		
-		if (!$user->data['is_member'])
-		{
+		if (!$user->data['is_member']) {
 			do_login();
 		}
 		
 		$sql = 'SELECT *
 			FROM _art_fav
-			WHERE art_id = ' . (int) $this->data['art_id'] . '
-				AND member_id = ' . (int) $user->data['user_id'];
-		$result = $db->sql_query($sql);
-		
-		if ($row = $db->sql_fetchrow($result))
-		{
-			$db->sql_freeresult($result);
-			$db->sql_query('UPDATE _art_fav SET fav_date = ' . time() . ' WHERE art_id = ' . (int) $this->data['art_id']);
-		}
-		else
-		{
-			$insert = array('art_id' => (int) $this->data['art_id'], 'member_id' => (int) $user->data['user_id'], 'fav_date' => time());
-			$db->sql_query('INSERT INTO _art_fav ' . $db->sql_build_array('INSERT', $insert));
+			WHERE art_id = ?
+				AND member_id = ?';
+		if (sql_fieldrow(sql_filter($sql, $this->data['art_id'], $user->data['user_id']))) {
+			$sql = 'UPDATE _art_fav SET fav_date = ?
+				WHERE art_id = ?';
+			sql_query(sql_filter($sql, time(), $this->data['art_id']));
+		} else {
+			$sql_insert = array(
+				'art_id' => (int) $this->data['art_id'],
+				'member_id' => (int) $user->data['user_id'],
+				'fav_date' => time()
+			);
+			$sql = 'INSERT INTO _art_fav' . sql_build('INSERT', $sql_insert);
+			sql_query($sql);
 		}
 		
 		redirect(s_link('art', $this->data['art_id']));
 	}
-} // END CLASS
+}
 
 ?>

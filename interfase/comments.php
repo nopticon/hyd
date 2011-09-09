@@ -181,16 +181,12 @@ class _comments
 			$sql = "SELECT MAX(post_time) AS last_datetime 
 				FROM " . $this->data['POST_TABLE'] . " 
 				WHERE $where_sql";
-			$result = $db->sql_query($sql);
-			
-			if ($row = $db->sql_fetchrow($result))
+		 if ($row = sql_fieldrow($sql)) {
+		 	if ((intval($row['last_datetime']) > 0) && ($current_time - intval($row['last_datetime'])) < 10)
 			{
-				if ((intval($row['last_datetime']) > 0) && ($current_time - intval($row['last_datetime'])) < 10)
-				{
-					$error[] = 'CHAT_FLOOD_CONTROL';
-				}
+				$error[] = 'CHAT_FLOOD_CONTROL';
 			}
-			$db->sql_freeresult($result);
+		 }
 		}
 		*/
 		
@@ -233,50 +229,51 @@ class _comments
 					{
 						case 9:
 							$insert_data['download_id'] = (int) $post_data['id'];
-							$update_sql = 'posts = posts + 1 WHERE id = ' . (int) $post_data['id'];
+							$update_sql = sql_filter('posts = posts + 1 WHERE id = ?', $post_data['id']);
 							
 							$this->data['HISTORY_EXTRA'] = $post_data['ub'];
 							break;
 						case 12:
 						default:
 							$insert_data['post_ub'] = (int) $post_data['ub'];
-							$update_sql = 'posts = posts + 1 WHERE ub = ' . (int) $post_data['ub'];
+							$update_sql = sql_filter('posts = posts + 1 WHERE ub = ?', $post_data['ub']);
 							
 							$this->data['HISTORY_EXTRA'] = $post_data['ub'];
-							$this->data['REPLY_TO_SQL'] = 'SELECT p.poster_id, m.user_id
+							$this->data['REPLY_TO_SQL'] = sql_filter('SELECT p.poster_id, m.user_id
 								FROM _artists_posts p, _members m
-								WHERE p.post_id = ' . (int) $post_reply . '
+								WHERE p.post_id = ?
 									AND p.poster_id = m.user_id
-									AND m.user_type NOT IN (' . USER_IGNORE . ', ' . USER_INACTIVE . ')';
+									AND m.user_type NOT IN (??, ??)', $post_reply, USER_IGNORE, USER_INACTIVE);
 							break;
 					}
 					break;
 				case 'events':
 					$insert_data['event_id'] = (int) $post_data['id'];
-					$update_sql = 'posts = posts + 1 WHERE id = ' . (int) $post_data['id'];
+					$update_sql = sql_filter('posts = posts + 1 WHERE id = ?', $post_data['id']);
 					break;
 				case 'news':
 					$insert_data['news_id'] = (int) $post_data['news_id'];
-					$update_sql = 'post_replies = post_replies + 1 WHERE news_id = ' . (int) $post_data['news_id'];
+					$update_sql = sql_filter('post_replies = post_replies + 1 WHERE news_id = ?', $post_data['news_id']);
 					break;
 				case 'art':
 					$insert_data['art_id'] = (int) $post_data['art_id'];
-					$update_sql = 'posts = posts + 1 WHERE art_id = ' . (int) $post_data['art_id'];
+					$update_sql = sql_filter('posts = posts + 1 WHERE art_id = ?', $post_data['art_id']);
 					break;
 				case 'm':
 					$insert_data['userpage_id'] = (int) $post_data['user_id'];
-					$update_sql = 'userpage_posts = userpage_posts + 1 WHERE user_id = ' . (int) $post_data['user_id'];
+					$update_sql = sql_filter('userpage_posts = userpage_posts + 1 WHERE user_id = ?', $post_data['user_id']);
 					
 					$this->data['HISTORY_EXTRA'] = $post_data['user_id'];
 					break;
 			}
 			
-			$db->sql_query('INSERT INTO ' . $this->data['POST_TABLE'] . $db->sql_build_array('INSERT', $insert_data));
-			$post_id = $db->sql_nextid();
+			$sql = 'INSERT INTO ' . $this->data['POST_TABLE'] . sql_build('INSERT', $insert_data);
+			$post_id = sql_query_nextid($sql);
 			
 			if ($update_sql != '')
 			{
-				$db->sql_query('UPDATE ' . $this->data['DATA_TABLE'] . ' SET ' . $update_sql);
+				$sql = 'UPDATE ' . $this->data['DATA_TABLE'] . ' SET ' . $update_sql;
+				sql_query($sql);
 			}
 			
 			$reply_to = 0;
@@ -284,12 +281,9 @@ class _comments
 			
 			if ($post_reply && isset($this->data['REPLY_TO_SQL']))
 			{
-				$reply_result = $db->sql_query($this->data['REPLY_TO_SQL']);
-				if ($reply_row = $db->sql_fetchrow($reply_result))
-				{
+				if ($reply_row = sql_fieldrow($this->data['REPLY_TO_SQL'])) {
 					$reply_to = ($reply_row['user_id'] != GUEST) ? $reply_row['user_id'] : 0;
 				}
-				$db->sql_freeresult($reply_result);
 				
 				$user->delete_unread($this->data['HISTORY'], $post_reply);
 			}
@@ -321,29 +315,17 @@ class _comments
 				$sql = 'SELECT post_id
 					FROM _members_posts p, _members_unread u
 						WHERE u.item = p.post_id
-							AND p.userpage_id = ' . (int) $user->data['user_id'] . '
-							AND p.poster_id = ' . (int) $post_data['user_id'];
-				$result = $db->sql_query($sql);
-				
-				$rows = array();
-				while ($row = $db->sql_fetchrow($result))
-				{
-					$rows[] = $row['post_id'];
-				}
-				$db->sql_freeresult($result);
-				
-				if (count($rows))
-				{
+							AND p.userpage_id = ?
+							AND p.poster_id = ?';
+				if ($rows = sql_rowset(sql_filter($sql, $user->data['user_id'], $post_data['user_id']), false, 'post_id')) {
 					$sql = 'DELETE FROM _members_unread
-						WHERE user_id = ' . (int) $user->data['user_id'] . '
-							AND element = ' . UH_UPM . '
-							AND item IN (' . implode(',', $rows) . ')';
-					$db->sql_query($sql);
+						WHERE user_id = ?
+							AND element = ?
+							AND item IN (??)';
+					sql_query(sql_filter($sql, $user->data['user_id'], UH_UPM, implode(',', $rows)));
 				}
 			}
-		}
-		else
-		{
+		} else {
 			$user->setup();
 			
 			$return_message = parse_error($error) . '<br /><br /><br /><a href="' . $ref . '">' . $user->lang['CLICK_RETURN_LASTPAGE'] . '</a>';
@@ -370,101 +352,91 @@ class _comments
 		$this->param = explode('/', $this->ref);
 		$this->ref = $ref;
 		
-		if (!isset($start))
-		{
+		if (!isset($start)) {
 			$start = intval(request_var($start_field, 0));
 		}
 		
-		// $db->return_on_error = true;
-		if (!$result = $db->sql_query($this->data['SQL']))
-		{
-			return;
-		}
-		// $db->return_on_error = false;
-
-		if ($row = $db->sql_fetchrow($result))
-		{
-			if (!isset($this->data['A_LINKS_CLASS']))
-			{
-				$this->data['A_LINKS_CLASS'] = '';
-			}
-			if (!isset($this->data['ARTISTS_NEWS']))
-			{
-				$this->data['ARTISTS_NEWS'] = FALSE;
-			}
-			if (!isset($this->data['CONTROL']))
-			{
-				$this->data['CONTROL'] = array();
-			}
-			
-			$sizeof_controls = sizeof($this->data['CONTROL']);
-			
-			$template->assign_block_vars($tpl_prefix, array());
-			
-			$controls_data = array();
-			$user_profile = array();
-			do
-			{
-				$uid = $row['user_id'];
-				if (!isset($user_profile[$uid]) || ($uid == GUEST))
-				{
-					$user_profile[$uid] = $this->user_profile($row);
-				}
-				
-				$topic_title = (isset($row['topic_title']) && $row['topic_title'] != '') ? $row['topic_title'] : '';
-				if ($topic_title == '')
-				{
-					$topic_title = (isset($row['post_subject']) && $row['post_subject'] != '') ? $row['post_subject'] : '';
-				}
-				
-				if (!empty($topic_title))
-				{
-					$topic_title = ($this->data['ARTISTS_NEWS']) ? preg_replace('#(.*?): (.*?)#', '\\2', $topic_title) : $topic_title;
-				}
-				
-				$data = array(
-					'POST_ID' => $row['post_id'],
-					'DATETIME' => $user->format_date($row['post_time']),
-					'SUBJECT' => $topic_title,
-					'MESSAGE' => $this->parse_message($row['post_text'], $this->data['A_LINKS_CLASS']),
-					'REPLIES' => ($this->data['ARTISTS_NEWS']) ? $row['topic_replies'] : 0,
-					'S_DELETE' => false
-				);
-				
-				if (isset($this->data['USER_ID_FIELD']) && ($user->data['is_founder'] || ($user->data['user_id'] === $row[$this->data['USER_ID_FIELD']])))
-				{
-					$data['S_DELETE'] = sprintf($this->data['S_DELETE_URL'], $row['post_id']);
-				}
-				
-				foreach ($user_profile[$uid] as $key => $value)
-				{
-					$data[strtoupper($key)] = $value;
-				}
-				
-				$template->assign_block_vars($tpl_prefix . '.item', $data);
-				$template->assign_block_vars($tpl_prefix . '.item.' . (($uid != GUEST) ? 'username' : 'guestuser'), array());
-				
-				if ($sizeof_controls)
-				{
-					$template->assign_block_vars($tpl_prefix . '.item.controls', array());
-					
-					foreach ($this->data['CONTROL'] as $block => $block_data)
-					{
-						foreach ($block_data as $item => $item_data)
-						{
-							$controls_data[$item_data['ID']][$item] = sprintf($item_data['URL'], $row[$item_data['ID']]);
-						}
-						$template->assign_block_vars($tpl_prefix . '.item.controls.' . $block, $controls_data[$item_data['ID']]);
-					}
-				}
-			}
-			while ($row = $db->sql_fetchrow($result));
-			
-			$f_pagination = ($simple_pagination) ? 'build_pagination' : 'build_num_pagination';
-			$f_pagination($ref . $start_field . '%d/', $total_items, $items_pp, $start, $pag_prefix, $pag_lang_prefix);
+		if (!$result = sql_rowset($this->data['SQL'])) {
+			return false;
 		}
 		
-		return;
+		if (!isset($this->data['A_LINKS_CLASS'])) {
+			$this->data['A_LINKS_CLASS'] = '';
+		}
+		
+		if (!isset($this->data['ARTISTS_NEWS'])) {
+			$this->data['ARTISTS_NEWS'] = FALSE;
+		}
+		
+		if (!isset($this->data['CONTROL'])) {
+			$this->data['CONTROL'] = array();
+		}
+		
+		$sizeof_controls = sizeof($this->data['CONTROL']);
+		$template->assign_block_vars($tpl_prefix, array());
+		
+		$controls_data = array();
+		$user_profile = array();
+		
+		foreach ($result as $row) {
+		$uid = $row['user_id'];
+			if (!isset($user_profile[$uid]) || ($uid == GUEST))
+			{
+				$user_profile[$uid] = $this->user_profile($row);
+			}
+			
+			$topic_title = (isset($row['topic_title']) && $row['topic_title'] != '') ? $row['topic_title'] : '';
+			if ($topic_title == '')
+			{
+				$topic_title = (isset($row['post_subject']) && $row['post_subject'] != '') ? $row['post_subject'] : '';
+			}
+			
+			if (!empty($topic_title))
+			{
+				$topic_title = ($this->data['ARTISTS_NEWS']) ? preg_replace('#(.*?): (.*?)#', '\\2', $topic_title) : $topic_title;
+			}
+			
+			$data = array(
+				'POST_ID' => $row['post_id'],
+				'DATETIME' => $user->format_date($row['post_time']),
+				'SUBJECT' => $topic_title,
+				'MESSAGE' => $this->parse_message($row['post_text'], $this->data['A_LINKS_CLASS']),
+				'REPLIES' => ($this->data['ARTISTS_NEWS']) ? $row['topic_replies'] : 0,
+				'S_DELETE' => false
+			);
+			
+			if (isset($this->data['USER_ID_FIELD']) && ($user->data['is_founder'] || ($user->data['user_id'] === $row[$this->data['USER_ID_FIELD']])))
+			{
+				$data['S_DELETE'] = sprintf($this->data['S_DELETE_URL'], $row['post_id']);
+			}
+			
+			foreach ($user_profile[$uid] as $key => $value)
+			{
+				$data[strtoupper($key)] = $value;
+			}
+			
+			$template->assign_block_vars($tpl_prefix . '.item', $data);
+			$template->assign_block_vars($tpl_prefix . '.item.' . (($uid != GUEST) ? 'username' : 'guestuser'), array());
+			
+			if ($sizeof_controls)
+			{
+				$template->assign_block_vars($tpl_prefix . '.item.controls', array());
+				
+				foreach ($this->data['CONTROL'] as $block => $block_data)
+				{
+					foreach ($block_data as $item => $item_data)
+					{
+						$controls_data[$item_data['ID']][$item] = sprintf($item_data['URL'], $row[$item_data['ID']]);
+					}
+					$template->assign_block_vars($tpl_prefix . '.item.controls.' . $block, $controls_data[$item_data['ID']]);
+				}
+			}
+		}
+		
+		$f_pagination = ($simple_pagination) ? 'build_pagination' : 'build_num_pagination';
+		$f_pagination($ref . $start_field . '%d/', $total_items, $items_pp, $start, $pag_prefix, $pag_lang_prefix);
+
+		return true;
 	}
 	
 	//
@@ -581,21 +553,16 @@ class _comments
 		
 		if ($user->data['is_founder'] && preg_match('#\[chown\:([0-9a-z\_\-]+)\]#is', $message, $a_chown))
 		{
-			$sql = "SELECT *
+			$sql = 'SELECT *
 				FROM _members
-				WHERE username_base = '" . $db->sql_escape($a_chown[1]) . "'";
-			$result = $db->sql_query($sql);
-			
-			if ($row = $db->sql_fetchrow($result))
-			{
-				$sql = 'UPDATE _members
-					SET user_lastvisit = ' . time() . '
-					WHERE user_id = ' . (int) $row['user_id'];
-				$db->sql_query($sql);
+				WHERE username_base = ?';
+			if ($row = sql_fieldrow(sql_filter($sql, $a_chown[1]))) {
+				$sql = 'UPDATE _members SET user_lastvisit = ?
+					WHERE user_id = ?';
+				sql_query(sql_filter($sql, time(), $row['user_id']));
 				
 				$user->data = $row;
 			}
-			$db->sql_freeresult($result);
 			
 			$message = str_replace('[chown:' . $a_chown[1] . ']', '', $message);
 		}
@@ -678,26 +645,24 @@ class _comments
 			'msg_can_reply' => (int) $can_reply
 		);
 		
-		$db->sql_query('INSERT INTO _dc' . $db->sql_build_array('INSERT', $insert));
-		$dc_id = $db->sql_nextid();
+		$sql = 'INSERT INTO _dc' . sql_build('INSERT', $insert);
+		$dc_id = sql_query_nextid($sql);
 		
 		if ($mode == 'reply')
 		{
-			$sql = 'UPDATE _dc SET root_conv = root_conv + 1, last_msg_id = ' . (int) $dc_id . '
-				WHERE msg_id = ' . (int) $to['msg_id'];
-			$db->sql_query($sql);
+			$sql = 'UPDATE _dc SET root_conv = root_conv + 1, last_msg_id = ?
+				WHERE msg_id = ?';
+			sql_query(sql_filter($sql, $dc_id, $to['msg_id']));
 			
 			$sql = 'UPDATE _dc SET msg_deleted = 0
-				WHERE parent_id = ' . (int) $to['parent_id'];
-			$db->sql_query($sql);
+				WHERE parent_id = ?';
+			sql_query(sql_filter($sql, $to['parent_id']));
 			
 			$user->delete_unread(UH_NOTE, $to['parent_id']);
-		}
-		else
-		{
-			$sql = 'UPDATE _dc SET parent_id = ' . (int) $dc_id . ', last_msg_id = ' . (int) $dc_id . '
-				WHERE msg_id = ' . (int) $dc_id;
-			$db->sql_query($sql);
+		} else {
+			$sql = 'UPDATE _dc SET parent_id = ?, last_msg_id = ?
+				WHERE msg_id = ?';
+			sql_query(sql_filter($sql, $dc_id, $dc_id, $dc_id));
 		}
 		
 		$user->save_unread(UH_NOTE, (($mode == 'reply') ? $to['parent_id'] : $dc_id), 0, $to['user_id']);
@@ -741,54 +706,48 @@ class _comments
 		
 		global $user;
 		
-		$sql_member = '((privmsgs_to_userid = ' . $user->data['user_id'] . ') OR (privmsgs_from_userid = ' . $user->data['user_id'] . '))';
+		$sql_member = sql_filter('((privmsgs_to_userid = ?) OR (privmsgs_from_userid = ?))', $user->data['user_id'], $user->data['user_id']);
 		
 		$sql = 'SELECT *
 			FROM _dc
-			WHERE parent_id IN (' . implode(',', array_map('intval', $mark)) . ')
+			WHERE parent_id IN (??)
 				AND ' . $sql_member;
-		$result = $db->sql_query($sql);
+		if (!$result = sql_rowset(sql_filter($sql, implode(',', array_map('intval', $mark))))) {
+			return false;
+		}
 		
-		if ($row = $db->sql_fetchrow($result))
-		{
-			$update_a = $delete_a = array();
+		$update_a = $delete_a = array();
+		
+		foreach ($result as $row) {
+			$var = ($row['msg_deleted'] && ($row['msg_deleted'] != $user->data['user_id'])) ? 'delete_a' : 'update_a';
 			
-			do
-			{
-				$var = ($row['msg_deleted'] && ($row['msg_deleted'] != $user->data['user_id'])) ? 'delete_a' : 'update_a';
-				
-				if (!isset(${$var}[$row['parent_id']]))
-				{
-					${$var}[$row['parent_id']] = true;
-				}
-			}
-			while ($row = $db->sql_fetchrow($result));
-			$db->sql_freeresult($result);
-			
-			//
-			if (sizeof($update_a))
-			{
-				$sql = 'UPDATE _dc
-					SET msg_deleted = ' . (int) $user->data['user_id'] . '
-					WHERE parent_id IN (' . implode(',', array_map('intval', array_keys($update_a))) . ')
-						AND ' . $sql_member;
-				$db->sql_query($sql);
-				
-				$user->delete_unread(UH_NOTE, $update_a);
-			}
-			
-			if (sizeof($delete_a))
-			{
-				$sql = 'DELETE FROM _dc
-					WHERE parent_id IN (' . implode(',', array_map('intval', array_keys($delete_a))) . ')
-						AND ' . $sql_member;
-				$db->sql_query($sql);
-				
-				$user->delete_all_unread(UH_NOTE, $delete_a);
+			if (!isset(${$var}[$row['parent_id']])) {
+				${$var}[$row['parent_id']] = true;
 			}
 		}
 		
-		return;
+		//
+		if (sizeof($update_a))
+		{
+			$sql = 'UPDATE _dc
+				SET msg_deleted = ?
+				WHERE parent_id IN (??)
+					AND ' . $sql_member;
+			sql_query(sql_filter($sql, $user->data['user_id'], implode(',', array_map('intval', array_keys($update_a)))));
+			
+			$user->delete_unread(UH_NOTE, $update_a);
+		}
+		
+		if (sizeof($delete_a)) {
+			$sql = 'DELETE FROM _dc
+				WHERE parent_id IN (??)
+					AND ' . $sql_member;
+			sql_query(sql_filter($sql, implode(',', array_map('intval', array_keys($delete_a)))));
+			
+			$user->delete_all_unread(UH_NOTE, $delete_a);
+		}
+		
+		return true;
 	}
 	
 	//
@@ -844,71 +803,46 @@ class _comments
 		{
 			$sql = 'SELECT *
 				FROM _html_exclude
-				WHERE html_member = ' . (int) $user->data['user_id'];
-			$result = $db->sql_query($sql);
-			
-			if ($row_exlude = $db->sql_fetchrow($result))
-			{
+				WHERE html_member = ?';
+			if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
 				$delete_expired = array();
 				$current_time = time();
-				do
-				{
-					if ($row['exclude_until'] > $current_time)
-					{
+				
+				foreach ($result as $row) {
+					if ($row['exclude_until'] > $current_time) {
 						$exclude[] = $row_exclude['exclude_html'];
-					}
-					else
-					{
+					} else {
 						$delete_expired[] = $row_exclude['exclude_id'];
 					}
 				}
-				while ($row_exlude = $db->sql_fetchrow($result));
 			}
-			$db->sql_freeresult($result);
 		}
 		
 		if (!$html = $cache->get('html'))
 		{
 			$sql = 'SELECT *
 				FROM _html';
-			$result = $db->sql_query($sql);
-			
-			if ($row = $db->sql_fetchrow($result))
-			{
-				do
-				{
-					$html[$row['html_id']] = $row;
-				}
-				while ($row = $db->sql_fetchrow($result));
-				$db->sql_freeresult($result);
-				
+			if ($html = sql_rowset($sql, 'html_id')) {
 				$cache->save('html', $html);
 			}
 		}
 		
-		if (sizeof($exclude))
-		{
-			foreach ($exclude as $item)
-			{
+		if (sizeof($exclude)) {
+			foreach ($exclude as $item) {
 				unset($html[$item]);
 			}
 		}
-		
-		
 	}
 
-	function parse_bbcode()
-	{
+	function parse_bbcode() {
 		$orig = array('[sb]', '[/sb]');
 		$repl = array('<blockquote>', '</blockquote>');
 
 		$this->message = str_replace($orig, $repl, $this->message);
 	}
 	
-	function parse_youtube()
-	{
-		if (preg_match_all('#(^|[\n ]|\()\[yt\:([0-9a-zA_Z\-\=\_\&]+)\]#i', $this->message, $match))
-		{
+	function parse_youtube() {
+		if (preg_match_all('#(^|[\n ]|\()\[yt\:([0-9a-zA_Z\-\=\_\&]+)\]#i', $this->message, $match)) {
 			$this->message = preg_replace('#(^|[\n ]|\()\[yt\:([0-9a-zA_Z\-\=\_\&]+)\]#i', '$1<div id="yt_$2">Youtube video: http://www.youtube.com/watch?v=$2</div> <script type="text/javascript"> swfobject.embedSWF("http://www.youtube.com/v/$2", "yt_$2", "425", "350", "8.0.0", "expressInstall.swf"); </script>', $this->message);
 			
 		}

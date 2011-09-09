@@ -97,8 +97,7 @@ class _chat
 	{
 		$cat = $this->get_cats();
 		
-		if (!sizeof($cat))
-		{
+		if (!sizeof($cat)) {
 			return;
 		}
 		
@@ -107,57 +106,43 @@ class _chat
 		$sql = 'SELECT *
 			FROM _chat_ch
 			ORDER BY ch_def DESC, ch_type, ch_name';
-		$result = $db->sql_query($sql);
+		if (!$this->rooms = sql_rowset($sql)) {
+			return false;
+		}
 		
-		if ($row = $db->sql_fetchrow($result))
-		{
-			do
-			{
-				$this->rooms[] = $row;
-			}
-			while ($row = $db->sql_fetchrow($result));
-			$db->sql_freeresult($result);
+		$template->assign_block_vars('chat', array());
+		
+		foreach ($cat as $cat_data) {
+			$template->assign_block_vars('chat.cat', array(
+				'LABEL' => $cat_data['cat_name'])
+			);
 			
-			$template->assign_block_vars('chat', array());
-			
-			foreach ($cat as $cat_data)
-			{
-				$template->assign_block_vars('chat.cat', array(
-					'LABEL' => $cat_data['cat_name'])
+			$rooms = 0;
+			foreach ($this->rooms as $channel) {
+				if ($cat_data['cat_id'] != $channel['cat_id']) {
+					continue;
+				}
+				
+				$ch_auth = ($channel['ch_auth']) ? '* ' : '';
+				
+				$template->assign_block_vars('chat.cat.channel', array(
+					'VALUE' => $channel['ch_int_name'],
+					'LABEL' => $ch_auth . $channel['ch_name'],
+					'SELECTED' => ($channel['ch_def']) ? ' selected' : '')
 				);
-				
-				$rooms = 0;
-				foreach ($this->rooms as $channel)
-				{
-					if ($cat_data['cat_id'] != $channel['cat_id'])
-					{
-						continue;
-					}
-					
-					$ch_auth = ($channel['ch_auth']) ? '* ' : '';
-					
-					$template->assign_block_vars('chat.cat.channel', array(
-						'VALUE' => $channel['ch_int_name'],
-						'LABEL' => $ch_auth . $channel['ch_name'],
-						'SELECTED' => ($channel['ch_def']) ? ' selected' : '')
-					);
-					$rooms++;
-				}
-				
-				if (!$rooms)
-				{
-					$template->assign_block_vars('chat.cat.noch', array());
-				}
+				$rooms++;
+			}
+			
+			if (!$rooms) {
+				$template->assign_block_vars('chat.cat.noch', array());
 			}
 		}
 		
-		return;
+		return true;
 	}
 	
-	function get_ch_listing($cat)
-	{
-		if (!sizeof($cat))
-		{
+	function get_ch_listing($cat) {
+		if (!sizeof($cat)) {
 			return;
 		}
 		
@@ -167,27 +152,17 @@ class _chat
 			FROM _chat_ch ch, _members m
 			WHERE ch.ch_founder = m.user_id
 			ORDER BY ch_def DESC, cat_id, ch_users DESC';
-		$result = $db->sql_query($sql);
-		
-		$ch = array();
-		while ($row = $db->sql_fetchrow($result))
-		{
-			$ch[] = $row;
-		}
-		$db->sql_freeresult($result);
+		$ch = sql_rowset($sql);
 		
 		$chatters = 0;
-		foreach ($cat as $cat_data)
-		{
+		foreach ($cat as $cat_data) {
 			$template->assign_block_vars('cat', array(
 				'NAME' => $cat_data['cat_name'])
 			);
 			
 			$rooms = 0;
-			foreach ($ch as $ch_data)
-			{
-				if ($cat_data['cat_id'] != $ch_data['cat_id'])
-				{
+			foreach ($ch as $ch_data) {
+				if ($cat_data['cat_id'] != $ch_data['cat_id']) {
 					continue;
 				}
 				
@@ -205,8 +180,7 @@ class _chat
 				$rooms++;
 			}
 			
-			if (!$rooms)
-			{
+			if (!$rooms) {
 				$template->assign_block_vars('cat.no_rooms', array());
 			}
 		}
@@ -224,14 +198,7 @@ class _chat
 			$sql = 'SELECT *
 				FROM _chat_cat
 				ORDER BY cat_order';
-			$result = $db->sql_query($sql);
-			
-			while ($row = $db->sql_fetchrow($result))
-			{
-				$cat[] = $row;
-			}
-			$db->sql_freeresult($result);
-			
+			$cat = sql_rowset($sql);
 			$cache->save('chat_cat', $cat);
 		}
 		
@@ -243,22 +210,15 @@ class _chat
 		global $user;
 		
 		$ch = request_var('ch', '');
-		if (!empty($ch))
-		{
-			if (preg_match('/([0-9a-z\-]+)/', $ch))
-			{
+		if (!empty($ch)) {
+			if (preg_match('/([0-9a-z\-]+)/', $ch)) {
 				$sql = 'SELECT *
-					FROM _chat_ch ' . "
-					WHERE ch_int_name = '" . $db->sql_escape($ch) . "'
-					LIMIT 1";
-				$result = $db->sql_query($sql);
-				
-				if ($row = $db->sql_fetchrow($result))
-				{
+					FROM _chat_ch
+					WHERE ch_int_name = ?
+					LIMIT 1';
+				if ($row = sql_fieldrow(sql_filter($sql, $ch))) {
 					$row['ch_id'] = (int) $row['ch_id'];
 					$this->data = $row;
-					
-					$db->sql_freeresult($result);
 					
 					return true;
 				}
@@ -294,21 +254,18 @@ class _chat
 		switch ($mode)
 		{
 			case 'logout':
-				$sql = "SELECT *
+				$sql = 'SELECT *
 					FROM _chat_sessions
-					WHERE session_id = '" . $db->sql_escape($csid) . "'";
-				$result = $db->sql_query($sql);
-				
-				if ($row = $db->sql_fetchrow($result))
-				{
+					WHERE session_id = ?';
+				if ($row = sql_fieldrow(sql_filter($sql, $csid))) {
 					$sql = 'UPDATE _chat_ch
 						SET ch_users = ch_users - 1
-						WHERE ch_id = ' . (int) $row['session_ch_id'];
-					$db->sql_query($sql);
+						WHERE ch_id = ?';
+					sql_query(sql_filter($sql, $row['session_ch_id']));
 					
-					$sql = "DELETE FROM _chat_sessions
-						WHERE session_id = '" . $db->sql_escape($csid) . "'";
-					$db->sql_query($sql);
+					$sql = 'DELETE FROM _chat_sessions
+						WHERE session_id = ?';
+					sql_query(sql_filter($sql, $csid));
 					
 					$this->_message($row['session_ch_id'], $user->data['user_id'], sprintf($user->lang['CHAT_MEMBER_LOGOUT'], $user->data['username']));
 				}
@@ -326,52 +283,28 @@ class _chat
 				$this->_message($this->data['ch_id'], 0, $message);
 				
 			case 'get':
-				$messages = array();
-				$members = array();
-				
 				$sql = 'SELECT c.*, m.username, m.user_color
 					FROM _chat_msg c, _members m
-					WHERE c.msg_ch = ' . (int) $this->data['ch_id'] . '
-						AND c.msg_ignore <> ' . (int) $user->data['user_id'] . '
-						AND c.msg_id > ' . (int) $last_msg . '
-						AND c.msg_time > ' . $this->data['session_start'] . '
+					WHERE c.msg_ch = ?
+						AND c.msg_ignore <> ?
+						AND c.msg_id > ?
+						AND c.msg_time > ?
 						AND c.msg_member_id = m.user_id
 					ORDER BY c.msg_time ASC';
-				$result = $db->sql_query($sql);
-				
-				if ($row = $db->sql_fetchrow($result))
-				{
-					do
-					{
-						$messages[] = $row;
-					}
-					while ($row = $db->sql_fetchrow($result));
-				}
-				$db->sql_freeresult($result);
+				$messages = sql_rowset(sql_filter($sql, $this->data['ch_id'], $user->data['user_id'], $last_msg, $this->data['session_start']));
 				
 				$sql = 'SELECT m.user_id, m.username, m.username_base, m.user_color
 					FROM _chat_sessions s, _members m
-					WHERE s.session_ch_id = ' . (int) $this->data['ch_id'] . '
+					WHERE s.session_ch_id = ?
 						AND s.session_member = m.user_id
 					ORDER BY m.username';
-				$result = $db->sql_query($sql);
-				
-				if ($row = $db->sql_fetchrow($result))
-				{
-					do
-					{
-						$members[] = $row;
-					}
-					while ($row = $db->sql_fetchrow($result));
-				}
-				$db->sql_freeresult($result);
+				$members = sql_rowset(sql_filter($sql, $this->data['ch_id']));
 				
 				$so_messages = sizeof($messages);
 				$so_members = sizeof($members);
 				
 				//
-				if ($so_messages || $so_members)
-				{
+				if ($so_messages || $so_members) {
 					header("Expires: Mon, 26 Jul 1997 05:00:00 GMT" ); 
 					header("Last-Modified: " . gmdate( "D, d M Y H:i:s" ) . "GMT" ); 
 					header("Cache-Control: no-cache, must-revalidate" ); 
@@ -380,18 +313,14 @@ class _chat
 					
 					$xmlre = '<?xml version="1.0" ?><ROOT>';
 					
-					if ($so_messages)
-					{
-						foreach ($messages as $row)
-						{
+					if ($so_messages) {
+						foreach ($messages as $row) {
 							$message = $this->comments->parse_message($row['msg_text'], 'bold red');
 							
 							$xmlre .= '<message id="' . $row['msg_id'] . '" sid="' . $this->data['session_id'] . '">';
 							
-							if (!$row['msg_ignore'])
-							{
-								if (preg_match("#\b(" . $user->data['username'] . ")\b#i", $message))
-								{
+							if (!$row['msg_ignore']) {
+								if (preg_match("#\b(" . $user->data['username'] . ")\b#i", $message)) {
 									$message = '<span class="rkc_self">' . str_replace('\"', '"', substr(@preg_replace('#(\>(((?>([^><]+|(?R)))*)\<))#se', "@preg_replace('#\b(" . str_replace('\\', '\\\\', $user->data['username']) . ")\b#i', '<span class=\"sgray bold\">\\\\1</span>', '\\0')", '>' . $message . '<'), 1, -1)) . '</span>';
 								}
 								
@@ -404,10 +333,8 @@ class _chat
 						}
 					}
 					
-					if ($so_members)
-					{
-						foreach ($members as $row)
-						{
+					if ($so_members) {
+						foreach ($members as $row) {
 							$xmlre .= '<member user_id="' . $row['user_id'] . '">';
 							
 							$xmlre .= '<nick>' . $row['username'] . '</nick><prof>' . s_link('m', $row['username_base']) . '</prof>';
@@ -420,30 +347,19 @@ class _chat
 					echo $xmlre;
 				}
 				
-				//
-				//
-				//
 				/*
+				
 				$sql = 'SELECT c.*, m.username, m.user_color
 					FROM _chat_msg c, _members m
-					WHERE c.msg_ch = ' . (int) $this->data['ch_id'] . '
-						AND c.msg_ignore <> ' . (int) $user->data['user_id'] . '
-						AND c.msg_id > ' . (int) $last_msg . '
-						AND c.msg_time > ' . $this->data['session_start'] . '
+					WHERE c.msg_ch = ?
+						AND c.msg_ignore <> ?
+						AND c.msg_id > ?
+						AND c.msg_time > ?
 						AND c.msg_member_id = m.user_id
 					ORDER BY c.msg_time ASC';
-				$result = $db->sql_query($sql);
+				$result = sql_rowset(sql_filter($sql, $this->data['ch_id'], $user->data['user_id'], $last_msg, $this->data['session_start']));
 				
-				if ($row = $db->sql_fetchrow($result))
-				{
-					do
-					{
-						
-					}
-					while ($row = $db->sql_fetchrow($result));
-					$db->sql_fetchrow($result);
-				}
-				**/
+				*/
 				break;
 		}
 		
@@ -462,17 +378,12 @@ class _chat
 		//
 		// Check friends
 		//
-		if ($this->data['ch_auth'] == 2)
-		{
+		if ($this->data['ch_auth'] == 2) {
 			$sql = 'SELECT *
 				FROM _members_friends
-				WHERE (user_id = ' . (int) $this->data['ch_founder'] . ' AND buddy_id = ' . (int) $user->data['user_id'] . ')
-					OR (user_id = ' . (int) $user->data['user_id'] . ' AND buddy_id = ' . (int) $this->data['ch_founder'] . ')';
-			$result = $db->sql_query($sql);
-			
-			if ($row = $db->sql_fetchrow($result))
-			{
-				$db->sql_freeresult($result);
+				WHERE (user_id = ? AND buddy_id = ?)
+					OR (user_id = ? AND buddy_id = ?)';
+			if (sql_fieldrow(sql_filter($sql, $this->data['ch_founder'], $user->data['user_id'], $user->data['user_id'], $this->data['ch_founder']))) {
 				return true;
 			}
 			return false;
@@ -484,16 +395,12 @@ class _chat
 		2 - Member
 		*/
 		
-		$sql = 'SELECT *
+		$sql = 'SELECT ch_auth
 			FROM _chat_auth
-			WHERE ch_id = ' . (int) $this->data['ch_id'] . '
-				AND ch_user_id = ' . (int) $user->data['user_id'];
-		$result = $db->sql_query($sql);
-		
-		if ($row = $db->sql_fetchrow($result))
-		{
-			switch ($row['ch_auth'])
-			{
+			WHERE ch_id = ?
+				AND ch_user_id = ?';
+		if ($ch_auth = sql_field(sql_filter($sql, $this->data['ch_id'], $user->data['user_id']), 'ch_auth', 0)) {
+			switch ($ch_auth) {
 				case 0:
 					return false;
 					break;
@@ -504,15 +411,11 @@ class _chat
 					$this->data['is_member'] = true;
 					break;
 			}
-		}
-		else
-		{
-			if ($this->data['ch_auth'])
-			{
+		} else {
+			if ($this->data['ch_auth']) {
 				return false;
 			}
 		}
-		$db->sql_freeresult($result);
 		
 		return true;
 	}
@@ -533,35 +436,27 @@ class _chat
 		
 		$ttime = time();
 		
-		$updated = FALSE;
-		$sql = "SELECT *
-			FROM _chat_sessions
-			WHERE /*session_id = '" . $db->sql_escape($sid) . "'
-				AND */session_member = " . (int) $user->data['user_id'] . '
-				AND session_ch_id = ' . (int) $this->data['ch_id'];
-		$result = $db->sql_query($sql);
+		$updated = false;
 		
-		if ($row = $db->sql_fetchrow($result))
-		{
+		$sql = 'SELECT *
+			FROM _chat_sessions
+			WHERE session_member = ?
+				AND session_ch_id = ?';
+		if ($row = sql_fieldrow(sql_filter($sql, $user->data['user_id'], $this->data['ch_id']))) {
 			$last_msg = request_var('last_msg', 0);
 			
-			$sql = 'UPDATE _chat_sessions
-				SET session_time = ' . $ttime . ', session_last_msg = ' . (int) $last_msg . "
-				WHERE session_id = '" . $db->sql_escape($sid) . "'
-					AND session_member = " . (int) $user->data['user_id'] . '
-					AND session_ch_id = ' . (int) $this->data['ch_id'];
-			$db->sql_query($sql);
+			$sql = 'UPDATE _chat_sessions SET session_time = ?, session_last_msg = ?
+				WHERE session_id = ? AND session_member = ? AND session_ch_id = ?';
+			sql_query(sql_filter($sql, $ttime, $last_msg, $sid, $user->data['user_id'], $this->data['ch_id']));
 			
 			$row['session_time'] = $ttime;
 			$row['session_last_msg'] = $last_msg;
 			$this->data += $row;
 			
-			$updated = TRUE;
+			$updated = true;
 		}
-		$db->sql_freeresult($result);
 		
-		if ($updated)
-		{
+		if ($updated) {
 			return true;
 		}
 		
@@ -574,17 +469,15 @@ class _chat
 			'session_time' => (int) $ttime,
 			'session_last_msg' => 0
 		);
-		$db->sql_query('INSERT INTO _chat_sessions' . $db->sql_build_array('INSERT', $insert_data));
+		sql_query('INSERT INTO _chat_sessions' . sql_build('INSERT', $insert_data));
 		
-		$sql = 'UPDATE _chat_ch
-			SET ch_users = ch_users + 1
-			WHERE ch_id = ' . (int) $this->data['ch_id'];
-		$db->sql_query($sql);
+		$sql = 'UPDATE _chat_ch SET ch_users = ch_users + 1
+			WHERE ch_id = ?';
+		sql_query(sql_filter($sql, $this->data['ch_id']));
 		
 		$this->_message($this->data['ch_id'], $user->data['user_id'], sprintf($user->lang['CHAT_MEMBER_ENTERED'], $user->data['username']));
 		
 		$this->data += $insert_data;
-		
 		$this->sys_clean();
 		
 		return;
@@ -602,7 +495,7 @@ class _chat
 			'msg_time' => (int) time(),
 			'msg_ip' => $user->ip
 		);
-		$db->sql_query('INSERT INTO _chat_msg' . $db->sql_build_array('INSERT', $insert_data));
+		sql_query('INSERT INTO _chat_msg' . sql_build('INSERT', $insert_data));
 		
 		return $insert_data;
 	}
@@ -626,32 +519,26 @@ class _chat
 	
 	function sys_clean()
 	{
-		global $db;
-		
 		$ttime = time();
 		
 		$sql = 'DELETE FROM _chat_msg
-			WHERE msg_time < ' . ($ttime - 3600);
-		$db->sql_query($sql);
+			WHERE msg_time < ?';
+		sql_query(sql_filter($sql, ($ttime - 3600)));
 		
 		//
 		//
 		$sql = 'SELECT s.*, m.username
 			FROM _chat_sessions s, _members m
-			WHERE s.session_time < ' . (int) ($ttime - 300) . '
+			WHERE s.session_time < ?
 				AND s.session_member = m.user_id';
-		$result = $db->sql_query($sql);
-		
-		if ($row = $db->sql_fetchrow($result))
-		{
+		if ($result = sql_rowset(sql_filter($sql, ($ttime - 300)))) {
 			global $user;
 			
 			$update_ch = array();
 			$delete_sessions = array();
 			$show_members = array();
 			
-			do
-			{
+			foreach ($result as $row) {
 				$chid = $row['session_ch_id'];
 				if (!isset($update_ch[$chid]))
 				{
@@ -660,16 +547,15 @@ class _chat
 				
 				$update_ch[$chid]++;
 				$show_members[$chid][$row['session_member']] = $row['username'];
-				$delete_sessions[] = "'" . $db->sql_escape($row['session_id']) . "'";
+				$delete_sessions[] = "'" . sql_escape($row['session_id']) . "'";
 			}
-			while ($row = $db->sql_fetchrow($result));
 			
 			foreach ($update_ch as $ch_id => $number)
 			{
 				$sql = 'UPDATE _chat_ch
-					SET ch_users = ch_users - ' . (int) $number . '
-					WHERE ch_id = ' . (int) $ch_id;
-				$db->sql_query($sql);
+					SET ch_users = ch_users - ??
+					WHERE ch_id = ?';
+				sql_query(sql_filter($sql, $number, $ch_id));
 				
 				foreach ($show_members[$ch_id] as $user_id => $username)
 				{
@@ -678,18 +564,17 @@ class _chat
 			}
 			
 			$sql = 'DELETE FROM _chat_sessions
-				WHERE session_id IN (' . implode(',', $delete_sessions) . ')';
-			$db->sql_query($sql);
+				WHERE session_id IN (??)';
+			sql_query(sql_filter($sql, implode(',', $delete_sessions)));
 		}
-		$db->sql_freeresult($result);
 		
 		//
 		//
 		//
 		/*
 		$sql = 'DELETE FROM _chat_sessions
-			WHERE session_start < ' . ($ttime - 43200);
-		$db->sql_query($sql);
+			WHERE session_start < ?';
+		sql_query(sql_filter($sql, ($ttime - 43200)));
 		*/
 	}
 }

@@ -61,24 +61,16 @@ class _events extends downloads
 	
 	function _setup()
 	{
-		global $db;
-		
 		$event_id = intval(request_var('id', 0));
-		if ($event_id > 0)
-		{
+		if ($event_id > 0) {
 			$sql = 'SELECT *
 				FROM _events
-				WHERE id = ' . (int) $event_id . '
+				WHERE id = ?
 					AND UNIX_TIMESTAMP() > date 
 				ORDER BY id';
-			$result = $db->sql_query($sql);
-			
-			if ($row = $db->sql_fetchrow($result))
-			{
+			if ($row = sql_fieldrow(sql_filter($sql, $event_id))) {
 				$row['id'] = intval($row['id']);
 				$this->data = $row;
-				
-				$db->sql_freeresult($result);
 				
 				return true;
 			}
@@ -87,26 +79,18 @@ class _events extends downloads
 		return false;
 	}
 	
-	function _nextevent()
-	{
+	function _nextevent() {
 		global $user, $template;
 		
 		$nevent = array();
 		$sql = 'SELECT *
 			FROM _events
-			WHERE date >= ' . $this->timetoday . '
+			WHERE date >= ?
 			ORDER BY date ASC
 			LIMIT 2';
-		$result = $db->sql_query($sql);
+		$result = sql_rowset(sql_filter($sql, $this->timetoday));
 		
-		while ($row = $db->sql_fetchrow($result))
-		{
-			$nevent[] = $row;
-		}
-		$db->sql_freeresult($result);
-		
-		foreach ($nevent as $row)
-		{
+		foreach ($result as $row) {
 			$this->filename = SDATA . 'events/future/thumbnails/' . $row['id'] . '.jpg';
 
 			$template->assign_block_vars('next_event', array(
@@ -119,19 +103,17 @@ class _events extends downloads
 		return;		
 	}	
 	
-	/*function _nextevent()
+	/*
+	function _nextevent()
 	{
 		global $user, $template;
 		
 		$sql = 'SELECT *
 			FROM _events
-			WHERE date >= ' . $this->timetoday . '
+			WHERE date >= ?
 			ORDER BY date ASC
 			LIMIT 1';
-		$result = $db->sql_query($sql);
-		
-		if ($row = $db->sql_fetchrow($result))
-		{
+		if ($row = sql_rowset(sql_filter($sql, $this->timetoday))) {
 			$this->filename = SDATA . 'events/future/thumbnails/' . $row['id'] . '.jpg';
 			
 			$template->assign_block_vars('next_event', array(
@@ -140,8 +122,8 @@ class _events extends downloads
 				'IMAGE' => $this->filename)
 			);
 		}
-		$db->sql_freeresult($result);
-	}*/
+	}
+	*/
 	
 	function _lastevent($start = 0)
 	{
@@ -149,32 +131,25 @@ class _events extends downloads
 		
 		$sql = 'SELECT *
 			FROM _events
-			WHERE (date < ' . $this->timetoday . ' OR date > ' . $this->timetoday . ')
+			WHERE (date < ? OR date > ?)
 				AND images > 0
 			ORDER BY date DESC
-			LIMIT ' . (int) $start . ', 1';
-		$result = $db->sql_query($sql);
-		
-		if ($row = $db->sql_fetchrow($result))
-		{
+			LIMIT ??, ??';
+		if ($row = sql_fieldrow(sql_filter($sql, $this->timetoday, $this->timetoday, $start, 1))) {
 			$sql = 'SELECT *
 				FROM _events_images
-				WHERE event_id = ' . (int) $row['id'] . '
+				WHERE event_id = ?
 				ORDER BY RAND()';
-			$result2 = $db->sql_query($sql);
-			
-			$row2 = $db->sql_fetchrow($result2);
-			$db->sql_freeresult($result2);
+			$row2 = sql_fieldrow(sql_filter($sql, $row['id']));
 			
 			$template->assign_block_vars('last_event', array(
 				'URL' => s_link('events', $row['id']),
 				'TITLE' => $row['title'],
-				'IMAGE' => SDATA . 'events/gallery/' . $row['id'] . '/thumbnails/' . $row2['image'] . '.jpg'
-			));
+				'IMAGE' => SDATA . 'events/gallery/' . $row['id'] . '/thumbnails/' . $row2['image'] . '.jpg')
+			);
 		}
-		$db->sql_freeresult($result);
 		
-		return;
+		return true;
 	}
 	
 	function view()
@@ -192,32 +167,28 @@ class _events extends downloads
 				redirect(s_link('events', $this->data['id']));
 			}
 			
-			if ($mode == 'view')
-			{
+			if ($mode == 'view') {
 				$sql = 'SELECT e.*, COUNT(e2.image) AS prev_images
 					FROM _events_images e, _events_images e2
-					WHERE e.event_id = ' . (int) $this->data['id'] . '
+					WHERE e.event_id = ?
 						AND e.event_id = e2.event_id 
-						AND e.image = ' . (int) $download_id . '
-						AND e2.image <= ' . (int) $download_id . '
+						AND e.image = ?
+						AND e2.image <= ?
 					GROUP BY e.image 
 					ORDER BY e.image ASC';
-			}
-			else
-			{
+				$sql = sql_filter($sql, $this->data['id'], $download_id, $download_id);
+			} else {
 				$sql = 'SELECT e2.*
 					FROM _events_images e2
 					LEFT JOIN _events e ON e.id = e2.event_id
-					WHERE e2.event_id = ' . (int) $this->data['id'] . '
-						AND e2.image = ' . (int) $download_id;
+					WHERE e2.event_id = ?
+						AND e2.image = ?';
+				$sql = sql_filter($sql, $this->data['id'], $download_id);
 			}
-			$result = $db->sql_query($sql);
 			
-			if (!$imagedata = $db->sql_fetchrow($result))
-			{
+			if (!$imagedata = sql_fieldrow($sql)) {
 				redirect(s_link('events', $this->data['id']));
 			}
-			$db->sql_freeresult($result);
 		}
 		
 		switch ($mode)
@@ -233,34 +204,36 @@ class _events extends downloads
 				
 				$sql = 'UPDATE _events_images
 					SET downloads = downloads + 1
-					WHERE event_id = ' . (int) $this->data['id'] . '
-						AND image = ' . $imagedata['image'];
-				$db->sql_query($sql);
+					WHERE event_id = ?
+						AND image = ?';
+				sql_query(sql_filter($sql, $this->data['id'], $imagedata['image']));
 				
 				$this->dl_file();				
 				break;
 			case 'fav':
-				if (!$user->data['is_member'])
-				{
+				if (!$user->data['is_member']) {
 					do_login();
 				}
 				
 				$sql = 'SELECT *
 					FROM _events_fav
-					WHERE event_id = ' . (int) $this->data['id'] . '
-						AND image_id = ' . (int) $imagedata['image'] . '
-						AND member_id = ' . (int) $user->data['user_id'];
-				$result = $db->sql_query($sql);
-				
-				if ($row = $db->sql_fetchrow($result))
-				{
-					$db->sql_freeresult($result);
-					$db->sql_query('UPDATE _events_fav SET fav_date = ' . time() . ' WHERE event_id = ' . (int) $this->data['id'] . ' AND image_id = ' . (int) $imagedata['image']);
-				}
-				else
-				{
-					$insert = array('event_id' => (int) $this->data['id'], 'image_id' => (int) $imagedata['image'], 'member_id' => (int) $user->data['user_id'], 'fav_date' => time());
-					$db->sql_query('INSERT INTO _events_fav ' . $db->sql_build_array('INSERT', $insert));
+					WHERE event_id = ?
+						AND image_id = ?
+						AND member_id = ?';
+				if ($row = sql_fieldrow(sql_filter($sql, $this->data['id'], $imagedata['image'], $user->data['user_id']))) {
+					$sql = 'UPDATE _events_fav SET fav_date = ?
+						WHERE event_id = ?
+							AND image_id = ?';
+					sql_query(sql_filter($sql, time(), $this->data['id'], $imagedata['image']));
+				} else {
+					$sql_insert = array(
+						'event_id' => (int) $this->data['id'],
+						'image_id' => (int) $imagedata['image'],
+						'member_id' => (int) $user->data['user_id'],
+						'fav_date' => time()
+					);
+					$sql = 'INSERT INTO _events_fav' . sql_build('INSERT', $sql_insert);
+					sql_query($sql);
 				}
 				redirect(s_link('events', array($this->data['id'], $imagedata['image'], 'view')));
 				
@@ -273,9 +246,9 @@ class _events extends downloads
 				{
 					$sql = 'UPDATE _events_images
 						SET views = views + 1
-						WHERE event_id = ' . (int) $this->data['id'] . '
-							AND image = ' . $imagedata['image'];
-					$db->sql_query($sql);
+						WHERE event_id = ?
+							AND image = ?';
+					sql_query(sql_filter($sql, $this->data['id'], $imagedata['image']));
 					
 					$template->assign_block_vars('selected', array(
 						'IMAGE' => SDATA . 'events/gallery/' . $this->data['id'] . '/' . $imagedata['image'] . '.jpg',
@@ -303,18 +276,14 @@ class _events extends downloads
 					$is_fav = false;
 					if ($user->data['is_member'])
 					{
-						$sql = 'SELECT *
+						$sql = 'SELECT member_id
 							FROM _events_fav
-							WHERE event_id = ' . (int) $this->data['id'] . '
-								AND image_id = ' . (int) $imagedata['image'] . '
-								AND member_id = ' . (int) $user->data['user_id'];
-						$result = $db->sql_query($sql);
-						
-						if ($row = $db->sql_fetchrow($result))
-						{
+							WHERE event_id = ?
+								AND image_id = ?
+								AND member_id = ?';
+						if (sql_field(sql_filter($sql, $this->data['id'], $imagedata['image'], $user->data['user_id']))) {
 							$is_fav = true;
 						}
-						$db->sql_freeresult($result);
 					}
 					
 					if (!$is_fav || !$user->data['is_member'])
@@ -328,7 +297,10 @@ class _events extends downloads
 				{
 					if (!$t_offset && $user->data['user_type'] != USER_FOUNDER)
 					{
-						$db->sql_query('UPDATE _events SET views = views + 1 WHERE id = ' . (int) $this->data['id']);
+						$sql = 'UPDATE _events SET views = views + 1
+							WHERE id = ?';
+						sql_query(sql_filter($sql, $this->data['id']));
+						
 						$this->data['views']++;
 					}
 				}
@@ -344,79 +316,61 @@ class _events extends downloads
 					
 					$sql = 'SELECT MAX(image) AS total
 						FROM _events_images
-						WHERE event_id = ' . (int) $this->data['id'];
-					$result = $db->sql_query($sql);
-					
-					if ($maximage = $db->sql_fetchrow($result))
-					{
-						$val = ($download_id == $maximage['total']) ? 2 : 1;
+						WHERE event_id = ?';
+					if ($maximage = sql_field(sql_filter($sql, $this->data['id']), 'total', 0)) {
+						$val = ($download_id == $maximage) ? 2 : 1;
 					}
-					$db->sql_freeresult($result);
 					
 					$t_offset = floor(($imagedata['prev_images'] - $val) / $t_per_page) * $t_per_page;
 				}
 				
 				if ($this->data['images'])
 				{
-					$exception_sql = (isset($download_id) && $download_id) ? 'AND g.image <> ' . $download_id : '';
+					$exception_sql = (isset($download_id) && $download_id) ? sql_filter(' AND g.image <> ? ', $download_id) : '';
 					
 					$sql = 'SELECT g.*
 						FROM _events e, _events_images g
-						WHERE e.id = ' . $this->data['id'] . '
+						WHERE e.id = ?
 							AND e.id = g.event_id ' . 
 							$exception_sql . '
 						ORDER BY g.image ASC 
-						LIMIT ' . (int) $t_offset . ', ' . $t_per_page;
-					$result = $db->sql_query($sql);
-					
-					if ($row = $db->sql_fetchrow($result))
-					{
+						LIMIT ??, ??';
+					if ($result = sql_rowset(sql_filter($sql, $this->data['id'], $t_offset, $t_per_image))) {
 						build_num_pagination(s_link('events', array($this->data['id'], 's%d')), $this->data['images'], $t_per_page, $t_offset, 'IMG_');
 						
 						$template->assign_block_vars('thumbnails', array());
 						
-						do
-						{
+						foreach ($result as $row) {
 							$template->assign_block_vars('thumbnails.item', array(
 								'URL' => s_link('events', array($this->data['id'], $row['image'], 'view')),
 								'IMAGE' => SDATA . 'events/gallery/' . $this->data['id'] . '/thumbnails/' . $row['image'] . '.jpg',
 								'RIMAGE' => SDATA . 'events/gallery/' . $this->data['id'] . '/' . $row['image'] . '.jpg',
 								'FOOTER' => $row['image_footer'],
 								'WIDTH' => $row['width'], 
-								'HEIGHT' => $row['height']
-							));
+								'HEIGHT' => $row['height'])
+							);
 						}
-						while ($row = $db->sql_fetchrow($result));
-						
-						$db->sql_freeresult($result);
-					}
-					else
-					{
+					} else {
 						redirect(s_link('events', $this->data['id']));
 					}
-				}
-				else
-				{
+				} else {
 					$template->assign_block_vars('no_images', array());
 				}
 				
 				// Credits
 				$sql = 'SELECT *
 					FROM _events_colab c, _members m
-					WHERE c.colab_event = ' . (int) $this->data['id'] . '
+					WHERE c.colab_event = ?
 						AND c.colab_uid = m.user_id
 					ORDER BY m.username';
-				$result = $db->sql_query($sql);
+				$result = sql_rowset(sql_filter($sql, $this->data['id']));
 				
 				$colabs = array();
-				while ($row = $db->sql_fetchrow($result))
-				{
+				foreach ($result as $row) {
 					$colabs[] = '<a href="' . s_link('m', $row['username_base']) . '">' . $row['username'] . '</a>';
 				}
-				$db->sql_freeresult($result);
 				
-				if (!empty($this->data['event_colab']))
-				{
+				if (!empty($this->data['event_colab'])) {
 					$colabs[] = $this->data['event_colab'];
 				}
 				
@@ -439,15 +393,17 @@ class _events extends downloads
 					$posts_offset = intval(request_var('ps', 0));
 					$comments->ref = $comments_ref;
 					
+					$sql = 'SELECT p.*, m.user_id, m.username, m.username_base, m.user_color, m.user_avatar, m.user_rank, m.user_posts, m.user_gender, m.user_sig
+						FROM _events_posts p, _members m
+						WHERE p.event_id = ?
+							AND p.post_active = 1
+							AND p.poster_id = m.user_id
+						ORDER BY p.post_time DESC
+						LIMIT ??, ??';
+					
 					$comments->data = array(
 						'A_LINKS_CLASS' => 'bold red',
-						'SQL' => 'SELECT p.*, m.user_id, m.username, m.username_base, m.user_color, m.user_avatar, m.user_rank, m.user_posts, m.user_gender, m.user_sig
-							FROM _events_posts p, _members m
-							WHERE p.event_id = ' . (int) $this->data['id'] . '
-								AND p.post_active = 1
-								AND p.poster_id = m.user_id
-							ORDER BY p.post_time DESC
-							LIMIT ' . (int) $posts_offset . ', ' . (int) $config['s_posts']
+						'SQL' => sql_filter($sql, $this->data['id'], $posts_offset, $config['s_posts'])
 					);
 					
 					$comments->view($posts_offset, 'ps', $this->data['posts'], $config['s_posts'], '', 'MSG_', 'TOPIC_');
@@ -458,14 +414,11 @@ class _events extends downloads
 				//
 				$template->assign_block_vars('posting_box', array());
 				
-				if ($user->data['is_member'])
-				{
+				if ($user->data['is_member']) {
 					$template->assign_block_vars('posting_box.box', array(
 						'REF' => $comments_ref)
 					);
-				}
-				else
-				{
+				} else {
 					$template->assign_block_vars('posting_box.only_registered', array(
 						'LEGEND' => sprintf($user->lang['LOGIN_TO_POST'], '', s_link('my', 'register')))
 					);
@@ -490,43 +443,29 @@ class _events extends downloads
 		$sql = 'SELECT *
 			FROM _events
 			ORDER BY date ASC';
-		$result = $db->sql_query($sql);
+		$result = sql_rowset($sql);
 		
-		while ($row = $db->sql_fetchrow($result))
-		{
-			if ($row['date'] >= $midnight && !$row['images'])
-			{
-				if ($row['date'] >= $midnight && $row['date'] < $midnight + 86400)
-				{
+		foreach ($result as $row) {
+			if ($row['date'] >= $midnight && !$row['images']) {
+				if ($row['date'] >= $midnight && $row['date'] < $midnight + 86400) {
 					$this->data['is_today'][] = $row;
-				}
-				else if ($row['date'] >= $midnight + 86400 && $row['date'] < $midnight + (86400 * 2))
-				{
+				} else if ($row['date'] >= $midnight + 86400 && $row['date'] < $midnight + (86400 * 2)) {
 					$this->data['is_tomorrow'][] = $row;
-				}
-				else if ($row['date'] >= $midnight + (86400 * 2) && $row['date'] < $week)
-				{
+				} else if ($row['date'] >= $midnight + (86400 * 2) && $row['date'] < $week) {
 					$this->data['is_week'][] = $row;
-				}
-				else
-				{
+				} else {
 					$this->data['is_future'][] = $row;
 				}
-			}
-			else
-			{
-				if ($row['images'])
-				{
+			} else {
+				if ($row['images']) {
 					$this->data['is_gallery'][] = $row;
 				}
 			}
 		}
-		$db->sql_freeresult($result);
 		
 		$total_gallery = sizeof($this->data['is_gallery']);
 		
-		if ($total_gallery)
-		{
+		if ($total_gallery) {
 			$gallery_offset = request_var('gallery_offset', 0);
 			
 			$gallery = $this->data['is_gallery'];
@@ -542,20 +481,18 @@ class _events extends downloads
 			
 			$sql = 'SELECT *
 				FROM _events_images
-				WHERE event_id IN (' . implode(',', $event_ids) . ')
+				WHERE event_id IN (??)
 				ORDER BY RAND()';
-			$result = $db->sql_query($sql);
+			$result = sql_rowset(sql_filter($sql, implode(',', $event_ids)));
 			
 			$random_images = array();
-			while ($row = $db->sql_fetchrow($result))
-			{
+			foreach ($result as $row) {
 				$random_images[$row['event_id']] = $row['image'];
 			}
-			$db->sql_freeresult($result);
 			
 			$template->assign_block_vars('gallery', array(
-				'EVENTS' => $total_gallery
-			));
+				'EVENTS' => $total_gallery)
+			);
 			
 			foreach ($gallery as $item)
 			{

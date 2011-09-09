@@ -81,17 +81,19 @@ class layout extends downloads
 			$this->msg->ref = s_link('a', array($this->data['subdomain'], 16));
 			$this->msg->auth = $this->auth;
 			
+			$sql = 'SELECT t.*, p.*, m.*
+				FROM _forum_topics t, _forum_posts p, _members m
+				WHERE t.forum_id = ?
+					AND t.topic_ub = ?
+					AND t.topic_poster = m.user_id
+					AND p.post_id = t.topic_first_post_id
+					AND t.topic_important = 0
+				ORDER BY t.topic_time DESC';
+			
 			$this->msg->data = array(
 				'ARTISTS_NEWS' => TRUE,
 				'A_LINKS_CLASS' => 'bold red',
-				'SQL' => 'SELECT t.*, p.*, m.*
-					FROM _forum_topics t, _forum_posts p, _members m
-					WHERE t.forum_id = ' . (int) $config['ub_fans_f'] . '
-						AND t.topic_ub = ' . (int) $this->data['ub'] . '
-						AND t.topic_poster = m.user_id
-						AND p.post_id = t.topic_first_post_id
-						AND t.topic_important = 0
-					ORDER BY t.topic_time DESC'
+				'SQL' => sql_filter($sql, $config['ub_fans_f'], $this->data['ub'])
 			);
 			
 			if ($this->auth['mod'])
@@ -130,15 +132,11 @@ class layout extends downloads
 		{
 			$sql = 'SELECT *
 				FROM _artists_voters
-				WHERE ub = ' . $this->data['ub'] . '
-					AND user_id = ' . (int) $user->data['user_id'];
-			$result = $db->sql_query($sql);
-			
-			if ($row = $db->sql_fetchrow($result))
-			{
+				WHERE ub = ?
+					AND user_id = ?';
+			if (sql_fieldrow(sql_filter($sql, $this->data['ub'], $user->data['user_id']))) {
 				$user_voted = TRUE;
 			}
-			$db->sql_freeresult($result);
 		}
 		
 		$template->assign_block_vars('ub_poll', array());
@@ -147,16 +145,9 @@ class layout extends downloads
 		{
 			$sql = 'SELECT option_id, vote_result
 				FROM _artists_votes
-				WHERE ub = ' . $this->data['ub'] . '
+				WHERE ub = ?
 				ORDER BY option_id';
-			$result = $db->sql_query($sql);
-			
-			$results = array();
-			while ($row = $db->sql_fetchrow($result))
-			{
-				$results[$row['option_id']] = $row['vote_result'];
-			}
-			$db->sql_freeresult($result);
+			$results = sql_rowset(sql_filter($sql, $this->data['ub']), 'option_id', 'vote_result');
 			
 			$template->assign_block_vars('ub_poll.results', array());
 			
@@ -194,18 +185,16 @@ class layout extends downloads
 		{
 			$sql = 'SELECT b.ub, u.user_id, u.username, u.username_base, u.user_color, u.user_avatar, u.user_avatar_type
 				FROM _artists_auth a, _artists b, _members u
-				WHERE a.ub = ' . (int) $this->data['ub'] . '
+				WHERE a.ub = ?
 					AND a.ub = b.ub 
 					AND a.user_id = u.user_id 
 				ORDER BY u.username';
-			$result = $db->sql_query($sql);
-			
-			if ($row = $db->sql_fetchrow($result))
-			{
-				$template->assign_block_vars('mods', array());
-				
-				do
-				{
+			if ($result = sql_rowset(sql_filter($sql, $this->data['ub']))) {
+				foreach ($result as $i => $row) {
+					if (!$i) {
+						$template->assign_block_vars('mods', array());
+					}
+					
 					$user_profile = $this->msg->user_profile($row);
 					
 					$template->assign_block_vars('mods.item', array(
@@ -214,12 +203,10 @@ class layout extends downloads
 						'COLOR' => $user_profile['user_color'])
 					);
 				}
-				while ($row = $db->sql_fetchrow($result));
-				$db->sql_freeresult($result);
+				
 				$this->msg->reset();
 				
-				if ($this->auth['mod'])
-				{
+				if ($this->auth['mod']) {
 					$template->assign_block_vars('mods.manage', array(
 						'URL' => s_link_control('a', array('a' => $this->data['subdomain'], 'mode' => 'auth')))
 					);
@@ -234,38 +221,32 @@ class layout extends downloads
 		
 		$sql = 'SELECT v.*, u.user_id, u.username, u.username_base, u.user_color
 			FROM _artists_fav v, _members u
-			WHERE v.ub = ' . (int) $this->data['ub'] . '
+			WHERE v.ub = ?
 				AND v.user_id = u.user_id 
 			ORDER BY joined DESC 
 			LIMIT 0, 10';
-		$result = $db->sql_query($sql);
+		$result = sql_rowset(sql_filter($sql, $this->data['ub']));
 		
-		$total = $db->sql_numrows($result);
-		if ($total)
-		{
+		if ($total = count($result)) {
 			$last_data['favorites'] = array(
-				'data' => $db->sql_fetchrowset($result),
+				'data' => $result,
 				'total' => $total
 			);
 		}
-		$db->sql_freeresult($result);
 		
 		$sql = 'SELECT v.*, u.user_id, u.username, u.username_base, u.user_color
 			FROM _artists_viewers v, _members u
-			WHERE v.ub = ' . (int) $this->data['ub'] . '
+			WHERE v.ub = ?
 				AND v.user_id = u.user_id 
 			ORDER BY datetime DESC';
-		$result = $db->sql_query($sql);
+		$result = sql_rowset(sql_filter($sql, $this->data['ub']));
 		
-		$total = $db->sql_numrows($result);
-		if ($total)
-		{
+		if ($total = count($result)) {
 			$last_data['visitors'] = array(
-				'data' => $db->sql_fetchrowset($result),
+				'data' => $result,
 				'total' => $total
 			);
 		}
-		$db->sql_freeresult($result);
 		
 		if (sizeof($last_data))
 		{
@@ -299,12 +280,10 @@ class layout extends downloads
 	// Biography
 	//
 	
-	function _2()
-	{
+	function _2() {
 		global $template;
 		
-		if ($this->data['featured_image'])
-		{
+		if ($this->data['featured_image']) {
 			$template->assign_block_vars('featured_image', array(
 				'IMAGE' => SDATA . 'artists/' . $this->data['ub'] . '/gallery/' . $this->data['featured_image'] . '.jpg',
 				'URL' => s_link('a', array($this->data['subdomain'], 4, $this->data['featured_image'], 'view')))
@@ -321,65 +300,59 @@ class layout extends downloads
 		return;
 	}
 	
-	function _3()
-	{
+	function _3() {
 		return;
 	}
 	
 	//
 	// Gallery
 	//
-	function _4()
-	{
+	function _4() {
 		global $config, $template;
 		
 		$mode = request_var('mode', '');
 		$download_id = intval(request_var('download_id', 0));
 		
-		if ($mode == 'save' || $mode == 'view')
-		{
-			if (!$download_id)
-			{
+		if ($mode == 'save' || $mode == 'view') {
+			if (!$download_id) {
 				redirect(s_link('a', array($this->data['subdomain'], 4)));
 			}
 			
-			if ($mode == 'view')
-			{
+			if ($mode == 'view') {
 				$sql = 'SELECT g.*, COUNT(g2.image) AS prev_images
 					FROM _artists_images g, _artists_images g2
-					WHERE g.ub = ' . (int) $this->data['ub'] . '
+					WHERE g.ub = ?
 						AND g2.ub = g.ub 
-						AND g.image = ' . (int) $download_id . '
-						AND g2.image <= ' . (int) $download_id . '
+						AND g.image = ?
+						AND g2.image <= ?
 					GROUP BY g.image 
 					ORDER BY g.image ASC';
-			}
-			else
-			{
+				$sql = sql_filter($sql, $this->data['ub'], $download_id, $download_id);
+			} else {
 				$sql = 'SELECT g.*
 					FROM _artists a, _artists_images g
-					WHERE a.ub = ' . (int) $this->data['ub'] . '
+					WHERE a.ub = ?
 						AND a.ub = g.ub 
-						AND g.image = ' . (int) $download_id;
+						AND g.image = ?';
+				$sql = sql_filter($sql, $this->data['ub'], $download_id);
 			}
-			$result = $db->sql_query($sql);
 			
-			if (!$imagedata = $db->sql_fetchrow($result))
-			{
+			if (!$imagedata = sql_fieldrow($sql)) {
 				redirect(s_link('a', array($this->data['subdomain'], 4)));
 			}
-			$db->sql_freeresult($result);
 		}
 		
 		switch ($mode)
 		{
 			case 'save':
-				if (!$imagedata['allow_dl'])
-				{
+				if (!$imagedata['allow_dl']) {
 					redirect(s_link('a', array($this->data['subdomain'], 4, $imagedata['image'], 'view')));
 				}
 				
-				$db->sql_query('UPDATE _artists_images SET downloads = downloads + 1 WHERE ub = ' . (int) $this->data['ub'] . ' AND image = ' . (int) $imagedata['image']);
+				$sql = 'UPDATE _artists_images SET downloads = downloads + 1
+					WHERE ub = ?
+						AND image = ?';
+				sql_query(sql_filter($sql, $this->data['ub'], $imagedata['image']));
 				
 				$this->filename = $this->data['name'] . '_' . $imagedata['image'] . '.jpg';
 				$this->filepath = 'data/artists/' . $this->data['ub'] . '/gallery/' . $imagedata['image'] . '.jpg';
@@ -387,11 +360,12 @@ class layout extends downloads
 				break;
 			case 'view':
 			default:
-				if ($mode == 'view')
-				{
-					if (!$this->auth['mod'])
-					{
-						$db->sql_query('UPDATE _artists_images SET views = views + 1 WHERE ub = ' . (int) $this->data['ub'] . ' AND image = ' . (int) $imagedata['image']);
+				if ($mode == 'view') {
+					if (!$this->auth['mod']) {
+						$sql = 'UPDATE _artists_images SET views = views + 1
+							WHERE ub = ?
+								AND image = ?';
+						sql_query(sql_filter($sql, $this->data['ub'], $imagedata['image']));
 					}
 					
 					$template->assign_block_vars('selected', array(
@@ -413,42 +387,35 @@ class layout extends downloads
 				//
 				// Get thumbnails
 				//
+				$sql_image = ($download_id) ? sql_filter(' AND g.image <> ? ', $download_id) : '';
+				
 				$sql = 'SELECT g.*
 					FROM _artists a, _artists_images g
 					WHERE a.ub = ' . $this->data['ub'] . '
-						AND a.ub = g.ub' . 
-						(($download_id) ? ' AND g.image <> ' . $download_id : '') . '
+						AND a.ub = g.ub' . $sql_image . '
 					ORDER BY image DESC';
-				$result = $db->sql_query($sql);
-				
-				if ($row = $db->sql_fetchrow($result))
-				{
-					$tcol = 0;
-					$template->assign_block_vars('thumbnails', array());
-					do
-					{
-						if (!$tcol)
-						{
-							$template->assign_block_vars('thumbnails.row', array());
-						}
-						
-						$template->assign_block_vars('thumbnails.row.col', array(
-							'URL' => s_link('a', array($this->data['subdomain'], 4, $row['image'], 'view')),
-							'IMAGE' => SDATA . 'artists/' . $this->data['ub'] . '/thumbnails/' . $row['image'] . '.jpg',
-							'RIMAGE' => get_a_imagepath(SDATA . 'artists/' . $this->data['ub'], $row['image'] . '.jpg', array('x1', 'gallery')),
-							'WIDTH' => $row['width'], 
-							'HEIGHT' => $row['height'],
-							'FOOTER' => $row['image_footer'])
-						);
-						
-						$tcol = ($tcol == 3) ? 0 : $tcol + 1;
-					}
-					while ($row = $db->sql_fetchrow($result));
-					$db->sql_freeresult($result);
-				}
-				else
-				{
+				if (!$result = sql_rowset(sql_filter($sql, $this->data['ub']))) {
 					redirect(s_link('a', array($this->data['subdomain'], 4)));
+				}
+				
+				$tcol = 0;
+				$template->assign_block_vars('thumbnails', array());
+				
+				foreach ($result as $row) {
+					if (!$tcol) {
+						$template->assign_block_vars('thumbnails.row', array());
+					}
+					
+					$template->assign_block_vars('thumbnails.row.col', array(
+						'URL' => s_link('a', array($this->data['subdomain'], 4, $row['image'], 'view')),
+						'IMAGE' => SDATA . 'artists/' . $this->data['ub'] . '/thumbnails/' . $row['image'] . '.jpg',
+						'RIMAGE' => get_a_imagepath(SDATA . 'artists/' . $this->data['ub'], $row['image'] . '.jpg', array('x1', 'gallery')),
+						'WIDTH' => $row['width'], 
+						'HEIGHT' => $row['height'],
+						'FOOTER' => $row['image_footer'])
+					);
+					
+					$tcol = ($tcol == 3) ? 0 : $tcol + 1;
 				}
 				break;
 		}
@@ -471,25 +438,19 @@ class layout extends downloads
 		$mode = request_var('mode', '');
 		$download_id = intval(request_var('download_id', 0));
 		
-		if ($mode == 'view' || $mode == 'save')
-		{
-			if (!$download_id)
-			{
+		if ($mode == 'view' || $mode == 'save') {
+			if (!$download_id) {
 				redirect(s_link('a', array($this->data['subdomain'], 6)));
 			}
 			
 			$sql = 'SELECT l.*
 				FROM _artists_lyrics l
 				LEFT JOIN _artists a ON a.ub = l.ub
-				WHERE l.ub = ' . (int) $this->data['ub'] . '
-					AND l.id = ' . (int) $download_id;
-			$result = $db->sql_query($sql);
-			
-			if (!$lyric_data = $db->sql_fetchrow($result))
-			{
+				WHERE l.ub = ?
+					AND l.id = ?';
+			if (!$lyric_data = sql_fieldrow($sql, $this->data['ub'], $download_id)) {
 				redirect(s_link('a', array($this->data['subdomain'], 6)));
 			}
-			$db->sql_freeresult($result);
 		}
 		
 		switch ($mode)
@@ -503,11 +464,10 @@ class layout extends downloads
 				
 				if (!$this->auth['mod'])
 				{
-					$sql = 'UPDATE _artists_lyrics
-						SET downloads = downloads + 1
-						WHERE id = ' . (int) $lyric_data['id'] . '
-							AND ub = ' . (int) $this->data['ub'];
-					$db->sql_query($sql);
+					$sql = 'UPDATE _artists_lyrics SET downloads = downloads + 1
+						WHERE id = ?
+							AND ub = ?';
+					sql_query(sql_filter($sql, $lyric_data['id'], $this->data['ub']));
 				}
 				
 				die($orig_file);
@@ -517,11 +477,13 @@ class layout extends downloads
 				break;
 			case 'view':
 			default:
-				if ($mode == 'view')
-				{
-					if (!$this->auth['mod'])
-					{
-						$db->sql_query('UPDATE _artists_lyrics SET views = views + 1 WHERE ub = ' . (int) $this->data['ub'] . ' AND id = ' . (int) $lyric_data['id']);
+				if ($mode == 'view') {
+					if (!$this->auth['mod']) {
+						$sql = 'UPDATE _artists_lyrics SET views = views + 1
+							WHERE ub = ?
+							AND id = ?';
+						$sql_query(sql_filter($sql, $this->data['ub'], $lyric_data['id']));
+						
 						$lyric_data['views']++;
 					}
 					
@@ -538,25 +500,21 @@ class layout extends downloads
 				$sql = 'SELECT l.*
 					FROM _artists_lyrics l
 					LEFT JOIN _artists a ON a.ub = l.ub
-					WHERE l.ub = ' . (int) $this->data['ub'] . '
+					WHERE l.ub = ?
 					ORDER BY title';
-				$result = $db->sql_query($sql);
+				$result = sql_rowset(sql_filter($sql, $this->data['ub']));
 				
-				if ($row = $db->sql_fetchrow($result))
-				{
-					$template->assign_block_vars('select', array());
-					
-					do
-					{
-						$template->assign_block_vars('select.item', array(
-							'URL' => s_link('a', array($this->data['subdomain'], 6, $row['id'], 'view')) . '#read',
-							'TITLE' => $row['title'],
-							'SELECTED' => ($download_id && $download_id == $row['id']) ? TRUE : FALSE)
-						);
+				foreach ($result as $i => $row) {
+					if (!$i) {
+						$template->assign_block_vars('select', array());
 					}
-					while ($row = $db->sql_fetchrow($result));
+					
+					$template->assign_block_vars('select.item', array(
+						'URL' => s_link('a', array($this->data['subdomain'], 6, $row['id'], 'view')) . '#read',
+						'TITLE' => $row['title'],
+						'SELECTED' => ($download_id && $download_id == $row['id']) ? TRUE : FALSE)
+					);
 				}
-				$db->sql_freeresult($result);
 				break;
 		}
 		
@@ -620,42 +578,38 @@ class layout extends downloads
 		
 		$sql = 'SELECT a.ub, p.*, m.user_id, m.username, m.username_base, m.user_color
 			FROM _artists a, _artists_posts p, _members m
-			WHERE a.ub = ' . (int) $this->data['ub'] . '
+			WHERE a.ub = ?
+				AND p.post_id = ?
 				AND a.ub = p.post_ub
-				AND p.post_id = ' . (int) $post_id . '
 				AND p.poster_id = m.user_id';
-		$result = $db->sql_query($sql);
-		
-		if (!$pdata = $db->sql_fetchrow($result))
-		{
+		if (!$pdata = sql_fieldrow($sql, $this->data['ub'], $post_id)) {
 			fatal_error();
 		}
 		
 		$mode = request_var('mode', '');
 		
-		if ($mode == 'report')
-		{
+		if ($mode == 'report') {
 			
-		}
-		else // ELSE << IF MODE != REPORT
-		{
+		} else {
 			$comments_ref = s_link('a', array($this->data['subdomain'], 12, $pdata['post_id'], 'reply'));
 			
 			$start = intval(request_var('rs', 0));
 			$this->msg->ref = $comments_ref;
 			$this->msg->auth = $this->auth;
 			
+			$sql = 'SELECT p.*, m.user_id, m.username, m.username_base, m.user_color, m.user_avatar
+				FROM _artists_posts p, _members m, _artists a
+				WHERE p.post_ub = ?
+					AND (p.post_id = ? OR p.post_reply = ?)
+					AND p.post_active = 1
+					AND p.post_ub = a.ub
+					AND p.poster_id = m.user_id
+				ORDER BY p.post_reply ASC, p.post_time DESC
+				LIMIT ??, ??'; 
+			
 			$this->msg->data = array(
 				'A_LINKS_CLASS' => 'bold red',
-				'SQL' => 'SELECT p.*, m.user_id, m.username, m.username_base, m.user_color, m.user_avatar
-					FROM _artists_posts p, _members m, _artists a
-					WHERE p.post_ub = ' . $this->data['ub'] . '
-						AND (p.post_id = ' . (int) $post_id . ' OR p.post_reply = ' . (int) $post_id . ')
-						AND p.post_active = 1
-						AND p.post_ub = a.ub
-						AND p.poster_id = m.user_id
-					ORDER BY p.post_reply ASC, p.post_time DESC
-					LIMIT ' . (int) $start . ', ' . (int) $config['s_posts']
+				'SQL' => sql_filter($sql, $this->data['ub'], $post_id, $post_id, $start, $config['s_posts'])
 			);
 			
 			if ($this->auth['user'])
@@ -697,9 +651,10 @@ class layout extends downloads
 			}
 			
 			$sql = preg_replace('/LIMIT ([0-9]+), ([0-9]+)/', '', $this->msg->data['SQL']);
-			$reply_result = $db->sql_query($sql);
-			$total_posts = $db->sql_numrows($reply_result);
-			$db->sql_freeresult($reply_result);
+			
+			$reply_result = sql_rowset($sql);
+			$total_posts = count($reply_result);
+			unset($reply_result);
 			
 			$this->msg->view($start, 'rs', $total_posts, $config['s_posts'], 'reply_msg', 'RMSG_', '', FALSE);
 			
@@ -772,9 +727,9 @@ class layout extends downloads
 			
 			if (empty($error_msg))
 			{
-				$sql = 'UPDATE _artists SET last_email = ' . (int) $current_time . ", last_email_user = " . (int) $user->data['user_id'] . '
-					WHERE ub = ' . (int) $this->data['ub'];
-				$db->sql_query($sql);
+				$sql = 'UPDATE _artists SET last_email = ?, last_email_user = ?
+					WHERE ub = ?';
+				sql_query(sql_filter($sql, $current_time, $user->data['user_id'], $this->data['ub']));
 				
 				include(ROOT.'interfase/emailer.php');
 				$emailer = new emailer($config['smtp_delivery']);
@@ -836,7 +791,9 @@ class layout extends downloads
 			trigger_error(sprintf($user->lang['LINKS_CANT_REDIRECT'], $this->data['www']));
 		}
 		
-		$db->sql_query('UPDATE _artists SET www_views = www_views + 1 WHERE ub = ' . (int) $this->data['ub']);
+		$sql = 'UPDATE _artists SET www_views = www_views + 1
+			WHERE ub = ?';
+		sql_query(sql_filter($sql, $this->data['ub']));
 		
 		header('Location: http://' . $this->data['www']);
 		exit;
@@ -870,7 +827,10 @@ class layout extends downloads
 				$sql_member += array('user_type' => USER_NORMAL, 'user_color' => '4D5358');
 			}
 			
-			$db->sql_query('DELETE FROM _artists_fav WHERE ub = ' . $this->data['ub'] . ' AND user_id = ' . (int) $user->data['user_id']);
+			$sql = 'DELETE FROM _artists_fav
+				WHERE ub = ?
+					AND user_id = ?';
+			sql_query(sql_filter($sql, $this->data['ub'], $user->data['user_id']));
 			
 			$user->delete_all_unread(UH_AF, $user->data['user_id']);
 		}
@@ -883,13 +843,20 @@ class layout extends downloads
 				$sql_member += array('user_type' => USER_FAN, 'user_color' => '7A0B43');
 			}
 			
-			$db->sql_query('INSERT INTO _artists_fav' . $db->sql_build_array('INSERT', array('ub' => (int) $this->data['ub'], 'user_id' => (int) $user->data['user_id'], 'joined' => time())));
+			$sql_insert = array(
+				'ub' => (int) $this->data['ub'],
+				'user_id' => (int) $user->data['user_id'],
+				'joined' => time()
+			);
+			$sql = 'INSERT INTO _artists_fav' . sql_build('INSERT', $sql_insert);
+			$fav_nextid = sql_query_nextid($sql);
 			
-			$user->save_unread(UH_AF, $db->sql_nextid(), $this->data['ub']);
+			$user->save_unread(UH_AF, $fav_nextid, $this->data['ub']);
 		}
 		
-		$sql = 'UPDATE _members SET ' . $db->sql_build_array('UPDATE', $sql_member) . ' WHERE user_id = ' . (int) $user->data['user_id'];
-		$db->sql_query($sql);
+		$sql = 'UPDATE _members SET ??
+			WHERE user_id = ?';
+		sql_query(sql_build($sql, sql_build('UPDATE', $sql_member), $user->data['user_id']));
 		
 		redirect($url);
 		
@@ -923,26 +890,39 @@ class layout extends downloads
 		
 		$sql = 'SELECT user_id
 			FROM _artists_voters
-			WHERE ub = ' . $this->data['ub'] . '
-				AND user_id = ' . $user->data['user_id'];
-		$result = $db->sql_query($sql);
-		
-		if ($row = $db->sql_fetchrow($result))
-		{
+			WHERE ub = ?
+				AND user_id = ?';
+		if ($row = sql_fieldrow(sql_filter($sql, $this->data['ub'], $user->data['user_id']))) {
 			redirect($url);
 		}
-		$db->sql_freeresult($result);
 		
 		//
-		$db->sql_query('UPDATE _artists_votes SET vote_result = vote_result + 1 WHERE ub = ' . (int) $this->data['ub'] . ' AND option_id = ' . (int) $option_id);
+		$sql = 'UPDATE _artists_votes SET vote_result = vote_result + 1
+			WHERE ub = ?
+				AND option_id = ?';
+		sql_query(sql_filter($sql, $this->data['ub'], $option_id));
 		
-		if (!$db->sql_affectedrows())
-		{
-			$db->sql_query('INSERT INTO _artists_votes (ub, option_id, vote_result) VALUES (' . (int) $this->data['ub'] . ', ' . (int) $option_id . ', 1)');
+		if (!sql_affectedrows()) {
+			$sql_insert = array(
+				'ub' => $this->data['ub'],
+				'option_id' => $option_id,
+				'vote_result' => 1
+			);
+			$sql = 'INSERT INTO _artists_votes' . sql_build('INSERT', $sql_insert);
+			sql_query($sql);
 		}
 		
-		$db->sql_query('INSERT INTO _artists_voters (ub, user_id, user_option) VALUES (' . (int) $this->data['ub'] . ', ' . (int) $user->data['user_id'] . ', ' . (int) $option_id . ')');
-		$db->sql_query('UPDATE _artists SET votes = votes + 1 WHERE ub = ' . (int) $this->data['ub']);
+		$sql_insert = array(
+			'ub' => $this->data['ub'],
+			'user_id' => $user->data['user_id'],
+			'user_option' => $option_id
+		);
+		$sql = 'INSERT INTO _artists_voters' . sql_build('INSERT', $sql_insert);
+		sql_query($sql);
+		
+		$sql = 'UPDATE _artists SET votes = votes + 1
+			WHERE ub = ?';
+		sql_query(sql_filter($sql, $this->data['ub']));
 		
 		redirect($url);
 	}
@@ -953,17 +933,16 @@ class layout extends downloads
 		
 		$sql = 'SELECT *
 			FROM _artists_video
-			WHERE video_a = ' . (int) $this->data['ub'] . '
+			WHERE video_a = ?
 			ORDER BY video_added DESC';
-		$result = $db->sql_query($sql);
+		$result = sql_rowset(sql_filter($sql, $this->data['ub']));
 		
 		$video = 0;
-		while ($row = $db->sql_fetchrow($result))
-		{
-			if (!$video)
-			{
+		foreach ($result as $row) {
+			if (!$video) {
 				$template->assign_block_vars('video', array());
 			}
+			
 			$template->assign_block_vars('video.row', array(
 				'NAME' => $row['video_name'],
 				'CODE' => $row['video_code'],
@@ -972,7 +951,6 @@ class layout extends downloads
 			
 			$video++;
 		}
-		$db->sql_freeresult($result);
 		
 		return;
 	}
@@ -1022,13 +1000,7 @@ class _artists extends layout
 		$sql = 'SELECT *
 			FROM _artists
 			ORDER BY name ASC';
-		$result = $db->sql_query($sql);
-		
-		while ($row = $db->sql_fetchrow($result))
-		{
-			$this->adata[$row['ub']] = $row;
-		}
-		$db->sql_freeresult($result);
+		$this->adata = sql_rowset($sql, 'ub');
 		
 		return;
 	}
@@ -1038,20 +1010,13 @@ class _artists extends layout
 		global $user;
 		
 		$_a = request_var('id', '');
-		if (!empty($_a))
-		{
-			if (preg_match('/([0-9a-zA-Z]+)/', $_a))
-			{
-				$sql = "SELECT * 
+		if (!empty($_a)) {
+			if (preg_match('/([0-9a-zA-Z]+)/', $_a)) {
+				$sql = 'SELECT * 
 					FROM _artists
-					WHERE subdomain = '" . $db->sql_escape(strtolower($_a)) . "' 
-					LIMIT 1";
-				$result = $db->sql_query($sql);
-				
-				if ($row = $db->sql_fetchrow($result))
-				{
-					$db->sql_freeresult($result);
-					
+					WHERE subdomain = ? 
+					LIMIT 1';
+				if ($row = sql_fieldrow(sql_filter($sql, strtolower($_a)))) {
 					$row['ub'] = (int) $row['ub'];
 					$this->data = $row;
 					
@@ -1081,22 +1046,16 @@ class _artists extends layout
 			return;
 		}
 		
-		if ($user->data['user_type'] == USER_ARTIST)
-		{
+		if ($user->data['user_type'] == USER_ARTIST) {
 			$sql = 'SELECT u.user_id
 				FROM _members u, _artists_auth a, _artists b
-				WHERE a.ub = ' . $this->data['ub'] . '
-					AND a.user_id = ' . (int) $user->data['user_id'] . ' 
+				WHERE a.ub = ?
+					AND a.user_id = ? 
 					AND a.user_id = u.user_id
 					AND b.ub = a.ub
 					AND b.ub = a.ub';
-			$result = $db->sql_query($sql);
-			
-			if ($row = $db->sql_fetchrow($result))
-			{
-				$db->sql_freeresult($result);
-				
-				$this->auth['smod'] = $this->auth['mod'] = TRUE;
+			if (sql_fieldrow(sql_filter($sql, $this->data['ub'], $user->data['user_id']))) {
+				$this->auth['smod'] = $this->auth['mod'] = true;
 				return;
 			}
 		}
@@ -1105,55 +1064,41 @@ class _artists extends layout
 			FROM _artists_access aa
 			LEFT JOIN _artists a ON aa.ub = a.ub
 			RIGHT JOIN _members m ON aa.user_id = m.user_id
-			WHERE aa.ub = ' . (int) $this->data['ub'] . '
-				AND aa.user_id = ' . (int) $user->data['user_id'];
-		$result = $db->sql_query($sql);
-		
-		if ($row = $db->sql_fetchrow($result))
-		{
+			WHERE aa.ub = ?
+				AND aa.user_id = ?';
+		if ($row = sql_fieldrow(sql_filter($sql, $this->data['ub'] , $user->data['user_id']))) {
 			$current_time = time();
 			
-			if (!$row['ban_time'] || $row['ban_time'] > $current_time)
-			{
-				if ($row['ban_access'])
-				{
+			if (!$row['ban_time'] || $row['ban_time'] > $current_time) {
+				if ($row['ban_access']) {
 					global $user;
 					
 					$message = (!$row['ban_time']) ? 'UB_BANNED' : sprintf($user->lang['UB_BANNED_UNTIL'], $user->format_date($row['ban_time']));
 					trigger_error($message);
-				}
-				else
-				{
-					$this->auth['post'] = FALSE;
+				} else {
+					$this->auth['post'] = false;
 					$this->auth['post_until'] = ($row['ban_time']) ? $row['ban_time'] : 0;
 				}
-			}
-			else
-			{
+			} else {
 				$sql = 'DELETE FROM _artists_access
-					WHERE user_id = ' . (int) $user->data['user_id'] . '
-						AND ub = ' . $this->data['ub'];
-				$db->sql_query($sql);
+					WHERE user_id = ?
+						AND ub = ?';
+				sql_query(sql_filter($sql, $user->data['user_id'], $this->data['ub']));
 			}
 		}
-		$db->sql_freeresult($result);
 		
 		if ($user->data['user_type'] != USER_NORMAL)
 		{
 			$sql = 'SELECT f.* 
 				FROM _artists b, _artists_fav f, _members m 
-				WHERE b.ub = ' . $this->data['ub'] . ' 
+				WHERE b.ub = ? 
 					AND b.ub = f.ub 
-					AND f.user_id = ' . (int) $user->data['user_id'] . ' 
+					AND f.user_id = ? 
 					AND f.user_id = m.user_id 
-					AND m.user_type <> ' . USER_IGNORE;
-			$result = $db->sql_query($sql);
-			
-			if ($row = $db->sql_fetchrow($result))
-			{
+					AND m.user_type <> ??';
+			if (sql_fieldrow(sql_filter($sql, $this->data['ub'], $user->data['user_id'], USER_IGNORE))) {
 				$this->auth['fav'] = TRUE;
 			}
-			$db->sql_freeresult($result);
 		}
 		
 		return;
@@ -1205,14 +1150,7 @@ class _artists extends layout
 				FROM _artists
 				ORDER BY datetime DESC
 				LIMIT 3';
-			$result = $db->sql_query($sql);
-			
-			$a_records = array();
-			while ($row = $db->sql_fetchrow($result))
-			{
-				$a_records[$row['ub']] = $row;
-			}
-			$db->sql_freeresult($result);
+			$a_records = sql_rowset($sql, 'ub');
 			
 			$cache->save('a_records', $a_records);
 		}
@@ -1223,17 +1161,15 @@ class _artists extends layout
 			
 			foreach ($a_records as $row)
 			{
-				$sql = 'SELECT *
+				$sql = 'SELECT ub, images
 					FROM _artists_images
-					WHERE ub = ' . (int) $row['ub'] . '
+					WHERE ub = ?
 					ORDER BY image';
-				$result = $db->sql_query($sql);
+				$result = sql_rowset(sql_filter($sql, $row['ub']));
 				
-				while ($row2 = $db->sql_fetchrow($result))
-				{
+				foreach ($result as $row) {
 					$ai_records[$row['ub']][] = $row2['image'];
 				}
-				$db->sql_freeresult($result);
 			}
 			
 			$cache->save('ai_records', $ai_records);
@@ -1273,27 +1209,14 @@ class _artists extends layout
 			global $cache;
 			
 			$a_random = array();
-			if (!$a_random = $cache->get('a_last_images'))
-			{
-				global $db;
-				
+			if (!$a_random = $cache->get('a_last_images')) {
 				$sql = 'SELECT *
 					FROM _artists_images
-					WHERE ub = ' . $all_data['datetime']['ub'] . '
+					WHERE ub = ?
 					ORDER BY image';
-				$result = $db->sql_query($sql);
-				
-				if ($row = $db->sql_fetchrow($result))
-				{
-					do
-					{
-						$a_random[] = $row['image'];
-					}
-					while ($row = $db->sql_fetchrow($result));
-					
+				if ($a_random = sql_rowset(sql_filter($sql, $all_data['datetime']['ub']), false, 'image')) {
 					$cache->save('a_last_images', $a_random);
 				}
-				$db->sql_freeresult($result);
 			}
 			
 			if (sizeof($a_random))
@@ -1336,14 +1259,12 @@ class _artists extends layout
 				FROM _artists
 				ORDER BY datetime DESC
 				LIMIT 10';
-			$result = $db->sql_query($sql);
+			$result = sql_rowset($sql);
 			
 			$a_recent = array();
-			while ($row = $db->sql_fetchrow($result))
-			{
+			foreach ($result as $row) {
 				$a_recent[$row['ub']] = 1;
 			}
-			$db->sql_freeresult($result);
 			
 			$cache->save('a_recent', $a_recent);
 		}
@@ -1375,19 +1296,16 @@ class _artists extends layout
 		{
 			$sql = 'SELECT *
 				FROM _artists_images
-				WHERE ub IN (' . implode(',', array_keys($a_ary)) . ')
+				WHERE ub IN (??)
 				ORDER BY RAND()';
-			$result = $db->sql_query($sql);
+			$result = sql_rowset(sql_filter($sql, implode(',', array_keys($a_ary))));
 			
 			$random_images = array();
-			while ($row = $db->sql_fetchrow($result))
-			{
-				if (!isset($random_images[$row['ub']]))
-				{
+			foreach ($result as $row) {
+				if (!isset($random_images[$row['ub']])) {
 					$random_images[$row['ub']] = $row['image'];
 				}
 			}
-			$db->sql_freeresult($result);
 			
 			$template->assign_block_vars('thumbnails', array());
 			
@@ -1406,61 +1324,50 @@ class _artists extends layout
 		return;
 	}
 	
-	function get_images($mainframe = false, $ub = 0, $rand = false)
-	{
-		if ($this->images)
-		{
+	function get_images($mainframe = false, $ub = 0, $rand = false) {
+		if ($this->images) {
 			return;
 		}
 		
-		global $db;
+		$gallery_path = 'data/artists/';
 		
-		if ($mainframe)
-		{
+		if ($mainframe) {
 			$sql = 'SELECT i.* 
 				FROM _artists_images i, _artists a 
 				WHERE i.ub = a.ub 
 				ORDER BY i.image';
-		}
-		else
-		{
-			if ($ub)
-			{
+		} else {
+			if ($ub) {
 				$sql = 'SELECT i.* 
 					FROM _artists_images i 
 					LEFT JOIN _artists a ON a.ub = i.ub 
-					WHERE i.ub = ' . (int) $ub . ' 
+					WHERE i.ub = ? 
 					ORDER BY ' . (($rand) ? 'RAND() LIMIT 1' : 'image');
+				$sql = sql_filter($sql, $ub);
 			}
 		}
-		$result = $db->sql_query($sql);
 		
-		$gallery_path = 'data/artists/';
-		
-		if ($ub && !$mainframe)
-		{
-			if ($row = $db->sql_fetchrow($result))
-			{
+		if ($ub && !$mainframe) {
+			if ($row = sql_fieldrow($sql)) {
 				$this->images[$row['ub']][$row['image']] = array(
 					'path' => $gallery_path . $row['ub'] . '/gallery/' . $row['image'] . '.jpg',
 					'image' => $row['image'],
 					'allow_dl' => $row['allow_dl']
 				);
 			}
-			$db->sql_freeresult($result);
 			
 			return $row['image'];
 		}
 		
-		while ($row = $db->sql_fetchrow($result))
-		{
+		$result = sql_rowset($sql);
+		
+		foreach ($result as $row) {
 			$this->images[$row['ub']][$row['image']] = array(
 				'path' => $gallery_path . $row['ub'] . '/gallery/' . $row['image'] . '.jpg',
 				'image' => $row['image'],
 				'allow_dl' => $row['allow_dl']
 			);
 		}
-		$db->sql_freeresult($result);
 		
 		return;
 	}
@@ -1524,11 +1431,10 @@ class _artists extends layout
 		$sql = 'SELECT *
 			FROM _artists
 			ORDER BY local DESC, name ASC';
-		$result = $db->sql_query($sql);
+		$result = sql_rowset($sql);
 		
 		$alphabet = array();
-		while ($row = $db->sql_fetchrow($result))
-		{
+		foreach ($result as $row) {
 			$this->adata[$row['local']][$row['ub']] = $row;
 			
 			$alpha_id = strtolower($row['name']);
@@ -1542,87 +1448,70 @@ class _artists extends layout
 				$alphabet[$alpha_id] = TRUE;
 			}
 		}
-		$db->sql_freeresult($result);
-			
+		
 		$selected_char = '';
 		$s_alphabet = intval(request_var('alphabet', 0));
 		
-		if ($s_alphabet)
-		{
+		if ($s_alphabet) {
 			$selected_char = chr(octdec($s_alphabet));
-			if (!preg_match('/([\#a-z])/', $selected_char))
-			{
+			if (!preg_match('/([\#a-z])/', $selected_char)) {
 				redirect(s_link('a'));
 			}
 		}
 		
-		$sql_where = ($s_alphabet) ? 'WHERE ' . (($selected_char == '#') ? "name NOT RLIKE '^[a-z]'" : "name LIKE '" . $db->sql_escape($selected_char) . "%'") : 'WHERE images > 1';
+		if ($s_alphabet) {
+			$sql_where = 'WHERE ' . (($selected_char == '#') ? "name NOT RLIKE '^[a-z]'" : sql_filter('name LIKE ?', $selected_char . '%'));
+		} else {
+			$sql_where = 'WHERE images > 1';
+		}
+		
 		$sql_order = (!$s_alphabet) ? 'RAND() LIMIT 12' : 'name';
 		
 		$sql = 'SELECT *
 			FROM _artists
 			' . $sql_where . '
 			ORDER BY ' . $sql_order;
-		$result = $db->sql_query($sql);
+		if (!$selected_artists = sql_rowset($sql, 'ub')) {
+			redirect(s_link('a'));
+		}
 		
-		if ($row = $db->sql_fetchrow($result))
-		{
-			$selected_artists = array();
-			do
-			{
-				$selected_artists[$row['ub']] = $row;
-			}
-			while ($row = $db->sql_fetchrow($result));
-			$db->sql_freeresult($result);
-			
-			$sql = 'SELECT *
-				FROM _artists_images
-				WHERE ub IN (' . implode(',', array_keys($selected_artists)) . ')
-				ORDER BY RAND()';
-			$result = $db->sql_query($sql);
-			
-			$random_images = array();
-			while ($row = $db->sql_fetchrow($result))
-			{
-				if (!isset($random_images[$row['ub']]))
-				{
-					$random_images[$row['ub']] = $row['image'];
-				}
-			}
-			$db->sql_freeresult($result);
-			
-			$template->assign_block_vars('search_match', array());
-			
-			if (!$s_alphabet)
-			{
-				$template->assign_block_vars('search_match.ajx', array());
-				$this->ajx = false;
-			}
-			
-			$tcol = 0;
-			foreach ($selected_artists as $ub => $data)
-			{
-				$image = ($data['images']) ? $ub . '/thumbnails/' . $random_images[$ub] . '.jpg' : 'default/shadow.gif';
-				
-				if (!$tcol)
-				{
-					$template->assign_block_vars('search_match.row', array());
-				}
-				
-				$template->assign_block_vars('search_match.row.col', array(
-					'NAME' => $data['name'],
-					'IMAGE' => SDATA . 'artists/' . $image,
-					'URL' => s_link('a', $data['subdomain']),
-					'LOCATION' => ($data['local']) ? 'Guatemala' : $data['location'],
-					'GENRE' => $data['genre'])
-				);
-				
-				$tcol = ($tcol == 3) ? 0 : $tcol + 1;
+		$sql = 'SELECT *
+			FROM _artists_images
+			WHERE ub IN (??)
+			ORDER BY RAND()';
+		$result = sql_rowset(sql_filter($sql, implode(',', array_keys($selected_artists))));
+		
+		$random_images = array();
+		foreach ($result as $row) {
+			if (!isset($random_images[$row['ub']])) {
+				$random_images[$row['ub']] = $row['image'];
 			}
 		}
-		else
-		{
-			redirect(s_link('a'));
+		
+		$template->assign_block_vars('search_match', array());
+		
+		if (!$s_alphabet) {
+			$template->assign_block_vars('search_match.ajx', array());
+			$this->ajx = false;
+		}
+		
+		$tcol = 0;
+		foreach ($selected_artists as $ub => $data) {
+			$image = ($data['images']) ? $ub . '/thumbnails/' . $random_images[$ub] . '.jpg' : 'default/shadow.gif';
+			
+			if (!$tcol) {
+				$template->assign_block_vars('search_match.row', array());
+			}
+			
+			$template->assign_block_vars('search_match.row.col', array(
+				'NAME' => $data['name'],
+				'IMAGE' => SDATA . 'artists/' . $image,
+				'URL' => s_link('a', $data['subdomain']),
+				'LOCATION' => ($data['local']) ? 'Guatemala' : $data['location'],
+				'GENRE' => $data['genre'])
+			);
+			
+			$tcol = ($tcol == 3) ? 0 : $tcol + 1;
 		}
 		
 		ksort($alphabet);
@@ -1742,56 +1631,70 @@ class _artists extends layout
 						$sql_viewers = array('datetime' => (int) $current_time, 'user_ip' => $user->ip);
 						$sql_viewers2 = array('ub' => (int) $this->data['ub'], 'user_id' => (int) $user->data['user_id']);
 						
-						$sql = 'UPDATE _artists_viewers
-							SET ' . $db->sql_build_array('UPDATE', $sql_viewers) . '
-							WHERE ' . $db->sql_build_array('SELECT', $sql_viewers2);
-						$db->sql_query($sql);
+						$sql = 'UPDATE _artists_viewers SET ??
+							WHERE ??';
+						sql_query(sql_filter($sql, sql_build('UPDATE', $sql_viewers), sql_build('SELECT', $sql_viewers2)));
 						
 						if (!$db->sql_affectedrows())
 						{
 							$update_views = TRUE;
 							$sql_stats = array('ub' => (int) $this->data['ub'], 'date' => (int) $current_month);
 							
-							$db->sql_query('INSERT INTO _artists_viewers' . $db->sql_build_array('INSERT', $sql_viewers + $sql_viewers2));
-							$db->sql_query('UPDATE _artists_stats SET members = members + 1 WHERE ' . $db->sql_build_array('SELECT', $sql_stats));
+							$sql = 'INSERT INTO _artists_viewers' . sql_build('INSERT', $sql_viewers + $sql_viewers2);
+							sql_query($sql);
 							
-							if (!$db->sql_affectedrows())
+							$sql = 'UPDATE _artists_stats SET members = members + 1
+								WHERE ??';
+							sql_query(sql_filter($sql, sql_build('SELECT', $sql_stats)));
+							
+							if (!sql_affectedrows())
 							{
-								$db->sql_query('INSERT INTO _artists_stats' . $db->sql_build_array('INSERT', $sql_stats + array('members' => 1, 'guests' => 0)));
+								$sql_insert = array(
+									'members' => 1,
+									'guests' => 0
+								);
+								$sql = 'INSERT INTO _artists_stats' . sql_build('INSERT', $sql_stats + $sql_insert);
+								sql_query($sql);
 							}
 							
 							$sql = 'SELECT user_id
 								FROM _artists_viewers
-								WHERE ub = ' . $this->data['ub'] . '
+								WHERE ub = ?
 								ORDER BY datetime DESC
 								LIMIT 10, 1';
-							$result = $db->sql_query($sql);
-							
-							if ($row = $db->sql_fetchrow($result))
-							{
+							if ($row = sql_fieldrow(sql_filter($sql, $this->data['ub']))) {
 								$sql = 'DELETE FROM _artists_viewers
-									WHERE ub = ' . $this->data['ub'] . '
-										AND user_id = ' . $row['user_id'];
-								$db->sql_query($sql);
+									WHERE ub = ?
+										AND user_id = ?';
+								sql_query(sql_filter($sql, $this->data['ub'], $row['user_id']));
 							}
-							$db->sql_freeresult($result);
 						}
 					}
 					
 					if ((($this->auth['user'] && $update_views) || (!$this->auth['user'] && $this->data['layout'] == 1)) && !isset($_REQUEST['ps']))
 					{
-						$db->sql_query('UPDATE _artists SET views = views + 1 WHERE ub = ' . $this->data['ub']);
+						$sql = 'UPDATE _artists SET views = views + 1
+							WHERE ub = ?';
+						sql_query(sql_filter($sql, $this->data['ub']));
 						$this->data['views']++;
 						
 						if ((!$this->auth['user'] && $this->data['layout'] == 1) && !isset($_REQUEST['ps']))
 						{
-							$sql_stats = array('ub' => (int) $this->data['ub'], 'date' => (int) $current_month);
+							$sql_stats = array(
+								'ub' => (int) $this->data['ub'],
+								'date' => (int) $current_month
+							);
+							$sql = 'UPDATE _artists_stats SET guests = guests + 1
+								WHERE ??';
+							sql_query(sql_filter($sql, sql_build('SELECT', $sql_stats)));
 							
-							$db->sql_query('UPDATE _artists_stats SET guests = guests + 1 WHERE ' . $db->sql_build_array('SELECT', $sql_stats));
-							
-							if (!$db->sql_affectedrows())
-							{
-								$db->sql_query('INSERT INTO _artists_stats' . $db->sql_build_array('INSERT', $sql_stats + array('members' => 0, 'guests' => 1)));
+							if (!sql_affectedrows()) {
+								$sql_insert = array(
+									'members' => 0,
+									'guests' => 1
+								);
+								$sql = 'INSERT INTO _artists_stats' . sql_build('INSERT', $sql_stats + $sql_insert);
+								sql_query($sql);
 							}
 						}
 					}
@@ -1810,48 +1713,34 @@ class _artists extends layout
 				
 				$sql = 'SELECT *
 					FROM _events e, _artists_events ae
-					WHERE ae.a_artist = ' . (int) $this->data['ub'] . '
+					WHERE ae.a_artist = ?
 						AND ae.a_event = e.id
 					ORDER BY e.date';
-				$result = $db->sql_query($sql);
+				$result = sql_rowset(sql_filter($sql, $this->data['ub']));
 				
 				$events = array();
-				while ($row = $db->sql_fetchrow($result))
-				{
-					if ($row['date'] >= $midnight)
-					{
-						if ($row['date'] >= $midnight && $row['date'] < $midnight + 86400)
-						{
+				foreach ($result as $row) {
+					if ($row['date'] >= $midnight) {
+						if ($row['date'] >= $midnight && $row['date'] < $midnight + 86400) {
 							$events['is_today'][] = $row;
-						}
-						else if ($row['date'] >= $midnight + 86400 && $row['date'] < $midnight + (86400 * 2))
-						{
+						} else if ($row['date'] >= $midnight + 86400 && $row['date'] < $midnight + (86400 * 2)) {
 							$events['is_tomorrow'][] = $row;
-						}
-						else if ($row['date'] >= $midnight + (86400 * 2) && $row['date'] < $week)
-						{
+						} else if ($row['date'] >= $midnight + (86400 * 2) && $row['date'] < $week) {
 							$events['is_week'][] = $row;
-						}
-						else
-						{
+						} else {
 							$events['is_future'][] = $row;
 						}
-					}
-					else if ($row['images'])
-					{
+					} else if ($row['images']) {
 						$events['is_gallery'][] = $row;
 					}
 				}
-				$db->sql_freeresult($result);
 				
-				if (isset($events['is_gallery']) && sizeof($events['is_gallery']))
-				{
+				if (isset($events['is_gallery']) && sizeof($events['is_gallery'])) {
 					$gallery = $events['is_gallery'];
 					@krsort($gallery);
 					
 					$template->assign_block_vars('events_gallery', array());
-					foreach ($gallery as $row)
-					{
+					foreach ($gallery as $row) {
 						$template->assign_block_vars('events_gallery.item', array(
 							'URL' => s_link('events', $row['id']),
 							'TITLE' => $row['title'],
@@ -1862,18 +1751,15 @@ class _artists extends layout
 					unset($events['is_gallery']);
 				}
 				
-				if (sizeof($events))
-				{
+				if (sizeof($events)) {
 					$template->assign_block_vars('events_future', array());
 					
-					foreach ($events as $is_date => $data)
-					{
+					foreach ($events as $is_date => $data) {
 						$template->assign_block_vars('events_future.set', array(
 							'L_TITLE' => $user->lang['UE_' . strtoupper($is_date)])
 						);
 						
-						foreach ($data as $item)
-						{
+						foreach ($data as $item) {
 							$template->assign_block_vars('events_future.set.item', array(
 								'ITEM_ID' => $item['id'],
 								'TITLE' => $item['title'],
@@ -1921,23 +1807,20 @@ class _artists extends layout
 						
 					$sql = 'SELECT *
 						FROM _art
-						WHERE ub = ' . $this->data['ub'] . '
+						WHERE ub = ?
 						ORDER BY title';
-					$result = $db->sql_query($sql);
+					$result = sql_rowset(sql_filter($sql, $this->data['ub']));
 					
-					while ($row = $db->sql_fetchrow($result))
-					{
+					foreach ($result as $row) {
 						$template->assign_block_vars('art_block.item', array('TITLE' => $row['title']));
 						
-						if ($row['id'] == $this->ud['TITLE'])
-						{
+						if ($row['id'] == $this->ud['TITLE']) {
 							$template->assign_block_vars('art_block.item.strong', array());
 							continue;
 						}
 						
 						$template->assign_block_vars('art_block.item.a', array('URL' => s_link('art', $row['id'])));
 					}
-					$db->sql_freeresult($result);
 				}
 				
 				//
@@ -1952,20 +1835,21 @@ class _artists extends layout
 					$this->msg->ref = $comments_ref;
 					$this->msg->auth = $this->auth;
 					
+					$sql = 'SELECT p.*, m.user_id, m.username, m.username_base, m.user_color
+						FROM _artists_posts p, _members m, _artists a
+						WHERE p.post_ub = ? 
+							AND p.post_ub = a.ub
+							AND p.post_active = 1 
+							AND p.poster_id = m.user_id 
+						ORDER BY p.post_time DESC 
+						LIMIT ??, ??';
+					
 					$this->msg->data = array(
 						'A_LINKS_CLASS' => 'bold red',
-						'SQL' => 'SELECT p.*, m.user_id, m.username, m.username_base, m.user_color
-							FROM _artists_posts p, _members m, _artists a
-							WHERE p.post_ub = ' . $this->data['ub'] . ' 
-								AND p.post_ub = a.ub
-								AND p.post_active = 1 
-								AND p.poster_id = m.user_id 
-							ORDER BY p.post_time DESC 
-							LIMIT ' . $start . ', ' . $config['s_posts']
+						'SQL' => sql_filter($sql, $this->data['ub'], $start, $config['s_posts'])
 					);
 					
-					if ($this->auth['user'])
-					{
+					if ($this->auth['user']) {
 						$this->msg->data['CONTROL']['reply'] = array(
 							'REPLY' => array(
 								'URL' => s_link('a', array($this->data['subdomain'], 12, '%d')) . '#reply',
@@ -1974,8 +1858,7 @@ class _artists extends layout
 						);
 					}
 					
-					if ($this->auth['user'] && !$this->auth['mod'])
-					{
+					if ($this->auth['user'] && !$this->auth['mod']) {
 						$this->msg->data['CONTROL']['report'] = array(
 							'REPORT' => array(
 								'URL' => s_link('a', array($this->data['subdomain'], 12, '%d', 'report')),
@@ -1984,12 +1867,10 @@ class _artists extends layout
 						);
 					}
 					
-					if ($this->auth['mod'])
-					{
+					if ($this->auth['mod']) {
 						$this->msg->data['CONTROL']['auth'] = array();
 						
-						if ($this->auth['adm'] && $user->data['is_founder'])
-						{
+						if ($this->auth['adm'] && $user->data['is_founder']) {
 							$this->msg->data['CONTROL']['auth']['EDIT'] = array(
 								'URL' => s_link_control('a', array('a' => $this->data['subdomain'], 'mode' => 'aposts', 'manage' => 'edit', 'id' => '%d')),
 								'ID' => 'post_id'
@@ -2005,27 +1886,19 @@ class _artists extends layout
 					$this->msg->view($start, 'ps', $this->data['posts'], $config['s_posts'], '', 'MSG_', '', FALSE);
 				}
 				
-				if ($this->data['a_active'] || $user->_team_auth('founder'))
-				{
-					if ($this->auth['post'])
-					{
-						if ($this->auth['user'])
-						{
+				if ($this->data['a_active'] || $user->_team_auth('founder')) {
+					if ($this->auth['post']) {
+						if ($this->auth['user']) {
 							$template->assign_block_vars('post_box', array('REF' => $comments_ref));
-						}
-						else
-						{
+						} else {
 							$template->assign_block_vars('no_guest_posting', array(
 								'LEGEND' => sprintf($user->lang['UB_NO_GUEST_POSTING'], $this->data['name'], s_link('my', 'register'))
 							));
 						}
-					}
-					else
-					{
+					} else {
 						$template->assign_block_vars('no_post_auth', array());
 						
-						if ($this->auth['post_until'])
-						{
+						if ($this->auth['post_until']) {
 							$template->assign_block_vars('no_post_auth.until', array('UNTIL_DATETIME' => $user->format_date($this->auth['post_until'])));
 						}
 					}
@@ -2034,8 +1907,7 @@ class _artists extends layout
 				//
 				// Contact | Fav
 				//
-				if ($this->data['email'] != '' || $this->data['www'] != '' || !$this->auth['mod'])
-				{
+				if ($this->data['email'] != '' || $this->data['www'] != '' || !$this->auth['mod']) {
 					$template->assign_block_vars('contact', array(
 						'WWW' => ($this->data['www'] != '') ? s_link('a', array($this->data['subdomain'], 14)) : '',
 						'EMAIL' => ($this->data['email'] != '') ? s_link('a', array($this->data['subdomain'], 13)) : '',
@@ -2068,28 +1940,20 @@ class _artists extends layout
 		return;
 	}
 	
-	function a_sidebar()
-	{
+	function a_sidebar() {
 		global $template;
 		
 		$sql = 'SELECT *
 			FROM _artists
 			ORDER BY RAND()';
-		$result = $db->sql_query($sql);
-		
-		if ($row = $db->sql_fetchrow($result))
-		{
+		if ($row = sql_rowset($sql)) {
 			$sql = 'SELECT *
 				FROM _artists_images
-				WHERE ub = ' . (int) $row['ub'] . '
+				WHERE ub = ?
 				ORDER BY RAND()';
-			$result2 = $db->sql_query($sql);
-			
-			if ($row2 = $db->sql_fetchrow($result2))
-			{
+			if ($row2 = sql_fieldrow(sql_filter($sql, $row['ub']))) {
 				$row['rand_image'] = $row2['image'];
 			}
-			$db->sql_freeresult($result2);
 			
 			$template->assign_block_vars('random_a', array(
 				'NAME' => $row['name'],
@@ -2099,7 +1963,6 @@ class _artists extends layout
 				'GENRE' => $row['genre'])
 			);
 		}
-		$db->sql_freeresult($result);
 	}
 
 }
