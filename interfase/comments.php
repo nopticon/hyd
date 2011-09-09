@@ -1077,19 +1077,15 @@ class _comments
 			
 			if (!$this->options['downloads']['list'] = $cache->get('downloads_list'))
 			{
-				global $db;
-				
 				$sql = 'SELECT a.name, a.subdomain, d.id, d.title
 					FROM _artists a, _dl d
 					WHERE a.ub = d.ub 
 					ORDER BY d.id';
-				$result = $db->sql_query($sql);
+				$result = sql_rowset($sql);
 				
-				while ($row = $db->sql_fetchrow($result))
-				{
+				foreach ($result as $row) {
 					$this->options['downloads']['list'][$row['id']] = $row;
 				}
-				$db->sql_freeresult($result);
 				
 				$cache->save('downloads_list', $this->options['downloads']['list']);
 			}

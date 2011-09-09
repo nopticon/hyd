@@ -486,7 +486,7 @@ class database extends dcom {
 		$sql_errno = @mysql_errno($this->connect);
 		
 		if (!$this->noerror) {
-			_fatal(507, '', '', array('sql' => $sql, 'message' => $sql_error), $sql_errno);
+			fatal_error(507, '', '', array('sql' => $sql, 'message' => $sql_error), $sql_errno);
 		}
 		
 		return array('message' => $sql_error, 'code' => $sql_errno);
