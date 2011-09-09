@@ -369,67 +369,43 @@ function update_post_stats(&$mode, &$post_data, &$forum_id, &$topic_id, &$post_i
 	$forum_update_sql = "forum_posts = forum_posts $sign";
 	$topic_update_sql = '';
 
-	if ($mode == 'delete')
-	{
-		if ($post_data['last_post'])
-		{
-			if ($post_data['first_post'])
-			{
+	if ($mode == 'delete') {
+		if ($post_data['last_post']) {
+			if ($post_data['first_post']) {
 				$forum_update_sql .= ', forum_topics = forum_topics - 1';
-			}
-			else
-			{
-
+			} else {
 				$topic_update_sql .= 'topic_replies = topic_replies - 1';
 
-				$sql = "SELECT MAX(post_id) AS last_post_id
+				$sql = 'SELECT MAX(post_id) AS last_post_id
 					FROM _forum_posts
-					WHERE topic_id = $topic_id";
-				$result = $db->sql_query($sql);
-
-				if ($row = $db->sql_fetchrow($result))
-				{
-					$topic_update_sql .= ', topic_last_post_id = ' . $row['last_post_id'];
+					WHERE topic_id = ?';
+				if ($last_post_id = sql_field(sql_filter($sql, $topic_id), 'last_post_id', 0)) {
+					$topic_update_sql .= ', topic_last_post_id = ' . $last_post_id;
 				}
 			}
 
-			if ($post_data['last_topic'])
-			{
-				$sql = "SELECT MAX(topic_id) AS last_topic_id
+			if ($post_data['last_topic']) {
+				$sql = 'SELECT MAX(topic_id) AS last_topic_id
 					FROM _forum_posts
-					WHERE forum_id = $forum_id";
-				$result = $db->sql_query($sql);
-
-				if ($row = $db->sql_fetchrow($result))
-				{
-					$forum_update_sql .= ($row['last_topic_id']) ? ', forum_topic_post_id = ' . $row['last_topic_id'] : ', forum_last_topic_id = 0';
+					WHERE forum_id = ?';
+				if ($last_topic_id = sql_field(sql_filter($sql, $forum_id), 'last_topic_id', 0)) {
+					$forum_update_sql .= ($last_topic_id) ? ', forum_topic_post_id = ' . $last_topic_id : ', forum_last_topic_id = 0';
 				}
 			}
-		}
-		else if ($post_data['first_post']) 
-		{
-			$sql = "SELECT MIN(post_id) AS first_post_id
+		} else if ($post_data['first_post']) {
+			$sql = 'SELECT MIN(post_id) AS first_post_id
 				FROM _forum_posts
-				WHERE topic_id = $topic_id";
-			$result = $db->sql_query($sql);
-
-			if ($row = $db->sql_fetchrow($result))
-			{
-				$topic_update_sql .= 'topic_replies = topic_replies - 1, topic_first_post_id = ' . $row['first_post_id'];
+				WHERE topic_id = ?';
+			if ($first_post_id = sql_field(sql_filter($sql, $topic_id), 'first_post_id', 0)) {
+				$topic_update_sql .= 'topic_replies = topic_replies - 1, topic_first_post_id = ' . $first_post_id;
 			}
-		}
-		else
-		{
+		} else {
 			$topic_update_sql .= 'topic_replies = topic_replies - 1';
 		}
-	}
-	else if ($mode != 'poll_delete')
-	{
+	} else if ($mode != 'poll_delete') {
 		$forum_update_sql .= ", forum_last_topic_id = $topic_id" . (($mode == 'newtopic') ? ", forum_topics = forum_topics $sign" : ""); 
 		$topic_update_sql = "topic_last_post_id = $post_id" . (($mode == 'reply') ? ", topic_replies = topic_replies $sign" : ", topic_first_post_id = $post_id");
-	}
-	else 
-	{
+	} else {
 		$topic_update_sql .= 'topic_vote = 0';
 	}
 
