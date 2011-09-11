@@ -363,8 +363,6 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 //
 function update_post_stats(&$mode, &$post_data, &$forum_id, &$topic_id, &$post_id, &$user_id)
 {
-	global $db;
-
 	$sign = ($mode == 'delete') ? '- 1' : '+ 1';
 	$forum_update_sql = "forum_posts = forum_posts $sign";
 	$topic_update_sql = '';
@@ -380,7 +378,7 @@ function update_post_stats(&$mode, &$post_data, &$forum_id, &$topic_id, &$post_i
 					FROM _forum_posts
 					WHERE topic_id = ?';
 				if ($last_post_id = sql_field(sql_filter($sql, $topic_id), 'last_post_id', 0)) {
-					$topic_update_sql .= ', topic_last_post_id = ' . $last_post_id;
+					$topic_update_sql .= sql_filter(', topic_last_post_id = ?', $last_post_id);
 				}
 			}
 
@@ -409,17 +407,16 @@ function update_post_stats(&$mode, &$post_data, &$forum_id, &$topic_id, &$post_i
 		$topic_update_sql .= 'topic_vote = 0';
 	}
 
-	$sql = "UPDATE _forums SET 
-		$forum_update_sql 
-		WHERE forum_id = $forum_id";
-	$db->sql_query($sql);
+	$sql = 'UPDATE _forums SET ' . $forum_update_sql . ' 
+		WHERE forum_id = ' . $forum_id;
+	sql_query($sql);
 
 	if ($topic_update_sql != '')
 	{
 		$sql = "UPDATE _forum_topics SET
 			$topic_update_sql
 			WHERE topic_id = $topic_id";
-		$db->sql_query($sql);
+		sql_query($sql);
 	}
 
 	if ($mode != 'poll_delete')
@@ -427,7 +424,7 @@ function update_post_stats(&$mode, &$post_data, &$forum_id, &$topic_id, &$post_i
 		$sql = "UPDATE _members
 			SET user_posts = user_posts $sign
 			WHERE user_id = $user_id";
-		$db->sql_query($sql, END_TRANSACTION);
+		sql_query($sql);
 	}
 	
 	$current_time=time();
@@ -435,57 +432,58 @@ function update_post_stats(&$mode, &$post_data, &$forum_id, &$topic_id, &$post_i
 	$hour_now = $current_time - (60*($minutes[0].$minutes[1])) - ($minutes[2].$minutes[3]);
 
 	$sql = "UPDATE _site_stats
-		SET " . (($mode == 'newtopic' || $post_data['first_post']) ? 'new_topics=new_topics' : 'new_posts=new_posts') . $sign . '
+		SET " . (($mode == 'newtopic' || $post_data['first_post']) ? 'new_topics = new_topics' : 'new_posts = new_posts') . $sign . '
 		WHERE date = ' . intval($hour_now);
-	if (!$db->sql_affectedrows())
+	sql_query($sql);
+	
+	if (!sql_affectedrows())
 	{
 		$sql = 'INSERT INTO _site_stats (date, '.(($mode == 'newtopic' || $post_data['first_post']) ? 'new_topics': 'new_posts').') 
-			VALUES ('.$hour_now.', 1)';
-		$db->sql_query($sql);
+			VALUES (' . $hour_now . ', 1)';
+		sql_query($sql);
 	}
 
-	$sql = "SELECT ug.user_id, g.group_id as g_id, u.user_posts, g.group_count, g.group_count_max FROM _groups g, _members u 
-		LEFT JOIN _members_group ug ON g.group_id=ug.group_id AND ug.user_id=$user_id
-		WHERE u.user_id=$user_id
-		AND g.group_single_user=0 
-		AND g.group_count_enable=1
-		AND g.group_moderator<>$user_id";
-	$result = $db->sql_query($sql);
+	$sql = 'SELECT ug.user_id, g.group_id as g_id, u.user_posts, g.group_count, g.group_count_max FROM _groups g, _members u 
+		LEFT JOIN _members_group ug ON g.group_id = ug.group_id AND ug.user_id = ?
+		WHERE u.user_id = ?
+		AND g.group_single_user = 0 
+		AND g.group_count_enable = 1
+		AND g.group_moderator <> ?';
+	$result = sql_rowset(sql_filter($sql, $user_id, $user_id, $user_id));
 	
-	while ($group_data = $db->sql_fetchrow($result))
-	{
+	foreach ($result as $group_data) {
 		$user_already_added = (empty($group_data['user_id'])) ? FALSE : TRUE;
 		$user_add = ($group_data['group_count'] == $group_data['user_posts'] && $user_id!=GUEST) ? TRUE : FALSE;
 		$user_remove = ($group_data['group_count'] > $group_data['user_posts'] || $group_data['group_count_max'] < $group_data['user_posts']) ? TRUE : FALSE;
 		
+		//user join a autogroup
 		if ($user_add && !$user_already_added)
 		{
-			//user join a autogroup
-			$sql = "INSERT INTO _members_group (group_id, user_id, user_pending) 
-				VALUES (".$group_data['g_id'].", $user_id, '0')";
-			$db->sql_query($sql);
+			$sql_insert = array(
+				'group_id' => $group_data['g_id'],
+				'user_id' => $user_id,
+				'user_pending' => 0
+			);
+			$sql = 'INSERT INTO _members_group' . sql_build('INSERT', $sql_insert);
+			sql_query($sql);
 		}
 		else
 		if ( $user_already_added && $user_remove)
 		{
 			//remove user from auto group
-			$sql = "DELETE FROM _members_group
-				WHERE group_id=".$group_data['g_id']." 
-				AND user_id=$user_id";
-			$db->sql_query($sql);
+			$sql = 'DELETE FROM _members_group
+				WHERE group_id = ? 
+				AND user_id = ?';
+			sql_query(sql_filter($sql, $group_data['g_id'], $user_id));
 		}
 	}
 	
-	$sql = "SELECT SUM(forum_topics) AS topic_total, SUM(forum_posts) AS post_total 
-		FROM _forums";
-	$result = $db->sql_query($sql);
-	
-	if ($row = $db->sql_fetchrow($result))
-	{
+	$sql = 'SELECT SUM(forum_topics) AS topic_total, SUM(forum_posts) AS post_total 
+		FROM _forums';
+	if ($row = sql_fieldrow($sql)) {
 		set_config('num_posts', $row['post_total']);
 		set_config('num_topics', $row['topic_total']);
 	}
-	unset($row);
 	
 	return;
 }
@@ -499,22 +497,23 @@ function delete_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 
 	if ($mode != 'poll_delete')
 	{
-		$sql = "DELETE FROM _forum_posts
-			WHERE post_id = $post_id";
-		$db->sql_query($sql);
+		$sql = 'DELETE FROM _forum_posts
+			WHERE post_id = ?';
+		sql_query(sql_filter($sql, $post_id));
 
 		if ($post_data['last_post'])
 		{
 			if ($post_data['first_post'])
 			{
 				$forum_update_sql .= ', forum_topics = forum_topics - 1';
-				$sql = "DELETE FROM _forum_topics
-					WHERE topic_id = $topic_id";
-				$db->sql_query($sql);
+				
+				$sql = 'DELETE FROM _forum_topics
+					WHERE topic_id = ?';
+				sql_query(sql_filter($sql, $topic_id));
 
-				$sql = "DELETE FROM _forum_topics_fav
-					WHERE topic_id = $topic_id";
-				$db->sql_query($sql);
+				$sql = 'DELETE FROM _forum_topics_fav
+					WHERE topic_id = ?';
+				sql_query(sql_filter($sql, $topic_id));
 				
 				delete_all_unread(UH_T, $topic_id);
 			}
