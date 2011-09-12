@@ -76,7 +76,7 @@ if (strstr($user->browser, 'compatible') || $is_firefox) {
 header('Content-type: text/css; charset=utf-8');
 header('Expires: ' . gmdate('D, d M Y H:i:s', time() + (60 * 60 * 24 * 30)) . ' GMT');
 
-//$db->report(false);
+//sql_report(false);
 $template->replace_vars = false;
 
 $template->assign_vars(array(
@@ -88,7 +88,7 @@ $template->set_filenames(array('body' => 'js/' . $filename . '.js'));
 $template->assign_var_from_handle('EXT', 'body');
 //$template->pparse('body');
 
-$db->sql_close();
+sql_close();
 
 $code = JSMin::minify($template->vars['EXT']);
 

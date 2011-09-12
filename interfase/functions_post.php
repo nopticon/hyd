@@ -522,17 +522,17 @@ function delete_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 
 	if ($mode == 'poll_delete' || ($mode == 'delete' && $post_data['first_post'] && $post_data['last_post']) && $post_data['has_poll'] && $post_data['edit_poll'])
 	{
-		$sql = "DELETE FROM _poll_options
-			WHERE topic_id = $topic_id";
-		$db->sql_query($sql);
+		$sql = 'DELETE FROM _poll_options
+			WHERE topic_id = ?';
+		sql_query(sql_filter($sql, $topic_id));
 
-		$sql = "DELETE FROM _poll_results
-			WHERE vote_id = $poll_id";
-		$db->sql_query($sql);
+		$sql = 'DELETE FROM _poll_results
+			WHERE vote_id = ?';
+		sql_query(sql_filter($sql, $poll_id));
 
-		$sql = "DELETE FROM _poll_voters
-			WHERE vote_id = $poll_id";
-		$db->sql_query($sql);
+		$sql = 'DELETE FROM _poll_voters
+			WHERE vote_id = ?';
+		sql_query(sql_filter($sql, $poll_id));
 	}
 
 	if ($mode == 'delete' && $post_data['first_post'] && $post_data['last_post'])
@@ -562,9 +562,10 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 
 	if ($mode == 'delete')
 	{
-		$delete_sql = (!$post_data['first_post'] && !$post_data['last_post']) ? " AND user_id = " . $userdata['user_id'] : '';
-		$sql = "DELETE FROM _forum_topics_fav WHERE topic_id = $topic_id" . $delete_sql;
-		$db->sql_query($sql);
+		$delete_sql = (!$post_data['first_post'] && !$post_data['last_post']) ? sql_filter(' AND user_id = ? ', $userdata['user_id']) : '';
+		
+		$sql = 'DELETE FROM _forum_topics_fav WHERE topic_id = ?' . $delete_sql;
+		sql_query(sql_filter($sql, $topic_id));
 	}
 	else 
 	{
@@ -572,69 +573,49 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 		{
 			$sql = 'SELECT ban_userid
 				FROM _banlist';
-			$result = $db->sql_query($sql);
-
+			$result = sql_rowset($sql);
+			
 			$user_id_sql = '';
-			while ($row = $db->sql_fetchrow($result))
-			{
-				if (isset($row['ban_userid']) && !empty($row['ban_userid']))
-				{
+			foreach ($result as $row) {
+				if (isset($row['ban_userid']) && !empty($row['ban_userid'])) {
 					$user_id_sql .= ', ' . $row['ban_userid'];
 				}
 			}
-			/*
-			$sql = "SELECT u.user_id, u.user_email, u.user_lang 
-				FROM _forum_topics_fav tw, _members u 
-				WHERE tw.topic_id = $topic_id 
-					AND tw.user_id NOT IN (" . $userdata['user_id'] . ", " . GUEST . $user_id_sql . ") 
-					AND tw.notify_status = " . TOPIC_WATCH_UN_NOTIFIED . " 
-					AND u.user_id = tw.user_id";
-			*/
-			// START MOD: prevent_reply_notification_emails_from_being_emailed_to_unauthorized_users... replaced the original
-			// $sql definition with the one that appears below
-			$sql = "SELECT DISTINCT u.user_id, u.user_email, u.user_lang 
-				FROM _forum_topics_fav tw
-				INNER JOIN _members u ON tw.user_id = u.user_id
-				INNER JOIN _members_group ug ON tw.user_id = ug.user_id
-				LEFT OUTER JOIN _auth_access aa ON ug.group_id = aa.group_id,
-				_forums f
-				WHERE tw.topic_id = $topic_id 
-				AND tw.user_id NOT IN (" . $userdata['user_id'] . ", " . GUEST . $user_id_sql . ") 
-				AND tw.notify_status = " . TOPIC_WATCH_UN_NOTIFIED . " 
-				AND f.forum_id = $forum_id
-				AND u.user_active = 1
-				AND
-				(
-					( aa.forum_id = $forum_id AND aa.auth_read = 1 )
-					OR f.auth_read <= " . AUTH_REG . " 
-					OR (u.user_level = " . USER_MOD . " AND f.auth_read = " . AUTH_MOD . ")
-					OR u.user_level = " . USER_ADMIN . "
-				)";
-			// END MOD: prevent_reply_notification_emails_from_being_emailed_to_unauthorized_users
-			$result = $db->sql_query($sql);
-
+			
 			$update_watched_sql = '';
 			$bcc_list_ary = array();
 			$usr_list_ary = array();
 			
-			if ($row = $db->sql_fetchrow($result))
-			{
-				// Sixty second limit
+			$sql = 'SELECT DISTINCT u.user_id, u.user_email, u.user_lang 
+				FROM _forum_topics_fav tw
+				INNER JOIN _members u ON tw.user_id = u.user_id
+				INNER JOIN _members_group ug ON tw.user_id = ug.user_id
+				LEFT OUTER JOIN _auth_access aa ON ug.group_id = aa.group_id, _forums f
+				WHERE tw.topic_id = ? 
+					AND tw.user_id NOT IN (??, ??, ??) 
+					AND tw.notify_status = ? 
+					AND f.forum_id = ?
+					AND u.user_active = 1
+					AND (
+						(aa.forum_id = ? AND aa.auth_read = 1)
+						OR f.auth_read <= ? 
+						OR (u.user_level = ? AND f.auth_read = ?)
+						OR u.user_level = ?
+					)';
+			if ($result = sql_rowset(sql_filter($sql, $topic_id, $userdata['user_id'], GUEST, $user_id_sql, TOPIC_WATCH_UN_NOTIFIED, $forum_id, $forum_id, AUTH_REG, USER_MOD, AUTH_MOD, USER_ADMIN))) {
 				@set_time_limit(60);
-
-				do
-				{
-					if ($row['user_email'] != '')
-					{
+				
+				foreach ($result as $row) {
+					if ($row['user_email'] != '') {
 						$bcc_list_ary[$row['user_lang']][] = $row['user_email'];
 					}
+					
 					$update_watched_sql .= ($update_watched_sql != '') ? ', ' . $row['user_id'] : $row['user_id'];
 				}
-				while ($row = $db->sql_fetchrow($result));
-
+				
 				if (sizeof($bcc_list_ary))
 				{
-					include(ROOT.'interfase/emailer.php');
+					include(ROOT . 'interfase/emailer.php');
 					$emailer = new emailer($config['smtp_delivery']);
 
 					$server_name = trim($config['server_name']);
@@ -681,38 +662,32 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 					}
 				}
 			}
-			$db->sql_freeresult($result);
 
 			if ($update_watched_sql != '')
 			{
-				$sql = "UPDATE _forum_topics_fav
-					SET notify_status = " . TOPIC_WATCH_NOTIFIED . "
-					WHERE topic_id = $topic_id
-						AND user_id IN ($update_watched_sql)";
-				$db->sql_query($sql);
+				$sql = 'UPDATE _forum_topics_fav
+					SET notify_status = ?
+					WHERE topic_id = ?
+						AND user_id IN (??)';
+				sql_query(sql_filter($sql, TOPIC_WATCH_NOTIFIED, $topic_id, $update_watched_sql));
 			}
 		}
 
-		$sql = "SELECT topic_id 
+		$sql = 'SELECT topic_id 
 			FROM _forum_topics_fav
-			WHERE topic_id = $topic_id
-				AND user_id = " . $userdata['user_id'];
-		$result = $db->sql_query($sql);
-
-		$row = $db->sql_fetchrow($result);
-
-		if (!$notify_user && !empty($row['topic_id']))
-		{
-			$sql = "DELETE FROM _forum_topics_fav
-				WHERE topic_id = $topic_id
-					AND user_id = " . $userdata['user_id'];
-			$db->sql_query($sql);
-		}
-		else if ($notify_user && empty($row['topic_id']))
-		{
-			$sql = "INSERT INTO _forum_topics_fav (user_id, topic_id, notify_status)
-				VALUES (" . $userdata['user_id'] . ", $topic_id, 0)";
-			$db->sql_query($sql);
+			WHERE topic_id = ?
+				AND user_id = ?';
+		if ($row = sql_fieldrow(sql_filter($sql, $topic_id, $userdata['user_id']))) {
+			if (!$notify_user && !empty($row['topic_id'])) {
+				$sql = 'DELETE FROM _forum_topics_fav
+					WHERE topic_id = ?
+						AND user_id = ?';
+				sql_query(sql_filter($sql, $topic_id, $userdata['user_id']));
+			} else if ($notify_user && empty($row['topic_id'])) {
+				$sql = "INSERT INTO _forum_topics_fav (user_id, topic_id, notify_status)
+					VALUES (" . $userdata['user_id'] . ", $topic_id, 0)";
+				sql_query($sql);
+			}
 		}
 	}
 }
@@ -732,29 +707,22 @@ function username_search($search_match)
 	$gen_simple_header = TRUE;
 
 	$username_list = '';
-	if ( !empty($search_match) )
+	if (!empty($search_match))
 	{
 		$username_search = preg_replace('/\*/', '%', phpbb_clean_username($search_match));
 
-		$sql = "SELECT username
+		$sql = 'SELECT username
 			FROM _members
-			WHERE username LIKE '" . $db->sql_escape($username_search) . "' AND user_id <> " . GUEST . "
-			ORDER BY username";
-		$result = $db->sql_query($sql);
-
-		if ( $row = $db->sql_fetchrow($result) )
-		{
-			do
-			{
-				$username_list .= '<option value="' . $row['username'] . '">' . $row['username'] . '</option>';
-			}
-			while ( $row = $db->sql_fetchrow($result) );
-		}
-		else
-		{
+			WHERE username LIKE ?
+				AND user_id <> ?
+			ORDER BY username';
+		if (!$result = sql_rowset(sql_filter($sql, $username_search, GUEST))) {
 			$username_list .= '<option>' . $lang['No_match']. '</option>';
 		}
-		$db->sql_freeresult($result);
+		
+		foreach ($result as $row) {
+			$username_list .= '<option value="' . $row['username'] . '">' . $row['username'] . '</option>';
+		}
 	}
 	
 	page_header($lang['Search']);

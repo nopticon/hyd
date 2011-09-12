@@ -22,8 +22,7 @@ if (class_exists('_rss')) {
 	return;
 }
 
-class _rss
-{
+class _rss {
 	var $mode;
 	var $xml = array();
 	
@@ -39,17 +38,14 @@ class _rss
 	
 	function _news()
 	{
-		global $db;
-		
 		$sql = 'SELECT n.*, m.username
 			FROM _news n, _members m
 			WHERE n.poster_id = m.user_id
 			ORDER BY post_time DESC
 			LIMIT 15';
-		$result = $db->sql_query($sql);
+		$result = sql_rowset($sql);
 		
-		while ($row = $db->sql_fetchrow($result))
-		{
+		foreach ($result as $row) {
 			$this->xml[] = array(
 				'title' => $row['post_subject'],
 				'link' => s_link('news', $row['news_id']),
@@ -58,28 +54,24 @@ class _rss
 				'author' => $row['username']
 			);
 		}
-		$db->sql_freeresult($result);
 		
 		return;
 	}
 	
 	function _events()
 	{
-		global $db;
+		return;
 	}
 	
 	function _artists()
 	{
-		global $db;
-		
 		$sql = 'SELECT name, subdomain, genre, datetime, local, location
 			FROM _artists
 			ORDER BY datetime DESC
 			LIMIT 15';
-		$result = $db->sql_query($sql);
+		$result = sql_rowset($sql);
 		
-		while ($row = $db->sql_fetchrow($result))
-		{
+		foreach ($result as $row) {
 			$this->xml[] = array(
 				'title' => $row['name'],
 				'link' => s_link('a', $row['subdomain']),
@@ -87,7 +79,6 @@ class _rss
 				'pubdate' => $row['datetime']
 			);
 		}
-		$db->sql_freeresult($result);
 		
 		return;
 	}
@@ -123,11 +114,7 @@ class _rss
 ' . $items . '</channel>
 </rss>';
 		
-		if (isset($db))
-		{
-			$db->sql_close();
-		}
-		
+		sql_close();
 		exit;
 	}
 }

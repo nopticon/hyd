@@ -18,29 +18,24 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-class mm_promo
-{
-	var $data = array();
+class mm_promo {
+	public $data = array();
 	
-	function mm_promo ()
-	{
+	public function __construct() {
 		return;
-	} // METHOD: mm_promo
+	}
 	
-	function submit_data ()
-	{
+	function submit_data() {
 		global $userdata, $template, $user_ip, $lang;
 		
-		if (isset($_POST['submit']))
-		{
+		if (isset($_POST['submit'])) {
 			$error_msg = '';
 			$message = '';
 			
 			$fields = preg_match_all('#\[field\](.*?)\[/field\]#si', $this->data['extended'], $field);
 			$data = '';
 			
-			for ($i = 0; $i < $fields; $i++)
-			{
+			for ($i = 0; $i < $fields; $i++) {
 				$no_field_error = TRUE;
 				
 				preg_match('/\[text\](.*?)\[\/text\]/si', $field[1][$i], $text);
@@ -50,20 +45,14 @@ class mm_promo
 				
 				$datafield = $_POST[$name[1]];
 				
-				if ((($datafield == '') || ($datafield == $default[1])) && $req)
-				{
+				if ((($datafield == '') || ($datafield == $default[1])) && $req) {
 					$error_msg .= (($error_msg != '') ? '<br />' : '') . $lang['PROMO_FIELD_EMPTY'] . '<b>' . ucwords($text[1]) . '</b>';
 					$no_field_error = FALSE;
-				}
-				else
-				{
-					if ($req && ($datafield != ''))
-					{
-						switch ($name[1])
-						{
+				} else {
+					if ($req && ($datafield != '')) {
+						switch ($name[1]) {
 							case 'email':
-								if (!preg_match("#(^|[\n ])([a-z0-9&\-_.]+?@[\w\-]+\.([\w\-\.]+\.)?[\w]+)#ie", $datafield))
-								{
+								if (!preg_match("#(^|[\n ])([a-z0-9&\-_.]+?@[\w\-]+\.([\w\-\.]+\.)?[\w]+)#ie", $datafield)) {
 									$error_msg .= (($error_msg != '') ? '<br />' : '') . $lang['Not_Email'];
 									$no_field_error = FALSE;
 								}
@@ -71,52 +60,46 @@ class mm_promo
 						}
 					}
 					
-					if (strlen($datafield) > 5000)
-					{
+					if (strlen($datafield) > 5000) {
 						$error_msg .= (($error_msg != '') ? '<br />' : '') . $lang['CHAT_MSG_TOO_LONG'];
 						$no_field_error = FALSE;
 					}
 					
-					if ($no_field_error)
-					{
+					if ($no_field_error) {
 						$data .= '[field][name]' . $text[1] . '[/name][value]' . $datafield . '[/value][/field]';
 					}
-				} // IF
-			} // FOR
+				}
+			}
 			
-			if (($userdata['user_id'] == GUEST) && !$userdata['session_logged_in'])
-			{
-				$result = $db->sql_query("SELECT MAX(datetime) AS last_datetime FROM " . MMT_UPR . " WHERE user_ip = '$user_ip'");
-				
-				if ($row = $db->sql_fetchrow($result))
-				{
-					if (intval($row['last_datetime']) > 0 && (time() - intval($row['last_datetime'])) < 60)
-					{
+			if (($userdata['user_id'] == GUEST) && !$userdata['session_logged_in']) {
+				$sql = 'SELECT MAX(datetime) AS last_datetime
+					FROM _promos
+					WHERE user_ip = ?';
+				if ($last_datetime = sql_field(sql_filter($sql, $user_ip), 'last_datetime', 0)) {
+					if (intval($last_datetime) > 0 && (time() - intval($last_datetime)) < 60) {
 						$error_msg .= (!empty($error_msg) ? '<br />' : '') . $lang['PROMO_FLOOD'];
 					}
 				}
-				$db->sql_freeresult($result);
 			}
 			
-			if ($error_msg != '')
-			{
+			if ($error_msg != '') {
 				die($error_msg);
 			}
-			else
-			{
-				$result = $db->sql_query("SELECT MAX(id) AS total FROM " . MMT_UPR);
-				if ($row = $db->sql_fetchrow($result))
-				{
-					$post_id = $row['total'] + 1;
-				}
-				
-				$db->sql_query("INSERT INTO " . MMT_UPR . " (id, promo, user_id, user_ip, datetime, data) VALUES ($post_id, " . $this->data['id'] . ", " . $userdata['user_id'] . ", '$user_ip', '" . time() . "', '" . $data . "')");
-				
-				$url = s_link('cover');
-				
-				meta_refresh(3, $url);
-				trigger_error(sprintf($lang['PROMO_THANKS'], '<a href="' . $url . '">', '</a>'));
-			}
+			
+			$sql_insert = array(
+				'promo' => $this->data['id'],
+				'user_id' => $userdata['user_id'],
+				'user_ip' => $user_ip,
+				'datetime' => time(),
+				'data' => $data
+			);
+			$sql = 'INSERT INTO _promos_users' . sql_build('INSERT', $sql_insert);
+			sql_query($sql);
+			
+			$url = s_link('cover');
+			meta_refresh(3, $url);
+			
+			trigger_error(sprintf($lang['PROMO_THANKS'], '<a href="' . $url . '">', '</a>'));
 			
 			return;
 		}
@@ -124,39 +107,35 @@ class mm_promo
 		redirect(s_link('cover'));
 		
 		return;
-	} // METHOD: submit_data
+	}
 	
-	function show_promo ()
-	{
+	public function show_promo() {
 		global $userdata, $template, $lang;
 		
-		if (($userdata['user_id'] != GUEST) && $userdata['session_logged_in'])
-		{
-			$result = $db->sql_query("SELECT * FROM " . MMT_UPR . " WHERE promo = " . $this->data['id'] . " AND user_id = " . $userdata['user_id'] . " ORDER BY user_id");
-			
-			if ($row = $db->sql_fetchrow($result))
-			{
+		if (($userdata['user_id'] != GUEST) && $userdata['session_logged_in']) {
+			$sql = 'SELECT *
+				FROM _promos_users
+				WHERE promo = ?
+					AND user_id = ?
+				ORDER BY user_id';
+			if ($row = sql_fieldrow(sql_filter($sql, $this->data['id'], $userdata['user_id']))) {
 				$url = s_link('cover');
 				meta_refresh(3, $url);
 				
 				trigger_error(sprintf($lang['PROMO_CANT_VIEW'], '<a href="' . $url . '">', '</a>'));
 			}
-			$db->sql_freeresult($result);
 		}
 		
-		if (isset($_POST['submit']))
-		{
+		if (isset($_POST['submit'])) {
 			$this->submit_data();
 		}
 		
 		$fields = preg_match_all('#\[field\](.*?)\[/field\]#si', $this->data['extended'], $field);
 		
-		if ($fields)
-		{
+		if ($fields) {
 			$all_req = TRUE;
 			
-			for ($i = 0; $i < $fields; $i++)
-			{
+			for ($i = 0; $i < $fields; $i++) {
 				preg_match('/\[type=(text|area)\]/si', $field[1][$i], $type);
 				preg_match('/\[length=(.*?)\]/si', $field[1][$i], $length);
 				preg_match('/\[name\](.*?)\[\/name\]/si', $field[1][$i], $name);
@@ -165,13 +144,11 @@ class mm_promo
 				preg_match('/\[description\](.*?)\[\/description\]/si', $field[1][$i], $description);
 				$req = strpos($field[1][$i], '[req]');
 				
-				if (!$req && $all_req)
-				{
+				if (!$req && $all_req) {
 					$all_req = FALSE;
 				}
 				
-				switch ($type[1])
-				{
+				switch ($type[1]) {
 					case 'area':
 						$default = (isset($_POST[$name[1]]) ? $_POST[$name[1]] : (($default[1] != '') ? $default[1] : ''));
 						$input = '<textarea name="' . $name[1] . '" rows="10" style="width:100%">' . $default .'</textarea>';
@@ -188,14 +165,13 @@ class mm_promo
 					'FIELD' => $input
 				));
 				
-				if ($description[1] != '')
-				{
+				if ($description[1] != '') {
 					$template->assign_block_vars('field.description', array(
 						'TEXT' => $description[1]
 					));
 				}
-			} // FOR
-		} // IF
+			}
+		}
 		
 		$template->assign_vars(array(
 			'PROMO_TITLE' => $this->data['title'],
@@ -204,10 +180,9 @@ class mm_promo
 			
 			'S_HIDDEN' => $s_hidden,
 			
-			'L_FILL_FORM' => ($all_req) ? $lang['PROMO_AREQD_FIELDS'] : $lang['PROMO_REQD_FIELDS']
-		));
-	} // METHOD: show_promo
-	
-} // CLASS: mm_promo
+			'L_FILL_FORM' => ($all_req) ? $lang['PROMO_AREQD_FIELDS'] : $lang['PROMO_REQD_FIELDS'])
+		);
+	}
+}
 
 ?>

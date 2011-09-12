@@ -264,8 +264,6 @@ class session {
 	
 	function register_ip()
 	{
-		global $db;
-		
 		$insert = array(
 			'log_user_id' => (int) $this->data['user_id'],
 			'log_session' => $this->session_id,
@@ -595,7 +593,7 @@ class user extends session
 			header("Status: 503 Service Temporarily Unavailable");
 			header("Retry-After: 3600");
 
-			$db->sql_close();
+			sql_close();
 			
 			echo $page_html;
 			exit;
@@ -700,8 +698,6 @@ class user extends session
 		global $cache;
 		
 		if (!$ranks = $cache->get('ranks')) {
-			global $db;
-			
 			$sql = 'SELECT *
 				FROM _ranks
 				ORDER BY rank_special DESC, rank_min';
@@ -841,7 +837,6 @@ class user extends session
 	*/
 	function save_unread($element, $item, $where_id = 0, $reply_to = 0, $reply_to_return = true, $update_rows = false) {
 		static $from_lastvisit;
-		global $db;
 		
 		if (!$element || !$item || in_array($element, array(UH_EP, UH_NP, UH_W))) {
 			return;
@@ -887,103 +882,82 @@ class user extends session
 			case UH_M:
 				$sql = 'SELECT m.user_id 
 					FROM _artists_auth a, _members m
-					WHERE a.ub = ' . (int) $where_id . '
+					WHERE a.ub = ?
 						AND a.user_id = m.user_id';
-				$result = $db->sql_query($sql);
-				
-				if ($row = $db->sql_fetchrow($result))
-				{
-					do
-					{
-						$sql_in[] = $row['user_id'];
-					}
-					while ($row = $db->sql_fetchrow($result));
-					
-					$db->sql_freeresult($result);
-				}
+				$sql_in = sql_rowset(sql_filter($sql, $where_id));
 				
 				$sql = 'SELECT u.user_id
 					FROM _artists_fav f, _artists b, _members u
-					WHERE f.ub = ' . (int) $where_id . '
+					WHERE f.ub = ?
 						AND f.ub = b.ub 
 						AND f.user_id = u.user_id 
 					ORDER BY u.user_id';
-				$result = $db->sql_query($sql);
+				$result = sql_rowset(sql_filter($sql, $where_id));
 				
-				if ($row = $db->sql_fetchrow($result))
-				{
-					do
-					{
-						$sql_in[] = $row['user_id'];
-					}
-					while ($row = $db->sql_fetchrow($result));
-					
-					$db->sql_freeresult($result);
+				foreach ($result as $row) {
+					$sql_in[] = $row['user_id'];
 				}
-				
 
 				$sql = 'SELECT user_id
 					FROM _members
-					WHERE (user_type IN (' . USER_FOUNDER . ',' . USER_ADMIN . ')' . ((sizeof($sql_in)) ? ' OR user_id IN (' . implode(',', $sql_in) . ')' : '') . ')
-						AND user_type NOT IN (' . USER_IGNORE . ',' . USER_INACTIVE . ')
-						AND user_id <> ' . $this->data['user_id'] . '
-						AND user_lastvisit > ' . $from_lastvisit . '
+					WHERE (user_type IN (??, ??)' . ((sizeof($sql_in)) ? ' OR user_id IN (' . implode(',', $sql_in) . ')' : '') . ')
+						AND user_type NOT IN (??, ??)
+						AND user_id <> ?
+						AND user_lastvisit > ?
 					ORDER BY user_id';
+				$sql = sql_filter($sql, USER_FOUNDER, USER_ADMIN, USER_IGNORE, USER_INACTIVE, $this->data['user_id'], $from_lastvisit);
 				break;
 			case UH_B:
 				$sql = 'SELECT user_id
 					FROM _members
-					WHERE user_type NOT IN (' . USER_IGNORE . ',' . USER_INACTIVE . ')
-						AND user_id = ' . (int) $where_id . '
+					WHERE user_type NOT IN (??, ??)
+						AND user_id = ?
 					ORDER BY user_id';
+				$sql = sql_filter($sql, USER_IGNORE, USER_INACTIVE, $where_id);
 				break;
 			case UH_U:
 				$sql = 'SELECT user_id
 					FROM _members
-					WHERE user_type IN (' . USER_FOUNDER . ')
-						AND user_type NOT IN (' . USER_IGNORE . ',' . USER_INACTIVE . ')
-						AND user_id <> ' . (int) $item . '
+					WHERE user_type IN (??)
+						AND user_type NOT IN (??, ??)
+						AND user_id <> ?
 						AND user_active = 1 
 					ORDER BY user_id';
+				$sql = sql_filter($sql, USER_FOUNDER, USER_IGNORE, USER_INACTIVE, $item);
 				break;
 			default:
 				$sql = 'SELECT user_id
 					FROM _members
-					WHERE user_type NOT IN (' . USER_IGNORE . ',' . USER_INACTIVE . ')
-						AND user_id <> ' . (int) $this->data['user_id'] . '
+					WHERE user_type NOT IN (??, ??)
+						AND user_id <> ?
 						AND user_lastvisit > 0 
-						AND user_lastvisit > ' . $from_lastvisit . '
+						AND user_lastvisit > ?
 					ORDER BY user_id';
+				$sql = sql_filter($sql, USER_IGNORE, USER_INACTIVE, $this->data['user_id'], $from_lastvisit);
 				break;
 		}
 		
 		$sql_items = 'SELECT user_id
 			FROM _members_unread
-			WHERE element = ' . (int) $element . '
-				AND item = ' . (int) $item . '
+			WHERE element = ?
+				AND item = ?
 			ORDER BY user_id';
-		$result = $db->sql_query($sql_items);
+		$result = sql_rowset(sql_filter($sql_items, $element, $item));
 		
-		while ($row = $db->sql_fetchrow($result))
-		{
+		foreach ($result as $row) {
 			$this->items[$row['user_id']] = true;
 		}
-		$db->sql_freeresult($result);
 		
 		// Process members SQL
-		$result = $db->sql_query($sql);
+		$result = sql_rowset($sql);
 		
-		while ($row = $db->sql_fetchrow($result))
-		{
-			if (!isset($this->items[$row['user_id']]))
-			{
+		foreach ($result as $row) {
+			if (!isset($this->items[$row['user_id']])) {
 				$this->insert_unread($row['user_id'], $element, $item);
 			}
 		}
-		$db->sql_freeresult($result);
 		
-		if ($update_rows)
-		{
+		if ($update_rows) {
 			$this->update_unread($element, $item);
 		}
 		
@@ -992,26 +966,24 @@ class user extends session
 	
 	function insert_unread($uid, $cat, $el)
 	{
-		global $db;
-		
 		$row = array(
 			'user_id' => (int) $uid,
 			'element' => (int) $cat,
 			'item' => (int) $el,
 			'datetime' => (int) $this->time
 		);
-		$sql = 'INSERT LOW_PRIORITY INTO _members_unread' . $db->sql_build_array('INSERT', $row);
-		$db->sql_query($sql);
+		$sql = 'INSERT LOW_PRIORITY INTO _members_unread' . sql_build('INSERT', $row);
+		sql_query($sql);
 	}
 	
 	function update_unread($cat, $el)
 	{
 		global $user;
 		
-		$sql = 'UPDATE _members_unread SET datetime = ' . $user->time . '
-			WHERE element = ' . (int) $cat . '
-				AND item = ' . (int) $el;
-		$db->sql_query($sql);
+		$sql = 'UPDATE _members_unread SET datetime = ?
+			WHERE element = ?
+				AND item = ?';
+		sql_query(sql_filter($sql, $user->time, $cat, $el));
 	}
 	
 	function get_unread($element, $item)
@@ -1023,22 +995,17 @@ class user extends session
 		
 		if (!sizeof($this->unr))
 		{
-			global $db;
-			
 			$sql = 'SELECT element, item
 				FROM _members_unread
-				WHERE user_id = ' . (int) $this->data['user_id'];
-			$result = $db->sql_query($sql);
+				WHERE user_id = ?';
+			$result = sql_rowset(sql_filter($sql, $this->data['user_id']));
 			
-			while ($row = $db->sql_fetchrow($result))
-			{
-				$this->unr[$row['element']][$row['item']] = TRUE;
+			foreach ($result as $row) {
+				$this->unr[$row['element']][$row['item']] = true;
 			}
-			$db->sql_freeresult($result);
 		}
 		
-		if (isset($this->unr[$element][$item]) && $this->unr[$element][$item])
-		{
+		if (isset($this->unr[$element][$item]) && $this->unr[$element][$item]) {
 			return true;
 		}
 		
@@ -1047,22 +1014,18 @@ class user extends session
 	
 	function delete_unread($element, $item)
 	{
-		if (!$element || !$item)
-		{
+		if (!$element || !$item) {
 			return false;
 		}
 		
 		$items = (is_array($item)) ? implode(',', array_map('intval', $item)) : (int) $item;
 		
-		if (!empty($items))
-		{
-			global $db;
-			
+		if (!empty($items)) {
 			$sql = 'DELETE LOW_PRIORITY FROM _members_unread
-				WHERE user_id = ' . $this->data['user_id'] . '
-					AND element = ' . (int) $element . '
-					AND item IN (' . $items . ')';
-			$db->sql_query($sql);
+				WHERE user_id = ?
+					AND element = ?
+					AND item IN (??)';
+			sql_query(sql_filter($sql, $this->data['user_id'], $element, $items));
 			
 			return true;
 		}
@@ -1072,19 +1035,16 @@ class user extends session
 	
 	function delete_all_unread($element, $item)
 	{
-		if (!$element || !$item)
-		{
+		if (!$element || !$item) {
 			return false;
 		}
-		
-		global $db;
 		
 		$items = (is_array($item)) ? implode(',', array_map('intval', $item)) : (int) $item;
 		
 		$sql = 'DELETE LOW_PRIORITY FROM _members_unread
-			WHERE element = ' . (int) $element . '
-				AND item IN (' . $items . ')';
-		$db->sql_query($sql);
+			WHERE element = ?
+				AND item IN (??)';
+		sql_query(sql_filter($sql, $element, $items));
 		
 		return true;
 	}
@@ -1105,42 +1065,34 @@ class user extends session
 		{
 			$sql = 'SELECT user_block_points
 				FROM _members
-				WHERE user_id = ' . (int) $uid;
-			$result = $db->sql_query($sql);
-			
-			if ($row = $db->sql_fetchrow($result))
-			{
+				WHERE user_id = ?';
+			if ($row = sql_fieldrow(sql_filter($sql, $uid))) {
 				$block = $row['user_block_points'];
 			}
-			$db->sql_freeresult($result);
 		}
 		
-		if ($block)
-		{
+		if ($block) {
 			return;
 		}
 		
 		$sql = 'UPDATE _members
-			SET user_points = user_points + ' . (int) $n . '
-			WHERE user_id = ' . (int) $uid;
-		$db->sql_query($sql);
+			SET user_points = user_points + ??
+			WHERE user_id = ?';
+		sql_query(sql_filter($sql, $n, $uid));
 		
 		return;
 	}
 	
 	function points_remove($n, $uid = false)
 	{
-		global $db;
-		
-		if ($uid === false)
-		{
+		if ($uid === false) {
 			$uid = $this->data['user_id'];
 		}
 		
 		$sql = 'UPDATE _members
-			SET user_points = user_points - ' . (int) $n . '
-			WHERE user_id = ' . (int) $uid;
-		$db->sql_query($sql);
+			SET user_points = user_points - ??
+			WHERE user_id = ?';
+		sql_query(sql_filter($sql, $n, $uid));
 		
 		return;
 	}
@@ -1210,35 +1162,37 @@ class user extends session
 		$group_id = '';
 		$datetime = time();
 		
-		$result = $db->sql_query("SELECT * FROM _ref WHERE domain = '" . $domain . "' OR url = '" . $url . "' ORDER BY url");
+		$sql = 'SELECT *
+			FROM _ref
+			WHERE domain = ?
+				OR url = ?
+			ORDER BY url';
+		$result = sql_rowset(sql_filter($sql, $domain, $url));
 		
-		while ($row = $db->sql_fetchrow($result))
-		{
-			if ($group_id == '')
-			{
+		foreach ($result as $row) {
+			if ($group_id == '') {
 				$group_id = $row['group_id'];
 			}
 			
-			if ($row['banned'])
-			{
-				$banned = TRUE;
+			if ($row['banned']) {
+				$banned = true;
 			}
 			
-			if (($row['url'] == $url) && !$update)
-			{
+			if (($row['url'] == $url) && !$update) {
 				$sql_banned = '';
-				$update = TRUE;
-				$insert = FALSE;
+				$update = true;
+				$insert = false;
 				
-				if (!$banned)
-				{
+				if (!$banned) {
 					$sql_banned = ", banned = " . intval($auto_block);
 				}
 				
-				$db->sql_query("UPDATE _ref SET request = '$request'" . $sql_banned . ", views = views + 1, last_datetime = $datetime, last_ip = '$user_ip' WHERE domain = '$domain' AND url = '$url'");
+				$sql = 'UPDATE _ref SET request = ?' . $sql_banned . ', views = views + 1, last_datetime = ?, last_ip = ?
+					WHERE domain = ?
+						AND url = ?';
+				sql_query(sql_filter($sql, $request, $datetime, $user_ip, $domain, $url));
 			}
-		} // WHILE
-		$db->sql_freeresult($result);
+		}
 		
 		if ($insert)
 		{
@@ -1247,18 +1201,27 @@ class user extends session
 				$group_id = md5(uniqid(time()));
 			}
 			
-			$db->sql_query("INSERT INTO _ref (group_id, domain, url, request, banned, views, datetime, last_datetime, last_ip) VALUES ('$group_id', '$domain', '$url', '$request', $auto_block, 1, $datetime, $datetime, '$user_ip')");
+			$sql_insert = array(
+				'group_id' => $group_id,
+				'domain' => $domain,
+				'url' => $url,
+				'request' => $request,
+				'banned' => $auto_block,
+				'views' => 1,
+				'datetime' => $datetime,
+				'last_datetime' => $datetime,
+				'last_ip' => $user_ip
+			);
+			$sql = 'INSERT INTO _ref' . sql_build('INSERT', $sql_insert);
+			sql_query($sql);
 		}
 		
-		if ($not_allowed_ref)
-		{
-			if ($banned)
-			{
+		if ($not_allowed_ref) {
+			if ($banned) {
 				redirect('net/access?2');
 			}
 			
-			if ($block_ud)
-			{
+			if ($block_ud) {
 				redirect(s_link());
 			}
 		}
@@ -1291,30 +1254,20 @@ class auth
 		
 		if (!isset($this->data[$member_id]))
 		{
-			global $db;
-			
 			$sql = 'SELECT *
 				FROM _auth_control
-				WHERE member_id = ' . (int) $member_id;
-			$result = $db->sql_query($sql);
-			
-			if ($row = $db->sql_fetchrow($result))
-			{
-				foreach ($row as $k => $v)
-				{
-					if (preg_match('#^a_#', $k))
-					{
+				WHERE member_id = ?';
+			if ($row = sql_fieldrow(sql_filter($sql, $member_id))) {
+				foreach ($row as $k => $v) {
+					if (preg_match('#^a_#', $k)) {
 						$this->data[$member_id][$k] = unserialize(_decode($v));
 					}
 				}
 			}
-			$db->sql_freeresult($result);
 		}
 		
-		if ((isset($this->data[$member_id]) && is_array($this->data[$member_id]) && sizeof($this->data[$member_id])) || $user->data['is_founder'])
-		{
-			if ($module !== false && empty($this->data[$member_id]['a_' . $module]))
-			{
+		if ((isset($this->data[$member_id]) && is_array($this->data[$member_id]) && sizeof($this->data[$member_id])) || $user->data['is_founder']) {
+			if ($module !== false && empty($this->data[$member_id]['a_' . $module])) {
 				return false;
 			}
 			
@@ -1324,28 +1277,23 @@ class auth
 		return false;
 	}
 	
-	function option($ary, $member_id = false)
-	{
+	function option($ary, $member_id = false) {
 		global $user;
 		
-		if ($member_id === false)
-		{
+		if ($member_id === false) {
 			$member_id = $user->data['user_id'];
 			
-			if ($user->data['is_founder'])
-			{
+			if ($user->data['is_founder']) {
 				return true;
 			}
 		}
 		
-		if (!isset($this->data[$member_id]) || !is_array($ary))
-		{
+		if (!isset($this->data[$member_id]) || !is_array($ary)) {
 			return;
 		}
 		
 		$a = '';
-		foreach ($ary as $i => $k)
-		{
+		foreach ($ary as $i => $k) {
 			if (!$i) $k = 'a_' . $k;
 			$a .= "['" . $k . "']";
 		}
@@ -1402,21 +1350,15 @@ class auth
 		//
 		if ($f_access === false)
 		{
-			$forum_match_sql = ($forum_id != AUTH_LIST_ALL) ? 'WHERE a.forum_id = ' . (int) $forum_id : '';
-	
+			$forum_match_sql = ($forum_id != AUTH_LIST_ALL) ? sql_filter('WHERE a.forum_id = ?', $forum_id) : '';
+			$sql_fetchrow = ($forum_id != AUTH_LIST_ALL) ? 'sql_fieldrow' : 'sql_rowset';
+			
 			$sql = 'SELECT a.forum_id, ' . $a_sql . '
 				FROM _forums a
 				' . $forum_match_sql;
-			$result = $db->sql_query($sql);
-	
-			$sql_fetchrow = ($forum_id != AUTH_LIST_ALL) ? 'sql_fetchrow' : 'sql_fetchrowset';
-	
-			if (!$f_access = $db->$sql_fetchrow($result))
-			{
-				$db->sql_freeresult($result);
+			if (!$f_access = $sql_fetchrow($sql)) {
 				return array();
 			}
-			$db->sql_freeresult($result);
 		}
 	
 		//
@@ -1427,28 +1369,23 @@ class auth
 		$u_access = array();
 		if ($user->data['is_member'])
 		{
-			$forum_match_sql = ($forum_id != AUTH_LIST_ALL) ? "AND a.forum_id = $forum_id" : '';
+			$forum_match_sql = ($forum_id != AUTH_LIST_ALL) ? sql_filter('AND a.forum_id = ?', $forum_id) : '';
 	
 			$sql = 'SELECT a.forum_id, ' . $a_sql . ', a.auth_mod
 				FROM _auth_access a, _members_group ug
-				WHERE ug.user_id = ' . (int) $user->data['user_id'] . '
+				WHERE ug.user_id = ?
 					AND ug.user_pending = 0
 					AND a.group_id = ug.group_id
 					' . $forum_match_sql;
-			$result = $db->sql_query($sql);
+			$result = sql_rowset(sql_filter($sql, $user->data['user_id']));
 			
-			while ($row = $db->sql_fetchrow($result))
-			{
-				if ($forum_id != AUTH_LIST_ALL)
-				{
+			foreach ($result as $row) {
+				if ($forum_id != AUTH_LIST_ALL) {
 					$u_access[] = $row;
-				}
-				else
-				{
+				} else {
 					$u_access[$row['forum_id']][] = $row;
 				}
 			}
-			$db->sql_freeresult($result);
 		}
 		
 		//

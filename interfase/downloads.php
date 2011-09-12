@@ -32,8 +32,6 @@ class downloads
 	
 	function dl_sql ($ub = '', $order = '')
 	{
-		global $db;
-		
 		$sql_ub = ($ub != '') ? sql_filter(' WHERE ub = ?', $ub) . ' ' : '';
 		$sql_order = ($order != '') ? ' ORDER BY ' . $order : '';
 		
@@ -69,8 +67,6 @@ class downloads
 		{
 			fatal_error();
 		}
-		
-		global $db;
 		
 		$sql = 'SELECT d.*
 			FROM _dl d
@@ -291,11 +287,9 @@ class downloads
 	
 	function dl_save()
 	{
-		global $db;
-		
 		$sql = 'UPDATE _dl SET downloads = downloads + 1
 			WHERE id = ?';
-		$db->sql_query(sql_filter($sql, $this->dl_data['id']));
+		sql_query(sql_filter($sql, $this->dl_data['id']));
 		
 		// TODO: Fix enie letters.
 		

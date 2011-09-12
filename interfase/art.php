@@ -36,8 +36,6 @@ class _art extends downloads
 		$rowset = array();
 		if (!($rowset = $cache->get('art')))
 		{
-			global $db;
-			
 			$sql = 'SELECT *
 				FROM _art
 				WHERE ub = 0 
@@ -57,8 +55,6 @@ class _art extends downloads
 	
 	function _setup()
 	{
-		global $db;
-		
 		$art_id = intval(request_var('id', 0));
 		if ($art_id)
 		{
@@ -262,8 +258,6 @@ class _art extends downloads
 	
 	function save()
 	{
-		global $db;
-		
 		$this->filename = $this->data['title'] . '.jpg';
 		$this->filepath = 'data/art/full/' . $this->data['art_id'] . '.jpg';
 		

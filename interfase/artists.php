@@ -995,8 +995,6 @@ class _artists extends layout
 	
 	function get_data()
 	{
-		global $db;
-		
 		$sql = 'SELECT *
 			FROM _artists
 			ORDER BY name ASC';
@@ -1635,7 +1633,7 @@ class _artists extends layout
 							WHERE ??';
 						sql_query(sql_filter($sql, sql_build('UPDATE', $sql_viewers), sql_build('SELECT', $sql_viewers2)));
 						
-						if (!$db->sql_affectedrows())
+						if (!sql_affectedrows())
 						{
 							$update_views = TRUE;
 							$sql_stats = array('ub' => (int) $this->data['ub'], 'date' => (int) $current_month);

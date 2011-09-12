@@ -33,8 +33,6 @@ class cache
 	
 	function config()
 	{
-		global $db;
-		
 		$sql = 'SELECT *
 			FROM _config';
 		$config = sql_rowset($sql, 'config_name', 'config_value');

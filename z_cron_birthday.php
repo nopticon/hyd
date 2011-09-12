@@ -27,20 +27,20 @@ $max_email = 10;
 require('./interfase/emailer.php');
 $emailer = new emailer();
 
-$sql = 'SELECT *
+$sql = "SELECT *
 	FROM _members
-	WHERE user_type NOT IN (' . USER_IGNORE . ', ' . USER_INACTIVE . ")
+	WHERE user_type NOT IN (??, ??)
 		AND user_id NOT IN (SELECT ban_userid FROM _banlist)
-		AND user_birthday LIKE '%" . date('md') . "'
-		AND user_birthday_last < " . (int) date('Y') . "
+		AND user_birthday LIKE '%??'
+		AND user_birthday_last < ?
 	ORDER BY username
-	LIMIT " . (int) $max_email;
-$result = $db->sql_query($sql);
+	LIMIT ??";
+$result = sql_rowset(sql_filter($sql, USER_IGNORE, USER_INACTIVE, date('md'), date('Y'), $max_email));
 
 $done = array();
 $usernames = array();
-while ($row = $db->sql_fetchrow($result))
-{
+
+foreach ($result as $row) {
 	$emailer->from('notify@rockrepublik.net');
 	$emailer->use_template('user_birthday');
 	$emailer->email_address($row['user_email']);
@@ -58,7 +58,6 @@ while ($row = $db->sql_fetchrow($result))
 	$done[] = $row['user_id'];
 	$usernames[] = $row['username'];
 }
-$db->sql_freeresult($result);
 
 if (count($done))
 {

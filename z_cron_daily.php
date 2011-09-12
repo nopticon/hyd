@@ -33,20 +33,13 @@ $sql = 'SELECT *
 	FROM _banners
 	WHERE banner_end > ' . (int) $_end . '
 	ORDER BY banner_end';
-$result = $db->sql_query($sql);
-
-$deleted = array();
-while ($row = $db->sql_fetchrow($result))
-{
-	$deleted[] = $row['banner_id'];
-}
-$db->sql_freeresult($result);
+$deleted = sql_rowset(sql_filter($sql, $_end), false, 'banner_id');
 
 if (count($deleted))
 {
 	$sql = 'DELETE FROM _banners
-		WHERE banner_id IN (' . implode(',', $deleted) . ')';
-	$db->sql_query($sql);
+		WHERE banner_id IN (??)';
+	sql_query(sql_filter($sql, implode(',', $deleted)));
 	
 	$cache->delete('banners');
 }
@@ -56,17 +49,14 @@ if (count($deleted))
 set_config('board_disable', 1);
 
 $sql = 'SHOW TABLES';
-$result = $db->sql_query($sql);
+$result = sql_rowset($sql, false, false, false, MYSQL_NUM);
 
-$tables = array();
-while ($row = $db->sql_fetchrow($result))
-{
+foreach ($result as $row) {
 	$tables[] = $row[0];
 }
-$db->sql_freeresult($result);
 
 $sql = 'OPTIMIZE TABLE ' . implode(', ', $tables);
-$db->sql_query($sql);
+sql_query($sql);
 
 set_config('board_disable', 0);
 

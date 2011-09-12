@@ -47,8 +47,6 @@ class board
 	
 	function forums()
 	{
-		global $db;
-		
 		$sql = 'SELECT f.*, t.topic_id, t.topic_title, p.post_id, p.post_time, p.post_username, u.user_id, u.username, u.username_base, u.user_color 
 			FROM (( _forums f
 			LEFT JOIN _forum_topics t ON t.topic_id = f.forum_last_topic_id

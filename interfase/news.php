@@ -35,59 +35,43 @@ POST_TIME				INT(11)
 POST_IP					VARCHAR(8)
 */
 
-class _news
-{
+class _news {
 	var $data = array();
 	var $news = array();
 	
-	function _news ()
-	{
+	public function __construct() {
 		return;
 	}
 	
-	function _setup ()
-	{
-		global $db;
-		
+	public function _setup() {
 		$post_id = request_var('id', 0);
-		if (!$post_id)
-		{
+		if (!$post_id) {
 			return false;
 		}
 		
 		$sql = 'SELECT n.*, c.*
 			FROM _news n, _news_cat c
-			WHERE n.news_id = ' . (int) $post_id . '
+			WHERE n.news_id = ?
 				AND n.cat_id = c.cat_id';
-		$result = $db->sql_query($sql);
-		
-		if (!$row = $db->sql_fetchrow($result))
-		{
+		if (!$row = sql_fieldrow($sql, $post_id)) {
 			fatal_error();
-		}
-		$db->sql_freeresult($result);
+		}	
 		
 		$this->data = $row;
 		return true;
 	}
 	
-	function _main()
-	{
+	public function _main() {
 		global $user, $cache, $template;
 		
 		$cat = request_var('cat', '');
-		if (!empty($cat))
-		{
-			$sql = "SELECT *
+		if (!empty($cat)) {
+			$sql = 'SELECT *
 				FROM _news_cat
-				WHERE cat_url = '" . $db->sql_escape($cat) . "'";
-			$result = $db->sql_query($sql);
-			
-			if (!$cat_data = $db->sql_fetchrow($result))
-			{
+				WHERE cat_url = ?';
+			if (!$cat_data = sql_fieldrow(sql_filter($sql, $cat))) {
 				fatal_error();
 			}
-			$db->sql_freeresult($result);
 			
 			$template->assign_block_vars('cat', array(
 				'CAT_URL' => s_link('news', $cat_data['cat_url']),
@@ -97,13 +81,12 @@ class _news
 			//
 			$sql = 'SELECT n.*, m.username, m.username_base, m.user_color
 				FROM _news n, _members m
-				WHERE n.cat_id = ' . (int) $cat_data['cat_id'] . '
+				WHERE n.cat_id = ?
 					AND n.poster_id = m.user_id
 				ORDER BY n.post_time DESC, n.news_id DESC';
-			$result = $db->sql_query($sql);
+			$result = sql_rowset(sql_filter($sql, $cat_data['cat_id']));
 			
-			while ($row = $db->sql_fetchrow($result))
-			{
+			foreach ($result as $row) {
 				$template->assign_block_vars('cat.item', array(
 					'URL' => s_link('news', $row['news_id']),
 					'SUBJECT' => $row['post_subject'],
@@ -114,33 +97,21 @@ class _news
 					'COLOR' => $row['user_color'])
 				);
 			}
-			$db->sql_freeresult($result);
-		}
-		else
-		{
-			if (!$cat = $cache->get('news_cat'))
-			{
+		} else {
+			if (!$cat = $cache->get('news_cat')) {
 				$sql = 'SELECT c.*, COUNT(n.news_id) AS elements
 					FROM _news_cat c, _news n
 					WHERE c.cat_id = n.cat_id
 					GROUP BY n.cat_id
 					ORDER BY c.cat_order';
-				$result = $db->sql_query($sql);
-				
-				$cat = array();
-				while ($row = $db->sql_fetchrow($result))
-				{
-					$cat[] = $row;
+				if ($cat = sql_rowset($sql)) {
+					$cache->save('news_cat', $cat);
 				}
-				$db->sql_freeresult($result);
-				
-				$cache->save('news_cat', $cat);
 			}
 			
 			$template->assign_block_vars('list', array());
 			
-			foreach ($cat as $row)
-			{
+			foreach ($cat as $row) {
 				$template->assign_block_vars('list.item', array(
 					'URL' => s_link('news', $row['cat_url']),
 					'NAME' => $row['cat_name'],
@@ -148,30 +119,26 @@ class _news
 					'ELEMENTS' => $row['elements'])
 				);
 			}
-			
 		}
 		
 		return;
 	}
 	
-	function _view ()
-	{
+	public function _view() {
 		global $user, $config, $template;
 		
 		$offset = intval(request_var('ps', 0));
 		
-		if ($this->data['poster_id'] != $user->data['user_id'] && !$offset)
-		{
-			$db->sql_query('UPDATE _news SET post_views = post_views + 1 WHERE news_id = ' . (int) $this->data['news_id']);
+		if ($this->data['poster_id'] != $user->data['user_id'] && !$offset) {
+			$sql = 'UPDATE _news SET post_views = post_views + 1
+				WHERE news_id = ?';
+			sql_query(sql_filter($sql, $this->data['news_id']));
 		}
 		
 		$sql = 'SELECT user_id, username, username_base, user_color, user_avatar, user_posts, user_gender, user_rank, user_sig
 			FROM _members
-			WHERE user_id = ' . (int) $this->data['poster_id'];
-		$result = $db->sql_query($sql);
-		
-		$userinfo = $db->sql_fetchrow($result);
-		$db->sql_freeresult($result);
+			WHERE user_id = ?';
+		$userinfo = sql_fieldrow(sql_filter($sql, $this->data['poster_id']));
 		
 		include('./interfase/comments.php');
 		$comments = new _comments();
@@ -183,8 +150,7 @@ class _news
 			'POST_TIME' => $user->format_date($this->data['post_time'])
 		);
 		
-		foreach ($user_profile as $key => $value)
-		{
+		foreach ($user_profile as $key => $value) {
 			$mainpost_data[strtoupper($key)] = $value;
 		}
 		
@@ -192,19 +158,20 @@ class _news
 		
 		$comments_ref = s_link('news', $this->data['news_id']);
 		
-		if ($this->data['post_replies'])
-		{
+		if ($this->data['post_replies']) {
 			$comments->reset();
 			$comments->ref = $comments_ref;
 			
+			$sql = 'SELECT p.*, m.user_id, m.username, m.username_base, m.user_color, m.user_avatar, m.user_rank, m.user_posts, m.user_gender, m.user_sig
+				FROM _news_posts p, _members m 
+				WHERE p.news_id = ? 
+					AND p.post_active = 1 
+					AND p.poster_id = m.user_id 
+				ORDER BY p.post_time DESC
+				LIMIT ??, ??';
+			
 			$comments->data = array(
-				'SQL' => 'SELECT p.*, m.user_id, m.username, m.username_base, m.user_color, m.user_avatar, m.user_rank, m.user_posts, m.user_gender, m.user_sig
-					FROM _news_posts p, _members m 
-					WHERE p.news_id = ' . (int) $this->data['news_id'] . ' 
-						AND p.post_active = 1 
-						AND p.poster_id = m.user_id 
-					ORDER BY p.post_time DESC
-					LIMIT ' . (int) $offset . ', ' . (int) $config['s_posts']
+				'SQL' => sql_filter($sql, $this->data['news_id'], $offset, $config['s_posts'])
 			);
 			
 			$comments->view($offset, 'ps', $this->data['post_replies'], $config['s_posts'], '', '', 'TOPIC_');
@@ -223,14 +190,11 @@ class _news
 		//
 		$template->assign_block_vars('posting_box', array());
 		
-		if ($user->data['is_member'])
-		{
+		if ($user->data['is_member']) {
 			$template->assign_block_vars('posting_box.box', array(
 				'REF' => $comments_ref)
 			);
-		}
-		else
-		{
+		} else {
 			$template->assign_block_vars('posting_box.only_registered', array(
 				'LEGEND' => sprintf($user->lang['LOGIN_TO_POST'], '', s_link('my', 'register'))
 			));

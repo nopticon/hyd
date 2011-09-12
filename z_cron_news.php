@@ -43,29 +43,15 @@ if (!$emails = $cache->get('team_email'))
 	$sql = 'SELECT DISTINCT member_id
 		FROM _team_members
 		ORDER BY member_id';
-	$result = $db->sql_query($sql);
-	
-	$mods = array();
-	while ($row = $db->sql_fetchrow($result))
-	{
-		$mods[] = $row['member_id'];
-	}
-	$db->sql_freeresult($result);
+	$mods = sql_rowset($sql, false, 'member_id');
 	
 	$sql = 'SELECT DISTINCT user_id, user_email
 		FROM _members
-		WHERE user_id IN (' . implode(',', $mods) . ')
-			OR user_type = ' . USER_FOUNDER;
-	$result = $db->sql_query($sql);
-	
-	$emails = array();
-	while ($row = $db->sql_fetchrow($result))
-	{
-		$emails[$row['user_id']] = $row['user_email'];
+		WHERE user_id IN (??)
+			OR user_type = ?';
+	if ($emails = sql_rowset(sql_filter($sql, implode(',', $mods), USER_FOUNDER), 'user_id', 'user_email')) {
+		$cache->save('team_email', $emails);
 	}
-	$db->sql_freeresult($result);
-	
-	$cache->save('team_email', $emails);
 }
 
 if (!$news_cat = $cache->get('news_cat_mail'))
@@ -73,16 +59,9 @@ if (!$news_cat = $cache->get('news_cat_mail'))
 	$sql = 'SELECT cat_id, cat_name
 		FROM _news_cat
 		ORDER BY cat_id';
-	$result = $db->sql_query($sql);
-	
-	$news_cat = array();
-	while ($row = $db->sql_fetchrow($result))
-	{
-		$news_cat[$row['cat_id']] = $row['cat_name'];
+	if ($news_cat = sql_rowset($sql, 'cat_id', 'cat_name')) {
+		$cache->save('news_cat_mail', $news_cat);
 	}
-	$db->sql_freeresult($result);
-	
-	$cache->save('news_cat_mail', $news_cat);
 }
 
 $team = array_flip($emails);
@@ -102,18 +81,14 @@ for ($i = 1; $i <= $count; $i++)
 		continue;
 	}
 	
-	$sql = "SELECT user_id, username, user_password
+	$sql = 'SELECT user_id, username, user_password
 		FROM _members
-		WHERE user_email = '" . $db->sql_escape($from) . "'";
-	$result = $db->sql_query($sql);
-	
-	if (!$userdata = $db->sql_fetchrow($result))
-	{
+		WHERE user_email = ?';
+	if (!$userdata = sql_fieldrow(sql_filter($sql, $from))) {
 		@error_log('[bot: news] ' . $from . ' - Userdata not found', 0);
 		$spam[] = $i;
 		continue;
 	}
-	$db->sql_freeresult($result);
 	
 	//
 	$s_header['user_id'] = $team[$author];
@@ -189,12 +164,10 @@ for ($i = 1; $i <= $count; $i++)
 			'post_time' => $post_date,
 			'post_ip' => $post_ip
 		);
-		$sql = 'INSERT INTO _news' . $db->sql_build_array('INSERT', $insert);
-		$db->sql_query($sql);
+		$sql = 'INSERT INTO _news' . sql_build('INSERT', $insert);
+		$post_id = sql_query_nextid($sql);
 		
-		$post_id = $db->sql_nextid();
 		$cache->delete('news', 'news_cat');
-
 		$user->save_unread(UH_GN, $post_id);
 		
 		$email_subject = 'Noticia publicada';
