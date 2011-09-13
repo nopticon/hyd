@@ -36,8 +36,8 @@ POST_IP					VARCHAR(8)
 */
 
 class _news {
-	var $data = array();
-	var $news = array();
+	public $data = array();
+	public $news = array();
 	
 	public function __construct() {
 		return;

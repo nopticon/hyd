@@ -18,67 +18,53 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-if (class_exists('_mail'))
-{
+if (class_exists('_mail')) {
 	return;
 }
 
-class _mail
-{
-	var $all;
-	var $data = array();
+class _mail {
+	public $all;
+	public $data = array();
 	
-	function _mail()
-	{
+	public function __construct() {
 		return;
 	}
 	
-	function parse_header($header)
-	{
+	public function parse_header($header) {
 		$last_header = '';
 		$parsed_header = array();
-		for ($j = 0, $end = sizeof($header); $j < $end; $j++)
-		{
+		for ($j = 0, $end = sizeof($header); $j < $end; $j++) {
 			$hd = split(':', $header[$j], 2);
-			if (preg_match_all("/\s/", $hd[0], $matches) || !isset($hd[1]) || !$hd[1])
-			{
-				if ($last_header)
-				{
+			
+			if (preg_match_all("/\s/", $hd[0], $matches) || !isset($hd[1]) || !$hd[1]) {
+				if ($last_header) {
 					$parsed_header[$last_header] .= "\r\n" . trim($header[$j]);
 				}
-			}
-			else
-			{
+			} else {
 				$last_header = strtolower($hd[0]);
-				if (!isset($parsed_header[$last_header]))
-				{
+				if (!isset($parsed_header[$last_header])) {
 					$parsed_header[$last_header] = '';
 				}
 				$parsed_header[$last_header] .= (($parsed_header[$last_header]) ? "\r\n" : '') . trim($hd[1]);
 			}
 		}
 		
-		foreach ($parsed_header as $hd_name => $hd_content)
-		{
+		foreach ($parsed_header as $hd_name => $hd_content) {
 			$start_enc_tag = $stop_enc_tag = 0;
 			$pre_text = $enc_text = $post_text = "";
 			
-			while(1)
-			{
-				if(strstr($hd_content, '=?') && strstr($hd_content, '?=') && substr_count($hd_content,'?') > 3)
-				{
+			while(1) {
+				if (strstr($hd_content, '=?') && strstr($hd_content, '?=') && substr_count($hd_content,'?') > 3) {
 					$start_enc_tag = strpos($hd_content, '=?');
 					$pre_text = substr($hd_content, 0, $start_enc_tag);
-					do
-					{
+					do {
 						$stop_enc_tag = strpos($hd_content, '?=', $stop_enc_tag) + 2;
 						$enc_text = substr($hd_content, $start_enc_tag, $stop_enc_tag);
 					}
 					while (!(substr_count($enc_text, '?') > 3));
 					
 					$enc_text = explode('?', $enc_text, 5);
-					switch (strtoupper($enc_text[2]))
-					{
+					switch (strtoupper($enc_text[2])) {
 						case "B":
 							$dec_text = base64_decode($enc_text[3]);
 							break;
@@ -90,16 +76,13 @@ class _mail
 					}
 					
 					$post_text = substr($hd_content, $stop_enc_tag);
-					if (substr(ltrim($post_text), 0, 2) == '=?')
-					{
+					if (substr(ltrim($post_text), 0, 2) == '=?') {
 						$post_text = ltrim($post_text);
 					}
 					
 					$hd_content = $pre_text . $dec_text . $post_text;
 					$parsed_header[$hd_name] = $hd_content;
-				}
-				else
-				{
+				} else {
 					break;
 				}
 			}
@@ -108,15 +91,13 @@ class _mail
 		return $parsed_header;
 	}
 	
-	function parse_address($addr)
-	{
+	public function parse_address($addr) {
 		$atpos = strpos($addr, '@');
 		$minpos = strpos($addr, '<');
 		$majpos = strpos($addr, '>');
 		$fromstart = 0;
 		$fromend = strlen($addr);
-		if ($minpos < $atpos && $majpos > $atpos)
-		{
+		if ($minpos < $atpos && $majpos > $atpos) {
 			$fromstart = $minpos + 1;
 			$fromend = $majpos;
 		}
@@ -124,12 +105,10 @@ class _mail
 		return substr($addr, $fromstart, $fromend - $fromstart);
 	}
 	
-	function parse_date($ddate)
-	{
+	public function parse_date($ddate) {
 		$dmonths = array('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
 		
-		if (strpos($ddate, ','))
-		{
+		if (strpos($ddate, ',')) {
 			$ddate = trim(substr($ddate, strpos($ddate, ',')+1, strlen($ddate)));
 		}
 		
@@ -144,10 +123,8 @@ class _mail
 		$ddate_d = $date_arr[0];
 		$ddate_Y = $date_arr[2];
 		
-		for ($j = 0; $j < 12; $j++)
-		{
-			if ($ddate_m == $dmonths[$j])
-			{
+		for ($j = 0; $j < 12; $j++) {
+			if ($ddate_m == $dmonths[$j]) {
 				$ddate_m = $j + 1;
 			}
 		}
@@ -157,53 +134,45 @@ class _mail
 		return ($ddate_U - $time_zn);
 	}
 	
-	function parse_ip($value)
-	{
+	public function parse_ip($value) {
 		$result = '127.0.0.1';
-		if ($count = preg_match_all('#from \[([0-9\.]+)\]#is', $value, $part))
-		{
+		if ($count = preg_match_all('#from \[([0-9\.]+)\]#is', $value, $part)) {
 			$result = $part[1][($count - 1)];
 		}
 		
 		return $result;
 	}
 	
-	function body($header, $message)
-	{
-		if (!isset($header['content-transfer-encoding']))
-		{
+	public function body($header, $message) {
+		if (!isset($header['content-transfer-encoding'])) {
 			$header['content-transfer-encoding'] = '';
 		}
+		
 		$content_transfer_encoding = strtolower(trim($header['content-transfer-encoding']));
-		if (empty($content_transfer_encoding))
-		{
+		if (empty($content_transfer_encoding)) {
 			$content_transfer_encoding = '8bit';
 		}
 		
 		$message = $this->text_decode($content_transfer_encoding, $message);
 		
-		if (!isset($header['content-type']))
-		{
+		if (!isset($header['content-type'])) {
 			$header['content-type'] = '';
 		}
+		
 		$content_type = split(';', $header["content-type"]);
-		for ($i = 0, $end = sizeof($content_type); $i < $end; $i++)
-		{
+		for ($i = 0, $end = sizeof($content_type); $i < $end; $i++) {
 			$content_type[$i] = trim(strtolower($content_type[$i]));
 		}
 		
-		if (empty($content_type[0]))
-		{
+		if (empty($content_type[0])) {
 			$content_type[0] = 'text/plain';
 		}
 		
-		if (strstr($content_type[0], 'multipart/') || strstr($content_type[0], 'message/'))
-		{
+		if (strstr($content_type[0], 'multipart/') || strstr($content_type[0], 'message/')) {
 			$content_type[0] = 'multipart';
 		}
 		
-		switch ($content_type[0])
-		{
+		switch ($content_type[0]) {
 			case 'text/plain':
 				$this->data['text-plain'] = htmlentities(implode("\n", $message));
 				break;
@@ -213,20 +182,17 @@ class _mail
 			case 'multipart':
 				$content_type[1] = split(';', $content_type[1]);
 				$boundary = '';
-				foreach($content_type[1] as $ct_pars)
-				{
+				
+				foreach($content_type[1] as $ct_pars) {
 					$ct_pars = split('=', $ct_pars, 2);
-					if (strtolower($ct_pars[0]) == "boundary")
-					{
+					if (strtolower($ct_pars[0]) == 'boundary') {
 						$boundary = str_replace('"', '', $ct_pars[1]);
 					}
 				}
 				
-				if ($boundary)
-				{
+				if ($boundary) {
 					$parts = $this->split_multipart($boundary, $message);
-					foreach ($parts as $part)
-					{
+					foreach ($parts as $part) {
 						$this->parse_part($part);
 					}
 				}
@@ -239,16 +205,14 @@ class _mail
 		return $this->data;
 	}
 	
-	function text_decode($encoding, $text)
-	{
+	public function text_decode($encoding, $text) {
 		switch ($encoding)
 		{
 			case 'quoted-printable':
 				$dec_text = explode("\n", quoted_printable_decode(implode("\n", $text)));
 				break;
 			case 'base64':
-				for($i = 0, $end = sizeof($text); $i < $end; $i++)
-				{
+				for($i = 0, $end = sizeof($text); $i < $end; $i++) {
 					$text[$i] = trim($text[$i]);
 				}
 				$dec_text = explode("\n", base64_decode(@implode('', $text)));
@@ -264,50 +228,39 @@ class _mail
 		return $dec_text;
 	}
 	
-	function split_multipart($boundary, $text)
-	{
+	public function split_multipart($boundary, $text) {
 		$parts = array();
 		$tmp = array();
-		foreach ($text as $i => $line)
-		{
+		foreach ($text as $i => $line) {
 			$line = trim($line);
-			if (strstr(strtolower($line), '--' . $boundary))
-			{
+			if (strstr(strtolower($line), '--' . $boundary)) {
 				$parts[] = $tmp;
 				$tmp = array();
-			}
-			else
-			{
+			} else {
 				$tmp[] = $line;
 			}
 		}
 		
-		for ($i = 0, $end = sizeof($parts); $i < $end; $i++)
-		{
+		for ($i = 0, $end = sizeof($parts); $i < $end; $i++) {
 			$parts[$i] = explode("\n", trim(implode("\n", $parts[$i])));
 		}
 		
 		return $parts;
 	}
 	
-	function parse_part($text)
-	{
+	public function parse_part($text) {
 		$headerpart = array();
 		$contentpart = array();
 		$noheader = 0;
-		foreach ($text as $riga)
-		{
-			if (!$riga)
-			{
+		
+		foreach ($text as $riga) {
+			if (!$riga) {
 				$noheader++;
 			}
 			
-			if ($noheader)
-			{
+			if ($noheader) {
 				$contentpart[] = $riga;
-			}
-			else
-			{
+			} else {
 				$headerpart[] = $riga;
 			}
 		}

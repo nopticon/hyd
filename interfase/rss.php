@@ -23,21 +23,18 @@ if (class_exists('_rss')) {
 }
 
 class _rss {
-	var $mode;
-	var $xml = array();
+	public $mode;
+	public $xml = array();
 	
-	function _rss()
-	{
+	function __construct() {
 		return;
 	}
 	
-	function smode($mode)
-	{
+	function smode($mode) {
 		$this->mode = $mode;
 	}
 	
-	function _news()
-	{
+	function _news() {
 		$sql = 'SELECT n.*, m.username
 			FROM _news n, _members m
 			WHERE n.poster_id = m.user_id
@@ -58,13 +55,11 @@ class _rss {
 		return;
 	}
 	
-	function _events()
-	{
+	function _events() {
 		return;
 	}
 	
-	function _artists()
-	{
+	function _artists() {
 		$sql = 'SELECT name, subdomain, genre, datetime, local, location
 			FROM _artists
 			ORDER BY datetime DESC
@@ -83,8 +78,7 @@ class _rss {
 		return;
 	}
 	
-	function output()
-	{
+	function output() {
 		global $user;
 		
 		$umode = strtoupper($this->mode);

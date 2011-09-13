@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-class mm_promo {
+class promos {
 	public $data = array();
 	
 	public function __construct() {
@@ -167,8 +167,8 @@ class mm_promo {
 				
 				if ($description[1] != '') {
 					$template->assign_block_vars('field.description', array(
-						'TEXT' => $description[1]
-					));
+						'TEXT' => $description[1])
+					);
 				}
 			}
 		}
