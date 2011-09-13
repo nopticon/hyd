@@ -48,7 +48,17 @@ function sql_filter() {
 		$args = $args[0];
 	}
 	
-	$args = array_map('sql_escape', $args);
+	$_args = array();
+	foreach ($args as $i => $arg) {
+		if (strpos($arg, '/***/') !== false) {
+			$_args[$i] = $arg;
+		} else {
+			$_args[$i] = sql_escape($arg);
+		}
+	}
+	$args = $_args;
+	
+	//$args = array_map('sql_escape', $args);
 	
 	foreach ($args as $i => $row) {
 		if (strpos($row, 'addquotes') !== false) {
@@ -242,7 +252,7 @@ function sql_escape($sql) {
 function sql_build($cmd, $a, $b = false) {
 	global $db;
 	
-	return $db->build($cmd, $a, $b);
+	return '/***/' . $db->build($cmd, $a, $b);
 }
 
 function sql_cache($sql, $sid = '', $private = true) {

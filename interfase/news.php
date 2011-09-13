@@ -53,9 +53,9 @@ class _news {
 			FROM _news n, _news_cat c
 			WHERE n.news_id = ?
 				AND n.cat_id = c.cat_id';
-		if (!$row = sql_fieldrow($sql, $post_id)) {
+		if (!$row = sql_fieldrow(sql_filter($sql, $post_id))) {
 			fatal_error();
-		}	
+		}
 		
 		$this->data = $row;
 		return true;

@@ -128,42 +128,33 @@ if ($submit)
 				$forum_update_sql .= ', forum_last_topic_id = ' . $last_topic_id;
 			}
 		}
-	}
-	else if ($post_data['first_post']) 
-	{
+	} else if ($post_data['first_post']) {
 		$sql = 'SELECT MIN(post_id) AS first_post_id
 			FROM _forum_posts
-			WHERE topic_id = ' . (int) $topic_id;
-		$result = $db->sql_query($sql);
-			
-		if ($row = $db->sql_fetchrow($result))
-		{
+			WHERE topic_id = ?';
+		if ($first_post_id = sql_field(sql_filter($sql, $topic_id), 'first_post_id', 0)) {
 			$topic_update_sql .= 'topic_replies = topic_replies - 1, topic_first_post_id = ' . $row['first_post_id'];
 		}
-		$db->sql_freeresult($result);
-	}
-	else
-	{
+	} else {
 		$topic_update_sql .= 'topic_replies = topic_replies - 1';
 	}
 
 	$sql = 'UPDATE _forums
 		SET ' . $forum_update_sql . '
-		WHERE forum_id = ' . (int) $forum_id;
-	$db->sql_query($sql);
+		WHERE forum_id = ?';
+	sql_query(sql_filter($sql, $forum_id));
 	
 	if ($topic_update_sql != '')
 	{
 		$sql = 'UPDATE _forum_topics
 			SET ' . $topic_update_sql . '
-			WHERE topic_id = ' . (int) $topic_id;
-		$db->sql_query($sql);
+			WHERE topic_id = ?';
+		sql_query(sql_filter($sql, $topic_id));
 	}
 
-	$sql = 'UPDATE _members
-		SET user_posts = user_posts - 1
-		WHERE user_id = ' . (int) $post_info['poster_id'];
-	$db->sql_query($sql);
+	$sql = 'UPDATE _members SET user_posts = user_posts - 1
+		WHERE user_id = ?';
+	sql_query(sql_filter($sql, $post_info['poster_id']));
 	
 	//
 	echo 'Deleted:<br /><br />';
@@ -178,18 +169,7 @@ if ($submit)
 FUNCTIONS
 
 */
-function query($sql)
-{
-	global $db;
-	
-	//echo $sql . '<br /><br />';
-	return $db->sql_query($sql);
-}
-
-function sync($id)
-{
-	global $db;
-	
+function sync($id) {
 	$last_topic = 0;
 	$total_posts = 0;
 	$total_topics = 0;
@@ -197,32 +177,21 @@ function sync($id)
 	//
 	$sql = 'SELECT COUNT(post_id) AS total 
 		FROM _forum_posts
-		WHERE forum_id = ' . (int) $id;
-	$result = $db->sql_query($sql);
-	
-	if ($row = $db->sql_fetchrow($result))
-	{
-		$total_posts = $row['total'];
-	}
-	$db->sql_freeresult($result);
+		WHERE forum_id = ?';
+	$total_posts = sql_field(sql_filter($sql, $id), 'total', 0);
 	
 	$sql = 'SELECT MAX(topic_id) as last_topic, COUNT(topic_id) AS total
 		FROM _forum_topics
-		WHERE forum_id = ' . (int) $id;
-	$result = $db->sql_query($sql);
-	
-	if ($row = $db->sql_fetchrow($result))
-	{
+		WHERE forum_id = ?';
+	if ($row = sql_fieldrow(sql_filter($sql, $id))) {
 		$last_topic = $row['last_topic'];
 		$total_topics = $row['total'];
 	}
-	$db->sql_freeresult($result);
 	
 	//
-	$sql = 'UPDATE _forums
-		SET forum_last_topic_id = ' . (int) $last_topic . ', forum_posts = ' . (int) $total_posts . ', forum_topics = ' . (int) $total_topics . '
-		WHERE forum_id = ' . (int) $id;
-	query($sql);
+	$sql = 'UPDATE _forums SET forum_last_topic_id = ?, forum_posts = ?, forum_topics = ?
+		WHERE forum_id = ?';
+	sql_query(sql_filter($sql, $last_topic, $total_posts, $total_topics, $id));
 	
 	return;
 }

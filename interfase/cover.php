@@ -19,9 +19,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 if (!defined('IN_NUCLEO')) exit;
 
 class cover {
-	var $msg;
+	public $msg;
 	
-	function news() {
+	public function news() {
 		global $cache, $user, $template;
 		
 		$news = array();
@@ -65,7 +65,7 @@ class cover {
 		return;
 	}
 
-	function twitter() {
+	public function twitter() {
 		/*
 		foreach ($timeline as $tweet) {
 			$date = '<br /><a href="http://www.twitter.com/rock_republik/status/' . $tweet->id . '">' . date('d.m.y, g:i a', strtotime($tweet->created_at)) . '</a>';
@@ -80,7 +80,7 @@ class cover {
 		*/
 	}
 	
-	function banners()
+	public function banners()
 	{
 		global $cache, $user, $template;
 		
@@ -110,7 +110,7 @@ class cover {
 		return;
 	}
 	
-	function founders()
+	public function founders()
 	{
 		global $cache, $user, $template;
 		
@@ -149,7 +149,7 @@ class cover {
 		}
 	}
 	
-	function extra()
+	public function extra()
 	{
 		global $config, $user, $template;
 		
@@ -168,10 +168,7 @@ class cover {
 		return;
 	}
 	
-	//
-	// RECENT BOARD POSTS
-	//
-	function board()
+	public function board()
 	{
 		global $user, $config, $template;
 		
@@ -183,7 +180,7 @@ class cover {
 				AND p.poster_id = u.user_id
 				AND t.topic_featured = 1
 			ORDER BY t.topic_announce DESC, p.post_time DESC
-			LIMIT ?';
+			LIMIT ??';
 		if ($result = sql_rowset(sql_filter($sql, $config['main_topics']))) {
 			$template->assign_block_vars('forum', array(
 				'L_TOP_POSTS' => sprintf($user->lang['TOP_FORUM'], count($result)),
@@ -214,10 +211,7 @@ class cover {
 		return true;
 	}
 	
-	//
-	// LAST POLL
-	//
-	function poll()
+	public function poll()
 	{
 		global $user, $auth, $config, $cache, $template;
 		

@@ -18,13 +18,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-include(ROOT.'interfase/downloads.php');
+include(ROOT . 'interfase/downloads.php');
 
 //
 // Class: layout
 //
-class layout extends downloads
-{
+class layout extends downloads {
 	//
 	// Home
 	//
@@ -1781,9 +1780,13 @@ class _artists extends layout
 						$download_type = $this->dl_type($key);
 						$template->assign_block_vars('ud_block', array('LANG' => $download_type['lang']));
 						
+						_pre($data);
+						
 						foreach ($data as $song)
 						{
-							$template->assign_block_vars('ud_block.item', array('TITLE' => $song['title']));
+							$template->assign_block_vars('ud_block.item', array(
+								'TITLE' => $song['title'])
+							);
 							
 							if (isset($this->dl_data['id']) && ($song['id'] == $this->dl_data['id']))
 							{
@@ -1791,8 +1794,11 @@ class _artists extends layout
 								continue;
 							}
 							
-							$template->assign_block_vars('ud_block.item.a', array('URL' => s_link('a', array($this->data['subdomain'], 9, $song['id']))));
+							$template->assign_block_vars('ud_block.item.a', array(
+								'URL' => s_link('a', array($this->data['subdomain'], 9, $song['id'])))
+							);
 						}
+						exit;
 					}
 				}
 				

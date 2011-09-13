@@ -701,7 +701,7 @@ class user extends session
 			$sql = 'SELECT *
 				FROM _ranks
 				ORDER BY rank_special DESC, rank_min';
-			$ranks - sql_rowset($sql);
+			$ranks = sql_rowset($sql);
 			$cache->save('ranks', $ranks);
 		}
 		
