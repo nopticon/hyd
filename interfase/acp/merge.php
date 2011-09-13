@@ -33,14 +33,10 @@ if ($submit)
 
 	$sql = 'SELECT *
 		FROM _forum_topics
-		WHERE topic_id = ' . (int) $from_topic;
-	$result = $db->sql_query($sql);
-	
-	if (!$row = $db->sql_fetchrow($result))
-	{
+		WHERE topic_id = ?';
+	if (!$row = sql_fieldrow(sql_filter($sql, $from_topic))) {
 		_die();
 	}
-	$db->sql_freeresult($result);
 	
 	$sql = 'SELECT *
 		FROM _forum_topics

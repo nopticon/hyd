@@ -25,12 +25,10 @@ $sql = 'SELECT topic_id, topic_title, topic_views, topic_replies
 	WHERE forum_id  NOT IN (38)
 	ORDER BY topic_time DESC
 	LIMIT 100';
-$result = $db->sql_query($sql);
+$result = sql_rowset($sql);
 
-while ($row = $db->sql_fetchrow($result))
-{
+foreach ($result as $row) {
 	echo '<div><a href="/topic/' . $row['topic_id'] . '/">' . $row['topic_title'] . '</a> (' . $row['topic_views'] . 'v, ' . $row['topic_replies'] . 'm)</div>';
 }
-$db->sql_freeresult($result);
 
 ?>

@@ -26,52 +26,45 @@ if ($submit)
 	
 	$sql = 'SELECT *
 		FROM _members_posts
-		WHERE post_id = ' . (int) $msg_id;
-	$result = $db->sql_query($sql);
-	
-	if (!$d = $db->sql_fetchrow($result))
-	{
+		WHERE post_id = ?';
+	if (!$d = sql_fieldrow(sql_filter($sql, $msg_id))) {
 		exit;
 	}
-	$db->sql_freeresult($result);
 	
 	$sql = 'DELETE FROM _members_posts
-		WHERE post_id = ' . (int) $msg_id;
-	$db->sql_query($sql);
+		WHERE post_id = ?';
+	sql_query(sql_filter($sql, $msg_id));
 	
-	$sql = 'UPDATE _members
-		SET userpage_posts = userpage_posts - 1
-		WHERE user_id = ' . (int) $d['userpage_id'];
-	$db->sql_query($sql);
+	$sql = 'UPDATE _members SET userpage_posts = userpage_posts - 1
+		WHERE user_id = ?';
+	sql_query(sql_filter($sql, $d['userpage_id']));
 	
 	if (isset($_POST['user']))
 	{
 		$sql = 'SELECT ban_id
 			FROM _banlist
-			WHERE ban_userid = ' . (int) $d['poster_id'];
-		$result = $db->sql_query($sql);
-		
-		if (!$row = $db->sql_fetchrow($result))
-		{
-			$sql = 'INSERT INTO _banlist (ban_userid) VALUES (' . (int) $d['poster_id'] . ')';
-			$db->sql_query($sql);
+			WHERE ban_userid = ?';
+		if (!$row = sql_fieldrow(sql_filter($sql, $d['poster_id']))) {
+			$sql_insert = array(
+				'ban_userid' => $d['poster_id']
+			);
+			$sql = 'INSERT INTO _banlist' . sql_build('INSERT', $sql_insert);
+			sql_query($sql);
 		}
-		$db->sql_freeresult($result);
 	}
 	
 	if (isset($_POST['ip']))
 	{
-		$sql = "SELECT ban_id
+		$sql = 'SELECT ban_id
 			FROM _banlist
-			WHERE ban_ip = '" . $db->sql_escape($d['post_ip']) . "'";
-		$result = $db->sql_query($sql);
-		
-		if (!$row = $db->sql_fetchrow($result))
-		{
-			$sql = "INSERT INTO _banlist (ban_ip) VALUES ('" . $db->sql_escape($d['post_ip']) . "')";
-			$db->sql_query($sql);
+			WHERE ban_ip = ?';
+		if (!$row = sql_fieldrow(sql_filter($sql, $d['post_ip']))) {
+			$sql_insert = array(
+				'ban_ip' => $d['post_ip']
+			);
+			$sql = 'INSERT INTO _banlist' . sql_build('INSERT', $sql_insert);
+			sql_query($sql);
 		}
-		$db->sql_freeresult($result);
 	}
 	
 	echo '<pre>';

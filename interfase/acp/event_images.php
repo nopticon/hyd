@@ -164,8 +164,8 @@ if ($submit)
 					'height' => (int) $xa['height'],
 					'allow_dl' => 1
 				);
-				$sql = 'INSERT INTO _events_images' . $db->sql_build_array('INSERT', $insert);
-				$db->sql_query($sql);
+				$sql = 'INSERT INTO _events_images' . sql_build('INSERT', $insert);
+				sql_query($sql);
 				
 				$count_images++;
 			}
@@ -188,9 +188,10 @@ if ($submit)
 				
 				for ($i = ($numbs[0] + $event_pre), $end = ($numbs[1] + $event_pre + 1); $i < $end; $i++)
 				{
-					$sql = "UPDATE _events_images SET image_footer = '" . $db->sql_escape(htmlencode($part[1])) . "'
-						WHERE event_id = " . (int) $event_id . ' AND image = ' . (int) $i;
-					$db->sql_query($sql);
+					$sql = 'UPDATE _events_images SET image_footer = ?
+						WHERE event_id = ?
+							AND image = ?';
+					sql_query(sql_filter($sql, htmlencode($part[1]), $event_id, $i));
 				}
 			}
 			
@@ -199,30 +200,28 @@ if ($submit)
 		
 		$sql = 'SELECT *
 			FROM _events_colab
-			WHERE colab_event = ' . (int) $event_id . '
-				AND colab_uid = ' . (int) $user->data['user_id'];
-		$result = $db->sql_query($sql);
-		
-		if (!$row = $db->sql_fetchrow($result))
+			WHERE colab_event = ?
+				AND colab_uid = ?';
+		if (!$row = sql_fieldrow(sql_filter($sql, $event_ud, $user->data['user_id'])))
 		{
-			$sql = 'INSERT INTO _events_colab (colab_event, colab_uid)
-				VALUES (' . (int) $event_id . ', ' . (int) $user->data['user_id'] . ')';
-			$db->sql_query($sql);
+			$sql_insert = array(
+				'colab_event' => $event_id,
+				'colab_uid' => $user->data['user_id']
+			);
+			$sql = 'INSERT INTO _events_colab' . sql_build('INSERT', $sql_insert);
+			sql_query($sql);
 		}
-		$db->sql_freeresult($result);
 		
-		$sql = 'UPDATE _events SET images = images + ' . (int) $count_images . '
-			WHERE id = ' . (int) $event_id;
-		$db->sql_query($sql);
+		$sql = 'UPDATE _events SET images = images + ??
+			WHERE id = ?';
+		sql_query(sql_filter($sql, $count_images, $event_id));
 		
 		$ftp->ftp_rename($ftp->dfolder() . 'data/tmp/' . $event_id . '/', $ftp->dfolder() . 'data/events/gallery/' . $event_id . '/');
 		//@rename($filepath_3, $filepath_2 . $event_id);
 		$ftp->ftp_quit();
 		
 		redirect(s_link('events', $event_id));
-	}
-	else
-	{
+	} else {
 		$template->assign_block_vars('error', array(
 			'MESSAGE' => parse_error($upload->error))
 		);
@@ -231,19 +230,17 @@ if ($submit)
 
 $sql = 'SELECT *
 	FROM _events
-	WHERE date < ' . (time() + 86400) . '
+	WHERE date < ??
 	ORDER BY date DESC';
-$result = $db->sql_query($sql);
+$result = sql_rowset(sql_filter($sql, (time() + 86400)));
 
-while ($row = $db->sql_fetchrow($result))
-{
+foreach ($result as $row) {
 	$template->assign_block_vars('event_list', array(
 		'EVENT_ID' => $row['id'],
 		'EVENT_TITLE' => (($row['images']) ? '* ' : '') . $row['title'],
 		'EVENT_DATE' => $user->format_date($row['date']))
 	);
 }
-$db->sql_freeresult($result);
 
 $template_vars = array(
 	'S_UPLOAD_ACTION' => $u,
@@ -251,25 +248,19 @@ $template_vars = array(
 );
 page_layout('EVENTS', 'acp/event_images', $template_vars, false);
 
-function a_mkdir($path, $folder)
-{
+function a_mkdir($path, $folder) {
 	global $ftp;
 	
 	$result = false;
-	if (!empty($path))
-	{
+	if (!empty($path)) {
 		$ftp->ftp_chdir($path);
 	}
 	
-	if ($ftp->ftp_mkdir($folder))
-	{
-		if ($ftp->ftp_site('CHMOD 0777 ' . $folder))
-		{
+	if ($ftp->ftp_mkdir($folder)) {
+		if ($ftp->ftp_site('CHMOD 0777 ' . $folder)) {
 			$result = folder;
 		}
-	}
-	else
-	{
+	} else {
 		_die('Can not create: ' . $folder);
 	}
 	

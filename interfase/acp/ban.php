@@ -20,47 +20,38 @@ if (!defined('IN_NUCLEO')) exit;
 
 _auth('founder');
 
-if ($submit)
-{
+if ($submit) {
 	$username = request_var('username', '');
-	if (empty($username))
-	{
+	if (empty($username)) {
 		fatal_error();
 	}
 	
 	$username = get_username_base($username);
 	
-	$sql = "SELECT *
+	$sql = 'SELECT *
 		FROM _members
-		WHERE username_base = '" . $db->sql_escape($username) . "'";
-	$result = $db->sql_query($sql);
-	
-	if (!$userdata = $db->sql_fetchrow($result))
-	{
+		WHERE username_base = ?';
+	if (!$userdata = sql_fieldrow(sql_filter($sql, $username))) {
 		fatal_error();
 	}
-	$db->sql_freeresult($result);
 	
 	$sql = 'SELECT *
 		FROM _banlist
-		WHERE ban_userid = ' . (int) $userdata['user_id'];
-	$result = $db->sql_query($sql);
-	
-	if (!$ban = $db->sql_fetchrow($result))
+		WHERE ban_userid = ?';
+	if (!$ban = sql_fieldrow(sql_filter($sql, $userdata['user_id'])))
 	{
 		$insert = array(
 			'ban_userid' => (int) $userdata['user_id']
 		);
-		$sql = 'INSERT INTO _banlist' . $db->sql_build_array('INSERT', $insert);
-		$db->sql_query($sql);
+		$sql = 'INSERT INTO _banlist' . sql_build('INSERT', $insert);
+		sql_query($sql);
 		
 		$sql = 'DELETE FROM _sessions
-			WHERE session_user_id = ' . (int) $userdata['user_id'];
-		$db->sql_query($sql);
+			WHERE session_user_id = ?';
+		sql_query(sql_filter($sql, $userdata['user_id']));
 		
 		echo 'El usuario ' . $userdata['username'] . ' fue bloqueado.';
 	}
-	$db->sql_freeresult($result);
 }
 
 ?>

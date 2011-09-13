@@ -25,10 +25,10 @@ if ($submit)
 	$forum_id = request_var('fid', 0);
 	$forum_alias = request_var('falias', '');
 	
-	$sql = "UPDATE _forums
-		SET forum_alias = '" . $forum_alias . "'
-		WHERE forum_id = " . (int) $forum_id;
-	$db->sql_query($sql);
+	$sql = 'UPDATE _forums
+		SET forum_alias = ?
+		WHERE forum_id = ?';
+	sql_query(sql_filter($sql, $forum_alias, $forum_id));
 	
 	echo $forum_id . ' > ' . $forum_alias . '<br />';
 }
@@ -47,13 +47,11 @@ if ($submit)
 $sql = 'SELECT forum_id, forum_name
 	FROM _forums
 	ORDER BY forum_order';
-$result = $db->sql_query($sql);
+$result = sql_rowset($sql);
 
-while ($row = $db->sql_fetchrow($result))
-{
+foreach ($result as $row) {
 	echo '<option value="' . $row['forum_id'] . '">' . $row['forum_name'] . '</option>';
 }
-$db->sql_freeresult($result);
 
 ?></select><br />
 

@@ -44,14 +44,7 @@ if ($submit)
 		
 		$sql = 'SELECT MAX(id) AS total
 			FROM _dl';
-		$result = $db->sql_query($sql);
-		
-		$a = 0;
-		if ($row = $db->sql_fetchrow($result))
-		{
-			$a = $row['total'];
-		}
-		$db->sql_freeresult($result);
+		$a = sql_field($sql, 'total', 0);
 		
 		$proc = 0;
 		foreach ($f as $row)
@@ -87,31 +80,26 @@ if ($submit)
 				'album' => $clean_album,
 				'year' => $clean_year
 			);
-			$db->sql_query('INSERT INTO _dl' . $db->sql_build_array('INSERT', $insert_dl));
-			$dl_id = $db->sql_nextid();
+			$sql = 'INSERT INTO _dl' . sql_build('INSERT', $insert_dl);
+			$dl_id = sql_query_nextid();
 			
 			// Alice notify
+			$topic_id = 0;
+			
 			$sql = 'SELECT *
 				FROM _forum_posts
 				WHERE post_id = 125750';
-			$result = $db->sql_query($sql);
-			
-			$topic_id = 0;
-			if ($row3 = $db->sql_fetchrow($result))
-			{
-				$sql = 'SELECT name, subdomain
-					FROM _artists
-					WHERE ub = ' . (int) $a_id;
-				$result2 = $db->sql_query($sql);
-				
+			if ($row3 = sql_fieldrow($sql)) {
 				$a_name = '';
 				$a_subd = '';
-				if ($row2 = $db->sql_fetchrow($result2))
-				{
+				
+				$sql = 'SELECT name, subdomain
+					FROM _artists
+					WHERE ub = ?';
+				if ($row2 = sql_fieldrow(sql_filter($sql, $a_id))) {
 					$a_name = $row2['name'];
 					$a_subd = $row2['subdomain'];
 				}
-				$db->sql_freeresult($result2);
 				
 				$a_intro = 'En esta secci&oacute;n encontrar&aacute;s la actualizaci&oacute;n de las &uacute;ltimas descargas agregadas a Rock Republik.' . "\n\n";
 				$a_format = "[sb] <strong> %s </strong>\n%s (%s)\n\n%s\n%s\n\nEnlace para escuchar:\n%s [/sb]";
@@ -122,31 +110,26 @@ if ($submit)
 				$row3['post_text'] = str_replace("\r", '', $row3['post_text']);
 				$a_post = $a_intro . $a_data . str_replace($a_intro, '', $row3['post_text']);
 				
-				$sql = "UPDATE _forum_posts
-					SET post_text = '" . $db->sql_escape($a_post) . "', post_time = " . time() . "
-					WHERE post_id = " . (int) $row3['post_id'];
-				$db->sql_query($sql);
+				$sql = 'UPDATE _forum_posts SET post_text = ?, post_time = ?
+					WHERE post_id = ?';
+				sql_query(sql_filter($sql, $a_post, time(), $row3['post_id']));
 				
-				$sql = 'UPDATE _forum_topics
-					SET topic_time = ' . time() . '
-					WHERE topic_id = ' . (int) $row3['topic_id'];
-				$db->sql_query($sql);
+				$sql = 'UPDATE _forum_topics SET topic_time = ?
+					WHERE topic_id = ?';
+				sql_query(sql_filter($sql, time(), $row3['topic_id']));
 				
 				$user->save_unread(UH_T, $row3['topic_id']);
 				$topic_id = $row3['topic_id'];
 			}
-			$db->sql_freeresult($result);
 		}
 		
-		$sql = 'UPDATE _artists SET um = um + ' . (int) $proc . '
-			WHERE ub = ' . (int) $a_id;
-		$db->sql_query($sql);
+		$sql = 'UPDATE _artists SET um = um + ??
+			WHERE ub = ?';
+		sql_query(sql_filter($sql, $proc, $a_id));
 		
 		$cache->delete('downloads_list');
 		redirect(s_link('topic', $topic_id));
-	}
-	else
-	{
+	} else {
 		$template->assign_block_vars('error', array(
 			'MESSAGE' => parse_error($upload->error))
 		);
@@ -157,13 +140,11 @@ $select_a = '';
 $sql = 'SELECT *
 	FROM _artists
 	ORDER BY name';
-$result = $db->sql_query($sql);
+$result = sql_rowset($sql);
 
-while ($row = $db->sql_fetchrow($result))
-{
+foreach ($result as $row) {
 	$select_a .= '<option value="' . $row['ub'] . '">' . $row['name'] . '</option>';
 }
-$db->sql_freeresult($result);
 
 $template_vars = array(
 	'S_UPLOAD_ACTION' => $u,

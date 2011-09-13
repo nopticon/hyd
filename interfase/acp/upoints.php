@@ -23,17 +23,15 @@ _auth('founder');
 $sql = 'SELECT *
 	FROM _forum_topics_nopoints
 	ORDER BY exclude_topic';
-$result = $db->sql_query($sql);
+$result = sql_rowset($sql);
 
-while ($row = $db->sql_fetchrow($result))
-{
+foreach ($result as $row) {
 	$sql = 'UPDATE _forum_topics
 		SET topic_points = 0
-		WHERE topic_id = ' . (int) $row['exclude_topic'];
-	$db->sql_query($sql);
+		WHERE topic_id = ?';
+	sql_query(sql_filter($sql, $row['exclude_topic']));
 	
 	echo $row['exclude_topic'] . '<br />';
 }
-$db->sql_freeresult($result);
 
 ?>

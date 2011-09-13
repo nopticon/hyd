@@ -33,40 +33,29 @@ if ($submit)
 	//
 	$sql = 'SELECT *
 		FROM _forum_topics
-		WHERE topic_id = ' . (int) $t;
-	$result = $db->sql_query($sql);
-	
-	if (!$tdata = $db->sql_fetchrow($result))
-	{
+		WHERE topic_id = ?';
+	if (!$tdata = sql_fieldrow(sql_filter($sql, $t))) {
 		_die();
 	}
-	$db->sql_freeresult($result);
 	
 	//
 	$sql = 'SELECT *
 		FROM _forums
-		WHERE forum_id = ' . (int) $f;
-	$result = $db->sql_query($sql);
-	
-	if (!$fdata = $db->sql_fetchrow($result))
-	{
+		WHERE forum_id = ?';
+	if (!$fdata = sql_fieldrow(sql_filter($sql, $f))) {
 		_die();
 	}
-	$db->sql_freeresult($result);
 	
 	//
-	$sql = 'UPDATE _forum_topics
-		SET forum_id = ' . (int) $f . '
-		WHERE topic_id = ' . $t;
-	$db->sql_query($sql);
+	$sql = 'UPDATE _forum_topics SET forum_id = ?
+		WHERE topic_id = ?';
+	sql_query(sql_filter($sql, $f, $t));
 	
-	$sql = 'UPDATE _forum_posts
-		SET forum_id = ' . (int) $f . '
-		WHERE topic_id = ' . (int) $t;
-	$db->sql_query($sql);
+	$sql = 'UPDATE _forum_posts SET forum_id = ?
+		WHERE topic_id = ?';
+	sql_query(sql_filter($sql, $f, $t));
 	
-	if (in_array($f, array(20, 39)))
-	{
+	if (in_array($f, array(20, 39))) {
 		topic_feature($t, 0);
 		topic_arkane($t, 0);
 	}
@@ -83,8 +72,6 @@ FUNCTIONS
 */
 function sync($id)
 {
-	global $db;
-	
 	$last_topic = 0;
 	$total_posts = 0;
 	$total_topics = 0;
@@ -92,32 +79,22 @@ function sync($id)
 	//
 	$sql = 'SELECT COUNT(post_id) AS total 
 		FROM _forum_posts
-		WHERE forum_id = ' . (int) $id;
-	$result = $db->sql_query($sql);
-	
-	if ($row = $db->sql_fetchrow($result))
-	{
-		$total_posts = $row['total'];
-	}
-	$db->sql_freeresult($result);
+		WHERE forum_id = ?';
+	$total_posts = sql_field(sql_filter($sql, $id), 'total', 0);
 	
 	$sql = 'SELECT MAX(topic_id) as last_topic, COUNT(topic_id) AS total
 		FROM _forum_topics
-		WHERE forum_id = ' . (int) $id;
-	$result = $db->sql_query($sql);
-	
-	if ($row = $db->sql_fetchrow($result))
+		WHERE forum_id = ?';
+	if ($row = sql_fieldrow(sql_filter($sql, $id)))
 	{
 		$last_topic = $row['last_topic'];
 		$total_topics = $row['total'];
 	}
-	$db->sql_freeresult($result);
 	
 	//
-	$sql = 'UPDATE _forums
-		SET forum_last_topic_id = ' . (int) $last_topic . ', forum_posts = ' . (int) $total_posts . ', forum_topics = ' . (int) $total_topics . '
-		WHERE forum_id = ' . (int) $id;
-	$db->sql_query($sql);
+	$sql = 'UPDATE _forums SET forum_last_topic_id = ?, forum_posts = ?, forum_topics = ?
+		WHERE forum_id = ?';
+	sql_query(sql_filter($sql, $last_topic, $total_posts, $total_topics, $id));
 	
 	return;
 }
@@ -138,13 +115,11 @@ Foro: <select name="forum_id">
 $sql = 'SELECT forum_id, forum_name
 	FROM _forums
 	ORDER BY forum_order';
-$result = $db->sql_query($sql);
+$result = sql_rowset($sql);
 
-while ($row = $db->sql_fetchrow($result))
-{
+foreach ($result as $row) {
 	echo '<option value="' . $row['forum_id'] . '">' . $row['forum_name'] . '</option>';
 }
-$db->sql_freeresult($result);
 
 ?>
 </select>

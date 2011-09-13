@@ -53,16 +53,14 @@ if ($submit)
 $sql = 'SELECT *
 	FROM _news
 	ORDER BY post_time DESC';
-$result = $db->sql_query($sql);
+$result = sql_rowset($sql);
 
-while ($row = $db->sql_fetchrow($result))
-{
+foreach ($result as $row) {
 	$template->assign_block_vars('news_list', array(
 		'NEWS_ID' => $row['news_id'],
 		'NEWS_TITLE' => $row['post_subject'])
 	);
 }
-$db->sql_freeresult($result);
 
 $template_vars = array(
 	'S_UPLOAD_ACTION' => $u,

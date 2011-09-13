@@ -30,34 +30,26 @@ if ($submit)
 		fatal_error();
 	}
 	
-	if (!empty($email))
-	{
-		$sql = "SELECT *
-			FROM _members
-			WHERE user_email = '" . $db->sql_escape($email) . "'";
-	}
-	else if ($userid)
-	{
+	if (!empty($email)) {
 		$sql = 'SELECT *
 			FROM _members
-			WHERE user_id = ' . (int) $userid;
-	}
-	else
-	{
-		$username = get_username_base($username);
-		
-		$sql = "SELECT *
+			WHERE user_email = ?';
+		$sql = sql_filter($sql, $email);
+	} else if ($userid) {
+		$sql = 'SELECT *
 			FROM _members
-			WHERE username_base = '" . $db->sql_escape($username) . "'";
+			WHERE user_id = ?';
+		$sql = sql_filter($sql, $userid);
+	} else {
+		$sql = 'SELECT *
+			FROM _members
+			WHERE username_base = ?';
+		$sql = sql_filter($sql, get_username_base($username));
 	}
 	
-	$result = $db->sql_query($sql);
-	
-	if (!$userdata = $db->sql_fetchrow($result))
-	{
+	if (!$userdata = sql_fieldrow($sql)) {
 		fatal_error();
 	}
-	$db->sql_freeresult($result);
 	
 	foreach ($userdata as $k => $void)
 	{

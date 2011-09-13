@@ -26,20 +26,14 @@ if ($submit)
 	
 	$sql = 'SELECT *
 		FROM _forum_topics
-		WHERE topic_id = ' . (int) $topic;
-	$result = $db->sql_query($sql);
-	
-	$topicdata = array();
-	if (!$topicdata = $db->sql_fetchrow($result))
-	{
+		WHERE topic_id = ?';
+	if (!$topicdata = sql_fieldrow(sql_filter($sql, $topic))) {
 		fatal_error();
 	}
-	$db->sql_freeresult($result);
 	
-	$sql = 'UPDATE _forum_topics
-		SET topic_locked = ' . (int) !$topicdata['topic_locked'] . '
-		WHERE topic_id = ' . (int) $topic;
-	$db->sql_query($sql);
+	$sql = 'UPDATE _forum_topics SET topic_locked = ?
+		WHERE topic_id = ?';
+	sql_query(sql_filter($sql, !$topicdata['topic_locked'], $topic));
 	
 	echo 'El tema <strong>' . $topicdata['topic_title'] . '</strong> ha sido ' . (($topicdata['topic_locked']) ? 'abierto' : 'cerrado') . '.';
 }

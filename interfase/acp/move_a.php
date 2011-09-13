@@ -33,33 +33,23 @@ if ($submit)
 	//
 	$sql = 'SELECT *
 		FROM _news
-		WHERE news_id = ' . (int) $t;
-	$result = $db->sql_query($sql);
-	
-	if (!$tdata = $db->sql_fetchrow($result))
-	{
+		WHERE news_id = ?';
+	if (!$tdata = sql_fieldrow(sql_filter($sql, $t))) {
 		_die();
 	}
-	$db->sql_freeresult($result);
 	
 	//
 	$sql = 'SELECT *
 		FROM _news_cat
-		WHERE cat_id = ' . (int) $f;
-	$result = $db->sql_query($sql);
-	
-	if (!$fdata = $db->sql_fetchrow($result))
-	{
+		WHERE cat_id = ?';
+	if (!$fdata = sql_fieldrow(sql_filter($sql, $f))) {
 		_die();
 	}
-	$db->sql_freeresult($result);
 	
 	//
-	$sql = 'UPDATE _news
-		SET cat_id = ' . (int) $f . '
-		WHERE news_id = ' . $t;
-	$db->sql_query($sql);
-		
+	$sql = 'UPDATE _news SET cat_id = ?
+		WHERE news_id = ?';
+	sql_query(sql_filter($sql, $f, $t));
 	
 	redirect(s_link('news', $t));
 }
@@ -81,13 +71,11 @@ Categoria: <select name="cat_id">
 $sql = 'SELECT cat_id, cat_name
 	FROM _news_cat
 	ORDER BY cat_id';
-$result = $db->sql_query($sql);
+$result = sql_rowset($sql);
 
-while ($row = $db->sql_fetchrow($result))
-{
+foreach ($result as $row) {
 	echo '<option value="' . $row['cat_id'] . '">' . $row['cat_name'] . '</option>';
 }
-$db->sql_freeresult($result);
 
 ?>
 </select>

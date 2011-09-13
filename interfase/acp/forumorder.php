@@ -29,10 +29,9 @@ if ($submit)
 	
 	$orderid = 10;
 	foreach ($list as $catid) {
-		$sql = 'UPDATE _forums
-			SET forum_order = ' . (int) $orderid . '
-			WHERE forum_id = ' . (int) $catid;
-		$db->sql_query($sql);
+		$sql = 'UPDATE _forums SET forum_order = ?
+			WHERE forum_id = ?';
+		sql_query(sql_filter($sql, $orderid, $catid));
 		
 		$orderid += 10;
 	}
@@ -40,7 +39,7 @@ if ($submit)
 	_die('Update.');
 }
 
-?><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+?><!DOCTYPE HTML>
 <html>
 <head>
 <title>Forum order</title>
@@ -49,7 +48,8 @@ if ($submit)
 <script src="/net/scripts/scriptaculous.js"></script>
 
 <script>
-Event.observe(window,'load',init,false);
+Event.observe(window, 'load', init, false);
+
 function init() {
 	Sortable.create('listContainer',{tag:'div',onUpdate:updateList});
 }
@@ -74,15 +74,11 @@ function updateList(container) {
 	$sql = 'SELECT forum_id, forum_name
 		FROM _forums
 		ORDER BY forum_order ASC';
-	$result = $db->sql_query($sql);
+	$result = sql_rowset($sql);
 	
-	while ($row = $db->sql_fetchrow($result))
-	{
-	?>
-	<div id="item_<?php echo $row['forum_id']; ?>"><?php echo $row['forum_name']; ?></div>
-	<?php
+	foreach ($result as $row) {
+		echo '<div id="item_' . $row['forum_id'] . '">' . $row['forum_name'] . '</div>';
 	}
-	$db->sql_freeresult($result);
 	?>
 </div>
 

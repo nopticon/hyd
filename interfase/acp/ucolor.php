@@ -25,26 +25,17 @@ if ($submit)
 	$username = request_var('username', '');
 	$username = get_username_base($username);
 	
-	$sql = "SELECT user_id, username
+	$sql = 'SELECT user_id, username
 		FROM _members
-		WHERE username_base = '" . $db->sql_escape($username) . "'";
-	$result = $db->sql_query($sql);
-	
-	$userdata = array();
-	if (!$userdata = $db->sql_fetchrow($result))
-	{
+		WHERE username_base = ?';
+	if (!$userdata = sql_fieldrow(sql_filter($sql, $username))) {
 		exit;
 	}
-	$db->sql_freeresult($result);
 	
-	$sql = "UPDATE _members
-		SET user_color = '4D5358'
-		WHERE user_id = " . (int) $userdata['user_id'];
-	$db->sql_query($sql);
+	$sql = 'UPDATE _members SET user_color = ?
+		WHERE user_id = ?';
+	sql_query(sql_filter($sql, '4D5358', $userdata['user_id']));
 	
-	//
-	//
-	//
 	require('./interfase/comments.php');
 	$comments = new _comments();
 	
@@ -55,7 +46,7 @@ if ($submit)
 	
 	M&aacute;s informaci&oacute;n en: http://www.rockrepublik.net/help/57/
 	
-	Gracias.";
+	Muchas gracias por tu comprensi&oacute;n.";
 	$_conv = sprintf($_conv, $userdata['username']);
 	
 	$dc_id = $comments->store_dc('start', $userdata, $user->data, 'Rock Republik: Cambio de color de usuario', $_conv);

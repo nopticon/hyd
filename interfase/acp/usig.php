@@ -25,22 +25,16 @@ if ($submit)
 	$username = request_var('username', '');
 	$username = get_username_base($username);
 	
-	$sql = "SELECT user_id, username
+	$sql = 'SELECT user_id, username
 		FROM _members
-		WHERE username_base = '" . $db->sql_escape($username) . "'";
-	$result = $db->sql_query($sql);
-	
-	$userdata = array();
-	if (!$userdata = $db->sql_fetchrow($result))
-	{
+		WHERE username_base = ?';
+	if (!$userdata = sql_fieldrow(sql_filter($sql, $username))) {
 		exit;
 	}
-	$db->sql_freeresult($result);
 	
-	$sql = "UPDATE _members
-		SET user_sig = ''
-		WHERE user_id = " . (int) $userdata['user_id'];
-	$db->sql_query($sql);
+	$sql = 'UPDATE _members SET user_sig = ?
+		WHERE user_id = ?';
+	sql_query(sql_filter($sql, '', $userdata['user_id']));
 	
 	echo 'La firma de ' . $userdata['username'] . ' ha sido borrada.';
 }

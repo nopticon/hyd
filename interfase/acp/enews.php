@@ -22,23 +22,17 @@ _auth('founder');
 
 $submit2 = isset($_POST['submit2']);
 
-if ($submit || $submit2)
-{
+if ($submit || $submit2) {
 	$news_id = request_var('news_id', 0);
 	
 	$sql = 'SELECT *
 		FROM _news
-		WHERE news_id = ' . (int) $news_id;
-	$result = $db->sql_query($sql);
-	
-	if (!$news_data = $db->sql_fetchrow($result))
-	{
+		WHERE news_id = ?';
+	if (!$news_data = sql_fieldrow(sql_filter($sql, $news_id))) {
 		_die('La noticia no existe.');
 	}
-	$db->sql_freeresult($result);
 	
-	if ($submit2)
-	{
+	if ($submit2) {
 		$post_subject = request_var('post_subject', '');
 		$post_desc = request_var('post_desc', '', true);
 		$post_message = request_var('post_text', '', true);
@@ -54,17 +48,15 @@ if ($submit || $submit2)
 		$post_desc = $comments->prepare($post_desc);
 		
 		//
-		$sql = "UPDATE _news
-			SET post_subject = '" . $db->sql_escape($post_subject) . "', post_desc = '" . $db->sql_escape($post_desc) . "', post_text = '" . $db->sql_escape($post_message) . "'
-			WHERE news_id = " . (int) $news_id;
-		$db->sql_query($sql);
+		$sql = 'UPDATE _news SET post_subject = ?, post_desc = ?, post_text = ?
+			WHERE news_id = ?';
+		sql_query(sql_filter($sql, $post_subject, $post_desc, $post_message, $news_id));
 		
 		$cache->delete('news');
 		redirect(s_link('news', $news_id));
 	}
 	
-	if ($submit)
-	{
+	if ($submit) {
 		$template->assign_block_vars('edit', array(
 			'ID' => $news_data['news_id'],
 			'SUBJECT' => $news_data['post_subject'],
@@ -74,8 +66,7 @@ if ($submit || $submit2)
 	}
 }
 
-if (!$submit)
-{
+if (!$submit) {
 	$template->assign_block_vars('field', array());
 }
 

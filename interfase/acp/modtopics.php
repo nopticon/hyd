@@ -26,10 +26,9 @@ $sql = 'SELECT *
 	FROM _members_unread
 	WHERE element = 8
 	ORDER BY user_id, element, item';
-$result = $db->sql_query($sql);
+$result = sql_rowset($sql);
 
-while ($row = $db->sql_fetchrow($result))
-{
+foreach ($result as $row) {
 	$delete = false;
 	
 	$t = search_topic($row['item']);
@@ -52,36 +51,28 @@ while ($row = $db->sql_fetchrow($result))
 	if ($delete)
 	{
 		$sql = 'DELETE LOW_PRIORITY FROM _members_unread
-			WHERE user_id = ' . (int) $row['user_id'] . '
+			WHERE user_id = ?
 				AND element = 8
-				AND item = ' . (int) $row['item'];
-		$db->sql_query($sql);
+				AND item = ?';
+		sql_query(sql_filter($sql, $row['user_id'], $row['item']));
 		
 		echo $row['user_id'] . '-' . $sql . '<br />';
 		flush();
 	}
 }
-$db->sql_freeresult($result);
-
 
 die();
 
 //
-function search_topic($topic_id)
-{
-	global $db;
+function search_topic($topic_id) {
+	$result = false;
 	
 	$sql = 'SELECT *
 		FROM _forum_topics
-		WHERE topic_id = ' . (int) $topic_id;
-	$result = $db->sql_query($sql);
-	
-	$result = false;
-	if ($row = $db->sql_fetchrow($result))
-	{
+		WHERE topic_id = ?';
+	if ($row = sql_fieldrow(sql_filter($sql, $topic_id))) {
 		$result = $row;
 	}
-	$db->sql_freeresult($result);
 	
 	return $result;
 }

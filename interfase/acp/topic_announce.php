@@ -27,22 +27,17 @@ if ($submit)
 	
 	$sql = 'SELECT *
 		FROM _forum_topics
-		WHERE topic_id = ' . (int) $topic;
-	$result = $db->sql_query($sql);
-	
-	$topicdata = array();
-	if (!$topicdata = $db->sql_fetchrow($result))
-	{
+		WHERE topic_id = ?';
+	if (!$topicdata = sql_fieldrow(sql_filter($sql, $topic))) {
 		fatal_error();
 	}
-	$db->sql_freeresult($result);
 	
 	$sql_important = ($important) ? ', topic_important = 1' : '';
 	
 	$sql = 'UPDATE _forum_topics
-		SET topic_color = \'E1CB39\', topic_announce = 1' . $sql_important . '
-		WHERE topic_id = ' . (int) $topic;
-	$db->sql_query($sql);
+		SET topic_color = ?, topic_announce = 1' . $sql_important . '
+		WHERE topic_id = ?';
+	sql_query(sql_filter($sql, 'E1CB39', $topic));
 	
 	echo 'El tema <strong>' . $topicdata['topic_title'] . '</strong> ha sido anunciado.';
 }

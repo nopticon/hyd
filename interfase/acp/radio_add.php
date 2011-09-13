@@ -36,16 +36,12 @@ if ($submit)
 		$v[$vv] = request_var($vv, $d);
 	}
 	
-	$sql = "SELECT show_id
+	$sql = 'SELECT show_id
 		FROM _radio
-		WHERE show_base = '" . $db->sql_escape($v['base']) . "'";
-	$result = $db->sql_query($sql);
-	
-	if ($row = $db->sql_fetchrow($result))
-	{
+		WHERE show_base = ?';
+	if ($row = sql_fieldrow(sql_filter($sql, $v['base']))) {
 		//_die('El programa ya existe');
 	}
-	$db->sql_freeresult($result);
 	
 	$time_start = mktime($v['start'] - $user->data['user_timezone'], 0, 0, 0, 0, 0);
 	$time_end = mktime($v['end'] - $user->data['user_timezone'], 0, 0, 0, 0, 0);
@@ -62,42 +58,39 @@ if ($submit)
 		unset($v[$vv]);
 	}
 	
-	$sql = 'INSERT INTO _radio' . $db->sql_build_array('INSERT', $v);
-	$db->sql_query($sql);
-	
-	$show_id = $db->sql_nextid();
+	$sql = 'INSERT INTO _radio' . sql_build('INSERT', $v);
+	$show_id = sql_query_nextid();
 	
 	$e_dj = explode("\n", $dj_list);
-	foreach ($e_dj as $rowu)
-	{
+	foreach ($e_dj as $rowu) {
 		$rowu = get_username_base($rowu);
 		
-		$sql = "SELECT *
+		$sql = 'SELECT *
 			FROM _members
-			WHERE username = '" . $db->sql_escape($rowu) . "'";
-		$result = $db->sql_query($sql);
-		
-		if ($row = $db->sql_fetchrow($result))
-		{
-			$sql = 'INSERT INTO _radio_dj (dj_show, dj_uid)
-				VALUES (' . (int) $show_id . ', ' . (int) $row['user_id'] . ')';
-			$db->sql_query($sql);
+			WHERE username = ?';
+		if ($row = sql_fieldrow(sql_filter($sql, $rowu))) {
+			$sql_insert = array(
+				'dj_show' => $show_id,
+				'dj_uid' => $row['user_id']
+			);
+			$sql = 'INSERT INTO _radio_dj' . sql_build('INSERT', $sql_insert);
+			sql_query($sql);
 			
 			$sql = 'SELECT *
 				FROM _team_members
 				WHERE team_id = 4
-					AND member_id = ' . (int) $row['user_id'];
-			$result2 = $db->sql_query($sql);
-			
-			if (!$row2 = $db->sql_fetchrow($result2))
-			{
-				$sql = "INSERT INTO _team_members (team_id, member_id, real_name, member_mod)
-					VALUES (4, " . (int) $row['user_id'] . ", '', 0)";
-				$db->sql_query($sql);
+					AND member_id = ?';
+			if (!$row2 = sql_fieldrow(sql_filter($sql, $row['user_id']))) {
+				$sql_insert = array(
+					'team_id' => 4,
+					'member_id' =>  $row['user_id'],
+					'real_name' => '',
+					'member_mod' => 0
+				);
+				$sql = 'INSERT INTO _team_members' . sql_build('INSERT', $sql_insert);
+				sql_query($sql);
 			}
-			$db->sql_freeresult($result2);
 		}
-		$db->sql_freeresult($result);
 	}
 	
 	$cache->delete('team_members');

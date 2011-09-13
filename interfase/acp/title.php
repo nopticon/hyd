@@ -34,21 +34,16 @@ if ($submit)
 
 	$sql = 'SELECT *
 		FROM _forum_topics
-		WHERE topic_id = ' . (int) $topic_id;
-	$result = $db->sql_query($sql);
-	
-	if (!$data = $db->sql_fetchrow($result))
-	{
+		WHERE topic_id = ?';
+	if (!$data = sql_fieldrow(sql_filter($sql, $topic_id))) {
 		die('NO FROM TOPIC: ' . $sql);
 	}
-	$db->sql_freeresult($result);
 	
 	$title = ucfirst(strtolower($data['topic_title']));
 	
-	$sql = "UPDATE _forum_topics
-		SET topic_title = '" . $db->sql_escape($title) . "'
-		WHERE topic_id = " . (int) $topic_id;
-	$db->sql_query($sql);
+	$sql = 'UPDATE _forum_topics SET topic_title = ?
+		WHERE topic_id = ?';
+	sql_query(sql_filter($sql, $title, $topic_id));
 	
 	echo $data['topic_title'] . '<br /><br />';
 	echo $title . '<br /><br />';

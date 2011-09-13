@@ -27,19 +27,14 @@ if ($submit)
 	
 	$sql = 'SELECT *
 		FROM _events
-		WHERE id = ' . (int) $event;
-	$result = $db->sql_query($sql);
-	
-	$eventdata = array();
-	if (!$eventdata = $db->sql_fetchrow($result))
-	{
+		WHERE id = ?';
+	if (!$eventdata = sql_fieldrow(sql_filter($sql, $event))) {
 		fatal_error();
 	}
-	$db->sql_freeresult($result);
 	
 	$sql = 'DELETE FROM _events
-		WHERE id = ' . (int) $event;
-	$db->sql_query($sql);
+		WHERE id = ?';
+	sql_query(sql_filter($sql, $event));
 	
 	echo 'El evento <strong>' . $eventdata['title'] . '</strong> ha sido borrado.';
 }

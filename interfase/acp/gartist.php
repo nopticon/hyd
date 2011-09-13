@@ -23,13 +23,11 @@ _auth('founder');
 require('./interfase/ftp.php');
 $ftp = new ftp();
 
-if (!$ftp->ftp_connect())
-{
+if (!$ftp->ftp_connect()) {
 	_die('Can not connnect');
 }
 
-if (!$ftp->ftp_login())
-{
+if (!$ftp->ftp_login()) {
 	$ftp->ftp_quit();
 	_die('Can not login');
 }
@@ -37,37 +35,29 @@ if (!$ftp->ftp_login())
 $sql = 'SELECT *
 	FROM _artists
 	ORDER BY ub';
-$result = $db->sql_query($sql);
+$result = sql_rowset($sql);
 
-while ($row = $db->sql_fetchrow($result))
-{
+foreach ($result as $row) {
 	a_mkdir($ftp->dfolder() . 'data/artists/' . $row['ub'], 'x1');
 }
-$db->sql_freeresult($result);
 
 $ftp->ftp_quit();
 
 _die('Done.');
 
-function a_mkdir($path, $folder)
-{
+function a_mkdir($path, $folder) {
 	global $ftp;
 	
 	$result = false;
-	if (!empty($path))
-	{
+	if (!empty($path)) {
 		$ftp->ftp_chdir($path);
 	}
 	
-	if ($ftp->ftp_mkdir($folder))
-	{
-		if ($ftp->ftp_site('CHMOD 0777 ' . $folder))
-		{
+	if ($ftp->ftp_mkdir($folder)) {
+		if ($ftp->ftp_site('CHMOD 0777 ' . $folder)) {
 			$result = folder;
 		}
-	}
-	else
-	{
+	} else {
 		_die('Can not create: ' . $folder);
 	}
 	

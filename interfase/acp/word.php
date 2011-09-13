@@ -28,68 +28,56 @@ if ($submit)
 	
 	$sql = "SELECT *
 		FROM _forum_posts
-		WHERE post_text LIKE '%" . $db->sql_escape($orig) . "%'
+		WHERE post_text LIKE '%??%'
 		ORDER BY post_id";
-	$result = $db->sql_query($sql);
+	$result = sql_rowset(sql_filter($sql, $orig));
 	
-	while ($row = $db->sql_fetchrow($result))
-	{
+	foreach ($result as $row) {
 		$row['post_text'] = str_replace($orig, $repl, $row['post_text']);
 		
-		$sql = "UPDATE _forum_posts
-			SET post_text = '" . $db->sql_escape($row['post_text']) . "'
-			WHERE post_id = " . (int) $row['post_id'];
-		$db->sql_query($sql);
-		//echo $sql . '<br />';
+		$sql = 'UPDATE _forum_posts SET post_text = ?
+			WHERE post_id = ?';
+		sql_query(sql_filter($sql, $row['post_text'], $row['post_id']));
 		
 		$total_1++;
 	}
-	$db->sql_freeresult($result);
 	
 	//
 	
 	$sql = "SELECT *
 		FROM _artists_posts
-		WHERE post_text LIKE '%" . $db->sql_escape($orig) . "%'
+		WHERE post_text LIKE '%??%'
 		ORDER BY post_id";
-	$result = $db->sql_query($sql);
+	$result = sql_rowset(sql_filter($sql, $orig));
 	
-	while ($row = $db->sql_fetchrow($result))
-	{
+	foreach ($result as $row) {
 		$row['post_text'] = str_replace($orig, $repl, $row['post_text']);
 		
-		$sql = "UPDATE _artists_posts
-			SET post_text = '" . $db->sql_escape($row['post_text']) . "'
-			WHERE post_id = " . (int) $row['post_id'];
-		$db->sql_query($sql);
-		//echo $sql . '<br />';
+		$sql = 'UPDATE _artists_posts SET post_text = ?
+			WHERE post_id = ?';
+		sql_query(sql_filter($sql, $row['post_text'], $row['post_id']));
 		
 		$total_2++;
 	}
-	$db->sql_freeresult($result);
 	
 	//
 	
 	$sql = "SELECT *
 		FROM _members_posts
-		WHERE post_text LIKE '%" . $db->sql_escape($orig) . "%'
+		WHERE post_text LIKE '%??%'
 		ORDER BY post_id";
-	$result = $db->sql_query($sql);
+	$result = sql_rowset(sql_filter($sql, $orig));
 	
-	while ($row = $db->sql_fetchrow($result))
-	{
+	foreach ($result as $row) {
 		$row['post_text'] = str_replace($orig, $repl, $row['post_text']);
 		
-		$sql = "UPDATE _members_posts
-			SET post_text = '" . $db->sql_escape($row['post_text']) . "'
-			WHERE post_id = " . (int) $row['post_id'];
-		$db->sql_query($sql);
-		//echo $sql . '<br />';
+		$sql = 'UPDATE _members_posts SET post_text = ?
+			WHERE post_id = ?';
+		sql_query(sql_filter($sql,$row['post_text'], $row['post_id']));
 		
 		$total_3++;
 	}
-	$db->sql_freeresult($result);
-
+	
 	_die('La frase <strong>' . $orig . '</strong> fue reemplazada por <strong>' . $repl . '</strong> en ' . $total_1 . ' f, ' . $total_2 . ' a, ' . $total_3 . ' m.');
 }
 

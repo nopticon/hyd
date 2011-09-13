@@ -31,32 +31,26 @@ if ($submit)
 	
 	$sql = 'SELECT *
 		FROM _events
-		WHERE id = ' . (int) $event;
-	$result = $db->sql_query($sql);
-	
-	if (!$row = $db->sql_fetchrow($result))
-	{
+		WHERE id = ?';
+	if (!$row = sql_fieldrow(sql_filter($sql, $event))) {
 		_die();
 	}
-	$db->sql_freeresult($result);
 	
 	$e_artist = explode("\n", $artist);
-	foreach ($e_artist as $row)
-	{
+	foreach ($e_artist as $row) {
 		$subdomain = get_subdomain($row);
 		
-		$sql = "SELECT *
+		$sql = 'SELECT *
 			FROM _artists
-			WHERE subdomain = '" . $db->sql_escape($subdomain) . "'";
-		$result = $db->sql_query($sql);
-		
-		if ($a_row = $db->sql_fetchrow($result))
-		{
-			$sql = 'INSERT INTO _artists_events (a_artist, a_event)
-				VALUES (' . (int) $a_row['ub'] . ', ' . (int) $event . ')';
-			$db->sql_query($sql);
+			WHERE subdomain = ?';
+		if ($a_row = sql_fieldrow(sql_filter($sql, $subdomain))) {
+			$sql_insert = array(
+				'a_artist' => $a_row['ub'],
+				'a_event' => $event
+			);
+			$sql = 'INSERT INTO _artists_events' . sql_build('INSERT', $sql_insert);
+			sql_query($sql);
 		}
-		$db->sql_freeresult($result);
 	}
 	
 	echo 'Actualizado.<br /><br />';
@@ -71,15 +65,13 @@ if ($submit)
 
 $sql = 'SELECT *
 	FROM _events
-	WHERE date > ' . time() . '
+	WHERE date > ??
 	ORDER BY date DESC';
-$result = $db->sql_query($sql);
+$result = sql_rowset(sql_filter($sql, time()));
 
-while ($row = $db->sql_fetchrow($result))
-{
+foreach ($result as $row) {
 	echo '<option value="' . $row['id'] . '">' . $row['title'] . ' - ' . $user->format_date($row['date']) . '</option>';
 }
-$db->sql_freeresult($result);
 
 ?>
 </select>

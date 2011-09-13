@@ -30,46 +30,34 @@ if ($submit)
 	
 	$sql = 'SELECT *
 		FROM _team
-		WHERE team_id = ' . (int) $team;
-	$result = $db->sql_query($sql);
-	
-	if (!$teamd = $db->sql_fetchrow($result))
-	{
+		WHERE team_id = ?';
+	if (!$teamd = sql_fieldrow(sql_filter($sql, $team))) {
 		fatal_error();
 	}
-	$db->sql_freeresult($result);
 	
-	$sql = "SELECT user_id, username
+	$sql = 'SELECT user_id, username
 		FROM _members
-		WHERE username_base = '" . $db->sql_escape($username) . "'";
-	$result = $db->sql_query($sql);
-	
-	$userdata = array();
-	if (!$userdata = $db->sql_fetchrow($result))
-	{
+		WHERE username_base = ?';
+	if (!$userdata = sql_fieldrow(sql_filter($sql, $username))) {
 		fatal_error();
 	}
-	$db->sql_freeresult($result);
+	
+	$insert = true;
 	
 	$sql = 'SELECT *
 		FROM _team_members
-		WHERE team_id = ' . (int) $team . '
-			AND member_id = ' . (int) $userdata['user_id'];
-	$result = $db->sql_query($sql);
-	
-	$insert = true;
-	if ($row = $db->sql_fetchrow($result))
-	{
-		if ($ismod && !$row['member_mod'])
-		{
+		WHERE team_id = ?
+			AND member_id = ?';
+	if ($row = sql_fieldrow(sql_filter($sql, $team, $userdata['user_id']))) {
+		if ($ismod && !$row['member_mod']) {
 			$sql = 'UPDATE _team_members SET member_mod = 1
-				WHERE team_id = ' . (int) $team . '
-					AND member_id = ' . (int) $userdata['user_id'];
-			$db->sql_query($sql);
+				WHERE team_id = ?
+					AND member_id = ?';
+			sql_query(sql_filter($sql, $team, $userdata['user_id']));
 		}
+		
 		$insert = false;
 	}
-	$db->sql_freeresult($result);
 	
 	if ($insert)
 	{
@@ -79,8 +67,8 @@ if ($submit)
 			'real_name' => $realname,
 			'member_mod' => $ismod
 		);
-		$sql = 'INSERT INTO _team_members' . $db->sql_build_array('INSERT', $insert);
-		$db->sql_query($sql);
+		$sql = 'INSERT INTO _team_members' . sql_build('INSERT', $insert);
+		sql_query($sql);
 	}
 	
 	$cache->delete('team', 'team_all', 'team_members', 'team_mod', 'team_radio', 'team_colab');
@@ -97,13 +85,11 @@ Equipo: <select name="team">
 $sql = 'SELECT *
 	FROM _team
 	ORDER BY team_name';
-$result = $db->sql_query($sql);
+$result = sql_rowset($sql);
 
-while ($row = $db->sql_fetchrow($result))
-{
+foreach ($result as $row) {
 	echo '<option value="' . $row['team_id'] . '">' . $row['team_name'] . '</option>';
 }
-$db->sql_freeresult($result);
 
 ?>
 </select><br />

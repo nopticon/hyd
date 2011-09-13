@@ -27,24 +27,20 @@ if ($submit)
 	$bot_ip = request_var('bot_ip', '');
 	$bot_base = get_username_base($bot_name);
 	
-	$sql = "SELECT *
+	$sql = 'SELECT *
 		FROM _bots
-		WHERE bot_name = '" . $db->sql_escape($bot_name) . "'";
-	$result = $db->sql_query($sql);
+		WHERE bot_name = ?';
 	
 	$insert = true;
-	if ($row = $db->sql_fetchrow($result))
-	{
+	if ($row = sql_fieldrow(sql_filter($sql, $bot_name))) {
 		$insert = false;
 		
-		if ($row['bot_ip'] != $bot_ip)
-		{
-			$sql = "UPDATE _bots SET bot_ip = '" . $row['bot_ip'] . "," . $bot_ip . "'
-				WHERE bot_id = " . (int) $row['bot_id'];
-			$db->sql_query($sql);
+		if ($row['bot_ip'] != $bot_ip) {
+			$sql = 'UPDATE _bots SET bot_ip = ?
+				WHERE bot_id = ?';
+			sql_query(sql_filter($sql, $row['bot_ip'] . ',' . $bot_ip, $row['bot_id']));
 		}
 	}
-	$db->sql_freeresult($result);
 	
 	if ($insert)
 	{
@@ -57,10 +53,8 @@ if ($submit)
 			'user_timezone' => -6.00,
 			'user_lang' => 'spanish'
 		);
-		$sql = 'INSERT INTO _members' . $db->sql_build_array('INSERT', $insert_member);
-		$db->sql_query($sql);
-		
-		$bot_id = $db->sql_nextid();
+		$sql = 'INSERT INTO _members' . sql_build('INSERT', $insert_member);
+		$bot_id = sql_query_nextid();
 		
 		$insert_bot = array(
 			'bot_active' => 1,
@@ -69,13 +63,13 @@ if ($submit)
 			'bot_agent' => $bot_agent,
 			'bot_ip' => $bot_ip,
 		);
-		$sql = 'INSERT INTO _bots' . $db->sql_build_array('INSERT', $insert_bot);
-		$db->sql_query($sql);
+		$sql = 'INSERT INTO _bots' . sql_build('INSERT', $insert_bot);
+		sql_query($sql);
 	}
 	
 	$sql = "DELETE FROM _sessions
-		WHERE session_browser LIKE '%" . $db->sql_escape($bot_name) . "%'";
-	$db->sql_query($sql);
+		WHERE session_browser LIKE '%??%'";
+	sql_query(sql_filter($sql, $bot_name));
 	
 	$cache->delete('bots');
 }

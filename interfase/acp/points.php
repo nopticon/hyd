@@ -24,14 +24,12 @@ $sql = 'SELECT user_id, username, username_base, user_points
 	FROM _members
 	WHERE user_points <> 0
 	ORDER BY user_points DESC, username';
-$result = $db->sql_query($sql);
+$result = sql_rowset($sql);
 
 echo '<ul>';
-while ($row = $db->sql_fetchrow($result))
-{
+foreach ($result as $row) {
 	echo '<li><a href="' . s_link('m', $row['username_base']) . '">' . $row['username'] . '</a> - ' . $row['user_points'] . '</li>';
 }
-$db->sql_freeresult($result);
 
 echo '</ul>';
 

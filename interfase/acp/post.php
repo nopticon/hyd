@@ -31,17 +31,13 @@ if ($submit)
 	
 	$sql = 'SELECT f.*, t.topic_id, t.topic_first_post_id, t.topic_last_post_id, t.topic_vote, p.post_id, p.poster_id, m.user_id
 		FROM _forum_posts p, _forum_topics t, _forums f, _members m
-		WHERE p.post_id = ' . (int) $post_id . '
+		WHERE p.post_id = ?
 			AND t.topic_id = p.topic_id
 			AND f.forum_id = p.forum_id
 			AND m.user_id = p.poster_id';
-	$result = $db->sql_query($sql);
-	
-	if (!$post_info = $db->sql_fetchrow($result))
-	{
+	if (!$post_info = sql_fieldrow(sql_filter($sql, $post_id))) {
 		die('@ post');
 	}
-	$db->sql_freeresult($result);
 	
 	$forum_id = $post_info['forum_id'];
 	$topic_id = $post_info['topic_id'];
@@ -58,49 +54,45 @@ if ($submit)
 	{
 		$sql = 'SELECT *
 			FROM _poll_options vd, _poll_results vr
-			WHERE vd.topic_id = ' . (int) $topic_id . '
+			WHERE vd.topic_id = ?
 				AND vr.vote_id = vd.vote_id
 			ORDER BY vr.vote_option_id';
-		$result = $db->sql_query($sql);
-
-		if ($row = $db->sql_fetchrow($result))
-		{
+		if ($row = sql_fieldrow(sql_filter($sql, $topic_id))) {
 			$poll_id = $row['vote_id'];
 		}
-		$db->sql_freeresult($result);
 	}
 	
 	//
 	// Process
 	//
 	$sql = 'DELETE FROM _forum_posts
-		WHERE post_id = ' . (int) $post_id;
-	$db->sql_query($sql);
+		WHERE post_id = ?';
+	sql_query(sql_filter($sql, $post_id));
 	
 	if ($post_data['first_post'] && $post_data['last_post'])
 	{
 		$sql = 'DELETE FROM _forum_topics
-			WHERE topic_id = ' . (int) $topic_id;
-		$db->sql_query($sql);
+			WHERE topic_id = ?';
+		sql_query(sql_filter($sql, $topic_id));
 		
 		$sql = 'DELETE FROM _forum_topics_fav
-			WHERE topic_id = ' . (int) $topic_id;
-		$db->sql_query($sql);
+			WHERE topic_id = ?';
+		sql_query(sql_filter($sql, $topic_id));
 	}
 	
 	/*if ($post_data['first_post'] && $post_data['has_poll'])
 	{
 		$sql = 'DELETE FROM _poll_options
-			WHERE topic_id = ' . (int) $topic_id;
-		$db->sql_query($sql);
+			WHERE topic_id = ?';
+		sql_query(sql_filter($sql, $topic_id));
 		
 		$sql = 'DELETE FROM _poll_results
-			WHERE vote_id = ' . (int) $poll_id;
-		$db->sql_query($sql);
+			WHERE vote_id = ?';
+		sql_query(sql_filter($sql, $poll_id));
 		
 		$sql = 'DELETE FROM _poll_voters
-			WHERE vote_id = ' . (int) $poll_id;
-		$db->sql_query($sql);
+			WHERE vote_id = ?';
+		sql_query(sql_filter($sql, $poll_id));
 	}*/
 	
 	//
@@ -121,28 +113,20 @@ if ($submit)
 			
 			$sql = 'SELECT MAX(post_id) AS last_post_id
 				FROM _forum_posts
-				WHERE topic_id = ' . (int) $topic_id;
-			$result = $db->sql_query($sql);
-			
-			if ($row = $db->sql_fetchrow($result))
-			{
-				$topic_update_sql .= ', topic_last_post_id = ' . $row['last_post_id'];
+				WHERE topic_id = ';
+			if ($last_post_id = sql_field(sql_filter($sql, $topic_id), 'last_post_id', 0)) {
+				$topic_update_sql .= ', topic_last_post_id = ' . $last_post_id;
 			}
-			$db->sql_freeresult($result);
 		}
 
 		if ($post_data['last_topic'])
 		{
 			$sql = 'SELECT MAX(topic_id) AS last_topic_id
 				FROM _forum_topics
-				WHERE forum_id = ' . (int) $forum_id;
-			$result = $db->sql_query($sql);
-				
-			if ($row = $db->sql_fetchrow($result))
-			{
-				$forum_update_sql .= ', forum_last_topic_id = ' . (($row['last_topic_id']) ? $row['last_topic_id'] : 0);
+				WHERE forum_id = ?';
+			if ($last_topic_id = sql_field(sql_filter($sql, $forum_id), 'last_topic_id', 0)) {
+				$forum_update_sql .= ', forum_last_topic_id = ' . $last_topic_id;
 			}
-			$db->sql_freeresult($result);
 		}
 	}
 	else if ($post_data['first_post']) 

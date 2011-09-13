@@ -29,22 +29,23 @@ if ($submit && ($username || $ip))
 	{
 		$username_base = get_username_base($username);
 		
-		$sql = "SELECT m.username, l.*
+		$sql = 'SELECT m.username, l.*
 			FROM _members m, _members_iplog l
 			WHERE m.user_id = l.log_user_id
-				AND m.username_base = '" . $db->sql_escape($username_base) . "'
-			ORDER BY l.log_time DESC";
+				AND m.username_base = ?
+			ORDER BY l.log_time DESC';
+		$sql = sql_filter($sql, $username_base);
 	}
 	else if ($ip)
 	{
-		$sql = "SELECT m.username, l.*
+		$sql = 'SELECT m.username, l.*
 			FROM _members m, _members_iplog l
 			WHERE m.user_id = l.log_user_id
-				AND l.log_ip = '" . $db->sql_escape($ip) . "'
-			ORDER BY l.log_time DESC";
+				AND l.log_ip = ?
+			ORDER BY l.log_time DESC';
+		$sql = sql_filter($sql, $ip);
 	}
-	
-	$result = $db->sql_query($sql);
+	$result = sql_rowset($sql);
 	
 	echo '<table border="1">
 	<tr>
@@ -57,8 +58,7 @@ if ($submit && ($username || $ip))
 		<td>Agent</td>
 	</tr>';
 	
-	while ($row = $db->sql_fetchrow($result))
-	{
+	foreach ($result as $row) {
 		echo '<tr>
 	<td>' . $row['log_user_id'] . '</td>
 	<td>' . $row['username'] . '</td>
@@ -69,7 +69,6 @@ if ($submit && ($username || $ip))
 	<td>' . $row['log_agent'] . '</td>
 </tr>';
 	}
-	$db->sql_freeresult($result);
 	
 	echo '</table><br /><br />';
 }

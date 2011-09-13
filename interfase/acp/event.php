@@ -35,18 +35,10 @@ if ($submit)
 	
 	$f = $upload->process($filepath_1, $_FILES['add_image'], array('jpg', 'jpeg'), $i_size);
 	
-	if (!sizeof($upload->error) && $f !== false)
-	{
+	if (!sizeof($upload->error) && $f !== false) {
 		$sql = 'SELECT MAX(id) AS total
 			FROM _events';
-		$result = $db->sql_query($sql);
-		
-		$img = 0;
-		if ($row = $db->sql_fetchrow($result))
-		{
-			$img = $row['total'];
-		}
-		$db->sql_freeresult($result);
+		$img = sql_field($sql, 'total', 0);
 		
 		// Create vars
 		$e_title = request_var('e_title', '');
@@ -58,13 +50,11 @@ if ($submit)
 		$e_mins = request_var('e_mins', 0);
 		$v_date = gmmktime($e_hour, $e_mins, 0, $e_month, $e_day, $e_year) - $user->timezone - $user->dst;
 		
-		foreach ($f as $row)
-		{
+		foreach ($f as $row) {
 			$img++;
 			
 			$xa = $upload->resize($row, $filepath_1, $filepath_1, $img, array(600, 400), false, false, true);
-			if ($xa === false)
-			{
+			if ($xa === false) {
 				continue;
 			}
 			$xb = $upload->resize($row, $filepath_1, $filepath_2, $img, array(100, 75), false, false);
@@ -75,9 +65,8 @@ if ($submit)
 				'archive' => '',
 				'date' => (int) $v_date
 			);
-			$sql = 'INSERT INTO _events' . $db->sql_build_array('INSERT', $insert);
-			$db->sql_query($sql);
-			$event_id = $db->sql_nextid();
+			$sql = 'INSERT INTO _events' . sql_build('INSERT', $insert);
+			$event_id = sql_query_nextid();
 			
 			//
 			$ex_artist = explode("\n", $e_artist);
@@ -85,18 +74,17 @@ if ($submit)
 			{
 				$subdomain = get_subdomain($row);
 				
-				$sql = "SELECT *
+				$sql = 'SELECT *
 					FROM _artists
-					WHERE subdomain = '" . $db->sql_escape($subdomain) . "'";
-				$result = $db->sql_query($sql);
-				
-				if ($a_row = $db->sql_fetchrow($result))
-				{
-					$sql = 'INSERT INTO _artists_events (a_artist, a_event)
-						VALUES (' . (int) $a_row['ub'] . ', ' . (int) $event_id . ')';
-					$db->sql_query($sql);
+					WHERE subdomain = ?';
+				if ($a_row = sql_fieldrow(sql_filter($sql, $subdomain))) {
+					$sql_insert = array(
+						'a_artist' => $a_row['ub'],
+						'a_event' => $event_id
+					);
+					$sql = 'INSERT INTO _artists_events' . sql_build('INSERT', $sql_insert);
+					sql_query($sql);
 				}
-				$db->sql_freeresult($result);
 			}
 			
 			// Alice: Create topic
@@ -115,8 +103,8 @@ if ($submit)
 				'topic_featured' => 1,
 				'topic_points' => 1
 			);
-			$db->sql_query('INSERT INTO _forum_topics' . $db->sql_build_array('INSERT', $insert));
-			$topic_id = $db->sql_nextid();
+			$sql = 'INSERT INTO _forum_topics' . sql_build('INSERT', $insert);
+			$topic_id = sql_query_nextid();
 			
 			$insert = array(
 				'topic_id' => (int) $topic_id,
@@ -127,12 +115,12 @@ if ($submit)
 				'post_text' => $post_message,
 				'post_np' => ''
 			);
-			$db->sql_query('INSERT INTO _forum_posts' . $db->sql_build_array('INSERT', $insert));
-			$post_id = $db->sql_nextid();
+			$sql = 'INSERT INTO _forum_posts' . sql_build('INSERT', $insert);
+			$post_id = sql_query_nextid();
 			
-			$sql = 'UPDATE _events SET event_topic = ' . (int) $topic_id . '
-				WHERE id = ' . (int) $event_id;
-			$db->sql_query($sql);
+			$sql = 'UPDATE _events SET event_topic = ?
+				WHERE id = ?';
+			sql_query(sql_filter($sql, $topic_id, $event_id));
 			
 			$insert = array(
 				'topic_id' => (int) $topic_id,
@@ -140,8 +128,8 @@ if ($submit)
 				'vote_start' => time(),
 				'vote_length' => (int) ($poll_length * 86400)
 			);
-			$db->sql_query('INSERT INTO _poll_options' . $db->sql_build_array('INSERT', $insert));
-			$poll_id = $db->sql_nextid();
+			$sql = 'INSERT INTO _poll_options' . sql_build('INSERT', $insert);
+			$poll_id = sql_query_nextid();
 			
 			$poll_options = array('Si asistir&eacute;', 'No asistir&eacute;');
 			
@@ -154,35 +142,29 @@ if ($submit)
 					'vote_option_text' => $option,
 					'vote_result' => 0
 				);
-				$db->sql_query('INSERT INTO _poll_results' . $db->sql_build_array('INSERT', $insert_data['POLLRESULTS'][$poll_option_id]));
+				$sql = 'INSERT INTO _poll_results' . sql_build('INSERT', $insert_data['POLLRESULTS'][$poll_option_id]);
+				sql_query($sql);
 				$poll_option_id++;
 			}
 			
-			$sql = 'UPDATE _forums
-				SET forum_posts = forum_posts + 1, forum_last_topic_id = ' . $topic_id . ', forum_topics = forum_topics + 1
+			$sql = 'UPDATE _forums SET forum_posts = forum_posts + 1, forum_last_topic_id = ?, forum_topics = forum_topics + 1
 				WHERE forum_id = 21';
-			$db->sql_query($sql);
+			sql_query(sql_filter($sql, $topic_id));
 			
-			$sql = 'UPDATE _forum_topics
-				SET topic_first_post_id = ' . $post_id . ', topic_last_post_id = ' . $post_id . '
-				WHERE topic_id = ' . $topic_id;
-			$db->sql_query($sql);
+			$sql = 'UPDATE _forum_topics SET topic_first_post_id = ?, topic_last_post_id = ?
+				WHERE topic_id = ?';
+			sql_query(sql_filter($sql, $post_id, $post_id, $topic_id));
 			
-			$sql = 'UPDATE _members
-				SET user_posts = user_posts + 1
-				WHERE user_id = ' . $user->data['user_id'];
-			$db->sql_query($sql);
+			$sql = 'UPDATE _members SET user_posts = user_posts + 1
+				WHERE user_id = ?';
+			sql_query(sql_filter($sql, $user->data['user_id']));
 			
-			$sql = "SELECT SUM(forum_topics) AS topic_total, SUM(forum_posts) AS post_total 
-				FROM _forums";
-			$result = $db->sql_query($sql);
-			
-			if ($row = $db->sql_fetchrow($result))
-			{
+			$sql = 'SELECT SUM(forum_topics) AS topic_total, SUM(forum_posts) AS post_total 
+				FROM _forums';
+			if ($row = sql_fieldrow($sql)) {
 				set_config('max_posts', $row['post_total']);
 				set_config('max_topics', $row['topic_total']);
 			}
-			$db->sql_freeresult($result);
 			
 			// Notify
 			$user->save_unread(UH_T, $topic_id);

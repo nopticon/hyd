@@ -31,23 +31,17 @@ if ($submit)
 	
 	$username = get_username_base($username);
 	
-	$sql = "SELECT user_id
+	$sql = 'SELECT user_id
 		FROM _members
-		WHERE username_base = '" . $db->sql_escape($username) . "'";
-	$result = $db->sql_query($sql);
-	
-	if (!$row = $db->sql_fetchrow($result))
-	{
+		WHERE username_base = ?';
+	if (!$row = sql_fieldrow(sql_filter($sql, $username))) {
 		die();
 	}
-	$db->sql_freeresult($result);
 	
-	$user_id = $row['user_id'];
-
-	$sql = "DELETE FROM _members_unread
-		WHERE user_id = " . (int) $user_id . '
-			AND element <> 16';
-	$db->sql_query($sql);
+	$sql = 'DELETE FROM _members_unread
+		WHERE user_id = ?
+			AND element <> ?';
+	sql_query(sql_filter($sql, $row['user_id'], 16));
 
 	echo 'Deleted';
 }

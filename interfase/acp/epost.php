@@ -31,14 +31,10 @@ if ($submit)
 	
 	$sql = 'SELECT *
 		FROM _forum_posts
-		WHERE post_id = ' . (int) $post_id;
-	$result = $db->sql_query($sql);
-	
-	if (!$postdata = $db->sql_fetchrow($result))
-	{
+		WHERE post_id = ?';
+	if (!$postdata = sql_fieldrow(sql_filter($sql, $post_id))) {
 		_die('El mensaje no existe.');
 	}
-	$db->sql_freeresult($result);
 	
 	//
 	require('./interfase/comments.php');
@@ -47,10 +43,10 @@ if ($submit)
 	$post_message = $comments->prepare($post_message);
 	
 	//
-	$sql = "UPDATE _forum_posts
-		SET post_text = '" . $db->sql_escape($post_message) . "'
-		WHERE post_id = " . (int) $post_id;
-	$db->sql_query($sql);
+	$sql = 'UPDATE _forum_posts
+		SET post_text = ?
+		WHERE post_id = ?';
+	sql_query(sql_filter($sql, $post_message, $post_id));
 	
 	redirect(s_link('post', $post_id));
 }

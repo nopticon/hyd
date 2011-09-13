@@ -30,34 +30,28 @@ if ($submit)
 	
 	$sql = 'SELECT *
 		FROM _poll_options
-		WHERE topic_id = ' . (int) $topic_id;
-	$result = $db->sql_query($sql);
-	
-	if (!$data_opt = $db->sql_fetchrow($result))
-	{
+		WHERE topic_id = ?';
+	if (!$data_opt = sql_fieldrow(sql_filter($sql, $topic_id))) {
 		_die();
 	}
-	$db->sql_freeresult($result);
 	
 	$sql = 'SELECT v.*, m.username, r.vote_option_text
 		FROM _poll_voters v, _members m, _poll_results r
-		WHERE v.vote_id = ' . (int) $data_opt['vote_id'] . '
+		WHERE v.vote_id = ?
 			AND v.vote_id = r.vote_id
 			AND v.vote_user_id = m.user_id
 			AND r.vote_option_id = v.vote_cast';
-	$result = $db->sql_query($sql);
+	$result = sql_rowset(sql_filter($sql, $data_opt['vote_id']));
 	
 	echo '<table>';
 	
-	while ($row = $db->sql_fetchrow($result))
-	{
+	foreach ($result as $row) {
 		echo '<tr>
 		<td>' . $row['username'] . '</td>
 		<td>' . $row['vote_option_text'] . '</td>
 		<td>' . $row['vote_user_ip'] . '</td>
 		</tr>';
 	}
-	$db->sql_freeresult($result);
 	
 	echo '</table><br /><br /><br />';
 }

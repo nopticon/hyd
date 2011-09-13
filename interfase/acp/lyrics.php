@@ -30,22 +30,17 @@ if ($submit)
 	
 	$sql = 'SELECT *
 		FROM _artists
-		WHERE ub = ' . (int) $request['ub'];
-	$result = $db->sql_query($sql);
-	
-	if (!$ad = $db->sql_fetchrow($result))
-	{
+		WHERE ub = ?';
+	if (!$ad = sql_fieldrow(sql_filter($sql, $request['ub']))) {
 		fatal_error();
 	}
-	$db->sql_freeresult($result);
 	
-	$sql = 'INSERT INTO _artists_lyrics' . $db->sql_build_array('INSERT', $request);
-	$db->sql_query($sql);
+	$sql = 'INSERT INTO _artists_lyrics' . sql_build('INSERT', $request);
+	sql_query($sql);
 	
-	$sql = 'UPDATE _artists
-		SET lirics = lirics + 1
-		WHERE ub = ' . (int) $request['ub'];
-	$db->sql_query($sql);
+	$sql = 'UPDATE _artists SET lirics = lirics + 1
+		WHERE ub = ?';
+	sql_query(sql_filter($sql, $request['ub']));
 	
 	redirect(s_link('a', $ad['subdomain']));
 }
@@ -58,13 +53,11 @@ Banda: <select name="ub"><?php
 $sql = 'SELECT ub, name
 	FROM _artists
 	ORDER BY name';
-$result = $db->sql_query($sql);
+$result = sql_rowset($sql);
 
-while ($row = $db->sql_fetchrow($result))
-{
+foreach ($result as $row) {
 	echo '<option value="' . $row['ub'] . '">' . $row['name'] . '</option>';
 }
-$db->sql_freeresult($result);
 
 ?></select><br />
 T&iacute;tulo: <input type="text" name="title" value="" /><br />

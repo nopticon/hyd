@@ -32,33 +32,24 @@ if ($submit)
 	$username_base1 = get_username_base($username1);
 	$username_base2 = get_username_base($username2);
 	
-	$sql = "SELECT *
+	$sql = 'SELECT *
 		FROM _members
-		WHERE username_base = '" . $db->sql_escape($username_base1) . "'";
-	$result = $db->sql_query($sql);
-	
-	if (!$userdata = $db->sql_fetchrow($result))
-	{
+		WHERE username_base = ?';
+	if (!$userdata = sql_fieldrow(sql_filter($sql, $username_base1))) {
 		_die('El usuario no existe.');
 	}
-	$db->sql_freeresult($result);
 	
-	$sql = "SELECT *
+	$sql = 'SELECT *
 		FROM _members
-		WHERE username_base = '" . $db->sql_escape($username_base2) . "'";
-	$result = $db->sql_query($sql);
-	
-	if ($void = $db->sql_fetchrow($result))
-	{
+		WHERE username_base = ?';
+	if ($void = sql_fieldrow(sql_filter($sql, $username_base2))) {
 		_die('El usuario ya existe.');
 	}
-	$db->sql_freeresult($result);
 	
 	//
-	$sql = "UPDATE _members
-		SET username = '" . $db->sql_escape($username2) . "', username_base = '" . $db->sql_escape($username_base2) . "'
-		WHERE user_id = " . (int) $userdata['user_id'];
-	$db->sql_query($sql);
+	$sql = 'UPDATE _members SET username = ?, username_base = ?
+		WHERE user_id = ?';
+	sql_query(sql_filter($sql, $username2, $username_base2, $userdata['user_id']));
 	
 	require('./interfase/emailer.php');
 	$emailer = new emailer();

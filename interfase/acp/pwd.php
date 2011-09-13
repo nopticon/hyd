@@ -28,22 +28,16 @@ if ($submit)
 	$username = get_username_base($username);
 	$password = user_password($password);
 	
-	$sql = "SELECT user_id, username
+	$sql = 'SELECT user_id, username
 		FROM _members
-		WHERE username_base = '" . $db->sql_escape($username) . "'";
-	$result = $db->sql_query($sql);
-	
-	$userdata = array();
-	if (!$userdata = $db->sql_fetchrow($result))
-	{
+		WHERE username_base = ?';
+	if (!$userdata = sql_fieldrow(sql_filter($sql, $username))) {
 		exit;
 	}
-	$db->sql_freeresult($result);
 	
-	$sql = "UPDATE _members
-		SET user_password = '" . $db->sql_escape($password) . "'
-		WHERE user_id = " . (int) $userdata['user_id'];
-	$db->sql_query($sql);
+	$sql = 'UPDATE _members SET user_password = ?
+		WHERE user_id = ?';
+	sql_query(sql_filter($sql, $password, $userdata['user_id']));
 	
 	echo 'La contrase&ntilde;a de ' . $userdata['username'] . ' fue actualizada.';
 	exit;
