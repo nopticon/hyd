@@ -1472,7 +1472,7 @@ class Template {
 }
 
 if (!function_exists('xs_switch')) {
-	public function xs_switch($tpl, $name) {
+	function xs_switch($tpl, $name) {
 		return (isset($tpl->_tpldata[$name.'.']) && count($tpl->_tpldata[$name.'.']) > 0);
 	}
 }

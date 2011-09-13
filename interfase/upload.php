@@ -16,31 +16,24 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-class upload
-{
-	var $error = array();
+class upload {
+	public $error = array();
 	
-	function array_merge($files)
-	{
+	public function array_merge($files) {
 		$file_ary = array();
 		if (!is_array($files)) return $file_ary;
 		
 		$a_keys = array_keys($files);
-		for ($i = 0, $end = sizeof($files['name']); $i < $end; $i++)
-		{
-			foreach ($a_keys as $k)
-			{
+		for ($i = 0, $end = sizeof($files['name']); $i < $end; $i++) {
+			foreach ($a_keys as $k) {
 				$file_ary[$i][$k] = $files[$k][$i];
 			}
 		}
 		
 		$check = array('name' => '', 'name' => 'none', 'size' => 0, 'error' => 4);
-		foreach ($file_ary as $i => $row)
-		{
-			foreach ($check as $k => $v)
-			{
-				if ($row[$k] === $v)
-				{
+		foreach ($file_ary as $i => $row) {
+			foreach ($check as $k => $v) {
+				if ($row[$k] === $v) {
 					unset($file_ary[$i]);
 				}
 			}
@@ -49,13 +42,11 @@ class upload
 		return array_values($file_ary);
 	}
 	
-	function get_extension($file)
-	{
+	function get_extension($file) {
 		return strtolower(str_replace('.', '', substr($file, strrpos($file, '.'))));
 	}
 	
-	function rename($a, $b)
-	{
+	function rename($a, $b) {
 		$filename = str_replace($a['random_name'], $b, $a['filepath']);
 		@rename($a['filepath'], $filename);
 		@chmod($filename, 0644);
@@ -63,8 +54,7 @@ class upload
 		return $filename;
 	}
 	
-	function _row($filepath, $filename)
-	{
+	function _row($filepath, $filename) {
 		$row = array(
 			'extension' => $this->get_extension($filename),
 			'name' => strtolower($filename),
@@ -77,73 +67,57 @@ class upload
 		return $row;
 	}
 	
-	function process($filepath, $files, $extension, $filesize, $safe = true)
-	{
+	function process($filepath, $files, $extension, $filesize, $safe = true) {
 		global $user;
 		
 		$umask = umask(0);
 		$files = $this->array_merge($files);
-		if (!sizeof($files))
-		{
+		if (!sizeof($files)) {
 			$this->error[] = 'FILES_NO_FILES';
 			return false;
 		}
 		
-		foreach ($files as $i => $row)
-		{
+		foreach ($files as $i => $row) {
 			$row['extension'] = $this->get_extension($row['name']);
 			$row['name'] = strtolower($row['name']);
 			
-			if (!in_array($row['extension'], $extension))
-			{
+			if (!in_array($row['extension'], $extension)) {
 				$this->error[] = sprintf($user->lang['UPLOAD_INVALID_EXT'], $row['name']);
 				$row['error'] = 1;
-			}
-			elseif ($safe)
-			{
-				if (preg_match('/\.(cgi|pl|js|asp|php|html|htm|jsp|jar|exe|dll|bat)/', $row['name']))
-				{
+			} elseif ($safe) {
+				if (preg_match('/\.(cgi|pl|js|asp|php|html|htm|jsp|jar|exe|dll|bat)/', $row['name'])) {
 					$row['extension'] = 'txt';
 				}
-			}
-			elseif ($row['size'] > $filesize)
-			{
+			} elseif ($row['size'] > $filesize) {
 				$this->error[] = sprintf($user->lang['UPLOAD_TOO_BIG'], $row['name'], ($filesize / 1048576));
 				$row['error'] = 1;
 			}
 			
-			if (isset($row['error']) && $row['error'] === 1)
-			{
+			if (isset($row['error']) && $row['error'] === 1) {
 				unset($files[$i]);
 				continue;
 			}
 			$files[$i] = $row;
 		}
 		
-		foreach ($files as $i => $row)
-		{
+		foreach ($files as $i => $row) {
 			$row['random_name'] = time() . '_' . substr(md5(unique_id()), 6);
 			$row['filename'] = $row['random_name'] . '.' . $row['extension'];
 			$row['filepath'] = $filepath . $row['filename'];
 			
-			if (@move_uploaded_file($row['tmp_name'], $row['filepath']))
-			{
+			if (@move_uploaded_file($row['tmp_name'], $row['filepath'])) {
 				@chmod($row['filepath'], 0644);
-			}
-			else
-			{
+			} else {
 				$this->error[] = sprintf($user->lang['UPLOAD_FAILED'], $row['name']);
 				$row['error'] = 1;
 			}
 			
-			if (@filesize($row['filepath']) > $filesize)
-			{
+			if (@filesize($row['filepath']) > $filesize) {
 				$this->error[] = sprintf($user->lang['UPLOAD_TOO_BIG'], $row['name'], ($filesize / 1048576));
 				$row['error'] = 1;
 			}
 			
-			if (isset($row['error']) && $row['error'] === 1)
-			{
+			if (isset($row['error']) && $row['error'] === 1) {
 				@unlink($row['filepath']);
 				unset($files[$i]);
 				continue;
@@ -155,21 +129,18 @@ class upload
 		return (count($files)) ? $files : false;
 	}
 	
-	function resize(&$row, $folder_a, $folder_b, $filename, $measure, $mscale = true, $watermark = true, $remove = false, $watermark_file = false)
-	{
+	function resize(&$row, $folder_a, $folder_b, $filename, $measure, $mscale = true, $watermark = true, $remove = false, $watermark_file = false) {
 		$a_filename = $filename . '.' . $row['extension'];
 		$source = $folder_a . $row['filename'];
 		$destination = $folder_b . $a_filename;
 		
 		// Get source image data
 		list($width, $height, $type, $void) = @getimagesize($source);
-		if ($width < 1 && $height < 1)
-		{
+		if ($width < 1 && $height < 1) {
 			return false;
 		}
 		
-		if ($width < $measure[0] && $height < $measure[1])
-		{
+		if ($width < $measure[0] && $height < $measure[1]) {
 			$measure[0] = $width;
 			$measure[1] = $height;
 		}
@@ -178,8 +149,7 @@ class upload
 		$row = array_merge($row, array('width' => $width, 'height' => $height, 'mwidth' => $measure[0], 'mheight' => $measure[1]));
 		$row = array_merge($row, $this->scale($scale_mode, $row));
 		
-		switch ($type)
-		{
+		switch ($type) {
 			case IMG_JPG:
 				$image_f = 'imagecreatefromjpeg';
 				$image_g = 'imagejpeg';
@@ -197,8 +167,7 @@ class upload
 				break;
 		}
 		
-		if (!$image = @$image_f($source))
-		{
+		if (!$image = @$image_f($source)) {
 			return false;
 		}
 		
@@ -207,10 +176,8 @@ class upload
 		@imagecopyresampled($thumb, $image, 0, 0, 0, 0, $row['width'], $row['height'], $width, $height);
 		
 		// Watermark
-		if ($watermark)
-		{
-			if ($watermark_file === false)
-			{
+		if ($watermark) {
+			if ($watermark_file === false) {
 				$watermark_file = 'w';
 			}
 			
@@ -218,16 +185,13 @@ class upload
 			$wm_w = imagesx($wm);
 			$wm_h = imagesy($wm);
 			
-			if ($watermark_file == 'w')
-			{
+			if ($watermark_file == 'w') {
 				$dest_x = $row['width'] - $wm_w - 5;
 				$dest_y = $row['height'] - $wm_h - 5;
 				
 				imagecopymerge($thumb, $wm, $dest_x, $dest_y, 0, 0, $wm_w, $wm_h, 100);
 				imagedestroy($wm);
-			}
-			else
-			{
+			} else {
 				$dest_x = round(($row['width'] / 2) - ($wm_w / 2));
 				$dest_y = round(($row['height'] / 2) - ($wm_h / 2));
 				
@@ -235,21 +199,17 @@ class upload
 			}
 			
 			/*
-			if ($watermark_file === false)
-			{
+			if ($watermark_file === false) {
 				$watermark_file = 'w';
 			}
 			$wm = imagecreatefrompng('../home/style/images/' . $watermark_file . '.png');
 			$wm_w = imagesx($wm);
 			$wm_h = imagesy($wm);
 			
-			if ($watermark_file == 'w')
-			{
+			if ($watermark_file == 'w') {}
 				$dest_x = $row['width'] - $wm_w - 5;
 				$dest_y = $row['height'] - $wm_h - 5;
-			}
-			else
-			{
+			} else {
 				$dest_x = round(($row['width'] / 2) - ($wm_w / 2));
 				$dest_y = round(($row['height'] / 2) - ($wm_h / 2));
 			}
@@ -260,8 +220,7 @@ class upload
 		}
 		
 		eval('$created = @' . $image_g . '($thumb, $destination' . (($type == IMG_JPG) ? ', 85' : '') . ');');
-		if (!$created || !@file_exists($destination))
-		{
+		if (!$created || !@file_exists($destination)) {
 			return false;
 		}
 		
@@ -269,8 +228,7 @@ class upload
 		@imagedestroy($thumb);
 		@imagedestroy($image);
 		
-		if ($remove && @file_exists($source))
-		{
+		if ($remove && @file_exists($source)) {
 			@unlink($source);
 		}
 		
@@ -278,22 +236,17 @@ class upload
 		return $row;
 	}
 	
-	function scale($mode, $a)
-	{
-		switch ($mode)
-		{
+	function scale($mode, $a) {
+		switch ($mode) {
 			case 'c':
 				$width = $a['mwidth'];
 				$height = round(($a['height'] * $a['mwidth']) / $a['width']);
 				break;
 			case 'v':
-				if ($a['width'] > $a['height'])
-				{
+				if ($a['width'] > $a['height']) {
 					$width = round($a['width'] * ($a['mwidth'] / $a['width']));
 					$height = round($a['height'] * ($a['mwidth'] / $a['width']));
-				} 
-				else 
-				{
+				} else {
 					$width = round($a['width'] * ($a['mwidth'] / $a['height']));
 					$height = round($a['height'] * ($a['mwidth'] / $a['height']));
 				}
@@ -302,12 +255,9 @@ class upload
 		return array('width' => $width, 'height' => $height);
 	}
 	
-	function alpha_overlay($destImg, $overlayImg, $imgW, $imgH, $onx, $ony, $alpha = 0)
-	{
-		for ($y = 0; $y < $imgH; $y++)
-		{
-			for ($x = 0; $x < $imgW; $x++)
-			{
+	function alpha_overlay($destImg, $overlayImg, $imgW, $imgH, $onx, $ony, $alpha = 0) {
+		for ($y = 0; $y < $imgH; $y++) {
+			for ($x = 0; $x < $imgW; $x++) {
 				$ovrARGB = imagecolorat($overlayImg, $x, $y);
 				$ovrA = ($ovrARGB >> 24) << 1;
 				$ovrR = $ovrARGB >> 16 & 0xFF;
@@ -315,15 +265,12 @@ class upload
 				$ovrB = $ovrARGB & 0xFF;
 				
 				$change = false;
-				if ($ovrA == 0)
-				{
+				if ($ovrA == 0) {
 					$dstR = $ovrR;
 					$dstG = $ovrG;
 					$dstB = $ovrB;
 					$change = true;
-				}
-				elseif ($ovrA < 254)
-				{
+				} elseif ($ovrA < 254) {
 					$dstARGB = imagecolorat($destImg, $x, $y);
 					$dstR = $dstARGB >> 16 & 0xFF;
 					$dstG = $dstARGB >> 8 & 0xFF;
@@ -334,8 +281,7 @@ class upload
 					$change = true;
 				}
 				
-				if ($change)
-				{
+				if ($change) {
 					$dstRGB = imagecolorallocatealpha($destImg, $dstR, $dstG, $dstB, $alpha);
 					imagesetpixel($destImg, ($onx + $x), ($ony + $y), $dstRGB);
 				}
@@ -345,19 +291,16 @@ class upload
 		return $destImg;
 	}
 	
-	function picnik_import()
-	{
+	function picnik_import() {
 		global $config;
 	}
 	
-	function picnik_export()
-	{
+	function picnik_export() {
 		global $config;
 	}
 }
 
 /*
-
 // 
 // index.php
 //
@@ -371,7 +314,7 @@ class upload
 $apikey = "a77f917f0058eb066a87af4d8a540960";
 
 // If someone wants to view the source, then dump it out.
-if( isset( $_GET["source"] ) ) {
+if(isset($_GET["source"])) {
 	echo "<pre>";
 	echo htmlentities( file_get_contents( "index.php") );								
 	echo "</pre>";
