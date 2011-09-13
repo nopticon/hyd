@@ -18,18 +18,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-class board
-{
-	var $cat_data = array();
-	var $forum_data = array();
-	var $msg;
+class board {
+	public $cat_data = array();
+	public $forum_data = array();
+	public $msg;
 	
-	function categories()
-	{
+	public function categories() {
 		global $cache;
 		
-		if (!$this->cat_data = $cache->get('forum_categories'))
-		{
+		if (!$this->cat_data = $cache->get('forum_categories')) {
 			$sql = 'SELECT cat_id, cat_title
 				FROM _forum_categories
 				ORDER BY cat_order';
@@ -45,8 +42,7 @@ class board
 		return true;
 	}
 	
-	function forums()
-	{
+	public function forums() {
 		$sql = 'SELECT f.*, t.topic_id, t.topic_title, p.post_id, p.post_time, p.post_username, u.user_id, u.username, u.username_base, u.user_color 
 			FROM (( _forums f
 			LEFT JOIN _forum_topics t ON t.topic_id = f.forum_last_topic_id
@@ -60,46 +56,36 @@ class board
 		return true;
 	}
 	
-	function index()
-	{
+	public function index() {
 		global $user, $auth, $template;
 		
 		$is_auth_ary = array();
 		$is_auth_ary = $auth->forum(AUTH_VIEW, AUTH_LIST_ALL, $this->forum_data);
 		
-		foreach ($this->cat_data as $c_data)
-		{
+		foreach ($this->cat_data as $c_data) {
 			$no_catdata = false;
 			
-			foreach ($this->forum_data as $f_data)
-			{
-				if ($f_data['cat_id'] == $c_data['cat_id'])
-				{
-					if (!$is_auth_ary[$f_data['forum_id']]['auth_view'])
-					{
+			foreach ($this->forum_data as $f_data) {
+				if ($f_data['cat_id'] == $c_data['cat_id']) {
+					if (!$is_auth_ary[$f_data['forum_id']]['auth_view']) {
 						continue;
 					}
 
-					if ($user->data['user_id'] == 5777 && $f_data['forum_name'] == '[root]')
-					{
+					if ($user->data['user_id'] == 5777 && $f_data['forum_name'] == '[root]') {
 						continue;
 					}
 					
-					if ($f_data['post_id'])
-					{
+					if ($f_data['post_id']) {
 						$f_data['topic_title'] = (strlen($f_data['topic_title']) > 30) ? substr($f_data['topic_title'], 0, 30) . '...' : $f_data['topic_title'];
 						
 						$last_topic = '<a class="bold" href="' . s_link('topic', $f_data['topic_id']) . '">' . $f_data['topic_title'] . '</a>';
 						$last_poster = ($f_data['user_id'] == GUEST) ? '<span style="color:#' . $f_data['user_color'] . '; font-weight: bold">*' . (($f_data['post_username'] != '') ? $f_data['post_username'] : $user->lang['GUEST']) . '</span>' : '<a style="color:#' . $f_data['user_color'] . '; font-weight: bold" href="' . s_link('m', $f_data['username_base']) . '">' . $f_data['username'] . '</a>';
 						$last_post_time = '<a href="' . s_link('post', $f_data['post_id']) . '#' . $f_data['post_id'] . '">' . $user->format_date($f_data['post_time']) . '</a>';
-					}
-					else
-					{
+					} else {
 						$last_poster = $last_post_time = $last_topic = '';
 					}
 					
-					if (!$no_catdata)
-					{
+					if (!$no_catdata) {
 						$template->assign_block_vars('category', array(
 							'DESCRIPTION' => $c_data['cat_title'])
 						);
@@ -122,8 +108,7 @@ class board
 		}
 	}
 	
-	function birthdays()
-	{
+	public function birthdays() {
 		global $template;
 		
 		$sql = "SELECT user_id, username, username_base, user_color, user_avatar, user_posts
@@ -152,8 +137,7 @@ class board
 		return true;
 	}
 	
-	function top_posters()
-	{
+	public function top_posters() {
 		global $template;
 		
 		$sql = 'SELECT user_id, username, username_base, user_color, user_avatar, user_posts

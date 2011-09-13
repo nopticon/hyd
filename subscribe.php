@@ -68,7 +68,7 @@ if (!empty($code_invite))
 		FROM _members_ref_invite i, _members m
 		WHERE i.invite_code = ?
 			AND i.invite_uid = m.user_id';
-	if (!$code_invite_row = sql_fetchrow(sql_filter($sql, $code_invite))) {
+	if (!$code_invite_row = sql_fieldrow(sql_filter($sql, $code_invite))) {
 		fatal_error();
 	}
 	

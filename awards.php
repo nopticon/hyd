@@ -52,23 +52,17 @@ if (time() >= 1197093599) {
 		
 		$sql = 'SELECT vd.vote_id, vd.vote_text, vd.vote_start, vd.vote_length, vr.vote_option_id, vr.vote_option_text, vr.vote_result
 			FROM _poll_options vd, _poll_results vr
-			WHERE vd.topic_id = ' . (int) $topic_id . '
+			WHERE vd.topic_id = ?
 				AND vr.vote_id = vd.vote_id
 			ORDER BY vr.vote_option_order, vr.vote_option_id ASC';
-		$result = sql_query($sql);
-	
-		if ($vote_info = sql_fetchrowset($result)) {
-			sql_freeresult($result);
+		if ($vote_info = sql_rowset(sql_filter($sql, $topic_id))) {
 			$vote_options = sizeof($vote_info);
 			
 			$sql = 'SELECT vote_id
 				FROM _poll_voters
-				WHERE vote_id = ' . (int) $vote_info[0]['vote_id'] . '
-					AND vote_user_id = ' . (int) $user->data['user_id'];
-			$result = sql_query($sql);
-	
-			$user_voted = ( $row = sql_fetchrow($result) ) ? TRUE : 0;
-			sql_freeresult($result);
+				WHERE vote_id = ?
+					AND vote_user_id = ?';
+			$user_voted = sql_field(sql_filter($sql, $vote_info[0]['vote_id'], $user->data['user_id']), 'vote_id', 0);
 	
 			$template->assign_block_vars('poll', array(
 				'POLL_TITLE' => $vote_info[0]['vote_text'])

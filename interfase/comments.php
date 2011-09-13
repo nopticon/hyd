@@ -23,18 +23,16 @@ if (class_exists('_comments'))
 	return;
 }
 
-class _comments
-{
-	var $ref;
-	var $mesage;
-	var $param = array();
-	var $data = array();
-	var $auth = array();
-	var $users = array();
-	var $options = array();
+class _comments {
+	public $ref;
+	public $mesage;
+	public $param = array();
+	public $data = array();
+	public $auth = array();
+	public $users = array();
+	public $options = array();
 	
-	function _comments()
-	{
+	public function __construct() {
 		$this->ref = '';
 		$this->auth = array();
 		$this->data = array();
@@ -43,13 +41,11 @@ class _comments
 		return;
 	}
 	
-	function reset()
-	{
+	public function reset() {
 		$this->_comments();
 	}
 	
-	function reset2()
-	{
+	public function reset2() {
 		$this->message = '';
 		$this->options = array();
 	}
@@ -57,8 +53,7 @@ class _comments
 	//
 	// Store members comments for (all) comment systems
 	//
-	function store()
-	{
+	public function store() {
 		global $user, $config;
 		
 		$ref = $this->ref;
@@ -70,11 +65,9 @@ class _comments
 		$sql = '';
 		$id = (isset($this->param[3])) ? (int) $this->param[3] : 0;
 		
-		switch ($this->param[0])
-		{
+		switch ($this->param[0]) {
 			case 'a':
-				if ($this->param[2] == 9)
-				{
+				if ($this->param[2] == 9) {
 					$sql = 'SELECT *
 						FROM _dl d, _artists a
 						WHERE d.id = ?
@@ -87,9 +80,7 @@ class _comments
 						'POST_TABLE' => '_dl_posts',
 						'HISTORY' => UH_M
 					);
-				}
-				else
-				{
+				} else {
 					$sql = 'SELECT *
 						FROM _artists
 						WHERE subdomain = ?';
@@ -193,13 +184,11 @@ class _comments
 		//
 		// CHECK USERNAME | MESSAGE
 		//
-		if (!sizeof($error))
-		{
+		if (!sizeof($error)) {
 			$message = request_var('message', '', true);
 			
 			// Check message
-			if (empty($message))
-			{
+			if (empty($message)) {
 				$error[] = 'EMPTY_MESSAGE';
 			}
 		}
@@ -207,8 +196,7 @@ class _comments
 		//
 		// INSERT DATA
 		//
-		if (!sizeof($error))
-		{
+		if (!sizeof($error)) {
 			$update_sql = '';
 			$post_reply = (isset($this->param[4]) && $this->param[4] == 'reply') ? $id : 0;
 			$message = $this->prepare($message);
@@ -222,11 +210,9 @@ class _comments
 				'post_text' => (string) $message
 			);
 			
-			switch ($this->param[0])
-			{
+			switch ($this->param[0]) {
 				case 'a':
-					switch ($this->param[2])
-					{
+					switch ($this->param[2]) {
 						case 9:
 							$insert_data['download_id'] = (int) $post_data['id'];
 							$update_sql = sql_filter('posts = posts + 1 WHERE id = ?', $post_data['id']);
@@ -270,8 +256,7 @@ class _comments
 			$sql = 'INSERT INTO ' . $this->data['POST_TABLE'] . sql_build('INSERT', $insert_data);
 			$post_id = sql_query_nextid($sql);
 			
-			if ($update_sql != '')
-			{
+			if ($update_sql != '') {
 				$sql = 'UPDATE ' . $this->data['DATA_TABLE'] . ' SET ' . $update_sql;
 				sql_query($sql);
 			}
@@ -279,8 +264,7 @@ class _comments
 			$reply_to = 0;
 			$history_extra = isset($this->data['HISTORY_EXTRA']) ? $this->data['HISTORY_EXTRA'] : 0;
 			
-			if ($post_reply && isset($this->data['REPLY_TO_SQL']))
-			{
+			if ($post_reply && isset($this->data['REPLY_TO_SQL'])) {
 				if ($reply_row = sql_fieldrow($this->data['REPLY_TO_SQL'])) {
 					$reply_to = ($reply_row['user_id'] != GUEST) ? $reply_row['user_id'] : 0;
 				}
@@ -289,19 +273,14 @@ class _comments
 			}
 			
 			$notify = true;
-			if ($this->param[0] == 'm' && $user->data['user_id'] == $post_data['user_id'])
-			{
+			if ($this->param[0] == 'm' && $user->data['user_id'] == $post_data['user_id']) {
 				$notify = false;
 			}
 			
-			if ($notify)
-			{
-				if ($this->param[0] == 'm')
-				{
+			if ($notify) {
+				if ($this->param[0] == 'm') {
 					$user->save_unread($this->data['HISTORY'], $post_id, $history_extra, $post_data['user_id']);
-				}
-				else
-				{
+				} else {
 					$user->save_unread($this->data['HISTORY'], $post_id, $history_extra, $reply_to, FALSE);
 					
 					// Points
@@ -310,8 +289,7 @@ class _comments
 			}
 			
 			// Userpage messages
-			if ($this->param[0] == 'm')
-			{
+			if ($this->param[0] == 'm') {
 				$sql = 'SELECT post_id
 					FROM _members_posts p, _members_unread u
 						WHERE u.item = p.post_id
@@ -338,12 +316,10 @@ class _comments
 	//
 	// View comments
 	//
-	function view($start, $start_field, $total_items, $items_pp, $tpl_prefix = '', $pag_prefix = '', $pag_lang_prefix = '', $simple_pagination = false)
-	{
+	public function view($start, $start_field, $total_items, $items_pp, $tpl_prefix = '', $pag_prefix = '', $pag_lang_prefix = '', $simple_pagination = false) {
 		global $config, $user, $template;
 		
-		if ($tpl_prefix == '')
-		{
+		if ($tpl_prefix == '') {
 			$tpl_prefix = 'posts';
 		}
 		
@@ -380,19 +356,16 @@ class _comments
 		
 		foreach ($result as $row) {
 		$uid = $row['user_id'];
-			if (!isset($user_profile[$uid]) || ($uid == GUEST))
-			{
+			if (!isset($user_profile[$uid]) || ($uid == GUEST)) {
 				$user_profile[$uid] = $this->user_profile($row);
 			}
 			
 			$topic_title = (isset($row['topic_title']) && $row['topic_title'] != '') ? $row['topic_title'] : '';
-			if ($topic_title == '')
-			{
+			if ($topic_title == '') {
 				$topic_title = (isset($row['post_subject']) && $row['post_subject'] != '') ? $row['post_subject'] : '';
 			}
 			
-			if (!empty($topic_title))
-			{
+			if (!empty($topic_title)) {
 				$topic_title = ($this->data['ARTISTS_NEWS']) ? preg_replace('#(.*?): (.*?)#', '\\2', $topic_title) : $topic_title;
 			}
 			
@@ -405,27 +378,22 @@ class _comments
 				'S_DELETE' => false
 			);
 			
-			if (isset($this->data['USER_ID_FIELD']) && ($user->data['is_founder'] || ($user->data['user_id'] === $row[$this->data['USER_ID_FIELD']])))
-			{
+			if (isset($this->data['USER_ID_FIELD']) && ($user->data['is_founder'] || ($user->data['user_id'] === $row[$this->data['USER_ID_FIELD']]))) {
 				$data['S_DELETE'] = sprintf($this->data['S_DELETE_URL'], $row['post_id']);
 			}
 			
-			foreach ($user_profile[$uid] as $key => $value)
-			{
+			foreach ($user_profile[$uid] as $key => $value) {
 				$data[strtoupper($key)] = $value;
 			}
 			
 			$template->assign_block_vars($tpl_prefix . '.item', $data);
 			$template->assign_block_vars($tpl_prefix . '.item.' . (($uid != GUEST) ? 'username' : 'guestuser'), array());
 			
-			if ($sizeof_controls)
-			{
+			if ($sizeof_controls) {
 				$template->assign_block_vars($tpl_prefix . '.item.controls', array());
 				
-				foreach ($this->data['CONTROL'] as $block => $block_data)
-				{
-					foreach ($block_data as $item => $item_data)
-					{
+				foreach ($this->data['CONTROL'] as $block => $block_data) {
+					foreach ($block_data as $item => $item_data) {
 						$controls_data[$item_data['ID']][$item] = sprintf($item_data['URL'], $row[$item_data['ID']]);
 					}
 					$template->assign_block_vars($tpl_prefix . '.item.controls.' . $block, $controls_data[$item_data['ID']]);
@@ -442,23 +410,18 @@ class _comments
 	//
 	// Get formatted member profile fields
 	//
-	function user_profile (&$row, $a_class = '', $unset_fields = false)
-	{
+	public function user_profile(&$row, $a_class = '', $unset_fields = false) {
 		global $user, $config;
 		static $all_ranks;
 		
-		if (!isset($this->users[$row['user_id']]) || $row['user_id'] == GUEST)
-		{
+		if (!isset($this->users[$row['user_id']]) || $row['user_id'] == GUEST) {
 			$data = array();
-			foreach ($row as $key => $value)
-			{
-				if (strpos($key, 'user') === false && $key != 'post_id')
-				{
+			foreach ($row as $key => $value) {
+				if (strpos($key, 'user') === false && $key != 'post_id') {
 					continue;
 				}
 				
-				switch ($key)
-				{
+				switch ($key) {
 					case 'username':
 						$data['username'] = ($row['user_id'] != GUEST) ? $value : '*' . (($row['post_username'] != '') ? $row['post_username'] : $user->lang['GUEST']);
 						break;
@@ -540,8 +503,7 @@ class _comments
 	// This function will prepare a posted message for
 	// entry into the database.
 	//
-	function prepare($message)
-	{
+	public function prepare($message) {
 		global $config, $user;
 		
 		// Do some general 'cleanup' first before processing message,
@@ -551,8 +513,7 @@ class _comments
 		$replace = array("\n", '', "\n\n", '...', "\\1&#058;");
 		$message = preg_replace($match, $replace, trim($message));
 		
-		if ($user->data['is_founder'] && preg_match('#\[chown\:([0-9a-z\_\-]+)\]#is', $message, $a_chown))
-		{
+		if ($user->data['is_founder'] && preg_match('#\[chown\:([0-9a-z\_\-]+)\]#is', $message, $a_chown)) {
 			$sql = 'SELECT *
 				FROM _members
 				WHERE username_base = ?';
@@ -570,27 +531,22 @@ class _comments
 		$allowed_tags = array('br', 'strong', 'ul', 'ol', 'li', 'em', 'small');
 		$is_mod = $user->_team_auth('mod');
 		
-		if ($is_mod)
-		{
+		if ($is_mod) {
 			$allowed_tags = array_merge($allowed_tags, array('blockquote', 'object', 'param', 'a', 'h1', 'h2', 'h3', 'div', 'span', 'img', 'table', 'tr', 'td', 'th'));
 		}
 		
-		if (isset($user->data['is_founder']) && $user->data['is_founder'])
-		{
+		if (isset($user->data['is_founder']) && $user->data['is_founder']) {
 			$allowed_tags = array_merge($allowed_tags, array('script'));
 		}
 		
 		$ptags = str_replace('*', '.*?', implode('|', $allowed_tags));
 		$message = preg_replace('#&lt;(\/?)(' . $ptags . ')&gt;#is', '<$1$2>', $message);
 		
-		if ($is_mod)
-		{
-			if (preg_match_all('#&lt;(' . $ptags . ') (.*?)&gt;#is', $message, $in_quotes))
-			{
+		if ($is_mod) {
+			if (preg_match_all('#&lt;(' . $ptags . ') (.*?)&gt;#is', $message, $in_quotes)) {
 				$repl = array('&lt;' => '<', '&gt;' => '>', '&quot;' => '"');
 				
-				foreach ($in_quotes[0] as $item)
-				{
+				foreach ($in_quotes[0] as $item) {
 					$message = preg_replace('#' . preg_quote($item, '#') . '#is', str_replace(array_keys($repl), array_values($repl), $item), $message);
 				}
 			}
@@ -599,10 +555,8 @@ class _comments
 		return $message;
 	}
 	
-	function remove_quotes($message)
-	{
-		if (strstr($message, '<blockquote>'))
-		{
+	public function remove_quotes($message) {
+		if (strstr($message, '<blockquote>')) {
 			$message = trim(preg_replace('#^<br />#is', '', preg_replace("#<blockquote>.*?blockquote>(.*?)#is", '\\1', $message)));
 		}
 		return $message;
@@ -615,21 +569,17 @@ class _comments
 	//
 	// Store new conversation
 	//
-	function store_dc($mode, $to, $from, $subject, $message, $can_reply = true, $can_email = false)
-	{
+	public function store_dc($mode, $to, $from, $subject, $message, $can_reply = true, $can_email = false) {
 		global $user;
 		
-		if ($mode == 'reply')
-		{
+		if ($mode == 'reply') {
 			$insert = array(
 				'parent_id' => (int) $to['parent_id'],
 				'privmsgs_type' => PRIVMSGS_NEW_MAIL,
 				'privmsgs_from_userid' => (int) $from['user_id'],
 				'privmsgs_to_userid' => (int) $to['user_id'],
 			);
-		}
-		else
-		{
+		} else {
 			$insert = array(
 				'privmsgs_type' => PRIVMSGS_NEW_MAIL,
 				'privmsgs_subject' => $subject,
@@ -648,8 +598,7 @@ class _comments
 		$sql = 'INSERT INTO _dc' . sql_build('INSERT', $insert);
 		$dc_id = sql_query_nextid($sql);
 		
-		if ($mode == 'reply')
-		{
+		if ($mode == 'reply') {
 			$sql = 'UPDATE _dc SET root_conv = root_conv + 1, last_msg_id = ?
 				WHERE msg_id = ?';
 			sql_query(sql_filter($sql, $dc_id, $to['msg_id']));
@@ -670,8 +619,7 @@ class _comments
 		//
 		// Notify via email if user requires it
 		//
-		if ($mode == 'start' && $can_email && $user->data['user_email_dc'])
-		{
+		if ($mode == 'start' && $can_email && $user->data['user_email_dc']) {
 			include_once('./interfase/emailer.php');
 			$emailer = new emailer();
 			
@@ -697,10 +645,8 @@ class _comments
 	//
 	// Delete conversation/s
 	//
-	function dc_delete($mark)
-	{
-		if (!is_array($mark) || !sizeof($mark))
-		{
+	public function dc_delete($mark) {
+		if (!is_array($mark) || !sizeof($mark)) {
 			return;
 		}
 		
@@ -727,8 +673,7 @@ class _comments
 		}
 		
 		//
-		if (sizeof($update_a))
-		{
+		if (sizeof($update_a)) {
 			$sql = 'UPDATE _dc
 				SET msg_deleted = ?
 				WHERE parent_id IN (??)
@@ -754,8 +699,7 @@ class _comments
 	// Message parser methods
 	//
 	
-	function parse_message($message, $a_class = '')
-	{
+	public function parse_message($message, $a_class = '') {
 		$this->message = ' ' . $message . ' ';
 		unset($message);
 		
@@ -774,17 +718,14 @@ class _comments
 		return str_replace("\n", '<br />', substr($this->message, 1, -1));
 	}
 	
-	function replace_blockquote()
-	{
-		if (strstr($this->message, '<blockquote>'))
-		{
+	public function replace_blockquote() {
+		if (strstr($this->message, '<blockquote>')) {
 			//$this->message = str_replace(array('<blockquote>', '</blockquote>'), array('<div class="msg-bq pad4 sub-color box2">', '</div><br />'), $this->message);
 			//$this->message = str_replace(array('<blockquote>', '</blockquote>'), array('<blockquote>', '</blockquote>'), $this->message);
 		}
 	}
 	
-	function parse_html($message)
-	{
+	public function parse_html($message) {
 		global $user, $cache;
 		
 		/*
@@ -799,8 +740,7 @@ class _comments
 		
 		$html = array();
 		$exclude = array();
-		if (!$user->data['is_founder'])
-		{
+		if (!$user->data['is_founder']) {
 			$sql = 'SELECT *
 				FROM _html_exclude
 				WHERE html_member = ?';
@@ -818,8 +758,7 @@ class _comments
 			}
 		}
 		
-		if (!$html = $cache->get('html'))
-		{
+		if (!$html = $cache->get('html')) {
 			$sql = 'SELECT *
 				FROM _html';
 			if ($html = sql_rowset($sql, 'html_id')) {
@@ -834,14 +773,14 @@ class _comments
 		}
 	}
 
-	function parse_bbcode() {
+	public function parse_bbcode() {
 		$orig = array('[sb]', '[/sb]');
 		$repl = array('<blockquote>', '</blockquote>');
 
 		$this->message = str_replace($orig, $repl, $this->message);
 	}
 	
-	function parse_youtube() {
+	public function parse_youtube() {
 		if (preg_match_all('#(^|[\n ]|\()\[yt\:([0-9a-zA_Z\-\=\_\&]+)\]#i', $this->message, $match)) {
 			$this->message = preg_replace('#(^|[\n ]|\()\[yt\:([0-9a-zA_Z\-\=\_\&]+)\]#i', '$1<div id="yt_$2">Youtube video: http://www.youtube.com/watch?v=$2</div> <script type="text/javascript"> swfobject.embedSWF("http://www.youtube.com/v/$2", "yt_$2", "425", "350", "8.0.0", "expressInstall.swf"); </script>', $this->message);
 			
@@ -850,33 +789,25 @@ class _comments
 		return;
 	}
 	
-	function parse_flash()
-	{
+	public function parse_flash() {
 		$p = '#(^|[\n ]|\()\[flash\:([\w]+?://.*?([^ \t\n\r<"\'\)]*)?)\:(\d+)\:(\d+)\]#ie';
-		if (preg_match_all($p, $this->message, $match))
-		{
+		if (preg_match_all($p, $this->message, $match)) {
 			$this->message = preg_replace($p, '\'$1<div id="flash_"></div> <script type="text/javascript"> swfobject.embedSWF("$2", "flash_", "$4", "$5", "8.0.0", "expressInstall.swf"); </script>\'', $this->message);
 		}
 		
 		return;
 	}
 	
-	function parse_images()
-	{
-		// #(http|https|ftp)://(.*?\.)*?[a-z0-9\-]+?\.[a-z]{2,4}:?([0-9]*?).*?\.(gif|jpg|jpeg|png)#ie
-		if (preg_match_all('#(^|[\n ]|\()(http|https|ftp)://([a-z0-9\-\.,\?!%\*_:;~\\&$@/=\+]+)(gif|jpg|jpeg|png)#ie', $this->message, $match))
-		//if (preg_match_all('#https?://([a-z0-9\-\.,\?!%\*_:;~\\&$@/=\+]+)#ie', $this->message, $match))
-		{
+	public function parse_images() {
+		if (preg_match_all('#(^|[\n ]|\()(http|https|ftp)://([a-z0-9\-\.,\?!%\*_:;~\\&$@/=\+]+)(gif|jpg|jpeg|png)#ie', $this->message, $match)) {
 			$orig = $repl = array();
-			foreach ($match[0] as $item)
-			{
+			foreach ($match[0] as $item) {
 				$item = trim($item);
 				$orig[] = '#(^|[\n ]|\()(' . preg_quote($item) . ')#i';
 				$repl[] = '\\1<img src="' . $item . '" border="0" alt="" />';
 			}
 			
-			if (sizeof($orig))
-			{
+			if (sizeof($orig)) {
 				$this->message = preg_replace($orig, $repl, $this->message);
 			}
 		}
@@ -884,12 +815,10 @@ class _comments
 		return;
 	}
 	
-	function parse_url()
-	{
+	public function parse_url() {
 		global $config;
 		
-		if (!isset($this->options['url']))
-		{
+		if (!isset($this->options['url'])) {
 			global $user;
 			
 			$this->options['url'] = array(
@@ -909,8 +838,7 @@ class _comments
 				)
 			);
 
-			if (!$user->data['is_member'] || $user->data['is_bot'])
-			{
+			if (!$user->data['is_member'] || $user->data['is_bot']) {
 				$this->options['url']['orig'][4] = '#(^|[\n ]|\()(([a-z0-9&\-_.]+?@)([\w\-]+\.([\w\-\.]+\.)?[\w]+))#se';
 				$this->options['url']['repl'][4] = "'\$1<span class=\"red\">$3'.substr('$4', 0, 4).'...</span>'";
 			}
@@ -920,16 +848,13 @@ class _comments
 		return;
 	}
 	
-	function parse_smilies()
-	{
+	public function parse_smilies() {
 		global $config;
 		
-		if (!isset($this->options['smilies']))
-		{
+		if (!isset($this->options['smilies'])) {
 			global $cache;
 			
-			if (!$smilies = $cache->get('smilies'))
-			{
+			if (!$smilies = $cache->get('smilies')) {
 				$sql = 'SELECT *
 					FROM _smilies
 					ORDER BY LENGTH(code) DESC';
@@ -937,32 +862,25 @@ class _comments
 				$cache->save('smilies', $smilies);
 			}
 			
-			for ($i = 0, $end = sizeof($smilies); $i < $end; $i++)
-			{
+			for ($i = 0, $end = sizeof($smilies); $i < $end; $i++) {
 				//$this->options['smilies']['orig'][] = "/(?<=.\W|\W.|^\W)" . preg_quote($smilies[$i]['code'], "/") . "(?=.\W|\W.|\W$)/";
-				//$this->options['smilies']['orig'][] = '#(?<=^|[\n ]|\.)' . preg_quote($smilies[$i]['code'], '#') . '#';
-				// #(^|[\n ]|\() --- (?<=|[\n ]|\.)
 				$this->options['smilies']['orig'][] = '#(^|[\n ]|\.|\()' . preg_quote($smilies[$i]['code'], '#') . '#';
 				$this->options['smilies']['repl'][] = ' <img class="middle" src="' . $config['smilies_path'] . '/' . $smilies[$i]['smile_url'] . '" alt="' . $smilies[$i]['emoticon'] . '" />';
 			}
 		}
 		
-		if (sizeof($this->options['smilies']))
-		{
+		if (sizeof($this->options['smilies'])) {
 			$this->message = preg_replace($this->options['smilies']['orig'], $this->options['smilies']['repl'], $this->message);
 		}
 		
 		return;
 	}
 	
-	function a_links ($style = 'ub-url')
-	{
-		if (!isset($this->options['a']))
-		{
+	public function a_links ($style = 'ub-url') {
+		if (!isset($this->options['a'])) {
 			global $cache;
 			
-			if (!$this->options['a']['match'] = $cache->get('ub_list'))
-			{
+			if (!$this->options['a']['match'] = $cache->get('ub_list')) {
 				$sql = 'SELECT name
 					FROM _artists
 					ORDER BY name';
@@ -976,21 +894,17 @@ class _comments
 			}
 		}
 		
-		if (preg_match_all('#\b(' . implode('|', $this->options['a']['match']) . ')\b#i', $this->message, $match))
-		{
-			foreach ($match[1] as $n)
-			{
+		if (preg_match_all('#\b(' . implode('|', $this->options['a']['match']) . ')\b#i', $this->message, $match)) {
+			foreach ($match[1] as $n) {
 				$m = strtolower($n);
 				$k = str_replace(array(' ', '_'), '', $m);
-				if (!isset($this->options['a']['data'][$k]))
-				{
+				if (!isset($this->options['a']['data'][$k])) {
 					$this->options['a']['data'][$k] = ucwords($m);
 				}
 			}
 			
 			$orig = $repl = array();
-			foreach ($this->options['a']['data'] as $sub => $real)
-			{
+			foreach ($this->options['a']['data'] as $sub => $real) {
 				$orig[] = '#(^|\s)(?<=.\W|\W.|^\W)\b(' . preg_quote($real, "#") . ')\b(?=.\W|\W.|\W$)#is';
 				$repl[] = '\\1<a href="' . s_link('a', $sub) . '">' . $real . '</a>';
 			}
@@ -1001,16 +915,13 @@ class _comments
 		return;
 	}
 	
-	function d_links ($style = '')
-	{
+	public function d_links($style = '') {
 		global $user;
 		
-		if (!isset($this->options['downloads']))
-		{
+		if (!isset($this->options['downloads'])) {
 			global $cache;
 			
-			if (!$this->options['downloads']['list'] = $cache->get('downloads_list'))
-			{
+			if (!$this->options['downloads']['list'] = $cache->get('downloads_list')) {
 				$sql = 'SELECT a.name, a.subdomain, d.id, d.title
 					FROM _artists a, _dl d
 					WHERE a.ub = d.ub 
@@ -1025,22 +936,18 @@ class _comments
 			}
 		}
 		
-		if (preg_match_all('#\:d([0-9]+)(\*)?\:#', $this->message, $match))
-		{
+		if (preg_match_all('#\:d([0-9]+)(\*)?\:#', $this->message, $match)) {
 			$orig = array();
 			$repl = array();
-			foreach ($match[1] as $i => $download)
-			{
-				if (isset($this->options['downloads']['list'][$download]))
-				{
-					$show_a = (isset($match[2][$i]) && $match[2][$i] != '') ? TRUE : FALSE;
+			foreach ($match[1] as $i => $download) {
+				if (isset($this->options['downloads']['list'][$download])) {
+					$show_a = (isset($match[2][$i]) && $match[2][$i] != '') ? true : false;
 					$orig[] = ':d' . $download . $match[2][$i] . ':';
 					$repl[] = '<a href="' . s_link('a', array($this->options['downloads']['list'][$download]['subdomain'], '9', $download)) . '" title="' . $this->options['downloads']['list'][$download]['name'] . ' - ' . $this->options['downloads']['list'][$download]['title'] . '">' . (($show_a) ? $this->options['downloads']['list'][$download]['name'] . ' - ' : '') . $this->options['downloads']['list'][$download]['title'] . '</a>';
 				}
 			}
 			
-			if (sizeof($orig))
-			{
+			if (sizeof($orig)) {
 				$this->message = str_replace($orig, $repl, $this->message);
 			}
 		}
@@ -1048,17 +955,13 @@ class _comments
 		return;
 	}
 	
-	function members_profile ()
-	{
-		if (preg_match_all('#\:m([0-9a-zA-Z\_\- ]+)\:#ii', $this->message, $match))
-		{
+	public function members_profile() {
+		if (preg_match_all('#\:m([0-9a-zA-Z\_\- ]+)\:#ii', $this->message, $match)) {
 			$orig = array();
 			$repl = array();
-			foreach ($match[1] as $orig_member)
-			{
+			foreach ($match[1] as $orig_member) {
 				$member = get_username_base($orig_member);
-				if (!isset($this->options['members'][$member]))
-				{
+				if (!isset($this->options['members'][$member])) {
 					$this->options['members'][$member] = '<a href="' . s_link('m', $member) . '">' . $orig_member . '</a>';
 				}
 				
@@ -1071,26 +974,20 @@ class _comments
 		return;
 	}
 	
-	function members_icon ()
-	{
+	public function members_icon() {
 		global $config;
 		
-		if (preg_match_all('#\:i([0-9a-zA-Z\_\- ]+)\:#si', $this->message, $match))
-		{
+		if (preg_match_all('#\:i([0-9a-zA-Z\_\- ]+)\:#si', $this->message, $match)) {
 			$orig = array();
 			$repl = array();
 			$formats = array('.jpg', '.gif', '.png');
 			
-			foreach ($match[1] as $orig_member)
-			{
+			foreach ($match[1] as $orig_member) {
 				$member = get_username_base($orig_member);
-				if (!isset($this->options['icons'][$member]))
-				{
-					for ($i = 0, $end = sizeof($formats); $i < $end; $i++)
-					{
+				if (!isset($this->options['icons'][$member])) {
+					for ($i = 0, $end = sizeof($formats); $i < $end; $i++) {
 						$icon_file = $config['avatar_path'] . '/' . $member . $formats[$i];
-						if (@file_exists('..' . $icon_file))
-						{
+						if (@file_exists('..' . $icon_file)) {
 							$this->options['icons'][$member] = '<a href="' . s_link('m', $member) . '" title="' . $orig_member . '"><img src="' . $icon_file . '" /></a>';
 							break;
 						}

@@ -22,16 +22,14 @@ if (class_exists('downloads')) {
 	return;
 }
 
-class downloads
-{
-	var $ud = array();
-	var $ud_song = array();
-	var $dl_data = array();
-	var $filename = '';
-	var $filepath = '';
+class downloads {
+	public $ud = array();
+	public $ud_song = array();
+	public $dl_data = array();
+	public $filename = '';
+	public $filepath = '';
 	
-	function dl_sql ($ub = '', $order = '')
-	{
+	public function dl_sql($ub = '', $order = '') {
 		$sql_ub = ($ub != '') ? sql_filter(' WHERE ub = ?', $ub) . ' ' : '';
 		$sql_order = ($order != '') ? ' ORDER BY ' . $order : '';
 		
@@ -43,13 +41,11 @@ class downloads
 		return;
 	}
 	
-	function dl_type ($ud)
-	{
+	public function dl_type($ud) {
 		global $user;
 		
 		$type = 0;
-		switch ($ud)
-		{
+		switch ($ud) {
 			case E_UD_AUDIO:
 				$type = array('lang' => $user->lang['AUDIO'], 'extension' => 'mp3', 'av' => 'Audio');
 				break;
@@ -60,11 +56,9 @@ class downloads
 		return $type;
 	}
 	
-	function dl_setup ()
-	{
+	public function dl_setup() {
 		$download_id = intval(request_var('download_id', 0));
-		if (!$download_id)
-		{
+		if (!$download_id) {
 			fatal_error();
 		}
 		
@@ -81,8 +75,7 @@ class downloads
 		return;
 	}
 	
-	function dl_view ()
-	{
+	public function dl_view() {
 		global $user, $config, $template;
 		
 		if (!$this->auth['adm'] && !$this->auth['mod']) {
@@ -92,8 +85,7 @@ class downloads
 		}
 		
 		$stats_text = '';
-		foreach (array('views' => 'VIEW', 'downloads' => 'DL') as $item => $stats_lang)
-		{
+		foreach (array('views' => 'VIEW', 'downloads' => 'DL') as $item => $stats_lang) {
 			$stats_text .= (($stats_text != '') ? ', ' : '') . '<strong>' . $this->dl_data[$item] . '</strong> ' . $user->lang[$stats_lang] . (($this->dl_data[$item] > 1) ? 's' : '');
 		}
 		
@@ -135,8 +127,7 @@ class downloads
 		// UD POLL
 		//
 		$user_voted = false;
-		if ($this->dl_data['votes'] && $this->auth['user'] && !$this->auth['adm'] && !$this->auth['mod'])
-		{
+		if ($this->dl_data['votes'] && $this->auth['user'] && !$this->auth['adm'] && !$this->auth['mod']) {
 			$sql = 'SELECT user_id
 				FROM _dl_voters
 				WHERE ud = ?
@@ -148,8 +139,7 @@ class downloads
 		
 		$template->assign_block_vars('ud_poll', array());
 		
-		if ($this->auth['adm'] || $this->auth['mod'] || !$this->auth['user'] || $user_voted)
-		{
+		if ($this->auth['adm'] || $this->auth['mod'] || !$this->auth['user'] || $user_voted) {
 			$sql = 'SELECT option_id, vote_result
 				FROM _dl_vote
 				WHERE ud = ?
@@ -158,8 +148,7 @@ class downloads
 			
 			$template->assign_block_vars('ud_poll.results', array());
 			
-			for ($i = 0, $end = sizeof($this->voting['ud']); $i < $end; $i++)
-			{
+			for ($i = 0, $end = sizeof($this->voting['ud']); $i < $end; $i++) {
 				$vote_result = (isset($results[$this->voting['ub'][$i]])) ? (int) $results[$this->voting['ub'][$i]] : 0;
 				$vote_percent = ($this->dl_data['votes'] > 0) ? $vote_result / $this->dl_data['votes'] : 0;
 
@@ -169,15 +158,12 @@ class downloads
 					'PERCENT' => sprintf("%.1d", ($vote_percent * 100)))
 				);
 			}
-		}
-		else
-		{
+		} else {
 			$template->assign_block_vars('ud_poll.options', array(
 				'S_VOTE_ACTION' => s_link('a', array($this->data['subdomain'], 9, $this->dl_data['id'], 'vote')))
 			);
 			
-			for ($i = 0, $end = sizeof($this->voting['ud']); $i < $end; $i++)
-			{
+			for ($i = 0, $end = sizeof($this->voting['ud']); $i < $end; $i++) {
 				$template->assign_block_vars('ud_poll.options.item', array(
 					'ID' => $this->voting['ud'][$i],
 					'CAPTION' => $user->lang['UB_UDV' . $this->voting['ud'][$i]])
@@ -190,8 +176,7 @@ class downloads
 		//
 		$comments_ref = s_link('a', array($this->data['subdomain'], 9, $this->dl_data['id']));
 		
-		if ($this->dl_data['posts'])
-		{
+		if ($this->dl_data['posts']) {
 			$start = intval(request_var('dps', 0));
 			$this->msg->ref = $comments_ref;
 			$this->msg->auth = $this->auth;
@@ -212,8 +197,7 @@ class downloads
 				'SQL' => sql_filter($sql, $this->dl_data['id'], $this->data['ub'], $start, $config['s_posts'])
 			);
 			
-			if ($this->auth['user'])
-			{
+			if ($this->auth['user']) {
 				$this->msg->data['CONTROL']['reply'] = array(
 					'REPLY' => array(
 						'URL' => s_link('a', array($this->data['subdomain'], 12, '%d', 'reply')),
@@ -222,8 +206,7 @@ class downloads
 				);
 			}
 			
-			if ($this->auth['user'] && !$this->auth['adm'] && !$this->auth['mod'])
-			{
+			if ($this->auth['user'] && !$this->auth['adm'] && !$this->auth['mod']) {
 				$this->msg->data['CONTROL']['report'] = array(
 					'REPORT' => array(
 						'URL' => s_link('a', array($this->data['subdomain'], 12, '%d', 'report')),
@@ -232,12 +215,10 @@ class downloads
 				);
 			}
 			
-			if ($this->auth['adm'] || $this->auth['mod'])
-			{
+			if ($this->auth['adm'] || $this->auth['mod']) {
 				$this->msg->data['CONTROL']['auth'] = array();
 				
-				if ($this->auth['adm'] && $user->data['is_founder'])
-				{
+				if ($this->auth['adm'] && $user->data['is_founder']) {
 					$this->msg->data['CONTROL']['auth']['EDIT'] = array(
 						'URL' => s_link_control('a', array('a' => $this->data['subdomain'], 'mode' => 'dposts', 'manage' => 'edit', 'id' => '%d')),
 						'ID' => 'post_id'
@@ -254,24 +235,18 @@ class downloads
 			$this->msg->view($start, 'dps', $this->dl_data['posts'], $config['s_posts'], 'ud_posts', 'DMSG_', 'TOPIC_', FALSE);
 		}
 		
-		if ($this->auth['post'])
-		{
-			if ($this->auth['user'])
-			{
+		if ($this->auth['post']) {
+			if ($this->auth['user']) {
 				$template->assign_block_vars('dl_post_box', array(
 					'REF' => $comments_ref,
 					'NL' => (int) !$this->auth['user'])
 				);
-			}
-			else
-			{
+			} else {
 				$template->assign_block_vars('dl_no_guest_posting', array(
 					'LEGEND' => sprintf($user->lang['UB_NO_GUEST_POSTING'], $this->data['name'], s_link('my', 'register')))
 				);
 			}
-		}
-		else
-		{
+		} else {
 			$template->assign_block_vars('dl_no_post_auth', array());
 			
 			if ($this->auth['post_until'])
@@ -285,8 +260,7 @@ class downloads
 		return;
 	}
 	
-	function dl_save()
-	{
+	public function dl_save() {
 		$sql = 'UPDATE _dl SET downloads = downloads + 1
 			WHERE id = ?';
 		sql_query(sql_filter($sql, $this->dl_data['id']));
@@ -303,8 +277,7 @@ class downloads
 		return;
 	}
 	
-	function dl_vote()
-	{
+	public function dl_vote() {
 		if (!$this->auth['user']) {
 			do_login();
 		}
@@ -314,8 +287,7 @@ class downloads
 		$option_id = intval(request_var('vote_id', 0));
 		$url = s_link('a', array($this->data['subdomain'], 9, $this->dl_data['id']));
 		
-		if ($this->auth['adm'] || $this->auth['mod'] || !in_array($option_id, $this->voting['ud']))
-		{
+		if ($this->auth['adm'] || $this->auth['mod'] || !in_array($option_id, $this->voting['ud'])) {
 			redirect($url);
 		}
 		
@@ -338,8 +310,7 @@ class downloads
 				AND option_id = ?';
 		sql_query(sql_filter($sql, $this->dl_data['id'], $option_id));
 		
-		if (!sql_affectedrows())
-		{
+		if (!sql_affectedrows()) {
 			$sql_insert = array(
 				'ud' => $this->dl_data['id'],
 				'option_id' => $option_id,
@@ -364,10 +335,8 @@ class downloads
 		redirect($url);
 	}
 	
-	function dl_fav ()
-	{
-		if (!$this->auth['user'])
-		{
+	public function dl_fav() {
+		if (!$this->auth['user']) {
 			do_login();
 		}
 		
@@ -385,8 +354,7 @@ class downloads
 		
 		$url = s_link('a', array($this->data['subdomain'], 9, $this->dl_data['id']));
 		
-		if ($is_fav)
-		{
+		if ($is_fav) {
 			redirect($url);
 		}
 		
@@ -405,8 +373,7 @@ class downloads
 		return redirect($url);
 	}
 	
-	function dl_file($name = '', $path = '', $data = '', $content_type = 'application/octet-stream', $disposition = 'attachment')
-	{
+	public function dl_file($name = '', $path = '', $data = '', $content_type = 'application/octet-stream', $disposition = 'attachment') {
 		sql_close();
 		
 		$bad_chars = array("'", "\\", ' ', '/', ':', '*', '?', '"', '<', '>', '|');
@@ -439,8 +406,7 @@ class downloads
 		exit;
 	}
 	
-	function format_filesize($filesize)
-	{
+	public function format_filesize($filesize) {
 		$mb = ($filesize >= 1048576) ? TRUE : FALSE;
 		$div = ($mb) ? 1048576 : 1024;
 		return bcdiv($filesize, $div, 2) . (($mb) ? ' MB' : ' KB');

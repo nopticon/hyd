@@ -54,19 +54,19 @@ $sql = 'SELECT *
 	FROM _members
 	WHERE user_type NOT IN (' . USER_FOUNDER . ', ' . USER_IGNORE . ', ' . USER_INACTIVE . ')
 	ORDER BY user_id';
-$result = sql_query($sql);
+$result = sql_rowset($sql);
 
 $total = 0;
-while ($row = sql_fetchrow($result))
+foreach ($result as $row)
 {
 	$sql = 'SELECT u.item, u.user_id, t.topic_ub
 		FROM _members_unread u, _forum_topics t
 		WHERE u.element = ' . UH_N . '
 			AND u.item = t.topic_id
 			AND u.user_id = ' . (int) $row['user_id'];
-	$result2 = sql_query($sql);
+	$result2 = sql_rowset($sql);
 	
-	while ($row2 = sql_fetchrow($result2))
+	foreach ($result2 as $row)
 	{
 		$sql = 'DELETE FROM _members_unread
 			WHERE element = ' . UH_N . '
@@ -82,17 +82,15 @@ while ($row = sql_fetchrow($result))
 		
 		$sql = 'SELECT user_id
 			FROM _artists_fav
-			WHERE user_id = ' . (int) $row2['user_id'] . '
-				AND ub = ' . (int) $row2['topic_ub'];
-		$result3 = sql_query($sql);
-		
-		if (!$row3 = sql_fetchrow($result3))
+			WHERE user_id = ?
+				AND ub = ?';
+		if (!$row3 = sql_fieldrow(sql_filter($sql, $row2['user_id'], $row2['topic_ub'])))
 		{
 			$sql = 'DELETE FROM _members_unread
-				WHERE element = ' . UH_N . '
-					AND item = ' . (int) $row2['item'] . '
-					AND user_id = ' . (int) $row['user_id'];
-			sql_query($sql);
+				WHERE element = ?
+					AND item = ?
+					AND user_id = ?';
+			sql_query(sql_filter($sql, UH_N, $row2['item'], $row['user_id']));
 			$total++;
 			
 			flush();

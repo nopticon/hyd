@@ -177,14 +177,9 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 		$sql = "SELECT MAX(post_time) AS last_post_time
 			FROM _forum_posts
 			WHERE $where_sql";
-		if ($result = sql_query($sql))
-		{
-			if ($row = sql_fetchrow($result))
-			{
-				if (intval($row['last_post_time']) > 0 && ($current_time - intval($row['last_post_time'])) < intval($config['flood_interval']))
-				{
-					trigger_error('Flood_Error');
-				}
+		if ($row = sql_fieldrow($result)) {
+			if (intval($row['last_post_time']) > 0 && ($current_time - intval($row['last_post_time'])) < intval($config['flood_interval'])) {
+				trigger_error('Flood_Error');
 			}
 		}
 	}

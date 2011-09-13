@@ -16,25 +16,22 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-function htmlencode($str)
-{
+function htmlencode($str) {
 	$result = trim(htmlentities(str_replace(array("\r\n", "\r", '\xFF'), array("\n", "\n", ' '), $str)));
 	$result = (STRIP) ? stripslashes($result) : $result;
-	if ($multibyte)
-	{
+	
+	if ($multibyte) {
 		$result = preg_replace('#&amp;(\#[0-9]+;)#', '&\1', $result);
 	}
 	
 	return $result;
 }
 
-function set_var(&$result, $var, $type, $multibyte = false)
-{
+function set_var(&$result, $var, $type, $multibyte = false) {
 	settype($var, $type);
 	$result = $var;
 
-	if ($type == 'string')
-	{
+	if ($type == 'string') {
 		$result = htmlencode($result);
 	}
 }
@@ -42,94 +39,69 @@ function set_var(&$result, $var, $type, $multibyte = false)
 //
 // Get value of request var
 //
-function request_var($var_name, $default, $multibyte = false)
-{
-	if (REQC)
-	{
+function request_var($var_name, $default, $multibyte = false) {
+	if (REQC) {
 		global $config;
 		
-		if (strstr($var_name, $config['cookie_name']) && isset($_COOKIE[$var_name]))
-		{
+		if (strstr($var_name, $config['cookie_name']) && isset($_COOKIE[$var_name])) {
 			$_REQUEST[$var_name] = $_COOKIE[$var_name];
 		}
 	}
 	
-	if (!isset($_REQUEST[$var_name]) || (is_array($_REQUEST[$var_name]) && !is_array($default)) || (is_array($default) && !is_array($_REQUEST[$var_name])))
-	{
+	if (!isset($_REQUEST[$var_name]) || (is_array($_REQUEST[$var_name]) && !is_array($default)) || (is_array($default) && !is_array($_REQUEST[$var_name]))) {
 		return (is_array($default)) ? array() : $default;
 	}
 
 	$var = $_REQUEST[$var_name];
-	if (!is_array($default))
-	{
+	if (!is_array($default)) {
 		$type = gettype($default);
 		_utf8($var);
-	}
-	else
-	{
+	} else {
 		list($key_type, $type) = each($default);
 		$type = gettype($type);
 		$key_type = gettype($key_type);
 	}
 
-	if (is_array($var))
-	{
+	if (is_array($var)) {
 		$_var = $var;
 		$var = array();
 
-		foreach ($_var as $k => $v)
-		{
-			if (is_array($v))
-			{
-				foreach ($v as $_k => $_v)
-				{
+		foreach ($_var as $k => $v) {
+			if (is_array($v)) {
+				foreach ($v as $_k => $_v) {
 					set_var($k, $k, $key_type);
 					set_var($_k, $_k, $key_type);
 					set_var($var[$k][$_k], $_v, $type, $multibyte);
 				}
-			}
-			else
-			{
+			} else {
 				set_var($k, $k, $key_type);
 				set_var($var[$k], $v, $type, $multibyte);
 			}
 		}
-	}
-	else
-	{
+	} else {
 		set_var($var, $var, $type, $multibyte);
 	}
 	
 	return $var;
 }
 
-function _utf8(&$a)
-{
-	if (is_array($a))
-	{
-		foreach ($a as $k => $v)
-		{
-			if (is_array($v))
-			{
-				foreach ($v as $_k => $_v)
-				{
+function _utf8(&$a) {
+	if (is_array($a)) {
+		foreach ($a as $k => $v) {
+			if (is_array($v)) {
+				foreach ($v as $_k => $_v) {
 					$a[$k][$_k] = utf8_decode($_v);
 				}
-			}
-			else
-			{
+			} else {
 				$a[$k] = utf8_decode($v);
 			}
 		}
-	}
-	else
-	{
+	} else {
 		$a = utf8_decode($a);
 	}
 }
 
-function decode_ht($path)
-{
+function decode_ht($path) {
 	$da_path = ROOT . '../' . $path;
 	
 	if (!@file_exists($da_path) || !$a = @file($da_path)) exit;
@@ -140,8 +112,7 @@ function decode_ht($path)
 //
 // Set or create config value
 //
-function set_config($config_name, $config_value)
-{
+function set_config($config_name, $config_value) {
 	global $config;
 
 	$sql = 'UPDATE _config
@@ -149,8 +120,7 @@ function set_config($config_name, $config_value)
 		WHERE config_name = ?';
 	sql_query(sql_filter($sql, $config_value, $config_name));
 
-	if (!sql_affectedrows() && !isset($config[$config_name]))
-	{
+	if (!sql_affectedrows() && !isset($config[$config_name])) {
 		$sql_insert = array(
 			'config_name' => $config_name,
 			'config_value' => $config_value
@@ -162,13 +132,11 @@ function set_config($config_name, $config_value)
 	$config[$config_name] = $config_value;
 }
 
-function forum_for_team($forum_id)
-{
+function forum_for_team($forum_id) {
 	global $config;
 	
 	$response = '';
-	switch ($forum_id)
-	{
+	switch ($forum_id) {
 		case $config['forum_for_mod']:
 			$response = 'mod';
 			break;
@@ -186,13 +154,11 @@ function forum_for_team($forum_id)
 	return $response;
 }
 
-function forum_for_team_list($forum_id)
-{
+function forum_for_team_list($forum_id) {
 	global $config, $user;
 	
 	$a_list = array();
-	switch ($forum_id)
-	{
+	switch ($forum_id) {
 		case $config['forum_for_mod']:
 			$a_list = $user->_team_auth_list('mod');
 			break;
@@ -210,45 +176,38 @@ function forum_for_team_list($forum_id)
 	return $a_list;
 }
 
-function forum_for_team_not()
-{
+function forum_for_team_not() {
 	global $config, $user;
 	
 	$sql = '';
 	$list = array('all', 'mod', 'radio', 'colab');
-	foreach ($list as $k)
-	{
-		if (!$user->_team_auth($k))
-		{
+	foreach ($list as $k) {
+		if (!$user->_team_auth($k)) {
 			$sql .= ', ' . (int) $config['forum_for_' . $k];
 		}
 	}
 	return $sql;
 }
 
-function forum_for_team_array()
-{
+function forum_for_team_array() {
 	global $config;
 	
 	$ary = array();
 	$list = array('all', 'mod', 'radio', 'colab');
-	foreach ($list as $k)
-	{
+	foreach ($list as $k) {
 		$ary[] = $config['forum_for_' . $k];
 	}
 	return $ary;
 }
 
-function points_start_date()
-{
+function points_start_date() {
 	return 1201370400;
 }
 
 //
 // Requested Page
 //
-function requested_page()
-{
+function requested_page() {
 	$protocol = ((int) $_SERVER['SERVER_PORT'] === 443) ? 'https://' : 'http://';
 	$current_page = $protocol . $_SERVER['HTTP_HOST'] . ((!empty($_SERVER['REQUEST_URI'])) ? $_SERVER['REQUEST_URI'] : '');
 	
@@ -258,8 +217,7 @@ function requested_page()
 //
 // Parse error lang
 //
-function parse_error($error)
-{
+function parse_error($error) {
 	global $user;
 	
 	return implode('<br />', preg_replace('#^([A-Z_]+)$#e', "(!empty(\$user->lang['\\1'])) ? \$user->lang['\\1'] : '\\1'", $error));
@@ -268,23 +226,20 @@ function parse_error($error)
 //
 // Return unique id
 //
-function unique_id()
-{
+function unique_id() {
 	list($sec, $usec) = explode(' ', microtime());
 	mt_srand((float) $sec + ((float) $usec * 100000));
 	return uniqid(mt_rand(), true);
 }
 
-function user_password($password)
-{
+function user_password($password) {
 	return sha1(md5($password));
 }
 
 //
 // Format the username
 //
-function phpbb_clean_username($username)
-{
+function phpbb_clean_username($username) {
 	/*
 	$username = substr(htmlspecialchars(str_replace("\'", "'", trim($username))), 0, 20);
 	$username = rtrim($username, "\\");
@@ -299,18 +254,15 @@ function phpbb_clean_username($username)
 	return $username;
 }
 
-function get_username_base($username, $check_match = false)
-{
-	if ($check_match && !preg_match('#^([A-Za-z0-9\-\_\ ]+)$#is', $username))
-	{
+function get_username_base($username, $check_match = false) {
+	if ($check_match && !preg_match('#^([A-Za-z0-9\-\_\ ]+)$#is', $username)) {
 		return false;
 	}
 	
 	return str_replace(' ', '', strtolower($username));
 }
 
-function get_subdomain($str)
-{
+function get_subdomain($str) {
 	$str = trim($str);
 	$str = strtolower($str);
 	$str = str_replace(' ', '', $str);
@@ -323,24 +275,22 @@ function get_subdomain($str)
 //
 // Get Userdata, $user can be username or user_id. If force_str is true, the username will be forced.
 //
-function get_userdata($user, $force_str = false)
-{
-	if (!is_numeric($user) || $force_str)
-	{
+function get_userdata($user, $force_str = false) {
+	if (!is_numeric($user) || $force_str) {
 		$user = phpbb_clean_username($user);
-	}
-	else
-	{
+	} else {
 		$user = intval($user);
 	}
-
+	
+	$field = (is_integer($user)) ? 'user_id' : 'username'; 
+	
 	$sql = 'SELECT *
 		FROM _members
-		WHERE ';
-	$sql .= ((is_integer($user)) ? 'user_id = ' . (int) $user : "username = '" .  $user . "'" ) . ' AND user_id <> ' . GUEST;
-	$result = sql_query($sql);
-
-	return ($row = sql_fetchrow($result)) ? $row : false;
+		WHERE ?? = ?
+			AND user_id <> ?';
+	if ($row = sql_fieldrow(sql_filter($sq, $field, $user, GUEST))) {
+		return $row;
+	}
 }
 
 function _substr($a, $k, $r = '...')

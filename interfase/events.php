@@ -39,16 +39,13 @@ EVENT_POINTS	VARCHAR(10)
 
 include('./interfase/downloads.php');
 
-class _events extends downloads
-{
-	var $data = array();
-	var $images = array();
-	var $timetoday = 0;
+class _events extends downloads { 
+	public $data = array();
+	public $images = array();
+	public $timetoday = 0;
 	
-	function _events($get_timetoday = false)
-	{
-		if ($get_timetoday)
-		{
+	public function __construct($get_timetoday = false) {
+		if ($get_timetoday) {
 			global $user;
 			
 			$current_time = time();
@@ -59,8 +56,7 @@ class _events extends downloads
 		return;
 	}
 	
-	function _setup()
-	{
+	public function _setup() {
 		$event_id = intval(request_var('id', 0));
 		if ($event_id > 0) {
 			$sql = 'SELECT *
@@ -79,7 +75,7 @@ class _events extends downloads
 		return false;
 	}
 	
-	function _nextevent() {
+	public function _nextevent() {
 		global $user, $template;
 		
 		$nevent = array();
@@ -104,8 +100,7 @@ class _events extends downloads
 	}	
 	
 	/*
-	function _nextevent()
-	{
+	public function _nextevent() {
 		global $user, $template;
 		
 		$sql = 'SELECT *
@@ -125,8 +120,7 @@ class _events extends downloads
 	}
 	*/
 	
-	function _lastevent($start = 0)
-	{
+	public function _lastevent($start = 0) {
 		global $template;
 		
 		$sql = 'SELECT *
@@ -152,18 +146,15 @@ class _events extends downloads
 		return true;
 	}
 	
-	function view()
-	{
+	public function view() {
 		global $user, $config, $template;
 		
 		$mode = request_var('mode', '');
 		
-		if ($mode == 'save' || $mode == 'view' || $mode == 'fav')
-		{
+		if ($mode == 'save' || $mode == 'view' || $mode == 'fav') {
 			$download_id = request_var('download_id', 0);
 			
-			if (!$download_id)
-			{
+			if (!$download_id) {
 				redirect(s_link('events', $this->data['id']));
 			}
 			
@@ -191,11 +182,9 @@ class _events extends downloads
 			}
 		}
 		
-		switch ($mode)
-		{
+		switch ($mode) {
 			case 'save':
-				if (!$this->data['allow_download'] || !$imagedata['allow_dl'])
-				{
+				if (!$this->data['allow_download'] || !$imagedata['allow_dl']) {
 					redirect(s_link('events', array($this->data['id'], $imagedata['image'], 'view')));
 				}
 				
@@ -242,8 +231,7 @@ class _events extends downloads
 			default:
 				$t_offset = intval(request_var('offset', 0));
 				
-				if ($mode == 'view')
-				{
+				if ($mode == 'view') {
 					$sql = 'UPDATE _events_images
 						SET views = views + 1
 						WHERE event_id = ?
@@ -257,8 +245,7 @@ class _events extends downloads
 						'FOOTER' => $imagedata['image_footer'])
 					);
 					
-					if ($user->_team_auth('founder'))
-					{
+					if ($user->_team_auth('founder')) {
 						$template->assign_block_vars('selected.update', array(
 							'URL' => s_link('ajax', 'eif'),
 							'EID' => $this->data['id'],
@@ -266,16 +253,14 @@ class _events extends downloads
 						);
 					}
 					
-					if ($this->data['allow_download'] && $imagedata['allow_dl'])
-					{
+					if ($this->data['allow_download'] && $imagedata['allow_dl']) {
 						$template->assign_block_vars('selected.download', array(
 							'URL' => s_link('events', array($this->data['id'], $imagedata['image'], 'save')))
 						);
 					}
 					
 					$is_fav = false;
-					if ($user->data['is_member'])
-					{
+					if ($user->data['is_member']) {
 						$sql = 'SELECT member_id
 							FROM _events_fav
 							WHERE event_id = ?
@@ -286,17 +271,13 @@ class _events extends downloads
 						}
 					}
 					
-					if (!$is_fav || !$user->data['is_member'])
-					{
+					if (!$is_fav || !$user->data['is_member']) {
 						$template->assign_block_vars('selected.fav', array(
 							'URL' => s_link('events', array($this->data['id'], $imagedata['image'], 'fav')))
 						);
 					}
-				}
-				else
-				{
-					if (!$t_offset && $user->data['user_type'] != USER_FOUNDER)
-					{
+				} else {
+					if (!$t_offset && $user->data['user_type'] != USER_FOUNDER) {
 						$sql = 'UPDATE _events SET views = views + 1
 							WHERE id = ?';
 						sql_query(sql_filter($sql, $this->data['id']));
@@ -310,8 +291,7 @@ class _events extends downloads
 				//
 				$t_per_page = 12;
 				
-				if ($mode == 'view' && $download_id)
-				{
+				if ($mode == 'view' && $download_id) {
 					$val = 1;
 					
 					$sql = 'SELECT MAX(image) AS total
@@ -324,8 +304,7 @@ class _events extends downloads
 					$t_offset = floor(($imagedata['prev_images'] - $val) / $t_per_page) * $t_per_page;
 				}
 				
-				if ($this->data['images'])
-				{
+				if ($this->data['images']) {
 					$exception_sql = (isset($download_id) && $download_id) ? sql_filter(' AND g.image <> ? ', $download_id) : '';
 					
 					$sql = 'SELECT g.*
@@ -388,8 +367,7 @@ class _events extends downloads
 				
 				$comments_ref = ($t_offset) ? s_link('events', array($this->data['id'], 's' . $t_offset)) : s_link('events', $this->data['id']);
 				
-				if ($this->data['posts'])
-				{
+				if ($this->data['posts']) {
 					$posts_offset = intval(request_var('ps', 0));
 					$comments->ref = $comments_ref;
 					
@@ -428,8 +406,7 @@ class _events extends downloads
 		}
 	}
 	
-	function home()
-	{
+	public function home() {
 		global $config, $template, $user;
 		
 		$timezone = $config['board_timezone'] * 3600;
@@ -509,18 +486,15 @@ class _events extends downloads
 			unset($this->data['is_gallery']);
 		}
 		
-		if (sizeof($this->data))
-		{
+		if (sizeof($this->data)) {
 			$template->assign_block_vars('future', array());
 			
-			foreach ($this->data as $is_date => $data)
-			{
+			foreach ($this->data as $is_date => $data) {
 				$template->assign_block_vars('future.set', array(
 					'L_TITLE' => $user->lang['UE_' . strtoupper($is_date)])
 				);
 				
-				foreach ($data as $item)
-				{
+				foreach ($data as $item) {
 					$template->assign_block_vars('future.set.item', array(
 						'ITEM_ID' => $item['id'],
 						'TITLE' => $item['title'],

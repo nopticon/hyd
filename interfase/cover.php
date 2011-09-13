@@ -46,8 +46,7 @@ class cover {
 		
 		$template->assign_block_vars('news', array());
 		
-		foreach ($news as $row)
-		{
+		foreach ($news as $row) {
 			$image = $images_dir . $row['news_id'] . '.jpg';
 			$image = (@file_exists('..' . $image)) ? $image : $images_dir . 'default.jpg';
 			
@@ -80,13 +79,11 @@ class cover {
 		*/
 	}
 	
-	public function banners()
-	{
+	public function banners() {
 		global $cache, $user, $template;
 		
 		$banners = array();
-		if (!$banners = $cache->get('banners'))
-		{
+		if (!$banners = $cache->get('banners')) {
 			$sql = 'SELECT *
 				FROM _banners
 				ORDER BY banner_order';
@@ -98,8 +95,7 @@ class cover {
 		if (!sizeof($banners)) return;
 		
 		$template->assign_block_vars('banners', array());
-		foreach ($banners as $item)
-		{
+		foreach ($banners as $item) {
 			$template->assign_block_vars('banners.item', array(
 				'URL' => (!empty($item['banner_url'])) ? $item['banner_url'] : '',
 				'IMAGE' => SDATA . 'base/' . $item['banner_id'] . '.gif',
@@ -110,13 +106,11 @@ class cover {
 		return;
 	}
 	
-	public function founders()
-	{
+	public function founders() {
 		global $cache, $user, $template;
 		
 		$founders = array();
-		if (!$founders = $cache->get('founders'))
-		{
+		if (!$founders = $cache->get('founders')) {
 			global $config;
 			
 			$sql = 'SELECT user_id, username, username_base, user_color, user_email, user_avatar
@@ -136,8 +130,7 @@ class cover {
 			$cache->save('founders', $founders);
 		}
 		
-		foreach ($founders as $user_id => $data)
-		{
+		foreach ($founders as $user_id => $data) {
 			$template->assign_block_vars('founders', array(
 				'REALNAME' => $data['realname'],
 				'USERNAME' => $data['username'],
@@ -149,8 +142,7 @@ class cover {
 		}
 	}
 	
-	public function extra()
-	{
+	public function extra() {
 		global $config, $user, $template;
 		
 		$ttime = time();
@@ -168,8 +160,7 @@ class cover {
 		return;
 	}
 	
-	public function board()
-	{
+	public function board() {
 		global $user, $config, $template;
 		
 		$sql = 'SELECT t.topic_id, t.topic_title, t.forum_id, t.topic_replies, t.topic_color, f.forum_alias, f.forum_name, p.post_id, p.post_username, p.post_time, u.user_id, u.username, u.username_base, u.user_color
@@ -211,12 +202,10 @@ class cover {
 		return true;
 	}
 	
-	public function poll()
-	{
+	public function poll() {
 		global $user, $auth, $config, $cache, $template;
 		
-		if (!$topic_id = $cache->get('last_poll_id'))
-		{
+		if (!$topic_id = $cache->get('last_poll_id')) {
 			$sql = 'SELECT t.topic_id
 				FROM _forum_topics t
 				LEFT JOIN _poll_options v ON t.topic_id = v.topic_id
@@ -276,8 +265,7 @@ class cover {
 			'POLL_TITLE' => $vote_info[0]['vote_text'])
 		);
 		
-		if (!$user->data['is_member'] || $user_voted || $poll_expired || !$is_auth['auth_vote'] || $topic_data['topic_locked'])
-		{
+		if (!$user->data['is_member'] || $user_voted || $poll_expired || !$is_auth['auth_vote'] || $topic_data['topic_locked']) {
 			$vote_results_sum = 0;
 			foreach ($vote_info as $row) {
 				$vote_results_sum += $row['vote_result'];

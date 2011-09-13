@@ -18,17 +18,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-class community
-{
-	function team()
-	{
+class community {
+	public function team() {
 		global $cache, $template;
 		
 		$team = array();
 		$team_members = array();
 		
-		if (!$team = $cache->get('team'))
-		{
+		if (!$team = $cache->get('team')) {
 			$sql = 'SELECT *
 				FROM _team
 				ORDER BY team_order';
@@ -37,8 +34,7 @@ class community
 			}
 		}
 		
-		if (!$team_members = $cache->get('team_members'))
-		{
+		if (!$team_members = $cache->get('team_members')) {
 			$sql = 'SELECT t.*
 				FROM _team_members t, _members m
 				WHERE t.member_id = m.user_id
@@ -49,8 +45,7 @@ class community
 		}
 		
 		//
-		if (!sizeof($team) || !sizeof($team_members))
-		{
+		if (!sizeof($team) || !sizeof($team_members)) {
 			return;
 		}
 		
@@ -58,8 +53,7 @@ class community
 		$comments = new _comments();
 		
 		$sql_members = array();
-		foreach ($team_members as $data)
-		{
+		foreach ($team_members as $data) {
 			$sql_members[] = $data['member_id'];
 		}
 		
@@ -107,7 +101,7 @@ class community
 		return;
 	}
 	
-	function vars() {
+	public function vars() {
 		global $user, $config, $template;
 		
 		$template->assign_vars(array(
@@ -118,23 +112,19 @@ class community
 		return;
 	}
 	
-	function online($sql, $block, $block_title, $unset_legend = false)
-	{
+	public function online($sql, $block, $block_title, $unset_legend = false) {
 		global $user, $template;
 		static $user_bots;
 		
-		if (!isset($user_bots))
-		{
+		if (!isset($user_bots)) {
 			$bots = array();
 			obtain_bots($bots);
-			foreach ($bots as $row)
-			{
+			foreach ($bots as $row) {
 				$user_bots[$row['user_id']] = true;
 			}
 		}
 		
-		foreach (array('last_user_id' => 0, 'users_visible' => 0, 'users_hidden' => 0, 'users_guests' => 0, 'users_bots' => 0, 'last_ip' => '', 'users_online' => 0) as $k => $v)
-		{
+		foreach (array('last_user_id' => 0, 'users_visible' => 0, 'users_hidden' => 0, 'users_guests' => 0, 'users_bots' => 0, 'last_ip' => '', 'users_online' => 0) as $k => $v) {
 			$$k = $v;
 		}
 		
@@ -182,13 +172,11 @@ class community
 		
 		$users_total = (int) $users_visible + $users_hidden + $users_guests + $users_bots;
 		
-		if (!($users_visible + $users_hidden) || (!$users_visible && $users_hidden))
-		{
+		if (!($users_visible + $users_hidden) || (!$users_visible && $users_hidden)) {
 			$template->assign_block_vars($block . '.members.none', array());
 		}
 		
-		/*if (!$users_visible)
-		{
+		/*if (!$users_visible) {
 			$template->assign_block_vars($block . '.members.none', array());
 		}*/
 		
@@ -218,8 +206,7 @@ class community
 		}
 	}
 	
-	function recent_members()
-	{
+	public function recent_members() {
 		global $user, $template;
 		
 		$sql = 'SELECT username, username_base, user_color

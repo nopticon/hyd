@@ -20,34 +20,24 @@ if (!defined('IN_NUCLEO')) exit;
 
 include(ROOT . 'interfase/downloads.php');
 
-//
-// Class: layout
-//
 class layout extends downloads {
 	//
 	// Home
 	//
-	function _1()
-	{
+	public function _1() {
 		global $user, $config, $template;
 		
 		//
 		// Gallery
 		//
-		if ($this->data['images'])
-		{
+		if ($this->data['images']) {
 			$simage = $this->get_images(FALSE, $this->data['ub'], TRUE);
 			$imagedata = $this->images[$this->data['ub']][$simage];
 			$image = $imagedata['path'];
-		}
-		else
-		{
-			if (!$this->data['um'] && !$this->data['uv'] && $this->data['bio'] == '')
-			{
+		} else {
+			if (!$this->data['um'] && !$this->data['uv'] && $this->data['bio'] == '') {
 				$default_image = 'default.jpg';
-			}
-			else
-			{
+			} else {
 				$default_image = 'default2.jpg';
 			}
 			
@@ -58,8 +48,7 @@ class layout extends downloads {
 			'IMAGE' => '/' . $image)
 		);
 		
-		if ($this->data['images'] > 1)
-		{
+		if ($this->data['images'] > 1) {
 			$template->assign_block_vars('ub_image.view', array(
 				'URL' => s_link('a', array($this->data['subdomain'], 4, $imagedata['image'], 'view')))
 			);
@@ -68,15 +57,13 @@ class layout extends downloads {
 		//
 		// News
 		//
-		if ($this->auth['mod'])
-		{
+		if ($this->auth['mod']) {
 			$template->assign_block_vars('news_create', array(
 				'URL' => s_link('control', array('_' . $this->data['subdomain'], 'news')))
 			);
 		}
 		
-		if ($this->data['news'])
-		{
+		if ($this->data['news']) {
 			$this->msg->ref = s_link('a', array($this->data['subdomain'], 16));
 			$this->msg->auth = $this->auth;
 			
@@ -95,8 +82,7 @@ class layout extends downloads {
 				'SQL' => sql_filter($sql, $config['ub_fans_f'], $this->data['ub'])
 			);
 			
-			if ($this->auth['mod'])
-			{
+			if ($this->auth['mod']) {
 				$this->msg->data['CONTROL'] = array(
 					/*'topic' => array(
 						'VIEW' => array(
@@ -127,8 +113,7 @@ class layout extends downloads {
 		// Poll
 		//
 		$user_voted = FALSE;
-		if ($this->auth['user'] && !$this->auth['mod'])
-		{
+		if ($this->auth['user'] && !$this->auth['mod']) {
 			$sql = 'SELECT *
 				FROM _artists_voters
 				WHERE ub = ?
@@ -140,8 +125,7 @@ class layout extends downloads {
 		
 		$template->assign_block_vars('ub_poll', array());
 		
-		if ($this->auth['mod'] || !$this->auth['user'] || $user_voted)
-		{
+		if ($this->auth['mod'] || !$this->auth['user'] || $user_voted) {
 			$sql = 'SELECT option_id, vote_result
 				FROM _artists_votes
 				WHERE ub = ?
@@ -150,8 +134,7 @@ class layout extends downloads {
 			
 			$template->assign_block_vars('ub_poll.results', array());
 			
-			foreach ($this->voting['ub'] as $item)
-			{
+			foreach ($this->voting['ub'] as $item) {
 				$vote_result = (isset($results[$item])) ? intval($results[$item]) : 0;
 				$vote_percent = ($this->data['votes'] > 0) ? $vote_result / $this->data['votes'] : 0;
 
@@ -161,15 +144,12 @@ class layout extends downloads {
 					'PERCENT' => sprintf("%.1d", ($vote_percent * 100)))
 				);
 			}
-		}
-		else
-		{
+		} else {
 			$template->assign_block_vars('ub_poll.options', array(
 				'S_VOTE_ACTION' => s_link('a', array($this->data['subdomain'], 17)))
 			);
 			
-			foreach ($this->voting['ub'] as $item)
-			{
+			foreach ($this->voting['ub'] as $item) {
 				$template->assign_block_vars('ub_poll.options.item', array(
 					'ID' => $item,
 					'CAPTION' => $user->lang['UB_VC' . $item])
@@ -180,8 +160,7 @@ class layout extends downloads {
 		//
 		// Auth Members
 		//
-		if ($this->auth['mod'] || $this->data['mods_legend'])
-		{
+		if ($this->auth['mod'] || $this->data['mods_legend']) {
 			$sql = 'SELECT b.ub, u.user_id, u.username, u.username_base, u.user_color, u.user_avatar, u.user_avatar_type
 				FROM _artists_auth a, _artists b, _members u
 				WHERE a.ub = ?
@@ -247,12 +226,10 @@ class layout extends downloads {
 			);
 		}
 		
-		if (sizeof($last_data))
-		{
+		if (sizeof($last_data)) {
 			$template->assign_block_vars('recent_members', array());
 			
-			foreach ($last_data as $block => $items)
-			{
+			foreach ($last_data as $block => $items) {
 				$template->assign_block_vars('recent_members.col', array(
 					'COUNT' => $items['total'],
 					'TITLE' => ($block == 'favorites') ? $user->lang['UB_RECENT_F'] : $user->lang['UB_RECENT_V'])
@@ -260,8 +237,7 @@ class layout extends downloads {
 				
 				$datetime = ($block == 'favorites') ? 'joined' : 'datetime';
 				
-				foreach ($items['data'] as $item)
-				{
+				foreach ($items['data'] as $item) {
 					$template->assign_block_vars('recent_members.col.item', array(
 						'DATETIME' => $user->format_date($item[$datetime]),
 						'USER_COLOR' => $item['user_color'],
@@ -278,8 +254,7 @@ class layout extends downloads {
 	//
 	// Biography
 	//
-	
-	function _2() {
+	public function _2() {
 		global $template;
 		
 		if ($this->data['featured_image']) {
@@ -299,14 +274,14 @@ class layout extends downloads {
 		return;
 	}
 	
-	function _3() {
+	public function _3() {
 		return;
 	}
 	
 	//
 	// Gallery
 	//
-	function _4() {
+	public function _4() {
 		global $config, $template;
 		
 		$mode = request_var('mode', '');
@@ -373,8 +348,7 @@ class layout extends downloads {
 						'HEIGHT' => $imagedata['height'])
 					);
 					
-					if ($imagedata['allow_dl'])
-					{
+					if ($imagedata['allow_dl']) {
 						$template->assign_block_vars('selected.download', array(
 							'URL' => s_link('a', array($this->data['subdomain'], 4, $imagedata['image'], 'save')))
 						);
@@ -422,16 +396,14 @@ class layout extends downloads {
 		return;
 	}
 	
-	function _5()
-	{
+	public function _5() {
 		return;
 	}
 	
 	//
 	// Lyrics
 	//
-	function _6()
-	{
+	public function _6() {
 		global $config, $template, $lang;
 		
 		$mode = request_var('mode', '');
@@ -452,8 +424,7 @@ class layout extends downloads {
 			}
 		}
 		
-		switch ($mode)
-		{
+		switch ($mode) {
 			case 'save':
 				$lyric_data['text'] = str_replace("\n", "\r\n", $lyric_data['text']);
 				
@@ -461,8 +432,7 @@ class layout extends downloads {
 				$orig_vars = array('{ARTIST}', '{EMAIL}', '{WEBSITE}', '{LYRIC_TITLE}', '{LYRIC_AUTHOR}', '{LYRIC_TEXT}');
 				$repl_vars = array($this->data['name'], $this->data['email'], $this->data['www'], $lyric_data['title'], $lyric_data['author'], $lyric_data['text']);
 				
-				if (!$this->auth['mod'])
-				{
+				if (!$this->auth['mod']) {
 					$sql = 'UPDATE _artists_lyrics SET downloads = downloads + 1
 						WHERE id = ?
 							AND ub = ?';
@@ -520,58 +490,49 @@ class layout extends downloads {
 		return;
 	}
 	
-	function _7()
-	{
+	public function _7() {
 		return;
 	}
 	
-	function _8()
-	{
+	public function _8() {
 		return;
 	}
 	
 	//
 	// Downloads
 	//
-	function _9()
-	{
+	public function _9() {
 		$this->dl_setup();
 		
 		$mode = request_var('dl_mode', '');
-		if ($mode == '')
-		{
+		if ($mode == '') {
 			$mode = 'view';
 		}
 		
-		if (!in_array($mode, array('view', 'save', 'vote', 'fav')))
-		{
+		if (!in_array($mode, array('view', 'save', 'vote', 'fav'))) {
 			redirect(s_link('a', $this->data['subdomain']));
 		}
 		
 		$mode = 'dl_' . $mode;
-		if (!method_exists($this, $mode))
-		{
+		if (!method_exists($this, $mode)) {
 			redirect(s_link('a', $this->data['subdomain']));
 		}
 		
 		return $this->$mode();
 	}
 	
-	function _10()
-	{
+	public function _10() {
 		return;
 	}
 	
 	//
 	// Messages
 	//
-	function _12()
-	{
+	public function _12() {
 		global $user, $config, $template;
 		
 		$post_id = request_var('post_id', 0);
-		if (!$post_id)
-		{
+		if (!$post_id) {
 			fatal_error();
 		}
 		
@@ -611,8 +572,7 @@ class layout extends downloads {
 				'SQL' => sql_filter($sql, $this->data['ub'], $post_id, $post_id, $start, $config['s_posts'])
 			);
 			
-			if ($this->auth['user'])
-			{
+			if ($this->auth['user']) {
 				$this->msg->data['CONTROL']['reply'] = array(
 					'REPLY' => array(
 						'URL' => s_link('a', array($this->data['subdomain'], 12, '%d')) . '#reply',
@@ -621,8 +581,7 @@ class layout extends downloads {
 				);
 			}
 			
-			if ($this->auth['user'] && !$this->auth['mod'])
-			{
+			if ($this->auth['user'] && !$this->auth['mod']) {
 				$this->msg->data['CONTROL']['report'] = array(
 					'REPORT' => array(
 						'URL' => s_link('a', array($this->data['subdomain'], 12, '%d', 'report')),
@@ -631,12 +590,10 @@ class layout extends downloads {
 				);
 			}
 			
-			if ($this->auth['mod'])
-			{
+			if ($this->auth['mod']) {
 				$this->msg->data['CONTROL']['auth'] = array();
 				
-				if ($this->auth['adm'] && $user->data['is_founder'])
-				{
+				if ($this->auth['adm'] && $user->data['is_founder']) {
 					$this->msg->data['CONTROL']['auth']['EDIT'] = array(
 						'URL' => s_link_control('a', array('a' => $this->data['subdomain'], 'mode' => 'aposts', 'manage' => 'edit', 'id' => '%d')),
 						'ID' => 'post_id'
@@ -662,27 +619,20 @@ class layout extends downloads {
 			);
 		}
 		
-		if ($this->auth['post'] && ($this->data['a_active'] || $user->_team_auth('founder')))
-		{
-			if ($this->auth['user'])
-			{
+		if ($this->auth['post'] && ($this->data['a_active'] || $user->_team_auth('founder'))) {
+			if ($this->auth['user']) {
 				$template->assign_block_vars('reply_post_box', array(
 					'REF' => $comments_ref)
 				);
-			}
-			else
-			{
+			} else {
 				$template->assign_block_vars('reply_no_guest_posting', array(
-					'LEGEND' => sprintf($user->lang['UB_NO_GUEST_POSTING'], $this->data['name'], s_link('my', 'register'))
-				));
+					'LEGEND' => sprintf($user->lang['UB_NO_GUEST_POSTING'], $this->data['name'], s_link('my', 'register')))
+				);
 			}
-		}
-		else
-		{
+		} else {
 			$template->assign_block_vars('reply_no_post_auth', array());
 			
-			if ($this->auth['post_until'])
-			{
+			if ($this->auth['post_until']) {
 				$template->assign_block_vars('reply_no_post_auth.until', array(
 					'UNTIL_DATETIME' => $user->format_date($this->auth['post_until']))
 				);
@@ -695,15 +645,12 @@ class layout extends downloads {
 	//
 	// Email
 	//
-	function _13()
-	{
-		if (empty($this->data['email']))
-		{
+	public function _13() {
+		if (empty($this->data['email'])) {
 			fatal_error();
 		}
 		
-		if (!$this->auth['user'])
-		{
+		if (!$this->auth['user']) {
 			do_login();
 		}
 		
@@ -714,18 +661,15 @@ class layout extends downloads {
 		$message = '';
 		$current_time = time();
 		
-		if (isset($_POST['submit']))
-		{
+		if (isset($_POST['submit'])) {
 			$subject = request_var('subject', '');
 			$message = request_var('message', '', true);
 			
-			if (empty($subject) || empty($message))
-			{
+			if (empty($subject) || empty($message)) {
 				$error_msg .= (($error_msg != '') ? '<br />' : '') . $user->lang['FIELDS_EMPTY'];
 			}
 			
-			if (empty($error_msg))
-			{
+			if (empty($error_msg)) {
 				$sql = 'UPDATE _artists SET last_email = ?, last_email_user = ?
 					WHERE ub = ?';
 				sql_query(sql_filter($sql, $current_time, $user->data['user_id'], $this->data['ub']));
@@ -758,8 +702,7 @@ class layout extends downloads {
 			}
 		}
 		
-		if ($error_msg != '')
-		{
+		if ($error_msg != '') {
 			$template->assign_block_vars('error', array());
 		}
 		
@@ -776,17 +719,14 @@ class layout extends downloads {
 	//
 	// Redirect to Website
 	//
-	function _14()
-	{
-		if ($this->data['www'] == '')
-		{
+	public function _14() {
+		if ($this->data['www'] == '') {
 			redirect(s_link('a', $this->data['subdomain']));
 		}
 		
 		global $user;
 		
-		if (!$this->data['www_awc'] && !check_www($this->data['www']))
-		{
+		if (!$this->data['www_awc'] && !check_www($this->data['www'])) {
 			trigger_error(sprintf($user->lang['LINKS_CANT_REDIRECT'], $this->data['www']));
 		}
 		
@@ -801,28 +741,23 @@ class layout extends downloads {
 	//
 	// Favorites
 	//
-	function _15()
-	{
+	public function _15() {
 		global $user;
 		
-		if (!$this->auth['user'])
-		{
+		if (!$this->auth['user']) {
 			do_login(sprintf($user->lang['LOGIN_BE_FAN'], $this->data['name']));
 		}
 		
 		$url = s_link('a', $this->data['subdomain']);
 		
-		if ($this->auth['smod'])
-		{
+		if ($this->auth['smod']) {
 			redirect($url);
 		}
 		
-		if ($this->auth['fav'])
-		{
+		if ($this->auth['fav']) {
 			$sql_member = array('user_a_favs' => $user->data['user_a_favs'] - 1);
 			
-			if ($user->data['user_a_favs'] == 1 && $user->data['user_type'] == USER_FAN)
-			{
+			if ($user->data['user_a_favs'] == 1 && $user->data['user_type'] == USER_FAN) {
 				$sql_member += array('user_type' => USER_NORMAL, 'user_color' => '4D5358');
 			}
 			
@@ -832,13 +767,10 @@ class layout extends downloads {
 			sql_query(sql_filter($sql, $this->data['ub'], $user->data['user_id']));
 			
 			$user->delete_all_unread(UH_AF, $user->data['user_id']);
-		}
-		else
-		{
+		} else {
 			$sql_member = array('user_a_favs' => $user->data['user_a_favs'] + 1);
 			
-			if ($user->data['user_type'] == USER_NORMAL)
-			{
+			if ($user->data['user_type'] == USER_NORMAL) {
 				$sql_member += array('user_type' => USER_FAN, 'user_color' => '7A0B43');
 			}
 			
@@ -862,26 +794,22 @@ class layout extends downloads {
 		return;
 	}
 	
-	function _16()
-	{
+	public function _16() {
 		return;
 	}
 	
 	//
 	// Vote
 	//
-	function _17()
-	{
-		if (!$this->auth['user'])
-		{
+	public function _17() {
+		if (!$this->auth['user']) {
 			do_login();
 		}
 		
 		$option_id = intval(request_var('vote_id', 0));
 		$url = s_link('a', $this->data['subdomain']);
 		
-		if ($this->auth['mod'] || !$option_id || !in_array($option_id, $this->voting['ub']))
-		{
+		if ($this->auth['mod'] || !$option_id || !in_array($option_id, $this->voting['ub'])) {
 			redirect($url);
 		}
 		
@@ -926,8 +854,7 @@ class layout extends downloads {
 		redirect($url);
 	}
 	
-	function _18()
-	{
+	public function _18() {
 		global $user, $template;
 		
 		$sql = 'SELECT *
@@ -958,19 +885,17 @@ class layout extends downloads {
 //
 // Class: _artists
 //
-class _artists extends layout
-{
-	var $auth = array();
-	var $data = array();
-	var $adata = array();
-	var $images = array();
-	var $layout = array();
-	var $voting = array();
-	var $msg = array();
-	var $ajx = true;
+class _artists extends layout {
+	public $auth = array();
+	public $data = array();
+	public $adata = array();
+	public $images = array();
+	public $layout = array();
+	public $voting = array();
+	public $msg = array();
+	public $ajx = true;
 	
-	function _artists ()
-	{
+	public function __construct() {
 		$this->layout = array(
 			'_01' => array('code' => 1, 'text' => 'UB_L01', 'tpl' => 'a_main'),
 			'_02' => array('code' => 2, 'text' => 'UB_L02', 'tpl' => 'a_bio'),
@@ -992,8 +917,7 @@ class _artists extends layout
 		);
 	}
 	
-	function get_data()
-	{
+	public function get_data() {
 		$sql = 'SELECT *
 			FROM _artists
 			ORDER BY name ASC';
@@ -1002,8 +926,7 @@ class _artists extends layout
 		return;
 	}
 	
-	function _setup()
-	{
+	public function _setup() {
 		global $user;
 		
 		$_a = request_var('id', '');
@@ -1027,8 +950,7 @@ class _artists extends layout
 		return false;
 	}
 	
-	function _auth ()
-	{
+	public function _auth() {
 		global $user;
 		
 		$this->auth['user'] = ($user->data['is_member']) ? TRUE : FALSE;
@@ -1038,8 +960,7 @@ class _artists extends layout
 		$this->auth['fav'] = FALSE;
 		$this->auth['post'] = TRUE;
 		
-		if (!$this->auth['user'] || $this->data['layout'] == 14) // TEMP
-		{
+		if (!$this->auth['user'] || $this->data['layout'] == 14) {
 			return;
 		}
 		
@@ -1084,8 +1005,7 @@ class _artists extends layout
 			}
 		}
 		
-		if ($user->data['user_type'] != USER_NORMAL)
-		{
+		if ($user->data['user_type'] != USER_NORMAL) {
 			$sql = 'SELECT f.* 
 				FROM _artists b, _artists_fav f, _members m 
 				WHERE b.ub = ? 
@@ -1101,34 +1021,27 @@ class _artists extends layout
 		return;
 	}
 	
-	function call_layout()
-	{
+	public function call_layout() {
 		$layout = '_' . $this->data['layout'];
-		if (!method_exists($this, $layout))
-		{
+		if (!method_exists($this, $layout)) {
 			redirect(s_link('a', $this->data['subdomain']));
 		}
 		
 		return $this->$layout();
 	}
 	
-	function stats ($id)
-	{
-		if (is_array($id))
-		{
+	public function stats ($id) {
+		if (is_array($id)) {
 			$all_stats = array();
-			foreach ($id as $item)
-			{
+			foreach ($id as $item) {
 				$all_stats[$item] = $this->stats($item);
 			}
 			return $all_stats;
 		}
 		
 		$t_ub = $s_ub = 0;
-		foreach ($this->adata as $data)
-		{
-			if ($data[$id] > $s_ub)
-			{
+		foreach ($this->adata as $data) {
+			if ($data[$id] > $s_ub) {
 				$s_ub = $data[$id];
 				$t_ub = $data['ub'];
 			}
@@ -1137,12 +1050,10 @@ class _artists extends layout
 		return ($t_ub) ? $this->adata[$t_ub] : false;
 	}
 	
-	function last_records()
-	{
+	public function last_records() {
 		global $user, $cache, $template;
 		
-		if (!$a_records = $cache->get('a_records'))
-		{
+		if (!$a_records = $cache->get('a_records')) {
 			$sql = 'SELECT ub, subdomain, name, genre
 				FROM _artists
 				ORDER BY datetime DESC
@@ -1152,12 +1063,10 @@ class _artists extends layout
 			$cache->save('a_records', $a_records);
 		}
 		
-		if (!$ai_records = $cache->get('ai_records'))
-		{
+		if (!$ai_records = $cache->get('ai_records')) {
 			$ai_records = array();
 			
-			foreach ($a_records as $row)
-			{
+			foreach ($a_records as $row) {
 				$sql = 'SELECT ub, images
 					FROM _artists_images
 					WHERE ub = ?
@@ -1174,16 +1083,14 @@ class _artists extends layout
 		
 		$template->assign_block_vars('a_records', array());
 		
-		foreach ($a_records as $row)
-		{
+		foreach ($a_records as $row) {
 			$template->assign_block_vars('a_records.item', array(
 				'URL' => s_link('a', $row['subdomain']),
 				'NAME' => $row['name'],
 				'GENRE' => $row['genre'])
 			);
 			
-			if (isset($ai_records[$row['ub']]))
-			{
+			if (isset($ai_records[$row['ub']])) {
 				$ai_select = array_rand($ai_records[$row['ub']]);
 				
 				$template->assign_block_vars('a_records.item.image', array(
@@ -1193,16 +1100,14 @@ class _artists extends layout
 		}
 	}
 	
-	function top_stats ()
-	{
+	public function top_stats() {
 		global $user, $template;
 		
 		$template->assign_block_vars('a_stats', array());
 		
 		$all_data = $this->stats(array('datetime', 'views', 'votes', 'posts'));
 		
-		if ($all_data['datetime'])
-		{
+		if ($all_data['datetime']) {
 			global $cache;
 			
 			$a_random = array();
@@ -1216,11 +1121,9 @@ class _artists extends layout
 				}
 			}
 			
-			if (sizeof($a_random))
-			{
+			if (sizeof($a_random)) {
 				$selected_image = array_rand($a_random);
-				if (isset($a_random[$selected_image]))
-				{
+				if (isset($a_random[$selected_image])) {
 					$template->assign_block_vars('a_stats.gallery', array(
 						'IMAGE' => SDATA . 'artists/' . $all_data['datetime']['ub'] . '/thumbnails/' . $a_random[$selected_image] . '.jpg',
 						'URL' => s_link('a', $all_data['datetime']['subdomain']))
@@ -1229,10 +1132,8 @@ class _artists extends layout
 			}
 		}
 		
-		foreach ($all_data as $id => $data)
-		{
-			if ($data['name'] != '')
-			{
+		foreach ($all_data as $id => $data) {
+			if ($data['name'] != '') {
 				$template->assign_block_vars('a_stats.item', array(
 					'LANG' => $user->lang['UB_TOP_' . strtoupper($id)],
 					'URL' => s_link('a', $data['subdomain']),
@@ -1246,12 +1147,10 @@ class _artists extends layout
 		return;
 	}
 	
-	function thumbnails()
-	{
+	public function thumbnails() {
 		global $cache, $template;
 		
-		if (!$a_recent = $cache->get('a_recent'))
-		{
+		if (!$a_recent = $cache->get('a_recent')) {
 			$sql = 'SELECT ub
 				FROM _artists
 				ORDER BY datetime DESC
@@ -1267,30 +1166,25 @@ class _artists extends layout
 		}
 		
 		$a_ary = array();
-		for ($i = 0; $i < 2; $i++)
-		{
+		for ($i = 0; $i < 2; $i++) {
 			$_a = array_rand($a_recent);
-			if (!$this->adata[$_a]['images'] || isset($a_ary[$_a]))
-			{
+			if (!$this->adata[$_a]['images'] || isset($a_ary[$_a])) {
 				$i--;
 				continue;
 			}
 			$a_ary[$_a] = $this->adata[$_a];
 		}
 		
-		for ($i = 0; $i < 2; $i++)
-		{
+		for ($i = 0; $i < 2; $i++) {
 			$_a = array_rand($this->adata);
-			if (!$this->adata[$_a]['images'] || isset($a_ary[$_a]))
-			{
+			if (!$this->adata[$_a]['images'] || isset($a_ary[$_a])) {
 				$i--;
 				continue;
 			}
 			$a_ary[$_a] = $this->adata[$_a];
 		}
 		
-		if (sizeof($a_ary))
-		{
+		if (sizeof($a_ary)) {
 			$sql = 'SELECT *
 				FROM _artists_images
 				WHERE ub IN (??)
@@ -1306,8 +1200,7 @@ class _artists extends layout
 			
 			$template->assign_block_vars('thumbnails', array());
 			
-			foreach ($a_ary as $ub => $data)
-			{
+			foreach ($a_ary as $ub => $data) {
 				$template->assign_block_vars('thumbnails.item', array(
 					'NAME' => $data['name'],
 					'IMAGE' => SDATA . 'artists/' . $ub . '/thumbnails/' . $random_images[$ub] . '.jpg',
@@ -1321,7 +1214,7 @@ class _artists extends layout
 		return;
 	}
 	
-	function get_images($mainframe = false, $ub = 0, $rand = false) {
+	public function get_images($mainframe = false, $ub = 0, $rand = false) {
 		if ($this->images) {
 			return;
 		}
@@ -1369,12 +1262,10 @@ class _artists extends layout
 		return;
 	}
 	
-	function downloads()
-	{
+	public function downloads() {
 		$this->dl_sql();
 		
-		if (empty($this->ud_song))
-		{
+		if (empty($this->ud_song)) {
 			return;
 		}
 		
@@ -1383,11 +1274,9 @@ class _artists extends layout
 		$template->assign_block_vars('downloads', array());
 		
 		$ud_in_ary = array();
-		foreach ($this->ud_song as $ud => $dl_data)
-		{
+		foreach ($this->ud_song as $ud => $dl_data) {
 			$dl_size = sizeof($dl_data);
-			if (!$dl_size)
-			{
+			if (!$dl_size) {
 				continue;
 			}
 			
@@ -1399,16 +1288,15 @@ class _artists extends layout
 				'TOTAL_COUNT' => $dl_size)
 			);
 			
-			for ($i = 0; $i < $ud_size; $i++)
-			{
+			for ($i = 0; $i < $ud_size; $i++) {
 				$ud_rand = array_rand($dl_data);
 				
-				if (isset($ud_in_ary[$ud][$ud_rand]))
-				{
+				if (isset($ud_in_ary[$ud][$ud_rand])) {
 					$i--;
 					continue;
 				}
-				$ud_in_ary[$ud][$ud_rand] = TRUE;
+				
+				$ud_in_ary[$ud][$ud_rand] = true;
 				
 				$template->assign_block_vars('downloads.panel.item', array(
 					'UB' => $this->adata[$dl_data[$ud_rand]['ub']]['name'],
@@ -1421,8 +1309,7 @@ class _artists extends layout
 		return;
 	}
 	
-	function _list()
-	{
+	public function _list() {
 		global $user, $config, $template;
 		
 		$sql = 'SELECT *
@@ -1436,10 +1323,8 @@ class _artists extends layout
 			
 			$alpha_id = strtolower($row['name']);
 			$alpha_id = $alpha_id{0};
-			if (!isset($alphabet[$alpha_id]))
-			{
-				if (preg_match('/([0-9])/', $alpha_id))
-				{
+			if (!isset($alphabet[$alpha_id])) {
+				if (preg_match('/([0-9])/', $alpha_id)) {
 					$alpha_id = '#';
 				}
 				$alphabet[$alpha_id] = TRUE;
@@ -1513,8 +1398,7 @@ class _artists extends layout
 		
 		ksort($alphabet);
 		
-		foreach ($alphabet as $key => $null)
-		{
+		foreach ($alphabet as $key => $null) {
 			$template->assign_block_vars('alphabet_item', array(
 				'CHAR' => strtoupper($key),
 				'URL' => s_link('a', '_' . decoct(ord($key))))
@@ -1529,23 +1413,20 @@ class _artists extends layout
 		return;
 	}
 	
-	function _panel()
-	{
+	public function _panel() {
 		global $user, $config, $template;
 		
 		$this->data['layout'] = request_var('layout', 0);
 		$this->_auth();
 		
-		switch ($this->data['layout'])
-		{
+		switch ($this->data['layout']) {
 			case 14:
 			case 15:
 			case 17:
 				$this->call_layout();
 				break;
 			default:
-				if (!$this->data['layout'])
-				{
+				if (!$this->data['layout']) {
 					$this->data['layout'] = 1;
 				}
 				
@@ -1564,28 +1445,23 @@ class _artists extends layout
 				$s_layout['a']['_12'] = ($this->data['layout'] == 12) ? true : false;
 				$s_layout['a']['_18'] = ($this->data['a_video'] > 0) ? true : false;
 				
-				foreach ($this->layout as $item => $data)
-				{
+				foreach ($this->layout as $item => $data) {
 					$s_layout['x'][$item] = $data['code'];
 					
-					if ($data['text'] == '')
-					{
+					if ($data['text'] == '') {
 						$s_layout['e'][$item] = $data['code'];
 					}
 					
-					if (isset($s_layout['a'][$item]) && $s_layout['a'][$item] && $data['tpl'] != '')
-					{
+					if (isset($s_layout['a'][$item]) && $s_layout['a'][$item] && $data['tpl'] != '') {
 						$s_layout['s'][$data['code']] = $data;
 					}
 					
-					if (($this->data['layout'] == $data['code']) && $data['tpl'] != '')
-					{
+					if (($this->data['layout'] == $data['code']) && $data['tpl'] != '') {
 						$this->data['template'] = $data['tpl'];
 					}
 				}
 				
-				if (!in_array($this->data['layout'], $s_layout['x']) || (!isset($s_layout['s'][$this->data['layout']]) && !in_array($this->data['layout'], $s_layout['e'])))
-				{
+				if (!in_array($this->data['layout'], $s_layout['x']) || (!isset($s_layout['s'][$this->data['layout']]) && !in_array($this->data['layout'], $s_layout['e']))) {
 					redirect(s_link('a', $this->data['subdomain']));
 				}
 				
@@ -1597,14 +1473,12 @@ class _artists extends layout
 				//
 				// Build nav
 				//
-				foreach ($s_layout['s'] as $data)
-				{
+				foreach ($s_layout['s'] as $data) {
 					$template->assign_block_vars('nav', array(
 						'LANG' => $user->lang[$data['text']])
 					);
 					
-					if ($this->data['layout'] == $data['code'])
-					{
+					if ($this->data['layout'] == $data['code']) {
 						$template->assign_block_vars('nav.strong', array());
 						continue;
 					}
@@ -1617,14 +1491,12 @@ class _artists extends layout
 				//
 				// Update stats
 				//				
-				if (!$this->auth['mod'])
-				{
-					$update_views = FALSE;
+				if (!$this->auth['mod']) {
+					$update_views = false;
 					$current_time = time();
 					$current_month = date('Ym', $current_time);
 					
-					if ($this->auth['user'])
-					{
+					if ($this->auth['user']) {
 						$sql_viewers = array('datetime' => (int) $current_time, 'user_ip' => $user->ip);
 						$sql_viewers2 = array('ub' => (int) $this->data['ub'], 'user_id' => (int) $user->data['user_id']);
 						
@@ -1632,9 +1504,8 @@ class _artists extends layout
 							WHERE ??';
 						sql_query(sql_filter($sql, sql_build('UPDATE', $sql_viewers), sql_build('SELECT', $sql_viewers2)));
 						
-						if (!sql_affectedrows())
-						{
-							$update_views = TRUE;
+						if (!sql_affectedrows()) {
+							$update_views = true;
 							$sql_stats = array('ub' => (int) $this->data['ub'], 'date' => (int) $current_month);
 							
 							$sql = 'INSERT INTO _artists_viewers' . sql_build('INSERT', $sql_viewers + $sql_viewers2);
@@ -1644,8 +1515,7 @@ class _artists extends layout
 								WHERE ??';
 							sql_query(sql_filter($sql, sql_build('SELECT', $sql_stats)));
 							
-							if (!sql_affectedrows())
-							{
+							if (!sql_affectedrows()) {
 								$sql_insert = array(
 									'members' => 1,
 									'guests' => 0
@@ -1668,15 +1538,13 @@ class _artists extends layout
 						}
 					}
 					
-					if ((($this->auth['user'] && $update_views) || (!$this->auth['user'] && $this->data['layout'] == 1)) && !isset($_REQUEST['ps']))
-					{
+					if ((($this->auth['user'] && $update_views) || (!$this->auth['user'] && $this->data['layout'] == 1)) && !isset($_REQUEST['ps'])) {
 						$sql = 'UPDATE _artists SET views = views + 1
 							WHERE ub = ?';
 						sql_query(sql_filter($sql, $this->data['ub']));
 						$this->data['views']++;
 						
-						if ((!$this->auth['user'] && $this->data['layout'] == 1) && !isset($_REQUEST['ps']))
-						{
+						if ((!$this->auth['user'] && $this->data['layout'] == 1) && !isset($_REQUEST['ps'])) {
 							$sql_stats = array(
 								'ub' => (int) $this->data['ub'],
 								'date' => (int) $current_month
@@ -1771,23 +1639,19 @@ class _artists extends layout
 				//
 				// Downloads
 				//
-				if ($this->data['um'] || $this->data['uv'])
-				{
+				if ($this->data['um'] || $this->data['uv']) {
 					$this->dl_sql($this->data['ub'], 'ud, title');
 					
-					foreach ($this->ud_song as $key => $data)
-					{
+					foreach ($this->ud_song as $key => $data) {
 						$download_type = $this->dl_type($key);
 						$template->assign_block_vars('ud_block', array('LANG' => $download_type['lang']));
 						
-						foreach ($data as $song)
-						{
+						foreach ($data as $song) {
 							$template->assign_block_vars('ud_block.item', array(
 								'TITLE' => $song['title'])
 							);
 							
-							if (isset($this->dl_data['id']) && ($song['id'] == $this->dl_data['id']))
-							{
+							if (isset($this->dl_data['id']) && ($song['id'] == $this->dl_data['id'])) {
 								$template->assign_block_vars('ud_block.item.strong', array());
 								continue;
 							}
@@ -1802,8 +1666,7 @@ class _artists extends layout
 				//
 				// Art
 				//
-				if ($this->data['arts'])
-				{
+				if ($this->data['arts']) {
 					$template->assign_block_vars('art_block', array());
 						
 					$sql = 'SELECT *
@@ -1830,8 +1693,7 @@ class _artists extends layout
 				$ref_layout = in_array($this->data['layout'], array(9, 12, 16)) ? 1 : $this->data['layout'];
 				$comments_ref = s_link('a', array($this->data['subdomain'], $ref_layout));
 				
-				if ($this->data['posts'])
-				{
+				if ($this->data['posts']) {
 					$start = intval(request_var('ps', 0));
 					$this->msg->ref = $comments_ref;
 					$this->msg->auth = $this->auth;
@@ -1941,7 +1803,7 @@ class _artists extends layout
 		return;
 	}
 	
-	function a_sidebar() {
+	public function a_sidebar() {
 		global $template;
 		
 		$sql = 'SELECT *

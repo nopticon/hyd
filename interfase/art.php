@@ -20,22 +20,18 @@ if (!defined('IN_NUCLEO')) exit;
 
 include('./interfase/downloads.php');
 
-class _art extends downloads
-{
-	var $data = array();
+class _art extends downloads {
+	public $data = array();
 	
-	function _art()
-	{
+	public function __construct() {
 		return;
 	}
 	
-	function _sql()
-	{
+	public function _sql() {
 		global $cache;
 		
 		$rowset = array();
-		if (!($rowset = $cache->get('art')))
-		{
+		if (!($rowset = $cache->get('art'))) {
 			$sql = 'SELECT *
 				FROM _art
 				WHERE ub = 0 
@@ -53,11 +49,9 @@ class _art extends downloads
 		return $rowset;
 	}
 	
-	function _setup()
-	{
+	function _setup() {
 		$art_id = intval(request_var('id', 0));
-		if ($art_id)
-		{
+		if ($art_id) {
 			$sql = 'SELECT *
 				FROM _art
 				WHERE art_id = ?';
@@ -74,23 +68,19 @@ class _art extends downloads
 		return false;
 	}
 	
-	function _rand()
-	{
+	public function _rand() {
 		static $rowset;
 		
-		if (!isset($rowset))
-		{
+		if (!isset($rowset)) {
 			$rowset = $this->_sql();
 		}
 		
-		if (!sizeof($rowset))
-		{
+		if (!sizeof($rowset)) {
 			return;
 		}
 		
 		$selected = array_rand($rowset);
-		if (empty($rowset[$selected]))
-		{
+		if (empty($rowset[$selected])) {
 			return $this->_rand();
 		}
 		
@@ -105,19 +95,15 @@ class _art extends downloads
 		return;
 	}
 	
-	function home()
-	{
+	public function home() {
 		global $template;
 		
-		if ($rowset = $this->_sql())
-		{
+		if ($rowset = $this->_sql()) {
 			$template->assign_block_vars('art', array());
 			
 			$tcol = 0;
-			foreach ($rowset as $id => $data)
-			{
-				if (!$tcol)
-				{
+			foreach ($rowset as $id => $data) {
+				if (!$tcol) {
 					$template->assign_block_vars('art.row', array());
 				}
 				
@@ -129,29 +115,24 @@ class _art extends downloads
 				
 				$tcol = ($tcol == 3) ? 0 : $tcol + 1;
 			}
-		}
-		else
-		{
+		} else {
 			$template->assign_block_vars('empty', array());
 		}
 		
 		return;
 	}
 	
-	function view()
-	{
+	public function view() {
 		global $user, $config, $template;
 		
 		$this->filename = $this->data['art_id'] . '.jpg';
 		$this->filepath = '/data/art/full/' . $this->filename;
 		
-		if (!@file_exists('..' . $this->filepath))
-		{
+		if (!@file_exists('..' . $this->filepath)) {
 			redirect(s_link('art'));
 		}
 		
-		if ($user->data['user_type'] != USER_FOUNDER && $user->data['user_id'] != $this->data['user_id'])
-		{
+		if ($user->data['user_type'] != USER_FOUNDER && $user->data['user_id'] != $this->data['user_id']) {
 			$sql = 'UPDATE _art SET views = views + 1
 				WHERE art_id = ?';
 			sql_query(sql_filter($sql, $this->data['art_id']));
@@ -172,8 +153,7 @@ class _art extends downloads
 		
 		$comments_ref = s_link('art', $this->data['art_id']);
 		
-		if ($this->data['posts'])
-		{
+		if ($this->data['posts']) {
 			$comments->reset();
 			
 			$start = intval(request_var('aps', 0));
@@ -201,22 +181,18 @@ class _art extends downloads
 		//
 		$template->assign_block_vars('posting_box', array());
 		
-		if ($user->data['is_member'])
-		{
+		if ($user->data['is_member']) {
 			$template->assign_block_vars('posting_box.box', array(
 				'REF' => $comments_ref)
 			);
-		}
-		else
-		{
+		} else {
 			$template->assign_block_vars('posting_box.only_registered', array(
 				'LEGEND' => sprintf($user->lang['LOGIN_TO_POST'], '', s_link('my', 'register')))
 			);
 		}
 		
 		$is_fav = false;
-		if ($user->data['is_member'])
-		{
+		if ($user->data['is_member']) {
 			$sql = 'SELECT *
 				FROM _art_fav
 				WHERE art_id = ?
@@ -226,13 +202,11 @@ class _art extends downloads
 			}
 		}
 		
-		if (!$is_fav || !$user->data['is_member'])
-		{
+		if (!$is_fav || !$user->data['is_member']) {
 			$template->assign_block_vars('fav', array(
 				'URL' => s_link('art', array($this->data['art_id'], 'fav')))
 			);
 		}
-		
 		
 		$template->assign_vars(array(
 			'ART_IMAGE' => $this->filepath,
@@ -256,8 +230,7 @@ class _art extends downloads
 		return;
 	}
 	
-	function save()
-	{
+	public function save() {
 		$this->filename = $this->data['title'] . '.jpg';
 		$this->filepath = 'data/art/full/' . $this->data['art_id'] . '.jpg';
 		
@@ -268,8 +241,7 @@ class _art extends downloads
 		$this->dl_file();
 	}
 	
-	function fav()
-	{
+	public function fav() {
 		global $user;
 		
 		if (!$user->data['is_member']) {

@@ -78,23 +78,20 @@ MSG_IP							VARCHAR(40)
 
 */
 
-class _chat
-{
-	var $data = array();
-	var $rooms = array();
-	var $users = array();
-	var $comments;
+class _chat {
+	public $data = array();
+	public $rooms = array();
+	public $users = array();
+	public $comments;
 	
-	function _chat()
-	{
+	public function __construct() {
 		require('./interfase/comments.php');
 		$this->comments = new _comments;
 		
 		return;
 	}
 	
-	function m_rooms()
-	{
+	public function m_rooms() {
 		$cat = $this->get_cats();
 		
 		if (!sizeof($cat)) {
@@ -141,7 +138,7 @@ class _chat
 		return true;
 	}
 	
-	function get_ch_listing($cat) {
+	public function get_ch_listing($cat) {
 		if (!sizeof($cat)) {
 			return;
 		}
@@ -188,13 +185,11 @@ class _chat
 		return $chatters;
 	}
 	
-	function get_cats()
-	{
+	public function get_cats() {
 		global $cache;
 		
 		$cat = array();
-		if (!$cat = $cache->get('chat_cat'))
-		{
+		if (!$cat = $cache->get('chat_cat')) {
 			$sql = 'SELECT *
 				FROM _chat_cat
 				ORDER BY cat_order';
@@ -205,8 +200,7 @@ class _chat
 		return $cat;
 	}
 	
-	function _setup()
-	{
+	public function _setup() {
 		global $user;
 		
 		$ch = request_var('ch', '');
@@ -230,12 +224,10 @@ class _chat
 		return false;
 	}
 	
-	function process_data($csid, $mode)
-	{
+	public function process_data($csid, $mode) {
 		global $user, $config;
 		
-		if (empty($csid))
-		{
+		if (empty($csid)) {
 			return false;
 		}
 		
@@ -251,8 +243,7 @@ class _chat
 		
 		$last_msg = request_var('last_msg', 0);
 		
-		switch ($mode)
-		{
+		switch ($mode) {
 			case 'logout':
 				$sql = 'SELECT *
 					FROM _chat_sessions
@@ -275,8 +266,7 @@ class _chat
 			case 'send':
 				$message = request_var('message', '');
 				
-				if (empty($message))
-				{
+				if (empty($message)) {
 					return false;
 				}
 				
@@ -366,12 +356,10 @@ class _chat
 		return;
 	}
 	
-	function auth()
-	{
+	public function auth() {
 		global $user;
 		
-		if ($user->data['is_founder'] || ($this->data['ch_founder'] == $user->data['user_id']))
-		{
+		if ($user->data['is_founder'] || ($this->data['ch_founder'] == $user->data['user_id'])) {
 			return true;
 		}
 		
@@ -420,8 +408,7 @@ class _chat
 		return true;
 	}
 	
-	function session($sid)
-	{
+	public function session($sid) {
 		global $user, $config;
 		
 		/*
@@ -483,8 +470,7 @@ class _chat
 		return;
 	}
 	
-	function _message($ch, $ignore, $message)
-	{
+	public function _message($ch, $ignore, $message) {
 		global $user;
 		
 		$insert_data = array(
@@ -500,8 +486,7 @@ class _chat
 		return $insert_data;
 	}
 	
-	function window()
-	{
+	public function window() {
 		global $user, $config, $template;
 		
 		$template->assign_vars(array(
@@ -510,15 +495,13 @@ class _chat
 			'CH_NAME' => $this->data['ch_name'])
 		);
 		
-		if ($user->data['user_id'] === $this->data['ch_founder'])
-		{
+		if ($user->data['user_id'] === $this->data['ch_founder']) {
 			// TEMP
 			// $template->assign_block_vars('ch_manage', array());
 		}
 	}
 	
-	function sys_clean()
-	{
+	public function sys_clean() {
 		$ttime = time();
 		
 		$sql = 'DELETE FROM _chat_msg
@@ -540,8 +523,7 @@ class _chat
 			
 			foreach ($result as $row) {
 				$chid = $row['session_ch_id'];
-				if (!isset($update_ch[$chid]))
-				{
+				if (!isset($update_ch[$chid])) {
 					$update_ch[$chid] = 0;
 				}
 				
@@ -550,15 +532,13 @@ class _chat
 				$delete_sessions[] = "'" . sql_escape($row['session_id']) . "'";
 			}
 			
-			foreach ($update_ch as $ch_id => $number)
-			{
+			foreach ($update_ch as $ch_id => $number) {
 				$sql = 'UPDATE _chat_ch
 					SET ch_users = ch_users - ??
 					WHERE ch_id = ?';
 				sql_query(sql_filter($sql, $number, $ch_id));
 				
-				foreach ($show_members[$ch_id] as $user_id => $username)
-				{
+				foreach ($show_members[$ch_id] as $user_id => $username) {
 					$this->_message($ch_id, $user_id, sprintf($user->lang['CHAT_MEMBER_TIMEOUT'], $username));
 				}
 			}

@@ -19,20 +19,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 if (!defined('IN_NUCLEO')) exit;
 
 class control {
-	var $vars = array();
-	var $modules = array();
-	var $data = array();
-	var $_nav = array();
+	public $_nav = array();
+	public $data = array();
+	public $modules = array();
+	public $vars = array();
 	
-	var $module_path;
-	var $module;
+	public $module_path;
+	public $module;
+	public $htmlfile;
 	
-	var $htmlfile;
-	
-	//
-	// Constructor
-	//
-	function control($module) {
+	public function __construct($module) {
 		if ($module != '') {
 			$this->module = $module;
 			$this->module_path = './control/m_' . $this->module . '.php';
@@ -50,74 +46,57 @@ class control {
 	//
 	// Get value of control var
 	//
-	function get_var($var_name, $default, $multibyte = false) {
-		if (!isset($this->vars[$var_name]) || (is_array($this->vars[$var_name]) && !is_array($default)) || (is_array($default) && !is_array($this->vars[$var_name])))
-		{
+	public function get_var($var_name, $default, $multibyte = false) {
+		if (!isset($this->vars[$var_name]) || (is_array($this->vars[$var_name]) && !is_array($default)) || (is_array($default) && !is_array($this->vars[$var_name]))) {
 			return (is_array($default)) ? array() : $default;
 		}
 	
 		$var = $this->vars[$var_name];
-		if (!is_array($default))
-		{
+		if (!is_array($default)) {
 			$type = gettype($default);
-		}
-		else
-		{
+		} else {
 			list($key_type, $type) = each($default);
 			$type = gettype($type);
 			$key_type = gettype($key_type);
 		}
 	
-		if (is_array($var))
-		{
+		if (is_array($var)) {
 			$_var = $var;
 			$var = array();
 	
-			foreach ($_var as $k => $v)
-			{
-				if (is_array($v))
-				{
-					foreach ($v as $_k => $_v)
-					{
+			foreach ($_var as $k => $v) {
+				if (is_array($v)) {
+					foreach ($v as $_k => $_v) {
 						set_var($k, $k, $key_type);
 						set_var($_k, $_k, $key_type);
 						set_var($var[$k][$_k], $_v, $type, $multibyte);
 					}
-				}
-				else
-				{
+				} else {
 					set_var($k, $k, $key_type);
 					set_var($var[$k], $v, $type, $multibyte);
 				}
 			}
-		}
-		else
-		{
+		} else {
 			set_var($var, $var, $type, $multibyte);
 		}
 		
 		return $var;
 	}
 	
-	function parse_vars()
-	{
+	public function parse_vars() {
 		$params = request_var('params', '');
-		if ($params != '')
-		{
+		if ($params != '') {
 			$params = explode('.', $params);
 			
-			foreach ($params as $input)
-			{
+			foreach ($params as $input) {
 				$data = explode('-', $input);
-				if (isset($data[0]) && isset($data[1]) && !empty($data[0]))
-				{
+				if (isset($data[0]) && isset($data[1]) && !empty($data[0])) {
 					$this->vars[$data[0]] = $data[1];
 				}
 			}
 		}
 		
-		if (isset($_POST))
-		{
+		if (isset($_POST)) {
 			_utf8($_POST);
 			$this->vars = array_merge($this->vars, $_POST);
 		}
@@ -125,20 +104,13 @@ class control {
 		return;
 	}
 	
-	function _modules()
-	{
+	public function _modules() {
 		$mod_init = TRUE;
 		$fp = @opendir('./control/');
-		while ($file = @readdir($fp))
-		{
-			if (preg_match('#^m_([a-z]+)\.php$#', $file, $mod))
-			{
+		while ($file = @readdir($fp)) {
+			if (preg_match('#^m_([a-z]+)\.php$#', $file, $mod)) {
 				include_once($file);
-//				if (isset($data))
-				{
-					//$this->modules[$mod[1]] = $data;
-					$this->modules[$mod[1]] = '';
-				}
+				$this->modules[$mod[1]] = '';
 			}
 		}
 		@closedir($fp);
@@ -146,16 +118,14 @@ class control {
 		return;
 	}
 	
-	function panel()
-	{
+	public function panel() {
 		global $user, $template;
 		
 		$this->htmlfile = 'control_body';
 		
 		$this->_modules();
 		
-		if (!$user->data['is_founder'])
-		{
+		if (!$user->data['is_founder']) {
 			$this->modules = array(
 				'a' => ''
 			);
@@ -163,8 +133,7 @@ class control {
 		
 		$template->assign_block_vars('list', array());
 		
-		foreach ($this->modules as $k => $v)
-		{
+		foreach ($this->modules as $k => $v) {
 			$template->assign_block_vars('list.item', array(
 				'NAME' => $user->lang['CONTROL_' . strtoupper($k)],
 				'URL' => s_link_control($k))
@@ -174,26 +143,21 @@ class control {
 		return;
 	}
 	
-	function set_nav($url, $name)
-	{
+	public function set_nav($url, $name) {
 		global $user;
 		
 		$name = (isset($user->lang[$name])) ? $user->lang[$name] : $name;
-		
 		$this->_nav[] = array('URL' => s_link_control($this->module, $url), 'NAME' => $name);
 		
 		return;
 	}
 	
-	function display_nav()
-	{
+	public function display_nav() {
 		global $user;
 		
 		$nav_legend = '';
-		foreach ($this->_nav as $data)
-		{
-			if ($data['NAME'] == '')
-			{
+		foreach ($this->_nav as $data) {
+			if ($data['NAME'] == '') {
 				continue;
 			}
 			

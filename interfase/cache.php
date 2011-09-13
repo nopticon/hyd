@@ -18,21 +18,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-class cache
-{
-	var $cache = array();
-	var $use = true;
+class cache {
+	public $cache = array();
+	public $use = true;
 	
-	function cache()
-	{
-		if (!defined('USE_CACHE'))
-		{
+	public function __construct() {
+		if (!defined('USE_CACHE')) {
 			$this->use = false;
 		}
 	}
 	
-	function config()
-	{
+	public function config() {
 		$sql = 'SELECT *
 			FROM _config';
 		$config = sql_rowset($sql, 'config_name', 'config_value');
@@ -42,25 +38,20 @@ class cache
 		return $config;
 	}
 	
-	function get($var)
-	{
-		if (!$this->use)
-		{
+	public function get($var) {
+		if (!$this->use) {
 			return false;
 		}
 		
 		$filename = './cache/' . /*md5*/($var) . '.php';
 		
-		if (@file_exists($filename))
-		{
-			if (!@include($filename))
-			{
+		if (@file_exists($filename)) {
+			if (!@include($filename)) {
 				$this->delete($var);
 				return;
 			}
 			
-			if (!empty($this->cache[$var]))
-			{
+			if (!empty($this->cache[$var])) {
 				return $this->cache[$var];
 			}
 			
@@ -70,18 +61,15 @@ class cache
 		return;
 	}
 	
-	function save($var, &$data)
-	{
-		if (!$this->use)
-		{
+	public function save($var, &$data) {
+		if (!$this->use) {
 			return;
 		}
 		
 		$filename = './cache/' . /*md5*/($var) . '.php';
 		
 		$fp = @fopen($filename, 'w');
-		if ($fp)
-		{
+		if ($fp) {
 			$file_buffer = '<?php $' . 'this->cache[\'' . $var . '\'] = ' . ((is_array($data)) ? $this->format($data) : "'" . str_replace("'", "\\'", str_replace('\\', '\\\\', $data)) . "'") . '; ?>';
 			
 			@flock($fp, LOCK_EX);
@@ -95,18 +83,14 @@ class cache
 		return;
 	}
 	
-	function delete()
-	{
-		if (!$this->use)
-		{
+	public function delete() {
+		if (!$this->use) {
 			return;
 		}
 		
-		foreach (func_get_args() as $var)
-		{
+		foreach (func_get_args() as $var) {
 			$cache_filename = './cache/' . /*md5*/($var) . '.php';
-			if (file_exists($cache_filename))
-			{
+			if (file_exists($cache_filename)) {
 				@unlink($cache_filename);
 			}
 		}
@@ -117,25 +101,16 @@ class cache
 	//
 	// Borrowed from phpBB 2.2 : acm_file.php
 	//
-	function format($data)
-	{
+	public function format($data) {
 		$lines = array();
-		foreach ($data as $k => $v)
-		{
-			if (is_array($v))
-			{
+		foreach ($data as $k => $v) {
+			if (is_array($v)) {
 				$lines[] = "'$k'=>" . $this->format($v);
-			}
-			elseif (is_int($v))
-			{
+			} elseif (is_int($v)) {
 				$lines[] = "'$k'=>$v";
-			}
-			elseif (is_bool($v))
-			{
+			} elseif (is_bool($v)) {
 				$lines[] = "'$k'=>" . (($v) ? 'TRUE' : 'FALSE');
-			}
-			else
-			{
+			} else {
 				$lines[] = "'$k'=>'" . str_replace("'", "\\'", str_replace('\\', '\\\\', $v)) . "'";
 			}
 		}
