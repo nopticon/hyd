@@ -19,26 +19,26 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 if (!defined('IN_NUCLEO')) exit;
 
 class common {
-	var $mode;
-	var $manage;
-	var $control;
-	var $auth;
+	public $mode;
+	public $manage;
+	public $control;
+	public $auth;
 	
-	function import_control() {
+	public function import_control() {
 		global $control;
 		
 		$this->control = $control;
 		return;
 	}
 	
-	function export_control() {
+	public function export_control() {
 		global $control;
 		
 		$control = $this->control;
 		return;
 	}
 	
-	function auth_access($member) {
+	public function auth_access($member) {
 		global $user;
 		
 		if ($user->data['user_type'] == USER_FOUNDER) {
@@ -60,23 +60,23 @@ class common {
 		return false;
 	}
 	
-	function check_method() {
+	public function check_method() {
 		if (!in_array($this->mode, array_keys($this->methods))) {
 			$this->mode = 'home';
 		}
 	}
 	
-	function check_manage() {
+	public function check_manage() {
 		if (empty($this->methods[$this->mode]) || /*!method_exists($this, $this->manage) || */!in_array($this->manage, $this->methods[$this->mode])) {
 			$this->manage = 'home';
 		}
 	}
 	
-	function call_method() {
+	public function call_method() {
 		return $this->{'_' . $this->mode . '_' . $this->manage}();
 	}
 	
-	function e($msg = '') {
+	public function e($msg = '') {
 		global $user;
 		
 		// GZip
