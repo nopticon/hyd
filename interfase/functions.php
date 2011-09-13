@@ -293,46 +293,35 @@ function get_userdata($user, $force_str = false) {
 	}
 }
 
-function _substr($a, $k, $r = '...')
-{
-	if (strlen($a) > $k)
-	{
+function _substr($a, $k, $r = '...') {
+	if (strlen($a) > $k) {
 		$a = (preg_match('/^(.*)\W.*$/', substr($a, 0, $k + 1), $matches) ? $matches[1] : substr($a, 0, $k)) . $r;
 	}
 	return $a;
 }
 
-function s_link($module = '', $data = false)
-{
+function s_link($module = '', $data = false) {
 	global $config;
 	
 	$url = 'http://';
 	$is_a = is_array($data);
-	if ($config['server_name'] != 'localhost' && $module == 'a' && $data !== false && ((!$is_a && !preg_match('/^_([0-9]+)$/i', $data)) || ($is_a && count($data) == 2)))
-	{
+	if ($config['server_name'] != 'localhost' && $module == 'a' && $data !== false && ((!$is_a && !preg_match('/^_([0-9]+)$/i', $data)) || ($is_a && count($data) == 2))) {
 		$subdomain = ($is_a) ? $data[0] : $data;
 		$url .= str_replace('www', $subdomain, $config['server_name']) . '/';
 		
 		if ($is_a) array_shift($data);
 		
 		if (!$is_a || ($is_a && !count($data))) $data = false;
-	}
-	else
-	{
+	} else {
 		$url .= $config['server_name'] . '/' . (($module != '') ? $module . '/' : '');
 	}
 	
-	if ($data !== false)
-	{
-		if (is_array($data))
-		{
-			foreach ($data as $value)
-			{
+	if ($data !== false) {
+		if (is_array($data)) {
+			foreach ($data as $value) {
 				if ($value != '') $url .= $value . '/';
 			}
-		}
-		else
-		{
+		} else {
 			$url .= $data . '/';
 		}
 	}
@@ -340,16 +329,13 @@ function s_link($module = '', $data = false)
 	return $url;
 }
 
-function s_link_control($module, $data = false)
-{
+function s_link_control($module, $data = false) {
 	global $config;
 	
 	$url = 'http://' . $config['server_name'] . '/control/' . $module . '/';
-	if ($data !== false)
-	{
+	if ($data !== false) {
 		$i = 0;
-		foreach ($data as $key => $value)
-		{
+		foreach ($data as $key => $value) {
 			$url .= (($i) ? '.' : '') . $key . '-' . $value;
 			$i++;
 		}
@@ -360,14 +346,11 @@ function s_link_control($module, $data = false)
 	return $url;
 }
 
-function s_hidden($input)
-{
+function s_hidden($input) {
 	$s_hidden_fields = '';
 	
-	if (is_array($input))
-	{
-		foreach ($input as $name => $value)
-		{
+	if (is_array($input)) {
+		foreach ($input as $name => $value) {
 			$s_hidden_fields .= '<input type="hidden" name="' . $name . '" value="' . $value . '" />';
 		}
 	}
@@ -375,8 +358,7 @@ function s_hidden($input)
 	return $s_hidden_fields;
 }
 
-function strnoupper($in)
-{
+function strnoupper($in) {
 	$in = strtolower($in);
 	return ucfirst($in);
 	//return preg_replace('/(^(\w*?)|(\w{4,}?))/e', "ucfirst('$1')", $in);
@@ -385,10 +367,8 @@ function strnoupper($in)
 //
 // Check if is number
 //
-function is_number($number = '')
-{
-	if (preg_match('/^([0-9]+)$/', $number))
-	{
+function is_number($number = '') {
+	if (preg_match('/^([0-9]+)$/', $number)) {
 		return true;
 	}
 	
@@ -398,20 +378,18 @@ function is_number($number = '')
 //
 // Build items pagination
 //
-function build_pagination($url_format, $total_items, $per_page, $offset, $prefix = '', $lang_prefix = '')
-{
+function build_pagination($url_format, $total_items, $per_page, $offset, $prefix = '', $lang_prefix = '') {
 	global $template, $user;
 	
 	$total_pages = ceil($total_items / $per_page);
 	$on_page = floor($offset / $per_page) + 1;
 	
 	$prev = $next = '';
-	if ($on_page > 1)
-	{
+	if ($on_page > 1) {
 		$prev = ' <a href="' . sprintf($url_format, (($on_page - 2) * $per_page)) . '">' . sprintf($user->lang[(($lang_prefix != '') ? $lang_prefix : '') . 'PAGES_PREV'], $per_page) . '</a>';
 	}
-	if ($on_page < $total_pages)
-	{
+	
+	if ($on_page < $total_pages) {
 		$next = '<a href="' . sprintf($url_format, ($on_page * $per_page)) . '">' . sprintf($user->lang[(($lang_prefix != '') ? $lang_prefix : '') . 'PAGES_NEXT'], $per_page) . '</a>';
 	}
 	
@@ -428,8 +406,7 @@ function build_pagination($url_format, $total_items, $per_page, $offset, $prefix
 // Build items pagination with numbers
 //
 //function generate_pagination($base_url, $num_items, $per_page, $start_item, $add_prevnext_text = TRUE, $start_field = 'start', $folders_format = 0)
-function build_num_pagination ($url_format, $total_items, $per_page, $offset, $prefix = '', $lang_prefix = '')
-{
+function build_num_pagination ($url_format, $total_items, $per_page, $offset, $prefix = '', $lang_prefix = '') {
 	global $user, $template;
 	
 	$begin_end = 3;
@@ -439,57 +416,45 @@ function build_num_pagination ($url_format, $total_items, $per_page, $offset, $p
 	$on_page = floor($offset / $per_page) + 1;
 	
 	$page_string = '';
-	if ($total_pages > ((2 * ($begin_end + $from_middle)) + 2))
-	{
+	if ($total_pages > ((2 * ($begin_end + $from_middle)) + 2)) {
 		$init_page_max = ($total_pages > $begin_end) ? $begin_end : $total_pages;
 
-		for ($i = 1; $i < $init_page_max + 1; $i++)
-		{
+		for ($i = 1; $i < $init_page_max + 1; $i++) {
 			$page_string .= ($i == $on_page) ? ' <strong>' . $i . '</strong>' : ' <a href="' . sprintf($url_format, (($i - 1) * $per_page)) . '">' . $i . '</a>';
 		}
 
-		if ( $total_pages > $begin_end )
-		{
-			if ( $on_page > 1  && $on_page < $total_pages )
-			{
+		if ($total_pages > $begin_end) {
+			if ($on_page > 1  && $on_page < $total_pages) {
 				$page_string .= ($on_page > ($begin_end + $from_middle + 1)) ? '<span> ... </span>' : '';
 
 				$init_page_min = ($on_page > ($begin_end + $from_middle)) ? $on_page : ($begin_end + $from_middle + 1);
 				$init_page_max = ($on_page < $total_pages - ($begin_end + $from_middle)) ? $on_page : $total_pages - ($begin_end + $from_middle);
 
-				for ($i = $init_page_min - $from_middle; $i < $init_page_max + ($from_middle + 1); $i++)
-				{
+				for ($i = $init_page_min - $from_middle; $i < $init_page_max + ($from_middle + 1); $i++) {
 					$page_string .= ($i == $on_page) ? ' <strong>' . $i . '</strong>' : ' <a href="' . sprintf($url_format, (($i - 1) * $per_page)) . '">' . $i . '</a>';
 				}
 
 				$page_string .= ($on_page < $total_pages - ($begin_end + $from_middle)) ? '<span> ... </span>' : '';
-			}
-			else
-			{
+			} else {
 				$page_string .= '<span> ... </span>';
 			}
 
-			for ($i = $total_pages - ($begin_end - 1); $i < $total_pages + 1; $i++)
-			{
+			for ($i = $total_pages - ($begin_end - 1); $i < $total_pages + 1; $i++) {
 				$page_string .= ($i == $on_page) ? ' <strong>' . $i . '</strong>'  : ' <a href="' . sprintf($url_format, (($i - 1) * $per_page)) . '">' . $i . '</a>';
 			}
 		}
-	}
-	else
-	{
-		for ($i = 1; $i < $total_pages + 1; $i++)
-		{
+	} else {
+		for ($i = 1; $i < $total_pages + 1; $i++) {
 			$page_string .= ($i == $on_page) ? ' <strong>' . $i . '</strong>' : ' <a href="' . sprintf($url_format, (($i - 1) * $per_page)) . '">' . $i . '</a>';
 		}
 	}
 	
 	$prev = $next = '';
-	if ($on_page > 1)
-	{
+	if ($on_page > 1) {
 		$prev = ' <a href="' . sprintf($url_format, (($on_page - 2) * $per_page)) . '">' . sprintf($user->lang[(($lang_prefix != '') ? $lang_prefix : '') . 'PAGES_PREV'], $per_page) . '</a>';
 	}
-	if ($on_page < $total_pages)
-	{
+	
+	if ($on_page < $total_pages) {
 		$next = '<a href="' . sprintf($url_format, ($on_page * $per_page)) . '">' . sprintf($user->lang[(($lang_prefix != '') ? $lang_prefix : '') . 'PAGES_NEXT'], $per_page) . '</a>';
 	}
 	
@@ -506,12 +471,10 @@ function build_num_pagination ($url_format, $total_items, $per_page, $offset, $p
 //
 // Obtain active bots
 //
-function obtain_bots(&$bots)
-{
+function obtain_bots(&$bots) {
 	global $cache;
 	
-	if (!$bots = $cache->get('bots'))
-	{
+	if (!$bots = $cache->get('bots')) {
 		$sql = 'SELECT user_id, bot_agent, bot_ip 
 			FROM _bots
 			WHERE bot_active = 1';
@@ -522,21 +485,17 @@ function obtain_bots(&$bots)
 	return;
 }
 
-function do_login($box_text = '', $need_auth = FALSE)
-{
+function do_login($box_text = '', $need_auth = false) {
 	global $user, $template;
 	
-	if (empty($user->data))
-	{
+	if (empty($user->data)) {
 		$user->init();
 	}
-	if (empty($user->lang))
-	{
+	if (empty($user->lang)) {
 		$user->setup();
 	}
 	
-	if (isset($_POST['login']))
-	{
+	if (isset($_POST['login'])) {
 		$ref = request_var('ref', '');
 		
 		$template->assign_block_vars('error', array(
@@ -545,8 +504,7 @@ function do_login($box_text = '', $need_auth = FALSE)
 	}
 	
 	$s_hidden = array();
-	if ($need_auth)
-	{
+	if ($need_auth) {
 		$s_hidden = array('admin' => 1);
 	}
 	
@@ -562,31 +520,25 @@ function do_login($box_text = '', $need_auth = FALSE)
 	page_layout('LOGIN2', 'login_body', $template_vars);
 }
 
-function get_file($f)
-{
+function get_file($f) {
 	if (!f($f)) return false;
 	
-	if (!@file_exists($f))
-	{
+	if (!@file_exists($f)) {
 		return w();
 	}
 	
 	return array_map('trim', @file($f));
 }
 
-function hook($name, $args = array(), $arr = false)
-{
-	switch ($name)
-	{
+function hook($name, $args = array(), $arr = false) {
+	switch ($name) {
 		case 'isset':
 			eval('$a = ' . $name . '($args' . ((is_array($args)) ? '[0]' . $args[1] : '') . ');');
 			return $a;
 			break;
 		case 'in_array':
-			if (is_array($args[1]))
-			{
-				if (hook('isset', array($args[1][0], $args[1][1])))
-				{
+			if (is_array($args[1])) {
+				if (hook('isset', array($args[1][0], $args[1][1]))) {
 					eval('$a = ' . $name . '($args[0], $args[1][0]' . $args[1][1] . ');');
 				}
 			} else {
@@ -601,41 +553,33 @@ function hook($name, $args = array(), $arr = false)
 	return $f($name, $args);
 }
 
-function _pre($a, $d = false)
-{
+function _pre($a, $d = false) {
 	echo '<pre>';
 	print_r($a);
 	echo '</pre>';
 	
-	if ($d === true)
-	{
+	if ($d === true) {
 		exit;
 	}
 }
 
-function entity_decode($s, $compat = true)
-{
-	if ($compat)
-	{
+function entity_decode($s, $compat = true) {
+	if ($compat) {
 		return html_entity_decode($s, ENT_COMPAT, 'UTF-8');
 	}
 	return html_entity_decode($s);
 }
 
-function f($s)
-{
+function f($s) {
 	return !empty($s);
 }
 
-function w($a = '', $d = false)
-{
+function w($a = '', $d = false) {
 	if (!f($a) || !is_string($a)) return array();
 	
 	$e = explode(' ', $a);
-	if ($d !== false)
-	{
-		foreach ($e as $i => $v)
-		{
+	if ($d !== false) {
+		foreach ($e as $i => $v) {
 			$e[$v] = $d;
 			unset($e[$i]);
 		}
@@ -644,10 +588,8 @@ function w($a = '', $d = false)
 	return $e;
 }
 
-function kernel_function($mode, $name, $param = false, $return_on_error = false)
-{
-	switch ($mode)
-	{
+function kernel_function($mode, $name, $param = false, $return_on_error = false) {
+	switch ($mode) {
 		case 'a':
 			$fe = 'file';
 			break;
@@ -664,30 +606,23 @@ function kernel_function($mode, $name, $param = false, $return_on_error = false)
 	
 	$fe .= '_exists';
 	
-	if ($mode == 'm')
-	{
+	if ($mode == 'm') {
 		$cfe = $fe($name, $param);
 		$name = get_class($name);
-	}
-	else
-	{
+	} else {
 		$cfe = $fe($name);
 	}
 	
-	if (!$cfe)
-	{
-		if ($return_on_error)
-		{
+	if (!$cfe) {
+		if ($return_on_error) {
 			return false;
 		}
 		
-		if ($mode == 'a')
-		{
+		if ($mode == 'a') {
 			$name = base64_encode(base64_encode($name));
 		}
 		
-		if ($param !== false)
-		{
+		if ($param !== false) {
 			$name .= ', ' . (is_array($param) ? implode(', ', $param) : $param);
 		}
 		
@@ -698,13 +633,11 @@ function kernel_function($mode, $name, $param = false, $return_on_error = false)
 	return true;
 }
 
-function fatal_error_tables($msg)
-{
+function fatal_error_tables($msg) {
 	return preg_replace('#([a-z_]+)\._([a-z]+)#is', '~\\2~', $msg);
 }
 
-function fatal_error($mode = '404', $bp_message = '')
-{
+function fatal_error($mode = '404', $bp_message = '') {
 	global $user, $config;
 	
 	$current_page = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
@@ -713,11 +646,9 @@ function fatal_error($mode = '404', $bp_message = '')
 	$username = (@method_exists($user, 'd')) ? $user->d('username') : '';
 	$bp_message .= "\n\n" . $current_page . "\n\n" . $username;
 	
-	switch ($mode)
-	{
+	switch ($mode) {
 		case 'mysql':
-			if (isset($config['default_lang']) && isset($user->lang))
-			{
+			if (isset($config['default_lang']) && isset($user->lang)) {
 				// Send email notification
 				require_once('./interfase/emailer.php');
 				$emailer = new emailer();
@@ -733,9 +664,7 @@ function fatal_error($mode = '404', $bp_message = '')
 				);
 				$emailer->send();
 				$emailer->reset();
-			}
-			else
-			{
+			} else {
 				$email_message = $bp_message . "\n\n" . date('r');
 				$email_headers = "From: info@rockrepublik.net\nReturn-Path: " . $config['board_email'] . "\nMessage-ID: <" . md5(uniqid(time())) . "@" . $config['server_name'] . ">\nMIME-Version: 1.0\nContent-type: text/plain; charset=iso-8859-1\nContent-transfer-encoding: 8bit\nDate: " . date('r', time()) . "\nX-Priority: 3\nX-MSMail-Priority: Normal\n"; 
 				$result = @mail('info@rockrepublik.net', 'MySQL error', preg_replace("#(?<!\r)\n#s", "\n", $email_message), $email_headers, "-f{$config['board_email']}");
@@ -760,19 +689,15 @@ function fatal_error($mode = '404', $bp_message = '')
 			break;
 	}
 	
-	if ($mode != '600')
-	{
+	if ($mode != '600') {
 		$error .= ', puedes regresar a<br /><a href="http://www.rockrepublik.net/">p&aacute;gina de inicio de Rock Republik</a> para encontrar informaci&oacute;n.'/* . '<br /><br />' . $bp_message*/;
 	}
 	
 	$error_filename = '../net/access/page_error.shtml';
-	if (@file_exists($error_filename))
-	{
+	if (@file_exists($error_filename)) {
 		$code = implode('', @file($error_filename));
 		$code = str_replace(array('<!--#echo var="PAGE_TITLE" -->', '<!--#echo var="PAGE_MESSAGE" -->'), array($title, $error), $code);
-	}
-	else
-	{
+	} else {
 		$code = '<strong>' . $title . '</strong><br /><br />' . $error;
 	}
 	
@@ -782,12 +707,10 @@ function fatal_error($mode = '404', $bp_message = '')
 	exit;
 }
 
-function msg_handler($errno, $msg_text, $errfile, $errline)
-{
+function msg_handler($errno, $msg_text, $errfile, $errline) {
 	global $template, $config, $user, $auth, $cache, $starttime;
 
-	switch ($errno)
-	{
+	switch ($errno) {
 		case E_NOTICE:
 		case E_WARNING:
 			//echo '<b>PHP Notice</b>: in file <b>' . $errfile . '</b> on line <b>' . $errline . '</b>: <b>' . $msg_text . '</b><br>';
@@ -798,12 +721,10 @@ function msg_handler($errno, $msg_text, $errfile, $errline)
 			fatal_error('mysql', $msg_text);
 			break;
 		case E_USER_NOTICE:
-			if (empty($user->data))
-			{
+			if (empty($user->data)) {
 				$user->init();
 			}
-			if (empty($user->lang))
-			{
+			if (empty($user->lang)) {
 				$user->setup();
 			}
 			
@@ -821,20 +742,17 @@ function msg_handler($errno, $msg_text, $errfile, $errline)
 	}
 }
 
-function redirect($url, $moved = false)
-{
+function redirect($url, $moved = false) {
 	global $config;
 	
 	sql_close();
 	
 	// If relative path, prepend board url
-	if (strpos($url, '://') === false)
-	{
+	if (strpos($url, '://') === false) {
 		$url = 'http://' . $config['server_name'] . trim($url);
 	}
 	
-	if ($moved !== false)
-	{
+	if ($moved !== false) {
 		header("HTTP/1.1 301 Moved Permanently");
 	}
 	
@@ -843,8 +761,7 @@ function redirect($url, $moved = false)
 }
 
 // Meta refresh assignment
-function meta_refresh($time, $url)
-{
+function meta_refresh($time, $url) {
 	global $template;
 
 	$template->assign_vars(array(
@@ -852,8 +769,7 @@ function meta_refresh($time, $url)
 	);
 }
 
-function topic_feature($topic_id, $value)
-{
+function topic_feature($topic_id, $value) {
 	$sql = 'UPDATE _forum_topics
 		SET topic_featured = ?
 		WHERE topic_id = ?';
@@ -861,8 +777,8 @@ function topic_feature($topic_id, $value)
 	
 	return;
 }
-function topic_arkane($topic_id, $value)
-{
+
+function topic_arkane($topic_id, $value) {
 	$sql = 'UPDATE _forum_topics
 		SET topic_points = ?
 		WHERE topic_id = ?';
@@ -871,8 +787,7 @@ function topic_arkane($topic_id, $value)
 	return;
 }
 
-function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive = true)
-{
+function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive = true) {
 	global $config, $user, $cache, $starttime, $template;
 	
 	define('HEADER_INC', TRUE);
@@ -880,22 +795,18 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 	//
 	// gzip_compression
 	//
-	if ($config['gzip_compress'])
-	{
+	if ($config['gzip_compress']) {
 		$useragent = (isset($HTTP_SERVER_VARS['HTTP_USER_AGENT'])) ? $HTTP_SERVER_VARS['HTTP_USER_AGENT'] : getenv('HTTP_USER_AGENT');
 	
-		if (strstr($useragent,'compatible') || strstr($useragent,'Gecko'))
-		{
+		if (strstr($useragent,'compatible') || strstr($useragent,'Gecko')) {
 			ob_start('ob_gzhandler');
 		}
 	}
 	
 	// Artists meta
 	$ub_meta = array();
-	if (!defined('NO_A_META'))
-	{
-		if (!$ub_meta = $cache->get('ub_list'))
-		{
+	if (!defined('NO_A_META')) {
+		if (!$ub_meta = $cache->get('ub_list')) {
 			$sql = 'SELECT name
 				FROM _artists
 				ORDER BY name';
@@ -912,8 +823,7 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 	
 	// Context Menu Blocking
 	$s_context_menu = '';
-	if (!$user->d('is_founder'))
-	{
+	if (!$user->d('is_founder')) {
 		$s_context_menu = ' oncontextmenu="return false"';
 	}
 	
@@ -931,8 +841,7 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 	//
 	$u_login_logout = ($user->d('is_member')) ? 'logout' : 'login';
 	
-	if (preg_match('#.*?my/confirm.*?#is', $user->d('session_page')))
-	{
+	if (preg_match('#.*?my/confirm.*?#is', $user->d('session_page'))) {
 		$user->data['session_page'] = '';
 	}
 	
@@ -976,8 +885,7 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 		'JS_KEEPALIVE' => $js_keepalive
 	);
 	
-	if ($custom_vars !== false)
-	{
+	if ($custom_vars !== false) {
 		$common_vars += $custom_vars;
 	}
 	
@@ -999,19 +907,15 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 	exit;
 }
 
-function sidebar()
-{
+function sidebar() {
 	$sfiles = func_get_args();
-	if (!is_array($sfiles) || !sizeof($sfiles))
-	{
+	if (!is_array($sfiles) || !sizeof($sfiles)) {
 		return;
 	}
 	
-	foreach ($sfiles as $each_file)
-	{
+	foreach ($sfiles as $each_file) {
 		$include_file = './interfase/sidebar/' . $each_file . '.php';
-		if (!file_exists($include_file))
-		{
+		if (!file_exists($include_file)) {
 			continue;
 		}
 		
@@ -1026,11 +930,9 @@ function sidebar()
 //
 // Used Functions: hex2asc()
 //
-function hex2asc($str)
-{
+function hex2asc($str) {
 	$newstring = '';
-	for ($n = 0, $end = strlen($str); $n < $end; $n+=2)
-	{
+	for ($n = 0, $end = strlen($str); $n < $end; $n+=2) {
 		$newstring .=  pack('C', hexdec(substr($str, $n, 2)));
 	}
 	
@@ -1040,21 +942,17 @@ function hex2asc($str)
 // End @ Sneak
 //
 
-function _encode($msg)
-{
-	for ($i = 0; $i < 1; $i++)
-	{
+function _encode($msg) {
+	for ($i = 0; $i < 1; $i++) {
 		$msg = base64_encode($msg);
 	}
 	
 	return bin2hex($msg);
 }
 
-function _decode($msg)
-{
+function _decode($msg) {
 	$msg = hex2asc($msg);
-	for ($i = 0; $i < 1; $i++)
-	{
+	for ($i = 0; $i < 1; $i++) {
 		$msg = base64_decode($msg);
 	}
 	
@@ -1063,33 +961,27 @@ function _decode($msg)
 // End @ encode | decode
 //
 
-function get_yt_code($a)
-{
+function get_yt_code($a) {
 	$clear = '';
 	
-	if (strpos($a, '://') === false)
-	{
+	if (strpos($a, '://') === false) {
 		return $a;
 	}
 	
 	$p = parse_url($a);
-	if (!isset($p['query']))
-	{
+	if (!isset($p['query'])) {
 		return $clear;
 	}
 	
 	$s = explode('&', $p['query']);
 	$v = '';
-	for ($i = 0, $end = count($s); $i < $end; $i++)
-	{
-		if (strpos($s[$i], 'v=') !== false)
-		{
+	for ($i = 0, $end = count($s); $i < $end; $i++) {
+		if (strpos($s[$i], 'v=') !== false) {
 			$v = $s[$i];
 		}
 	}
 	
-	if (empty($v))
-	{
+	if (empty($v)) {
 		return $clear;
 	}
 	
@@ -1097,41 +989,33 @@ function get_yt_code($a)
 	return $s2[1];
 }
 
-function get_a_imagepath($path, $filename, $folders)
-{
-	foreach ($folders as $row)
-	{
+function get_a_imagepath($path, $filename, $folders) {
+	foreach ($folders as $row) {
 		$a = $path . '/' . $row . '/' . $filename;
-		if (@file_exists('..' . $a))
-		{
+		if (@file_exists('..' . $a)) {
 			return $a;
 		}
 	}
 	return false;
 }
 
-function check_www($url)
-{
+function check_www($url) {
 	global $config;
 	
-	if (!$config['check_www'])
-	{
+	if (!$config['check_www']) {
 		return true;
 	}
 	
 	$domain = str_replace('http://', '', $url);
-	if (strstr($domain, '?'))
-	{
+	if (strstr($domain, '?')) {
 		$domain_e = explode('/', $domain);
 		$domain = $domain_e[0];
-		if ($domain == $config['server_name'])
-		{
+		if ($domain == $config['server_name']) {
 			$domain .= '/' . $domain_e[1];
 		}
 	}
 	
-	if ($check = @fopen('http://' . $domain, 'r'))
-	{
+	if ($check = @fopen('http://' . $domain, 'r')) {
 		@fclose($check);
 		return true;
 	}
@@ -1139,31 +1023,26 @@ function check_www($url)
 	return false;
 }
 
-function _die($str)
-{
+function _die($str) {
 	sql_close();
 	
 	echo $str;
 	exit;
 }
 
-function _shoutcast()
-{
+function _shoutcast() {
 	global $config;
 	
 	$response = false;
 	
-	$connection = @fsockopen($config['shoutcast_host'], $config['shoutcast_port'], $errno, $errstr, 5);
-	if (!$connection)
-	{
+	if (!$connection = @fsockopen($config['shoutcast_host'], $config['shoutcast_port'], $errno, $errstr, 5)) {
 		return $response;
 	}
 	
 	$s_response = '';
 	
 	fputs($connection, 'GET /admin.cgi?pass=' . $config['shoutcast_code'] . "&mode=viewxml HTTP/1.0\r\nUser-Agent: SHOUTcast Song Status (Mozilla Compatible)\r\n\r\n");
-	while (!feof($connection))
-	{
+	while (!feof($connection)) {
 		$s_response .= fgets($connection, 1000);
 	}
 	@fclose($connection);
@@ -1173,16 +1052,10 @@ function _shoutcast()
 	$shoutcast = XML_unserialize(strstr($s_response, '<?xml'));
 	$shoutcast = $shoutcast['SHOUTCASTSERVER'];
 	
-	//if ($shoutcast['STREAMSTATUS'])
-	{
-		$response = $shoutcast;
-	}
-	
-	return $response;
+	return $shoutcast;
 }
 
-function html_entity_decode_utf8($string)
-{
+function html_entity_decode_utf8($string) {
 	static $trans_tbl;
 	
 	// replace numeric entities
@@ -1190,11 +1063,9 @@ function html_entity_decode_utf8($string)
 	$string = preg_replace('~&#([0-9]+);~e', 'code2utf(\\1)', $string);
 	
 	// replace literal entities
-	if (!isset($trans_tbl))
-	{
+	if (!isset($trans_tbl)) {
 		$trans_tbl = array();
-		foreach (get_html_translation_table(HTML_ENTITIES) as $val => $key)
-		{
+		foreach (get_html_translation_table(HTML_ENTITIES) as $val => $key) {
 			$trans_tbl[$key] = utf8_encode($val);
 		}
 	}
@@ -1203,8 +1074,7 @@ function html_entity_decode_utf8($string)
 }
 
 // Returns the utf string corresponding to the unicode value (from php.net, courtesy - romans@void.lv)
-function code2utf($num)
-{
+function code2utf($num) {
 	if ($num < 128) return chr($num);
 	if ($num < 2048) return chr(($num >> 6) + 192) . chr(($num & 63) + 128);
 	if ($num < 65536) return chr(($num >> 12) + 224) . chr((($num >> 6) & 63) + 128) . chr(($num & 63) + 128);
@@ -1212,10 +1082,8 @@ function code2utf($num)
 	return '';
 }
 
-if (!function_exists('bcdiv'))
-{
-	function bcdiv($first, $second, $scale = 0)
-	{
+if (!function_exists('bcdiv')) {
+	function bcdiv($first, $second, $scale = 0) {
 		$res = $first / $second;
 		return round( $res, $scale );
 	}
