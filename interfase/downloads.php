@@ -38,7 +38,7 @@ class downloads
 		$sql = 'SELECT *
 			FROM _dl' . 
 			$sql_ub . $sql_order;
-		$this->ud_song = sql_rowset($sql, 'ud');
+		$this->ud_song = sql_rowset($sql, 'ud', false, true);
 		
 		return;
 	}

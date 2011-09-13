@@ -1780,8 +1780,6 @@ class _artists extends layout
 						$download_type = $this->dl_type($key);
 						$template->assign_block_vars('ud_block', array('LANG' => $download_type['lang']));
 						
-						_pre($data);
-						
 						foreach ($data as $song)
 						{
 							$template->assign_block_vars('ud_block.item', array(
@@ -1798,7 +1796,6 @@ class _artists extends layout
 								'URL' => s_link('a', array($this->data['subdomain'], 9, $song['id'])))
 							);
 						}
-						exit;
 					}
 				}
 				

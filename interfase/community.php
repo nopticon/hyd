@@ -225,7 +225,8 @@ class community
 		$sql = 'SELECT username, username_base, user_color
 			FROM _members
 			WHERE user_type NOT IN (??, ??)
-			ORDER BY user_regdate DESC';
+			ORDER BY user_regdate DESC
+			LIMIT 10';
 		$result = sql_rowset(sql_filter($sql, USER_INACTIVE, USER_IGNORE));
 		
 		$template->assign_block_vars('recent_members', array());
