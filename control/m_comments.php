@@ -18,42 +18,35 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-class comments extends common
-{
-	var $methods = array(
+class comments extends common {
+	public $methods = array(
 		'emoticons' => array('add', 'edit', 'delete'),
 		'help' => array('add', 'edit', 'delete')
 	);
 	
-	function comments()
-	{
+	public function __construct() {
 		return;
 	}
 	
-	function _emoticons_setup()
-	{
-		
+	public function _emoticons_setup() {
+		return;
 	}
 	
-	function _help_setup()
-	{
-		
+	public function _help_setup() {
+		return;
 	}
 	
-	function nav()
-	{
+	public function nav() {
 		global $user;
 		
 		$this->control->set_nav(array('mode' => $this->mode), $user->lang['CONTROL_COMMENTS_' . strtoupper($this->mode)]);
 	}
 	
-	function home()
-	{
+	public function home() {
 		global $user, $template;
 		
 		$template->assign_block_vars('menu', array());
-		foreach ($this->methods as $module => $void)
-		{
+		foreach ($this->methods as $module => $void) {
 			$template->assign_block_vars('menu.item', array(
 				'URL' => s_link_control('comments', array('mode' => $module)),
 				'TITLE' => $user->lang['CONTROL_COMMENTS_' . strtoupper($module)])
@@ -66,41 +59,34 @@ class comments extends common
 	//
 	// Emoticons
 	//
-	function emoticons()
-	{
+	public function emoticons() {
 		$this->call_method();
 	}
 	
-	function _emoticons_home()
-	{
+	public function _emoticons_home() {
 		die('_emoticons_home');
 	}
 	
-	function _emoticons_add()
-	{
+	public function _emoticons_add() {
 		die('_emoticons_add');
 	}
 	
-	function _emoticons_edit()
-	{
+	public function _emoticons_edit() {
 		die('_emoticons_edit');
 	}
 	
-	function emoticons_delete()
-	{
+	public function emoticons_delete() {
 		die('_emoticons_delete');
 	}
 	
 	//
 	// Help
 	//
-	function help()
-	{
+	public function help() {
 		$this->call_method();
 	}
 	
-	function _help_home()
-	{
+	public function _help_home() {
 		global $user, $template;
 		
 		include('./interfase/comments.php');
@@ -108,8 +94,7 @@ class comments extends common
 		
 		$ha = $this->auth->query('comments');
 		
-		if ($ha)
-		{
+		if ($ha) {
 			$ha_add = $this->auth->option(array('help', 'add'));
 			$ha_edit = $this->auth->option(array('help', 'edit'));
 			$ha_delete = $this->auth->option(array('help', 'delete'));
@@ -128,8 +113,7 @@ class comments extends common
 		//
 		// Loop
 		//
-		foreach ($cat as $help_id => $cdata)
-		{
+		foreach ($cat as $help_id => $cdata) {
 			$template->assign_block_vars('cat', array(
 				'HELP_ES' => $cdata['help_es'],
 				'HELP_EN' => $cdata['help_en'],
@@ -139,8 +123,7 @@ class comments extends common
 				'HELP_DOWN' => s_link_control('comments', array('mode' => $this->mode)))
 			);
 			
-			if ($ha_edit)
-			{
+			if ($ha_edit) {
 				$template->assign_block_vars('cat.edit', array(
 					'URL' => s_link_control('comments', array('mode' => $this->mode, 'manage' => 'edit', 'sub' => 'cat', 'id' => $help_id)),
 					'UP' => s_link_control('comments', array('mode' => $this->mode, 'manage' => 'edit', 'sub' => 'cat', 'id' => $help_id, 'order' => '_15')),
@@ -148,17 +131,14 @@ class comments extends common
 				);
 			}
 			
-			if ($ha_delete)
-			{
+			if ($ha_delete) {
 				$template->assign_block_vars('cat.delete', array(
 					'URL' => s_link_control('comments', array('mode' => $this->mode, 'manage' => 'delete', 'sub' => 'cat', 'id' => $help_id)))
 				);
 			}
 			
-			foreach ($faq as $faq_id => $fdata)
-			{
-				if ($help_id != $fdata['help_id'])
-				{
+			foreach ($faq as $faq_id => $fdata) {
+				if ($help_id != $fdata['help_id']) {
 					continue;
 				}
 				
@@ -167,15 +147,13 @@ class comments extends common
 					'ANSWER_ES' => $comments->parse_message($fdata['faq_answer_es']))
 				);
 				
-				if ($ha_edit)
-				{
+				if ($ha_edit) {
 					$template->assign_block_vars('cat.faq.edit', array(
 						'URL' => s_link_control('comments', array('mode' => $this->mode, 'manage' => 'edit', 'sub' => 'faq', 'id' => $fdata['faq_id'])))
 					);
 				}
 				
-				if ($ha_delete)
-				{
+				if ($ha_delete) {
 					$template->assign_block_vars('cat.faq.delete', array(
 						'URL' => s_link_control('comments', array('mode' => $this->mode, 'manage' => 'delete', 'sub' => 'faq', 'id' => $fdata['faq_id'])))
 					);
@@ -183,8 +161,7 @@ class comments extends common
 			}
 		}
 		
-		if ($ha_add)
-		{
+		if ($ha_add) {
 			$template->assign_block_vars('add', array(
 				'URL' => s_link_control('comments', array('mode' => $this->mode, 'manage' => 'add')))
 			);
@@ -195,8 +172,7 @@ class comments extends common
 		return;
 	}
 	
-	function _help_add()
-	{
+	public function _help_add() {
 		global $user, $cache, $template;
 		
 		$error = array();
@@ -205,8 +181,7 @@ class comments extends common
 		
 		$menu = array('module' => 'CONTROL_COMMENTS_HELP_MODULE', 'cat' => 'CATEGORY', 'faq' => 'FAQ');
 		
-		switch ($sub)
-		{
+		switch ($sub) {
 			case 'cat':
 				$module_id = 0;
 				$help_es = '';
@@ -225,8 +200,7 @@ class comments extends common
 			default:
 				$template->assign_block_vars('menu', array());
 				
-				foreach ($menu as $url => $name)
-				{
+				foreach ($menu as $url => $name) {
 					$template->assign_block_vars('menu.item', array(
 						'URL' => s_link_control('comments', array('mode' => $this->mode, 'manage' => $this->manage, 'sub' => $url)),
 						'TITLE' => (isset($user->lang[$name])) ? $user->lang[$name] : $name)
@@ -235,23 +209,19 @@ class comments extends common
 				break;
 		}
 		
-		if ($submit)
-		{
-			switch ($sub)
-			{
+		if ($submit) {
+			switch ($sub) {
 				case 'cat':
 					$module_id = $this->control->get_var('module_id', 0);
 					$help_es = $this->control->get_var('help_es', '');
 					$help_en = $this->control->get_var('help_en', '');
 					
-					if (empty($help_es) || empty($help_en))
-					{
+					if (empty($help_es) || empty($help_en)) {
 						$error[] = 'CONTROL_COMMENTS_HELP_EMPTY';
 					}
 					
 					// Insert
-					if (!sizeof($error))
-					{
+					if (!sizeof($error)) {
 						$sql_insert = array(
 							'help_module' => (int) $module_id,
 							'help_es' => $help_es,
@@ -268,13 +238,11 @@ class comments extends common
 					$answer_es = $this->control->get_var('answer_es', '');
 					$answer_en = $this->control->get_var('answer_en', '');
 					
-					if (empty($question_es) || empty($question_en) || empty($answer_es) || empty($answer_en))
-					{
+					if (empty($question_es) || empty($question_en) || empty($answer_es) || empty($answer_en)) {
 						$error[] = 'CONTROL_COMMENTS_HELP_EMPTY';
 					}
 					
-					if (!sizeof($error))
-					{
+					if (!sizeof($error)) {
 						$sql_insert = array(
 							'help_id' => $help_id,
 							'faq_question_es' => $question_es,
@@ -288,13 +256,11 @@ class comments extends common
 				case 'module':
 					$module_name = $this->control->get_var('module_name', '');
 					
-					if (empty($module_name))
-					{
+					if (empty($module_name)) {
 						$error[] = 'CONTROL_COMMENTS_HELP_EMPTY';
 					}
 					
-					if (!sizeof($error))
-					{
+					if (!sizeof($error)) {
 						$sql_insert = array(
 							'module_name' => $module_name
 						);
@@ -303,16 +269,13 @@ class comments extends common
 					break;
 			}
 			
-			if (!sizeof($error))
-			{
+			if (!sizeof($error)) {
 				sql_query($sql);
 				
 				$cache->delete('help_cat', 'help_faq', 'help_modules');
 				
 				redirect(s_link_control('comments', array('mode' => $this->mode)));
-			}
-			else
-			{
+			} else {
 				$template->assign_block_vars('error', array(
 					'MESSAGE' => parse_error($error))
 				);
@@ -328,8 +291,7 @@ class comments extends common
 			'S_HIDDEN' => s_hidden(array('module' => $this->control->module, 'mode' => $this->mode, 'manage' => $this->manage, 'sub' => $sub))
 		);
 		
-		switch ($sub)
-		{
+		switch ($sub) {
 			case 'cat':
 				$sql = 'SELECT *
 					FROM _help_modules
@@ -378,8 +340,7 @@ class comments extends common
 		$template->assign_vars($template_vars);
 	}
 	
-	function _help_edit_move()
-	{
+	public function _help_edit_move() {
 		$sql = 'SELECT *
 			FROM _help_cat
 			ORDER BY help_order';
@@ -397,8 +358,7 @@ class comments extends common
 		return;
 	}
 	
-	function _help_edit()
-	{
+	public function _help_edit() {
 		global $user, $cache, $template;
 		
 		$error = array();
@@ -406,8 +366,7 @@ class comments extends common
 		$id = $this->control->get_var('id', 0);
 		$submit = (isset($_POST['submit'])) ? TRUE : FALSE;
 		
-		switch ($sub)
-		{
+		switch ($sub) {
 			case 'cat':
 				$sql = 'SELECT c.*, m.*
 					FROM _help_cat c, _help_modules m
@@ -461,23 +420,19 @@ class comments extends common
 		}
 		
 		// IF submit
-		if ($submit)
-		{
-			switch ($sub)
-			{
+		if ($submit) {
+			switch ($sub) {
 				case 'cat':
 					$module_id = $this->control->get_var('module_id', 0);
 					$help_es = $this->control->get_var('help_es', '');
 					$help_en = $this->control->get_var('help_en', '');
 					
-					if (empty($help_es) || empty($help_en))
-					{
+					if (empty($help_es) || empty($help_en)) {
 						$error[] = 'CONTROL_COMMENTS_HELP_EMPTY';
 					}
 					
 					// Update
-					if (!sizeof($error))
-					{
+					if (!sizeof($error)) {
 						$sql_update = array(
 							'help_es' => $help_es,
 							'help_en' => $help_en,
@@ -500,13 +455,11 @@ class comments extends common
 					$answer_en = $this->control->get_var('answer_en', '');
 					$help_id = $this->control->get_var('help_id', 0);
 					
-					if (empty($question_es) || empty($question_en) || empty($answer_es) || empty($answer_en))
-					{
+					if (empty($question_es) || empty($question_en) || empty($answer_es) || empty($answer_en)) {
 						$error[] = 'CONTROL_COMMENTS_HELP_EMPTY';
 					}
 					
-					if (!sizeof($error))
-					{
+					if (!sizeof($error)) {
 						$sql = 'SELECT *
 							FROM _help_cat
 							WHERE help_id = ?';
@@ -516,8 +469,7 @@ class comments extends common
 					}
 					
 					// Update
-					if (!sizeof($error))
-					{
+					if (!sizeof($error)) {
 						$sql_update = array(
 							'help_id' => (int) $help_id,
 							'faq_question_es' => $question_es,
@@ -537,8 +489,7 @@ class comments extends common
 					break;
 			} // switch
 			
-			if (sizeof($error))
-			{
+			if (sizeof($error)) {
 				$template->assign_block_vars('error', array(
 					'MESSAGE' => parse_error($error))
 				);
@@ -553,8 +504,7 @@ class comments extends common
 			'S_HIDDEN' => s_hidden(array('module' => $this->control->module, 'mode' => $this->mode, 'manage' => $this->manage, 'sub' => $sub, 'id' => $id))
 		);
 		
-		switch ($sub)
-		{
+		switch ($sub) {
 			case 'cat':
 				$sql = 'SELECT *
 					FROM _help_modules
@@ -600,8 +550,7 @@ class comments extends common
 		return;
 	}
 	
-	function _help_delete()
-	{
+	public function _help_delete() {
 		
 	}
 }

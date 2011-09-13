@@ -93,6 +93,6 @@ $template_vars = array(
 	'S_TOPIC_ACTION' => $topic_url . (($start) ? 's' . $start . '/' : ''),
 	'U_VIEW_FORUM' => s_link('forum', $forum_id)
 );
-page_layout('Rock Republik Awards .07', 'awards_voting', $template_vars);
+page_layout('Rock Republik Awards', 'awards_voting', $template_vars);
 
 ?>

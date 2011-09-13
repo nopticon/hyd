@@ -28,34 +28,25 @@ $lang = array(
 );
 
 $uptime = @exec('uptime');
-if ( strstr($uptime, 'day') )
-{
-	if ( strstr($uptime, 'min') )
-	{
+if (strstr($uptime, 'day')) {
+	if (strstr($uptime, 'min')) {
 		preg_match("/up\s+(\d+)\s+(days,|days|day,|day)\s+(\d{1,2})\s+min/", $uptime, $times);
 		$days = $times[1];
 		$hours = 0;
 		$mins = $times[3];
-	}
-	else
-	{
+	} else {
 		preg_match("/up\s+(\d+)\s+(days,|days|day,|day)\s+(\d{1,2}):(\d{1,2}),/", $uptime, $times);
 		$days = $times[1];
 		$hours = $times[3];
 		$mins = $times[4];
 	}
-}
-else
-{
-	if ( strstr($uptime, 'min') )
-	{
+} else {
+	if (strstr($uptime, 'min')) {
 		preg_match("/up\s+(\d{1,2})\s+min/", $uptime, $times);
 		$days = 0;
 		$hours = 0;
 		$mins = $times[1];
-	}
-	else
-	{
+	} else {
 		preg_match("/up\s+(\d+):(\d+),/", $uptime, $times);
 		$days = 0;
 		$hours = $times[1];

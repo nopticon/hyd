@@ -18,25 +18,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-class events extends common
-{
-	var $data = array();
-	var $methods = array(
+class events extends common {
+	public $data = array();
+	public $methods = array(
 		'manage' => array('add', 'edit', 'delete'),
 		'images' => array('add', 'edit', 'delete'),
 		'messages' => array('edit', 'delete')
 	);
 	
-	function events()
-	{
+	public function __construct() {
 		return;
 	}
 	
-	function setup()
-	{
+	public function setup() {
 		$event_id = $this->control->get_var('id', 0);
-		if ($event_id)
-		{
+		if ($event_id) {
 			$sql = 'SELECT *
 				FROM _events
 				WHERE id = ?';
@@ -50,22 +46,19 @@ class events extends common
 		return false;
 	}
 	
-	function home()
-	{
+	public function home() {
 		global $user, $template;
 		
-		if ($this->setup())
-		{
+		if ($this->setup()) {
 			$template->assign_block_vars('menu', array());
-			foreach ($this->methods as $module => $void)
-			{
+			foreach ($this->methods as $module => $void) {
 				$template->assign_block_vars('menu.item', array(
 					'URL' => s_link_control('a', array('a' => $this->data['subdomain'], 'mode' => $module)),
 					'NAME' => $user->lang['CONTROL_A_' . strtoupper($module)])
 				);
 			}
 			
-//			$this->nav();
+			//$this->nav();
 		}
 	}
 }

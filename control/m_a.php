@@ -18,10 +18,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-class a extends common
-{
-	var $data = array();
-	var $methods = array(
+class a extends common {
+	public $data = array();
+	public $methods = array(
 		'news' => array('add', 'edit', 'delete'),
 		'aposts' => array('edit', 'delete'),
 		//'log' => array('view', 'delete'),
@@ -35,23 +34,20 @@ class a extends common
 		//'downloads' => array('add', 'edit', 'delete'),
 		//'dposts' => array('edit', 'delete')
 	);
-	var $comments;
+	public $comments;
 	
-	function a()
-	{
+	public function __construct() {
 		require('./interfase/comments.php');
 		$this->comments = new _comments();
-				
+		
 		return;
 	}
 	
-	function setup()
-	{
+	public function setup() {
 		global $user;
 		
 		$a = $this->control->get_var('a', '');
-		if (empty($a))
-		{
+		if (empty($a)) {
 			return false;
 		}
 		
@@ -62,8 +58,7 @@ class a extends common
 			return false;
 		}
 		
-		if ($user->data['user_type'] == USER_ARTIST)
-		{
+		if ($user->data['user_type'] == USER_ARTIST) {
 			$sql = 'SELECT *
 				FROM _artists_auth
 				WHERE ub = ?
@@ -77,27 +72,22 @@ class a extends common
 		return true;
 	}
 	
-	function nav()
-	{
+	public function nav() {
 		$this->control->set_nav(array('a' => $this->data['subdomain']), $this->data['name']);
 		
-		if ($this->mode != 'home')
-		{
+		if ($this->mode != 'home') {
 			global $user;
 			
 			$this->control->set_nav(array('a' => $this->data['subdomain'], 'mode' => $this->mode), $user->lang['CONTROL_A_' . strtoupper($this->mode)]);
 		}
 	}
 	
-	function home()
-	{
+	public function home() {
 		global $user, $template;
 		
-		if ($this->setup())
-		{
+		if ($this->setup()) {
 			$template->assign_block_vars('menu', array());
-			foreach ($this->methods as $module => $void)
-			{
+			foreach ($this->methods as $module => $void) {
 				$template->assign_block_vars('menu.item', array(
 					'URL' => s_link_control('a', array('a' => $this->data['subdomain'], 'mode' => $module)),
 					'NAME' => $user->lang['CONTROL_A_' . strtoupper($module)])
@@ -105,12 +95,9 @@ class a extends common
 			}
 			
 			$this->nav();
-		}
-		else
-		{
+		} else {
 			$sql_where = '';
-			if ($user->data['user_type'] == USER_ARTIST)
-			{
+			if ($user->data['user_type'] == USER_ARTIST) {
 				$sql = 'SELECT a.ub
 					FROM _artists_auth au, _artists a, _members m
 					WHERE au.ub = a.ub
@@ -172,10 +159,8 @@ class a extends common
 	//
 	// News
 	//
-	function news()
-	{
-		if (!$this->setup())
-		{
+	public function news() {
+		if (!$this->setup()) {
 			fatal_error();
 		}
 		
@@ -183,8 +168,7 @@ class a extends common
 		$this->call_method();
 	}
 	
-	function _news_home()
-	{
+	public function _news_home() {
 		global $template;
 		
 		$s_hidden = array('module' => $this->control->module, 'a' => $this->data['subdomain'], 'mode' => $this->mode, 'manage' => 'add');
@@ -196,12 +180,10 @@ class a extends common
 		return;
 	}
 	
-	function _news_add()
-	{
+	public function _news_add() {
 		$submit = isset($_POST['submit']) ? TRUE : FALSE;
 		
-		if (!$submit)
-		{
+		if (!$submit) {
 			redirect(s_link_control('a', array('a' => $this->data['subdomain'], 'mode' => 'news')));
 		}
 		
@@ -213,24 +195,19 @@ class a extends common
 		$error = array();
 		
 		// Check subject
-		if (empty($post_title))
-		{
+		if (empty($post_title)) {
 			$error[] = 'EMPTY_SUBJECT';
 		}
 		
 		// Check message
-		if (empty($message))
-		{
+		if (empty($message)) {
 			$error[] = 'EMPTY_MESSAGE';
-		}
-		elseif (/*preg_match('#(\.){1,}#i', $message) || */(strlen($message) < 10))
-		{
+		} elseif (/*preg_match('#(\.){1,}#i', $message) || */(strlen($message) < 10)) {
 			$error[] = 'EMPTY_MESSAGE';
 		}
 		
 		// Flood
-		if (!sizeof($error))
-		{
+		if (!sizeof($error)) {
 			$sql = 'SELECT MAX(post_time) AS last_post_time
 				FROM _forum_posts
 				WHERE poster_id = ?';
@@ -241,8 +218,7 @@ class a extends common
 			}
 		}
 		
-		if (!sizeof($error))
-		{
+		if (!sizeof($error)) {
 			$message = $this->comments->prepare($message);
 			
 			$insert_data['TOPIC'] = array(
@@ -292,8 +268,7 @@ class a extends common
 			redirect(s_link('a', $this->data['subdomain']));
 		}
 		
-		if (sizeof($error))
-		{
+		if (sizeof($error)) {
 			$template->assign_block_vars('error', array(
 				'MESSAGE' => parse_error($error))
 			);
@@ -307,14 +282,12 @@ class a extends common
 		return;
 	}
 	
-	function _news_edit()
-	{
+	public function _news_edit() {
 		global $user, $config, $template;
 		
 		$submit = isset($_POST['submit']) ? TRUE : FALSE;
 		$id = $this->control->get_var('id', 0);
-		if (!$id)
-		{
+		if (!$id) {
 			fatal_error();
 		}
 		
@@ -339,30 +312,25 @@ class a extends common
 		$post_title = preg_replace('#(.*?): (.*?)#', '\\2', $nsdata['topic_title']);
 		$message = $nsdata2['post_text'];
 		
-		if ($submit)
-		{
+		if ($submit) {
 			$post_title = $this->control->get_var('title', '');
 			$message = $this->control->get_var('message', '', true);
 			$current_time = time();
 			$error = array();
 			
 			// Check subject
-			if (empty($post_title))
-			{
+			if (empty($post_title)) {
 				$error[] = 'EMPTY_SUBJECT';
 			}
 			
 			// Check message
-			if (empty($message))
-			{
+			if (empty($message)) {
 				$error[] = 'EMPTY_MESSAGE';
 			}
 			
-			if (!sizeof($error))
-			{
+			if (!sizeof($error)) {
 				$message = $this->comments->prepare($message);
-				if ($message != $nsdata2['post_text'])
-				{
+				if ($message != $nsdata2['post_text']) {
 					$update_data = array(
 						'TOPIC' => array(
 							'topic_title' => $this->data['name'] . ': ' . $post_title,
@@ -389,8 +357,7 @@ class a extends common
 				redirect(s_link('a', $this->data['subdomain']));
 			}
 			
-			if (sizeof($error))
-			{
+			if (sizeof($error)) {
 				$template->assign_block_vars('error', array(
 					'MESSAGE' => parse_error($error))
 				);
@@ -410,10 +377,8 @@ class a extends common
 		return;
 	}
 	
-	function _news_delete()
-	{
-		if (isset($_POST['cancel']))
-		{
+	public function _news_delete() {
+		if (isset($_POST['cancel'])) {
 			redirect(s_link('a', $this->data['subdomain']));
 		}
 		
@@ -421,8 +386,7 @@ class a extends common
 		
 		$id = $this->control->get_var('id', 0);
 		
-		if (!$id)
-		{
+		if (!$id) {
 			fatal_error();
 		}
 		
@@ -435,8 +399,7 @@ class a extends common
 			fatal_error();
 		}
 		
-		if (isset($_POST['confirm']))
-		{
+		if (isset($_POST['confirm'])) {
 			include('./interfase/functions_admin.php');
 			
 			$sql_a = array();
@@ -490,15 +453,12 @@ class a extends common
 	//
 	// A Posts
 	//
-	function aposts()
-	{
-		if (!$this->setup())
-		{
+	public function aposts() {
+		if (!$this->setup()) {
 			fatal_error();
 		}
 		
-		if ($this->manage == 'home')
-		{
+		if ($this->manage == 'home') {
 			//die('home: artists > aposts @ ! link');
 			redirect(s_link('a', $this->data['subdomain']));
 		}
@@ -507,16 +467,14 @@ class a extends common
 		$this->call_method();
 	}
 	
-	function _aposts_edit()
-	{
+	public function _aposts_edit() {
 		global $user, $config, $template;
 		
 		$submit = isset($_POST['submit']) ? TRUE : FALSE;
 		
 		$id = $this->control->get_var('id', 0);
 		
-		if (!$id)
-		{
+		if (!$id) {
 			fatal_error();
 		}
 		
@@ -531,19 +489,16 @@ class a extends common
 		
 		$message = $pdata['post_text'];
 		
-		if ($submit)
-		{
+		if ($submit) {
 			$message = $this->control->get_var('message', '', true);
 			$error = array();
 			
 			// Check message
-			if (empty($message))
-			{
+			if (empty($message)) {
 				$error[] = 'EMPTY_MESSAGE';
 			}
 			
-			if (!sizeof($error))
-			{
+			if (!sizeof($error)) {
 				$message = $this->comments->prepare($message);
 				
 				$sql = 'UPDATE _artists_posts SET post_text = ?
@@ -573,10 +528,8 @@ class a extends common
 		return;
 	}
 	
-	function _aposts_delete()
-	{
-		if (isset($_POST['cancel']))
-		{
+	public function _aposts_delete() {
+		if (isset($_POST['cancel'])) {
 			redirect(s_link('a', $this->data['subdomain']));
 		}
 		
@@ -584,8 +537,7 @@ class a extends common
 		
 		$id = $this->control->get_var('id', 0);
 		
-		if (!$id)
-		{
+		if (!$id) {
 			fatal_error();
 		}
 		
@@ -600,8 +552,7 @@ class a extends common
 			fatal_error();
 		}
 		
-		if (isset($_POST['confirm']))
-		{
+		if (isset($_POST['confirm'])) {
 			$delete_forever = ($user->data['is_founder'] && $delete_forever) ? TRUE : FALSE;
 			
 			if ($delete_forever) {
@@ -649,10 +600,8 @@ class a extends common
 	//
 	// Log
 	//
-	function log()
-	{
-		if (!$this->setup())
-		{
+	public function log() {
+		if (!$this->setup()) {
 			fatal_error();
 		}
 		
@@ -660,15 +609,13 @@ class a extends common
 		$this->call_method();
 	}
 	
-	function _log_home()
-	{
+	public function _log_home() {
 		global $user, $template;
 		
 		$member = $this->control->get_var('m', 0);
 		$no_results = TRUE;
 		
-		if ($member)
-		{
+		if ($member) {
 			$sql = 'SELECT user_id, username, username_base, user_color
 				FROM _members
 				WHERE user_id = ?';
@@ -731,8 +678,7 @@ class a extends common
 							break;
 					}
 					
-					if ($sql != '')
-					{
+					if ($sql != '') {
 						$result = sql_rowset($sql);
 						
 						foreach ($result as $row) {
@@ -793,17 +739,15 @@ class a extends common
 		);
 	}
 	
-	function _log_delete() {
+	public function _log_delete() {
 		die('default: log @ delete');
 	}
 	
 	//
 	// Auth
 	//
-	function auth()
-	{
-		if (!$this->setup())
-		{
+	public function auth() {
+		if (!$this->setup()) {
 			fatal_error();
 		}
 		
@@ -811,8 +755,7 @@ class a extends common
 		$this->call_method();
 	}
 	
-	function __auth_table($row, $check_unique = false)
-	{
+	public function __auth_table($row, $check_unique = false) {
 		global $user, $template;
 		
 		include('./interfase/comments.php');
@@ -854,11 +797,10 @@ class a extends common
 		return;
 	}
 	
-	function _auth_home()
-	{
+	public function _auth_home() {
 		global $user, $template;
 		
-		$results = FALSE;
+		$results = false;
 		
 		$sql = 'SELECT u.user_id, u.user_type, u.username, u.username_base, u.user_color, u.user_avatar
 			FROM _artists_auth a, _members u
@@ -883,20 +825,17 @@ class a extends common
 		);
 	}
 	
-	function _auth_add()
-	{
+	public function _auth_add() {
 		global $config, $user, $template;
 		
 		$submit = isset($_POST['submit']) ? TRUE : FALSE;
 		$no_results = TRUE;
 		
-		if ($submit)
-		{
+		if ($submit) {
 			$s_members = $this->control->get_var('s_members', array(0));
 			$s_member = $this->control->get_var('s_member', '');
 			
-			if (sizeof($s_members))
-			{
+			if (sizeof($s_members)) {
 				$sql = 'SELECT user_id
 					FROM _members
 					WHERE user_id IN (??)
@@ -920,8 +859,7 @@ class a extends common
 						}
 					}
 					
-					if (sizeof($s_members_i))
-					{
+					if (sizeof($s_members_i)) {
 						$sql = 'SELECT user_id, user_color, user_rank
 							FROM _members
 							WHERE user_id IN (??)';
@@ -932,8 +870,7 @@ class a extends common
 							$sd_members[$row['user_id']] = $row;
 						}
 						
-						foreach ($s_members_i as $m)
-						{
+						foreach ($s_members_i as $m) {
 							$sql_insert = array(
 								'ub' => $this->data['ub'],
 								'user_id' => $m
@@ -942,8 +879,7 @@ class a extends common
 							sql_query($sql);
 						}
 						
-						foreach ($sd_members as $user_id => $item)
-						{
+						foreach ($sd_members as $user_id => $item) {
 							$update = array(
 								'user_type' => USER_ARTIST,
 								'user_auth_control' => 1
@@ -997,8 +933,7 @@ class a extends common
 				}
 			}
 			
-			if (!empty($s_member))
-			{
+			if (!empty($s_member)) {
 				$s_member = phpbb_clean_username(str_replace('*', '%', $s_member));
 				
 				$sql = 'SELECT user_id
@@ -1036,8 +971,7 @@ class a extends common
 		
 		$s_hidden = array('module' => $this->control->module, 'a' => $this->data['subdomain'], 'mode' => $this->mode, 'manage' => $this->manage);
 		
-		if ($submit && !$no_results)
-		{
+		if ($submit && !$no_results) {
 			$s_hidden['s_member'] = str_replace('%', '*', $s_member);
 		}
 		
@@ -1051,27 +985,23 @@ class a extends common
 		);
 	}
 	
-	function _auth_delete()
-	{
+	public function _auth_delete() {
 		$auth_url = s_link_control('a', array('a' => $this->data['subdomain'], 'mode' => $this->mode));
 		
-		if (isset($_POST['cancel']))
-		{
+		if (isset($_POST['cancel'])) {
 			redirect($auth_url);
 		}
 		
 		$submit = isset($_POST['submit']) ? TRUE : FALSE;
 		$confirm = isset($_POST['confirm']) ? TRUE : FALSE;
 		
-		if ($submit || $confirm)
-		{
+		if ($submit || $confirm) {
 			global $config, $user, $template;
 			
 			$s_members = $this->control->get_var('s_members', array(0));
 			$s_members_i = array();
 			
-			if (sizeof($s_members))
-			{
+			if (sizeof($s_members)) {
 				$sql = 'SELECT user_id
 					FROM _artists_auth
 					WHERE ub = ?';
@@ -1163,8 +1093,7 @@ class a extends common
 			//
 			$s_members_list = '';
 			$s_members_hidden = s_hidden(array('module' => $this->control->module, 'a' => $this->data['subdomain'], 'mode' => $this->mode, 'manage' => $this->manage));
-			foreach ($s_members as $data)
-			{
+			foreach ($s_members as $data) {
 				$s_members_list .= (($s_members_list != '') ? ', ' : '') . '<strong style="color:#' . $data['user_color'] . '; font-weight: bold">' . $data['username'] . '</strong>';
 				$s_members_hidden .= s_hidden(array('s_members[]' => $data['user_id']));
 			}
@@ -1187,10 +1116,8 @@ class a extends common
 	//
 	// Gallery
 	//
-	function gallery()
-	{
-		if (!$this->setup())
-		{
+	public function gallery() {
+		if (!$this->setup()) {
 			fatal_error();
 		}
 		
@@ -1198,8 +1125,7 @@ class a extends common
 		$this->call_method();
 	}
 	
-	function _gallery_home()
-	{
+	public function _gallery_home() {
 		global $user, $template;
 		
 		$sql = 'SELECT g.*
@@ -1246,20 +1172,20 @@ class a extends common
 		);
 	}
 	
-	function __gallery_add_chmod($ary, $perm) {
+	public function __gallery_add_chmod($ary, $perm) {
 		foreach ($ary as $cdir) {
 			@chmod($cdir, $perm);
 		}
 	}
 	
-	function __gallery_add_delete($filename) {
+	public function __gallery_add_delete($filename) {
 		if (!@is_writable($filename)) {
 			//@chmod($filename, 0777);
 		}
 		@unlink($filename);
 	}
 	
-	function _gallery_add() {
+	public function _gallery_add() {
 		global $user, $template;
 		
 		$filesize = 3000 * 1024;
@@ -1274,21 +1200,18 @@ class a extends common
 			
 			$f = $upload->process($filepath_1, $_FILES['add_image'], array('jpg'), $filesize);
 			
-			if (!sizeof($upload->error) && $f !== false)
-			{
+			if (!sizeof($upload->error) && $f !== false) {
 				$sql = 'SELECT MAX(image) AS total
 					FROM _artists_images
 					WHERE ub = ?';
 				$img = sql_field(sql_filter($sql, $this->data['ub']), 'total', 0);
 				
 				$a = 0;
-				foreach ($f as $row)
-				{
+				foreach ($f as $row) {
 					$img++;
 					
 					$xa = $upload->resize($row, $filepath_1, $filepath_1, $img, array(600, 400), false, false, true);
-					if ($xa === false)
-					{
+					if ($xa === false) {
 						continue;
 					}
 					
@@ -1329,11 +1252,11 @@ class a extends common
 		return;
 	}
 	
-	function _gallery_edit() {
+	public function _gallery_edit() {
 		
 	}
 	
-	function _gallery_delete() {
+	public function _gallery_delete() {
 		global $user, $template;
 		
 		$error = false;
@@ -1357,16 +1280,14 @@ class a extends common
 				$result = sql_rowset(sql_filter($sql, $this->data['ub'], implode(',', $s_images)));
 				
 				foreach ($result as $row) {
-					foreach ($path as $path_row)
-					{
+					foreach ($path as $path_row) {
 						$filepath = $path_row . $row['image'] . '.jpg';
 						@unlink($filepath);
 					}
 					$affected[] = $row['image'];
 				}
 				
-				if (count($affected))
-				{
+				if (count($affected)) {
 					$sql = 'DELETE FROM _artists_images 
 						WHERE ub = ?
 							AND image IN (??)';
@@ -1382,8 +1303,7 @@ class a extends common
 		redirect(s_link_control('a', array('a' => $this->data['subdomain'], 'mode' => $this->mode)));
 	}
 	
-	function _gallery_footer()
-	{
+	public function _gallery_footer() {
 		global $user, $template;
 		
 		$a = $this->control->get_var('image', '');
@@ -1408,10 +1328,8 @@ class a extends common
 	//
 	// Biography
 	//
-	function biography()
-	{
-		if (!$this->setup())
-		{
+	public function biography() {
+		if (!$this->setup()) {
 			fatal_error();
 		}
 		
@@ -1419,8 +1337,7 @@ class a extends common
 		$this->call_method();
 	}
 	
-	function _biography_home()
-	{
+	public function _biography_home() {
 		global $user, $template;
 		
 		$sql = 'SELECT bio
@@ -1440,7 +1357,7 @@ class a extends common
 		}
 	}
 	
-	function _biography_edit() {
+	public function _biography_edit() {
 		global $user;
 		
 		if (isset($_POST['submit'])) {
@@ -1458,33 +1375,27 @@ class a extends common
 	//
 	// Lyrics
 	//
-	function lyrics()
-	{
+	public function lyrics() {
 		$this->call_method();
 	}
 	
-	function _lyrics_add()
-	{
+	public function _lyrics_add() {
 		
 	}
 	
-	function _lyrics_edit()
-	{
+	public function _lyrics_edit() {
 		
 	}
 	
-	function _lyrics_delete()
-	{
+	public function _lyrics_delete() {
 		
 	}
 	
 	//
 	// Video
 	//
-	function video()
-	{
-		if (!$this->setup())
-		{
+	public function video() {
+		if (!$this->setup()) {
 			fatal_error();
 		}
 		
@@ -1492,8 +1403,7 @@ class a extends common
 		$this->call_method();
 	}
 	
-	function _video_home()
-	{
+	public function _video_home() {
 		global $user, $template;
 		
 		$sql = 'SELECT *
@@ -1522,17 +1432,14 @@ class a extends common
 		return;
 	}
 	
-	function _video_add()
-	{
+	public function _video_add() {
 		global $user, $template;
 		
-		if (isset($_POST['submit']))
-		{
+		if (isset($_POST['submit'])) {
 			$code = $this->control->get_var('code', '', true);
 			$vname = $this->control->get_var('vname', '');
 			
-			if (!empty($code))
-			{
+			if (!empty($code)) {
 				$sql = 'SELECT *
 					FROM _artists_video
 					WHERE video_a = ?
@@ -1572,18 +1479,15 @@ class a extends common
 		return;
 	}
 	
-	function _video_delete()
-	{
+	public function _video_delete() {
 		global $user, $template;
 	}
 	
 	//
 	// Stats
 	//
-	function stats()
-	{
-		if (!$this->setup())
-		{
+	public function stats() {
+		if (!$this->setup()) {
 			fatal_error();
 		}
 		
@@ -1591,8 +1495,7 @@ class a extends common
 		$this->call_method();
 	}
 	
-	function _stats_home()
-	{
+	public function _stats_home() {
 		global $user, $template;
 		
 		$sql = 'SELECT *, SUM(members + guests) AS total
@@ -1634,13 +1537,11 @@ class a extends common
 				'YEAR' => $year)
 			);
 			
-			if (!isset($years_sum[$year]))
-			{
+			if (!isset($years_sum[$year])) {
 				$years_sum[$year] = 0;
 			}
 			
-			for ($i = 1; $i < 13; $i++)
-			{
+			for ($i = 1; $i < 13; $i++) {
 				$month = (($i < 10) ? '0' : '') . $i;
 				$monthdata = (isset($stats[$year . $month])) ? $stats[$year . $month] : array();
 				$monthdata['total'] = isset($monthdata['total']) ? $monthdata['total'] : 0;
@@ -1671,23 +1572,19 @@ class a extends common
 	//
 	// Voters
 	//
-	function voters()
-	{
+	public function voters() {
 		$this->call_method();
 	}
 	
-	function _voters_home()
-	{
+	public function _voters_home() {
 		
 	}
 	
 	//
 	// Downloads
 	//
-	function downloads()
-	{
-		if (!$this->setup())
-		{
+	public function downloads() {
+		if (!$this->setup()) {
 			fatal_error();
 		}
 		
@@ -1695,8 +1592,7 @@ class a extends common
 		$this->call_method();
 	}
 	
-	function _downloads_home()
-	{
+	public function _downloads_home() {
 		global $user, $template;
 		
 		$sql = 'SELECT *
@@ -1739,33 +1635,27 @@ class a extends common
 		return;
 	}
 	
-	function _downloads_add()
-	{
+	public function _downloads_add() {
 		
 	}
 	
-	function _downloads_edit()
-	{
+	public function _downloads_edit() {
 		
 	}
 	
-	function _downloads_delete()
-	{
+	public function _downloads_delete() {
 		
 	}
 	
 	//
 	// D Posts
 	//
-	function dposts()
-	{
-		if (!$this->setup())
-		{
+	public function dposts() {
+		if (!$this->setup()) {
 			fatal_error();
 		}
 		
-		if ($this->manage == 'home')
-		{
+		if ($this->manage == 'home') {
 			redirect(s_link('a', $this->data['subdomain']));
 		}
 		
@@ -1773,8 +1663,7 @@ class a extends common
 		$this->call_method();
 	}
 	
-	function _dposts_edit()
-	{
+	public function _dposts_edit() {
 		global $user, $config, $template;
 		
 		$submit = isset($_POST['submit']) ? TRUE : FALSE;
@@ -1798,19 +1687,16 @@ class a extends common
 		
 		$message = $pdata['post_text'];
 		
-		if ($submit)
-		{
+		if ($submit) {
 			$message = $this->control->get_var('message', '', true);
 			$error = array();
 			
 			// Check message
-			if (empty($message))
-			{
+			if (empty($message)) {
 				$error[] = 'EMPTY_MESSAGE';
 			}
 			
-			if (!sizeof($error))
-			{
+			if (!sizeof($error)) {
 				$message = $this->comments->prepare($message);
 				
 				$sql = 'UPDATE _dl_posts SET post_text = ?
@@ -1820,8 +1706,7 @@ class a extends common
 				redirect(s_link('a', array($this->data['subdomain'], 9, $pdata['download_id'])));
 			}
 			
-			if (sizeof($error))
-			{
+			if (sizeof($error)) {
 				$template->assign_block_vars('error', array(
 					'MESSAGE' => parse_error($error))
 				);
@@ -1842,14 +1727,12 @@ class a extends common
 		return;
 	}
 	
-	function _dposts_delete()
-	{
+	public function _dposts_delete() {
 		global $config, $user;
 		
 		$id = $this->control->get_var('id', 0);
 		
-		if (!$id)
-		{
+		if (!$id) {
 			fatal_error();
 		}
 		
@@ -1917,46 +1800,38 @@ class a extends common
 	//
 	// Art
 	//
-	function art()
-	{
+	public function art() {
 		
 	}
 	
-	function _art_home()
-	{
+	public function _art_home() {
 		
 	}
 	
-	function _art_add()
-	{
+	public function _art_add() {
 		
 	}
 	
-	function _art_edit()
-	{
+	public function _art_edit() {
 		
 	}
 	
-	function _art_delete()
-	{
+	public function _art_delete() {
 		
 	}
 	
 	//
 	// Art Posts
 	//
-	function arposts()
-	{
+	public function arposts() {
 		
 	}
 	
-	function _arposts_edit()
-	{
+	public function _arposts_edit() {
 		
 	}
 	
-	function _arposts_delete()
-	{
+	public function _arposts_delete() {
 		
 	}
 }
