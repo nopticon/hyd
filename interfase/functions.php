@@ -530,6 +530,18 @@ function get_file($f) {
 	return array_map('trim', @file($f));
 }
 
+function exception($filename, $dynamics = false) {
+	$a = implode("\n", get_file(ROOT . 'template/exceptions/' . $filename . '.htm'));
+	
+	if ($dynamics !== false) {
+		foreach ($dynamics as $k => $v) {
+			$a = str_replace('<!--#echo var="' . $k . '" -->', $v, $a);
+		}
+	}
+	
+	return $a;
+}
+
 function hook($name, $args = array(), $arr = false) {
 	switch ($name) {
 		case 'isset':
@@ -683,7 +695,7 @@ function fatal_error($mode = '404', $bp_message = '') {
 			$title = 'Archivo no encontrado';
 			$error .= 'no existe';
 			
-			header("HTTP/1.0 404 Not Found");
+			status("404 Not Found");
 			
 			@error_log('[php client ' . $user->ip . ((isset($user->data['username'])) ? ' - ' . $user->data['username'] : '') . '] File does not exist: ' . $current_page, 0);
 			break;
@@ -693,18 +705,20 @@ function fatal_error($mode = '404', $bp_message = '') {
 		$error .= ', puedes regresar a<br /><a href="http://www.rockrepublik.net/">p&aacute;gina de inicio de Rock Republik</a> para encontrar informaci&oacute;n.'/* . '<br /><br />' . $bp_message*/;
 	}
 	
-	$error_filename = '../net/access/page_error.shtml';
-	if (@file_exists($error_filename)) {
-		$code = implode('', @file($error_filename));
-		$code = str_replace(array('<!--#echo var="PAGE_TITLE" -->', '<!--#echo var="PAGE_MESSAGE" -->'), array($title, $error), $code);
-	} else {
-		$code = '<strong>' . $title . '</strong><br /><br />' . $error;
-	}
-	
 	sql_close();
 	
-	echo $code;
+	$replaces = array(
+		'PAGE_TITLE' => $title,
+		'PAGE_MESSAGE' => $error
+	);
+	
+	echo exception('error', $replaces);
 	exit;
+}
+
+function status($message) {
+	header("HTTP/1.1 " . $message);
+	header("Status: " . $message);
 }
 
 function msg_handler($errno, $msg_text, $errfile, $errline) {

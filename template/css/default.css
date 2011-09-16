@@ -55,10 +55,12 @@ hr {
 	background: #2f2f30;
 	border-left: 1px solid #0c0c0c;
 	border-right: 1px solid #0c0c0c;
+	border-bottom: 1px solid #0c0c0c;
 }
 #container-2 {
 	border-left: 1px solid #4c5558;
 	border-right: 1px solid #4c5558;
+	border-bottom: 1px solid #4c5558;
 }
 #container-3 {
 	padding: 10px;
@@ -80,7 +82,7 @@ hr {
 	display: block;
 	width: 300px;
 	height: 47px;
-	background: url(images/header.gif) no-repeat;
+	/*background: url(images/header.gif) no-repeat;*/
 	text-indent: -9000px;
 }
 #header h1 a:hover {
@@ -105,9 +107,11 @@ hr {
 }
 
 #footer {
-	margin: 30px 10px 0 10px;
-	padding: 15px 0 15px 0;
-	border-top: 1px solid #4c5558;
+	width: 940px;
+	margin: 0 auto;
+	/*margin: 20px 10px 0 10px;*/
+	padding: 22px 0 25px 0;
+	/*border-top: 1px solid #4c5558;*/
 }
 #search {
 	margin-top: 11px;

@@ -105,7 +105,7 @@ class community {
 		global $user, $config, $template;
 		
 		$template->assign_vars(array(
-			'MEMBERS_COUNT' => $config['max_users'],
+			'MEMBERS_COUNT' => number_format($config['max_users']),
 			'START_DATE' => $user->format_date($config['board_startdate'], "d " . $user->lang['OF_COMM'] . " F Y"))
 		);
 		

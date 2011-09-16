@@ -185,6 +185,6 @@ $template_vars = array(
 	'MAX_FILESIZE' => $i_size
 );
 
-page_layout('EVENTS', 'hidden_ue_body', $template_vars, false);
+page_layout('EVENTS', 'events_create_body', $template_vars, false);
 
 ?>

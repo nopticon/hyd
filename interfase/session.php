@@ -538,35 +538,18 @@ class user extends session {
 		unset($lang_set);
 
 		$template->set_template(ROOT.'template');
-		require(ROOT . 'template/config.cfg');
 
 		// Is board disabled and user not an admin or moderator?
 		// TODO
 		// New ACL enabling board access while offline?
 		if ($config['board_disable'] && $this->data['user_id'] != 2) {
-			$page_html = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<title>Rock Republik Networks</title>
-<link rel="stylesheet" type="text/css" href="http://www.rockrepublik.net/net/styles/pe.css" />
-</head>
-
-<body>
-<img src="http://www.rockrepublik.net/net/access/error.gif" width="350" height="146" alt="" border="0" />
-
-<h1>Temporalmente fuera de servicio.</h1>
-<div>Estamos realizando cambios en el sistema.<br /><a href="/">Intenta en un momento</a></div>
-</body>
-</html>';
 			
-			header("HTTP/1.1 503 Service Temporarily Unavailable");
-			header("Status: 503 Service Temporarily Unavailable");
+			status("503 Service Temporarily Unavailable");
 			header("Retry-After: 3600");
 
 			sql_close();
 			
-			echo $page_html;
+			echo exception('disabled');
 			exit;
 		}
 

@@ -66,6 +66,6 @@ $template_vars = array(
 	'S_UPLOAD_ACTION' => $u,
 	'MAX_FILESIZE' => $i_size
 );
-page_layout('NEWS IMAGES UPLOADER', 'hidden_ni_body', $template_vars, false);
+page_layout('NEWS IMAGES UPLOADER', 'news_images_body', $template_vars, false);
 
 ?>
