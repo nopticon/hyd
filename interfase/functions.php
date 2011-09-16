@@ -600,6 +600,36 @@ function w($a = '', $d = false) {
 	return $e;
 }
 
+function sendmail($to, $from, $subject, $template = '', $vars = array()) {
+	static $included;
+	
+	if (!$included) {
+		require_once(ROOT . 'interfase/emailer.php');
+		$emailer = new emailer();
+		
+		$included = true;
+	}
+	
+	$emailer->from = trim($from);
+	
+	$template_parts = explode(':', $template);
+	
+	if (isset($template_parts[0])) {
+		$emailer->use_template($template_parts[0]);
+	}
+	
+	if (isset($template_parts[1])) {
+		$emailer->format = $template_parts[1];
+	}
+	
+	$emailer->assign_vars($vars);
+	
+	$response = $emailer->send();
+	$emailer->reset();
+	
+	return $response;
+}
+
 function kernel_function($mode, $name, $param = false, $return_on_error = false) {
 	switch ($mode) {
 		case 'a':
