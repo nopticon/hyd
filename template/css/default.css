@@ -459,7 +459,7 @@ a.submitd {
 	border: 0;
 }
 .ul_none img {
-	border: 1px solid #4c5558;
+	/*border: 1px solid #4c5558;*/
 }
 .ul_none .clear img {
 	border: 0 !important;

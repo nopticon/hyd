@@ -589,7 +589,7 @@ $panel_selection = array(
 $panel_selection += array(
 	/*'favs' => array('L' => 'FAVS', 'U' => FALSE),*/
 	'friends' => array('L' => 'FRIENDS', 'U' => FALSE),
-	'messages' => array('L' => 'POSTS', 'U' => FALSE)/*,
+	/*'messages' => array('L' => 'POSTS', 'U' => FALSE),
 	'stats' => array('L' => 'STATS', 'U' => FALSE)*/
 );
 
