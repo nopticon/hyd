@@ -1,9 +1,6 @@
 <!-- INCLUDE page_header.htm -->
 
-<div class="g2"><h1>{TITLE} // {DATE}</h1></div>
-<!-- BEGIN hide -->
-<div class="dtposted float_right">{VIEWS} &raquo; Visitas</div>
-<!-- END hide -->
+<div class="g2"><h1>{TITLE} @ {DATE}</h1></div>
 
 <!-- BEGIN selected -->
 <div class="ie-widthfix float-holder a_right a_controls"><!-- BEGIN download --><a href="{download.URL}">{L_UE_DOWNLOAD}</a><!-- END download --><!-- BEGIN fav --> <a href="{fav.URL}">{L_UB_FAV_ADD}</a><!-- END fav --></div>
@@ -29,11 +26,6 @@
 	<!-- END item -->
 </ul>
 </div>
-<script type="text/javascript">
-//<![CDATA[
-setupZoom();
-//]]>
-</script>
 <!-- END thumbnails -->
 
 <!-- IF COLAB != '' -->
@@ -59,11 +51,6 @@ setupZoom();
 <!-- END item -->
 </div>
 <!-- IF MSG_PAGES_NUMS != ' <strong>1</strong>' --><div class="pagination">{MSG_PAGES_NUMS}</div><!-- ENDIF -->
-<script type="text/javascript">
-//<![CDATA[
-_.signature([<!-- BEGIN item --><!-- IF item.S_ROW_COUNT -->, <!-- ENDIF -->'{item.POST_ID}'<!-- END item -->]);
-//]]>
-</script>
 <!-- END posts -->
 
 <!-- BEGIN posting_box -->
@@ -77,9 +64,6 @@ _.signature([<!-- BEGIN item --><!-- IF item.S_ROW_COUNT -->, <!-- ENDIF -->'{it
 <div class="rows5_top_1"><input class="submit" type="submit" name="post" value="{L_SUBMIT}" /></div>
 </form>
 <!-- END box -->
-<!-- BEGIN only_registered -->
-<div class="black_box a_center">{only_registered.LEGEND}</div>
-<!-- END only_registered -->
 </div>
 <!-- END posting_box -->
 

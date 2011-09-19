@@ -6,6 +6,7 @@
 	<h1><a href="{U_COVER}" title="Rock Republik">Rock Republik</a></h1>
 	<h2>La comunidad m&aacute;s grande de Rock en Guatemala</h2>
 	
+	<!-- IF IS_MEMBER -->
 	<div id="search" class="cols5_left_2 float_left">
 	<h2 class="z">B&uacute;squeda</h2>
 	<form action="http://www.google.com/cse" id="cse-search-box" target="_blank">
@@ -14,6 +15,7 @@
 		<input type="text" name="q" size="20" class="normal" /> <input type="submit" name="sa" value="&gt;&gt;" />
 	</form>	
 	</div>
+	<!-- ENDIF -->
 	<div id="menu">
 		<h2 class="z">Navegaci&oacute;n</h2>
 		<ul>
@@ -33,9 +35,13 @@
 		<!-- IF IS_MEMBER -->
 		<ul>
 			<li><a class="relevant uunique" href="{U_PROFILE}">{S_USERNAME}</a></li>
-			<li><a href="{U_EDITPROFILE}">{L_PREFERENCES}</a></li>
-			<!-- IF S_CONTROLPANEL != '' --><li><a href="{S_CONTROLPANEL}">{L_CONTROL_PANEL}</a></li><!-- ENDIF -->
-			<li id="logout"><a href="{U_SESSION}">{L_LOGOUT2}</a></li>
+			<li><a href="/">Opciones</a>
+				<ul id="account">
+					<!-- IF S_CONTROLPANEL != '' --><li><a href="{S_CONTROLPANEL}">{L_CONTROL_PANEL}</a></li><!-- ENDIF -->
+					<li><a href="{U_EDITPROFILE}">{L_PREFERENCES}</a></li>
+					<li><a href="{U_SESSION}">{L_LOGOUT2}</a></li>
+				</ul>
+			</li>
 		</ul>
 		<!-- ELSE -->
 		<form action="{U_SESSION}" method="post">

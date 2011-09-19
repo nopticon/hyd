@@ -51,7 +51,6 @@
 		</li>
 		<!-- END item -->
 	</ul>
-	<div class="rows5_top_6"><input class="submit" type="submit" name="delete[{notes.ELEMENT}]" value="{L_DELETE_MARKED}" /></div>
 	</div>
 	<!-- END notes -->
 	<!-- BEGIN friends -->
@@ -67,7 +66,6 @@
 		</li>
 		<!-- END item -->
 	</ul>
-	<div class="rows5_top_6"><input class="submit" type="submit" name="delete[{friends.ELEMENT}]" value="{L_DELETE_MARKED}" /></div>
 	</div>
 	<!-- END friends -->
 	<!-- BEGIN userpagem -->
@@ -83,7 +81,6 @@
 		</li>
 		<!-- END item -->
 	</ul>
-	<div class="rows5_top_6"><input class="submit" type="submit" name="delete[{userpagem.ELEMENT}]" value="{L_DELETE_MARKED}" /></div>
 	</div>
 	<!-- END userpagem -->
 	<!-- BEGIN news -->
@@ -99,72 +96,21 @@
 		</li>
 		<!-- END item -->
 	</ul>
-	<div class="rows5_top_6"><input class="submit" type="submit" name="delete[{news.ELEMENT}]" value="{L_DELETE_MARKED}" /></div>
 	</div>
 	<!-- END news -->
-	<!-- BEGIN a_news -->
-	<div class="rows5_top_2 float-holder ie-widthfix item_block_3">
-	<div class="section"><h1>{L_NEWS}</h1></div>
-	<ul class="ul_none">
-		<!-- BEGIN item -->
-		<li class="rows5_top_1">
-			<div class="float-holder ie-widthfix">
-			<div class="float_left col75"><input type="checkbox" class="none" name="items[{a_news.ELEMENT}][]" value="{item.S_MARK_ID}" checked="checked" />&nbsp;<a class="relevant" href="{item.POST_URL}">{item.POST_TITLE}</a></div>
-			<div class="float_right col25 a_right">{item.POST_TIME}</div>
-			</div>
-		</li>
-		<!-- END item -->
-	</ul>
-	<div class="rows5_top_6"><input class="submit" type="submit" name="delete[{a_news.ELEMENT}]" value="{L_DELETE_MARKED}" /></div>
-	</div>
-	<!-- END a_news -->
-	<!-- BEGIN artists -->
-	<div class="rows5_top_2 float-holder ie-widthfix item_block_3">
-	<div class="section"><h1>{L_UB}</h1></div>
-	<ul class="ul_none">
-		<!-- BEGIN item -->
-		<li class="rows5_top_1">
-			<div class="float-holder ie-widthfix">
-			<div class="float_left col75"><input type="checkbox" class="none" name="items[{artists.ELEMENT}][]" value="{item.S_MARK_ID}" checked="checked" />&nbsp;<a class="relevant" href="{item.UB_URL}">{item.NAME}</a></div>
-			<div class="float_right col25 a_right">{item.POST_TIME}</div>
-			</div>
-		</li>
-		<!-- END item -->
-	</ul>
-	<div class="rows5_top_6"><input class="submit" type="submit" name="delete[{artists.ELEMENT}]" value="{L_DELETE_MARKED}" /></div>
-	</div>
-	<!-- END artists -->
-	<!-- BEGIN downloads -->
-	<div class="rows5_top_2 float-holder ie-widthfix item_block_3">
-	<div class="section"><h1>{L_DOWNLOADS}</h1></div>
-	<ul class="ul_none">
-		<!-- BEGIN item -->
-		<li class="rows5_top_1">
-			<div class="float-holder ie-widthfix">
-			<div class="float_left col75"><input type="checkbox" class="none" name="items[{downloads.ELEMENT}][]" value="{item.S_MARK_ID}" checked="checked" />&nbsp;[{item.UD_TYPE}] <a class="relevant" href="{item.UD_URL}">{item.UD}</a> {L_OF} <a class="relevant" href="{item.UB_URL}">{item.UB}</a></div>
-			<div class="float_right col25 a_right">{item.DATETIME}</div>
-			</div>
-		</li>
-		<!-- END item -->
-	</ul>
-	<div class="rows5_top_6"><input class="submit" type="submit" name="delete[{downloads.ELEMENT}]" value="{L_DELETE_MARKED}" /></div>
-	</div>
-	<!-- END downloads -->
 	<!-- BEGIN forums -->
 	<div class="rows5_top_2 float-holder ie-widthfix item_block_3">
 	<div class="section"><h1>{L_NEW_FORUM}</h1></div>
 	<ul class="ul_none">
-		<!-- <a class="bold" href="{item.FORUM_URL}">{item.FORUM_NAME}</a> -->
 		<!-- BEGIN item -->
-		<li class="rows5_top_1">
+		<li>
 			<div class="float-holder ie-widthfix">
-			<div class="float_left col75"><input type="checkbox" class="none" name="items[{forums.ELEMENT}][]" value="{item.S_MARK_ID}" checked="checked" />&nbsp;<a class="relevant<!-- IF item.FOR_MODS --> funique<!-- ENDIF -->"<!-- IF item.TOPIC_COLOR --> style="color:#{item.TOPIC_COLOR};"<!-- ENDIF --> href="{item.TOPIC_URL}">{item.TOPIC_TITLE}</a> ({item.TOPIC_REPLIES}m)</div>
+			<div class="float_left col75"><input type="checkbox" class="none" name="items[{forums.ELEMENT}][]" value="{item.S_MARK_ID}" checked="checked" />&nbsp;<a class="relevant<!-- IF item.FOR_MODS --> funique<!-- ENDIF -->"<!-- IF item.TOPIC_COLOR --> style="color:#{item.TOPIC_COLOR};"<!-- ENDIF --> href="{item.TOPIC_URL}">{item.TOPIC_TITLE}</a> ({item.TOPIC_REPLIES})</div>
 			<div class="float_right col25 a_right"><!-- IF item.USER_ID != 1 --><a class="relevant uunique" href="{item.USER_PROFILE}">{item.USERNAME}</a><!-- ELSE --><span class="relevant">*{item.USERNAME}</span><!-- ENDIF --><br />{item.DATETIME}</div>
 			</div>
 		</li>
 		<!-- END item -->
 	</ul>
-	<div class="rows5_top_6"><input class="submit" type="submit" name="delete[{forums.ELEMENT}]" value="{L_DELETE_MARKED}" /></div>
 	</div>
 	<!-- END forums -->
 	<!-- BEGIN a_messages -->
@@ -180,7 +126,6 @@
 		</li>
 		<!-- END item -->
 	</ul>
-	<div class="rows5_top_6"><input class="submit" type="submit" name="delete[{a_messages.ELEMENT}]" value="{L_DELETE_MARKED}" /></div>
 	</div>
 	<!-- END a_messages -->
 	<!-- BEGIN d_messages -->
@@ -196,7 +141,6 @@
 		</li>
 		<!-- END item -->
 	</ul>
-	<div class="rows5_top_6"><input class="submit" type="submit" name="delete[{d_messages.ELEMENT}]" value="{L_DELETE_MARKED}" /></div>
 	</div>
 	<!-- END d_messages -->
 	<!-- BEGIN a_fav -->
@@ -212,26 +156,8 @@
 		</li>
 		<!-- END item -->
 	</ul>
-	<div class="rows5_top_6"><input class="submit" type="submit" name="delete[{a_fav.ELEMENT}]" value="{L_DELETE_MARKED}" /></div>
 	</div>
 	<!-- END a_fav -->
-	<!-- BEGIN users -->
-	<div class="rows5_top_2 float-holder ie-widthfix item_block_3">
-	<div class="section"><h1>{L_USERS}</h1></div>
-	<ul class="ul_none">
-		<!-- BEGIN item -->
-		<li class="rows5_top_1">
-			<div class="float-holder ie-widthfix">
-			<div class="float_left col75"><input type="checkbox" class="none" name="items[{users.ELEMENT}][]" value="{item.S_MARK_ID}" checked="checked" />&nbsp;<a class="relevant uunique" href="{item.USER_PROFILE}">{item.USERNAME}</a></div>
-			<div class="float_right col25 a_right">{item.DATETIME}</div>
-			</div>
-		</li>
-		<!-- END item -->
-	</ul>
-	<div class="rows5_top_6"><input class="submit" type="submit" name="delete[{users.ELEMENT}]" value="{L_DELETE_MARKED}" /></div>
-	</div>
-	<!-- END users -->
-	<div class="rows5_top_3 a_right"><input class="submit" type="submit" name="delete_all" value="{L_NEW_DELETE_ALL}" /></div>
 	</form>
 	<!-- END items -->
 	<!-- BEGIN no_items -->

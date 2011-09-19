@@ -61,6 +61,12 @@ class cover {
 			);
 		}
 		
+		if ($user->_team_auth('mod')) {
+			$template->assign_block_vars('news.create', array(
+				'U_NEWS_CREATE' => s_link('news', 'create'))
+			);
+		}
+		
 		return;
 	}
 

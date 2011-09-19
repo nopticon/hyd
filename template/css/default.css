@@ -83,7 +83,7 @@ hr {
 	display: block;
 	width: 300px;
 	height: 47px;
-	background: url(images/header.gif) no-repeat;
+	/*background: url(images/header.gif) no-repeat;*/
 	text-indent: -9000px;
 }
 #header h1 a:hover {
@@ -576,7 +576,7 @@ a.submitd {
 .item_block_2 ul li:first-child, .item_block ul li.first_child { margin-top: 0; }
 .item_block_3 { }
 .item_block_3 ul { }
-.item_block_3 ul li { margin-top: 3px; padding: 3px; }
+.item_block_3 ul li { margin-top: 1px; padding: 1px; }
 .item_block_3 ul li:hover { background: #4c5558; }
 .item_block_3 ul li:first-child, .item_block ul li.first_child { margin-top: 0; }
 .first_image { padding: 0 !important; height: 60px !important; }

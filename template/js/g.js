@@ -49,6 +49,8 @@ $(function() {
 		}
 	}
 	
+	$('#account').hide();
+	
 	if (xka) {
 		// Keep alive
 		$.PeriodicalUpdater('/ajax/ka/', {

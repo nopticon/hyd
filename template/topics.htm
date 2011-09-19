@@ -18,10 +18,6 @@
 </div>
 <!-- END topics -->
 
-<!-- BEGIN no_topics -->
-<div class="color pad6 ie-widthfix">{L_NO_TOPICS}</div>
-<!-- END no_topics -->
-
 <!-- IF PAGES_NUMS != ' <strong>1</strong>' --><div class="rows5_top_5 pagination">{PAGES_NUMS}</div><!-- ENDIF -->
 
 <!-- BEGIN posting_box -->
@@ -49,20 +45,10 @@
 	<div class="rows5_top_1"><em>{L_POLL_OPTION_EXPLAIN}</em></div>
 	<div class="rows5_top_1"><textarea id="t-polloptions" name="poll_options" cols="150" rows="10">{box.POLL_OPTIONS}</textarea></div>
 </div>
-<!-- BEGIN hide -->
-<script language="javascript" type="text/javascript">
-//<![CDATA[
-Element.hide('addpollbox');
-//]]>
-</script>
-<!-- END hide -->
 <!-- END addpoll -->
 <div class="rows5_top_1 a_center"><input class="submit" type="submit" name="post" value="{L_SUBMIT}" /></div>
 </form>
 <!-- END box -->
-<!-- BEGIN only_registered -->
-<div class="black_box a_center">{only_registered.LEGEND}</div>
-<!-- END only_registered -->
 <!-- BEGIN not_allowed -->
 <div class="black_box a_center">{not_allowed.LEGEND}</div>
 <!-- END not_allowed -->

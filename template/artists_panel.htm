@@ -53,10 +53,12 @@
 </div>
 
 <!-- IF INACTIVE -->
-<div class="rows5_bot_1"><div class="black_box a_center">
+<div class="rows5_bot_1">
+	<div class="black_box a_center">
 	<h2>{L_ARTIST_INACTIVE}</h2>
 	<p>{L_ARTIST_INACTIVE_DESC}</p>
-</div></div>
+	</div>
+</div>
 <!-- ENDIF -->
 
 <div class="col_3 float_left">
@@ -92,7 +94,7 @@
 		<ul class="ul_none">
 			<!-- BEGIN item -->
 			<li class="clear <!-- IF item.S_ROW_COUNT -->rows5_top_1<!-- ENDIF -->">
-			<div class="rows5_bot_1"><!-- BEGIN username --><a class="relevant uunique" href="{item.PROFILE}"><!-- END username --><!-- BEGIN guestuser --><span class="relevant"><!-- END guestuser -->{item.USERNAME}<!-- BEGIN guestuser --></span><!-- END guestuser --><!-- BEGIN username --></a><!-- END username --><br />{item.DATETIME}</div>
+			<div class="rows5_bot_1"><!-- BEGIN username --><a class="relevant uunique" href="{item.PROFILE}"><!-- END username -->{item.USERNAME}<!-- BEGIN username --></a><!-- END username --><br />{item.DATETIME}</div>
 			<div class="nowraptext">{item.MESSAGE}</div>
 			<!-- BEGIN controls --><div class="a_controls rows5_top_4 rows5_bot_1 a_right"><!-- BEGIN reply --><a href="{reply.REPLY}">{L_CMT_REPLY}</a><!-- END reply --><!-- BEGIN hidden_report --> <a href="{report.REPORT}">{L_CMT_REPORT}</a><!-- END hidden_report --><!-- BEGIN auth --><!-- IF isset(auth.EDIT) --> <a href="{auth.EDIT}">{L_CMT_EDIT}</a><!-- ENDIF --> <!-- IF isset(auth.DELETE) --> <a href="{auth.DELETE}">{L_CMT_DELETE}</a><!-- ENDIF --><!-- END auth --></div><!-- END controls -->
 			</li>
@@ -120,13 +122,6 @@
 	<div class="dark_box a_center">{L_UB_BAN_POST}<!-- BEGIN until --><br /><br />{L_UB_BAN_POST_UNTIL}:<br /><span class="relevant">{until.UNTIL_DATETIME}</span><!-- END until --></div>
 	</div>
 	<!-- END no_post_auth -->
-	
-	<!-- BEGIN no_guest_posting -->
-	<div class="rows5_top_2">
-	<div class="section"><h1>{L_COMMENTS}</h1></div>
-	<div class="dark_box a_center">{no_guest_posting.LEGEND}</div>
-	</div>
-	<!-- END no_guest_posting -->
 	
 	<!-- BEGIN mods -->
 	<div class="rows5_top_4 item_block_3">
