@@ -81,15 +81,14 @@ $current_time = time();
 $error = array();
 $is_auth = array();
 
-if (!$post_id && $reply)
-{
+if (!$post_id && $reply) {
 	$reply = 0;
 }
 
 //
 // Load user config
 //
-$user->setup('viewtopic');
+$user->setup();
 
 //
 // Start member auth

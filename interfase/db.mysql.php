@@ -33,7 +33,7 @@ class database extends dcom {
 			exit('330');
 		}
 		
-		if (!@mysql_select_db($this->_access['database'])) {
+		if (!@mysql_select_db($this->_access['database'], $this->connect)) {
 			exit('331');
 		}
 		unset($this->_access);

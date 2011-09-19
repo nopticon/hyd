@@ -25,7 +25,7 @@ $user->init();
 // Set init vars
 //
 $mode = request_var('mode', '');
-$submit = (isset($_POST['submit'])) ? TRUE : FALSE;
+$submit = (isset($_POST['submit'])) ? true : false;
 
 if (($mode == 'password' || $mode == 'verify'))
 {

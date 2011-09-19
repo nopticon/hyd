@@ -21,10 +21,8 @@ require('./interfase/common.php');
 
 $user->init();
 
-if (!$user->data['is_member'])
-{
-	if ($user->data['is_bot'])
-	{
+if (!$user->data['is_member']) {
+	if ($user->data['is_bot']) {
 		redirect(s_link());
 	}
 	do_login();
@@ -35,8 +33,7 @@ if (!$user->data['is_member'])
 $viewprofile = request_var('member', '');
 $mode = request_var('mode', '');
 
-if (empty($viewprofile))
-{
+if (empty($viewprofile)) {
 	fatal_error();
 }
 
@@ -60,8 +57,7 @@ if (!$profiledata = sql_fieldrow(sql_filter($sql, $viewprofile, USER_INACTIVE, U
 }
 
 //
-if (empty($mode))
-{
+if (empty($mode)) {
 	$mode = 'main';
 }
 
@@ -77,11 +73,9 @@ $epbi2 = $user->_team_auth('all');
 //
 // UPDATE LAST PROFILE VIEWERS LIST
 // 1 && (0 || 1 && 0 && 1) && 1
-if ($user->data['is_member'] && $user->data['user_id'] != $profiledata['user_id'] && !in_array($mode, array('friend', 'ban')))
-{
+if ($user->data['is_member'] && $user->data['user_id'] != $profiledata['user_id'] && !in_array($mode, array('friend', 'ban'))) {
 	$is_blocked_member = false;
-	if (!$epbi)
-	{
+	if (!$epbi) {
 		$sql = 'SELECT ban_id
 			FROM _members_ban
 			WHERE user_id = ?
@@ -98,21 +92,18 @@ if ($user->data['is_member'] && $user->data['user_id'] != $profiledata['user_id'
 	}
 	
 	$update_viewer_log = true;
-	if ($is_blocked_member || ($user->data['user_hideuser'] && !$epbi) || ($user->_team_auth('founder') && $user->data['user_hideuser']))
-	{
+	if ($is_blocked_member || ($user->data['user_hideuser'] && !$epbi) || ($user->_team_auth('founder') && $user->data['user_hideuser'])) {
 		$update_viewer_log = false;
 	}
 	
-	if ($update_viewer_log)
-	{
+	if ($update_viewer_log) {
 		$sql = 'UPDATE _members_viewers
 			SET datetime = ?, user_ip = ?
 			WHERE user_id = ? 
 				AND viewer_id = ?';
 		sql_query(sql_filter($sql, $current_time, $user->ip, $profiledata['user_id'], $user->data['user_id']));
 		
-		if (!sql_affectedrows())
-		{
+		if (!sql_affectedrows()) {
 			$sql_insert = array(
 				'user_id' => $profiledata['user_id'],
 				'viewer_id' => $user->data['user_id'],
@@ -144,8 +135,7 @@ $memberdays = max(1, round(($current_time - $profiledata['user_regdate']) / 8640
 //
 $profile_fields = $comments->user_profile($profiledata);
 
-switch ($mode)
-{
+switch ($mode) {
 	case 'friend':
 		if (!$user->data['is_member']) {
 			if ($user->data['is_bot']) {
@@ -487,29 +477,55 @@ switch ($mode)
 				$col = ($col == 2) ? 0 : $col + 1;
 			}
 		}
-		break;
-	case 'friends':
-	case 'friendof':
+		
 		//
-		// GET USER FRIENDS
+		// GET USERPAGE MESSAGES
 		//
-		if ($mode == 'friends')
+		$comments_ref = s_link('m', $profiledata['username_base']);
+		if ($profiledata['userpage_posts'])
 		{
-			$sql = 'SELECT b.buddy_id AS user_id, u.username, u.username_base, u.user_color, u.user_avatar, u.user_rank, u.user_gender, u.user_posts
-				FROM _members_friends b, _members u
-				WHERE b.user_id = ?
-					AND b.buddy_id = u.user_id
-				ORDER BY u.username';
+			$comments->reset();
+			$comments->ref = $comments_ref;
+			
+			$sql = 'SELECT p.*, u2.user_id, u2.username, u2.username_base, u2.user_color, u2.user_avatar
+				FROM _members_posts p, _members u, _members u2
+				WHERE p.userpage_id = ?
+					AND p.userpage_id = u.user_id 
+					AND p.post_active = 1 
+					AND p.poster_id = u2.user_id 
+				ORDER BY p.post_time DESC 
+				LIMIT 50';
+			
+			$comments->data = array(
+				'A_LINKS_CLASS' => 'bold red',
+				'USER_ID_FIELD' => 'userpage_id',
+				'S_DELETE_URL' => s_link('mcp', array('ucm', '%d')),
+				'SQL' => sql_filter($sql, $profiledata['user_id'])
+			);
+			
+			$comments->view(0, '', $profiledata['userpage_posts'], $profiledata['userpage_posts'], 'main.posts');
+		}
+		
+		if ($user->data['is_member'])
+		{
+			$template->assign_block_vars('main.box', array(
+				'REF' => $comments_ref)
+			);
 		}
 		else
 		{
-			$sql = 'SELECT u.user_id, u.username, u.username_base, u.user_color, u.user_avatar, u.user_rank, u.user_gender, u.user_posts
-				FROM _members_friends b, _members u
-				WHERE b.buddy_id = ?
-					AND b.user_id = u.user_id
-				ORDER BY u.username';
+			$template->assign_block_vars('main.members', array());
 		}
-		if ($result = sql_rowset(sql_filter($sql, $profiledata['user_id']))) {
+		break;
+	case 'friends':
+		$sql = 'SELECT DISTINCT u.user_id AS user_id, u.username, u.username_base, u.user_color, u.user_avatar, u.user_rank, u.user_gender, u.user_posts
+			FROM _members_friends b, _members u
+			WHERE (b.user_id = ?
+				AND b.buddy_id = u.user_id) OR
+				(b.buddy_id = ?
+					AND b.user_id = u.user_id)
+			ORDER BY u.username';
+		if ($result = sql_rowset(sql_filter($sql, $profiledata['user_id'], $profiledata['user_id']))) {
 			$template->assign_block_vars('friends', array());
 			
 			$tcol = 0;
@@ -533,46 +549,7 @@ switch ($mode)
 		}
 		break;
 	case 'messages':
-		//
-		// GET USERPAGE MESSAGES
-		//
-		$template->assign_block_vars('messages', array());
 		
-		$comments_ref = s_link('m', array($profiledata['username_base'], 'messages'));
-		if ($profiledata['userpage_posts'])
-		{
-			$comments->reset();
-			$comments->ref = $comments_ref;
-			
-			$sql = 'SELECT p.*, u2.user_id, u2.username, u2.username_base, u2.user_color, u2.user_avatar, u2.user_sig, u2.user_rank, u2.user_gender, u2.user_posts
-				FROM _members_posts p, _members u, _members u2
-				WHERE p.userpage_id = ?
-					AND p.userpage_id = u.user_id 
-					AND p.post_active = 1 
-					AND p.poster_id = u2.user_id 
-				ORDER BY p.post_time DESC 
-				LIMIT 50';
-			
-			$comments->data = array(
-				'A_LINKS_CLASS' => 'bold red',
-				'USER_ID_FIELD' => 'userpage_id',
-				'S_DELETE_URL' => s_link('mcp', array('ucm', '%d')),
-				'SQL' => sql_filter($sql, $profiledata['user_id'])
-			);
-			
-			$comments->view(0, '', $profiledata['userpage_posts'], $profiledata['userpage_posts'], 'messages.posts');
-		}
-		
-		if ($user->data['is_member'])
-		{
-			$template->assign_block_vars('messages.box', array(
-				'REF' => $comments_ref)
-			);
-		}
-		else
-		{
-			$template->assign_block_vars('messages.members', array());
-		}
 		break;
 	case 'stats':
 		$user_stats = array(
@@ -612,7 +589,6 @@ $panel_selection = array(
 $panel_selection += array(
 	/*'favs' => array('L' => 'FAVS', 'U' => FALSE),*/
 	'friends' => array('L' => 'FRIENDS', 'U' => FALSE),
-	'friendof' => array('L' => 'FRIENDOF', 'U' => FALSE),
 	'messages' => array('L' => 'POSTS', 'U' => FALSE)/*,
 	'stats' => array('L' => 'STATS', 'U' => FALSE)*/
 );

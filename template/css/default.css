@@ -58,6 +58,7 @@ hr {
 	border-bottom: 1px solid #0c0c0c;
 }
 #container-2 {
+	padding-bottom: 10px;
 	border-left: 1px solid #4c5558;
 	border-right: 1px solid #4c5558;
 	border-bottom: 1px solid #4c5558;
@@ -82,7 +83,7 @@ hr {
 	display: block;
 	width: 300px;
 	height: 47px;
-	/*background: url(images/header.gif) no-repeat;*/
+	background: url(images/header.gif) no-repeat;
 	text-indent: -9000px;
 }
 #header h1 a:hover {
@@ -300,6 +301,7 @@ a.submitd {
 .col49 { width: 49%; }
 .col50 { width: 50%; }
 .col60 { width: 60%; }
+.col66 { width: 66%; }
 .col75 { width: 75%; }
 .col80 { width: 80%; }
 .col90 { width: 90%; }

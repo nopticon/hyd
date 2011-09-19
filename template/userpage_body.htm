@@ -51,7 +51,7 @@ google_ad_height = 90;
 
 <!-- BEGIN main -->
 <div class="rows5_top_4 float-holder ie-widthfix">
-	<div class="float_left col49">
+	<div class="float_left col33">
 		<!-- BEGIN general -->
 		<div class="g1"><h1 style="color: #{USERNAME_COLOR};">Informaci&oacute;n</h1></div>	
 		<ul class="ul_none nowraptext">
@@ -85,8 +85,19 @@ google_ad_height = 90;
 			</ul>
 		</div>
 		<!-- END thumbnails -->
+		
+		<!-- BEGIN lastboard -->
+		<div class="rows5_top_2 float-holder ie-widthfix item_block_3">
+		<div class="g1"><h1 style="color: #{USERNAME_COLOR};">&Uacute;ltimos mensajes del foro</h1></div>	
+		<ul class="ul_none">
+			<!-- BEGIN row -->
+			<li class="rows5_top_6"><strong>{row.TIME}</strong>: <a href="{row.URL}">{row.TITLE}</a></li>
+			<!-- END row -->
+		</ul>
+		</div>
+		<!-- END lastboard -->
 	</div>
-	<div class="float_right col49">
+	<div class="float_right col66">
 		<!-- BEGIN post_comment_box -->
 		<div class="post_comment">
 		<div class="g1"><h1 style="color: #{USERNAME_COLOR};">Env&iacute;a tu mensaje</h1></div>
@@ -99,18 +110,34 @@ google_ad_height = 90;
 		</div>
 		<!-- END post_comment_box -->
 		
-		<!-- BEGIN lastboard -->
-		<div class="rows5_top_2 float-holder ie-widthfix item_block_3">
-		<div class="g1"><h1 style="color: #{USERNAME_COLOR};">&Uacute;ltimos mensajes del foro</h1></div>	
-		<ul class="ul_none">
-			<!-- BEGIN row -->
-			<li class="rows5_top_6"><strong>{row.TIME}</strong>: <a href="{row.URL}">{row.TITLE}</a></li>
-			<!-- END row -->
-		</ul>
+		<!-- BEGIN posts -->
+		<div class="comments rows5_top_2">
+		<a name="first"></a>
+		<!-- BEGIN item -->
+		<a name="{item.POST_ID}"></a>
+		<div id="comment-{item.S_ROW_COUNT}">
+		<h3><strong>{item.S_ROW_COUNT}</strong><span>.</span> <em><!-- BEGIN username --><a href="{item.PROFILE}"><!-- END username --><img src="{item.USER_AVATAR}" alt="{item.USERNAME}'s Avatar" /><!-- BEGIN username --></a><!-- END username --></em><cite><!-- BEGIN username --><a href="{item.PROFILE}"><!-- END username -->{item.USERNAME}<!-- BEGIN username --></a><!-- END username --></cite> <span>dijo:</span></h3>
+		<blockquote>
+		<!-- IF item.S_DELETE -->
+		<div class="rows5_bot_1 rows5_top a_controls a_right"><a class="red" href="{item.S_DELETE}">{L_DELETE}</a></div>
+		<!-- ENDIF -->
+		<div class="col100 nowraptext">{item.MESSAGE}</div>
+		<!-- IF item.USER_SIG != '' -->
+		<div class="col_fr nowraptext"><p>--{item.USER_SIG}</p></div>
+		<!-- ENDIF -->
+		<p class="dtposted">{item.DATETIME}</p>
+		</blockquote>
+		<hr /></div>
+		<!-- END item -->
 		</div>
-		<!-- END lastboard -->
+		<script type="text/javascript">
+		//<![CDATA[
+		_.signature([<!-- BEGIN item --><!-- IF item.S_ROW_COUNT -->, <!-- ENDIF -->'{item.POST_ID}'<!-- END item -->]);
+		//]]>
+		</script>
+		<!-- END posts -->
 		
-		<!-- BEGIN viewers -->
+		<!-- BEGIN hide_viewers -->
 		<div class="rows5_top_3">
 			<div class="g1"><h1 style="color: #{USERNAME_COLOR};">Visitantes</h1></div>
 			<ul class="ul_none">
@@ -123,7 +150,7 @@ google_ad_height = 90;
 				<!-- END row -->
 			</ul>
 		</div>
-		<!-- END viewers -->
+		<!-- END hide_viewers -->
 	</div>
 </div>
 <!-- END main -->
@@ -154,33 +181,6 @@ google_ad_height = 90;
 </form>
 </div>
 <!-- END box -->
-
-<!-- BEGIN posts -->
-<div class="comments rows5_top_2">
-<a name="first"></a>
-<!-- BEGIN item -->
-<a name="{item.POST_ID}"></a>
-<div id="comment-{item.S_ROW_COUNT}">
-<h3><strong>{item.S_ROW_COUNT}</strong><span>.</span> <em><!-- BEGIN username --><a href="{item.PROFILE}"><!-- END username --><img src="{item.USER_AVATAR}" alt="{item.USERNAME}'s Avatar" /><!-- BEGIN username --></a><!-- END username --></em><cite><!-- BEGIN username --><a href="{item.PROFILE}"><!-- END username -->{item.USERNAME}<!-- BEGIN username --></a><!-- END username --></cite> <span>dijo:</span></h3>
-<blockquote>
-<!-- IF item.S_DELETE -->
-<div class="rows5_bot_1 rows5_top a_controls a_right"><a class="red" href="{item.S_DELETE}">{L_DELETE}</a></div>
-<!-- ENDIF -->
-<div class="col_fr nowraptext">{item.MESSAGE}</div>
-<!-- IF item.USER_SIG != '' -->
-<div class="col_fr nowraptext"><p>--{item.USER_SIG}</p></div>
-<!-- ENDIF -->
-<p class="dtposted">{item.DATETIME}</p>
-</blockquote>
-<hr /></div>
-<!-- END item -->
-</div>
-<script type="text/javascript">
-//<![CDATA[
-_.signature([<!-- BEGIN item --><!-- IF item.S_ROW_COUNT -->, <!-- ENDIF -->'{item.POST_ID}'<!-- END item -->]);
-//]]>
-</script>
-<!-- END posts -->
 <!-- END messages -->
 
 <!-- INCLUDE page_footer.htm -->

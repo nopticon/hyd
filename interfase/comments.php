@@ -42,7 +42,7 @@ class _comments {
 	}
 	
 	public function reset() {
-		$this->_comments();
+		self::__construct();
 	}
 	
 	public function reset2() {

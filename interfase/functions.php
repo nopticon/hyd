@@ -772,6 +772,10 @@ function msg_handler($errno, $msg_text, $errfile, $errline) {
 				$user->setup();
 			}
 			
+			if (empty($template->root)) {
+				$template->set_template(ROOT.'template');
+			}
+			
 			$custom_vars = array(
 				'MESSAGE_TITLE' => $user->lang['INFORMATION'],
 				'MESSAGE_TEXT' => (isset($user->lang[$msg_text])) ? $user->lang[$msg_text] : $msg_text

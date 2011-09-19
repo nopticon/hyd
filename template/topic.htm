@@ -6,6 +6,7 @@
 		<div class="g2"><h1><a href="{S_TOPIC_ACTION}">{TOPIC_TITLE}</a></h1></div>
 		<div class="rows5_top_2 rows5_bot_1 a_controls a_left"><!-- BEGIN post_box --><a href="#reply">{L_POST_REPLY}</a><!-- END post_box --><!-- BEGIN mcppoints --> <a href="{mcppoints.U_FEAT}">{mcppoints.V_LANG}</a><!-- END mcppoints --><!-- BEGIN feature --> <a href="{feature.U_FEAT}">{feature.V_LANG}</a><!-- END feature --></div>
 	</div>
+	<!-- BEGIN hide -->
 	<div class="col19 float_right a_right">
 		<!-- BEGIN order_posts -->
 		<form action="{S_TOPIC_ACTION}" method="post">
@@ -17,6 +18,7 @@
 		</form>
 		<!-- END order_posts -->
 	</div>
+	<!-- END hide -->
 </div>
 
 <!-- BEGIN poll -->
@@ -109,22 +111,22 @@
 <div class="section"><h1>{L_SEND_POST}</h1></div>
 <!-- BEGIN post_box -->
 <div class="ie-widthfix float-holder">
-		<div class="col75 float_left">
-			<form action="{post_box.S_POST_ACTION}" method="post">
-			<div><label for="comment">{L_POST}</label> - <a class="relevant" onclick="return popup('{S_EMOTICONS}', '_emoticons', 300, 450);" href="{S_EMOTICONS}" target="_blank">{L_EMOTICONS}</a></div>
-			<div class="rows5_top_1"><textarea id="comment" name="message" cols="100" rows="10"></textarea></div>
-			<!-- BEGIN reply -->
-			<div class="rows5_top_1"><label for="comment_reply">{L_ORIGINAL_POST}</label></div>
-			<div class="rows5_top_1"><textarea id="comment_reply" name="reply_message" cols="100" rows="10">{reply.MESSAGE}</textarea></div>
-			<!-- END reply -->
-			<div class="rows5_top_1"><label for="comment_np">{L_NOWPLAYING}</label></div>
-			<div class="rows5_top_1"><input id="comment_np" name="np" size="100" value="{post_box.NP}" /></div>
-			<div class="rows5_top_1 a_center"><input class="submit" type="submit" name="post" value="{L_SUBMIT}" /></div>
-			</form>
-		</div>
-		<div class="cols5_left_2 info float_left">
-			<!-- INCLUDE sidebar/last_event.htm -->
-		</div>		
+	<div class="col75 float_left">
+		<form action="{post_box.S_POST_ACTION}" method="post">
+		<div><label for="comment">{L_POST}</label> - <a class="relevant" onclick="return popup('{S_EMOTICONS}', '_emoticons', 300, 450);" href="{S_EMOTICONS}" target="_blank">{L_EMOTICONS}</a></div>
+		<div class="rows5_top_1"><textarea id="comment" name="message" cols="100" rows="10"></textarea></div>
+		<!-- BEGIN reply -->
+		<div class="rows5_top_1"><label for="comment_reply">{L_ORIGINAL_POST}</label></div>
+		<div class="rows5_top_1"><textarea id="comment_reply" name="reply_message" cols="100" rows="10">{reply.MESSAGE}</textarea></div>
+		<!-- END reply -->
+		<div class="rows5_top_1"><label for="comment_np">{L_NOWPLAYING}</label></div>
+		<div class="rows5_top_1"><input id="comment_np" name="np" size="100" value="{post_box.NP}" /></div>
+		<div class="rows5_top_1 a_center"><input class="submit" type="submit" name="post" value="{L_SUBMIT}" /></div>
+		</form>
+	</div>
+	<div class="cols5_left_2 info float_left">
+	<!-- INCLUDE sidebar/last_event.htm -->
+	</div>		
 </div>		
 <!-- END post_box -->
 <!-- BEGIN post_members -->
