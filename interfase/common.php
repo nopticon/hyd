@@ -74,7 +74,7 @@ if (!defined('REQC')) {
 }
 
 require(ROOT.'interfase/constants.php');
-require(ROOT.'interfase/db.mysql.php');
+require(ROOT.'interfase/db.mysqli.php');
 require(ROOT.'interfase/template.php');
 require(ROOT.'interfase/session.php');
 require(ROOT.'interfase/functions.php');
