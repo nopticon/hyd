@@ -1,17 +1,7 @@
 <!-- INCLUDE html_head.htm -->
-
-<!-- IF JS_KEEPALIVE -->
-<script type="text/javascript">
-//<![CDATA[
-_.frame.alive();
-//]]>
-</script>
-<!-- ENDIF -->
 </head>
 
 <body>
-
-<a name="top"></a>
 
 <div id="container-1">
 <div id="container-2">
@@ -21,14 +11,16 @@ _.frame.alive();
 	<h1><a href="{U_COVER}" title="Rock Republik">Rock Republik</a></h1>
 	<h2>La comunidad m&aacute;s grande de Rock en Guatemala</h2>
 	
-	<div id="search" class="col100 cols5_left_2 float_left">
+	<!-- IF IS_MEMBER -->
+	<div id="search" class="cols5_left_2 float_left">
 	<h2 class="z">B&uacute;squeda</h2>
 	<form action="http://www.google.com/cse" id="cse-search-box" target="_blank">
 		<input type="hidden" name="cx" value="011451472206911963378:6mdnbpfkyi8" />
 		<input type="hidden" name="ie" value="UTF-8" />
-		<input type="text" name="q" size="20" class="normal" /> <input type="submit" name="sa" value="&gt;&gt;" class="submit" />
+		<input type="text" name="q" size="20" class="normal" /> <input type="submit" name="sa" value="&gt;&gt;" />
 	</form>	
 	</div>
+	<!-- ENDIF -->
 	<div id="menu">
 		<h2 class="z">Navegaci&oacute;n</h2>
 		<ul>

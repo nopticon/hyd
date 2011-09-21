@@ -112,7 +112,7 @@ function sql_transaction($status = 'begin') {
 function sql_field($sql, $field, $def = false) {
 	global $db;
 	
-	$result = $db->query($sql);
+	$db->query($sql);
 	$response = $db->fetchfield($field);
 	$db->freeresult();
 	
@@ -130,11 +130,11 @@ function sql_field($sql, $field, $def = false) {
 function sql_fieldrow($sql, $result_type = MYSQL_ASSOC) {
 	global $db;
 	
-	$result = $db->query($sql);
+	$db->query($sql);
 	
 	$response = false;
 	if ($row = $db->fetchrow($result_type)) {
-		$row['_numrows'] = $db->numrows($result);
+		$row['_numrows'] = $db->numrows();
 		$response = $row;
 	}
 	$db->freeresult();
@@ -153,7 +153,6 @@ function sql_rowset($sql, $a = false, $b = false, $g = false, $rt = MYSQL_ASSOC)
 	
 	$arr = w();
 	foreach ($data as $row) {
-	//while ($row = $db->fetchrowset($rt)) {
 		$z = ($b === false) ? $row : $row[$b];
 		
 		if ($a === false) {

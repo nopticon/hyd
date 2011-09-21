@@ -54,11 +54,16 @@ class database extends dcom {
 		}
 		
 		if ($this->result) {
-			$this->result->close();
+			if (is_object($this->result)) {
+				$this->result->free();
+			}
 			$this->result = false;
 		}
 		
-		$this->connect->close();
+		if (is_object($this->connect)) {
+			$this->connect->close();
+		}
+		
 		$this->connect = false;
 		
 		return true;
@@ -248,25 +253,14 @@ class database extends dcom {
 		return false;
 	}
 	
-	public function fetchfield($field, $rownum = -1) {
-		
-		if ($rownum > -1) {
-			$result = @mysql_result($query_id, $rownum, $field);
-		} else {
-			if (empty($this->row[$query_id]) && empty($this->rowset[$query_id])) {
-				if ($this->fetchrow()) {
-					$result = $this->row['' . $query_id . ''][$field];
-				}
-			} else {
-				if ($this->rowset[$query_id]) {
-					$result = $this->rowset[$query_id][0][$field];
-				} elseif ($this->row[$query_id]) {
-					$result = $this->row[$query_id][$field];
-				}
+	public function fetchfield($field) {
+		if ($this->result && is_object($this->result)) {
+			if ($data = $this->fetchrow()) {
+				return (isset($data[$field])) ? $data[$field] : false;
 			}
 		}
 		
-		return (isset($result)) ? $result : false;
+		return false;
 	}
 	
 	public function rowseek($rownum) {

@@ -99,7 +99,7 @@ class userpage {
 	}
 	
 	public function friend_list() {
-		global $user, $profiledata;
+		global $user, $profiledata, $comments, $template;
 		
 		$sql = 'SELECT DISTINCT u.user_id AS user_id, u.username, u.username_base, u.user_color, u.user_avatar, u.user_rank, u.user_gender, u.user_posts
 			FROM _members_friends b, _members u
@@ -205,7 +205,7 @@ class userpage {
 	}
 	
 	public function user_stats() {
-		global $profiledata;
+		global $profiledata, $template;
 		
 		$user_stats = array(
 			'VISITS_COUNT' => $profiledata['user_totallogon'],
@@ -234,7 +234,7 @@ class userpage {
 	}
 	
 	public function user_main() {
-		global $user, $profiledata, $comments;
+		global $user, $profiledata, $comments, $template;
 		
 		$template->assign_block_vars('main', array());
 		
