@@ -131,6 +131,10 @@ function set_config($config_name, $config_value) {
 	$config[$config_name] = $config_value;
 }
 
+function leading_zero($number) {
+	return (($number < 10) ? '0' : '') . $number;
+}
+
 function forum_for_team($forum_id) {
 	global $config;
 	

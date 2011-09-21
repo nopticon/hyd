@@ -27,15 +27,12 @@ $user->init();
 $mode = request_var('mode', '');
 $submit = (isset($_POST['submit'])) ? true : false;
 
-if (($mode == 'password' || $mode == 'verify'))
-{
-	if ($user->data['is_bot'])
-	{
+if (($mode == 'password' || $mode == 'verify')) {
+	if ($user->data['is_bot']) {
 		redirect(s_link());
 	}
 	
-	if ($user->data['is_member'])
-	{
+	if ($user->data['is_member']) {
 		redirect(s_link('my', 'profile'));
 	}
 	
@@ -43,8 +40,7 @@ if (($mode == 'password' || $mode == 'verify'))
 	
 }
 
-switch ($mode)
-{
+switch ($mode) {
 	case 'password':
 		$template_vars = array();
 		
@@ -83,8 +79,7 @@ switch ($mode)
 				fatal_error();
 			}
 			
-			if ($process)
-			{
+			if ($process) {
 				require('./interfase/emailer.php');
 				$emailer = new emailer();
 				
@@ -136,8 +131,7 @@ switch ($mode)
 		if ($submit) {
 			$password = request_var('newkey', '');
 			
-			if (!empty($password))
-			{
+			if (!empty($password)) {
 				$crypt_password = user_password($password);
 				
 				$sql = 'UPDATE _members SET user_password = ?
@@ -303,8 +297,7 @@ $current_time = time();
 //
 // MAIN CODE
 //
-switch ($mode)
-{
+switch ($mode) {
 	case 'profile':
 		$user_fields = array(
 			'public_email' => (string) $user->data['user_public_email'],
@@ -328,20 +321,13 @@ switch ($mode)
 			'color' => (string) $user->data['user_color']
 		);
 		
-		//if (!$user->data['user_gender'])
-		{
-			$user_fields['gender'] = (int) $user->data['user_gender'];
-		}
+		$user_fields['gender'] = (int) $user->data['user_gender'];
 		
-		//if (!$user->data['user_birthday'])
-		{
-			$user_fields['birthday_day'] = (int) substr($user->data['user_birthday'], 6, 2);
-			$user_fields['birthday_month'] = (int) substr($user->data['user_birthday'], 4, 2);
-			$user_fields['birthday_year'] = (int) substr($user->data['user_birthday'], 0, 4);
-		}
+		$user_fields['birthday_day'] = (int) substr($user->data['user_birthday'], 6, 2);
+		$user_fields['birthday_month'] = (int) substr($user->data['user_birthday'], 4, 2);
+		$user_fields['birthday_year'] = (int) substr($user->data['user_birthday'], 0, 4);
 		
-		foreach ($user_fields as $name => $value)
-		{
+		foreach ($user_fields as $name => $value) {
 			$$name = $value;
 		}
 		
@@ -356,20 +342,16 @@ switch ($mode)
 			'M d, Y h:i a'
 		);
 		
-		if ($submit)
-		{
+		if ($submit) {
 			$e_mb = array('timezone');
 			$e2_mb = array();
-			foreach ($e_mb as $k)
-			{
+			foreach ($e_mb as $k) {
 				$e2_mb[$k] = true;
 			}
 			
-			foreach ($user_fields as $name => $value)
-			{
+			foreach ($user_fields as $name => $value) {
 				$multibyte = true;
-				if ($e2_mb[$name])
-				{
+				if ($e2_mb[$name]) {
 					$multibyte = false;
 				}
 				$$name = request_var($name, $value, $multibyte);
@@ -381,66 +363,50 @@ switch ($mode)
 			$hideuser = (isset($_POST['hideuser'])) ? true : false;
 			$email_dc = (isset($_POST['email_dc'])) ? true : false;
 			
-			if (!empty($password1))
-			{
-				if (empty($password2))
-				{
+			if (!empty($password1)) {
+				if (empty($password2)) {
 					$error[] = 'EMPTY_PASSWORD2';
 				}
 				
-				if (!sizeof($error))
-				{
-					if ($password1 != $password2)
-					{
+				if (!sizeof($error)) {
+					if ($password1 != $password2) {
 						$error[] = 'PASSWORD_MISMATCH';
-					}
-					else if (strlen($password1) > 30)
-					{
+					} else if (strlen($password1) > 30) {
 						$error[] = 'PASSWORD_LONG';
 					}
 				}
 			}
 			
 			$check_length_ary = array('location', 'sig', 'msnm', 'yim', 'aim', 'icq', 'website', 'occ', 'interests', 'os', 'fav_genres', 'fav_artists');
-			foreach ($check_length_ary as $name)
-			{
-				if (strlen($$name) < 3)
-				{
+			foreach ($check_length_ary as $name) {
+				if (strlen($$name) < 3) {
 					$$name = '';
 				}
 			}
 			
-			if ($icq && !preg_match('/[0-9]+$/', $icq))
-			{
+			if ($icq && !preg_match('/[0-9]+$/', $icq)) {
 				$icq = '';
 			}
 			
-			if (!empty($website))
-			{
-				if (!preg_match('#^http[s]?:\/\/#i', $website))
-				{
+			if (!empty($website)) {
+				if (!preg_match('#^http[s]?:\/\/#i', $website)) {
 					$website = 'http://' . $website;
 				}
 		
-				if (!preg_match('#^http[s]?\\:\\/\\/[a-z0-9\-]+\.([a-z0-9\-]+\.)?[a-z]+#i', $website))
-				{
+				if (!preg_match('#^http[s]?\\:\\/\\/[a-z0-9\-]+\.([a-z0-9\-]+\.)?[a-z]+#i', $website)) {
 					$website = '';
 				}
 			}
 
-			if (!empty($color))
-			{
+			if (!empty($color)) {
 				$color = substr($color, 1);
-				if ($color !== $user->data['user_color'])
-				{
+				if ($color !== $user->data['user_color']) {
 					$color = strtoupper($color);
-					if (strlen($color) != 6)
-					{
+					if (strlen($color) != 6) {
 						$error[] = 'USERPAGE_ERROR';
 					}
 					
-					if (!sizeof($error))
-					{
+					if (!sizeof($error)) {
 						$valid_hex = explode(',', '0,1,2,3,4,5,6,7,8,9,A,B,C,D,E,F');
 						for ($i = 0, $end = strlen($color); $i < $end; $i++)
 						{
@@ -453,29 +419,22 @@ switch ($mode)
 				}
 			}
 			
-			if (!empty($rank))
-			{
+			if (!empty($rank)) {
 				$rank_word = explode(' ', $rank);
-				if (sizeof($rank_word) > 3)
-				{
+				if (sizeof($rank_word) > 3) {
 					$error[] = 'RANK_TOO_LONG';
 				}
 				
-				if (!sizeof($error))
-				{
+				if (!sizeof($error)) {
 					$rank_limit = 15;
-					foreach ($rank_word as $each)
-					{
-						if (preg_match_all('#\&.*?\;#is', $each, $each_preg))
-						{
-							foreach ($each_preg[0] as $each_preg_each)
-							{
+					foreach ($rank_word as $each) {
+						if (preg_match_all('#\&.*?\;#is', $each, $each_preg)) {
+							foreach ($each_preg[0] as $each_preg_each) {
 								$rank_limit += (strlen($each_preg_each) - 1);
 							}
 						}
 						
-						if (strlen($each) > $rank_limit)
-						{
+						if (strlen($each) > $rank_limit) {
 							$error[] = 'RANK_TOO_LONG';
 							break;
 						}
@@ -484,8 +443,7 @@ switch ($mode)
 			}
 			
 			// Rank
-			if (!empty($rank) && !sizeof($error))
-			{
+			if (!empty($rank) && !sizeof($error)) {
 				$sql = 'SELECT rank_id
 					FROM _ranks
 					WHERE rank_title = ?';
@@ -501,15 +459,13 @@ switch ($mode)
 				}
 				
 				$old_rank = $userdata['user_rank'];
-				if ($old_rank)
-				{
+				if ($old_rank) {
 					$sql = 'SELECT user_id
 						FROM _members
 						WHERE user_rank = ?';
 					$by = sql_rowset(sql_filter($sql, $old_rank), false, 'user_id');
 					
-					if (sizeof($by) == 1)
-					{
+					if (sizeof($by) == 1) {
 						$sql = 'DELETE FROM _ranks
 							WHERE rank_id = ?';
 						sql_query(sql_filter($sql, $old_rank));
@@ -645,14 +601,6 @@ switch ($mode)
 		
 		page_layout('MEMBER_OPTIONS', 'profile_body');
 		break;
-}
-
-//
-// FUNCTIONS
-//
-function leading_zero ($number)
-{
-	return (($number < 10) ? '0' : '') . $number;
 }
 
 ?>

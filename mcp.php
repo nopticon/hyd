@@ -40,8 +40,7 @@ if ($mode !== 'ucm') {
 
 $submit = isset($_POST['submit']);
 
-switch ($mode)
-{
+switch ($mode) {
 	case 'ucm':
 		$msg_id = request_var('msg_id', 0);
 		
@@ -72,8 +71,7 @@ switch ($mode)
 		
 		$user->delete_unread(UH_UPM, $msg_id);
 		
-		if ($pdata['post_time'] > points_start_date() && $pdata['post_time'] < 1203314400)
-		{
+		if ($pdata['post_time'] > points_start_date() && $pdata['post_time'] < 1203314400) {
 			//$user->points_remove(1, $pdata['poster_id']);
 		}
 		
@@ -149,8 +147,7 @@ switch ($mode)
 		redirect(s_link('topic', $topic_id));
 		break;
 	case 'merge':
-		if ($submit)
-		{
+		if ($submit) {
 			$from_topic = request_var('from_topic', 0);
 			$to_topic = request_var('to_topic', 0);
 			
@@ -183,10 +180,8 @@ switch ($mode)
 				fatal_error();
 			}
 			
-			if ($from_poll)
-			{
-				if ($to_poll)
-				{
+			if ($from_poll) {
+				if ($to_poll) {
 					$sql = 'SELECT vote_id
 						FROM _poll_options
 						WHERE topic_id = ?';
@@ -197,14 +192,11 @@ switch ($mode)
 							'DELETE FROM _poll_options WHERE vote_id = ?'
 						);
 						
-						foreach ($sql as $item)
-						{
+						foreach ($sql as $item) {
 							sql_query(sql_filter($item, $vote_id));
 						}
 					}
-				}
-				else
-				{
+				} else {
 					$sql = 'UPDATE _poll_options
 						SET topic_id = ?
 						WHERE topic_id = ?';
@@ -244,8 +236,7 @@ switch ($mode)
 			sql_query(sql_filter($sql, $from_topic));
 			
 			// Update the poll status
-			if ($from_poll && !$to_poll)
-			{
+			if ($from_poll && !$to_poll) {
 				$sql = 'UPDATE _forum_topics
 					SET topic_vote = 1
 					WHERE topic_id = ?';
@@ -255,8 +246,7 @@ switch ($mode)
 			sync_merge('topic', $to_topic);
 			sync_merge('forum', $to_forum_id);
 			
-			if ($from_forum_id != $to_forum_id)
-			{
+			if ($from_forum_id != $to_forum_id) {
 				sync_merge('forum', $from_forum_id);
 			}
 		}
@@ -372,8 +362,7 @@ foreach ($result as $row) {
 			$post_message = request_var('message', '', true);
 			$post_message = $comments->prepare($post_message);
 			
-			if (!empty($topic_title) && $topic_title != $topic['topic_title'])
-			{
+			if (!empty($topic_title) && $topic_title != $topic['topic_title']) {
 				$sql = 'UPDATE _forum_topics SET topic_title = ?
 					WHERE topic_id = ?';
 				sql_query(sql_filter($sql, $topic_title, $topic['topic_id']));
@@ -388,8 +377,7 @@ foreach ($result as $row) {
 				}
 			}
 			
-			if ($post_message != $row['post_text'])
-			{
+			if ($post_message != $row['post_text']) {
 				$sql = 'UPDATE _forum_posts SET post_text = ?
 					WHERE post_id = ?';
 				sql_query(sql_filter($sql, $post_message, $msg_id));
@@ -446,8 +434,7 @@ foreach ($result as $row) {
 			redirect(s_link('mcp', array('topic', $topic_id)));
 		}
 		
-		if ($post_data['first_post'] && $post_data['has_poll'])
-		{
+		if ($post_data['first_post'] && $post_data['has_poll']) {
 			$sql = 'SELECT vote_id
 				FROM _poll_options vd, _poll_results vr
 				WHERE vd.topic_id = ?
@@ -463,8 +450,7 @@ foreach ($result as $row) {
 			WHERE post_id = ?';
 		sql_query(sql_filter($sql, $post_id));
 		
-		if ($post_data['first_post'] && $post_data['last_post'])
-		{
+		if ($post_data['first_post'] && $post_data['last_post']) {
 			$sql = 'DELETE FROM _forum_topics
 				WHERE topic_id = ?';
 			sql_query(sql_filter($sql, $topic_id));
@@ -474,8 +460,7 @@ foreach ($result as $row) {
 			sql_query(sql_filter($sql, $topic_id));
 		}
 		
-		if (!in_array($forum_id, forum_for_team_array()) && $post_info['topic_points'] && $post_info['post_time'] > points_start_date())
-		{
+		if (!in_array($forum_id, forum_for_team_array()) && $post_info['topic_points'] && $post_info['post_time'] > points_start_date()) {
 			//$user->points_remove(1, $post_info['poster_id']);
 		}
 		
@@ -514,8 +499,7 @@ foreach ($result as $row) {
 				}
 			}
 	
-			if ($post_data['last_topic'])
-			{
+			if ($post_data['last_topic']) {
 				$sql = 'SELECT MAX(topic_id) AS last_topic_id
 					FROM _forum_topics
 					WHERE forum_id = ?';
@@ -523,9 +507,7 @@ foreach ($result as $row) {
 					$forum_update_sql .= ', forum_last_topic_id = ' . $last_topic_id;
 				}
 			}
-		}
-		else if ($post_data['first_post']) 
-		{
+		} else if ($post_data['first_post']) {
 			$sql = 'SELECT MIN(post_id) AS first_post_id
 				FROM _forum_posts
 				WHERE topic_id = ?';
@@ -541,8 +523,7 @@ foreach ($result as $row) {
 			WHERE forum_id = ' . (int) $forum_id;
 		sql_query($sql);
 		
-		if ($topic_update_sql != '')
-		{
+		if ($topic_update_sql != '') {
 			$sql = 'UPDATE _forum_topics
 				SET ' . $topic_update_sql . '
 				WHERE topic_id = ' . (int) $topic_id;
@@ -633,8 +614,7 @@ foreach ($result as $row) {
 			WHERE topic_id = ?';
 		$poll = sql_rowset(sql_filter($sql, $topic_id), false, 'vote_id');
 		
-		if (count($poll))
-		{
+		if (count($poll)) {
 			$poll_ary = implode(',', $poll);
 			
 			$sql = 'DELETE FROM _poll_options
@@ -658,24 +638,18 @@ foreach ($result as $row) {
 		break;
 }
 
-function smail_ary($data, $first = true)
-{
+function smail_ary($data, $first = true) {
 	$message = '';
 	foreach ($data as $k => $v)
 	{
-		if (preg_match('/^\d+$/', $k))
-		{
-			if (!$first)
-			{
+		if (preg_match('/^\d+$/', $k)) {
+			if (!$first) {
 				continue;
 			}
 		}
-		if (is_array($v))
-		{
+		if (is_array($v)) {
 			$message .= "\n\n" . '---------------------------------------------------------------------' . "\n" . smail_ary($v, false);
-		}
-		else
-		{
+		} else {
 			$message .= (($message != '') ? "\n" : '') . $k . ' > ' . $v;
 		}
 	}
@@ -683,8 +657,7 @@ function smail_ary($data, $first = true)
 	return $message;
 }
 
-function smail($member, $data, $to = 'a')
-{
+function smail($member, $data, $to = 'a') {
 	global $user, $config;
 	
 	$emailer = new emailer();
@@ -704,10 +677,8 @@ function smail($member, $data, $to = 'a')
 	$emailer->reset();
 }
 
-function sync_merge($type, $id = false)
-{
-	switch($type)
-	{
+function sync_merge($type, $id = false) {
+	switch($type) {
 		case 'all forums':
 			$sql = 'SELECT forum_id
 				FROM _forums';
@@ -768,8 +739,7 @@ function sync_merge($type, $id = false)
 	return true;
 }
 
-function sync_move($id)
-{
+function sync_move($id) {
 	$last_topic = 0;
 	$total_posts = 0;
 	$total_topics = 0;
@@ -796,8 +766,7 @@ function sync_move($id)
 	return;
 }
 
-function sync_post($id)
-{
+function sync_post($id) {
 	$last_topic = 0;
 	$total_posts = 0;
 	$total_topics = 0;
@@ -824,8 +793,7 @@ function sync_post($id)
 	return;
 }
 
-function sync_topic($id)
-{
+function sync_topic($id) {
 	$last_topic = 0;
 	$total_posts = 0;
 	$total_topics = 0;
@@ -847,8 +815,9 @@ function sync_topic($id)
 	//
 	$sql = 'UPDATE _forums SET forum_last_topic_id = ?, forum_posts = ?, forum_topics = ?
 		WHERE forum_id = ?';
-	sql_query(sql_filter($sql, $last_topic, $total_posts, $total_topics, $id));	
-	return;
+	sql_query(sql_filter($sql, $last_topic, $total_posts, $total_topics, $id));
+		
+	return true;
 }
 
 ?>
