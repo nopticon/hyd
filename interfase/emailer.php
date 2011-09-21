@@ -165,7 +165,7 @@ class emailer {
 		$this->extra_headers = (($this->reply_to != '') ? "Reply-to: $this->reply_to\n" : '') . (($this->from != '') ? "From: $this->from\n" : "From: " . $config['board_email'] . "\n") . "Return-Path: " . $config['board_email'] . "\nMessage-ID: <" . md5(uniqid(time())) . "@rockrepublik.net" . /*$config['server_name'] . */">\nMIME-Version: 1.0\nContent-type: text/plain; charset=" . $this->encoding . "\nContent-transfer-encoding: 8bit\nDate: " . date('r', time()) . "\nX-Priority: 3\nX-MSMail-Priority: Normal\n" . $this->extra_headers . (($cc != '') ? "Cc: $cc\n" : '')  . (($bcc != '') ? "Bcc: $bcc\n" : ''); 
 
 		// Send message ... removed $this->encode() from subject for time being
-		$empty_to_header = ($to == '') ? TRUE : FALSE;
+		$empty_to_header = ($to == '') ? true : false;
 		$to = ($to == '') ? (($config['sendmail_fix']) ? ' ' : 'Undisclosed-recipients:;') : $to;
 		
 		$result = @mail($to, $this->subject, preg_replace("#(?<!\r)\n#s", "\n", $this->msg), $this->extra_headers, "-f{$config['board_email']}");

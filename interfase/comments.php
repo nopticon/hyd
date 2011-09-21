@@ -159,8 +159,8 @@ class _comments {
 		$update_sql = '';
 		$current_time = time();
 		
-		$this->auth['user'] = ($user->data['is_member']) ? TRUE : FALSE;
-		$this->auth['adm'] = (($user->data['user_type'] == USER_FOUNDER) && $this->auth['user']) ? TRUE : FALSE;
+		$this->auth['user'] = ($user->data['is_member']) ? true : false;
+		$this->auth['adm'] = (($user->data['user_type'] == USER_FOUNDER) && $this->auth['user']) ? true : false;
 		
 		/*
 		//
@@ -281,7 +281,7 @@ class _comments {
 				if ($this->param[0] == 'm') {
 					$user->save_unread($this->data['HISTORY'], $post_id, $history_extra, $post_data['user_id']);
 				} else {
-					$user->save_unread($this->data['HISTORY'], $post_id, $history_extra, $reply_to, FALSE);
+					$user->save_unread($this->data['HISTORY'], $post_id, $history_extra, $reply_to, false);
 					
 					// Points
 					//$user->points_add(1);
@@ -341,7 +341,7 @@ class _comments {
 		}
 		
 		if (!isset($this->data['ARTISTS_NEWS'])) {
-			$this->data['ARTISTS_NEWS'] = FALSE;
+			$this->data['ARTISTS_NEWS'] = false;
 		}
 		
 		if (!isset($this->data['CONTROL'])) {

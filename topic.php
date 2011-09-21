@@ -70,8 +70,8 @@ $topic_url = s_link('topic', $topic_id);
 
 $reply = request_var('reply', 0);
 $start = request_var('offset', 0);
-$submit_reply = isset($_POST['post']) ? TRUE : FALSE;
-$submit_vote = isset($_POST['vote']) ? TRUE : FALSE;
+$submit_reply = isset($_POST['post']) ? true : false;
+$submit_vote = isset($_POST['vote']) ? true : false;
 
 $post_message = '';
 $post_reply_message = '';
@@ -416,7 +416,7 @@ if ($topic_data['topic_vote']) {
 				AND vote_user_id = ?';
 		$user_voted = sql_field(sql_filter($sql, $vote_info[0]['vote_id'], $user->data['user_id']), 'vote_id', 0);
 		
-		$poll_expired = ($vote_info[0]['vote_length']) ? (($vote_info[0]['vote_start'] + $vote_info[0]['vote_length'] < $current_time) ? TRUE : 0) : 0;
+		$poll_expired = ($vote_info[0]['vote_length']) ? (($vote_info[0]['vote_start'] + $vote_info[0]['vote_length'] < $current_time) ? true : 0) : 0;
 		
 		$template->assign_block_vars('poll', array(
 			'POLL_TITLE' => $vote_info[0]['vote_text'])

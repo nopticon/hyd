@@ -221,7 +221,7 @@ class userpage {
 			
 			if (!$m) {
 				$template->assign_block_vars('main.stats', array());
-				$m = TRUE;
+				$m = true;
 			}
 			
 			$template->assign_block_vars('main.stats.item', array(

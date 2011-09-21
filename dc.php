@@ -88,7 +88,7 @@ $user->setup();
 //
 // Submit
 //
-$submit = (isset($_POST['post'])) ? TRUE : 0;
+$submit = (isset($_POST['post'])) ? true : 0;
 $msg_id = intval(request_var('p', 0));
 $mode = request_var('mode', '');
 $error = array();

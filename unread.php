@@ -76,7 +76,7 @@ if (isset($_POST['items']) && (isset($_POST['delete']) || isset($_POST['delete_a
 	redirect(s_link('new'));
 } else if ($unread_element && $unread_item) {
 	$url = '';
-	$delete_item = TRUE;
+	$delete_item = true;
 	
 	switch ($unread_element) {
 		case UH_U:
@@ -112,7 +112,7 @@ if (isset($_POST['items']) && (isset($_POST['delete']) || isset($_POST['delete_a
 					AND d.ub = a.ub';
 			if ($result = sql_field(sql_filter($sql, $unread_item), 'subdomain', '')) {
 				$url = s_link('a', array($result, 9, $unread_item));
-				$delete_item = FALSE;
+				$delete_item = false;
 			}
 			break;
 		case UH_C:
@@ -122,7 +122,7 @@ if (isset($_POST['items']) && (isset($_POST['delete']) || isset($_POST['delete_a
 					AND p.post_ub = a.ub';
 			if ($result = sql_field(sql_filter($sql, $unread_item), 'subdomain', '')) {
 				$url = s_link('a', array($result, 12, $unread_item));
-				$delete_item = FALSE;
+				$delete_item = false;
 			}
 			break;
 		case UH_FRIEND:

@@ -24,7 +24,7 @@ require('./interfase/common.php');
 //
 $forum_id = request_var('f', '');
 $start = intval(request_var('offset', 0));
-$submit_topic = isset($_POST['post']) ? TRUE : FALSE;
+$submit_topic = isset($_POST['post']) ? true : false;
 
 if (empty($forum_id)) {
 	fatal_error();
@@ -96,7 +96,7 @@ $current_time = time();
 
 if ($submit_topic)
 {
-	$topic_important = (isset($_POST['topictype'])) ? TRUE : FALSE;
+	$topic_important = (isset($_POST['topictype'])) ? true : false;
 	$auth_key = ($topic_important) ? 'auth_announce' : 'auth_post';
 	
 	if ($forum_row['forum_locked'] && !$is_auth['auth_mod']) {

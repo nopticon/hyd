@@ -28,17 +28,19 @@ $artists = new _artists();
 if ($artists->_setup()) {
 	include('./interfase/comments.php');
 	$artists->msg = new _comments();
+	
+	$artists->_panel();
 		
-	$method = 'panel';
 	$page_title = $artists->data['name'];
 	$pagehtml = 'artists_panel';
 } else {
-	$method = 'list';
+	$artists->_list();
+	$artists->latest();
+	
 	$page_title = 'UB';
 	$pagehtml = 'artists_body';
 }
 
-$artists->{'_' . $method}();
 page_layout($page_title, $pagehtml, false, $artists->ajx);
 
 ?>

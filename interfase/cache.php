@@ -109,7 +109,7 @@ class cache {
 			} elseif (is_int($v)) {
 				$lines[] = "'$k'=>$v";
 			} elseif (is_bool($v)) {
-				$lines[] = "'$k'=>" . (($v) ? 'TRUE' : 'FALSE');
+				$lines[] = "'$k'=>" . (($v) ? 'true' : 'false');
 			} else {
 				$lines[] = "'$k'=>'" . str_replace("'", "\\'", str_replace('\\', '\\\\', $v)) . "'";
 			}

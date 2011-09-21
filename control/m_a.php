@@ -181,7 +181,7 @@ class a extends common {
 	}
 	
 	public function _news_add() {
-		$submit = isset($_POST['submit']) ? TRUE : FALSE;
+		$submit = isset($_POST['submit']) ? true : false;
 		
 		if (!$submit) {
 			redirect(s_link_control('a', array('a' => $this->data['subdomain'], 'mode' => 'news')));
@@ -285,7 +285,7 @@ class a extends common {
 	public function _news_edit() {
 		global $user, $config, $template;
 		
-		$submit = isset($_POST['submit']) ? TRUE : FALSE;
+		$submit = isset($_POST['submit']) ? true : false;
 		$id = $this->control->get_var('id', 0);
 		if (!$id) {
 			fatal_error();
@@ -470,7 +470,7 @@ class a extends common {
 	public function _aposts_edit() {
 		global $user, $config, $template;
 		
-		$submit = isset($_POST['submit']) ? TRUE : FALSE;
+		$submit = isset($_POST['submit']) ? true : false;
 		
 		$id = $this->control->get_var('id', 0);
 		
@@ -541,7 +541,7 @@ class a extends common {
 			fatal_error();
 		}
 		
-		$delete_forever = (isset($_POST['delete_forever'])) ? TRUE : FALSE;
+		$delete_forever = (isset($_POST['delete_forever'])) ? true : false;
 		
 		$sql = 'SELECT p.*, m.user_id, m.username, m.username_base, m.user_color
 			FROM _artists_posts p, _members m
@@ -553,7 +553,7 @@ class a extends common {
 		}
 		
 		if (isset($_POST['confirm'])) {
-			$delete_forever = ($user->data['is_founder'] && $delete_forever) ? TRUE : FALSE;
+			$delete_forever = ($user->data['is_founder'] && $delete_forever) ? true : false;
 			
 			if ($delete_forever) {
 				$sql = 'DELETE FROM _artists_posts
@@ -613,7 +613,7 @@ class a extends common {
 		global $user, $template;
 		
 		$member = $this->control->get_var('m', 0);
-		$no_results = TRUE;
+		$no_results = true;
 		
 		if ($member) {
 			$sql = 'SELECT user_id, username, username_base, user_color
@@ -828,8 +828,8 @@ class a extends common {
 	public function _auth_add() {
 		global $config, $user, $template;
 		
-		$submit = isset($_POST['submit']) ? TRUE : FALSE;
-		$no_results = TRUE;
+		$submit = isset($_POST['submit']) ? true : false;
+		$no_results = true;
 		
 		if ($submit) {
 			$s_members = $this->control->get_var('s_members', array(0));
@@ -850,7 +850,7 @@ class a extends common {
 					$result = sql_rowset(sql_filter($sql, $this->data['ub']));
 					
 					foreach ($result as $row) {
-						$s_members_a[$row['user_id']] = TRUE;
+						$s_members_a[$row['user_id']] = true;
 					}
 					
 					foreach ($s_members as $m) {
@@ -992,8 +992,8 @@ class a extends common {
 			redirect($auth_url);
 		}
 		
-		$submit = isset($_POST['submit']) ? TRUE : FALSE;
-		$confirm = isset($_POST['confirm']) ? TRUE : FALSE;
+		$submit = isset($_POST['submit']) ? true : false;
+		$confirm = isset($_POST['confirm']) ? true : false;
 		
 		if ($submit || $confirm) {
 			global $config, $user, $template;
@@ -1514,7 +1514,7 @@ class a extends common {
 			
 			if (!isset($years_temp[$year])) {
 				$years[] = $year;
-				$years_temp[$year] = TRUE;
+				$years_temp[$year] = true;
 			}
 			
 			if (!isset($years_sum[$year])) {
@@ -1666,7 +1666,7 @@ class a extends common {
 	public function _dposts_edit() {
 		global $user, $config, $template;
 		
-		$submit = isset($_POST['submit']) ? TRUE : FALSE;
+		$submit = isset($_POST['submit']) ? true : false;
 		
 		$id = $this->control->get_var('id', 0);
 		
@@ -1752,8 +1752,8 @@ class a extends common {
 		}
 		
 		if (isset($_POST['confirm'])) {
-			$delete_forever = (isset($_POST['delete_forever'])) ? TRUE : FALSE;
-			$delete_forever = ($user->data['is_founder'] && $delete_forever) ? TRUE : FALSE;
+			$delete_forever = (isset($_POST['delete_forever'])) ? true : false;
+			$delete_forever = ($user->data['is_founder'] && $delete_forever) ? true : false;
 			
 			if ($delete_forever) {
 				$sql = 'DELETE FROM _dl_posts

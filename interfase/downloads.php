@@ -232,7 +232,7 @@ class downloads {
 			}
 			
 			//
-			$this->msg->view($start, 'dps', $this->dl_data['posts'], $config['s_posts'], 'ud_posts', 'DMSG_', 'TOPIC_', FALSE);
+			$this->msg->view($start, 'dps', $this->dl_data['posts'], $config['s_posts'], 'ud_posts', 'DMSG_', 'TOPIC_', false);
 		}
 		
 		if ($this->auth['post']) {
@@ -407,7 +407,7 @@ class downloads {
 	}
 	
 	public function format_filesize($filesize) {
-		$mb = ($filesize >= 1048576) ? TRUE : FALSE;
+		$mb = ($filesize >= 1048576) ? true : false;
 		$div = ($mb) ? 1048576 : 1024;
 		return bcdiv($filesize, $div, 2) . (($mb) ? ' MB' : ' KB');
 	}

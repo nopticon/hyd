@@ -110,7 +110,7 @@ if ($f_total) {
 	);
 	
 	for ($i = 0; $i < $f_total; $i++) {
-		$image_exists = (($links[$i]['image'] != '') && @file_exists('../data/web/' . $links[$i]['image'])) ? TRUE : FALSE;
+		$image_exists = (($links[$i]['image'] != '') && @file_exists('../data/web/' . $links[$i]['image'])) ? true : false;
 		$url = s_link('bounce', array('f', $links[$i]['id']));
 		
 		$template->assign_block_vars('block.item', array(

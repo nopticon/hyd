@@ -404,7 +404,7 @@ function build_pagination($url_format, $total_items, $per_page, $offset, $prefix
 //
 // Build items pagination with numbers
 //
-//function generate_pagination($base_url, $num_items, $per_page, $start_item, $add_prevnext_text = TRUE, $start_field = 'start', $folders_format = 0)
+//function generate_pagination($base_url, $num_items, $per_page, $start_item, $add_prevnext_text = true, $start_field = 'start', $folders_format = 0)
 function build_num_pagination ($url_format, $total_items, $per_page, $offset, $prefix = '', $lang_prefix = '') {
 	global $user, $template;
 	
@@ -839,7 +839,7 @@ function topic_arkane($topic_id, $value) {
 function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive = true) {
 	global $config, $user, $cache, $starttime, $template;
 	
-	define('HEADER_INC', TRUE);
+	define('HEADER_INC', true);
 	
 	//
 	// gzip_compression

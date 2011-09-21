@@ -81,7 +81,7 @@ class Twitter
 
 		} catch (TwitterException $e) {
 			if ($e->getCode() === 401) {
-				return FALSE;
+				return false;
 			}
 			throw $e;
 		}
@@ -92,7 +92,7 @@ class Twitter
 	/**
 	 * Sends message to the Twitter.
 	 * @param string   message encoded in UTF-8
-	 * @return mixed   ID on success or FALSE on failure
+	 * @return mixed   ID on success or false on failure
 	 * @throws TwitterException
 	 */
 	public function send($message)
@@ -102,7 +102,7 @@ class Twitter
 		}
 
 		$res = $this->request('statuses/update', array('status' => $message));
-		return $res->id ? (string) $res->id : FALSE;
+		return $res->id ? (string) $res->id : false;
 	}
 
 
@@ -158,7 +158,7 @@ class Twitter
 	public function destroy($id)
 	{
 		$res = $this->request("statuses/destroy/$id");
-		return $res->id ? (string) $res->id : FALSE;
+		return $res->id ? (string) $res->id : false;
 	}
 
 
@@ -202,14 +202,14 @@ class Twitter
 		$request->sign_request($this->signatureMethod, $this->consumer, $this->token);
 
 		$curl = curl_init();
-		curl_setopt($curl, CURLOPT_HEADER, FALSE);
+		curl_setopt($curl, CURLOPT_HEADER, false);
 		curl_setopt($curl, CURLOPT_TIMEOUT, 20);
 		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
 		curl_setopt($curl, CURLOPT_HTTPHEADER, array('Expect:'));
-		curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE); // no echo, just return result
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true); // no echo, just return result
 		curl_setopt($curl, CURLOPT_USERAGENT, 'Twitter for PHP');
 		if ($method === 'POST') {
-			curl_setopt($curl, CURLOPT_POST, TRUE);
+			curl_setopt($curl, CURLOPT_POST, true);
 			curl_setopt($curl, CURLOPT_POSTFIELDS, $request->to_postdata());
 			curl_setopt($curl, CURLOPT_URL, $request->get_normalized_http_url());
 		} else {
@@ -326,9 +326,9 @@ class Twitter
 	{
 		$curl = curl_init();
 		curl_setopt($curl, CURLOPT_URL, 'http://is.gd/api.php?longurl=' . urlencode($m[0]));
-		curl_setopt($curl, CURLOPT_HEADER, FALSE);
+		curl_setopt($curl, CURLOPT_HEADER, false);
 		curl_setopt($curl, CURLOPT_TIMEOUT, 20);
-		curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 		$result = curl_exec($curl);
 		$code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 		return curl_errno($curl) || $code >= 400 ? $m[0] : $result;

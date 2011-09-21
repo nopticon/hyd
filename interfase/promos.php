@@ -36,7 +36,7 @@ class promos {
 			$data = '';
 			
 			for ($i = 0; $i < $fields; $i++) {
-				$no_field_error = TRUE;
+				$no_field_error = true;
 				
 				preg_match('/\[text\](.*?)\[\/text\]/si', $field[1][$i], $text);
 				preg_match('/\[name\](.*?)\[\/name\]/si', $field[1][$i], $name);
@@ -47,14 +47,14 @@ class promos {
 				
 				if ((($datafield == '') || ($datafield == $default[1])) && $req) {
 					$error_msg .= (($error_msg != '') ? '<br />' : '') . $lang['PROMO_FIELD_EMPTY'] . '<b>' . ucwords($text[1]) . '</b>';
-					$no_field_error = FALSE;
+					$no_field_error = false;
 				} else {
 					if ($req && ($datafield != '')) {
 						switch ($name[1]) {
 							case 'email':
 								if (!preg_match("#(^|[\n ])([a-z0-9&\-_.]+?@[\w\-]+\.([\w\-\.]+\.)?[\w]+)#ie", $datafield)) {
 									$error_msg .= (($error_msg != '') ? '<br />' : '') . $lang['Not_Email'];
-									$no_field_error = FALSE;
+									$no_field_error = false;
 								}
 								break;
 						}
@@ -62,7 +62,7 @@ class promos {
 					
 					if (strlen($datafield) > 5000) {
 						$error_msg .= (($error_msg != '') ? '<br />' : '') . $lang['CHAT_MSG_TOO_LONG'];
-						$no_field_error = FALSE;
+						$no_field_error = false;
 					}
 					
 					if ($no_field_error) {
@@ -133,7 +133,7 @@ class promos {
 		$fields = preg_match_all('#\[field\](.*?)\[/field\]#si', $this->data['extended'], $field);
 		
 		if ($fields) {
-			$all_req = TRUE;
+			$all_req = true;
 			
 			for ($i = 0; $i < $fields; $i++) {
 				preg_match('/\[type=(text|area)\]/si', $field[1][$i], $type);
@@ -145,7 +145,7 @@ class promos {
 				$req = strpos($field[1][$i], '[req]');
 				
 				if (!$req && $all_req) {
-					$all_req = FALSE;
+					$all_req = false;
 				}
 				
 				switch ($type[1]) {

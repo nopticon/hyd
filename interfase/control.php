@@ -105,7 +105,7 @@ class control {
 	}
 	
 	public function _modules() {
-		$mod_init = TRUE;
+		$mod_init = true;
 		$fp = @opendir('./control/');
 		while ($file = @readdir($fp)) {
 			if (preg_match('#^m_([a-z]+)\.php$#', $file, $mod)) {

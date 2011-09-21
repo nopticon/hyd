@@ -262,7 +262,7 @@ class cover {
 			$user_voted = (sql_field(sql_filter($sql, $vote_info[0]['vote_id'], $user->data['user_id']), 'vote_user_id', false)) ? true : false;
 		}
 		
-		$poll_expired = ($vote_info[0]['vote_length']) ? (($vote_info[0]['vote_start'] + $vote_info[0]['vote_length'] < $current_time) ? TRUE : 0) : 0;
+		$poll_expired = ($vote_info[0]['vote_length']) ? (($vote_info[0]['vote_start'] + $vote_info[0]['vote_length'] < $current_time) ? true : 0) : 0;
 		
 		$template->assign_block_vars('poll', array(
 			'U_POLL_TOPIC' => s_link('topic', $topic_id),

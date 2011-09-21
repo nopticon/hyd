@@ -24,7 +24,7 @@ class getid3_write_id3v2
 	var $minorversion                = 0;        // ID3v2 minor version - always 0
 	var $merge_existing_data         = false;    // if true, merge new data with existing tags; if false, delete old tag data and only write new tags
 	var $id3v2_default_encodingid    = 0;        // default text encoding (ISO-8859-1) if not explicitly passed
-	var $id3v2_use_unsynchronisation = false;    // the specs say it should be TRUE, but most other ID3v2-aware programs are broken if unsynchronization is used, so by default don't use it.
+	var $id3v2_use_unsynchronisation = false;    // the specs say it should be true, but most other ID3v2-aware programs are broken if unsynchronization is used, so by default don't use it.
 	var $warnings                    = array();  // any non-critical errors will be stored here
 	var $errors                      = array();  // any critical errors will be stored here
 
@@ -1783,7 +1783,7 @@ class getid3_write_id3v2
 	}
 
 	function is_hash($var) {
-		// written by dev-nullØchristophe*vg
+		// written by dev-nullï¿½christophe*vg
 		// taken from http://www.php.net/manual/en/function.array-merge-recursive.php
 		if (is_array($var)) {
 			$keys = array_keys($var);
@@ -1798,7 +1798,7 @@ class getid3_write_id3v2
 	}
 
 	function array_join_merge($arr1, $arr2) {
-		// written by dev-nullØchristophe*vg
+		// written by dev-nullï¿½christophe*vg
 		// taken from http://www.php.net/manual/en/function.array-merge-recursive.php
 		if (is_array($arr1) && is_array($arr2)) {
 			// the same -> merge

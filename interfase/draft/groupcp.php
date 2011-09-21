@@ -48,15 +48,15 @@ else
 	$mode = '';
 }
 
-$confirm = ( isset($HTTP_POST_VARS['confirm']) ) ? TRUE : 0;
-$cancel = ( isset($HTTP_POST_VARS['cancel']) ) ? TRUE : 0;
+$confirm = ( isset($HTTP_POST_VARS['confirm']) ) ? true : 0;
+$cancel = ( isset($HTTP_POST_VARS['cancel']) ) ? true : 0;
 
 $start = ( isset($HTTP_GET_VARS['start']) ) ? intval($HTTP_GET_VARS['start']) : 0;
 
 //
 // Default var values
 //
-$is_moderator = FALSE;
+$is_moderator = false;
 
 if ( isset($HTTP_POST_VARS['groupstatus']) && $group_id )
 {
@@ -265,7 +265,7 @@ else if ( $group_id )
 	
 		if ( $group_moderator == $userdata['user_id'] || $userdata['user_level'] == USER_ADMIN )
 		{
-			$is_moderator = TRUE;
+			$is_moderator = true;
 		}
 			
 		//
@@ -554,7 +554,7 @@ else if ( $group_id )
 		{
 			if ( $group_members[$i]['user_id'] == $userdata['user_id'] && $userdata['session_logged_in'] )
 			{
-				$is_group_member = TRUE; 
+				$is_group_member = true; 
 			}
 		}
 	}
@@ -568,19 +568,19 @@ else if ( $group_id )
 		{
 			if ( $modgroup_pending_list[$i]['user_id'] == $userdata['user_id'] && $userdata['session_logged_in'] )
 			{
-				$is_group_pending_member = TRUE;
+				$is_group_pending_member = true;
 			}
 		}
 	}
 
 	if ( $userdata['user_level'] == USER_ADMIN )
 	{
-		$is_moderator = TRUE;
+		$is_moderator = true;
 	}
 
 	if ( $userdata['user_id'] == $group_info['group_moderator'] )
 	{
-		$is_moderator = TRUE;
+		$is_moderator = true;
 
 		$group_details =  $lang['Are_group_moderator'];
 
@@ -913,7 +913,7 @@ else
 			FROM _groups g, _members_group ug
 			WHERE ug.user_id = " . $userdata['user_id'] . "  
 				AND ug.group_id = g.group_id
-				AND g.group_single_user <> " . TRUE . "
+				AND g.group_single_user <> " . true . "
 			ORDER BY g.group_name, ug.user_id";
 		$result = $db->sql_query($sql);
 		unset($sql);
@@ -949,7 +949,7 @@ else
 	$ignore_group_sql =	( count($in_group) ) ? "AND group_id NOT IN (" . implode(', ', $in_group) . ")" : ''; 
 	$sql = "SELECT group_id, group_name, group_type, group_count , group_count_max 
 		FROM _groups g 
-		WHERE group_single_user <> " . TRUE . " 
+		WHERE group_single_user <> " . true . " 
 			$ignore_group_sql 
 		ORDER BY g.group_name";
 	$result = $db->query($sql);

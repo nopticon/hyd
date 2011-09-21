@@ -447,9 +447,9 @@ function update_post_stats(&$mode, &$post_data, &$forum_id, &$topic_id, &$post_i
 	$result = sql_rowset(sql_filter($sql, $user_id, $user_id, $user_id));
 	
 	foreach ($result as $group_data) {
-		$user_already_added = (empty($group_data['user_id'])) ? FALSE : TRUE;
-		$user_add = ($group_data['group_count'] == $group_data['user_posts'] && $user_id!=GUEST) ? TRUE : FALSE;
-		$user_remove = ($group_data['group_count'] > $group_data['user_posts'] || $group_data['group_count_max'] < $group_data['user_posts']) ? TRUE : FALSE;
+		$user_already_added = (empty($group_data['user_id'])) ? false : true;
+		$user_add = ($group_data['group_count'] == $group_data['user_posts'] && $user_id!=GUEST) ? true : false;
+		$user_remove = ($group_data['group_count'] > $group_data['user_posts'] || $group_data['group_count_max'] < $group_data['user_posts']) ? true : false;
 		
 		//user join a autogroup
 		if ($user_add && !$user_already_added)
@@ -699,7 +699,7 @@ function username_search($search_match)
 	global $admin_level, $level_prior;
 //-- fin mod : profile cp --------------------------------------------------------------------------
 	
-	$gen_simple_header = TRUE;
+	$gen_simple_header = true;
 
 	$username_list = '';
 	if (!empty($search_match))

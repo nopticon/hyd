@@ -72,6 +72,8 @@ $lang += array(
 	'BACK_TOP' => 'Ir arriba',
 	'COUNTRY' => 'Pa&iacute;s',
 	'SAVE_CHANGES' => 'Guardar cambios',
+	'FAN' => 'fan',
+	'FANS' => 'fans',
 	
 	'PAGES_PREV' => '&lt;&lt; <strong>Anteriores %d</strong>',
 	'PAGES_NEXT' => '<strong>Siguientes %d</strong> &gt;&gt;',

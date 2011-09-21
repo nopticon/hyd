@@ -181,7 +181,7 @@ if (isset($_REQUEST['filename'])) {
 					break;
 			}
 
-			// symbolic-link-resolution enhancements by davidbullockØtech-center*com
+			// symbolic-link-resolution enhancements by davidbullockï¿½tech-center*com
 			$TargetObject     = realpath($currentfilename);  // Find actual file path, resolve if it's a symbolic link
 			$TargetObjectType = filetype($TargetObject);     // Check file type without examining extension
 
@@ -398,8 +398,8 @@ ob_end_flush();
 
 
 function RemoveAccents($string) {
-	// Revised version by markstewardØhotmail*com
-	return strtr(strtr($string, 'ŠŽšžŸÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝàáâãäåçèéêëìíîïñòóôõöøùúûüýÿ', 'SZszYAAAAAACEEEEIIIINOOOOOOUUUUYaaaaaaceeeeiiiinoooooouuuuyy'), array('Þ' => 'TH', 'þ' => 'th', 'Ð' => 'DH', 'ð' => 'dh', 'ß' => 'ss', 'Œ' => 'OE', 'œ' => 'oe', 'Æ' => 'AE', 'æ' => 'ae', 'µ' => 'u'));
+	// Revised version by markstewardï¿½hotmail*com
+	return strtr(strtr($string, 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½', 'SZszYAAAAAACEEEEIIIINOOOOOOUUUUYaaaaaaceeeeiiiinoooooouuuuyy'), array('ï¿½' => 'TH', 'ï¿½' => 'th', 'ï¿½' => 'DH', 'ï¿½' => 'dh', 'ï¿½' => 'ss', 'ï¿½' => 'OE', 'ï¿½' => 'oe', 'ï¿½' => 'AE', 'ï¿½' => 'ae', 'ï¿½' => 'u'));
 }
 
 
@@ -470,7 +470,7 @@ function table_var_dump($variable) {
 			break;
 
 		case 'boolean':
-			$returnstring .= ($variable ? 'TRUE' : 'FALSE');
+			$returnstring .= ($variable ? 'true' : 'false');
 			break;
 
 		case 'integer':

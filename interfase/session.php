@@ -530,7 +530,7 @@ class user extends session {
 		
 		// We include common language file here to not load it every time a custom language file is included
 		$lang = &$this->lang;
-		if ((include($this->lang_path . "main.php")) === FALSE) {
+		if ((include($this->lang_path . "main.php")) === false) {
 			die("Language file " . $this->lang_path . "main.php" . " couldn't be opened.");
 		}
 
@@ -1196,7 +1196,7 @@ class auth {
 			$a .= "['" . $k . "']";
 		}
 		
-		eval('$b = (isset($this->data[$member_id]' . $a . ')) ? TRUE : FALSE;');
+		eval('$b = (isset($this->data[$member_id]' . $a . ')) ? true : false;');
 		return $b;
 	}
 	
@@ -1294,7 +1294,7 @@ class auth {
 		// auth requirement of USER_MOD
 		//
 		
-		$this->founder = ($user->data['is_founder']) ? TRUE : FALSE;
+		$this->founder = ($user->data['is_founder']) ? true : false;
 		
 		$auth_user = array();
 		foreach ($auth_fields as $a_key) {
@@ -1305,20 +1305,20 @@ class auth {
 	
 				switch ($value) {
 					case AUTH_ALL:
-						$auth_user[$a_key] = TRUE;
+						$auth_user[$a_key] = true;
 						$auth_user[$a_key . '_type'] = $user->lang['AUTH_ANONYMOUS_USERS'];
 						break;
 					case AUTH_REG:
-						$auth_user[$a_key] = ($user->data['is_member']) ? TRUE : FALSE;
+						$auth_user[$a_key] = ($user->data['is_member']) ? true : false;
 						$auth_user[$a_key . '_type'] = $user->lang['AUTH_REGISTERED_USERS'];
 						break;
 					case AUTH_ACL:
-						$auth_user[$a_key] = ($user->data['is_member']) ? $this->check_user(AUTH_ACL, $a_key, $u_access, $custom_mod) : FALSE;
+						$auth_user[$a_key] = ($user->data['is_member']) ? $this->check_user(AUTH_ACL, $a_key, $u_access, $custom_mod) : false;
 						$auth_user[$a_key . '_type'] = $user->lang['AUTH_USERS_GRANTED_ACCESS'];
 						break;
 					case AUTH_MOD:
-						//$auth_user[$a_key] = ($user->data['is_member']) ? $this->check_user(AUTH_MOD, 'auth_mod', $u_access, $custom_mod) : FALSE;
-						$auth_user[$a_key] = ($user->data['is_member']) ? $user->_team_auth($custom_mod) : FALSE;
+						//$auth_user[$a_key] = ($user->data['is_member']) ? $this->check_user(AUTH_MOD, 'auth_mod', $u_access, $custom_mod) : false;
+						$auth_user[$a_key] = ($user->data['is_member']) ? $user->_team_auth($custom_mod) : false;
 						$auth_user[$a_key . '_type'] = $user->lang['AUTH_MODERATORS'];
 						break;
 					case AUTH_ADMIN:
@@ -1326,7 +1326,7 @@ class auth {
 						$auth_user[$a_key . '_type'] = $user->lang['AUTH_ADMINISTRATORS'];
 						break;
 					default:
-						$auth_user[$a_key] = FALSE;
+						$auth_user[$a_key] = false;
 						break;
 				}
 			} else {
@@ -1338,20 +1338,20 @@ class auth {
 	
 					switch ($value) {
 						case AUTH_ALL:
-							$auth_user[$f_forum_id][$a_key] = TRUE;
+							$auth_user[$f_forum_id][$a_key] = true;
 							$auth_user[$f_forum_id][$a_key . '_type'] = $user->lang['AUTH_ANONYMOUS_USERS'];
 							break;
 						case AUTH_REG:
-							$auth_user[$f_forum_id][$a_key] = ($user->data['is_member']) ? TRUE : FALSE;
+							$auth_user[$f_forum_id][$a_key] = ($user->data['is_member']) ? true : false;
 							$auth_user[$f_forum_id][$a_key . '_type'] = $user->lang['AUTH_REGISTERED_USERS'];
 							break;
 						case AUTH_ACL:
-							$auth_user[$f_forum_id][$a_key] = ($user->data['is_member']) ? $this->check_user(AUTH_ACL, $a_key, $u_access[$f_forum_id], $custom_mod) : FALSE;
+							$auth_user[$f_forum_id][$a_key] = ($user->data['is_member']) ? $this->check_user(AUTH_ACL, $a_key, $u_access[$f_forum_id], $custom_mod) : false;
 							$auth_user[$f_forum_id][$a_key . '_type'] = $user->lang['AUTH_USERS_GRANTED_ACCESS'];
 							break;
 						case AUTH_MOD:
-							//$auth_user[$f_forum_id][$a_key] = ($user->data['is_member']) ? $this->check_user(AUTH_MOD, 'auth_mod', $u_access[$f_forum_id]) : FALSE;
-							$auth_user[$f_forum_id][$a_key] = ($user->data['is_member']) ? $user->_team_auth($custom_mod) : FALSE;
+							//$auth_user[$f_forum_id][$a_key] = ($user->data['is_member']) ? $this->check_user(AUTH_MOD, 'auth_mod', $u_access[$f_forum_id]) : false;
+							$auth_user[$f_forum_id][$a_key] = ($user->data['is_member']) ? $user->_team_auth($custom_mod) : false;
 							$auth_user[$f_forum_id][$a_key . '_type'] = $user->lang['AUTH_MODERATORS'];
 							break;
 						case AUTH_ADMIN:
@@ -1359,7 +1359,7 @@ class auth {
 							$auth_user[$f_forum_id][$a_key . '_type'] = $user->lang['AUTH_ADMINISTRATORS'];
 							break;
 						default:
-							$auth_user[$f_forum_id][$a_key] = FALSE;
+							$auth_user[$f_forum_id][$a_key] = false;
 							break;
 					}
 				}
@@ -1372,14 +1372,14 @@ class auth {
 		if ($forum_id != AUTH_LIST_ALL) {
 			$custom_mod = forum_for_team($forum_id);
 			
-			//$auth_user['auth_mod'] = ($user->data['is_member']) ? $this->check_user(AUTH_MOD, 'auth_mod', $u_access) : FALSE;
-			$auth_user['auth_mod'] = ($user->data['is_member']) ? $user->_team_auth($custom_mod) : FALSE;
+			//$auth_user['auth_mod'] = ($user->data['is_member']) ? $this->check_user(AUTH_MOD, 'auth_mod', $u_access) : false;
+			$auth_user['auth_mod'] = ($user->data['is_member']) ? $user->_team_auth($custom_mod) : false;
 		} else {
 			for ($k = 0, $end = sizeof($f_access); $k < $end; $k++) {
 				$f_forum_id = $f_access[$k]['forum_id'];
 				$custom_mod = forum_for_team($forum_id);
 	
-				$auth_user[$f_forum_id]['auth_mod'] = ($user->data['is_member']) ? (isset($u_access[$f_forum_id]) ? $this->check_user(AUTH_MOD, 'auth_mod', $u_access[$f_forum_id], $custom_mod) : FALSE) : FALSE;
+				$auth_user[$f_forum_id]['auth_mod'] = ($user->data['is_member']) ? (isset($u_access[$f_forum_id]) ? $this->check_user(AUTH_MOD, 'auth_mod', $u_access[$f_forum_id], $custom_mod) : false) : false;
 			}
 		}
 	

@@ -58,8 +58,6 @@ function sql_filter() {
 	}
 	$args = $_args;
 	
-	//$args = array_map('sql_escape', $args);
-	
 	foreach ($args as $i => $row) {
 		if (strpos($row, 'addquotes') !== false) {
 			$e_row = explode(',', $row);
@@ -142,26 +140,25 @@ function sql_fieldrow($sql, $result_type = MYSQL_ASSOC) {
 	return $response;
 }
 
-function sql_rowset($sql, $a = false, $b = false, $g = false, $rt = MYSQL_ASSOC) {
+function sql_rowset($sql, $a = false, $b = false, $global = false, $type = MYSQL_ASSOC) {
 	global $db;
 	
-	$result = $db->query($sql);
-	
-	if (!$data = $db->fetchrowset($rt)) {
+	$db->query($sql);
+	if (!$data = $db->fetchrowset($type)) {
 		return false;
 	}
 	
 	$arr = w();
 	foreach ($data as $row) {
-		$z = ($b === false) ? $row : $row[$b];
+		$data = ($b === false) ? $row : $row[$b];
 		
 		if ($a === false) {
-			$arr[] = $z;
+			$arr[] = $data;
 		} else {
-			if ($g) {
-				$arr[$row[$a]][] = $z;
+			if ($global) {
+				$arr[$row[$a]][] = $data;
 			} else {
-				$arr[$row[$a]] = $z;
+				$arr[$row[$a]] = $data;
 			}
 		}
 	}
@@ -204,9 +201,7 @@ function _rowset_style_row($row, $style, $prefix = '') {
 function sql_close() {
 	global $db;
 	
-	if (isset($db)) {
-		$db->close();
-		
+	if ($db->close()) {
 		return true;
 	}
 	

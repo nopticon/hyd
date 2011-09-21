@@ -177,7 +177,7 @@ class comments extends common {
 		
 		$error = array();
 		$sub = $this->control->get_var('sub', '');
-		$submit = (isset($_POST['submit'])) ? TRUE : FALSE;
+		$submit = (isset($_POST['submit'])) ? true : false;
 		
 		$menu = array('module' => 'CONTROL_COMMENTS_HELP_MODULE', 'cat' => 'CATEGORY', 'faq' => 'FAQ');
 		
@@ -364,7 +364,7 @@ class comments extends common {
 		$error = array();
 		$sub = $this->control->get_var('sub', '');
 		$id = $this->control->get_var('id', 0);
-		$submit = (isset($_POST['submit'])) ? TRUE : FALSE;
+		$submit = (isset($_POST['submit'])) ? true : false;
 		
 		switch ($sub) {
 			case 'cat':

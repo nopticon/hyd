@@ -65,7 +65,7 @@ class sql_db {
 	//
 	// Base query method
 	//
-	public function sql_query($query = '', $transaction = FALSE) {
+	public function sql_query($query = '', $transaction = false) {
 		if (is_array($query)) {
 			if (count($query)) {
 				foreach ($query as $each) {

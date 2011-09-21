@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-include(ROOT . 'interfase/downloads.php');
+require_once(ROOT . 'interfase/downloads.php');
 
 class layout extends downloads {
 	//
@@ -31,7 +31,7 @@ class layout extends downloads {
 		// Gallery
 		//
 		if ($this->data['images']) {
-			$simage = $this->get_images(FALSE, $this->data['ub'], TRUE);
+			$simage = $this->get_images(false, $this->data['ub'], true);
 			$imagedata = $this->images[$this->data['ub']][$simage];
 			$image = $imagedata['path'];
 		} else {
@@ -64,45 +64,30 @@ class layout extends downloads {
 		}
 		
 		if ($this->data['news']) {
-			$this->msg->ref = s_link('a', array($this->data['subdomain'], 16));
-			$this->msg->auth = $this->auth;
-			
-			$sql = 'SELECT t.*, p.*, m.*
+			$sql = "(SELECT ?, p.topic_id, p.post_text, t.topic_time as post_time, m.user_id, m.username, m.username_base
 				FROM _forum_topics t, _forum_posts p, _members m
 				WHERE t.forum_id = ?
 					AND t.topic_ub = ?
 					AND t.topic_poster = m.user_id
 					AND p.post_id = t.topic_first_post_id
 					AND t.topic_important = 0
-				ORDER BY t.topic_time DESC';
-			
-			$this->msg->data = array(
-				'ARTISTS_NEWS' => TRUE,
-				'A_LINKS_CLASS' => 'bold red',
-				'SQL' => sql_filter($sql, $config['ub_fans_f'], $this->data['ub'])
-			);
-			
-			if ($this->auth['mod']) {
-				$this->msg->data['CONTROL'] = array(
-					/*'topic' => array(
-						'VIEW' => array(
-							'URL' => s_link('a', array($this->data['subdomain'], 16, 't%d')),
-							'ID' => 'topic_id'),
-						'POST' => array(
-							'URL' => s_link('a', array($this->data['subdomain'], 16, 't%d')) . '#reply',
-							'ID' => 'topic_id')
-					),*/
-					'auth' => array(
-						'EDIT' => array(
-							'URL' => s_link_control('a', array('a' => $this->data['subdomain'], 'mode' => 'news', 'manage' => 'edit', 'id' => '%d')),
-							'ID' => 'topic_id'
-						),
-						'DELETE' => array(
-							'URL' => s_link_control('a', array('a' => $this->data['subdomain'], 'mode' => 'news', 'manage' => 'delete', 'id' => '%d')),
-							'ID' => 'topic_id'
-						)
-					)
-				);
+				ORDER BY t.topic_time DESC)
+					UNION ALL
+				(SELECT ?, p.post_id, p.post_text, p.post_time, m.user_id, m.username, m.username_base
+				FROM _artists a, _artists_posts p, _members m
+				WHERE p.post_ub = ? 
+					AND p.post_ub = a.ub
+					AND p.post_active = 1 
+					AND p.poster_id = m.user_id 
+				ORDER BY p.post_time DESC 
+				LIMIT ??, ??)
+				ORDER BY post_time DESC";
+			if ($result = sql_rowset(sql_filter($sql, 'news', $config['ub_fans_f'], $this->data['ub'], 'post', $this->data['ub'], 0, 10))) {
+				$template->assign_block_vars('news', array());
+				
+				foreach ($result as $row) {
+					
+				}
 			}
 			
 			$this->msg->view(0, 'ns', $this->data['news'], $this->data['news'], 'news');
@@ -112,14 +97,14 @@ class layout extends downloads {
 		//
 		// Poll
 		//
-		$user_voted = FALSE;
+		$user_voted = false;
 		if ($this->auth['user'] && !$this->auth['mod']) {
 			$sql = 'SELECT *
 				FROM _artists_voters
 				WHERE ub = ?
 					AND user_id = ?';
 			if (sql_fieldrow(sql_filter($sql, $this->data['ub'], $user->data['user_id']))) {
-				$user_voted = TRUE;
+				$user_voted = true;
 			}
 		}
 		
@@ -187,62 +172,6 @@ class layout extends downloads {
 				if ($this->auth['mod']) {
 					$template->assign_block_vars('mods.manage', array(
 						'URL' => s_link_control('a', array('a' => $this->data['subdomain'], 'mode' => 'auth')))
-					);
-				}
-			}
-		}
-		
-		//
-		// Favorites | Viewers
-		//
-		$last_data = array();
-		
-		$sql = 'SELECT v.*, u.user_id, u.username, u.username_base, u.user_color
-			FROM _artists_fav v, _members u
-			WHERE v.ub = ?
-				AND v.user_id = u.user_id 
-			ORDER BY joined DESC 
-			LIMIT 0, 10';
-		$result = sql_rowset(sql_filter($sql, $this->data['ub']));
-		
-		if ($total = count($result)) {
-			$last_data['favorites'] = array(
-				'data' => $result,
-				'total' => $total
-			);
-		}
-		
-		$sql = 'SELECT v.*, u.user_id, u.username, u.username_base, u.user_color
-			FROM _artists_viewers v, _members u
-			WHERE v.ub = ?
-				AND v.user_id = u.user_id 
-			ORDER BY datetime DESC';
-		$result = sql_rowset(sql_filter($sql, $this->data['ub']));
-		
-		if ($total = count($result)) {
-			$last_data['visitors'] = array(
-				'data' => $result,
-				'total' => $total
-			);
-		}
-		
-		if (sizeof($last_data)) {
-			$template->assign_block_vars('recent_members', array());
-			
-			foreach ($last_data as $block => $items) {
-				$template->assign_block_vars('recent_members.col', array(
-					'COUNT' => $items['total'],
-					'TITLE' => ($block == 'favorites') ? $user->lang['UB_RECENT_F'] : $user->lang['UB_RECENT_V'])
-				);
-				
-				$datetime = ($block == 'favorites') ? 'joined' : 'datetime';
-				
-				foreach ($items['data'] as $item) {
-					$template->assign_block_vars('recent_members.col.item', array(
-						'DATETIME' => $user->format_date($item[$datetime]),
-						'USER_COLOR' => $item['user_color'],
-						'PROFILE' => s_link('m', $item['username_base']),
-						'USERNAME' => $item['username'])
 					);
 				}
 			}
@@ -481,7 +410,7 @@ class layout extends downloads {
 					$template->assign_block_vars('select.item', array(
 						'URL' => s_link('a', array($this->data['subdomain'], 6, $row['id'], 'view')) . '#read',
 						'TITLE' => $row['title'],
-						'SELECTED' => ($download_id && $download_id == $row['id']) ? TRUE : FALSE)
+						'SELECTED' => ($download_id && $download_id == $row['id']) ? true : false)
 					);
 				}
 				break;
@@ -612,7 +541,7 @@ class layout extends downloads {
 			$total_posts = count($reply_result);
 			unset($reply_result);
 			
-			$this->msg->view($start, 'rs', $total_posts, $config['s_posts'], 'reply_msg', 'RMSG_', '', FALSE);
+			$this->msg->view($start, 'rs', $total_posts, $config['s_posts'], 'reply_msg', 'RMSG_', '', false);
 			
 			$template->assign_vars(array(
 				'PARENT_ID' => $post_id)
@@ -953,12 +882,12 @@ class _artists extends layout {
 	public function _auth() {
 		global $user;
 		
-		$this->auth['user'] = ($user->data['is_member']) ? TRUE : FALSE;
-		$this->auth['adm'] = (($user->data['user_type'] == USER_FOUNDER) && $this->auth['user']) ? TRUE : FALSE;
-		$this->auth['mod'] = ($this->auth['adm']) ? TRUE : FALSE;
-		$this->auth['smod'] = FALSE;
-		$this->auth['fav'] = FALSE;
-		$this->auth['post'] = TRUE;
+		$this->auth['user'] = ($user->data['is_member']) ? true : false;
+		$this->auth['adm'] = (($user->data['user_type'] == USER_FOUNDER) && $this->auth['user']) ? true : false;
+		$this->auth['mod'] = ($this->auth['adm']) ? true : false;
+		$this->auth['smod'] = false;
+		$this->auth['fav'] = false;
+		$this->auth['post'] = true;
 		
 		if (!$this->auth['user'] || $this->data['layout'] == 14) {
 			return;
@@ -1014,7 +943,7 @@ class _artists extends layout {
 					AND f.user_id = m.user_id 
 					AND m.user_type <> ??';
 			if (sql_fieldrow(sql_filter($sql, $this->data['ub'], $user->data['user_id'], USER_IGNORE))) {
-				$this->auth['fav'] = TRUE;
+				$this->auth['fav'] = true;
 			}
 		}
 		
@@ -1030,7 +959,7 @@ class _artists extends layout {
 		return $this->$layout();
 	}
 	
-	public function stats ($id) {
+	public function stats($id) {
 		if (is_array($id)) {
 			$all_stats = array();
 			foreach ($id as $item) {
@@ -1327,7 +1256,7 @@ class _artists extends layout {
 				if (preg_match('/([0-9])/', $alpha_id)) {
 					$alpha_id = '#';
 				}
-				$alphabet[$alpha_id] = TRUE;
+				$alphabet[$alpha_id] = true;
 			}
 		}
 		
@@ -1419,6 +1348,10 @@ class _artists extends layout {
 		$this->data['layout'] = request_var('layout', 0);
 		$this->_auth();
 		
+		if (!$this->data['layout']) {
+			$this->data['layout'] = 1;
+		}
+		
 		switch ($this->data['layout']) {
 			case 14:
 			case 15:
@@ -1426,21 +1359,17 @@ class _artists extends layout {
 				$this->call_layout();
 				break;
 			default:
-				if (!$this->data['layout']) {
-					$this->data['layout'] = 1;
-				}
-				
 				//
 				// Nav
 				//
 				$s_layout = array();
-				$s_layout['a']['_01'] = TRUE;
+				$s_layout['a']['_01'] = true;
 				$s_layout['a']['_02'] = ($this->data['bio'] != '') ? true : false;
-				// $s_layout['a']['_03'] = TRUE;
+				// $s_layout['a']['_03'] = true;
 				$s_layout['a']['_04'] = ($this->data['images'] > 1) ? true : false;
-				// $s_layout['_05'] = TRUE;
+				// $s_layout['_05'] = true;
 				$s_layout['a']['_06'] = ($this->data['lirics'] > 0) ? true : false;
-				// $s_layout['a']['_07'] = TRUE;
+				// $s_layout['a']['_07'] = true;
 				$s_layout['a']['_09'] = ($this->data['layout'] == 9) ? true : false;
 				$s_layout['a']['_12'] = ($this->data['layout'] == 12) ? true : false;
 				$s_layout['a']['_18'] = ($this->data['a_video'] > 0) ? true : false;
@@ -1566,7 +1495,7 @@ class _artists extends layout {
 				}
 				
 				//
-				// OWN EVENTS
+				// Own events
 				//
 				$timezone = $config['board_timezone'] * 3600;
 		
@@ -1690,6 +1619,7 @@ class _artists extends layout {
 				//
 				// Messages
 				//
+				/*
 				$ref_layout = in_array($this->data['layout'], array(9, 12, 16)) ? 1 : $this->data['layout'];
 				$comments_ref = s_link('a', array($this->data['subdomain'], $ref_layout));
 				
@@ -1746,7 +1676,7 @@ class _artists extends layout {
 						);
 					}
 					
-					$this->msg->view($start, 'ps', $this->data['posts'], $config['s_posts'], '', 'MSG_', '', FALSE);
+					$this->msg->view($start, 'ps', $this->data['posts'], $config['s_posts'], '', 'MSG_', '', false);
 				}
 				
 				if ($this->data['a_active'] || $user->_team_auth('founder')) {
@@ -1766,16 +1696,20 @@ class _artists extends layout {
 						}
 					}
 				}
+				*/
+				$sql = 'SELECT COUNT(user_id) AS fan_count
+					FROM _artists_fav
+					WHERE ub = ?
+					ORDER BY joined DESC';
+				$fan_count = sql_field(sql_filter($sql, $this->data['ub']), 'fan_count', 0);
 				
 				//
-				// Contact | Fav
+				// Make fans
 				//
-				if ($this->data['email'] != '' || $this->data['www'] != '' || !$this->auth['mod']) {
-					$template->assign_block_vars('contact', array(
-						'WWW' => ($this->data['www'] != '') ? s_link('a', array($this->data['subdomain'], 14)) : '',
-						'EMAIL' => ($this->data['email'] != '') ? s_link('a', array($this->data['subdomain'], 13)) : '',
-						'FAV_URL' => (!$this->auth['smod']) ? s_link('a', array($this->data['subdomain'], 15)) : '',
-						'FAV_LANG' => (!$this->auth['smod']) ? (($this->auth['fav']) ? $user->lang['UB_FAV_DEL'] : $user->lang['UB_FAV_ADD']) : '')
+				if (!$this->auth['mod'] && !$this->auth['smod']) {
+					$template->assign_block_vars('make_fans', array(
+						'FAV_URL' => s_link('a', array($this->data['subdomain'], 15)),
+						'FAV_LANG' => ($this->auth['fav']) ? $user->lang['UB_FAV_DEL'] : $user->lang['UB_FAV_ADD'])
 					);
 				}
 				
@@ -1788,6 +1722,8 @@ class _artists extends layout {
 					'GENRE' => $this->data['genre'],
 					'POSTS' => number_format($this->data['posts']),
 					'VOTES' => number_format($this->data['votes']),
+					'FANS' => $fan_count,
+					'L_FANS' => ($fan_count == 1) ? $user->lang['FAN'] : $user->lang['FANS'], 
 					
 					'S_CONTROLPANEL' => (($user->data['is_member'] && $user->data['user_auth_control']) ? s_link('control', '_' . $this->data['subdomain']) : ''),
 					'LOCATION' => ($this->data['local']) ? (($this->data['location'] != '') ? $this->data['location'] . ', ' : '') . 'Guatemala' : $this->data['location'])
@@ -1803,13 +1739,17 @@ class _artists extends layout {
 		return;
 	}
 	
+	public function latest() {
+		return true;
+	}
+	
 	public function a_sidebar() {
 		global $template;
 		
 		$sql = 'SELECT *
 			FROM _artists
 			ORDER BY RAND()';
-		if ($row = sql_rowset($sql)) {
+		if ($row = sql_fieldrow($sql)) {
 			$sql = 'SELECT *
 				FROM _artists_images
 				WHERE ub = ?
