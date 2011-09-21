@@ -187,7 +187,7 @@ class database extends dcom {
 	}
 	
 	public function affectedrows() {
-		if ($this->result && is_object($this->result)) {
+		if ($this->connect && is_object($this->connect)) {
 			return $this->connect->affected_rows;
 		}
 		
@@ -236,7 +236,7 @@ class database extends dcom {
 		return false;
 	}
 	
-	public function fetchrowset($query_id = 0, $result_type = MYSQL_BOTH) {
+	public function fetchrowset($result_type = MYSQL_BOTH) {
 		if ($this->result && is_object($this->result)) {
 			$result = array();
 			while ($row = $this->result->fetch_array($result_type)) {
@@ -270,7 +270,11 @@ class database extends dcom {
 	}
 	
 	public function rowseek($rownum) {
-		return ($query_id) ? @mysql_data_seek($query_id, $rownum) : false;
+		if ($this->result && is_object($this->result)) {
+			return $this->result->data_seek($rownum);
+		}
+		
+		return false;
 	}
 	
 	public function nextid() {
@@ -290,8 +294,12 @@ class database extends dcom {
 		return true;
 	}
 	
-	public function escape($msg) {
-		return mysql_real_escape_string($msg, $this->connect);
+	public function escape($str) {
+		if ($this->connect) {
+			return $this->connect->escape_string($str);
+		}
+		
+		return false;
 	}
 	
 	public function cache($a_sql, $sid = '', $private = true) {
@@ -305,7 +313,7 @@ class database extends dcom {
 		
 		if ($private) {
 			$sql .= ' AND cache_uid = ?';
-			$filter_values[] = $bio->v('bio_id');
+			$filter_values[] = $user->data['user_id'];
 		}
 		
 		$query = sql_field(sql_filter($sql, $filter_values), 'cache_query', '');
@@ -320,7 +328,7 @@ class database extends dcom {
 			$insert = array(
 				'cache_sid' => $sid,
 				'cache_query' => $a_sql,
-				'cache_uid' => $bio->v('bio_id'),
+				'cache_uid' => $user->data['user_id'],
 				'cache_time' => time()
 			);
 			$sql = 'INSERT INTO _search_cache' . $this->build('INSERT', $insert);
@@ -453,11 +461,11 @@ class database extends dcom {
 				break;
 		}
 		
-		global $bio;
+		global $user;
 		
 		$sql_insert = array(
 			'time' => time(),
-			'uid' => $bio->v('bio_id'),
+			'uid' => $user->data['user_id'],
 			'method' => $method,
 			'actions' => json_encode($query)
 		);
@@ -477,11 +485,11 @@ class database extends dcom {
 	}
 	
 	public function error($sql = '') {
-		$sql_error = $this->connect->error();
-		$sql_errno = $this->connect->errno();
+		$sql_error = $this->connect->error;
+		$sql_errno = $this->connect->errno;
 		
 		if (!$this->noerror) {
-			fatal_error(507, '', '', array('sql' => $sql, 'message' => $sql_error), $sql_errno);
+			fatal_error('mysql', $sql . '<br /><br />' . $sql_error . '<br /><br />' . $sql_errno);
 		}
 		
 		return array('message' => $sql_error, 'code' => $sql_errno);

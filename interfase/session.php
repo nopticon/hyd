@@ -527,7 +527,7 @@ class user extends session {
 				}
 			}
 		}
-
+		
 		// We include common language file here to not load it every time a custom language file is included
 		$lang = &$this->lang;
 		if ((include($this->lang_path . "main.php")) === FALSE) {

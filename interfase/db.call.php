@@ -114,7 +114,7 @@ function sql_field($sql, $field, $def = false) {
 	
 	$result = $db->query($sql);
 	$response = $db->fetchfield($field);
-	$db->freeresult($result);
+	$db->freeresult();
 	
 	if ($response === false) {
 		$response = $def;
@@ -133,11 +133,11 @@ function sql_fieldrow($sql, $result_type = MYSQL_ASSOC) {
 	$result = $db->query($sql);
 	
 	$response = false;
-	if ($row = $db->fetchrow($result, $result_type)) {
+	if ($row = $db->fetchrow($result_type)) {
 		$row['_numrows'] = $db->numrows($result);
 		$response = $row;
 	}
-	$db->freeresult($result);
+	$db->freeresult();
 	
 	return $response;
 }
@@ -147,8 +147,13 @@ function sql_rowset($sql, $a = false, $b = false, $g = false, $rt = MYSQL_ASSOC)
 	
 	$result = $db->query($sql);
 	
+	if (!$data = $db->fetchrowset($rt)) {
+		return false;
+	}
+	
 	$arr = w();
-	while ($row = $db->fetchrow($result, $rt)) {
+	foreach ($data as $row) {
+	//while ($row = $db->fetchrowset($rt)) {
 		$z = ($b === false) ? $row : $row[$b];
 		
 		if ($a === false) {
@@ -161,7 +166,7 @@ function sql_rowset($sql, $a = false, $b = false, $g = false, $rt = MYSQL_ASSOC)
 			}
 		}
 	}
-	$db->freeresult($result);
+	$db->freeresult();
 	
 	return $arr;
 }

@@ -314,7 +314,7 @@ class _events extends downloads {
 							$exception_sql . '
 						ORDER BY g.image ASC 
 						LIMIT ??, ??';
-					if ($result = sql_rowset(sql_filter($sql, $this->data['id'], $t_offset, $t_per_image))) {
+					if ($result = sql_rowset(sql_filter($sql, $this->data['id'], $t_offset, $t_per_page))) {
 						build_num_pagination(s_link('events', array($this->data['id'], 's%d')), $this->data['images'], $t_per_page, $t_offset, 'IMG_');
 						
 						$template->assign_block_vars('thumbnails', array());

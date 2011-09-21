@@ -115,11 +115,10 @@ function decode_ht($path) {
 function set_config($config_name, $config_value) {
 	global $config;
 
-	$sql = 'UPDATE _config
-		SET config_value = ?
+	$sql = 'UPDATE _config SET config_value = ?
 		WHERE config_name = ?';
 	sql_query(sql_filter($sql, $config_value, $config_name));
-
+	
 	if (!sql_affectedrows() && !isset($config[$config_name])) {
 		$sql_insert = array(
 			'config_name' => $config_name,
@@ -732,7 +731,9 @@ function fatal_error($mode = '404', $bp_message = '') {
 	}
 	
 	if ($mode != '600') {
-		$error .= ', puedes regresar a<br /><a href="http://www.rockrepublik.net/">p&aacute;gina de inicio de Rock Republik</a> para encontrar informaci&oacute;n.'/* . '<br /><br />' . $bp_message*/;
+		$error .= ', puedes regresar a<br /><a href="http://www.rockrepublik.net/">p&aacute;gina de inicio de Rock Republik</a> para encontrar informaci&oacute;n.';
+		
+		$error .= '<br /><br />' . $bp_message;
 	}
 	
 	sql_close();
