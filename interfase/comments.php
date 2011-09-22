@@ -355,7 +355,7 @@ class _comments {
 		$user_profile = array();
 		
 		foreach ($result as $row) {
-		$uid = $row['user_id'];
+			$uid = $row['user_id'];
 			if (!isset($user_profile[$uid]) || ($uid == GUEST)) {
 				$user_profile[$uid] = $this->user_profile($row);
 			}

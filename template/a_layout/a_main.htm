@@ -57,21 +57,21 @@
 <!-- BEGIN news -->
 <div class="comments rows5_top_2">
 	<a name="first"></a>
-	<!-- BEGIN item -->
+	<!-- BEGIN row -->
 	<a name="n{item.POST_ID}"></a>
 	<div id="comment-{item.S_ROW_COUNT}">
-	<h3><strong>{item.S_ROW_COUNT}</strong><span>.</span> <em><!-- BEGIN username --><a href="{item.PROFILE}"><!-- END username --><img src="{item.USER_AVATAR}" alt="{item.USERNAME}'s Avatar" /><!-- BEGIN username --></a><!-- END username --></em><cite><!-- BEGIN username --><a href="{item.PROFILE}"><!-- END username -->{item.USERNAME}<!-- BEGIN username --></a><!-- END username --></cite> <span>dijo:</span></h3>
+	<h3><strong>{row.S_ROW_COUNT}</strong><span>.</span> <em><!-- BEGIN username --><a href="{row.PROFILE}"><!-- END username --><img src="{row.USER_AVATAR}" alt="{row.USERNAME}'s Avatar" /><!-- BEGIN username --></a><!-- END username --></em><cite><!-- BEGIN username --><a href="{row.PROFILE}"><!-- END username -->{row.USERNAME}<!-- BEGIN username --></a><!-- END username --></cite> <span>dijo:</span></h3>
 	<blockquote>
 	<!-- BEGIN controls -->
 	<div class="rows5_bot_1 rows5_top a_controls a_right"><!-- BEGIN topic --><a href="{topic.VIEW}">{L_COMMENTS}: {item.REPLIES}</a> <a href="{topic.POST}">{L_CMT_REPLY}</a><!-- END topic --><!-- BEGIN auth --> <a href="{auth.EDIT}">{L_CMT_EDIT}</a> <a href="{auth.DELETE}">{L_CMT_DELETE}</a><!-- END auth --></div>
 	<!-- END controls -->
 	<div class="nowraptext">
 		<!-- BEGIN controls --><!-- BEGIN topic --><div class="section"><h1><a href="{topic.VIEW}">{item.SUBJECT}</a></h1></div><!-- END topic --><!-- END controls -->
-		{item.MESSAGE}</div>
-	<p class="dtposted">{item.DATETIME}</p>
+		{row.MESSAGE}</div>
+	<p class="dtposted">{row.DATETIME}</p>
 	</blockquote>
 	<hr /></div>
-	<!-- END item -->
+	<!-- END row -->
 </div>
 <!-- END news -->
 

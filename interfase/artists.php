@@ -85,8 +85,21 @@ class layout extends downloads {
 			if ($result = sql_rowset(sql_filter($sql, 'news', $config['ub_fans_f'], $this->data['ub'], 'post', $this->data['ub'], 0, 10))) {
 				$template->assign_block_vars('news', array());
 				
+				$user_profile = array();
+				
 				foreach ($result as $row) {
+					$uid = $row['user_id'];
 					
+					if (!isset($user_profile[$uid]) || ($uid == GUEST)) {
+						$user_profile[$uid] = $this->msg->user_profile($row);
+					}
+					
+					$template->assign_block_vars('news.row', array(
+						'POST_ID' => $row['post_id'],
+						'DATETIME' => $user->format_date($row['post_time']),
+						'MESSAGE' => $this->msg->parse_message($row['post_text']),
+						'S_DELETE' => false
+					));
 				}
 			}
 			
@@ -348,7 +361,7 @@ class layout extends downloads {
 				LEFT JOIN _artists a ON a.ub = l.ub
 				WHERE l.ub = ?
 					AND l.id = ?';
-			if (!$lyric_data = sql_fieldrow($sql, $this->data['ub'], $download_id)) {
+			if (!$lyric_data = sql_fieldrow(sql_filter($sql, $this->data['ub'], $download_id))) {
 				redirect(s_link('a', array($this->data['subdomain'], 6)));
 			}
 		}
@@ -368,8 +381,6 @@ class layout extends downloads {
 					sql_query(sql_filter($sql, $lyric_data['id'], $this->data['ub']));
 				}
 				
-				die($orig_file);
-				
 				$this->filename = $this->data['name'] . '_' . $lyric_data['title'] . '.txt';
 				$this->dl_file('', '', str_replace($orig_vars, $repl_vars, $orig_file), 'text/txt');
 				break;
@@ -380,7 +391,7 @@ class layout extends downloads {
 						$sql = 'UPDATE _artists_lyrics SET views = views + 1
 							WHERE ub = ?
 							AND id = ?';
-						$sql_query(sql_filter($sql, $this->data['ub'], $lyric_data['id']));
+						sql_query(sql_filter($sql, $this->data['ub'], $lyric_data['id']));
 						
 						$lyric_data['views']++;
 					}
