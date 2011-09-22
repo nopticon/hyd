@@ -530,20 +530,95 @@ a.submitd {
 	display: none !important;
 }
 
-.comments{ display:block; clear:both; margin: 0 5%; }
-.comments h3 span { position:absolute;left:-9999px;text-align:left; }
-.comments blockquote p.dtposted a{ padding-left:14px; }
-.comments h3{ position:relative; float:left; width:20%; margin:1em 0 0 0; padding:3em 0 0 0; font-size:1em; line-height:1.2em; border-top:1px solid #4c5558; text-align:center; }
-.comments h3 strong{ display: none; position:absolute; left:0; top:-0.6em; padding:0 0.2em 0 14px; font:300 1.5em/1em arial,sans-serif; color:#b0b0a6; }
-.comments h3 em{ display:block; text-align:center; font-size:0.95em; font-style:normal; color:#d0ced1; }
-.comments h3 cite{display:block;font-style:normal;font-weight:900;margin:1em 0 1.5em 0;}
-.comments blockquote div{ font-size:0.95em; line-height:1.8em; color:#d0ced1; }
-.comments blockquote p.dtposted{ position:absolute; top:-0.6em; right:0; padding-left:0.5em; margin:0; font-size:0.85em; line-height:1em; color:#868670; text-align:right; background:#2f2f30; }
-.comments blockquote blockquote{ overflow:hidden; margin:1em 0; padding:0.2em 1.25em 0.2em 24px; background:#101010; color:#d0ced1; }
-.comments blockquote blockquote{ float:none; width:auto; margin:1em 0; border:0; }
-.comments blockquote{ position:relative; float:right; width:74%; margin:1em 0 0 0; padding:1.5em 0; border-top:1px solid #4c5558; }
-.nowraptext a { color: #66CC33; }
-.comments h3 em img{ padding:1px; }
+.comments {
+	display: block;
+	clear: both;
+	margin: 0 2%;
+}
+.comments h3 span {
+	position: absolute;
+	left: -9999px;
+	text-align: left;
+}
+.comments blockquote p.dtposted a {
+	padding-left: 14px;
+}
+.comments h3 {
+	position: relative;
+	float: left;
+	width: 20%;
+	margin: 1em 0 0 0;
+	padding: 1.5em 0 0 0;
+	font-size: 1em;
+	border-top: 1px solid #4c5558;
+	text-align: center;
+}
+.comments h3 strong {
+	display: none;
+	position: absolute;
+	left: 0;
+	top: -0.6em;
+	padding: 0 0.2em 0 14px;
+	font: 300 1.5em/1em arial,sans-serif;
+	color: #b0b0a6;
+}
+.comments h3 em {
+	display: block;
+	text-align: center;
+	font-size: 0.95em;
+	font-style: normal;
+	color: #fff;
+}
+.comments h3 cite {
+	display: block;
+	font-style: normal;
+	margin: 4px 0 5px 0;
+}
+.comments blockquote div {
+	font-size: 0.95em;
+	line-height: 1.8em;
+	color: #d0ced1;
+}
+.comments blockquote p.dtposted {
+	position: absolute;
+	top: -0.6em;
+	right: 0;
+	padding-left: 0.5em;
+	margin: 0;
+	font-size: 0.85em;
+	line-height: 1em;
+	color: #868670;
+	text-align: right;
+	background: #2f2f30;
+}
+.comments blockquote blockquote {
+	overflow: hidden;
+	margin: 1em 0;
+	padding: 0.2em 1.25em 0.2em 24px;
+	background: #101010;
+	color:#d0ced1;
+}
+.comments blockquote blockquote {
+	float: none;
+	width: auto;
+	margin: 1em 0;
+	border: 0;
+}
+.comments blockquote {
+	position: relative;
+	float: right;
+	width: 77%;
+	margin: 1em 0 0 0;
+	padding: 1.5em 0;
+	border-top: 1px solid #4c5558;
+}
+
+.nowraptext a {
+	color: #66CC33;
+}
+.comments h3 em img {
+	padding: 1px;
+}
 
 #articles { }
 #articles ul li { width: 468px; height: 85px; }

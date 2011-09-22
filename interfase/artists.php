@@ -63,8 +63,8 @@ class layout extends downloads {
 			);
 		}
 		
-		if ($this->data['news']) {
-			$sql = "(SELECT ?, p.topic_id, p.post_text, t.topic_time as post_time, m.user_id, m.username, m.username_base
+		if ($this->data['news'] || $this->data['posts']) {
+			$sql = "(SELECT ?, p.topic_id, p.post_text, t.topic_time as post_time, m.user_id, m.username, m.username_base, m.user_avatar
 				FROM _forum_topics t, _forum_posts p, _members m
 				WHERE t.forum_id = ?
 					AND t.topic_ub = ?
@@ -73,7 +73,7 @@ class layout extends downloads {
 					AND t.topic_important = 0
 				ORDER BY t.topic_time DESC)
 					UNION ALL
-				(SELECT ?, p.post_id, p.post_text, p.post_time, m.user_id, m.username, m.username_base
+				(SELECT ?, p.post_id, p.post_text, p.post_time, m.user_id, m.username, m.username_base, m.user_avatar
 				FROM _artists a, _artists_posts p, _members m
 				WHERE p.post_ub = ? 
 					AND p.post_ub = a.ub
@@ -94,17 +94,22 @@ class layout extends downloads {
 						$user_profile[$uid] = $this->msg->user_profile($row);
 					}
 					
-					$template->assign_block_vars('news.row', array(
+					$row_data = array(
 						'POST_ID' => $row['post_id'],
 						'DATETIME' => $user->format_date($row['post_time']),
 						'MESSAGE' => $this->msg->parse_message($row['post_text']),
 						'S_DELETE' => false
-					));
+					);
+					
+					foreach ($user_profile[$uid] as $key => $value) {
+						$row_data[strtoupper($key)] = $value;
+					}
+					
+					$template->assign_block_vars('news.row', $row_data);
 				}
 			}
 			
-			$this->msg->view(0, 'ns', $this->data['news'], $this->data['news'], 'news');
-			$this->msg->reset();
+			$total_rows = $this->data['news'] + $this->data['posts']; 
 		}
 		
 		//
