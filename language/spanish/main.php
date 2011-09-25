@@ -792,6 +792,7 @@ $lang += array(
 	'UE_PHOTOS' => 'fotograf&iacute;as',
 	'EVENT_ASSIST' => '&iquest;Asistir&aacute;s?',
 	
+	'EVENTS_THANKS' => 'Fotos gracias a: ',
 	'UE_CORRESP' => 'Corresponsales',
 	'UE_SEND_PHOTOS' => 'Enviar Fotos',
 	'UE_SEND_FILES' => 'Enviar Archivos',

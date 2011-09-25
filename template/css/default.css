@@ -83,7 +83,7 @@ hr {
 	display: block;
 	width: 300px;
 	height: 47px;
-	/*background: url(images/header.gif) no-repeat;*/
+	background: url(images/header.gif) no-repeat;
 	text-indent: -9000px;
 }
 #header h1 a:hover {
@@ -167,7 +167,7 @@ hr {
 }
 
 #menu {
-	width: 525px;
+	width: 461px;
 	height: 53px;
 	float: right;
 	margin-top: -55px;
@@ -439,9 +439,15 @@ a.submitd {
 .pagination strong, .pagination a, .pagination span { line-height: 30px; text-decoration: none; padding: 5px; background: #4c5558; font-size: 10pt; }
 .pagination span { background: #2f2f30; padding: 0; }
 .pagination strong, .pagination a:hover { background: #5d8812; text-decoration: none; }
-.post_comment { }
+.post_comment {
+	width: 96%;
+	margin: 0 auto;
+}
 .post_comment textarea, .post_comment input {
-	width: 99%;
+	width: 100%;
+}
+.post_comment textarea {
+	height: 45px;
 }
 
 .error {

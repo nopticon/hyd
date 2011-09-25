@@ -1,6 +1,35 @@
 <!-- INCLUDE page_header.htm -->
 
-<div class="g2"><h1>{TITLE} @ {DATE}</h1></div>
+<div class="rows5_top_1 float-holder ie-widthfix">
+	<div class="float_left col75">
+		<div class="g2"><h1>{TITLE} @ {DATE}</h1></div>
+	</div>
+	<div class="float_right a_right col25">
+		<input class="submit" type="submit" id="submit_photos" value="&iquest;Tienes fotos de este evento? Env&iacute;alas" />
+	</div>
+</div>
+
+<script type="text/javascript">
+//<![CDATA[
+
+$(function() {
+	$('#submit_photos_box').hide();
+});
+
+$('#submit_photos').click(function() {
+	$('#submit_photos_box').toggle('slow');
+});
+
+//]]>
+</script>
+
+<div id="submit_photos_box">
+	Envianos las fotos que hayas tomado en el evento y quieras compartir con la comunidad.
+	
+	<form action="" method="post" enctype="multipart/form-data">
+		
+	</form>
+</div>
 
 <!-- BEGIN selected -->
 <div class="ie-widthfix float-holder a_right a_controls"><!-- BEGIN download --><a href="{download.URL}">{L_UE_DOWNLOAD}</a><!-- END download --><!-- BEGIN fav --> <a href="{fav.URL}">{L_UB_FAV_ADD}</a><!-- END fav --></div>
@@ -8,6 +37,7 @@
 <div class="rows5_top a_center">
 	<div><!-- BEGIN download --><a href="{download.URL}"><!-- END download --><img class="border" src="{selected.IMAGE}" width="{selected.WIDTH}" height="{selected.HEIGHT}" alt="" /><!-- BEGIN download --></a><!-- END download --></div>
 	<div id="footer" class="rows5_top legend a_center"><!-- IF selected.FOOTER != '' -->{selected.FOOTER}<!-- ENDIF --></div>
+	<!-- BEGIN hide -->
 	<!-- BEGIN update -->
 	<script type="text/javascript">
 	//<![CDATA[
@@ -15,6 +45,7 @@
 	//]]>
 	</script>
 	<!-- END update -->
+	<!-- END hide -->
 </div>
 <!-- END selected -->
 
@@ -29,15 +60,27 @@
 <!-- END thumbnails -->
 
 <!-- IF COLAB != '' -->
-<div class="rows5_top dark_box a_center">Fotos gracias a: {COLAB}</div>
+<div class="rows5_top dark_box a_center">{L_EVENTS_THANKS} {COLAB}</div>
 <!-- ENDIF -->
 
 <br /><div align="center"><a name="fb_share" type="button_count" href="http://www.facebook.com/sharer.php">Share</a><script src="http://static.ak.fbcdn.net/connect.php/js/FB.Share" type="text/javascript"></script></div>
 
 <!-- BEGIN thumbnails --><!-- IF IMG_PAGES_NUMS != ' <strong>1</strong>' --><div class="pagination">{IMG_PAGES_NUMS}</div><!-- ENDIF --><!-- END thumbnails -->
 
+<!-- BEGIN posting_box -->
+<!-- BEGIN box -->
+<a name="post"></a>
+<div class="rows5_top_2 post_comment">
+<div class="g2"><h1>{L_SEND_POST} / <a class="relevant" onclick="return popup('{S_EMOTICONS}', '_emoticons', 300, 450);" href="{S_EMOTICONS}" target="_blank">{L_EMOTICONS}</a></h1></div>
+<form action="{S_COMMENTS}" method="post" name="post"><input type="hidden" name="ref" value="{box.REF}" />
+<div class="rows5_top_1"><textarea id="comment" name="message"></textarea></div>
+<div class="rows5_top_1"><input class="submit" type="submit" name="post" value="{L_SUBMIT}" /></div>
+</form>
+</div>
+<!-- END box -->
+<!-- END posting_box -->
+
 <!-- BEGIN posts -->
-<div class="section"><h1>{POSTS} <!-- IF POSTS == 1 -->{L_POST}<!-- ELSE -->{L_POSTS}<!-- ENDIF --></h1></div>
 <div class="comments">
 <!-- BEGIN item -->
 <a name="{item.POST_ID}"></a>
@@ -52,20 +95,6 @@
 </div>
 <!-- IF MSG_PAGES_NUMS != ' <strong>1</strong>' --><div class="pagination">{MSG_PAGES_NUMS}</div><!-- ENDIF -->
 <!-- END posts -->
-
-<!-- BEGIN posting_box -->
-<a name="post"></a>
-<div class="rows5_top_2 post_comment">
-<div class="section"><h1>{L_SEND_POST}</h1></div>
-<!-- BEGIN box -->
-<form action="{S_COMMENTS}" method="post" name="post"><input type="hidden" name="ref" value="{box.REF}" />
-<div><label for="comment">{L_POST}</label> - <a class="relevant" onclick="return popup('{S_EMOTICONS}', '_emoticons', 300, 450);" href="{S_EMOTICONS}" target="_blank">{L_EMOTICONS}</a></div>
-<div class="rows5_top_1"><textarea id="comment" name="message" cols="150" rows="10"></textarea></div>
-<div class="rows5_top_1"><input class="submit" type="submit" name="post" value="{L_SUBMIT}" /></div>
-</form>
-<!-- END box -->
-</div>
-<!-- END posting_box -->
 
 <div id="cache" class="z">
 	<!-- BEGIN thumbnails -->

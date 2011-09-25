@@ -1,9 +1,20 @@
 <!-- INCLUDE js/j.js -->
 <!-- INCLUDE js/j.periodic.js -->
 <!-- INCLUDE js/j.url.js -->
+<!-- INCLUDE js/j.textarea.js -->
 
 $(function() {
-	var xka = true; 
+	var xka = true;
+	
+	$('textarea').autoResize({
+		onReize: function() {
+			$(this).css({opacity: 0.8});
+		},
+		animateCallback: function() {
+			$(this).css({opacity: 1});
+		},
+		limit: 250
+	});
 	
 	if ($.url.segment() > 0) {
 		switch ($.url.segment(0)) {
