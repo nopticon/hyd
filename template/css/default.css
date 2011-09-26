@@ -229,6 +229,22 @@ a.submitd {
 	padding: 2px !important;
 }
 
+.sec {
+	margin-bottom:18px;
+}
+
+.sec h3 {
+	display: inline;
+	margin: 0 10px 0 10px;
+	border-bottom: 1px solid #F5B800;
+	
+	padding-bottom: 3px;
+	
+	font-family: 'Ubuntu', Arial, Helvetica, sans-serif !important;
+	font-size: 15px;
+	color: #F5B800;
+}
+
 #allies {
 	width: 100%;
 	margin: 20px 0 0 12px;

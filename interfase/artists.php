@@ -1120,7 +1120,7 @@ class _artists extends layout {
 			$a_ary[$_a] = $this->adata[$_a];
 		}
 		
-		for ($i = 0; $i < 2; $i++) {
+		for ($i = 0; $i < 1; $i++) {
 			$_a = array_rand($this->adata);
 			if (!$this->adata[$_a]['images'] || isset($a_ary[$_a])) {
 				$i--;

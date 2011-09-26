@@ -624,13 +624,17 @@ $lang += array(
 	//
 	// SITE NOTICES
 	//
-	'NOTICE_ARTISTS' => '&iquest;Tu banda desea recibir apoyo de <strong>Rock Republik</strong>?<br /><br />Env&iacute;anos el material completo a info&#64;rockrepublik.net para obtener su propio espacio!',
-	'NOTICE_EVENTS' => '&iquest;Quieres anunciar un evento o actividad en esta secci&oacute;n?<br /><br />Env&iacute;anos el afiche a info&#64;rockrepublik.net y lo publicaremos. Agradeceremos que incluyas <a href="http://www.rockrepublik.net/home/downloads/logo.zip">nuestro logo</a> en la publicidad del evento.',
+	'NOTICE_ARTISTS' => '&iquest;Te gustar&iacute;a que tu banda obtenga el apoyo de <strong>Rock Republik</strong>?<br /><br />Env&iacute;anos el material completo a info&#64;rockrepublik.net para tener su propio espacio!',
+	'NOTICE_EVENTS' => '&iquest;Te gustar&iacute;a anunciar un evento o actividad en esta secci&oacute;n?<br /><br />Env&iacute;anos el afiche a info&#64;rockrepublik.net y lo publicaremos. Agradeceremos que incluyas <a href="http://www.rockrepublik.net/home/downloads/logo.zip">nuestro logo</a> en la publicidad del evento.',
+	
+	// ALLIES
+	'ALLIES_DESCRIPTION' => '&iquest;Te gustar&iacute;a formar parte de los Aliados de Rock Republik?<br /><br />Env&iacute;anos la informaci&oacute;n de tu sitio web a: <a class="high" href="mailto:info&#64;rockrepublik.net">info&#64;rockrepublik.net</a>',
 	
 	//
 	// NEWS
 	//
 	'NEWS' => 'Art&iacute;culos',
+	'LATEST_NEWS' => '&Uacute;ltimas noticias',
 	'NEWS2' => 'Art&iacute;culo',
 	'NEWS_LOCAL' => 'Nacional',
 	'NEWS_NON_LOCAL' => 'Internacional',

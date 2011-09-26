@@ -1,20 +1,12 @@
 <!-- INCLUDE page_header.htm -->
 
 <div class="col_1 float_left">
-<div class="section"><h1>{L_ARTISTS}</h1></div>
-	<!-- BEGIN thumbnails -->
-	<ul class="ul_none">
-		<!-- BEGIN item -->
-		<li class="row_1f li_lines pad_2 a_center"><a class="relevant_artist" href="{item.URL}">{item.NAME}</a><br /><br />{item.GENRE}<br /><br /><a href="{item.URL}"><img src="{item.IMAGE}" alt="{item.NAME}" /></a></li>
-		<!-- END item -->
-	</ul>
-	<!-- END thumbnails -->
+	
 </div>
 
 <div class="col_2 cols5_left float_left">
 	<!-- BEGIN banners -->
 	<div id="images" class="item_block">
-		<div class="section"><h1>{L_ANNOUNCES}</h1></div>	
 		<div class="z"><h1>{L_IMAGES}</h1></div>
 		<ul class="ul_none">
 			<!-- BEGIN item -->
@@ -39,8 +31,8 @@
 	<!-- END banners -->
 
 	<!-- BEGIN news -->
-	<div id="articles" class="item_block">
-		<div class="section"><h1>{L_NEWS}</h1></div>
+	<div id="articles" class="">
+		<div class="sec"><h3>{L_LATEST_NEWS}</h3></div>
 		<ul class="ul_none">
 		<!-- BEGIN item -->
 		<li><div>{item.TIMESTAMP}: <a class="relevant_artist" href="{item.URL}">{item.SUBJECT}</a></div><div class="v"><a href="{item.URL}"><img src="{item.IMAGE}" alt="" /></a></div><div class="s">{item.MESSAGE}</div></li>
@@ -55,8 +47,7 @@
 	</div>
 	<!-- END news -->
 	
-	<div class="section"><h1>{L_ANNOUNCES}</h1></div>	
-	<div id="images_bottom">
+	<div id="images_bottom" class="rows5_top_2">
 	<ul id="ul_simage">
 		<li>
 		<script type="text/javascript"><!--
@@ -72,7 +63,7 @@
 	</div>
 
 	<div id="board" class="rows5_top_4 item_block_3">
-		<div class="section"><h1>{L_BOARD_LATEST}</h1></div>
+		<div class="sec"><h3>{L_BOARD_LATEST}</h3></div>
 		<!-- BEGIN forum -->
 		<ul class="ul_none">
 			<!-- BEGIN item -->
@@ -123,7 +114,18 @@
 			<!-- END hidden -->			
 		</ul>
 	</div>
-		
+	
+	<!-- BEGIN thumbnails -->
+	<div id="artists" class="rows5_top_6">
+		<div class="section"><h1>{L_ARTISTS}</h1></div>
+		<ul class="ul_none">
+			<!-- BEGIN item -->
+			<li class="row_1f li_lines pad_2 a_center"><a class="relevant_artist" href="{item.URL}">{item.NAME}</a><br /><br />{item.GENRE}<br /><br /><a href="{item.URL}"><img src="{item.IMAGE}" alt="{item.NAME}" /></a></li>
+			<!-- END item -->
+		</ul>
+	</div>
+	<!-- END thumbnails -->
+	
 	<!-- BEGIN hide -->
 	<div id="radio">
 		<div class="section"><h1>{L_RADIO}</h1></div>
