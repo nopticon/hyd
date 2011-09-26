@@ -83,7 +83,7 @@ hr {
 	display: block;
 	width: 300px;
 	height: 47px;
-	background: url(images/header.gif) no-repeat;
+	/*background: url(images/header.gif) no-repeat;*/
 	text-indent: -9000px;
 }
 #header h1 a:hover {
@@ -322,10 +322,17 @@ a.submitd {
 .col80 { width: 80%; }
 .col90 { width: 90%; }
 .col100 { width: 100%; }
+
+.col_left {
+	width: 75%;
+}
+.col_right {
+	width: 24%;
+}
+
 .col_1 {
 	width: 214px;
 	min-height: 310px;
-	/*background: url(images/grad_col.png) no-repeat;*/
 }
 .col_1f { width: 219px; }
 .col_1f2 { width: 205px; }
@@ -387,6 +394,10 @@ a.submitd {
 }
 .g2 {
 	width: 95%;
+}
+
+.low_color, .low_color a {
+	color: #9F9FA2 !important;
 }
 
 .section_e {
@@ -643,7 +654,7 @@ a.submitd {
 }
 
 #articles { }
-#articles ul li { width: 468px; height: 85px; }
+#articles ul li { display: block; width: 100%; }
 #articles ul li img { max-width: 67px; max-height: 50px; }
 #articles ul li .v { float: left; width: 85px; height: 60px; text-align: center; margin-top: 5px; }
 #articles ul li .s { margin-top: 5px; }

@@ -1,10 +1,6 @@
 <!-- INCLUDE page_header.htm -->
 
-<div class="col_1 float_left">
-	
-</div>
-
-<div class="col_2 cols5_left float_left">
+<div class="col_left float_left">
 	<!-- BEGIN banners -->
 	<div id="images" class="item_block">
 		<div class="z"><h1>{L_IMAGES}</h1></div>
@@ -25,17 +21,20 @@
 			<script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
 			</li>
 			<!-- END hide -->
-				
 		</ul>
 	</div>
 	<!-- END banners -->
 
 	<!-- BEGIN news -->
-	<div id="articles" class="">
+	<div id="articles">
 		<div class="sec"><h3>{L_LATEST_NEWS}</h3></div>
 		<ul class="ul_none">
 		<!-- BEGIN item -->
-		<li><div>{item.TIMESTAMP}: <a class="relevant_artist" href="{item.URL}">{item.SUBJECT}</a></div><div class="v"><a href="{item.URL}"><img src="{item.IMAGE}" alt="" /></a></div><div class="s">{item.MESSAGE}</div></li>
+		<li>
+			<div>{item.TIMESTAMP}: <a class="relevant_artist" href="{item.URL}">{item.SUBJECT}</a></div>
+			<div class="v"><a href="{item.URL}"><img src="{item.IMAGE}" alt="" /></a></div>
+			<div class="s">{item.MESSAGE}</div>
+		</li>
 		<!-- END item -->
 		</ul>
 		<div class="a_right">
@@ -47,37 +46,40 @@
 	</div>
 	<!-- END news -->
 	
-	<div id="images_bottom" class="rows5_top_2">
-	<ul id="ul_simage">
-		<li>
-		<script type="text/javascript"><!--
-		google_ad_client = "pub-5371491382621943";
-		google_ad_slot = "2766054894";
-		google_ad_width = 468;
-		google_ad_height = 60;
-		//-->
-		</script>
-		<script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
-		</li>		
-	</ul>
+	<div id="se_cover_1" class="rows5_top_2"></div>
+	
+	<div class="float-holder ie-widthfix">
+		<div id="board" class="col50 float_left rows5_top_4 ul_style">
+			<div class="sec"><h3>{L_BOARD_LATEST}</h3></div>
+			<!-- BEGIN forum -->
+			<ul class="ul_none">
+				<!-- BEGIN item -->
+				<li>
+					<div><a<!-- IF item.TOPIC_COLOR --> style="color:#{item.TOPIC_COLOR};"<!-- ENDIF --> href="{item.U_TOPIC}">{item.TOPIC_TITLE}</a></div>
+					<div class="low_color"><a href="{item.PROFILE}">{item.USERNAME}</a> public&oacute; a las {item.POST_TIME}</div>
+				</li>
+				<!-- END item -->
+			</ul>
+			<!-- END forum -->
+		</div>
+		<div id="board" class="col50 float_right rows5_top_4 ul_style">
+			<div class="sec"><h3>{L_BOARD_LATEST}</h3></div>
+			<!-- BEGIN forum -->
+			<ul class="ul_none">
+				<!-- BEGIN item -->
+				<li>
+					<div><a<!-- IF item.TOPIC_COLOR --> style="color:#{item.TOPIC_COLOR};"<!-- ENDIF --> href="{item.U_TOPIC}">{item.TOPIC_TITLE}</a></div>
+					<div class="low_color"><a href="{item.PROFILE}">{item.USERNAME}</a> public&oacute; a las {item.POST_TIME}</div>
+				</li>
+				<!-- END item -->
+			</ul>
+			<!-- END forum -->
+		</div>
 	</div>
-
-	<div id="board" class="rows5_top_4 item_block_3">
-		<div class="sec"><h3>{L_BOARD_LATEST}</h3></div>
-		<!-- BEGIN forum -->
-		<ul class="ul_none">
-			<!-- BEGIN item -->
-			<li><div>{item.POST_TIME}: <a class="relevant"<!-- IF item.TOPIC_COLOR --> style="color:#{item.TOPIC_COLOR};"<!-- ENDIF --> href="{item.U_TOPIC}">{item.TOPIC_TITLE}</a></div><div class="cols5_left_1"><a class="uunique" href="{item.PROFILE}">{item.USERNAME}</a></div></li>
-			<!-- END item -->
-		</ul>
-		<!-- END forum -->
-	</div>
-	<br />
 </div>
 
-<div class="col_1 cols5_left float_left">
-
-	<div class="section"><h1>Enlaces</h1></div>	
+<div class="col_right cols5_left float_right">
+	<div class="sec"><h3>{L_SOCIAL_NETWORKS}</h3></div>	
 		<div id="links">
 			<ul>
 				<!-- BEGIN hide -->
@@ -102,9 +104,9 @@
 	</div> -->
 	
 	<div id="events" class="rows5_top_6">
-		<div class="section"><h1>{L_UE}</h1></div>
+		<div class="sec"><h3>{L_UE}</h3></div>
 		<ul class="ul_none">
-			<div class="a_center rows5_top_1 rows5_bot_1"><a class="relevant_artist" href="{U_EVENTS}">Pr&oacute;ximos eventos</a></div>
+			<div class="a_center rows5_bot_1"><a class="relevant_artist" href="{U_EVENTS}">Pr&oacute;ximos eventos</a></div>
 			<!-- BEGIN next_event -->
 			<li class="a_center"><div><a href="{next_event.URL}">{next_event.TITLE}</a></div><a href="{next_event.URL}"><img style="margin-bottom: 15px; margin-top: 10px;" src="{next_event.IMAGE}" alt="" /></a></li>
 			<!-- END next_event -->
@@ -117,10 +119,14 @@
 	
 	<!-- BEGIN thumbnails -->
 	<div id="artists" class="rows5_top_6">
-		<div class="section"><h1>{L_ARTISTS}</h1></div>
+		<div class="sec"><h3>{L_ARTISTS}</h3></div>
 		<ul class="ul_none">
 			<!-- BEGIN item -->
-			<li class="row_1f li_lines pad_2 a_center"><a class="relevant_artist" href="{item.URL}">{item.NAME}</a><br /><br />{item.GENRE}<br /><br /><a href="{item.URL}"><img src="{item.IMAGE}" alt="{item.NAME}" /></a></li>
+			<li class="pad_2 a_center">
+				<div><a class="relevant_artist" href="{item.URL}">{item.NAME}</a><div>
+				<div>{item.GENRE}<div>
+				<div><a href="{item.URL}"><img src="{item.IMAGE}" alt="{item.NAME}" /></a><div>
+			</li>
 			<!-- END item -->
 		</ul>
 	</div>
@@ -182,3 +188,14 @@
 </div>
 
 <!-- INCLUDE page_footer.htm -->
+
+<div id="hse_cover_1" style="display: none;">
+	<script type="text/javascript"><!--
+	google_ad_client = "pub-5371491382621943";
+	google_ad_slot = "2766054894";
+	google_ad_width = 468;
+	google_ad_height = 60;
+	//-->
+	</script>
+	<script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
+</div>

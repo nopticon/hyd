@@ -5,6 +5,7 @@
 
 $(function() {
 	var xka = true;
+	var $d;
 	
 	$('textarea').autoResize({
 		onReize: function() {
@@ -14,6 +15,11 @@ $(function() {
 			$(this).css({opacity: 1});
 		},
 		limit: 250
+	});
+	
+	$('div[id^="hse_"]').each(function() {
+		$d = $('#se_' + this.id.substr(4)).empty();
+		$('ins:first', this).appendTo($d);
 	});
 	
 	if ($.url.segment() > 0) {

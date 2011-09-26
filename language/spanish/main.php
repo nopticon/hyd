@@ -824,9 +824,13 @@ $lang += array(
 	// BOUNCE
 	//
 	// 'LINKS_' => '',
+	'LINKS' => 'Enlaces',
 	'LINKS_FRIENDS' => 'Sitios Amigos',
 	'LINKS_WEBSITE' => 'Sitio Web',
 	'LINKS_CANT_REDIRECT' => '[ <a href="http://%1$s" target="_self">%1$s</a> ] no est&aacute; disponible en este momento.',
+	
+	// SOCIAL NETWORKS
+	'SOCIAL_NETWORKS' => 'Redes sociales',
 	
 	//
 	// USER PAGES
