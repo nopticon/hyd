@@ -51,7 +51,7 @@ class cover {
 			$image = (@file_exists('..' . $image)) ? $image : $images_dir . 'default.jpg';
 			
 			$template->assign_block_vars('news.item', array(
-				'TIMESTAMP' => $user->format_date($row['post_time'], 'd M'),
+				'TIMESTAMP' => $user->format_date($row['post_time'], 'j \d\e F Y'),
 				'URL' => s_link('news', $row['news_id']),
 				'SUBJECT' => $row['post_subject'],
 				'CAT' => $row['cat_name'],
@@ -166,12 +166,15 @@ class cover {
 		return;
 	}
 	
-	public function board() {
+	public function board_general() {
 		global $user, $config, $template;
 		
-		$sql = 'SELECT t.topic_id, t.topic_title, t.forum_id, t.topic_replies, t.topic_color, f.forum_alias, f.forum_name, p.post_id, p.post_username, p.post_time, u.user_id, u.username, u.username_base, u.user_color
+		$sql = 'SELECT t.topic_id, t.topic_title, t.topic_color, t.topic_replies, p.post_id, p.post_time, u.user_id, u.username, u.username_base
 			FROM _forums f, _forum_topics t, _forum_posts p, _members u
-			WHERE t.forum_id = f.forum_id
+			WHERE t.topic_id NOT IN (
+					SELECT e.event_topic FROM _events e WHERE e.event_topic > 0
+				)
+				AND t.forum_id = f.forum_id
 				AND p.post_deleted = 0
 				AND p.post_id = t.topic_last_post_id
 				AND p.poster_id = u.user_id
@@ -179,7 +182,7 @@ class cover {
 			ORDER BY t.topic_announce DESC, p.post_time DESC
 			LIMIT ??';
 		if ($result = sql_rowset(sql_filter($sql, $config['main_topics']))) {
-			$template->assign_block_vars('forum', array(
+			$template->assign_block_vars('board_general', array(
 				'L_TOP_POSTS' => sprintf($user->lang['TOP_FORUM'], count($result)),
 				'POSTS' => $config['max_posts'],
 				'TOPICS' => $config['max_topics'])
@@ -188,17 +191,50 @@ class cover {
 			foreach ($result as $row) {
 				$username = ($row['user_id'] != GUEST) ? $row['username'] : (($row['post_username'] != '') ? $row['post_username'] : $user->lang['GUEST']);
 				
-				$template->assign_block_vars('forum.item', array(
+				$template->assign_block_vars('board_general.item', array(
 					'U_TOPIC' => ($row['topic_replies']) ? s_link('post', $row['post_id']) . '#' . $row['post_id'] : s_link('topic', $row['topic_id']),
-					//'TOPIC_TITLE' => substr_replace(substr($row['topic_title'],0,55),' ...',55,0),
-					'TOPIC_TITLE' => _substr($row['topic_title'], 65),
-					'TOPIC_REPLIES' => $row['topic_replies'],
+					'TOPIC_TITLE' => $row['topic_title'],
 					'TOPIC_COLOR' => $row['topic_color'],
-					'FORUM_NAME' => $row['forum_name'],
-					'FORUM_URL' => s_link('forum', $row['forum_alias']),
 					'POST_TIME' => $user->format_date($row['post_time'], 'H:i'),
 					'USER_ID' => $row['user_id'],
-					'USER_COLOR' => $row['user_color'],
+					'USERNAME' => $username,
+					'PROFILE' => s_link('m', $row['username_base']))
+				);
+			}
+		}
+		
+		return true;
+	}
+	
+	public function board_events() {
+		global $user, $config, $template;
+		
+		$sql = 'SELECT t.topic_id, t.topic_title, t.topic_color, p.post_id, p.post_time, u.user_id, u.username, u.username_base, e.id, e.date
+			FROM _forum_topics t, _forum_posts p, _events e, _members u
+			WHERE p.post_deleted = 0
+				AND t.topic_featured = 1
+				AND t.topic_id = e.event_topic
+				AND p.post_id = t.topic_last_post_id
+				AND p.poster_id = u.user_id
+			ORDER BY t.topic_announce DESC, p.post_time DESC
+			LIMIT ??';
+		if ($result = sql_rowset(sql_filter($sql, $config['main_topics']))) {
+			$template->assign_block_vars('board_events', array(
+				'L_TOP_POSTS' => sprintf($user->lang['TOP_FORUM'], count($result)),
+				'POSTS' => $config['max_posts'],
+				'TOPICS' => $config['max_topics'])
+			);
+			
+			foreach ($result as $row) {
+				$username = ($row['user_id'] != GUEST) ? $row['username'] : (($row['post_username'] != '') ? $row['post_username'] : $user->lang['GUEST']);
+				
+				$template->assign_block_vars('board_events.item', array(
+					'U_TOPIC' => s_link('events', $row['id']),
+					'TOPIC_TITLE' => $row['topic_title'],
+					'TOPIC_COLOR' => $row['topic_color'],
+					'EVENT_DATE' => $user->format_date($row['date'], $user->lang['DATE_FORMAT']),
+					'POST_TIME' => $user->format_date($row['post_time'], 'H:i'),
+					'USER_ID' => $row['user_id'],
 					'USERNAME' => $username,
 					'PROFILE' => s_link('m', $row['username_base']))
 				);

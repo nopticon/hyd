@@ -34,7 +34,8 @@ $events = new _events(true);
 
 $cover->news();
 $cover->banners();
-$cover->board();
+$cover->board_general();
+$cover->board_events();
 $cover->poll();
 $cover->twitter();
 

@@ -87,11 +87,14 @@ google_ad_height = 90;
 		<!-- END thumbnails -->
 		
 		<!-- BEGIN lastboard -->
-		<div class="rows5_top_2 float-holder ie-widthfix item_block_3">
+		<div class="rows5_top_2 float-holder ie-widthfix item_block_3 ul_style">
 		<div class="g1"><h1 style="color: #{USERNAME_COLOR};">&Uacute;ltimos mensajes del foro</h1></div>	
 		<ul class="ul_none">
 			<!-- BEGIN row -->
-			<li class="rows5_top_6"><strong>{row.TIME}</strong>:<br /><a href="{row.URL}">{row.TITLE}</a></li>
+			<li>
+				<div><a<!-- IF row.TOPIC_COLOR --> style="color:#{row.TOPIC_COLOR};"<!-- ENDIF --> href="{row.URL}">{row.TITLE}</a></div>
+				<div class="low_color">{row.DATE} a las {row.TIME}</div>
+			</li>
 			<!-- END row -->
 		</ul>
 		</div>

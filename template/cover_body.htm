@@ -31,9 +31,12 @@
 		<ul class="ul_none">
 		<!-- BEGIN item -->
 		<li>
-			<div>{item.TIMESTAMP}: <a class="relevant_artist" href="{item.URL}">{item.SUBJECT}</a></div>
+			<div class="ie-widthfix float-holder">
+			<div><a href="{item.URL}">{item.SUBJECT}</a></div>
+			<div class="low_color">Publicado el {item.TIMESTAMP}</div>
 			<div class="v"><a href="{item.URL}"><img src="{item.IMAGE}" alt="" /></a></div>
 			<div class="s">{item.MESSAGE}</div>
+			</div>
 		</li>
 		<!-- END item -->
 		</ul>
@@ -51,7 +54,7 @@
 	<div class="float-holder ie-widthfix">
 		<div id="board" class="col50 float_left rows5_top_4 ul_style">
 			<div class="sec"><h3>{L_BOARD_LATEST}</h3></div>
-			<!-- BEGIN forum -->
+			<!-- BEGIN board_general -->
 			<ul class="ul_none">
 				<!-- BEGIN item -->
 				<li>
@@ -60,20 +63,20 @@
 				</li>
 				<!-- END item -->
 			</ul>
-			<!-- END forum -->
+			<!-- END board_general -->
 		</div>
-		<div id="board" class="col50 float_right rows5_top_4 ul_style">
-			<div class="sec"><h3>{L_BOARD_LATEST}</h3></div>
-			<!-- BEGIN forum -->
+		<div id="board_events" class="col50 float_right rows5_top_4 ul_style">
+			<div class="sec"><h3>{L_BOARD_EVENTS}</h3></div>
+			<!-- BEGIN board_events -->
 			<ul class="ul_none">
 				<!-- BEGIN item -->
 				<li>
-					<div><a<!-- IF item.TOPIC_COLOR --> style="color:#{item.TOPIC_COLOR};"<!-- ENDIF --> href="{item.U_TOPIC}">{item.TOPIC_TITLE}</a></div>
+					<div><a<!-- IF item.TOPIC_COLOR --> style="color:#{item.TOPIC_COLOR};"<!-- ENDIF --> href="{item.U_TOPIC}">{item.TOPIC_TITLE} ({item.EVENT_DATE})</a></div>
 					<div class="low_color"><a href="{item.PROFILE}">{item.USERNAME}</a> public&oacute; a las {item.POST_TIME}</div>
 				</li>
 				<!-- END item -->
 			</ul>
-			<!-- END forum -->
+			<!-- END board_events -->
 		</div>
 	</div>
 </div>
@@ -81,9 +84,6 @@
 <div class="col_right cols5_left float_right">	
 	<div id="links">
 		<ul>
-			<!-- BEGIN hide -->
-			<li><a href="{S_SERVER}/mmc" target="_self"><img src="{S_SERVER}/home/images/mmc.gif" alt="Leer noticias de Metal" /></a></li>
-			<!-- END hide -->
 			<li><a href="http://www.facebook.com/rockrepublik" target="_blank"><img src="{S_SERVER}/home/images/fb.gif" alt="Hacerme fan de Rock Republik" /></a></li>
 			<li><a href="http://www.twitter.com/rockrepublik" target="_blank"><img src="{S_SERVER}/home/images/twitter.gif" alt="Seguir a Rock Republik" /></a></li>				
 		</ul>

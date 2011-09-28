@@ -290,7 +290,7 @@ class userpage {
 		}
 		
 		// Latest board posts
-		$sql = "SELECT DISTINCT(t.topic_title), p.post_id, p.post_time
+		$sql = "SELECT DISTINCT(t.topic_title), p.post_id, p.post_time, t.topic_color
 			FROM _forum_topics t, _forum_posts p
 			WHERE p.poster_id = ?
 				AND p.forum_id NOT IN (14,15,16,17,20,22,38)
@@ -308,7 +308,9 @@ class userpage {
 			$template->assign_block_vars('main.lastboard.row', array(
 				'URL' => s_link('post', $row['post_id']) . '#' . $row['post_id'],
 				'TITLE' => $row['topic_title'],
-				'TIME' => $user->format_date($row['post_time'], 'd M @ H:i'))
+				'TOPIC_COLOR' => $row['topic_color'],
+				'TIME' => $user->format_date($row['post_time'], 'H:i'),
+				'DATE' => $user->format_date($row['post_time'], $user->lang['DATE_FORMAT']))
 			);
 		}
 		

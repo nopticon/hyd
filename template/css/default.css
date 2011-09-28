@@ -654,8 +654,9 @@ a.submitd {
 }
 
 #articles { }
-#articles ul li { display: block; width: 100%; }
-#articles ul li img { max-width: 67px; max-height: 50px; }
+#articles ul li { display: block; }
+#articles ul li a { font-size: 11pt; color: #70a416; }
+#articles ul li img { }
 #articles ul li .v { float: left; width: 85px; height: 60px; text-align: center; margin-top: 5px; }
 #articles ul li .s { margin-top: 5px; }
 

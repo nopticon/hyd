@@ -707,12 +707,12 @@ function fatal_error($mode = '404', $bp_message = '') {
 					'MESSAGE' => $bp_message,
 					'TIME' => $user->format_date(time(), 'r'))
 				);
-				$emailer->send();
+				//$emailer->send();
 				$emailer->reset();
 			} else {
 				$email_message = $bp_message . "\n\n" . date('r');
 				$email_headers = "From: info@rockrepublik.net\nReturn-Path: " . $config['board_email'] . "\nMessage-ID: <" . md5(uniqid(time())) . "@" . $config['server_name'] . ">\nMIME-Version: 1.0\nContent-type: text/plain; charset=iso-8859-1\nContent-transfer-encoding: 8bit\nDate: " . date('r', time()) . "\nX-Priority: 3\nX-MSMail-Priority: Normal\n"; 
-				$result = @mail('info@rockrepublik.net', 'MySQL error', preg_replace("#(?<!\r)\n#s", "\n", $email_message), $email_headers, "-f{$config['board_email']}");
+				//$result = @mail('info@rockrepublik.net', 'MySQL error', preg_replace("#(?<!\r)\n#s", "\n", $email_message), $email_headers, "-f{$config['board_email']}");
 			}
 			
 			$title = 'Error del sistema';
