@@ -642,7 +642,7 @@ $lang += array(
 	//
 	// UNREAD MESSAGE CENTER
 	//
-	'THENEW' => 'Lo nuevo',
+	'THENEW' => 'Lo Nuevo',
 	'NEW_MARK' => 'Marcar como leidos autom&aacute;ticamente',
 	'NEW_MARK_NEVER' => 'Nunca',
 	'NEW_MARK_ALWAYS' => 'Siempre',
@@ -794,9 +794,15 @@ $lang += array(
 	'UE_NO_DATA' => 'No hay afiche del evento, pronto ser&aacute; publicado.',
 	'UE_NO_IMAGES' => 'No hay fotos del evento, pronto ser&aacute;n publicadas.<br /><br />Mientras tanto escribe tu opini&oacute;n!',
 	'UE_PHOTOS' => 'fotograf&iacute;as',
-	'EVENT_ASSIST' => '&iquest;Asistir&aacute;s?',
 	
-	'EVENTS_THANKS' => 'Fotos gracias a: ',
+	'EVENT_ASSIST' => '&iquest;Asistir&aacute;s?',
+	'EVENT_AFTER' => 'Programado para el %s',
+	'EVENT_BEFORE' => 'Se realiz&oacute; el %s',
+	'EVENT_TODAY' => 'Programado para <strong>hoy</strong>',
+	'EVENT_TOMORROW' => 'ProgamadO para <strong>ma&ntilde;ana</strong>',
+	'EVENT_YESTERDAY' => 'Se realiz&oacute; <strong>ayer</strong>',
+	'EVENT_PHOTO_THANKS' => 'Fotos gracias a:',
+	
 	'UE_CORRESP' => 'Corresponsales',
 	'UE_SEND_PHOTOS' => 'Enviar Fotos',
 	'UE_SEND_FILES' => 'Enviar Archivos',

@@ -2,10 +2,19 @@
 <!-- INCLUDE js/j.periodic.js -->
 <!-- INCLUDE js/j.url.js -->
 <!-- INCLUDE js/j.textarea.js -->
+<!-- INCLUDE js/j.social.js -->
+<!-- INCLUDE js/png.js -->
+
+function popup(url, name, width, height) {
+	var win = window.open(url, name, 'toolbar = 0, scrollbars = 1, location = 0, statusbar = 0, menubar = 0, resizable = 1, width=' + width + ', height=' + height);
+	return false;
+}
 
 $(function() {
 	var xka = true;
 	var $d;
+	var doctitle = document.title;
+	var docurl = window.location.href;
 	
 	$('textarea').autoResize({
 		onReize: function() {
@@ -15,6 +24,32 @@ $(function() {
 			$(this).css({opacity: 1});
 		},
 		limit: 250
+	});
+	
+	$(function(){
+		$.prettySociable({
+			share_on_label: 'Compartir en ',
+			share_label: 'Comparte',
+			hover_padding: 0,
+			tooltip: {
+				offsetTop:500,
+				offsetLeft: 0
+			}
+		});
+	});
+	
+	$('.share').each(function() {
+		if (docurl && doctitle) {
+			$(this).html('<a rel="prettySociable" href="' + docurl + '"></a>');
+		}
+	});
+	
+	$('.smile').each(function() {
+		$(this).html('&#8594;&#9786;');
+		$(this).attr('title', 'Mostrar emociones');
+	}).click(function() {
+		popup($(this).attr('href'), '_emoticons', 300, 450);
+		return false;
 	});
 	
 	$('div[id^="hse_"]').each(function() {
@@ -67,6 +102,10 @@ $(function() {
 	}
 	
 	$('#account').hide();
+	$('#account_me').click(function() {
+		$('#account').toggle('slow');
+		return false;
+	});
 	
 	if (xka) {
 		// Keep alive

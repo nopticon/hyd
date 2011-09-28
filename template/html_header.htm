@@ -6,6 +6,29 @@
 	<h1><a href="{U_COVER}" title="Rock Republik">Rock Republik</a></h1>
 	<h2>La comunidad m&aacute;s grande de Rock en Guatemala</h2>
 	
+	<div id="menu">
+		<h2 class="z">Navegaci&oacute;n</h2>
+		<ul>
+			<!-- IF IS_MEMBER -->
+			<li><a href="{U_PROFILE}">{S_USERNAME}</a> <span id="account_me">&#9660;</span>
+				<ul id="account">
+					<!-- IF S_CONTROLPANEL != '' --><li><a href="{S_CONTROLPANEL}">{L_CONTROL_PANEL}</a></li><!-- ENDIF -->
+					<li><a href="{U_EDITPROFILE}">{L_PREFERENCES}</a></li>
+					<li><a href="{U_SESSION}">{L_LOGOUT2}</a></li>
+				</ul>
+			</li>
+			<!-- ENDIF -->
+			<li><a href="{U_WHATS_NEW}" title="{S_UNREAD_ITEMS}">{L_THENEW}</a></li>
+			<li><a href="{U_ARTISTS}" title="{L_UB}">{L_UB}</a></li>
+			<li><a href="{U_EVENTS}" title="{L_UE}">{L_UE}</a></li>
+			<li><a href="{U_FORUM}" title="{L_FORUM}">{L_FORUM}</a></li>
+			<li><a href="{U_COMMUNITY}" title="{L_COMMUNITY}">{L_COMMUNITY}</a></li>
+			<li><a href="{U_RADIO}" title="{L_RADIO}">{L_RADIO}</a></li>
+			<li><a href="{U_ALLIES}" title="{L_ALLIES}">{L_ALLIES}</a></li>
+		</ul>
+	</div>
+	
+	<!-- BEGIN hide -->
 	<!-- IF IS_MEMBER -->
 	<div id="search" class="cols5_left_2 float_left">
 	<h2 class="z">B&uacute;squeda</h2>
@@ -16,33 +39,11 @@
 	</form>	
 	</div>
 	<!-- ENDIF -->
-	<div id="menu">
-		<h2 class="z">Navegaci&oacute;n</h2>
-		<ul>
-			<li id="menu_1"><a href="{U_WHATS_NEW}" title="{S_UNREAD_ITEMS}">{S_UNREAD_ITEMS}</a></li>
-			<li id="menu_2"><a href="{U_RADIO}" title="{L_RADIO}">{L_RADIO}</a></li>			
-			<li id="menu_3"><a href="{U_ARTISTS}" title="{L_UB}">{L_UB}</a></li>
-			<li id="menu_4"><a href="{U_EVENTS}" title="{L_UE}">{L_UE}</a></li>
-			<li id="menu_6"><a href="{U_FORUM}" title="{L_FORUM}">{L_FORUM}</a></li>
-			<li id="menu_8"><a href="{U_COMMUNITY}" title="{L_COMMUNITY}">{L_COMMUNITY}</a></li>
-			<li id="menu_7"><a href="{U_ALLIES}" title="{L_ALLIES}">{L_ALLIES}</a></li>
-		</ul>
-	</div>
+	<!-- END hide -->
 	
 	<div id="mcontrols">
 		<h2 class="z">Control de usuario</h2>
-		<!-- IF IS_MEMBER -->
-		<ul>
-			<li><a class="relevant uunique" href="{U_PROFILE}">{S_USERNAME}</a></li>
-			<li><a href="/">Opciones</a>
-				<ul id="account">
-					<!-- IF S_CONTROLPANEL != '' --><li><a href="{S_CONTROLPANEL}">{L_CONTROL_PANEL}</a></li><!-- ENDIF -->
-					<li><a href="{U_EDITPROFILE}">{L_PREFERENCES}</a></li>
-					<li><a href="{U_SESSION}">{L_LOGOUT2}</a></li>
-				</ul>
-			</li>
-		</ul>
-		<!-- ELSE -->
+		<!-- ! IF IS_MEMBER -->
 		<form action="{U_SESSION}" method="post">
 		<input type="hidden" name="ref" value="{S_REDIRECT}" />
 		<a class="submitd" href="{U_REGISTER}">{L_REGISTER}</a>&nbsp;&nbsp;

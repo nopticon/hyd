@@ -167,11 +167,7 @@ hr {
 }
 
 #menu {
-	width: 461px;
-	height: 53px;
-	float: right;
-	margin-top: -55px;
-	background-repeat: no-repeat;
+	margin-top: 1px;
 }
 #menu ul {
 	list-style: none;
@@ -181,24 +177,23 @@ hr {
 }
 #menu ul li {
 	float: left;
+	margin-left: 15px;
 }
 #menu ul li a {
-	display: block;
-	width: 64px;
-	height: 53px;
-	text-indent: -9000px;
+	display: inline;
 }
 #menu ul li a:hover {
-	background-position: 0 -53px;
+	
 }
-#menu_1 a { background: url(images/menu_1.png); }
-#menu_2 a { background: url(images/menu_2.png); }
-#menu_3 a { background: url(images/menu_3.png); }
-#menu_4 a { background: url(images/menu_4.png); }
-#menu_5 a { background: url(images/menu_5.png); }
-#menu_6 a { background: url(images/menu_6.png); }
-#menu_7 a { background: url(images/menu_7.png); }
-#menu_8 a { background: url(images/menu_8.png); }
+
+.share {
+}
+.share a {
+	display: block;
+	width: 32px;
+	height: 32px;
+	background: url(images/share.png);
+}
 
 .submit {
 	width: auto !important;
@@ -243,6 +238,16 @@ a.submitd {
 	font-family: 'Ubuntu', Arial, Helvetica, sans-serif !important;
 	font-size: 15px;
 	color: #F5B800;
+}
+.sec h3 a {
+	color: #DBA400;
+}
+.smile {
+	font-size: 20px;
+}
+.smile:hover {
+	text-decoration: none;
+	color: #A4DB00;
 }
 
 #allies {
@@ -307,6 +312,7 @@ a.submitd {
 
 .float_left { float: left; }
 .float_right { float: right; }
+.col4 { width: 4%; }
 .col19 { width: 19%; }
 .col20 { width: 23%; }
 .col24 { width: 24.6%; }
@@ -318,6 +324,7 @@ a.submitd {
 .col50 { width: 50%; }
 .col60 { width: 60%; }
 .col66 { width: 66%; }
+.col71 { width: 71%; }
 .col75 { width: 75%; }
 .col80 { width: 80%; }
 .col90 { width: 90%; }
@@ -467,14 +474,16 @@ a.submitd {
 .pagination span { background: #2f2f30; padding: 0; }
 .pagination strong, .pagination a:hover { background: #5d8812; text-decoration: none; }
 .post_comment {
-	width: 96%;
 	margin: 0 auto;
 }
 .post_comment textarea, .post_comment input {
 	width: 100%;
 }
 .post_comment textarea {
+	display: block;
+	width: 97.5%;
 	height: 45px;
+	margin: 0 auto;
 }
 
 .error {
@@ -740,3 +749,114 @@ html[xmlns] .float-holder { display: block; }
 * html .float-holder { height: 1%; }
 * html .ie-widthfix { height: 1%; }
 <!-- ENDIF -->
+
+/* Pretty Social */
+html, body {
+	height: 100%;
+}
+#ps_hover{
+	left: 0;
+	top: 0;
+	position: absolute;
+	z-index: 1000;
+}
+/*.ps_hd{
+	background: url(images/tr.png) top right no-repeat;
+	padding: 0 8px 0 0;
+}
+.ps_hd .ps_c {
+	background: url(images/tl.png) top left no-repeat;
+}
+.ps_ft{
+	background: url(images/br.png) top right no-repeat;
+	padding: 0 8px 0 0;
+}
+.ps_ft .ps_c{
+	background: url(images/bl.png) top left no-repeat;
+}
+.ps_bd {
+	background: url(images/cr.png) top right repeat-y;
+	padding: 0 8px 0 0;
+}
+.ps_bd .ps_c {
+	background: url(images/cl.png) top left repeat-y;
+	padding: 0 0 0 8px;
+}*/
+.ps_bd .ps_s {
+}
+.ps_hd,.ps_bd,.ps_ft {
+	position: relative;
+	z-index: 1000;
+}
+.ps_hd .ps_c,.ps_ft .ps_c {
+	font-size: 1px;
+	height: 8px;
+}
+#ps_title {
+	background: url(images/tt_r.png) top right no-repeat;
+	padding: 0 5px 0 0;
+	/*color: #fff;*/
+	font-size: 10px;
+	font-weight: normal;
+	left: 8px;
+	position: absolute;
+	top:0;
+	z-index:999;
+}
+#ps_title .ps_tt_l {
+	background: url(images/tt_l.png) top left no-repeat;
+	line-height: 20px;
+	padding: 0 0 0 5px;
+}
+#ps_tooltip {
+	font-size: 10px;
+	left: 0;
+	position: absolute;
+	top: 0;
+	width: 250px;
+	z-index: 1010;
+}
+#ps_tooltip p{
+	margin: 0;
+}
+#ps_tooltip strong {
+	font-size: 1.2em;
+}
+#ps_websites {
+	left: 50%;
+	position: absolute;
+	top: 50%;
+	z-index: 1005;
+}
+#ps_websites .ps_label {
+	color: #fff;
+	display: none;
+	font-size: 2em;
+	left: 0;
+	position: absolute;
+	top: 0;
+	white-space: nowrap;
+}
+#ps_websites ul {
+	list-style: none;
+	position: relative;
+	z-index: 1010;
+	width:400px;
+}
+#ps_websites li {
+	display: block;
+	float: left;
+	margin: 0 30px 40px 0;
+}
+#ps_websites a {
+	display: block;
+}
+#ps_overlay {
+	background: #000;
+	height: 100%;
+	left: 0;
+	position: absolute;
+	top: 0;
+	width: 100%;
+	z-index: 1005;
+}

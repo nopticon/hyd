@@ -62,7 +62,6 @@ class _events extends downloads {
 			$sql = 'SELECT *
 				FROM _events
 				WHERE id = ?
-					AND UNIX_TIMESTAMP() > date 
 				ORDER BY id';
 			if ($row = sql_fieldrow(sql_filter($sql, $event_id))) {
 				$row['id'] = intval($row['id']);
@@ -151,7 +150,7 @@ class _events extends downloads {
 		
 		$mode = request_var('mode', '');
 		
-		if ($mode == 'save' || $mode == 'view' || $mode == 'fav') {
+		if ($mode == 'view' || $mode == 'fav') {
 			$download_id = request_var('download_id', 0);
 			
 			if (!$download_id) {
@@ -162,7 +161,7 @@ class _events extends downloads {
 				$sql = 'SELECT e.*, COUNT(e2.image) AS prev_images
 					FROM _events_images e, _events_images e2
 					WHERE e.event_id = ?
-						AND e.event_id = e2.event_id 
+						AND e.event_id = e2.event_id
 						AND e.image = ?
 						AND e2.image <= ?
 					GROUP BY e.image 
@@ -183,22 +182,6 @@ class _events extends downloads {
 		}
 		
 		switch ($mode) {
-			case 'save':
-				if (!$this->data['allow_download'] || !$imagedata['allow_dl']) {
-					redirect(s_link('events', array($this->data['id'], $imagedata['image'], 'view')));
-				}
-				
-				$this->filename = $this->data['title'] . '_' . $imagedata['image'] . '.jpg';
-				$this->filepath = 'data/events/gallery/' . $this->data['id'] . '/' . $imagedata['image'] . '.jpg';
-				
-				$sql = 'UPDATE _events_images
-					SET downloads = downloads + 1
-					WHERE event_id = ?
-						AND image = ?';
-				sql_query(sql_filter($sql, $this->data['id'], $imagedata['image']));
-				
-				$this->dl_file();				
-				break;
 			case 'fav':
 				if (!$user->data['is_member']) {
 					do_login();
@@ -225,7 +208,6 @@ class _events extends downloads {
 					sql_query($sql);
 				}
 				redirect(s_link('events', array($this->data['id'], $imagedata['image'], 'view')));
-				
 				break;
 			case 'view':
 			default:
@@ -252,13 +234,7 @@ class _events extends downloads {
 							'PID' => $imagedata['image'])
 						);
 					}
-					
-					if ($this->data['allow_download'] && $imagedata['allow_dl']) {
-						$template->assign_block_vars('selected.download', array(
-							'URL' => s_link('events', array($this->data['id'], $imagedata['image'], 'save')))
-						);
-					}
-					
+
 					$is_fav = false;
 					if ($user->data['is_member']) {
 						$sql = 'SELECT member_id
@@ -266,7 +242,7 @@ class _events extends downloads {
 							WHERE event_id = ?
 								AND image_id = ?
 								AND member_id = ?';
-						if (sql_field(sql_filter($sql, $this->data['id'], $imagedata['image'], $user->data['user_id']))) {
+						if (sql_field(sql_filter($sql, $this->data['id'], $imagedata['image'], $user->data['user_id']), 'member_id', 0)) {
 							$is_fav = true;
 						}
 					}
@@ -281,15 +257,11 @@ class _events extends downloads {
 						$sql = 'UPDATE _events SET views = views + 1
 							WHERE id = ?';
 						sql_query(sql_filter($sql, $this->data['id']));
-						
-						$this->data['views']++;
 					}
 				}
 				
-				//
-				// GET THUMBNAILS
-				//
-				$t_per_page = 12;
+				// Get event thumbnails
+				$t_per_page = 8;
 				
 				if ($mode == 'view' && $download_id) {
 					$val = 1;
@@ -314,52 +286,71 @@ class _events extends downloads {
 							$exception_sql . '
 						ORDER BY g.image ASC 
 						LIMIT ??, ??';
-					if ($result = sql_rowset(sql_filter($sql, $this->data['id'], $t_offset, $t_per_page))) {
-						build_num_pagination(s_link('events', array($this->data['id'], 's%d')), $this->data['images'], $t_per_page, $t_offset, 'IMG_');
-						
-						$template->assign_block_vars('thumbnails', array());
-						
-						foreach ($result as $row) {
-							$template->assign_block_vars('thumbnails.item', array(
-								'URL' => s_link('events', array($this->data['id'], $row['image'], 'view')),
-								'IMAGE' => SDATA . 'events/gallery/' . $this->data['id'] . '/thumbnails/' . $row['image'] . '.jpg',
-								'RIMAGE' => SDATA . 'events/gallery/' . $this->data['id'] . '/' . $row['image'] . '.jpg',
-								'FOOTER' => $row['image_footer'],
-								'WIDTH' => $row['width'], 
-								'HEIGHT' => $row['height'])
-							);
-						}
-					} else {
+					if (!$result = sql_rowset(sql_filter($sql, $this->data['id'], $t_offset, $t_per_page))) {
 						redirect(s_link('events', $this->data['id']));
 					}
+					
+					build_num_pagination(s_link('events', array($this->data['id'], 's%d')), $this->data['images'], $t_per_page, $t_offset, 'IMG_');
+					
+					$template->assign_block_vars('thumbnails', array());
+					
+					foreach ($result as $row) {
+						$template->assign_block_vars('thumbnails.item', array(
+							'URL' => s_link('events', array($this->data['id'], $row['image'], 'view')),
+							'IMAGE' => SDATA . 'events/gallery/' . $this->data['id'] . '/thumbnails/' . $row['image'] . '.jpg',
+							'RIMAGE' => SDATA . 'events/gallery/' . $this->data['id'] . '/' . $row['image'] . '.jpg',
+							'FOOTER' => $row['image_footer'],
+							'WIDTH' => $row['width'], 
+							'HEIGHT' => $row['height'])
+						);
+					}
+					
+					// Credits
+					$sql = 'SELECT *
+						FROM _events_colab c, _members m
+						WHERE c.colab_event = ?
+							AND c.colab_uid = m.user_id
+						ORDER BY m.username';
+					if ($result = sql_rowset(sql_filter($sql, $this->data['id']))) {
+						$template->assign_block_vars('collab', array());
+						
+						foreach ($result as $row) {
+							$template->assign_block_vars('collab.row', array(
+								'PROFILE' => s_link('m', $row['username_base']),
+								'USERNAME' => $row['username'])
+							);
+						}
+					}
 				} else {
-					$template->assign_block_vars('no_images', array());
+					$template->assign_block_vars('event_flyer', array(
+						'IMAGE_SRC' => SDATA . 'events/future/' . $this->data['id'] . '.jpg')
+					);
 				}
 				
-				// Credits
-				$sql = 'SELECT *
-					FROM _events_colab c, _members m
-					WHERE c.colab_event = ?
-						AND c.colab_uid = m.user_id
-					ORDER BY m.username';
-				$result = sql_rowset(sql_filter($sql, $this->data['id']));
+				list($d, $m, $y) = explode(' ', gmdate('j n Y', time() + $user->timezone + $user->dst));
+				$midnight = gmmktime(0, 0, 0, $m, $d, $y) - $user->timezone - $user->dst;
 				
-				$colabs = array();
-				foreach ($result as $row) {
-					$colabs[] = '<a href="' . s_link('m', $row['username_base']) . '">' . $row['username'] . '</a>';
-				}
+				$event_date = $user->format_date($this->data['date'], 'j F Y');
 				
-				if (!empty($this->data['event_colab'])) {
-					$colabs[] = $this->data['event_colab'];
+				if ($this->data['date'] >= $midnight) {
+					if ($this->data['date'] >= $midnight && $this->data['date'] < $midnight + 86400) {
+						$event_date_format = $user->lang['EVENT_TODAY'];
+					} else if ($this->data['date'] >= $midnight + 86400 && $this->data['date'] < $midnight + (86400 * 2)) {
+						$event_date_format = $user->lang['EVENT_TOMORROW'];
+					} else {
+						$event_date_format = sprintf($user->lang['EVENT_AFTER'], $event_date);
+					}
+				} else {
+					if ($this->data['date'] >= ($midnight - 86400)) {
+						$event_date_format = $user->lang['EVENT_YESTERDAY'];
+					} else {
+						$event_date_format = sprintf($user->lang['EVENT_BEFORE'], $event_date);
+					}
 				}
 				
 				$template->assign_vars(array(
-					'TITLE' => $this->data['title'],
-					'IMAGES' => $this->data['images'],
-					'DATE' => $user->format_date($this->data['date'], 'd F Y'),
-					'VIEWS' => $this->data['views'],
-					'POSTS' => $this->data['posts'],
-					'COLAB' => implode(', ', $colabs))
+					'EVENT_NAME' => $this->data['title'],
+					'EVENT_DATE' => $event_date_format)
 				);
 				
 				require('./interfase/comments.php');
@@ -387,18 +378,10 @@ class _events extends downloads {
 					$comments->view($posts_offset, 'ps', $this->data['posts'], $config['s_posts'], '', 'MSG_', 'TOPIC_');
 				}
 				
-				//
 				// Posting box
-				//
-				$template->assign_block_vars('posting_box', array());
-				
 				if ($user->data['is_member']) {
-					$template->assign_block_vars('posting_box.box', array(
+					$template->assign_block_vars('posting_box', array(
 						'REF' => $comments_ref)
-					);
-				} else {
-					$template->assign_block_vars('posting_box.only_registered', array(
-						'LEGEND' => sprintf($user->lang['LOGIN_TO_POST'], '', s_link('my', 'register')))
 					);
 				}
 				
@@ -477,8 +460,8 @@ class _events extends downloads {
 					'URL' => s_link('events', $item['id']),
 					'TITLE' => $item['title'],
 					'IMAGE' => SDATA . 'events/gallery/' . $item['id'] . '/thumbnails/' . $random_images[$item['id']] . '.jpg',
-					'DATETIME' => $user->format_date($item['date'], $user->lang['DATE_FORMAT'])
-				));
+					'DATETIME' => $user->format_date($item['date'], $user->lang['DATE_FORMAT']))
+				);
 			}
 			
 			build_num_pagination(s_link('events', 'g%d'), $total_gallery, 4, $gallery_offset);
@@ -501,10 +484,10 @@ class _events extends downloads {
 						'DATE' => $user->format_date($item['date']),
 						'THUMBNAIL' => SDATA . 'events/future/thumbnails/' . $item['id'] . '.jpg',
 						'SRC' => SDATA . 'events/future/' . $item['id'] . '.jpg',
-						'U_TOPIC' => ($item['event_topic']) ? s_link('topic', $item['event_topic']) : '')
+						'U_TOPIC' => s_link('events', $item['id']))
 					);
-				} // FOREACH
-			} // FOREACH
+				}
+			}
 		}
 	}
 }
