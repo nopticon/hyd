@@ -55,6 +55,8 @@ switch ($mode) {
 			
 			do_login('', $adm);
 		}
+
+		do_login();
 		
 		redirect(s_link());
 		break;

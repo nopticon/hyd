@@ -30,15 +30,13 @@ form, img {
 	margin: 0;
 	padding: 0;
 	border: 0;
+	vertical-align: middle;
 }
 input, textarea, select {
 	background: #40474A;
 	border: 0;
 	padding: 2px;
 	box-shadow: 1px 1px 1px #111;
-}
-img {
-	vertical-align: middle;
 }
 hr {
 	display: block;
@@ -73,46 +71,17 @@ hr {
 	height: 98px;
 	background: url(images/grad.png) repeat-x;
 }
-#header h1 {
-	width: 300px;
-	height: 51px;
-	margin-left: 15px;
-	float: left;
-}
-#header h1 a {
-	display: block;
-	width: 300px;
-	height: 47px;
-	/*background: url(images/header.gif) no-repeat;*/
-	text-indent: -9000px;
-}
-#header h1 a:hover {
-	background-position: 0 -47px;
-}
-#header h2 {
-	width: 74px;
-	height: 51px;
-	margin-left: 295px;
-	text-indent: -9000px;
-}
-#header h2 a {
-	display: block;
-	width: 101px;
-	height: 51px;
-}
 #header_in {
-	padding-top: 5px;
-	padding-left: 10px;
-	height: 93px;
-	background: url(images/curve.png) no-repeat bottom;
+	padding: 5px 0 10px 10px;
+	border-bottom: 2px solid #4c5558;
+	/*height: 93px;*/
+	/*background: url(images/curve.png) no-repeat bottom;*/
 }
 
 #footer {
 	width: 940px;
 	margin: 0 auto;
-	/*margin: 20px 10px 0 10px;*/
 	padding: 22px 0 25px 0;
-	/*border-top: 1px solid #4c5558;*/
 }
 #search {
 	margin-top: 11px;
@@ -130,8 +99,74 @@ hr {
 	font-weight: normal;
 }
 
+#app {
+	display: block;
+	float: left;
+	background: #aaa;
+}
+#app h1 {
+	width: 300px;
+	height: 51px;
+	margin-left: 0;
+	float: left;
+}
+#app h1 a {
+	display: block;
+	width: 300px;
+	height: 47px;
+	border: 1px solid #ccc;
+	/*background: url(images/header.gif) no-repeat;*/
+	text-indent: -9000px;
+}
+#app h1 a:hover {
+	background-position: 0 -47px;
+}
+#header h2 {
+	width: 74px;
+	height: 51px;
+	text-indent: -9000px;
+}
+#app h2 a {
+	display: block;
+	width: 101px;
+	height: 51px;
+}
+
+#menu {
+	display: block;
+	float: left;
+	margin-top: 1px;
+}
+#menu ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+#menu ul li {
+	float: left;
+	margin-right: 15px;
+}
+#menu ul li a {
+	display: inline;
+}
+#menu ul li a:hover {
+	
+}
+
+#sign {
+	float: right;
+	background: #ccc;
+}
+#sign ul li {
+	
+}
+#sign ul li ul {
+	display: none;
+}
+
 #mcontrols {
-	width: 655px;
+	width: 100%;
 	float: right;
 	margin-top: 10px;
 	text-align: right;
@@ -148,12 +183,6 @@ hr {
 	float: left;
 	margin-left: 15px;
 }
-#logout {
-	margin-left: 20px !important;
-}
-#logout a {
-	color: #70a416;
-}
 #mcontrols input {
 	background: #40474A;
 	color: #d0ced1;
@@ -164,26 +193,6 @@ hr {
 #mcontrols input.submit {
 	padding: 0;
 	font-weight: normal;
-}
-
-#menu {
-	margin-top: 1px;
-}
-#menu ul {
-	list-style: none;
-	margin: 0;
-	padding: 0;
-	border: 0;
-}
-#menu ul li {
-	float: left;
-	margin-left: 15px;
-}
-#menu ul li a {
-	display: inline;
-}
-#menu ul li a:hover {
-	
 }
 
 .share {

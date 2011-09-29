@@ -26,16 +26,30 @@ $(function() {
 		limit: 250
 	});
 	
-	$(function(){
-		$.prettySociable({
-			share_on_label: 'Compartir en ',
-			share_label: 'Comparte',
-			hover_padding: 0,
-			tooltip: {
-				offsetTop:500,
-				offsetLeft: 0
-			}
-		});
+	$('ul[id^=expand_').hide();
+	
+	$('.expand').click(function() {
+		$('#expand_' + $(this).attr('id')).toggle('slow');
+		return false;
+	});
+	
+	/*
+	$('.expand').hide();
+	
+	$('.expand').click(function() {
+		alert($(this).attr('id') + ' ' + $(this).id + ' ' + this.id);
+		//$('#expand_').toggle('slow');
+		return false;
+	});
+	*/
+	$.prettySociable({
+		share_on_label: 'Compartir en ',
+		share_label: 'Comparte',
+		hover_padding: 0,
+		tooltip: {
+			offsetTop:500,
+			offsetLeft: 0
+		}
 	});
 	
 	$('.share').each(function() {
@@ -100,12 +114,6 @@ $(function() {
 				break;
 		}
 	}
-	
-	$('#account').hide();
-	$('#account_me').click(function() {
-		$('#account').toggle('slow');
-		return false;
-	});
 	
 	if (xka) {
 		// Keep alive

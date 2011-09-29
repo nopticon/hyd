@@ -311,21 +311,15 @@ if (!$country = $cache->get('country'))
 	$cache->save('country', $country);
 }
 
-//
-// GeoIP
-//
-include('./interfase/geoip.php');
-$gi = geoip_open("./interfase/GeoIP.dat", GEOIP_STANDARD);
-
-$geoip_code = strtolower(geoip_country_code_by_addr($gi, $user->ip));
-
 $country_codes = array();
 foreach ($country as $item)
 {
 	$country_codes[$item['country_short']] = $item['country_id'];
 }
 
-$v_fields['country'] = ($v_fields['country']) ? $v_fields['country'] : ((isset($country_codes[$geoip_code])) ? $country_codes[$geoip_code] : $country_codes['gt']);
+$country_code = strtolower(geoip_country_code_by_name($user->ip));
+
+$v_fields['country'] = ($v_fields['country']) ? $v_fields['country'] : ((isset($country_codes[$country_code])) ? $country_codes[$country_code] : $country_codes['gt']);
 foreach ($country as $item)
 {
 	$template->assign_block_vars('country', array(
@@ -411,13 +405,5 @@ foreach ($fields as $k => $v)
 }
 
 page_layout('NEW_ACCOUNT_SUBJECT', 'subscribe_body', $tv);
-
-//
-// FUNCTIONS
-//
-function leading_zero($number)
-{
-	return (($number < 10) ? '0' : '') . $number;
-}
 
 ?>

@@ -21,6 +21,9 @@ if (!is_array($lang) || empty($lang)) {
 }
 
 $lang += array(
+	'APPLICATION' => 'Rock Republik',
+	'APPLICATION_DESC' => 'La comunidad m&aacute;s grande de Rock en Guatemala',
+
 	'ENCODING' => "iso-8859-1",
 	'DIRECTION' => '',
 	'DATE_FORMAT' => 'd M Y',
@@ -74,6 +77,8 @@ $lang += array(
 	'SAVE_CHANGES' => 'Guardar cambios',
 	'FAN' => 'fan',
 	'FANS' => 'fans',
+	'NAVIGATION' => 'Navegaci&oacute;n',
+	'SEARCH' => 'B&uacute;squeda',
 	
 	'PAGES_PREV' => '&lt;&lt; <strong>Anteriores %d</strong>',
 	'PAGES_NEXT' => '<strong>Siguientes %d</strong> &gt;&gt;',

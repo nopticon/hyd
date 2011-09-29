@@ -3,35 +3,62 @@
 
 <div id="header">
 <div id="header_in" class="float-holder ie-widthfix">
-	<h1><a href="{U_COVER}" title="Rock Republik">Rock Republik</a></h1>
-	<h2>La comunidad m&aacute;s grande de Rock en Guatemala</h2>
+	<div id="app">
+		<h1><a href="{U_COVER}" title="{L_APPLICATION}">{L_APPLICATION}</a></h1>
+		<h2>{L_APPLICATION_DESC}</h2>
+		
+		<div id="menu">
+			<h2 class="z">{L_NAVIGATION}</h2>
+			<ul>
+				<!-- IF IS_MEMBER -->
+				<li><a class="expand" id="account" href="/">{S_USERNAME} &#9660;</a>
+					<ul id="expand_account">
+						<li><a href="{U_PROFILE}">{S_USERNAME}</a></li>
+						<li><a href="{U_EDITPROFILE}">{L_PREFERENCES}</a></li>
+						<!-- IF S_CONTROLPANEL != '' -->
+						<li><a href="{S_CONTROLPANEL}">{L_CONTROL_PANEL}</a></li>
+						<!-- ENDIF -->
+						<li><a href="{U_SESSION}">{L_LOGOUT2}</a></li>
+					</ul>
+				</li>
+				<!-- ENDIF -->
+				<li><a href="{U_WHATS_NEW}" title="{S_UNREAD_ITEMS}">{L_THENEW}</a></li>
+				<li><a href="{U_ARTISTS}" title="{L_UB}">{L_UB}</a></li>
+				<li><a href="{U_EVENTS}" title="{L_UE}">{L_UE}</a></li>
+				<li><a href="{U_FORUM}" title="{L_FORUM}">{L_FORUM}</a></li>
+				<li><a href="{U_COMMUNITY}" title="{L_COMMUNITY}">{L_COMMUNITY}</a></li>
+				<li><a href="{U_RADIO}" title="{L_RADIO}">{L_RADIO}</a></li>
+				<li><a href="{U_ALLIES}" title="{L_ALLIES}">{L_ALLIES}</a></li>
+				<li><a class="expand" id="facebook" href="/">Facebook</a></li>
+				<li><a class="expand" id="twitter" href="/">Twitter</a></li>
+			</ul>
+		</div>
+	</div>
 	
-	<div id="menu">
-		<h2 class="z">Navegaci&oacute;n</h2>
+	<!-- IF ! IS_MEMBER -->
+	<div id="sign">
 		<ul>
-			<!-- IF IS_MEMBER -->
-			<li><a href="{U_PROFILE}">{S_USERNAME}</a> <span id="account_me">&#9660;</span>
-				<ul id="account">
-					<!-- IF S_CONTROLPANEL != '' --><li><a href="{S_CONTROLPANEL}">{L_CONTROL_PANEL}</a></li><!-- ENDIF -->
-					<li><a href="{U_EDITPROFILE}">{L_PREFERENCES}</a></li>
-					<li><a href="{U_SESSION}">{L_LOGOUT2}</a></li>
+			<li><a href="{U_REGISTER}">{L_REGISTER}</a></li>
+			<li><a href="{U_SESSION}">{L_LOGIN2}</a>
+				<ul>
+					<li>
+						<form action="{U_SESSION}" method="post">
+						<input type="hidden" name="ref" value="{S_REDIRECT}" />
+						{L_USERNAME}: <input type="text" name="username" maxlength="25" value="" /> 
+						{L_PASSWORD}: <input type="password" name="password" maxlength="32" value="" /> 
+						<input class="special" type="submit" name="login" value="{L_LOGIN}" />
+						</form>
+					</li>
 				</ul>
 			</li>
-			<!-- ENDIF -->
-			<li><a href="{U_WHATS_NEW}" title="{S_UNREAD_ITEMS}">{L_THENEW}</a></li>
-			<li><a href="{U_ARTISTS}" title="{L_UB}">{L_UB}</a></li>
-			<li><a href="{U_EVENTS}" title="{L_UE}">{L_UE}</a></li>
-			<li><a href="{U_FORUM}" title="{L_FORUM}">{L_FORUM}</a></li>
-			<li><a href="{U_COMMUNITY}" title="{L_COMMUNITY}">{L_COMMUNITY}</a></li>
-			<li><a href="{U_RADIO}" title="{L_RADIO}">{L_RADIO}</a></li>
-			<li><a href="{U_ALLIES}" title="{L_ALLIES}">{L_ALLIES}</a></li>
 		</ul>
 	</div>
+	<!-- ENDIF -->
 	
 	<!-- BEGIN hide -->
 	<!-- IF IS_MEMBER -->
 	<div id="search" class="cols5_left_2 float_left">
-	<h2 class="z">B&uacute;squeda</h2>
+	<h2 class="z">{L_SEARCH}</h2>
 	<form action="http://www.google.com/cse" id="cse-search-box" target="_blank">
 		<input type="hidden" name="cx" value="011451472206911963378:6mdnbpfkyi8" />
 		<input type="hidden" name="ie" value="UTF-8" />
@@ -40,19 +67,6 @@
 	</div>
 	<!-- ENDIF -->
 	<!-- END hide -->
-	
-	<div id="mcontrols">
-		<h2 class="z">Control de usuario</h2>
-		<!-- ! IF IS_MEMBER -->
-		<form action="{U_SESSION}" method="post">
-		<input type="hidden" name="ref" value="{S_REDIRECT}" />
-		<a class="submitd" href="{U_REGISTER}">{L_REGISTER}</a>&nbsp;&nbsp;
-		{L_USERNAME}: <input class="normal" type="text" name="username" size="15" maxlength="25" value="" /> 
-		{L_PASSWORD}: <input type="password" name="password" size="15" maxlength="32" value="" /> 
-		<input class="submitd" type="submit" name="login" value="{L_LOGIN}" />
-		</form>
-		<!-- ENDIF -->
-	</div>
 </div>
 </div>
 
