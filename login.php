@@ -22,6 +22,7 @@ require('./interfase/common.php');
 $user->init(false);
 
 $mode = request_var('mode', '');
+
 switch ($mode) {
 	case 'login':
 		if ($user->data['is_member'] && !isset($_POST['admin'])) {
@@ -47,7 +48,6 @@ switch ($mode) {
 						if (!$row['user_country'] || !$row['user_location'] || !$row['user_gender'] || !$row['user_birthday'] || !$row['user_avatar']) {
 							$ref = s_link('my', 'profile');
 						}
-						
 						redirect($ref);
 					}
 				}

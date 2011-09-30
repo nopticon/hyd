@@ -180,18 +180,23 @@ hr {
 	font-weight: normal;
 }
 #search_result {
+	display: none;
 	background: #444;
 	color: #EEE;
 	border-right: 1px solid #383838;
 	border-left: 1px solid #383838;
 	border-bottom: 1px solid #383838;
 	position: absolute;
-	right: 41px;
+	right: 14px;
 	top: 23px;
 	height: 250px;
 	width: 171px;
 	padding: 3px;
 	overflow: auto;
+}
+.defaultInput {
+	font-size: 10px;
+	color: #BBB !important;
 }
 .webResult {
 	margin-bottom: 10px;

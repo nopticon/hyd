@@ -1,89 +1,57 @@
 $(document).ready(function(){
-	
 	var config = {
-		siteURL		: 'rockrepublik.net',	// Change this to your site
-		searchSite	: true,
-		type		: 'web',
-		append		: false,
-		perPage		: 8,			// A maximum of 8 is allowed by Google
-		page		: 0				// The start page
+		siteURL: 'rockrepublik.net',
+		searchSite: true,
+		type: 'web',
+		append: false,
+		perPage: 8,
+		page: 0
 	}
 	
-	// The small arrow that marks the active search icon:
-	var arrow = $('<span>',{className:'arrow'}).appendTo('ul.icons');
-	
-	$('ul.icons li').click(function(){
-		var el = $(this);
-		
-		if(el.hasClass('active')){
-			// The icon is already active, exit
-			return false;
-		}
-		
-		el.siblings().removeClass('active');
-		el.addClass('active');
-		
-		// Move the arrow below this icon
-		arrow.stop().animate({
-			left		: el.position().left,
-			marginLeft	: (el.width()/2)-4
-		});
-		
-		// Set the search type
-		config.type = el.attr('data-searchType');
-		$('#more').fadeOut();
-	});
-	
-	// Adding the site domain as a label for the first radio button:
-	$('#siteNameLabel').append(' '+config.siteURL);
-	
-	// Marking the Search tutorialzine.com radio as active:
-	$('#searchSite').click();	
-	
-	// Marking the web search icon as active:
-	$('li.web').click();
-	
 	// Focusing the input text box:
-	$('#s').focus();
-
-	$('#searchForm').submit(function(){
-		googleSearch();
-		return false;
-	});
+	//$('#s').focus();
+	$('#sb').hide();
 	
-	$('#searchSite,#searchWeb').change(function(){
-		// Listening for a click on one of the radio buttons.
-		// config.searchSite is either true or false.
-		config.searchSite = this.id == 'searchSite';
+	$('#s').keyup(function() {
+		if ($.trim($(this).val())) {
+			clearTimeout($.data(this, 'timer'));
+			var wait = setTimeout(googleSearch, 500);
+			$(this).data('timer', wait);
+		} else {
+			$('#search_result').hide();
+		}
 	});
-	
 	
 	function googleSearch(settings){
-		// If no parameters are supplied to the function,
-		// it takes its defaults from the config object above:
 		settings = $.extend({},config,settings);
 		settings.term = settings.term || $('#s').val();
 		
+		if (!$.trim(settings.term)) {
+			return false;
+		}
+		
 		if(settings.searchSite){
-			// Using the Google site:example.com to limit the search to a
-			// specific domain:
-			settings.term = 'site:'+settings.siteURL+' '+settings.term;
+			settings.term = 'site:' + settings.siteURL + ' ' + settings.term;
 		}
 		
 		// URL of Google's AJAX search API
-		var apiURL = 'http://ajax.googleapis.com/ajax/services/search/'+settings.type+'?v=1.0&callback=?';
+		var apiURL = 'http://ajax.googleapis.com/ajax/services/search/' + settings.type + '?v=1.0&callback=?';
 		var resultsDiv = $('#search_result');
 		
 		$.getJSON(apiURL,{q:settings.term,rsz:settings.perPage,start:settings.page*settings.perPage},function(r){
 			var results = r.responseData.results;
 			$('#more').remove();
 			
-			if(results.length){
+			if (resultsDiv.is(':hidden')) {
+				resultsDiv.show();
+			}
+			
+			if (results.length){
 				// If results were returned, add them to a pageContainer div,
 				// after which append them to the #search_result:
 				var pageContainer = $('<div>',{className:'pageContainer'});
 				
-				for(var i=0;i<results.length;i++){
+				for (var i = 0 ;i < results.length; i++){
 					// Creating a new result object and firing its toString method:
 					pageContainer.append(new result(results[i]) + '');
 				}

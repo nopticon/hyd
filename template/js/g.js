@@ -1,4 +1,5 @@
 <!-- INCLUDE js/j.js -->
+<!-- INCLUDE js/j.value.js -->
 <!-- INCLUDE js/j.periodic.js -->
 <!-- INCLUDE js/j.url.js -->
 <!-- INCLUDE js/j.textarea.js -->
@@ -16,6 +17,12 @@ $(function() {
 	var $d;
 	var doctitle = document.title;
 	var docurl = window.location.href;
+	
+	//$('#s').defaultValue('Buscar en Rock Republik');
+	
+	//$('#s').defaultText();
+	//$('#searchForm').jQLiteID();
+	$('form').jQLiteID();
 	
 	$('ul[id^="expand_"]').hide();
 	
