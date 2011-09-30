@@ -72,10 +72,8 @@ hr {
 	background: url(images/grad.png) repeat-x;
 }
 #header_in {
-	padding: 5px 0 10px 10px;
-	border-bottom: 2px solid #4c5558;
-	/*height: 93px;*/
-	/*background: url(images/curve.png) no-repeat bottom;*/
+	padding: 5px 0 8px 10px;
+	border-bottom: 1px solid #4c5558;
 }
 
 #footer {
@@ -83,31 +81,14 @@ hr {
 	margin: 0 auto;
 	padding: 22px 0 25px 0;
 }
-#search {
-	margin-top: 11px;
-	width: 220px;
-	text-align: left;
-}
-#search input {
-	background: #40474A;
-	color: #d0ced1;
-	margin: 0 3px 0 5px;
-	padding: 1px;
-}
-#search input.submit {
-	padding: 1px;
-	font-weight: normal;
-}
 
 #app {
 	display: block;
 	float: left;
-	background: #aaa;
 }
 #app h1 {
 	width: 300px;
 	height: 51px;
-	margin-left: 0;
 	float: left;
 }
 #app h1 a {
@@ -116,7 +97,7 @@ hr {
 	height: 47px;
 	border: 1px solid #ccc;
 	/*background: url(images/header.gif) no-repeat;*/
-	text-indent: -9000px;
+	text-indent: -10000px;
 }
 #app h1 a:hover {
 	background-position: 0 -47px;
@@ -154,45 +135,97 @@ hr {
 	
 }
 
-#sign {
+#sign, #search {
 	float: right;
-	background: #ccc;
+	margin: 8px 8px 0 0;
+}
+#sign ul {
+	margin: 0;
+	padding: 0;
 }
 #sign ul li {
-	
+	float: left;
+	margin-top: 0;
+	margin-left: 15px;
+	list-style: none;
+}
+#sign ul li a {
+	padding: 2px;
+	background: #444;
+	color: #EEE;
+	border: 1px solid #383838;
+	border-radius: 5px;
 }
 #sign ul li ul {
 	display: none;
 }
-
-#mcontrols {
-	width: 100%;
-	float: right;
-	margin-top: 10px;
-	text-align: right;
-}
-#mcontrols ul {
-	float: right;
-	list-style: none;
-	margin: 0 0 0 0;
-	padding: 0;
+#search fieldset {
 	border: 0;
-	margin-right: 10px;
 }
-#mcontrols ul li {
-	float: left;
-	margin-left: 15px;
+#search {
+	position: relative;
+	left: 0;
+	top: 0;
 }
-#mcontrols input {
-	background: #40474A;
+#search input {
+	background: #444;
+	border: 0px solid #383838;
+	box-shadow: 0 !important;
 	color: #d0ced1;
-	border: 1px solid #4c5558;
-	margin: 0 5px 0 5px;
+	margin: 0 3px 0 5px;
 	padding: 1px;
 }
-#mcontrols input.submit {
-	padding: 0;
+#search input.submit {
+	padding: 1px;
 	font-weight: normal;
+}
+#search_result {
+	background: #444;
+	color: #EEE;
+	border-right: 1px solid #383838;
+	border-left: 1px solid #383838;
+	border-bottom: 1px solid #383838;
+	position: absolute;
+	right: 41px;
+	top: 23px;
+	height: 250px;
+	width: 171px;
+	padding: 3px;
+	overflow: auto;
+}
+.webResult {
+	margin-bottom: 10px;
+}
+.webResult h2 {
+	width: 98% !important;
+	height: auto !important;
+	background-color: #5D6F7B;
+	font-size: 11px;
+	font-weight: normal;
+	padding: 2px;
+	border-radius: 3px;
+	text-indent: 0 !important;
+}
+.webResult h2 a {
+	color: #eee;
+	border: none;
+}
+.webResult p {
+	/*line-height: 1.5;*/
+	padding: 5px;
+}
+.webResult p b {
+	color: #FFF;
+}
+.webResult > a {
+	margin-left: 5px;
+}
+
+#facebook {
+	color: #65A8D0;
+}
+#twitter {
+	color: #9AE4E8;
 }
 
 .share {
@@ -671,18 +704,46 @@ a.submitd {
 	padding: 1px;
 }
 
-#articles { }
-#articles ul li { display: block; }
-#articles ul li a { font-size: 11pt; color: #70a416; }
-#articles ul li img { }
-#articles ul li .v { float: left; width: 85px; height: 60px; text-align: center; margin-top: 5px; }
-#articles ul li .s { margin-top: 5px; }
+#articles {
+}
+#articles ul li {
+	display: block;
+}
+#articles ul li a {
+	font-size: 11pt; color: #76C000;
+}
+#articles ul li .v {
+	float: left;
+	width: 85px;
+	height: 60px;
+	text-align: center;
+	margin-top: 5px;
+}
+#articles ul li .s {
+	margin-top: 5px;
+}
 
-#poll .caption { margin: 5px 0 5px 0; }
-#poll .bar { display: block; border: 1px solid #4c5558; height: 8px; }
-#poll .bar div { display: block; height: 8px; line-height: 8px; background: #70a416; border-right: 1px solid #4c5558; }
-#poll .a_right { margin-top: 10px; }
-#poll .a_right a { color: #70a416; }
+#poll .caption {
+	margin: 5px 0 5px 0;
+}
+#poll .bar {
+	display: block;
+	border: 1px solid #4c5558;
+	height: 8px;
+}
+#poll .bar div {
+	display: block;
+	height: 8px;
+	line-height: 8px;
+	background: #70a416;
+	border-right: 1px solid #4c5558;
+}
+#poll .a_right {
+	margin-top: 10px;
+}
+#poll .a_right a {
+	color: #70a416;
+}
 
 .li_lines, .li_lines_1 { border-top: 1px solid #4c5558; }
 .li_lines:first-child { border:0; }

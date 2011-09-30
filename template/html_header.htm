@@ -11,7 +11,7 @@
 			<h2 class="z">{L_NAVIGATION}</h2>
 			<ul>
 				<!-- IF IS_MEMBER -->
-				<li><a class="expand" id="account" href="/">{S_USERNAME} &#9660;</a>
+				<li><a class="expand" id="account" href="{U_PROFILE}">{S_USERNAME} &#9660;</a>
 					<ul id="expand_account">
 						<li><a href="{U_PROFILE}">{S_USERNAME}</a></li>
 						<li><a href="{U_EDITPROFILE}">{L_PREFERENCES}</a></li>
@@ -28,19 +28,32 @@
 				<li><a href="{U_FORUM}" title="{L_FORUM}">{L_FORUM}</a></li>
 				<li><a href="{U_COMMUNITY}" title="{L_COMMUNITY}">{L_COMMUNITY}</a></li>
 				<li><a href="{U_RADIO}" title="{L_RADIO}">{L_RADIO}</a></li>
+				<!-- BEGIN hide -->
 				<li><a href="{U_ALLIES}" title="{L_ALLIES}">{L_ALLIES}</a></li>
-				<li><a class="expand" id="facebook" href="/">Facebook</a></li>
-				<li><a class="expand" id="twitter" href="/">Twitter</a></li>
+				<!-- END hide -->
+				<li><a class="expand" id="facebook" href="//www.facebook.com/rockrepublik">Facebook</a></li>
+				<li><a class="expand" id="twitter" href="//www.twitter.com/rockrepublik">Twitter</a></li>
 			</ul>
 		</div>
 	</div>
 	
-	<!-- IF ! IS_MEMBER -->
-	<div id="sign">
+	<!-- IF IS_MEMBER -->
+	<div id="search" class="ie-widthfix float-holder">
+	<form id="searchForm" method="post">
+		<fieldset>
+			<input id="s" type="text">
+			<input type="submit" value=" &gt; " id="submitButton" />
+		</fieldset>
+	</form>
+	
+	<div id="search_result" class="ie-widthfix float-holder"></div>	
+	</div>
+	<!-- ELSE -->
+	<div id="sign" class="ie-widthfix float-holder">
 		<ul>
-			<li><a href="{U_REGISTER}">{L_REGISTER}</a></li>
-			<li><a href="{U_SESSION}">{L_LOGIN2}</a>
-				<ul>
+			<li><a class="expand" id="signup" href="{U_REGISTER}">{L_REGISTER}</a></li>
+			<li><a class="expand" id="signin" href="{U_SESSION}">{L_LOGIN2}</a>
+				<ul id="expand_signin">
 					<li>
 						<form action="{U_SESSION}" method="post">
 						<input type="hidden" name="ref" value="{S_REDIRECT}" />
@@ -54,19 +67,6 @@
 		</ul>
 	</div>
 	<!-- ENDIF -->
-	
-	<!-- BEGIN hide -->
-	<!-- IF IS_MEMBER -->
-	<div id="search" class="cols5_left_2 float_left">
-	<h2 class="z">{L_SEARCH}</h2>
-	<form action="http://www.google.com/cse" id="cse-search-box" target="_blank">
-		<input type="hidden" name="cx" value="011451472206911963378:6mdnbpfkyi8" />
-		<input type="hidden" name="ie" value="UTF-8" />
-		<input type="text" name="q" size="20" class="normal" /> <input type="submit" name="sa" value="&gt;&gt;" />
-	</form>	
-	</div>
-	<!-- ENDIF -->
-	<!-- END hide -->
 </div>
 </div>
 
