@@ -222,39 +222,12 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
 	$template->assign_block_vars('no_items', array());
 }
 
-$mark_options = array('NEW_MARK_NEVER', 'NEW_MARK_ALWAYS');
-foreach ($mark_options as $i => $mark_item) {
-	$template->assign_block_vars('mark_item', array(
-		'ITEM' => $i,
-		'NAME' => $user->lang[$mark_item],
-		'SELECTED' => (($i == $user->data['user_mark_items']) ? ' selected="selected"' : ''))
-	);
-}
-
-$sql = 'SELECT d.id, d.title, a.subdomain, a.name
-	FROM _dl d, _artists a
-	WHERE d.ud = 1
-		AND d.ub = a.ub
-	ORDER BY d.date DESC
-	LIMIT 0, 10';
-$result = sql_rowset($sql);
-
-foreach ($result as $row) {
-	$template->assign_block_vars('downloads', array(
-		'URL' => s_link('a', array($row['subdomain'], 9, $row['id'])),
-		'A' => $row['name'],
-		'T' => $row['title'])
-	);
-}
-
 $template->assign_vars(array(
 	'S_UNREAD_ACTION' => s_link('new'))
 );
 
 //
 // Load sidebar
-sidebar('artists', 'events');
-
 page_layout('UNREAD_ITEMS', 'unread_body');
 
 ?>

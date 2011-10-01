@@ -1045,6 +1045,28 @@ class _artists extends layout {
 		}
 	}
 	
+	public function latest_music() {
+		global $template;
+		
+		$sql = 'SELECT d.id, d.title, a.subdomain, a.name
+			FROM _dl d, _artists a
+			WHERE d.ud = 1
+				AND d.ub = a.ub
+			ORDER BY d.date DESC
+			LIMIT 0, 10';
+		$result = sql_rowset($sql);
+		
+		foreach ($result as $row) {
+			$template->assign_block_vars('downloads', array(
+				'URL' => s_link('a', array($row['subdomain'], 9, $row['id'])),
+				'A' => $row['name'],
+				'T' => $row['title'])
+			);
+		}
+		
+		return true;
+	}
+	
 	public function top_stats() {
 		global $user, $template;
 		
