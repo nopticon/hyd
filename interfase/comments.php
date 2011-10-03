@@ -279,6 +279,23 @@ class _comments {
 			
 			if ($notify) {
 				if ($this->param[0] == 'm') {
+					require('./interfase/emailer.php');
+					$emailer = new emailer();
+					
+					$emailer->from('Rock Republik <info@rockrepublik.net>');
+					$emailer->use_template('user_message');
+					$emailer->email_address($post_data['user_email']);
+					$emailer->set_subject($user->data['username'] . ' te envio un mensaje en Rock Republik');
+					
+					$emailer->assign_vars(array(
+						'USERNAME_TO' => $post_data['username'],
+						'USERNAME_FROM' => $user->data['username'],
+						'USER_MESSAGE' => entity_decode($message),
+						'U_PROFILE' => s_link('m', $post_data['username_base']))
+					);
+					$emailer->send();
+					$emailer->reset();
+					
 					$user->save_unread($this->data['HISTORY'], $post_id, $history_extra, $post_data['user_id']);
 				} else {
 					$user->save_unread($this->data['HISTORY'], $post_id, $history_extra, $reply_to, false);

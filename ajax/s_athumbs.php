@@ -55,7 +55,7 @@ foreach ($selected_artists as $ub => $data) {
 		$return_string .= '<tr>';
 	}
 	
-	$return_string .= '<td align="center" valign="bottom"><a href="' . s_link('a', $data['subdomain']) . '"><img class="box" src="/data/artists/' . (($data['images']) ? $ub . '/thumbnails/' . $random_images[$ub] . '.jpg' : 'default/shadow.gif') . '" alt="' . $data['genre'] . '" /></a><br /><div class="sep2-top"><a class="bold" href="' . s_link('a', $data['subdomain']) . '">' . $data['name'] . '</a></div><div><small>' . (($data['local']) ? 'Guatemala' : $data['location']) . '</small></div></td>';
+	$return_string .= '<td align="center" valign="bottom"><a class="relevant_artist" href="' . s_link('a', $data['subdomain']) . '"><img class="box" src="/data/artists/' . (($data['images']) ? $ub . '/thumbnails/' . $random_images[$ub] . '.jpg' : 'default/shadow.gif') . '" alt="' . $data['genre'] . '" /></a><br /><div class="sep2-top"><a class="bold" href="' . s_link('a', $data['subdomain']) . '">' . $data['name'] . '</a></div><div><small>' . (($data['local']) ? 'Guatemala' : $data['location']) . '</small></div></td>';
 	$tcol = ($tcol == 3) ? 0 : $tcol + 1;
 	
 	if (!$tcol) {

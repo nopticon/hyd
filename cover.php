@@ -43,7 +43,7 @@ $artists->get_data();
 $artists->thumbnails();
 
 $events->_nextevent();
-$events->_lastevent();
+//$events->_lastevent();
 
 page_layout('HOME', 'cover_body', false, false);
 

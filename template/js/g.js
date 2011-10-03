@@ -17,14 +17,11 @@ $(function() {
 	var $d;
 	var doctitle = document.title;
 	var docurl = window.location.href;
+	var window_size = $(window).width();
 	
-	//$('#s').defaultValue('Buscar en Rock Republik');
+	$('#searchForm').jQLiteID();
 	
-	//$('#s').defaultText();
-	//$('#searchForm').jQLiteID();
-	$('form').jQLiteID();
-	
-	$('ul[id^="expand_"]').hide();
+	$('ul[id^="expand_"]').hide().addClass('flying');
 	
 	$('.expand').click(function(event) {
 		event.preventDefault();

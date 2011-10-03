@@ -23,7 +23,7 @@
 </div>
 
 <!-- BEGIN future -->
-<div class="rows5_top_2"><div class="section"><h1>{L_EVENTS_NEXT}</h1></div></div>
+<div class="rows5_top_2"><div class="sec"><h3>{L_EVENTS_NEXT}</h3></div></div>
 
 <div class="col_1 float_left">
 	<!-- BEGIN set -->
@@ -36,7 +36,7 @@
 </div>
 <div class="col_3 float_right">
 	<!-- BEGIN set -->
-	<div<!-- IF set.S_ROW_COUNT --> class="rows5_top rows5_top_3"<!-- ENDIF -->><div class="section"><h1>{set.L_TITLE}</h1></div></div>
+	<div<!-- IF set.S_ROW_COUNT --> class="rows5_top rows5_top_3"<!-- ENDIF -->><div class="sec"><h3>{set.L_TITLE}</h3></div></div>
 	<ul class="ul_none">
 		<!-- BEGIN item -->
 		<li class="a_center<!-- IF item.S_ROW_COUNT --> rows5_top_3<!-- ENDIF -->"><a name="{item.ITEM_ID}"></a><span class="relevant">{item.TITLE}</span><br />{item.DATE}<br /><br /><!-- IF item.U_TOPIC != '' --><a href="{item.U_TOPIC}"><!-- ENDIF --><img src="{item.SRC}" alt="" /><!-- IF item.U_TOPIC != '' --></a><!-- ENDIF --></li>

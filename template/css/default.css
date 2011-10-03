@@ -8,7 +8,7 @@ p, div, span, select {
 }
 p, div, span, input, textarea, select, a, optgroup, h1, h2 {
 	margin: 0;
-	font-family: 'Ubuntu', Verdana, Helvetica, sans-serif;
+	font-family: 'Ubuntu', 'Verdana', Helvetica, sans-serif;
 	text-decoration: none;
 	text-shadow: 1px 1px 1px #222;
 }
@@ -73,7 +73,7 @@ hr {
 }
 #header_in {
 	padding: 5px 0 8px 10px;
-	border-bottom: 1px solid #4c5558;
+	border-bottom: 1px solid #40474A;
 }
 
 #footer {
@@ -225,6 +225,20 @@ hr {
 .webResult > a {
 	margin-left: 5px;
 }
+.flying {
+	display: none;
+	background: #444;
+	color: #EEE;
+	border-right: 1px solid #383838;
+	border-left: 1px solid #383838;
+	border-bottom: 1px solid #383838;
+	position: absolute;
+	right: 14px;
+	top: 23px;
+	width: 212px;
+	padding: 3px;
+	overflow: auto;
+}
 
 #facebook {
 	color: #65A8D0;
@@ -287,8 +301,16 @@ a.submitd {
 	color: #F5B800;
 }
 .sec h3 a {
-	color: #DBA400;
+	font-family: 'Ubuntu', Arial, Helvetica, sans-serif !important;
+	font-size: 15px;
+	color: #F5B800;
 }
+.sec h3 a:hover {
+	text-decoration: none;
+}
+/*.sec h3 a {
+	color: #DBA400;
+}*/
 .smile {
 	font-size: 20px;
 }
