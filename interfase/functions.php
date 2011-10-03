@@ -848,12 +848,10 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 	//
 	// gzip_compression
 	//
-	if ($config['gzip_compress']) {
-		$useragent = (isset($HTTP_SERVER_VARS['HTTP_USER_AGENT'])) ? $HTTP_SERVER_VARS['HTTP_USER_AGENT'] : getenv('HTTP_USER_AGENT');
-	
-		if (strstr($useragent,'compatible') || strstr($useragent,'Gecko')) {
-			ob_start('ob_gzhandler');
-		}
+	$useragent = (isset($HTTP_SERVER_VARS['HTTP_USER_AGENT'])) ? $HTTP_SERVER_VARS['HTTP_USER_AGENT'] : getenv('HTTP_USER_AGENT');
+
+	if (strstr($useragent,'compatible') || strstr($useragent,'Gecko')) {
+		ob_start('ob_gzhandler');
 	}
 	
 	// Artists meta
@@ -879,8 +877,6 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 	if (!$user->d('is_founder')) {
 		$s_context_menu = ' oncontextmenu="return false"';
 	}
-	
-	$s_version = explode('/', $config['s_version']);
 	
 	//
 	// Send headers
@@ -930,7 +926,6 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 		'S_CONTEXT_MENU' => $s_context_menu,
 		'S_USERNAME' => $user->d('username'),
 		'S_CONTROLPANEL' => (!isset($template->vars['S_CONTROLPANEL'])) ? (($user->d('is_member') && $user->d('user_auth_control')) ? s_link('control') : '') : $template->vars['S_CONTROLPANEL'],
-		'S_VERSION' => $s_version[0],
 		'S_UNREAD_ITEMS' => (($unread_items == 1) ? sprintf($user->lang['UNREAD_ITEM_COUNT'], $unread_items) : sprintf($user->lang['UNREAD_ITEMS_COUNT'], $unread_items)),
 		'S_AP_POINTS' => (($user->d('user_points') == 1) ? sprintf($user->lang['AP_POINT'], $user->d('user_points')) : sprintf($user->lang['AP_POINTS'], $user->d('user_points'))),
 		
@@ -1054,10 +1049,6 @@ function get_a_imagepath($path, $filename, $folders) {
 
 function check_www($url) {
 	global $config;
-	
-	if (!$config['check_www']) {
-		return true;
-	}
 	
 	$domain = str_replace('http://', '', $url);
 	if (strstr($domain, '?')) {

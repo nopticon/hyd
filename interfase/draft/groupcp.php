@@ -21,13 +21,11 @@ require('./interfase/common.php');
 
 $user->init();
 
-$script_name = preg_replace('/^\/?(.*?)\/?$/', "\\1", trim($config['script_path']));
 $script_name = ( $script_name != '' ) ? $script_name . '/groupcp.php' : 'groupcp.php';
 $server_name = trim($config['server_name']);
 $server_protocol = ( $config['cookie_secure'] ) ? 'https://' : 'http://';
-$server_port = ( $config['server_port'] <> 80 ) ? ':' . trim($config['server_port']) . '/' : '/';
 
-$server_url = $server_protocol . $server_name . $server_port . $script_name;
+$server_url = $server_protocol . $server_name . $script_name;
 
 if ( isset($HTTP_GET_VARS[POST_GROUPS_URL]) || isset($HTTP_POST_VARS[POST_GROUPS_URL]) )
 {
@@ -156,7 +154,7 @@ else if ( isset($HTTP_POST_VARS['joingroup']) && $group_id )
 	{
 		include(ROOT.'interfase/emailer.php');
 		
-		$emailer = new emailer($config['smtp_delivery']);
+		$emailer = new emailer();
 		$emailer->from($config['board_email']);
 		$emailer->replyto($config['board_email']);
 		
@@ -167,8 +165,7 @@ else if ( isset($HTTP_POST_VARS['joingroup']) && $group_id )
 		$emailer->assign_vars(array(
 			'SITENAME' => $config['sitename'], 
 			'GROUP_MODERATOR' => $moderator['username'],
-			'EMAIL_SIG' => (!empty($config['board_email_sig'])) ? str_replace('<br />', "\n", "-- \n" . $config['board_email_sig']) : '', 
-	
+			
 			'U_GROUPCP' => $server_url . '?' . POST_GROUPS_URL . "=$group_id&validate=true"
 		));
 		
@@ -339,7 +336,7 @@ else if ( $group_id )
 					$group_name = $group_name_row['group_name'];
 
 					include(ROOT.'interfase/emailer.php');
-					$emailer = new emailer($config['smtp_delivery']);
+					$emailer = new emailer();
 
 					$emailer->from($config['board_email']);
 					$emailer->replyto($config['board_email']);
@@ -351,7 +348,6 @@ else if ( $group_id )
 					$emailer->assign_vars(array(
 						'SITENAME' => $config['sitename'], 
 						'GROUP_NAME' => $group_name,
-						'EMAIL_SIG' => (!empty($config['board_email_sig'])) ? str_replace('<br />', "\n", "-- \n" . $config['board_email_sig']) : '', 
 
 						'U_GROUPCP' => $server_url . '?' . POST_GROUPS_URL . "=$group_id")
 					);
@@ -459,7 +455,7 @@ else if ( $group_id )
 						$group_name = $group_name_row['group_name'];
 
 						include(ROOT.'interfase/emailer.php');
-						$emailer = new emailer($config['smtp_delivery']);
+						$emailer = new emailer();
 
 						$emailer->from($config['board_email']);
 						$emailer->replyto($config['board_email']);
@@ -475,7 +471,6 @@ else if ( $group_id )
 						$emailer->assign_vars(array(
 							'SITENAME' => $config['sitename'], 
 							'GROUP_NAME' => $group_name,
-							'EMAIL_SIG' => (!empty($config['board_email_sig'])) ? str_replace('<br />', "\n", "-- \n" . $config['board_email_sig']) : '', 
 
 							'U_GROUPCP' => $server_url . '?' . POST_GROUPS_URL . "=$group_id")
 						);
@@ -1055,8 +1050,8 @@ function generate_user_info(&$row, $date_format, $group_mod, &$from, &$posts, &$
 
 	if ( !empty($row['user_viewemail']) || $group_mod )
 	{
-		$email_uri = ( $config['board_email_form'] ) ? s_link('my', array('email', $row['userbase_name'])) : 'mailto:' . $row['user_email'];
-		$email = '<a href="' . $email_uri . '">' . $lang['Send_email'] . '</a>';
+		$email_uri = '';
+		$email = '';
 	}
 	else
 	{

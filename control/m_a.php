@@ -262,7 +262,6 @@ class a extends common {
 			sql_query(sql_filter($sql, $this->data['ub']));
 			
 			topic_feature($topic_id, 0);
-			set_config('max_posts', $config['max_posts'] + 1);
 			$user->save_unread(UH_N, $topic_id);
 			
 			redirect(s_link('a', $this->data['subdomain']));
@@ -424,7 +423,6 @@ class a extends common {
 			sql_query($sql_a);
 			
 			sync('forum', $config['ub_fans_f']);
-			set_config('max_posts', $config['max_posts'] - 1);
 			$user->delete_all_unread(UH_N, $id);
 			
 			redirect(s_link('a', $this->data['subdomain']));

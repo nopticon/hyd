@@ -153,16 +153,6 @@ class cover {
 		
 		$ttime = time();
 		
-		$start_date = $user->format_date($config['board_startdate'], $user->lang['DATE_FORMAT']);
-		$boarddays = number_format((($ttime - $config['board_startdate']) / 86400));
-		
-		$template->assign_vars(array(
-			'TOTAL_USERS' => $config['max_users'],
-			'TOTAL_ARTISTS' => $config['max_artists'],
-			'START_DATE' => $start_date,
-			'BOARDDAYS' => $boarddays)
-		);
-		
 		return;
 	}
 	
@@ -183,9 +173,7 @@ class cover {
 			LIMIT ??';
 		if ($result = sql_rowset(sql_filter($sql, $config['main_topics']))) {
 			$template->assign_block_vars('board_general', array(
-				'L_TOP_POSTS' => sprintf($user->lang['TOP_FORUM'], count($result)),
-				'POSTS' => $config['max_posts'],
-				'TOPICS' => $config['max_topics'])
+				'L_TOP_POSTS' => sprintf($user->lang['TOP_FORUM'], count($result)))
 			);
 			
 			foreach ($result as $row) {
@@ -220,9 +208,7 @@ class cover {
 			LIMIT ??';
 		if ($result = sql_rowset(sql_filter($sql, $config['main_topics']))) {
 			$template->assign_block_vars('board_events', array(
-				'L_TOP_POSTS' => sprintf($user->lang['TOP_FORUM'], count($result)),
-				'POSTS' => $config['max_posts'],
-				'TOPICS' => $config['max_topics'])
+				'L_TOP_POSTS' => sprintf($user->lang['TOP_FORUM'], count($result)))
 			);
 			
 			foreach ($result as $row) {

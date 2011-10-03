@@ -48,7 +48,7 @@ hr {
 }
 
 #container-1 {
-	width: 940px;
+	width: 960px;
 	margin: 0 auto;
 	background: #2f2f30;
 	border-left: 1px solid #0c0c0c;
@@ -77,7 +77,7 @@ hr {
 }
 
 #footer {
-	width: 940px;
+	width: 960px;
 	margin: 0 auto;
 	padding: 22px 0 25px 0;
 }
@@ -95,8 +95,8 @@ hr {
 	display: block;
 	width: 300px;
 	height: 47px;
-	/*border: 1px solid #ccc;*/
-	background: url(images/header.gif) no-repeat;
+	border: 1px solid #ccc;
+	/*background: url(images/header.gif) no-repeat;*/
 	text-indent: -10000px;
 }
 #app h1 a:hover {
@@ -831,10 +831,25 @@ a.submitd {
 	padding: 0;
 }
 
-#acover { width: 468px; height: 60px; margin-top: 10px; }
-#aevent { width: 935px; height: 90px; margin-top: 20px; }
-#atopic { width: 935px; height: 90px; margin-bottom: 10px; }
-#atopicm { margin-top: 5px; margin-bottom: 5px;}
+#acover {
+	width: 468px;
+	height: 60px;
+	margin-top: 10px;
+}
+#aevent {
+	width: 935px;
+	height: 90px;
+	margin-top: 20px;
+}
+#atopic {
+	width: 935px;
+	height: 90px;
+	margin-bottom: 10px;
+}
+#atopicm {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
 
 .info { width: 200px; height: 227px; }
 .float-holder:after { content: "."; display: block; clear: both; visibility: hidden; line-height: 0; height: 0; }

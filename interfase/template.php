@@ -73,7 +73,7 @@ class Template {
 
 	// Default template directory.
 	// If file for default template isn't found file from this template is used.
-	public $tpldef = 'subSilver';
+	public $tpldef = 'mmg';
 
 	// this will hash handle names to the compiled code for that handle.
 	public $compiled_code = array();
@@ -87,6 +87,8 @@ class Template {
 
 	// Auto-compile setting
 	public $auto_compile = 1;
+	public $auto_recompile = 1;
+	public $warn_includes = 1;
 
 	// Current template name
 	public $tpl = '';
@@ -103,9 +105,7 @@ class Template {
 
 	// eXtreme Styles variables
 	public $xs_started = 0;
-	public $xs_version = 7; // number version. internal. do not change.
-	public $xs_versiontxt = '2.2.1'; // text version
-
+	
 	// These handles will be parsed if pparse() is executed.
 	// Can be used to automatically include header/footer if there is any content.
 	public $preparse = '';
@@ -147,10 +147,7 @@ class Template {
 		
 		$this->vars = &$this->_tpldata['.'][0];
 		
-		$this->tpldef = $config['xs_def_template'];
 		$this->use_cache = $config['xs_use_cache'];
-		$this->auto_compile = $config['xs_auto_compile'];
-		$this->xs_check_switches = $config['xs_check_switches'];
 		$this->cache_search = array('.', '\\', '/', '_tpl');
 		$this->cache_replace = array('_', '.', '.', '.php');
 		
@@ -336,7 +333,7 @@ class Template {
 			}
 			
 			if ($xs_include) {
-				if($config['xs_warn_includes']) {
+				if ($this->warn_includes) {
 					die('Template->make_filename(): Error - included template file not found: ' . $filename);
 				}
 				return false;
@@ -345,7 +342,7 @@ class Template {
 			}
 		}
 		// checking if we should recompile cache
-		if (!empty($this->files_cache[$handle]) && !empty($config['xs_auto_recompile'])) {
+		if (!empty($this->files_cache[$handle]) && $this->auto_recompile) {
 			$cache_time = @filemtime($this->files_cache[$handle]);
 			if(@filemtime($this->files[$handle]) > $cache_time || $config['xs_template_time'] > $cache_time) {	
 				// file was changed. don't use cache file (will be recompled if configuration allowes it)

@@ -268,17 +268,9 @@ if ($submit_reply || $submit_vote) {
 					WHERE topic_id = ?', $topic_id);
 				sql_query($sql);
 				
-				$sql = 'UPDATE _members
-					SET user_posts = user_posts + 1
+				$sql = 'UPDATE _members SET user_posts = user_posts + 1
 					WHERE user_id = ?';
 				sql_query(sql_filter($sql, $user->data['user_id']));
-				
-				$sql = 'SELECT SUM(forum_topics) AS topic_total, SUM(forum_posts) AS post_total 
-					FROM _forums';
-				if ($row = sql_fieldrow($sql)) {
-					set_config('max_posts', $row['post_total']);
-					set_config('max_topics', $row['topic_total']);
-				}
 				
 				redirect(s_link('post', $post_id) . '#' . $post_id);
 			}

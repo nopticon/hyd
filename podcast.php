@@ -17,30 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 define('IN_NUCLEO', true);
-define('NO_A_META', true);
 require('./interfase/common.php');
 
 $user->init();
 $user->setup();
 
-$smilies = array();
-if (!$smilies = $cache->get('smilies')) {
-	$sql = 'SELECT *
-		FROM _smilies
-		ORDER BY LENGTH(code) DESC';
-	if ($smilies = sql_rowset($sql)) {
-		$cache->save('smilies', $smilies);
-	}
-}
+$template_vars = array();
 
-foreach ($smilies as $smile_url => $data) {
-	$template->assign_block_vars('smilies_row', array(
-		'CODE' => $data['code'],
-		'IMAGE' => $config['assets_path'] . '/' . $data['smile_url'],
-		'DESC' => $data['emoticon'])
-	);
-}
-
-page_layout('EMOTICONS', 'emoticons_body');
+page_layout('PODCAST', 'podcast_body', $template_vars, false);
 
 ?>

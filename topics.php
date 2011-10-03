@@ -281,13 +281,6 @@ if ($submit_topic)
 				WHERE user_id = ?';
 			sql_query(sql_filter($sql, $user->data['user_id']));
 			
-			$sql = 'SELECT SUM(forum_topics) AS topic_total, SUM(forum_posts) AS post_total 
-				FROM _forums';
-			if ($row = sql_fieldrow($sql)) {
-				set_config('max_posts', $row['post_total']);
-				set_config('max_topics', $row['topic_total']);
-			}
-			
 			redirect(s_link('topic', $topic_id));
 		}
 	}

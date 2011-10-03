@@ -473,13 +473,6 @@ function update_post_stats(&$mode, &$post_data, &$forum_id, &$topic_id, &$post_i
 		}
 	}
 	
-	$sql = 'SELECT SUM(forum_topics) AS topic_total, SUM(forum_posts) AS post_total 
-		FROM _forums';
-	if ($row = sql_fieldrow($sql)) {
-		set_config('num_posts', $row['post_total']);
-		set_config('num_topics', $row['topic_total']);
-	}
-	
 	return;
 }
 
@@ -611,13 +604,12 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 				if (sizeof($bcc_list_ary))
 				{
 					include(ROOT . 'interfase/emailer.php');
-					$emailer = new emailer($config['smtp_delivery']);
+					$emailer = new emailer();
 
 					$server_name = trim($config['server_name']);
 					$server_protocol = ($config['cookie_secure']) ? 'https://' : 'http://';
-					$server_port = ($config['server_port'] <> 80) ? ':' . trim($config['server_port']) : '';
 					
-					$post_url = $server_protocol . $server_name . $server_port . s_link('post', $post_id) . "#$post_id";
+					$post_url = $server_protocol . $server_name . s_link('post', $post_id) . "#$post_id";
 					
 					$emailer->from($config['board_email']);
 					$emailer->replyto($config['board_email']);
@@ -644,12 +636,12 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 						$emailer->msg = preg_replace('#[ ]?{USERNAME}#', '', $emailer->msg);
 
 						$emailer->assign_vars(array(
-							'EMAIL_SIG' => (!empty($config['board_email_sig'])) ? str_replace('<br />', "\n", "-- \n" . $config['board_email_sig']) : '',
+							'EMAIL_SIG' => '',
 							'SITENAME' => $config['sitename'],
 							'TOPIC_TITLE' => $topic_title, 
 
 							'U_TOPIC' => $post_url,
-							'U_STOP_WATCHING_TOPIC' => $server_protocol . $server_name . $server_port . $script_name . '&' . POST_TOPIC_URL . "=$topic_id&unwatch=topic")
+							'U_STOP_WATCHING_TOPIC' => $server_protocol . $server_name . $script_name . '&' . POST_TOPIC_URL . "=$topic_id&unwatch=topic")
 						);
 
 						$emailer->send();

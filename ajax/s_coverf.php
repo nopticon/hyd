@@ -38,7 +38,7 @@ if ($result = sql_rowset(sql_filter($sql, $config['ub_fans_f'], $config['main_to
 	$top_posts = sprintf($user->lang['TOP_FORUM'], count($result));
 	
 ?>
-<div class="head"><img src="/net/icons/forum.gif" width="18" height="18" alt="<?php echo $top_posts; ?>" title="<?php echo $top_posts; ?>" /><?php echo $top_posts; ?><div class="head-normal">&nbsp;| <?php echo $config['max_posts']; ?>m</div></div>
+<div class="head"><img src="/net/icons/forum.gif" width="18" height="18" alt="<?php echo $top_posts; ?>" title="<?php echo $top_posts; ?>" /><?php echo $top_posts; ?></div>
 <div class="ie-widthfix">
 <table width="100%" class="t-collapse" cellpadding="5">
 <?php
