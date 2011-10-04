@@ -59,6 +59,6 @@ $sql = 'SELECT user_id, username, username_base, user_color, user_hideuser, user
 	ORDER BY username';
 $comm->online(sql_filter($sql, $timetoday, ($timetoday + 86399)), 'online', 'MEMBERS_TODAY', 'MEMBERS_VISIBLE');
 
-page_layout('COMMUNITY', 'community_body', false, false);
+page_layout('COMMUNITY', 'community', false, false);
 
 ?>

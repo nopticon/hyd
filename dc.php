@@ -74,7 +74,7 @@ if (isset($_POST['delete']) && $mark) {
 			'S_CONFIRM_ACTION' => s_link('my', 'dc'),
 			'S_HIDDEN_FIELDS' => s_hidden($s_hidden)
 		);
-		page_layout('DCONVS', 'confirm_body', $template_vars);
+		page_layout('DCONVS', 'confirm', $template_vars);
 	}
 	
 	redirect(s_link('my', 'dc'));
@@ -377,6 +377,6 @@ $template_vars = array(
 	'S_HIDDEN_FIELDS' => s_hidden($s_hidden_fields)
 );
 
-page_layout($page_title, 'dconv_body', $template_vars);
+page_layout($page_title, 'conversations', $template_vars);
 
 ?>

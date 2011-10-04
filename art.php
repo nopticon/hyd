@@ -31,12 +31,12 @@ if ($art->_setup()) {
 	
 	if (!in_array($mode, array('save', 'fav'))) {
 		$mode = 'view';
-		$pagehtml = 'art_view';
+		$pagehtml = 'art.view';
 		$page_title = $user->lang['ART'] . ' | ' . $art->data['title'];
 	}
 } else {
 	$mode = 'home';
-	$pagehtml = 'art_body';
+	$pagehtml = 'art';
 	$page_title = 'ART';
 }
 

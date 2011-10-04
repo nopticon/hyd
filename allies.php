@@ -24,6 +24,6 @@ require('./interfase/allies.php');
 $user->init();
 $user->setup();
 
-page_layout('ALLIES', 'allies_body', false, false);
+page_layout('ALLIES', 'partners', false, false);
 
 ?>

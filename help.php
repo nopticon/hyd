@@ -147,6 +147,6 @@ if ($module_id || $help) {
 	}
 }
 
-page_layout('HELP', 'help_body');
+page_layout('HELP', 'help');
 
 ?>

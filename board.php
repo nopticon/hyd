@@ -41,6 +41,6 @@ $board->msg = new _comments();
 $board->index();
 $board->birthdays();
 
-page_layout('FORUM_INDEX', 'board_body');
+page_layout('FORUM_INDEX', 'board');
 
 ?>

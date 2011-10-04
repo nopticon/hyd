@@ -125,6 +125,6 @@ $template_vars = array(
 	'URL_VIDEO' => s_link('dl', 'video')
 );
 
-page_layout('DOWNLOADS', 'downloads_body', $template_vars);
+page_layout('DOWNLOADS', 'downloads', $template_vars);
 
 ?>

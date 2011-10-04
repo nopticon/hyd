@@ -45,6 +45,6 @@ $artists->thumbnails();
 $events->_nextevent();
 //$events->_lastevent();
 
-page_layout('HOME', 'cover_body', false, false);
+page_layout('HOME', 'cover', false, false);
 
 ?>

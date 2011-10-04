@@ -41,6 +41,6 @@ foreach ($smilies as $smile_url => $data) {
 	);
 }
 
-page_layout('EMOTICONS', 'emoticons_body');
+page_layout('EMOTICONS', 'emoticons');
 
 ?>

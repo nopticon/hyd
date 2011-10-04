@@ -28,12 +28,12 @@ $events = new _events();
 if ($events->_setup()) {
 	$events->view();
 	
-	$pagehtml = 'events_view';
+	$pagehtml = 'events.view';
 	$page_title = $user->lang['UE'] . ' | ' . $events->data['title'];
 } else {
 	$events->home();
 	
-	$pagehtml = 'events_body';
+	$pagehtml = 'events';
 	$page_title = 'UE';
 }
 

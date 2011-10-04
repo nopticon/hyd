@@ -83,8 +83,7 @@ $template->assign_var_from_handle('EXT', 'body');
 
 sql_close();
 
-$code = str_replace(array("\r\n", "\n", "\t"), '', $template->vars['EXT']);
-echo $code;
+echo str_replace(array("\r\n", "\n", "\t"), '', $template->vars['EXT']);
 exit;
 
 ?>

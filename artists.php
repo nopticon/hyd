@@ -32,13 +32,13 @@ if ($artists->_setup()) {
 	$artists->_panel();
 		
 	$page_title = $artists->data['name'];
-	$pagehtml = 'artists_panel';
+	$pagehtml = 'artists.view';
 } else {
 	$artists->_list();
 	$artists->latest();
 	
 	$page_title = 'UB';
-	$pagehtml = 'artists_body';
+	$pagehtml = 'artists';
 }
 
 page_layout($page_title, $pagehtml, false, $artists->ajx);
