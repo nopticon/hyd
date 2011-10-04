@@ -2,18 +2,15 @@ Charset: iso-8859-1
 
 Hola {USERNAME},
 
-{SITENAME} te invita para que escribas tu crítica y des tu puntuación sobre:
+Rock Republik te invita a escribir una cr&iacute;tica y puntuaci&oacute;n sobre:
 
-"{UD_TITLE}" de "{UB_NAME}"
+"{UD_TITLE}" de {UB_NAME}
 
-Para hacerlo, haz click sobre este enlace o pega la dirección en la barra de direcciones:
-
-------------
+Si est&aacute;s de acuerdo, visita el siguiente enlace e ingresa los datos de tu cuenta Rock Republik:
 
 {U_INVITE}
 
-------------
+Atentamente,
 
-Inicia sesión con tu usuario "{USERNAME}" y sigue las instrucciones. Recibirás e-mail por cada invitación que recibas.
-
-{EMAIL_SIG}
+Rock Republik Networks
+http://www.rockrepublik.net/

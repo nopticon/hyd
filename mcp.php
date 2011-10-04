@@ -401,7 +401,7 @@ foreach ($result as $row) {
 			'V_MESSAGE' => $row['post_text'],
 			'S_ACTION' => s_link('mcp', array('edit', $msg_id))
 		);
-		page_layout('Editar', 'modcp_edit', $tv);
+		page_layout('Editar', 'modcp.edit', $tv);
 		break;
 	case 'post':
 		$post_id = request_var('msg_id', 0);

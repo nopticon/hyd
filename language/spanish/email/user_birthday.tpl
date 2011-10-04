@@ -1,10 +1,14 @@
-Subject: Feliz cumpleaños!
+Subject: &iexcl;Feliz cumplea&ntilde;os!
 Charset: iso-8859-1
 
 Hola {USERNAME},
 
-Rock Republik te desea feliz cumpleaños!
-Que la pases muy bien.
+&iexcl;Rock Republik te desea feliz cumplea&nilde;os!
 
-Rock Republik
-www.rockrepublik.net
+Muchas gracias por formar parte de nuestra comunidad.
+Deseamos que la pases muy bien.
+
+Atentamente,
+
+Rock Republik Networks
+http://www.rockrepublik.net/

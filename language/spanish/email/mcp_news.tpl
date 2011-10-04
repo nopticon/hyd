@@ -4,7 +4,7 @@ Hola {USERNAME},
 
 {MESSAGE}
 
-Agradecemos tu participación.
+Atentamente,
 
 Rock Republik Networks
 http://www.rockrepublik.net/

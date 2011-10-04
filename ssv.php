@@ -61,6 +61,6 @@ $template_vars = array(
 	'SERVER_LOAD' => sprintf($lang['SERVER_LOAD'], $load)
 );
 
-page_layout('HOME', 'ssv_body', $template_vars, false);
+page_layout('HOME', 'ssv', $template_vars, false);
 
 ?>

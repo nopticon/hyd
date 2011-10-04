@@ -520,7 +520,7 @@ function do_login($box_text = '', $need_auth = false) {
 		'S_HIDDEN_FIELDS' => s_hidden($s_hidden)
 	);
 	
-	page_layout('LOGIN2', 'login_body', $template_vars);
+	page_layout('LOGIN2', 'login', $template_vars);
 }
 
 function get_file($f) {
@@ -786,7 +786,7 @@ function msg_handler($errno, $msg_text, $errfile, $errline) {
 				'MESSAGE_TEXT' => (isset($user->lang[$msg_text])) ? $user->lang[$msg_text] : $msg_text
 			);
 			
-			page_layout('INFORMATION', 'message_body', $custom_vars);
+			page_layout('INFORMATION', 'message', $custom_vars);
 			
 			break;
 		default:

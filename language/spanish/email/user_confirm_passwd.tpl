@@ -1,20 +1,14 @@
-Subject: Rock Republik: Confirmación de nueva contraseña
+Subject: Rock Republik: Confirmaci&oacute;n de nueva contrase&ntilde;a
 Charset: iso-8859-1
 
 Hola {USERNAME},
 
-Estás recibiendo este mensaje porque has actualizado tu contraseña de usuario de Rock Republik.
-
-Los datos para iniciar sesión son:
-
-Usuario: {USERNAME}
-Contraseña: {PASSWORD}
-
-Esta es la dirección de tu perfil público:
+La contrase&ntilde;a de tu cuenta en Rock Republik ha sido actualizada correctamente.
+Esta es la direcci&oacute;n de tu perfil p&uacute;blico:
 
 {U_PROFILE}
 
-Gracias,
+Atentamente,
 
 Rock Republik Networks
 http://www.rockrepublik.net/

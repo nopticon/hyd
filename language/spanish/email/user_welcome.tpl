@@ -1,4 +1,4 @@
-Subject: Rock Republik: Confirmación de usuario
+Subject: Rock Republik: Confirmaci&oacute;n de usuario
 Charset: iso-8859-1
 
 Hola {USERNAME},
@@ -9,7 +9,7 @@ Antes de utilizar tu usuario debes confirmar el registro visitando el siguiente 
 
 {U_ACTIVATE}
 
-Gracias,
+Atentamente,
 
 Rock Republik Networks
 http://www.rockrepublik.net/

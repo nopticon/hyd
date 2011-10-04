@@ -404,6 +404,6 @@ foreach ($fields as $k => $v)
 	$tv['E_' . strtoupper($k)] = (isset($error[$k])) ? true : false;
 }
 
-page_layout('NEW_ACCOUNT_SUBJECT', 'subscribe_body', $tv);
+page_layout('NEW_ACCOUNT_SUBJECT', 'subscribe', $tv);
 
 ?>

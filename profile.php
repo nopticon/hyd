@@ -112,7 +112,7 @@ switch ($mode) {
 			'S_ACTION' => s_link('my', 'password')
 		);
 		
-		page_layout('SENDPASSWORD', 'sendpassword_body', $template_vars);
+		page_layout('SENDPASSWORD', 'password', $template_vars);
 		break;
 	case 'verify':
 		$code = request_var('code', '');
@@ -163,7 +163,7 @@ switch ($mode) {
 				$template_vars = array(
 					'PAGE_MODE' => 'updated'
 				);
-				page_layout('SENDPASSWORD', 'sendpassword_body', $template_vars);
+				page_layout('SENDPASSWORD', 'password', $template_vars);
 			}
 		}
 		
@@ -171,7 +171,7 @@ switch ($mode) {
 			'PAGE_MODE' => 'verify',
 			'S_ACTION' => s_link('my', array('verify', $code))
 		);
-		page_layout('SENDPASSWORD', 'sendpassword_body', $template_vars);
+		page_layout('SENDPASSWORD', 'password', $template_vars);
 		break;
 	case 'confirm':
 		$code = request_var('code', '');
@@ -276,7 +276,7 @@ switch ($mode) {
 			'MESSAGE_TITLE' => $user->lang['INFORMATION'],
 			'MESSAGE_TEXT' => $user->lang['MEMBERSHIP_ADDED_CONFIRM']
 		);
-		page_layout('INFORMATION', 'message_body', $custom_vars);
+		page_layout('INFORMATION', 'message', $custom_vars);
 		break;
 }
 
@@ -599,7 +599,7 @@ switch ($mode) {
 		
 		$template->assign_vars($output_vars);
 		
-		page_layout('MEMBER_OPTIONS', 'profile_body');
+		page_layout('MEMBER_OPTIONS', 'profile');
 		break;
 }
 

@@ -1,4 +1,4 @@
-Subject: Rock Republik [ Bienvenido ]
+Subject: Te damos la bienvenida a Rock Republik
 Charset: iso-8859-1
 
 {WELCOME_MSG}
@@ -7,12 +7,12 @@ Por favor conserva este email. Los datos de tu cuenta son los siguentes:
 
 ----------------------------
 Usuario: {USERNAME}
-Contraseña: {PASSWORD}
+Contrase&ntilde;a: {PASSWORD}
 ----------------------------
 
-Tu cuenta se encuentra inactiva. El Administrador de Rock Republik debe activarla antes que puedas iniciar sesión. Recibirás otro email cuando esto halla sucedido.
+Tu cuenta se encuentra inactiva. El Administrador de Rock Republik debe activarla antes que puedas iniciar sesiï¿½n. Recibirï¿½s otro email cuando esto halla sucedido.
 
-Por favor no olvides tu contraseña, ya que ésta se encuentra encriptada en nuestro sistema y no podemos reenviártela. Sin embargo, de olvidar tu contraseña puedes volver a pedir una nueva, que se activará de la misma manera que esta cuenta.
+Por favor no olvides tu contraseï¿½a, ya que ï¿½sta se encuentra encriptada en nuestro sistema y no podemos reenviï¿½rtela. Sin embargo, de olvidar tu contraseï¿½a puedes volver a pedir una nueva, que se activarï¿½ de la misma manera que esta cuenta.
 
 Muchas gracias por registrarte en Rock Republik.
 

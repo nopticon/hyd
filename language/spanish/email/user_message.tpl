@@ -10,7 +10,7 @@ Para responder ingresa a la siguiente direccion:
 
 {U_PROFILE}
 
-Gracias,
+Atentamente,
 
 Rock Republik Networks
 http://www.rockrepublik.net/

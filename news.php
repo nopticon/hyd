@@ -28,12 +28,12 @@ $news = new _news();
 if ($news->_setup()) {
 	$news->_view();
 	
-	$pagehtml = 'news_read';
+	$pagehtml = 'news.view';
 	$page_title = $user->lang['NEWS'] . ' | ' . $news->data['post_subject'];
 } else {
 	$news->_main();
 	
-	$pagehtml = 'news_body';
+	$pagehtml = 'news';
 	$page_title = 'NEWS';
 }
 

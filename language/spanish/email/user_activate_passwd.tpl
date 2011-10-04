@@ -1,18 +1,16 @@
-Subject: Rock Republik: Activación de nueva contraseña
+Subject: Rock Republik: Activaciï¿½n de nueva contraseï¿½a
 Charset: iso-8859-1
 
 Hola {USERNAME},
 
-Estás recibiendo este mensaje porque has solicitado una nueva contraseña para tu usuario de Rock Republik.
-Si no has solicitado el cambio, ignora este mensaje.
+Hemos recibido tu solicitud para seleccionar la contrase&ntilde;a de tu cuenta en Rock Republik.
+Si no has solicitado el cambio, puedes ignorar este mensaje.
 
-Si realmente deseas cambiar tu contraseña, visita la siguiente dirección:
+Si realmente deseas cambiar tu contrase&ntile;a, visita el siguiente enlace:
 
 {U_ACTIVATE}
 
-Si tienes algún problema o comentario por favor contáctanos.
-
-Gracias,
+Atentamente,
 
 Rock Republik Networks
 http://www.rockrepublik.net/

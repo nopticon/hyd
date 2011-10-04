@@ -228,6 +228,6 @@ $template->assign_vars(array(
 
 //
 // Load sidebar
-page_layout('UNREAD_ITEMS', 'unread_body');
+page_layout('UNREAD_ITEMS', 'unread');
 
 ?>

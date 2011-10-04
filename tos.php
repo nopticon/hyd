@@ -22,6 +22,6 @@ require('./interfase/common.php');
 $user->init();
 $user->setup();
 
-page_layout('PRIVACY_POLICY', 'privacy_body');
+page_layout('PRIVACY_POLICY', 'tos');
 
 ?>

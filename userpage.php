@@ -215,7 +215,8 @@ $template_vars = array(
 	'MSN' => $profiledata['user_msnm']
 );
 
-$use_template = 'userpage_body';
+$use_template = 'userpage';
+
 $use_m_template = 'profiles/' . $profiledata['username_base'];
 if (@file_exists(ROOT . 'template/' . $use_m_template . '.htm'))
 {
