@@ -1,28 +1,4 @@
-<!-- INCLUDE page_header.htm -->
-
-<script language="Javascript" type="text/javascript"> 
-<!-- 
-function setCheckboxes(theForm, elementName, isChecked)
-{
-    var chkboxes = document.forms[theForm].elements[elementName];
-    var count = chkboxes.length;
-
-    if (count) 
-	{
-        for (var i = 0; i < count; i++) 
-		{
-            chkboxes[i].checked = isChecked;
-    	}
-    } 
-	else 
-	{
-    	chkboxes.checked = isChecked;
-    } 
-
-    return true;
-} 
-//--> 
-</script>
+<!-- INCLUDE page.header.htm -->
 
 <table width="100%" cellpadding="5" cellspacing="0" border="0">
 <form method="post" id="modcpForm" action="{S_MODCP_ACTION}">{S_HIDDEN_FIELDS}
@@ -136,20 +112,20 @@ function setCheckboxes(theForm, elementName, isChecked)
 								<!-- BEGIN switch_auth_delete -->
 								<input type="submit" name="delete" class="btn100" value="{L_DELETE}" />
 								<!-- END switch_auth_delete -->
-								  
+								
 								<input type="submit" name="move" class="btn100" value="{L_MOVE}" />
-								  
+								
 								<input type="submit" name="lock" class="btn100" value="{L_LOCK}" />
-								  
+								
 								<input type="submit" name="unlock" class="btn100" value="{L_UNLOCK}" />
 								<br /><br />
-								<!-- BEGIN switch_auth_sticky -->  
+								<!-- BEGIN switch_auth_sticky -->
 								<input type="submit" name="sticky" class="btn100" value="{L_STICKY}" />
 								<!-- END switch_auth_sticky -->
-								<!-- BEGIN switch_auth_announce -->  
+								<!-- BEGIN switch_auth_announce -->
 								<input type="submit" name="announce" class="btn100" value="{L_ANNOUNCE}" />
 								<!-- END switch_auth_announce -->
-								  
+								
 								<input type="submit" name="normalise" class="btn100" value="{L_NORMALISE}" />
 								</td>
 							</tr>
@@ -178,4 +154,4 @@ function setCheckboxes(theForm, elementName, isChecked)
 </form>
 </table>
 
-<!-- INCLUDE page_footer.htm -->
+<!-- INCLUDE page.footer.htm -->
