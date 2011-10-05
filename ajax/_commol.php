@@ -16,13 +16,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-define('IN_NUCLEO', true);
-define('ROOT', './../');
+require_once(ROOT . 'interfase/community.php');
 
-require_once('./../interfase/common.php');
-require_once('./../interfase/community.php');
-
-$user->init(false);
 $user->setup();
 
 $comm = new community();
@@ -54,7 +49,7 @@ $sql = 'SELECT user_id, username, username_base, user_color, user_hideuser, user
 $comm->online(sql_filter($sql, USER_IGNORE, $timetoday, ($timetoday + 86399)), 'online', 'MEMBERS_TODAY', 'MEMBERS_VISIBLE');
 
 $template->set_filenames(array(
-	'body' => 'community_online.htm')
+	'body' => 'community.online.htm')
 );
 $template->pparse('body');
 

@@ -16,26 +16,26 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-if (strtolower($_SERVER['REQUEST_METHOD']) == 'post') {
-	$filename = $_GET['filename'];
-	if (!empty($filename)) {
-		$filename = 's_' . $filename . '.php';
-		
-		if (@file_exists('./' . $filename)) {
-			@include('./' . $filename);
-			return;
-		}
-	}
+$user->setup();
+
+$event_id = request_var('event_id', 0);
+$image_id = request_var('image_id', 0);
+
+$sql = 'SELECT *
+	FROM _events_images
+	WHERE event_id = ?
+		AND image = ?';
+if (!$imaged = sql_fieldrow(sql_filter($sql, $event_id, $image_id))) {
+	fatal_error();
 }
+$image_footer = request_var('image_footer', '', true);
 
-$file_content = @file('../template/exceptions/missing.htm');
+$sql = 'UPDATE _events_images SET image_footer = ?
+	WHERE event_id = ?
+		AND image = ?';
+sql_query(sql_filter($sql, $image_footer, $event_id, $image_id));
 
-$matches = array(
-	'<!--#echo var="HTTP_HOST" -->' => $_SERVER['HTTP_HOST'],
-	'<!--#echo var="REQUEST_URI" -->' => $_SERVER['REQUEST_URI']
-);
-
-echo str_replace($matches, implode('', $file_content));
+echo $image_footer;
 exit;
 
 ?>

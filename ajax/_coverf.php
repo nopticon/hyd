@@ -16,16 +16,10 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-define('IN_NUCLEO', true);
-define('ROOT', './../');
-require(ROOT . 'interfase/common.php');
 require(ROOT . 'interfase/artists.php');
 
-$user->init(false);
 $user->setup();
 
-//
-//
 $sql = 'SELECT t.topic_id, t.topic_title, t.forum_id, t.topic_replies, f.forum_name, p.post_id, p.post_username, p.post_time, u.user_id, u.username, u.username_base, u.user_color
 	FROM _forums f, _forum_topics t, _forum_posts p, _members u
 	WHERE t.forum_id NOT IN (??)
