@@ -35,7 +35,7 @@ foreach ($partners as $i => $row) {
 	$template->assign_block_vars('partners.row', array(
 		'NAME' => $row['partner_name'],
 		'IMAGE' => $row['partner_image'],
-		'URL' => $config['assets_url'] . 'style/sites/' . $row['partner_url'])
+		'URL' => $config['assets_url'] . '/style/sites/' . $row['partner_url'])
 	);
 }
 

@@ -1258,10 +1258,7 @@ class Template {
 		global $config, $user;
 		
 		if (empty($this->xs_started)) {
-			// Adding predefined variables
 			$this->xs_started = 1;
-			$this->vars['PHP'] = 'php';
-			$this->vars['LANG'] = $config['default_lang'];
 			
 			// Adding current template
 			$tpl = $this->root . '/';
@@ -1269,15 +1266,24 @@ class Template {
 				$tpl = substr($tpl, 2, strlen($tpl));
 			}
 			
-			$this->vars['TEMPLATE'] = $tpl;
-			$this->vars['TEMPLATE_NAME'] = $this->tpl;
-			$this->vars['S_SERVER'] = 'http://' . $config['server_name'];
-			$this->vars['IS_MEMBER'] = (isset($user->data['is_member'])) ? (int) $user->data['is_member'] : 0;
-			$this->vars['S_COMMENTS'] = s_link('comments');
-			$this->vars['S_EMOTICONS'] = s_link('emoticons');
-			$this->vars['S_CONTROL'] = s_link('control');
+			$extra_template = array(
+				'PHP' => 'php',
+				'LANG' => $config['default_lang'],
+				
+				'S_SERVER' => 'http://' . $config['server_name'],
+				'S_ASSETS' => $config['assets_url'],
+				'S_COMMENTS' => s_link('comments'),
+				'S_EMOTICONS' => s_link('emoticons'),
+				'S_CONTROL' => s_link('control'),
+				
+				'TEMPLATE' => $tpl,
+				'TEMPLATE_NAME' => $this->tpl,
+				
+				'IS_MEMBER' => (isset($user->data['is_member'])) ? (int) $user->data['is_member'] : 0,
+				'MEMBER_COLOR' => $user->data['user_color']
+			);
 			
-			$this->vars['MEMBER_COLOR'] = $user->data['user_color'];
+			$this->vars = array_merge($this->vars, $extra_template);
 		}
 	}
 

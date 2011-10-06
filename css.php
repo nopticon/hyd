@@ -17,7 +17,12 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 define('IN_NUCLEO', true);
-require('./interfase/common.php');
+
+if (!defined('ROOT')) {
+	define('ROOT', './');
+}
+
+require(ROOT . 'interfase/common.php');
 
 $user->init(false);
 $user->setup();
@@ -78,7 +83,9 @@ $template->assign_vars(array(
 	'IE' => $is_ie)
 );
 
-$template->set_filenames(array('body' => 'css/' . $filename . '.css'));
+$template->set_filenames(array(
+	'body' => 'css/' . $filename . '.css')
+);
 $template->assign_var_from_handle('EXT', 'body');
 
 sql_close();

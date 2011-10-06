@@ -1768,7 +1768,7 @@ class _artists extends layout {
 				);
 				
 				$template->set_filenames(array(
-					'a_body' => 'a_layout/' . $this->data['template'] . '.htm')
+					'a_body' => 'artists/' . $this->data['template'] . '.htm')
 				);
 				$template->assign_var_from_handle('UB_BODY', 'a_body');
 				break;

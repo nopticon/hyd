@@ -612,8 +612,8 @@ $lang += array(
 	// PAGE HEADER
 	//
 	'HOME' => 'Inicio',
-	'UB' => 'Bandas',
-	'UB_NEW' => 'Bandas nuevas',
+	'UB' => 'Artistas',
+	'UB_NEW' => 'Artistas nuevos',
 	'COMMUNITY' => 'Comunidad',
 	'USERS' => 'Usuarios',
 	'TOP_FORUM' => 'Ultimos %s mensajes del Foro',

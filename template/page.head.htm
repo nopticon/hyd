@@ -2,22 +2,14 @@
 <html lang="es">
 <head>
 <meta charset="utf-8" />
-<title><!-- IF PAGE_TITLE != 'Inicio' -->{PAGE_TITLE} en <!-- ENDIF -->Rock Republik, la comunidad m&aacute;s grande de rock en Guatemala</title>
-<link rel="stylesheet" type="text/css" media="all" href="{S_SERVER}/home/style/default.css" />
+<title><!-- IF PAGE_TITLE != 'Inicio' -->{PAGE_TITLE} en <!-- ENDIF -->Rock Republik<!-- IF PAGE_TITLE == 'Inicio' -->, la comunidad m&aacute;s grande de rock en Guatemala<!-- ENDIF --></title>
+<link rel="stylesheet" type="text/css" media="all" href="{S_ASSETS}/default.css" />
 <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Ubuntu:bold,normal|Inconsolata:normal|Droid+Sans">
-{META}
 <meta name="description" content="{S_DESCRIPTION}" />
 <meta name="keywords" content="{S_KEYWORDS}" />
-<meta name="robots" content="all" />
 <link href="{S_SERVER}/favicon.ico" rel="shortcut icon"/>
 <link rel="alternate" type="application/rss+xml" href="http://feeds.feedburner.com/rockrepublik_news" title="{L_RSS_NEWS}"/>
-<link rel="alternate" type="application/rss+xml" href="http://feeds.feedburner.com/rockrepublik_artists" title="{L_RSS_ARTISTS}"/>
-<script src="{S_SERVER}/ext/g.js" type="text/javascript"></script>
+<script src="{S_ASSETS}/g.js" type="text/javascript"></script>
 <!--[if lt IE 7]>
-<script src="{S_SERVER}/ext/7.js" type="text/javascript"></script>
+<script src="{S_ASSETS}/ie.js" type="text/javascript"></script>
 <![endif]-->
-<!-- BEGIN customcolor -->
-<style type="text/css">
-body { background-color: #{customcolor.COLOR}; }
-</style>
-<!-- END customcolor -->

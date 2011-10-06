@@ -17,7 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 define('IN_NUCLEO', true);
-require('./interfase/common.php');
+if (!defined('ROOT')) {
+	define('ROOT', './');
+}
+
+require(ROOT . 'interfase/common.php');
 
 $user->init(false);
 $user->setup();
@@ -36,7 +40,7 @@ if (empty($filename) || !preg_match('#[a-z\_]+#i', $filename)) {
 	fatal_error();
 }
 
-$filepath = './template/js/' . $filename . '.js';
+$filepath = ROOT . 'template/js/' . $filename . '.js';
 if (!@file_exists($filepath)) {
 	fatal_error();
 }
@@ -60,7 +64,7 @@ if ($etag_client == $etag_server && $f_last_modified == $http_if_modified_since)
 	exit;
 }
 
-require('./interfase/jsmin.php');
+require(ROOT . 'interfase/jsmin.php');
 
 $is_firefox = (strstr($user->browser, 'Gecko')) ? true : false;
 $is_ie = (strstr($user->browser, 'IE')) ? true : false;

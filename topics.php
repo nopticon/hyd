@@ -480,8 +480,10 @@ if ($forum_id == $config['forum_for_radio'] && $user->_team_auth('radio')) {
 }
 
 $template_file = 'topics';
-if (@file_exists('./template/custom/forum_' . $forum_id . '.htm')) {
-	$template_file = 'custom/forum_' . $forum_id;
+
+$use_m_template = 'custom/forum_' . $forum_id;
+if (@file_exists(ROOT . 'template/' . $use_m_template . '.htm')) {
+	$template_file = $use_m_template;
 }
 
 page_layout($forum_row['forum_name'], $template_file);

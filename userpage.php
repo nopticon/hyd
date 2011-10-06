@@ -215,14 +215,13 @@ $template_vars = array(
 	'MSN' => $profiledata['user_msnm']
 );
 
-$use_template = 'userpage';
+$template_file = 'userpage';
 
-$use_m_template = 'profiles/' . $profiledata['username_base'];
-if (@file_exists(ROOT . 'template/' . $use_m_template . '.htm'))
-{
-	$use_template = $use_m_template;
+$use_m_template = 'custom/profile_' . $profiledata['username_base'];
+if (@file_exists(ROOT . 'template/' . $use_m_template . '.htm')) {
+	$template_file = $use_m_template;
 }
 
-page_layout($profiledata['username'], $use_template, $template_vars);
+page_layout($profiledata['username'], $template_file, $template_vars);
 
 ?>
