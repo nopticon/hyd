@@ -5,16 +5,17 @@
 	<div class="float_left col71">
 		<div class="sec"><h3><a href="{U_VIEW_FORUM}">{FORUM_NAME}</a> &raquo; <a href="{S_TOPIC_ACTION}">{TOPIC_TITLE}</a></h3></div>
 		<div class="cols5_left low_color">{EVENT_DATE}</div>
-		<!-- BEGIN collab -->
-		<div class="cols5_left low_color">{L_EVENT_PHOTO_THANKS}
-			<!-- BEGIN row -->
-			<a href="{row.PROFILE}">{row.USERNAME}</a>
-			<!-- END row -->
-		</div>
-		<!-- END collab -->
 	</div>
 	<div class="float_right a_right col25">
-		<!-- BEGIN post_box --><a href="#reply">{L_POST_REPLY}</a><!-- END post_box --><!-- BEGIN mcppoints --> <a href="{mcppoints.U_FEAT}">{mcppoints.V_LANG}</a><!-- END mcppoints --><!-- BEGIN feature --> <a href="{feature.U_FEAT}">{feature.V_LANG}</a><!-- END feature -->
+		<!-- BEGIN post_box -->
+		<a href="#reply">{L_POST_REPLY}</a>
+		<!-- END post_box -->
+		<!-- BEGIN mcppoints -->
+		<a href="{mcppoints.U_FEAT}">{mcppoints.V_LANG}</a>
+		<!-- END mcppoints -->
+		<!-- BEGIN feature -->
+		<a href="{feature.U_FEAT}">{feature.V_LANG}</a>
+		<!-- END feature -->
 	</div>
 </div>
 
@@ -51,7 +52,9 @@
 </div>
 <!-- END poll -->
 
-<!-- IF PAGES_NUMS != ' <strong>1</strong>' --><div class="rows5_top_7 pagination">{PAGES_NUMS}</div><!-- ENDIF -->
+<!-- IF PAGES_NUMS != ' <strong>1</strong>' -->
+<div class="rows5_top_7 pagination">{PAGES_NUMS}</div>
+<!-- ENDIF -->
 
 <!-- BEGIN posts -->
 <div class="comments">
@@ -67,7 +70,7 @@
 <div class="col_fr nowraptext">
 {item.MESSAGE}
 <!-- IF item.PLAYING != '' -->
-<br /><br /><div class="a_right nowplay">{item.PLAYING} &nbsp;<img src="{S_SERVER}/net/smiles/arkane.png" alt="" /></div>
+<br /><br /><div class="a_right nowplay">{item.PLAYING} &nbsp;<img src="{S_ASSETS}/emoticon/arkane.png" alt="" /></div>
 <!-- ENDIF -->
 </div>
 <!-- IF item.USER_SIG != '' -->
@@ -80,16 +83,11 @@
 </div>
 <!-- END posts -->
 
-<!-- IF PAGES_NUMS != ' <strong>1</strong>' --><div class="pagination">{PAGES_NUMS}</div><!-- ENDIF -->
-
-<br /><div align="center"><a name="fb_share" type="button_count" href="http://www.facebook.com/sharer.php">Share</a><script src="http://static.ak.fbcdn.net/connect.php/js/FB.Share" type="text/javascript"></script></div>
-
-<!-- BEGIN post_error -->
-<a name="e"></a><div class="rows5_top_2"><div class="error_block"><h2>{L_ERROR}</h2><p>{post_error.MESSAGE}</p></div></div>
-<!-- END post_error -->
+<!-- IF PAGES_NUMS != ' <strong>1</strong>' -->
+<div class="pagination">{PAGES_NUMS}</div>
+<!-- ENDIF -->
 
 <!-- BEGIN post_box -->
-<a name="reply"></a>
 <div class="rows5_top_2 post_comment">
 <div class="ie-widthfix float-holder">
 	<div class="col75 float_left">
@@ -105,6 +103,7 @@
 		<div class="rows5_top_1 a_center"><input class="submit" type="submit" name="post" value="{L_SUBMIT}" /></div>
 		</form>
 	</div>
+	<!-- BEGIN hide -->
 	<div class="cols5_left_2 info float_right">
 		<script type="text/javascript"><!--
 		google_ad_client = "ca-pub-5371491382621943";
@@ -114,7 +113,8 @@
 		//-->
 		</script>
 		<script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
-	</div>		
+	</div>
+	<!-- END hide -->
 </div>		
 <!-- END post_box -->
 </div>

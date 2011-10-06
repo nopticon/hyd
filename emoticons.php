@@ -36,7 +36,7 @@ if (!$smilies = $cache->get('smilies')) {
 foreach ($smilies as $smile_url => $data) {
 	$template->assign_block_vars('smilies_row', array(
 		'CODE' => $data['code'],
-		'IMAGE' => $config['assets_path'] . '/' . $data['smile_url'],
+		'IMAGE' => $config['assets_url'] . '/emoticon/' . $data['smile_url'],
 		'DESC' => $data['emoticon'])
 	);
 }

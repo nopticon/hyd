@@ -334,7 +334,7 @@ class userpage {
 		$age = 0;
 		if ($profiledata['user_birthday']) {
 			$bd_month = gmmktime(0, 0, 0, substr($profiledata['user_birthday'], 4, 2) + 1, 0, 0);
-			$birthday = substr($profiledata['user_birthday'], 6, 2) . ' ' . $user->format_date($bd_month, 'F') . ' ' . substr($profiledata['user_birthday'], 0, 4);
+			$birthday = (int) substr($profiledata['user_birthday'], 6, 2) . ' ' . $user->format_date($bd_month, 'F') . ' ' . substr($profiledata['user_birthday'], 0, 4);
 			
 			$age = date('Y', $current_time) - intval(substr($profiledata['user_birthday'], 0, 4));
 			if (intval(substr($profiledata['user_birthday'], 4, 4)) > date('md', $current_time)) {

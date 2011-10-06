@@ -127,7 +127,7 @@ $(function() {
 	
 	$('div[id^="hse_"]').each(function() {
 		$d = $('#se_' + this.id.substr(4)).empty();
-		$('ins:first', this).appendTo($d);
+		$('ins:first', this).appendTo($d).addClass('rows5_top_2');
 	});
 });
 
