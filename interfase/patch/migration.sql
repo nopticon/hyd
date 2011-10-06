@@ -56,3 +56,46 @@ DELETE FROM _config WHERE config_name = 'sc_stats_ipport';
 DELETE FROM _config WHERE config_name = 'sc_stats_down';
 DELETE FROM _config WHERE config_name = 'sc_stats_key';
 DELETE FROM _config WHERE config_name = 'max_login_attempts';
+
+INSERT INTO _config (config_name, config_value) VALUES ('assets_url', '//assets.rockrepublik.net/');
+INSERT INTO _config (config_name, config_value) VALUES ('assets_path', 'assets/');
+
+ALTER TABLE _artists_voters ADD voter_id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST;
+ALTER TABLE _artists_votes ADD vote_id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST;
+ALTER TABLE _art_fav ADD fav_id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST;
+ALTER TABLE _chat_auth ADD PRIMARY KEY(ch_id);
+ALTER TABLE _dl_fav ADD fav_id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST;
+ALTER TABLE _dl_vote ADD vote_id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST;
+ALTER TABLE _dl_voters ADD voter_id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST;
+ALTER TABLE _events_fav ADD fav_id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST;
+ALTER TABLE _events_images ADD image_id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST;
+ALTER TABLE _members_iplog ADD log_id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST;
+ALTER TABLE _members_ref_invite ADD invite_id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST;
+ALTER TABLE _members_unread ADD unread_id INT( 11 ) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST;
+ALTER TABLE _members_viewers ADD viewers_id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST;
+ALTER TABLE _team_members ADD members_id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST;
+
+CREATE TABLE IF NOT EXISTS _partners (
+	partner_id MEDIUMINT(5) NOT NULL AUTO_INCREMENT,
+	partner_name VARCHAR(100) NOT NULL DEFAULT '',
+	partner_url VARCHAR(100) NOT NULL DEFAULT '',
+	partner_image VARCHAR(50) NOT NULL DEFAULT '',
+	partner_order SMALLINT(3) NOT NULL DEFAULT '0',
+	PRIMARY KEY (partner_id)
+) ENGINE=InnoDB;
+
+INSERT INTO _partners (partner_name, partner_url, partner_image, partner_order) VALUES
+	('18-50 TV', 'http://www.18-50.tv/', '18-50.jpg', 1),
+	('Black Moon Shows', 'http://www.blackmoonshows.com/', 'blackmoonshows.jpg', 2),
+	('Craneo Metal de Costa Rica', 'http://www.craneometal.com/', 'craneometal.jpg', 3),
+	('Equipos Profesionales, S.A.', 'http://www.equiposprofesionales.com/music/', 'epsa.jpg', 4),
+	('Innovation Network Technologies', 'http://www.innett.com/', 'innett.jpg', 5),
+	('Metal cr&iacute;tico, El Salvador', 'http://www.metalcritico.com/', 'metalcritico.jpg', 6),
+	('Mundo Xpedition', 'http://www.mundoxpedition.com/', 'xpedition.jpg', 7),
+	('Nopticon Networks', 'http://www.nopticon.com/', 'nopticon.jpg', 8),
+	('Oxigeno Radio', 'http://www.oxigenoradio.net/', 'oxigenoradio.jpg', 9),
+	('Radio Reacktor', 'http://www.reacktor.com/', 'reacktor.jpg', 10),
+	('Radio Rock 9-80', 'http://www.rock9-80.com/', 'rock9-80.jpg', 11),
+	('Rock Stage Rumania', 'http://www.rockstage.ro/', 'rockstage.jpg', 12),
+	('Sangre Chapina', 'http://www.sangrechapina.com/', 'sangrechapina.jpg', 13),
+	('The Metal Room', 'http://www.elcuartodelmetal.co.cc/', 'themetalroom.jpg', 14);

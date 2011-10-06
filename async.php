@@ -26,7 +26,7 @@ if (strtolower($_SERVER['REQUEST_METHOD']) == 'post') {
 	$filename = request_var('filename', '');
 	
 	if (!empty($filename)) {
-		$module_path = ROOT . 'ajax/_' . $filename . '.php';
+		$module_path = ROOT . '_async_' . $filename . '.php';
 		
 		if (@file_exists($module_path)) {
 			$user->init(false);

@@ -16,6 +16,29 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-if (!defined('IN_NUCLEO')) exit;
+define('IN_NUCLEO', true);
+require('./interfase/common.php');
+
+$user->init();
+$user->setup();
+
+$sql = 'SELECT *
+	FROM _partners
+	ORDER BY partner_order';
+$partners = sql_rowset($sql);
+
+foreach ($partners as $i => $row) {
+	if (!$i) {
+		$template->assign_block_vars('partners', array());
+	}
+	
+	$template->assign_block_vars('partners.row', array(
+		'NAME' => $row['partner_name'],
+		'IMAGE' => $row['partner_image'],
+		'URL' => $config['assets_url'] . 'style/sites/' . $row['partner_url'])
+	);
+}
+
+page_layout('PARTNERS', 'partners', false, false);
 
 ?>
