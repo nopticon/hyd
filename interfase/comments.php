@@ -291,7 +291,7 @@ class _comments {
 						'USERNAME_TO' => $post_data['username'],
 						'USERNAME_FROM' => $user->data['username'],
 						'USER_MESSAGE' => entity_decode($message),
-						'U_PROFILE' => s_link('m', $post_data['username_base']))
+						'U_PROFILE' => s_link('m', $user->data['username_base']))
 					);
 					$emailer->send();
 					$emailer->reset();

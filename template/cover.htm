@@ -26,59 +26,61 @@
 	<!-- END banners -->
 
 	<!-- BEGIN news -->
-	<div id="articles">
+	<div class="news ls_none">
 		<div class="sec"><h3>{L_LATEST_NEWS}</h3></div>
-		<ul class="ul_none">
-		<!-- BEGIN item -->
-		<li>
-			<div class="ie-widthfix float-holder">
-			<div><a href="{item.URL}">{item.SUBJECT}</a></div>
-			<div class="low_color">Publicado el {item.TIMESTAMP}</div>
-			<div class="v"><a href="{item.URL}"><img src="{item.IMAGE}" alt="" /></a></div>
-			<div class="s">{item.MESSAGE}</div>
-			</div>
-		</li>
-		<!-- END item -->
+		<ul>
+			<!-- BEGIN row -->
+			<li>
+				<div class="ie-widthfix float-holder">
+				<div><a href="{item.URL}">{item.SUBJECT}</a></div>
+				<div class="low_color">Publicado el {item.TIMESTAMP}</div>
+				<div class="v"><a href="{item.URL}"><img src="{item.IMAGE}" alt="" /></a></div>
+				<div class="s">{item.MESSAGE}</div>
+				</div>
+			</li>
+			<!-- END row -->
 		</ul>
-		<div class="a_right">
-			<!-- BEGIN create -->
-			<a class="" href="{create.U_NEWS_CREATE}">Publicar informaci&oacute;n</a> &nbsp; &nbsp; &nbsp; &nbsp;
-			<!-- END create -->
-			<a class="relevant_artist" href="{U_NEWS}">Leer m&aacute;s art&iacute;culos</a>
+		
+		<div class="a_right ls_none">
+			<ul>
+				<!-- BEGIN create -->
+				<li><a href="{create.U_NEWS_CREATE}">Publicar informaci&oacute;n</a></li>
+				<!-- END create -->
+				<li><a href="{U_NEWS}">Leer m&aacute;s art&iacute;culos</a></li>
+			</ul>
 		</div>
 	</div>
 	<!-- END news -->
 	
 	<div id="se_cover_1"></div>
 	
-	<div class="float-holder ie-widthfix">
-		<div id="board" class="is_mid rows5_top_4 ul_style">
-			<div class="sec"><h3>{L_BOARD_LATEST}</h3></div>
-			<!-- BEGIN board_general -->
-			<ul class="ul_none">
-				<!-- BEGIN item -->
-				<li>
-					<div><a<!-- IF item.TOPIC_COLOR --> style="color:#{item.TOPIC_COLOR};"<!-- ENDIF --> href="{item.U_TOPIC}">{item.TOPIC_TITLE}</a></div>
-					<div class="low_color"><a href="{item.PROFILE}">{item.USERNAME}</a> public&oacute; a las {item.POST_TIME}</div>
-				</li>
-				<!-- END item -->
-			</ul>
-			<!-- END board_general -->
-		</div>
-		<div id="board_events" class="is_mid rows5_top_4 ul_style">
-			<div class="sec"><h3>{L_BOARD_EVENTS}</h3></div>
-			<!-- BEGIN board_events -->
-			<ul class="ul_none">
-				<!-- BEGIN item -->
-				<li>
-					<div><a<!-- IF item.TOPIC_COLOR --> style="color:#{item.TOPIC_COLOR};"<!-- ENDIF --> href="{item.U_TOPIC}">{item.TOPIC_TITLE} ({item.EVENT_DATE})</a></div>
-					<div class="low_color"><a href="{item.PROFILE}">{item.USERNAME}</a> public&oacute; a las {item.POST_TIME}</div>
-				</li>
-				<!-- END item -->
-			</ul>
-			<!-- END board_events -->
-		</div>
+	<!-- BEGIN board_general -->
+	<div class="is_mid rows5_top_4 ls_none">
+		<div class="sec"><h3>{L_BOARD_LATEST}</h3></div>
+		<ul>
+			<!-- BEGIN item -->
+			<li>
+				<div><a<!-- IF item.TOPIC_COLOR --> style="color:#{item.TOPIC_COLOR};"<!-- ENDIF --> href="{item.U_TOPIC}">{item.TOPIC_TITLE}</a></div>
+				<div class="low_color"><a href="{item.PROFILE}">{item.USERNAME}</a> public&oacute; a las {item.POST_TIME}</div>
+			</li>
+			<!-- END item -->
+		</ul>
 	</div>
+	<!-- END board_general -->
+	
+	<!-- BEGIN board_events -->
+	<div class="is_mid rows5_top_4 ls_none">
+		<div class="sec"><h3>{L_BOARD_EVENTS}</h3></div>
+		<ul>
+			<!-- BEGIN item -->
+			<li>
+				<div><a<!-- IF item.TOPIC_COLOR --> style="color:#{item.TOPIC_COLOR};"<!-- ENDIF --> href="{item.U_TOPIC}">{item.TOPIC_TITLE} ({item.EVENT_DATE})</a></div>
+				<div class="low_color"><a href="{item.PROFILE}">{item.USERNAME}</a> public&oacute; a las {item.POST_TIME}</div>
+			</li>
+			<!-- END item -->
+		</ul>
+	</div>
+	<!-- END board_events -->
 </div>
 
 <div class="is_right">	

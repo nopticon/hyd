@@ -50,7 +50,7 @@ class cover {
 			$image = $images_dir . $row['news_id'] . '.jpg';
 			$image = (@file_exists('..' . $image)) ? $image : $images_dir . 'default.jpg';
 			
-			$template->assign_block_vars('news.item', array(
+			$template->assign_block_vars('news.row', array(
 				'TIMESTAMP' => $user->format_date($row['post_time'], 'j \d\e F Y'),
 				'URL' => s_link('news', $row['news_id']),
 				'SUBJECT' => $row['post_subject'],
