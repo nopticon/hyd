@@ -26,7 +26,7 @@ $lang += array(
 
 	'ENCODING' => "iso-8859-1",
 	'DIRECTION' => '',
-	'DATE_FORMAT' => 'd M Y',
+	'DATE_FORMAT' => 'j F Y',
 	
 	'FORUM' => 'Foro',
 	'CATEGORY' => 'Categor&iacute;a',

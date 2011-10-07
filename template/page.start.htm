@@ -1,83 +1,83 @@
-<div id="container-1">
-<div id="container-2">
-
-<div id="header">
-<div id="header_in" class="float-holder ie-widthfix">
-	<div id="app">
-		<h1><a href="{U_COVER}" title="{L_APPLICATION}">{L_APPLICATION}</a></h1>
-		<h2>{L_APPLICATION_DESC}</h2>
+<div class="page">
+	
+	<div class="header">
+		<div class="brand">
+			<h1><a href="{U_COVER}" title="{L_APPLICATION}">{L_APPLICATION}</a></h1>
+			<h2>{L_APPLICATION_DESC}</h2>
+			
+			<div id="menu">
+				<ul>
+					<!-- IF IS_MEMBER -->
+					<li><a class="expand" id="account" href="{U_PROFILE}">{S_USERNAME} &#9660;</a>
+						<ul id="expand_account">
+							<li><a href="{U_PROFILE}">{S_USERNAME}</a></li>
+							<li><a href="{U_WHATS_NEW}" title="{S_UNREAD_ITEMS}">{L_THENEW}</a></li>
+							<li><a href="{U_EDITPROFILE}">{L_PREFERENCES}</a></li>
+							<!-- IF S_CONTROLPANEL != '' -->
+							<li><a href="{S_CONTROLPANEL}">{L_CONTROL_PANEL}</a></li>
+							<!-- ENDIF -->
+							<li><a href="{U_SESSION}">{L_LOGOUT2}</a></li>
+						</ul>
+					</li>
+					<!-- ENDIF -->
+					<li><a href="{U_ARTISTS}" title="{L_UB}">{L_UB}</a></li>
+					<li><a href="{U_EVENTS}" title="{L_UE}">{L_UE}</a></li>
+					<li><a href="{U_FORUM}" title="{L_FORUM}">{L_FORUM}</a></li>
+					<li><a href="{U_COMMUNITY}" title="{L_COMMUNITY}">{L_COMMUNITY}</a></li>
+					<li><a href="{U_BROADCAST}" title="{L_BROADCAST}">{L_BROADCAST}</a></li>
+					<!-- BEGIN hide -->
+					<li><a href="{U_ALLIES}" title="{L_ALLIES}">{L_ALLIES}</a></li>
+					<!-- END hide -->
+					<li><a class="expand" id="facebook" href="//www.facebook.com/rockrepublik">Facebook</a>
+						<ul id="expand_facebook">
+							<li>
+								<script type="text/javascript" src="http://static.ak.connect.facebook.com/js/api_lib/v0.4/FeatureLoader.js.php/en_US"></script>
+								<script type="text/javascript">FB.init("fed8ea7d6067b5b601104fb41cabf9c0");</script>
+								<fb:fan profile_id="48722647107" stream="1" connections="0" width="212"></fb:fan>
+							</li>
+						</ul>
+					</li>
+					<li><a class="expand" id="twitter" href="//www.twitter.com/rockrepublik">Twitter</a></li>
+				</ul>
+			</div>
+		</div>
 		
-		<div id="menu">
-			<h2 class="z">{L_NAVIGATION}</h2>
+		<!-- IF IS_MEMBER -->
+		<div id="search" class="ie-widthfix float-holder">
+		<form id="searchForm" method="post">
+			<fieldset>
+				<input id="s" type="text" title="Buscar en Rock Republik">
+				<input id="sb" type="submit" value=" &gt; " />
+			</fieldset>
+		</form>
+		
+		<div id="search_result" class="ie-widthfix float-holder"></div>	
+		</div>
+		<!-- ELSE -->
+		<div id="sign" class="ie-widthfix float-holder">
 			<ul>
-				<!-- IF IS_MEMBER -->
-				<li><a class="expand" id="account" href="{U_PROFILE}">{S_USERNAME} &#9660;</a>
-					<ul id="expand_account">
-						<li><a href="{U_PROFILE}">{S_USERNAME}</a></li>
-						<li><a href="{U_WHATS_NEW}" title="{S_UNREAD_ITEMS}">{L_THENEW}</a></li>
-						<li><a href="{U_EDITPROFILE}">{L_PREFERENCES}</a></li>
-						<!-- IF S_CONTROLPANEL != '' -->
-						<li><a href="{S_CONTROLPANEL}">{L_CONTROL_PANEL}</a></li>
-						<!-- ENDIF -->
-						<li><a href="{U_SESSION}">{L_LOGOUT2}</a></li>
-					</ul>
-				</li>
-				<!-- ENDIF -->
-				<li><a href="{U_ARTISTS}" title="{L_UB}">{L_UB}</a></li>
-				<li><a href="{U_EVENTS}" title="{L_UE}">{L_UE}</a></li>
-				<li><a href="{U_FORUM}" title="{L_FORUM}">{L_FORUM}</a></li>
-				<li><a href="{U_COMMUNITY}" title="{L_COMMUNITY}">{L_COMMUNITY}</a></li>
-				<li><a href="{U_BROADCAST}" title="{L_BROADCAST}">{L_BROADCAST}</a></li>
-				<!-- BEGIN hide -->
-				<li><a href="{U_ALLIES}" title="{L_ALLIES}">{L_ALLIES}</a></li>
-				<!-- END hide -->
-				<li><a class="expand" id="facebook" href="//www.facebook.com/rockrepublik">Facebook</a>
-					<ul id="expand_facebook">
+				<li><a class="expand" id="signup" href="{U_REGISTER}">{L_REGISTER}</a></li>
+				<li><a class="expand" id="signin" href="{U_SESSION}">{L_LOGIN2}</a>
+					<ul id="expand_signin">
 						<li>
-							<script type="text/javascript" src="http://static.ak.connect.facebook.com/js/api_lib/v0.4/FeatureLoader.js.php/en_US"></script>
-							<script type="text/javascript">FB.init("fed8ea7d6067b5b601104fb41cabf9c0");</script>
-							<fb:fan profile_id="48722647107" stream="1" connections="0" width="212"></fb:fan>
+							<form action="{U_SESSION}" method="post">
+								<input type="hidden" name="ref" value="{S_REDIRECT}" />
+								<fieldset>
+								{L_USERNAME}: <input type="text" name="username" maxlength="25" value="" /> 
+								{L_PASSWORD}: <input type="password" name="password" maxlength="32" value="" /> 
+								<input class="special" type="submit" name="login" value="{L_LOGIN}" />
+								</fieldset>
+							</form>
 						</li>
 					</ul>
 				</li>
-				<li><a class="expand" id="twitter" href="//www.twitter.com/rockrepublik">Twitter</a></li>
 			</ul>
 		</div>
+		<!-- ENDIF -->
+		
+		<span class="clear"></span>
 	</div>
 	
-	<!-- IF IS_MEMBER -->
-	<div id="search" class="ie-widthfix float-holder">
-	<form id="searchForm" method="post">
-		<fieldset>
-			<input id="s" type="text" title="Buscar en Rock Republik">
-			<input id="sb" type="submit" value=" &gt; " />
-		</fieldset>
-	</form>
+	<hr />
 	
-	<div id="search_result" class="ie-widthfix float-holder"></div>	
-	</div>
-	<!-- ELSE -->
-	<div id="sign" class="ie-widthfix float-holder">
-		<ul>
-			<li><a class="expand" id="signup" href="{U_REGISTER}">{L_REGISTER}</a></li>
-			<li><a class="expand" id="signin" href="{U_SESSION}">{L_LOGIN2}</a>
-				<ul id="expand_signin">
-					<li>
-						<form action="{U_SESSION}" method="post">
-							<input type="hidden" name="ref" value="{S_REDIRECT}" />
-							<fieldset>
-							{L_USERNAME}: <input type="text" name="username" maxlength="25" value="" /> 
-							{L_PASSWORD}: <input type="password" name="password" maxlength="32" value="" /> 
-							<input class="special" type="submit" name="login" value="{L_LOGIN}" />
-							</fieldset>
-						</form>
-					</li>
-				</ul>
-			</li>
-		</ul>
-	</div>
-	<!-- ENDIF -->
-</div>
-</div>
-
-<div id="container-3" class="ie-widthfix float-holder">
+	<div id="content">

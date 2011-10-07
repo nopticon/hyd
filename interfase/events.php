@@ -75,7 +75,7 @@ class _events extends downloads {
 	}
 	
 	public function _nextevent() {
-		global $user, $template;
+		global $config, $user, $template;
 		
 		$nevent = array();
 		$sql = 'SELECT *
@@ -89,7 +89,7 @@ class _events extends downloads {
 			$this->filename = SDATA . 'events/future/thumbnails/' . $row['id'] . '.jpg';
 
 			$template->assign_block_vars('next_event', array(
-				'URL' => s_link('events') . '#' . $row['id'],
+				'URL' => s_link('events', $row['id']),
 				'TITLE' => $row['title'],
 				'IMAGE' => $this->filename)
 			); 
@@ -98,29 +98,8 @@ class _events extends downloads {
 		return;		
 	}	
 	
-	/*
-	public function _nextevent() {
-		global $user, $template;
-		
-		$sql = 'SELECT *
-			FROM _events
-			WHERE date >= ?
-			ORDER BY date ASC
-			LIMIT 1';
-		if ($row = sql_rowset(sql_filter($sql, $this->timetoday))) {
-			$this->filename = SDATA . 'events/future/thumbnails/' . $row['id'] . '.jpg';
-			
-			$template->assign_block_vars('next_event', array(
-				'URL' => s_link('events') . '#' . $row['id'],
-				'TITLE' => $row['title'],
-				'IMAGE' => $this->filename)
-			);
-		}
-	}
-	*/
-	
 	public function _lastevent($start = 0) {
-		global $template;
+		global $config, $template;
 		
 		$sql = 'SELECT *
 			FROM _events
