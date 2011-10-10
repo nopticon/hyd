@@ -1,6 +1,6 @@
 <!-- INCLUDE page.header.htm -->
 
-<div class="boxb pad12 ie-widthfix float-holder">
+<div class="">
 <div class="head-float-left">
 <div class="sep"><h1>{L_CHAT}</h1></div>
 <h1 class="red">{L_CHAT_CREATE}</h1>
@@ -22,37 +22,7 @@
 <!-- END error -->
 
 <div class="m6">
-<form action="{S_ACTION}" method="post">
-<div class="pad6 box3 float-holder ie-widthfix dark-color">
-<table cellpadding="1" cellspacing="8">
-	<tr>
-		<td width="110">{L_CHAT_CREATE_NAME}</td>
-		<td><input type="text" name="ch_name" size="25" maxlength="25" value="{CH_NAME}" /></td>
-	</tr>
-	<tr>
-		<td>{L_CHAT_CREATE_DESC}</td>
-		<td><input type="text" name="ch_desc" size="25" maxlength="255" value="{CH_DESC}" /></td>
-	</tr>
-	<!-- BEGIN select_cat -->
-	<tr>
-		<td>{L_CHAT_CREATE_CAT}</td>
-		<td><select name="ch_cat">{select_cat.CHAT_SELECT_CAT}</select></td>
-	</tr>
-	<!-- END select_cat -->
-	<tr>
-		<td>{L_CHAT_CREATE_AUTH}</td>
-		<td><select name="ch_auth">{CHAT_SELECT_AUTH}</select></td>
-	</tr>
-	<!-- BEGIN select_type -->
-	<tr>
-		<td>{L_CHAT_CREATE_TYPE}</td>
-		<td><select name="ch_type">{select_type.CHAT_SELECT_TYPE}</select></td>
-	</tr>
-	<!-- END select_type -->
-</table>
-<div align="center"><input type="submit" class="bold w100p" name="submit" value="{L_SUBMIT}" /></div>
-</div>
-</form>
+
 </div>
 
 <!-- INCLUDE page.footer.htm -->

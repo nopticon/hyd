@@ -1,18 +1,18 @@
 <!-- BEGIN online -->
-<div class="<!-- IF online.S_ROW_COUNT -->rows5_top_2 rows5_top_1<!-- ENDIF -->">
+<div class="<!-- IF online.S_ROW_COUNT -->pad_top<!-- ENDIF --> ls_none">
 	<div class="sec"><h3>{online.L_TITLE}</h3></div>
-	<ul class="ul_none">
+	<ul>
 		<!-- BEGIN legend -->
 		<!-- BEGIN item -->
-		<li class="pad_2"><strong>{item.ONLINE_VALUE}</strong> {item.L_MEMBERS}</li>
+		<li><strong>{item.ONLINE_VALUE}</strong> {item.L_MEMBERS}</li>
 		<!-- END item -->
 		<!-- END legend -->
 		<!-- BEGIN members -->
 		<!-- BEGIN item -->
-		<li class="pad_2"><a class="relevant uunique" href="{item.PROFILE}">{item.USERNAME}</a></li>
+		<li><a href="{item.PROFILE}">{item.USERNAME}</a></li>
 		<!-- END item -->
 		<!-- BEGIN none -->
-		<li class="pad_2">{L_NONE}</li>
+		<li>{L_NONE}</li>
 		<!-- END none -->
 		<!-- END members -->
 	</ul>
@@ -20,11 +20,11 @@
 <!-- END online -->
 
 <!-- BEGIN recent_members -->
-<div class="rows5_top rows5_top_1">
+<div class="pad_top ls_none">
 	<div class="sec"><h3>{L_MEMBERS_LASTEST}</h3></div>
-	<ul class="ul_none">
+	<ul>
 		<!-- BEGIN item -->
-		<li class="pad_2"><a class="relevant uunique" href="{item.PROFILE}">{item.USERNAME}</a></li>
+		<li><a href="{item.PROFILE}">{item.USERNAME}</a></li>
 		<!-- END item -->
 	</ul>
 </div>

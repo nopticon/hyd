@@ -2,18 +2,27 @@
 
 <div class="sec"><h3>{TOTAL_A} {L_UB}<!-- IF SELECTED_LETTER --> <span>&raquo;</span> {SELECTED_LETTER}<!-- ENDIF --></h3></div>
 
+<!-- BEGIN hide -->
 <div class="sec"><h3>
 <!-- BEGIN alphabet_item -->
-<!-- IF alphabet_item.S_ROW_COUNT --> &nbsp; <!-- ENDIF --><!-- IF SELECTED_LETTER == alphabet_item.CHAR --><strong class="red">{alphabet_item.CHAR}</strong><!-- ELSE --><a href="{alphabet_item.URL}">{alphabet_item.CHAR}</a><!-- ENDIF -->
+<!-- IF alphabet_item.S_ROW_COUNT --> &nbsp; <!-- ENDIF --><!-- IF SELECTED_LETTER == alphabet_item.CHAR --><strong>{alphabet_item.CHAR}</strong><!-- ELSE --><a href="{alphabet_item.URL}">{alphabet_item.CHAR}</a><!-- ENDIF -->
 <!-- END alphabet_item -->
 </h3></div>
+<!-- END hide -->
 
 <!-- BEGIN search_match -->
 <div id="ajx-thumbnails">
 <ul class="ul_none">
 	<!-- BEGIN row -->
 	<!-- BEGIN col -->
-	<li class="row_1f col_1f float_left pad_2 a_center"><a class="relevant_artist" href="{col.URL}">{col.NAME}</a><br />{col.GENRE}<br /><br />{col.LOCATION}<br /><br /><a href="{col.URL}"><img src="{col.IMAGE}" alt="{col.NAME}" /></a></li>
+	<li class="el_left a_center">
+		<ul>
+			<li><a href="{col.URL}">{col.NAME}</a></li>
+			<li>{col.GENRE}</li>
+			<li>{col.LOCATION}</li>
+			<li><a href="{col.URL}"><img src="{col.IMAGE}" alt="{col.NAME}" /></a></li>
+		</ul>
+	</li>
 	<!-- END col -->
 	<!-- END row -->
 </ul>

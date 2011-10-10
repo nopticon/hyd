@@ -1,14 +1,20 @@
 <!-- INCLUDE page.header.htm -->
 
-<form action="{S_CONFIRM_ACTION}" method="post">{S_HIDDEN_FIELDS}
-<div class="section"><h1>{L_CONFIRM}</h1></div>
-<ul class="ul_none">
-	<li class="a_center">{MESSAGE_TEXT}</li>
-	<!-- IF isset(DELETE_FOREVER) && DELETE_FOREVER -->
-	<li class="a_center rows5_top_4"><input type="checkbox" name="delete_forever" value="1" /> {L_CONTROL_A_APOSTS_DELETE_FOREVER}</li>
-	<!-- ENDIF -->
-</ul>
-<div class="rows5_top_2 a_center"><input class="submit" type="submit" name="confirm" value="{L_YES}" /> <input class="submit" type="submit" name="cancel" value="{L_NO}" /></div>
-</form>
+<div class="ls_none">
+	<form action="{S_CONFIRM_ACTION}" method="post">
+		{S_HIDDEN_FIELDS}
+		
+		<div class="sec"><h3>{L_CONFIRM}</h3></div>
+		
+		<ul>
+			<li class="a_center">{MESSAGE_TEXT}</li>
+			<!-- IF isset(DELETE_FOREVER) && DELETE_FOREVER -->
+			<li class="a_center rows5_top_4"><input type="checkbox" name="delete_forever" value="1" /> {L_CONTROL_A_APOSTS_DELETE_FOREVER}</li>
+			<!-- ENDIF -->
+		</ul>
+		
+		<div><input type="submit" name="confirm" value="{L_YES}" /> <input type="submit" name="cancel" value="{L_NO}" /></div>
+	</form>
+</div>
 
 <!-- INCLUDE page.footer.htm -->

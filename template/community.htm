@@ -1,41 +1,56 @@
 <!-- INCLUDE page.header.htm -->
 
-<div class="rows5_top <!-- IF category.S_ROW_COUNT -->rows5_top_1 <!-- ENDIF -->">
+<div class="ls_none">
 	<div class="sec"><h3>Rock Republik Networks</h3></div>
 	<ul class="ul_none">
-		<li class="pad_2">Apoyando el rock desde el <strong>{START_DATE}</strong></li>
-		<li class="pad_2"><strong>{MEMBERS_COUNT}</strong> {L_MEMBERS_ALL}</li>
+		<li>Apoyando el rock desde el <strong>{START_DATE}</strong></li>
+		<li><strong>{MEMBERS_COUNT}</strong> {L_MEMBERS_ALL}</li>
 	</ul>
 </div>
 
-<div class="rows5_top_2">
-<div class="col_1 float_left">
-	<div id="online"><!-- INCLUDE community.online.htm --></div>
-</div>
-
-<div class="col_3 float_right">
-<div class="ie-widthfix float-holder">
-	<div class="sec"><h3>Administraci&oacute;n</h3></div>
-	<ul class="ul_none">
-		<!-- BEGIN founders -->
-		<li class="row_3 col_1f2 float_left <!-- IF row.S_ROW_COUNT > 0 -->li_lines_1<!-- ENDIF --> pad_2 a_center"><a class="relevant uunique" href="{founders.PROFILE}">{founders.USERNAME}</a><br />{founders.REALNAME}<br /><br /><a href="{founders.PROFILE}"><img src="{founders.AVATAR}" alt="" /></a></li>
-		<!-- END founders -->
-	</ul>
-</div>
-
-<!-- BEGIN team -->
-<div class="rows5_top_1 ie-widthfix float-holder">
-	<div class="sec"><h3>{team.TEAM_NAME}</h3></div>
-	<ul class="ul_none">
-		<!-- BEGIN row -->
-		<!-- BEGIN member -->
-		<li class="row_3 col_1f2 float_left pad_2 a_center"><a class="relevant uunique" href="{member.PROFILE}">{member.USERNAME}</a><br /><!-- IF member.REALNAME != '' -->{member.REALNAME}<!-- ELSE -->--<!-- ENDIF --><br /><br /><a href="{member.PROFILE}"><img src="{member.AVATAR}" alt="" /></a></li>
-		<!-- END member -->
-		<!-- END row -->
-	</ul>
-</div>
-<!-- END team -->
-</div>
+<div class="pad_top">
+	<div class="is_left">
+		<div id="online">
+			<!-- INCLUDE community.online.htm -->
+		</div>
+	</div>
+	
+	<div class="is_right">
+		<div class="ls_none">
+		<div class="sec"><h3>Administraci&oacute;n</h3></div>
+		<ul>
+			<!-- BEGIN founders -->
+			<li class="el_left a_center">
+				<ul>
+					<li><a href="{founders.PROFILE}">{founders.USERNAME}</a></li>
+					<li>{founders.REALNAME}</li>
+					<li><a href="{founders.PROFILE}"><img src="{founders.AVATAR}" alt="" /></a></li>
+					<li></li>
+				</ul>
+			</li>
+			<!-- END founders -->
+		</ul>
+		</div>
+		
+		<!-- BEGIN team -->
+		<div class="pad_top ls_none">
+			<div class="sec"><h3>{team.TEAM_NAME}</h3></div>
+			<ul>
+				<!-- BEGIN row -->
+				<!-- BEGIN member -->
+				<li class="el_left a_center">
+					<ul>
+						<li><a href="{member.PROFILE}">{member.USERNAME}</a></li>
+						<li><!-- IF member.REALNAME != '' -->{member.REALNAME}<!-- ELSE -->--<!-- ENDIF --></li>
+						<li><a href="{member.PROFILE}"><img src="{member.AVATAR}" alt="" /></a></li>
+					</ul>
+				</li>
+				<!-- END member -->
+				<!-- END row -->
+			</ul>
+		</div>
+		<!-- END team -->
+	</div>
 </div>
 
 <!-- INCLUDE page.footer.htm -->

@@ -1,6 +1,6 @@
 <!-- INCLUDE page.header.htm -->
 
-<div class="section"><h1>{L_RADIO}</h1></div>
+<div class="sec"><h3>{L_RADIO}</h3></div>
 
 <div id="radio_listen">
 <ul class="ul_none">
@@ -27,32 +27,6 @@
 	<!-- END hidden -->
 </div>
 
-<div class="rows5_top dark_box a_center">
-	<h2>&iquest;Qu&eacute; est&aacute; sonando?</h2>
-	<div id="now" class="now_auto a_center">Cargando...</div>
-</div>
-<script type="text/javascript">
-//<![CDATA[
-var v = {
-	asynchronous: true,
-	frequency: 30,
-	postBody: 'a=1&hash='
-}
-new Ajax.PeriodicalUpdater('now', '{S_SERVER}/now', v);
-//]]>
-</script>
-
-<div id="msninfo">
-	<p>Agreganos a tus contactos de <strong>Live Messenger</strong> para solicitar tus canciones: <strong>radio&#64;rockrepublik.net</strong>.</p>
-	<p>&iquest;Te gustar&iacute;a tener tu programa en Rock Republik Radio? Env&iacute;anos tu propuesta: <strong>info&#64;rkradio.net</strong>.</p>
-</div>
-
-<div id="special">
-	<h1>Programas especiales</h1>
-</div>
-
-<div class="section"><h1>Programas en vivo</h1></div>
-
 <div id="radio_container" class="float-holder ie-widthfix">
 	<div id="radio_list">
 	<ul>
@@ -73,10 +47,6 @@ new Ajax.PeriodicalUpdater('now', '{S_SERVER}/now', v);
 	<p><strong>&iquest;Quieres formar parte de nuestro equipo de locutores?</strong><br />
 	Para ser locutor necesitas tener computadora y micr&oacute;fono en buen estado y conexi&oacute;n de 512kbps.<br />
 	Si cumples con lo anterior, env&iacute;anos tu propuesta junto con tus datos a <span class="red">info&#64;rkradio.net</span>, la analizaremos y te enviaremos una respuesta con m&aacute;s informaci&oacute;n.</p>
-	
-	<p><strong>&iquest;Quieres ser patrocinador de RK Radio?</strong><br />
-	Buscamos gente que tenga un sitio, banda, empresa, negocio u otro y desea promocionarse y puede pagar por publicidad.<br />
-	Env&iacute;anos tu propuesta a <span class="red">sponsor&#64;rkradio.net</span> y nos pondremos en contacto.</p>
 </div>
 
 <!-- BEGIN active -->
@@ -89,13 +59,6 @@ new Ajax.PeriodicalUpdater('now', '{S_SERVER}/now', v);
 <!-- END item -->
 </ul>
 </div>
-<script type="text/javascript">
-//<![CDATA[
-radio.config('playlist', '{songs.U_PLAYLIST}');
-radio.playlist.timer();
-radio.listener.start();
-//]]>
-</script>
 <!-- END songs -->
 <!-- END active -->
 

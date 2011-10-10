@@ -341,6 +341,14 @@ hr {
 	width: 25%;
 	float: right;
 }
+.is_left_i {
+	width: 25%;
+	float: left;
+}
+.is_right_i {
+	width: 75%;
+	float: right;
+}
 .is_mid {
 	width: 50%;
 	float: left;

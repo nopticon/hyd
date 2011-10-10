@@ -12,25 +12,27 @@ $(function() {
 //]]>
 </script>
 
-<div class="rows5_top_1 float-holder ie-widthfix">
-	<div class="float_left col4 share">&nbsp;</div>
-	<div class="float_left col71">
-		<div class="sec"><h3>{EVENT_NAME}</h3></div>
-		<div class="cols5_left low_color">{EVENT_DATE}</div>
-		<!-- BEGIN collab -->
-		<div class="cols5_left low_color">{L_EVENT_PHOTO_THANKS}
-			<!-- BEGIN row -->
-			<a href="{row.PROFILE}">{row.USERNAME}</a>
-			<!-- END row -->
-		</div>
-		<!-- END collab -->
+<div class="share">&nbsp;</div>
+
+<div class="is_left">
+	<div class="sec"><h3>{EVENT_NAME}</h3></div>
+	<div class="low_color">{EVENT_DATE}</div>
+	
+	<!-- BEGIN collab -->
+	<div class="low_color">{L_EVENT_PHOTO_THANKS}
+		<!-- BEGIN row -->
+		<a href="{row.PROFILE}">{row.USERNAME}</a>
+		<!-- END row -->
 	</div>
-	<div class="float_right a_right col25">
-		<input class="submit" type="submit" id="submit_photos" value="&iquest;Tienes fotos de este evento? Env&iacute;alas" />
-	</div>
+	<!-- END collab -->
+</div>
+<div class="is_right">
+	<input type="submit" id="submit_photos" value="&iquest;Tienes fotos de este evento? Env&iacute;alas" />
 </div>
 
-<div class="cols5_left" id="submit_photos_box">
+<span class="clear"></span>
+
+<div id="submit_photos_box">
 	Envianos las fotos que hayas tomado en el evento y quieras compartir con la comunidad.
 	
 	<form action="" method="post" enctype="multipart/form-data">
@@ -39,7 +41,7 @@ $(function() {
 </div>
 
 <!-- BEGIN event_flyer -->
-<div id="placeholder" class="ie-widthfix float-holder">
+<div id="placeholder">
 	<div class="a_center"><img src="{event_flyer.IMAGE_SRC}" alt="" /></div>
 </div>
 <!-- END event_flyer -->
@@ -47,9 +49,9 @@ $(function() {
 <!-- BEGIN selected -->
 <div class="ie-widthfix float-holder a_right a_controls"><!-- BEGIN download --><a href="{download.URL}">{L_UE_DOWNLOAD}</a><!-- END download --><!-- BEGIN fav --> <a href="{fav.URL}">{L_UB_FAV_ADD}</a><!-- END fav --></div>
 
-<div class="rows5_top a_center">
-	<div><!-- BEGIN download --><a href="{download.URL}"><!-- END download --><img class="border" src="{selected.IMAGE}" width="{selected.WIDTH}" height="{selected.HEIGHT}" alt="" /><!-- BEGIN download --></a><!-- END download --></div>
-	<div id="footer" class="rows5_top legend a_center"><!-- IF selected.FOOTER != '' -->{selected.FOOTER}<!-- ENDIF --></div>
+<div class="pad_top a_center">
+	<div><!-- BEGIN download --><a href="{download.URL}"><!-- END download --><img src="{selected.IMAGE}" width="{selected.WIDTH}" height="{selected.HEIGHT}" alt="" /><!-- BEGIN download --></a><!-- END download --></div>
+	<div id="footer" class="pad_top a_mid"><!-- IF selected.FOOTER != '' -->{selected.FOOTER}<!-- ENDIF --></div>
 	<!-- BEGIN hide -->
 	<!-- BEGIN update -->
 	<script type="text/javascript">
@@ -63,23 +65,25 @@ $(function() {
 <!-- END selected -->
 
 <!-- BEGIN thumbnails -->
-<div class="rows5_top_2 ie-widthfix float-holder">
-<ul class="ul_none">
+<div class="pad_top ls_none">
+<ul>
 	<!-- BEGIN item -->
-	<li class="row_3 col_1f float_left pad_2 a_center"><a href="{item.RIMAGE}" title="{item.FOOTER}"><img src="{item.IMAGE}" alt="" /></a></li>
+	<li><a href="{item.RIMAGE}" title="{item.FOOTER}"><img src="{item.IMAGE}" alt="" /></a></li>
 	<!-- END item -->
 </ul>
 </div>
 
-<!-- IF IMG_PAGES_NUMS != ' <strong>1</strong>' --><div class="pagination">{IMG_PAGES_NUMS}</div><!-- ENDIF -->
+<!-- IF IMG_PAGES_NUMS != ' <strong>1</strong>' -->
+<div class="pagination">{IMG_PAGES_NUMS}</div>
+<!-- ENDIF -->
 <!-- END thumbnails -->
 
 <!-- BEGIN posting_box -->
 <div id="posting_box" class="rows5_top_2 post_comment">
 <div class="sec"><h3>{L_SEND_POST} <a class="smile" href="{S_EMOTICONS}">@</a></h3></div>
 <form action="{S_COMMENTS}" method="post" name="post"><input type="hidden" name="ref" value="{box.REF}" />
-<div class="rows5_top_1"><textarea id="comment" name="message"></textarea></div>
-<div class="rows5_top_1"><input class="submit" type="submit" name="post" value="{L_SUBMIT}" /></div>
+<div><textarea id="comment" name="message"></textarea></div>
+<div><input class="submit" type="submit" name="post" value="{L_SUBMIT}" /></div>
 </form>
 </div>
 <!-- END posting_box -->
@@ -87,7 +91,6 @@ $(function() {
 <!-- BEGIN posts -->
 <div class="comments">
 <!-- BEGIN item -->
-<a name="{item.POST_ID}"></a>
 <div id="comment-{item.S_ROW_COUNT}">
 <h3><strong>{item.S_ROW_COUNT}</strong><span>.</span> <em><!-- BEGIN username --><a href="{item.PROFILE}"><!-- END username --><img src="{item.USER_AVATAR}" alt="{item.USERNAME}'s Avatar" /><!-- BEGIN username --></a><!-- END username --></em><cite><!-- BEGIN username --><a href="{item.PROFILE}"><!-- END username -->{item.USERNAME}<!-- BEGIN username --></a><!-- END username --></cite> <span>dijo:</span></h3>
 <blockquote>

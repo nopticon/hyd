@@ -1,21 +1,11 @@
-<!-- INCLUDE page.head.htm -->
-</head>
+<!-- INCLUDE page.header.htm -->
 
-<body>
-
-<div class="item_block_3">
-<h2 class="z">Emoticonos</h2>
-<ul class="ul_none">
-	<!-- BEGIN smilies_row -->
-	<li>
-		<div class="float-holder ie-widthfix">
-			<div class="float_left col50">{smilies_row.CODE}</div>
-			<div class="float_right col50 a_right"><img src="{smilies_row.IMAGE}" alt="{smilies_row.DESC}" /></div>
-		</div>
-	</li>
+<div class="ls_none">
+	<ul>
+		<!-- BEGIN smilies_row -->
+		<li><img src="{smilies_row.IMAGE}" alt="{smilies_row.DESC}" /> {smilies_row.CODE}</li>
 	<!-- END smilies_row -->
-</ul>
+	</ul>
 </div>
 
-</body>
-</html>
+<!-- INCLUDE page.footer.htm -->
