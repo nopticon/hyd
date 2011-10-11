@@ -26,7 +26,7 @@
 	<!-- END banners -->
 
 	<!-- BEGIN news -->
-	<div class="news ls_none">
+	<div class="news ls">
 		<div class="sec"><h3>{L_LATEST_NEWS}</h3></div>
 		<ul>
 			<!-- BEGIN row -->
@@ -55,13 +55,15 @@
 	<div id="se_cover_1"></div>
 	
 	<!-- BEGIN board_general -->
-	<div class="is_mid rows5_top_4 ls_none">
+	<div class="is_mid pad_top ls">
 		<div class="sec"><h3>{L_BOARD_LATEST}</h3></div>
 		<ul>
 			<!-- BEGIN item -->
 			<li>
-				<div><a<!-- IF item.TOPIC_COLOR --> style="color:#{item.TOPIC_COLOR};"<!-- ENDIF --> href="{item.U_TOPIC}">{item.TOPIC_TITLE}</a></div>
-				<div class="low_color"><a href="{item.PROFILE}">{item.USERNAME}</a> public&oacute; a las {item.POST_TIME}</div>
+				<ul>
+					<li><a<!-- IF item.TOPIC_COLOR --> style="color:#{item.TOPIC_COLOR};"<!-- ENDIF --> href="{item.U_TOPIC}">{item.TOPIC_TITLE}</a></li>
+					<li class="_"><a href="{item.PROFILE}">{item.USERNAME}</a> public&oacute; a las {item.POST_TIME}</li>
+				</ul>
 			</li>
 			<!-- END item -->
 		</ul>
@@ -69,13 +71,15 @@
 	<!-- END board_general -->
 	
 	<!-- BEGIN board_events -->
-	<div class="is_mid rows5_top_4 ls_none">
+	<div class="is_mid pad_top ls">
 		<div class="sec"><h3>{L_BOARD_EVENTS}</h3></div>
 		<ul>
 			<!-- BEGIN item -->
 			<li>
-				<div><a<!-- IF item.TOPIC_COLOR --> style="color:#{item.TOPIC_COLOR};"<!-- ENDIF --> href="{item.U_TOPIC}">{item.TOPIC_TITLE} ({item.EVENT_DATE})</a></div>
-				<div class="low_color"><a href="{item.PROFILE}">{item.USERNAME}</a> public&oacute; a las {item.POST_TIME}</div>
+				<ul>
+					<li><a<!-- IF item.TOPIC_COLOR --> style="color:#{item.TOPIC_COLOR};"<!-- ENDIF --> href="{item.U_TOPIC}">{item.TOPIC_TITLE} ({item.EVENT_DATE})</a></li>
+					<li class="_"><a href="{item.PROFILE}">{item.USERNAME}</a> public&oacute; a las {item.POST_TIME}</li>
+				</ul>
 			</li>
 			<!-- END item -->
 		</ul>

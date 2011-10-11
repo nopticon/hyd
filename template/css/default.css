@@ -326,6 +326,24 @@ hr {
 	margin-left: 25px;
 }
 
+.ls ul {
+	margin: 0 0 5px 25px;
+	padding: 0;
+	border: 0;
+	/*background: #000088;*/
+}
+.ls ul ul {
+	list-style: none;
+	margin: 0;
+	padding: 0px;
+}
+.ls ul li {
+	padding: 7px 0 7px 0;
+}
+.ls ul li li {
+	padding: 0;
+}
+
 .el_left {
 	float: left;
 }
@@ -386,7 +404,7 @@ hr {
 .rows5_bot_1 { padding-bottom: 10px; }
 .rows5_bot_2 { padding-bottom: 20px; }
 
-.low_color, .low_color a {
+._, ._ a {
 	color: #9F9FA2 !important;
 }
 
