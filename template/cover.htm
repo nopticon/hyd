@@ -2,25 +2,12 @@
 
 <div class="is_left">
 	<!-- BEGIN banners -->
-	<div id="images" class="item_block">
-		<div class="z"><h1>{L_IMAGES}</h1></div>
-		<ul class="ul_none">
-			<!-- BEGIN item -->
-			<li class="<!-- IF !(item.S_ROW_COUNT) -->first_child <!-- ENDIF -->first_image"><!-- IF item.URL != '' --><a href="{item.URL}"><!-- ENDIF --><img src="{S_SERVER}{item.IMAGE}" alt="" /><!-- IF item.URL != '' --></a><!-- ENDIF --></li>
-			<!-- END item -->
-			
-			<!-- BEGIN hide -->
-			<li class="col_2">
-			<script type="text/javascript"><!--
-			google_ad_client = "pub-5371491382621943";
-			google_ad_slot = "2766054894";
-			google_ad_width = 468;
-			google_ad_height = 60;
-			//-->
-			</script>
-			<script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
-			</li>
-			<!-- END hide -->
+	<div id="images" class="lsn">
+		<div class="z"><h3>{L_IMAGES}</h3></div>
+		<ul>
+			<!-- BEGIN row -->
+			<li><!-- IF row.URL != '' --><a href="{row.URL}"><!-- ENDIF --><img src="{S_SERVER}{row.IMAGE}" alt="" /><!-- IF row.URL != '' --></a><!-- ENDIF --></li>
+			<!-- END row -->
 		</ul>
 	</div>
 	<!-- END banners -->
@@ -31,17 +18,17 @@
 		<ul>
 			<!-- BEGIN row -->
 			<li>
-				<div class="ie-widthfix float-holder">
-				<div><a href="{item.URL}">{item.SUBJECT}</a></div>
-				<div class="low_color">Publicado el {item.TIMESTAMP}</div>
-				<div class="v"><a href="{item.URL}"><img src="{item.IMAGE}" alt="" /></a></div>
-				<div class="s">{item.MESSAGE}</div>
-				</div>
+				<ul>
+					<li><a href="{item.URL}"><img src="{item.IMAGE}" alt="" /></a></li>
+					<li><h4><a href="{item.URL}">{item.SUBJECT}</a></h4></li>
+					<li class="_">Publicado el {item.TIMESTAMP}</li>
+					<li>{item.MESSAGE}</li>
+				</ul>
 			</li>
 			<!-- END row -->
 		</ul>
 		
-		<div class="a_right ls_none">
+		<div class="a_right ls_inline">
 			<ul>
 				<!-- BEGIN create -->
 				<li><a href="{create.U_NEWS_CREATE}">Publicar informaci&oacute;n</a></li>
@@ -88,28 +75,31 @@
 </div>
 
 <div class="is_right">	
-	<div id="events" class="rows5_top">
-		<div class="sec"><h3>{L_UE}</h3></div>
-		<ul class="ul_none">
-			<div class="a_center rows5_bot_1"><a class="relevant_artist" href="{U_EVENTS}">{L_EVENTS_NEXT}</a></div>
+	<div class="ls_none">
+		<div class="sec"><h3><a href="{U_EVENTS}">{L_EVENTS_NEXT}</a></h3></div>
+		<ul>
 			<!-- BEGIN next_event -->
-			<li class="a_center"><div><a href="{next_event.URL}">{next_event.TITLE}</a></div><a href="{next_event.URL}"><img style="margin-bottom: 15px; margin-top: 10px;" src="{next_event.IMAGE}" alt="" /></a></li>
+			<li>
+				<ul>
+					<li><a href="{next_event.URL}">{next_event.TITLE}</a></li>
+					<li><a href="{next_event.URL}"><img src="{next_event.IMAGE}" alt="" /></a></li>
+				</ul>
+			</li>
 			<!-- END next_event -->
-			<!-- BEGIN last_event -->
-			<li class="rows5_top a_center"><a class="relevant_artist" href="{last_event.URL}">&Uacute;ltimo Evento</a><a href="{last_event.URL}">{last_event.TITLE}</a><br /><br /><a href="{last_event.URL}"><img src="{last_event.IMAGE}" alt="" /></a></li>
-			<!-- END last_event -->
 		</ul>
 	</div>
 	
 	<!-- BEGIN thumbnails -->
-	<div id="artists" class="rows5_top_6">
+	<div class="pad_top ls_none">
 		<div class="sec"><h3>{L_ARTISTS}</h3></div>
-		<ul class="ul_none">
+		<ul>
 			<!-- BEGIN item -->
-			<li class="pad_2 a_center">
-				<div><a class="relevant_artist" href="{item.URL}">{item.NAME}</a><div>
-				<div>{item.GENRE}<div>
-				<div><a href="{item.URL}"><img src="{item.IMAGE}" alt="{item.NAME}" /></a><div>
+			<li>
+				<ul>
+					<li><a href="{item.URL}">{item.NAME}</a></li>
+					<li>{item.GENRE}</li>
+					<li><a href="{item.URL}"><img src="{item.IMAGE}" alt="{item.NAME}" /></a></li>
+				</ul>
 			</li>
 			<!-- END item -->
 		</ul>
@@ -117,30 +107,12 @@
 	<!-- END thumbnails -->
 	
 	<!-- BEGIN hide -->
-	<div id="radio">
-		<div class="section"><h1>{L_RADIO}</h1></div>
-			<div align="center">
-				<div id="radio_live" align="center"><a href="http://www.rockrepublik.net/radio/">Escucha Rock Republik Radio</a></div>
-					<script type="text/javascript"> swfobject.embedSWF("{S_SERVER}/space/radio/live_cover_s.swf", "radio_live", "174", "60", "9.0.0", "expressInstall.swf"); </script>
-			</div>
-			<div id="now" class="now_height"></div>
-		<script type="text/javascript">
-		//<![CDATA[
-		new Ajax.PeriodicalUpdater('now', '{S_SERVER}/now', {asynchronous: true, frequency: 30, postBody: 'a=1&hash='});
-		//]]>
-		</script>
-	</div>
-	<!-- END hide -->
-	
-	<!-- BEGIN hide -->
 	<!-- BEGIN poll -->
-	<div id="poll" class="rows5_top">
-		<div class="sec"><h3>{L_POLL}</h3></div>
+	<div id="poll" class="pad_top">
+		<div class="sec"><h3>{poll.POLL_TITLE}</h3></div>
 		<!-- BEGIN options -->
 		<form method="post" action="{options.S_VOTE_ACTION}">
 		<!-- END options -->
-		
-		<div class="relevant_artist a_center">{poll.POLL_TITLE}</div>
 		
 		<div class="rows5_top_1">
 		<ul class="ul_none">
@@ -154,14 +126,14 @@
 		<!-- END results -->
 		<!-- BEGIN options -->
 		<!-- BEGIN item -->
-		<li class="a_left rows5_top_1"><input class="none" type="radio" id="vo_{item.POLL_OPTION_ID}" name="vote_id" value="{item.POLL_OPTION_ID}" /> <label for="vo_{item.POLL_OPTION_ID}">{item.POLL_OPTION_CAPTION}</label></li>
+		<li class="a_left rows5_top_1"><input type="radio" id="vo_{item.POLL_OPTION_ID}" name="vote_id" value="{item.POLL_OPTION_ID}" /> <label for="vo_{item.POLL_OPTION_ID}">{item.POLL_OPTION_CAPTION}</label></li>
 		<!-- END item -->
 		<!-- END options -->
 		</ul>
 		<!-- BEGIN options -->
-		<div class="rows5_top_1 a_center"><input class="submit" type="submit" name="vote" value="{L_VOTE}" /></div>
+		<div class="pad_top a_mid"><input class="submit" type="submit" name="vote" value="{L_VOTE}" /></div>
 		<!-- END options -->
-		<div class="a_right"><a class="relevant" href="{poll.U_POLL_TOPIC}">{poll.S_REPLIES} <!-- IF poll.S_REPLIES == 1 -->{L_POLL_COMMENT}<!-- ELSE -->{L_POLL_COMMENTS}<!-- ENDIF --></a></div>
+		<div class="a_right"><a href="{poll.U_POLL_TOPIC}">{poll.S_REPLIES} <!-- IF poll.S_REPLIES == 1 -->{L_POLL_COMMENT}<!-- ELSE -->{L_POLL_COMMENTS}<!-- ENDIF --></a></div>
 		</div>
 		<!-- BEGIN options -->
 		</form>
@@ -170,8 +142,6 @@
 	<!-- END poll -->
 	<!-- END hide -->
 </div>
-
-<span class="clear"></span>
 
 <!-- INCLUDE page.footer.htm -->
 

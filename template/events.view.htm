@@ -42,13 +42,11 @@ $(function() {
 
 <!-- BEGIN event_flyer -->
 <div id="placeholder">
-	<div class="a_center"><img src="{event_flyer.IMAGE_SRC}" alt="" /></div>
+	<div class="a_mid"><img src="{event_flyer.IMAGE_SRC}" alt="" /></div>
 </div>
 <!-- END event_flyer -->
 
 <!-- BEGIN selected -->
-<div class="ie-widthfix float-holder a_right a_controls"><!-- BEGIN download --><a href="{download.URL}">{L_UE_DOWNLOAD}</a><!-- END download --><!-- BEGIN fav --> <a href="{fav.URL}">{L_UB_FAV_ADD}</a><!-- END fav --></div>
-
 <div class="pad_top a_center">
 	<div><!-- BEGIN download --><a href="{download.URL}"><!-- END download --><img src="{selected.IMAGE}" width="{selected.WIDTH}" height="{selected.HEIGHT}" alt="" /><!-- BEGIN download --></a><!-- END download --></div>
 	<div id="footer" class="pad_top a_mid"><!-- IF selected.FOOTER != '' -->{selected.FOOTER}<!-- ENDIF --></div>
