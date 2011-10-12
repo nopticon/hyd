@@ -1,9 +1,9 @@
 <!-- INCLUDE page.header.htm -->
 
-<div class="rows5_top_1 float-holder ie-widthfix">
+<div class="pad_top">
 	<div class="float_left col4 share">&nbsp;</div>
 	<div class="float_left col71">
-		<div class="sec"><h3><a href="{U_VIEW_FORUM}">{FORUM_NAME}</a> &raquo; <a href="{S_TOPIC_ACTION}">{TOPIC_TITLE}</a></h3></div>
+		<div class="h"><h3><a href="{U_VIEW_FORUM}">{FORUM_NAME}</a> &raquo; <a href="{S_TOPIC_ACTION}">{TOPIC_TITLE}</a></h3></div>
 		<div class="cols5_left low_color">{EVENT_DATE}</div>
 	</div>
 	<div class="float_right a_right col25">
@@ -20,7 +20,7 @@
 </div>
 
 <!-- BEGIN poll -->
-<div class="rows5_top_2">
+<div class="pad_top">
 <div id="poll" class="black_box">
 <!-- BEGIN options -->
 <form method="post" action="{options.S_VOTE_ACTION}">
@@ -28,8 +28,8 @@
 
 <div class="relevant a_center">{poll.POLL_TITLE}</div>
 
-<div class="rows5_top_1 a_left">
-<ul class="ul_none">
+<div class="pad_top ls">
+<ul>
 <!-- BEGIN results -->
 <!-- BEGIN item -->
 <li><div class="caption">{item.CAPTION} <span>({item.RESULT})</span></div><div class="bar"><div style="width: {item.PERCENT}%;">&nbsp;</div></div></li>
@@ -37,12 +37,12 @@
 <!-- END results -->
 <!-- BEGIN options -->
 <!-- BEGIN item -->
-<li class="a_left rows5_top_1"><input class="none" type="radio" id="vo_{item.POLL_OPTION_ID}" name="vote_id" value="{item.POLL_OPTION_ID}" /> <label for="vo_{item.POLL_OPTION_ID}">{item.POLL_OPTION_CAPTION}</label></li>
+<li class="pad_top"><input class="none" type="radio" id="vo_{item.POLL_OPTION_ID}" name="vote_id" value="{item.POLL_OPTION_ID}" /> <label for="vo_{item.POLL_OPTION_ID}">{item.POLL_OPTION_CAPTION}</label></li>
 <!-- END item -->
 <!-- END options -->
 </ul>
 <!-- BEGIN options -->
-<div class="rows5_top_1 a_center"><input class="submit" type="submit" name="vote" value="{L_VOTE}" /></div>
+<div class="pad_top a_mid"><input class="submit" type="submit" name="vote" value="{L_VOTE}" /></div>
 <!-- END options -->
 </div>
 <!-- BEGIN options -->
@@ -53,7 +53,7 @@
 <!-- END poll -->
 
 <!-- IF PAGES_NUMS != ' <strong>1</strong>' -->
-<div class="rows5_top_7 pagination">{PAGES_NUMS}</div>
+<div class="pad_top pagination">{PAGES_NUMS}</div>
 <!-- ENDIF -->
 
 <!-- BEGIN posts -->
@@ -65,7 +65,7 @@
 <h3><strong>{item.S_ROW_COUNT}</strong><span>.</span> <em><!-- BEGIN username --><a href="{item.PROFILE}"><!-- END username --><img src="{item.USER_AVATAR}" alt="{item.USERNAME}'s Avatar" /><!-- BEGIN username --></a><!-- END username --></em><cite><!-- BEGIN username --><a href="{item.PROFILE}"><!-- END username -->{item.USERNAME}<!-- BEGIN username --></a><!-- END username --></cite> <span>dijo:</span></h3>
 <blockquote>
 <!-- BEGIN controls -->
-<div class="rows5_bot_1 rows5_top a_controls a_right"><!-- BEGIN reply --><a href="{reply.URL}">{L_CMT_REPLY}</a><!-- END reply --><!-- BEGIN report --> <a href="{report.URL}">{L_CMT_REPORT}</a><!-- END report --><!-- BEGIN ip --> <a href="{ip.URL}">{L_CMT_IP}</a><!-- END ip  --><!-- BEGIN edit --> <a href="{edit.URL}">{L_CMT_EDIT}</a><!-- END edit --><!-- BEGIN restore --> <a href="{restore.URL}"><span class="red">{L_CMT_RESTORE}</span></a><!-- END restore --><!-- BEGIN delete --> <a onclick="return confirm('&iquest;Confirmas borrar el mensaje?');" href="{delete.URL}">{L_CMT_DELETE}</a><!-- END delete --></div>
+<div class="pad_top ctl a_right"><!-- BEGIN reply --><a href="{reply.URL}">{L_CMT_REPLY}</a><!-- END reply --><!-- BEGIN report --> <a href="{report.URL}">{L_CMT_REPORT}</a><!-- END report --><!-- BEGIN ip --> <a href="{ip.URL}">{L_CMT_IP}</a><!-- END ip  --><!-- BEGIN edit --> <a href="{edit.URL}">{L_CMT_EDIT}</a><!-- END edit --><!-- BEGIN restore --> <a href="{restore.URL}"><span class="red">{L_CMT_RESTORE}</span></a><!-- END restore --><!-- BEGIN delete --> <a onclick="return confirm('&iquest;Confirmas borrar el mensaje?');" href="{delete.URL}">{L_CMT_DELETE}</a><!-- END delete --></div>
 <!-- END controls -->
 <div class="col_fr nowraptext">
 {item.MESSAGE}
@@ -88,19 +88,19 @@
 <!-- ENDIF -->
 
 <!-- BEGIN post_box -->
-<div class="rows5_top_2 post_comment">
+<div class="pad_top post_comment">
 <div class="ie-widthfix float-holder">
 	<div class="col75 float_left">
-		<div class="sec"><h3>{L_SEND_POST} <a class="smile" href="{S_EMOTICONS}">@</a></h3></div>
+		<div class="h"><h3>{L_SEND_POST} <a class="smile" href="{S_EMOTICONS}">@</a></h3></div>
 		<form action="{post_box.S_POST_ACTION}" method="post">
-		<div class="rows5_top_1"><textarea id="comment" name="message"></textarea></div>
+		<div class="pad_top"><textarea id="comment" name="message"></textarea></div>
 		<!-- BEGIN reply -->
-		<div class="rows5_top_1"><label for="comment_reply">{L_ORIGINAL_POST}</label></div>
-		<div class="rows5_top_1"><textarea id="comment_reply" name="reply_message" cols="100" rows="10">{reply.MESSAGE}</textarea></div>
+		<div class="pad_top"><label for="comment_reply">{L_ORIGINAL_POST}</label></div>
+		<div class="pad_top"><textarea id="comment_reply" name="reply_message" cols="100" rows="10">{reply.MESSAGE}</textarea></div>
 		<!-- END reply -->
-		<div class="rows5_top_1"><label for="comment_np">{L_NOWPLAYING}</label></div>
-		<div class="rows5_top_1"><input id="comment_np" name="np" size="100" value="{post_box.NP}" /></div>
-		<div class="rows5_top_1 a_center"><input class="submit" type="submit" name="post" value="{L_SUBMIT}" /></div>
+		<div class="pad_top"><label for="comment_np">{L_NOWPLAYING}</label></div>
+		<div class="pad_top"><input id="comment_np" name="np" size="100" value="{post_box.NP}" /></div>
+		<div class="pad_top a_mid"><input class="submit" type="submit" name="post" value="{L_SUBMIT}" /></div>
 		</form>
 	</div>
 	<!-- BEGIN hide -->

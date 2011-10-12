@@ -1,7 +1,7 @@
 <!-- INCLUDE page.header.htm -->
 
 <!-- BEGIN hide -->
-<div class="a_center">
+<div class="a_mid">
 	<script type="text/javascript"><!--
 	google_ad_client = "pub-5371491382621943";
 	google_ad_slot = "8783292401";
@@ -13,32 +13,28 @@
 </div>
 <!-- END hide -->
 
-<div class="is_mid ls_none">
-	<div class="sec"><h3>{UNAME}</h3></div>
-	<ul>
-		<li>{GENRE}</li>
-		<li>{LOCATION}</li>
-	</ul>
+<div class="share">&nbsp;</div>
+
+<div class="is_left ls_none">
+	<div class="h b"><h3>{UNAME}</h3>
+		<!-- BEGIN make_fans -->
+		<a href="{make_fans.FAV_URL}">{make_fans.FAV_LANG}</a>
+		<!-- END contact -->
+	</div>
+	<div class="_">{GENRE} &mdash; {LOCATION}</div>
 </div>
 
 <div class="is_mid">
-	<div class="pad_top control a_right">
-		{FANS} {L_FANS}
-		<!-- BEGIN make_fans -->
-		 &nbsp; &nbsp; &nbsp; &nbsp; 
-		<a class="bold" href="{make_fans.FAV_URL}">{make_fans.FAV_LANG}</a>
-		<!-- END contact -->
-	</div>
+	<div class="pad_top a_right">{FANS} {L_FANS}</div>
 </div>
 
 <span class="clear"></span>
 
-<div class="pad_top control a_right">
-	<h2 class="z">Secciones</h2>
+<div class="pad_top control">
 	<ul>
 		<!-- BEGIN nav -->
 		<!-- BEGIN strong -->
-		<li class="relevant"><span>{nav.LANG}</span></li>
+		<li class="hg">{nav.LANG}</li>
 		<!-- END strong -->
 		<!-- BEGIN a -->
 		<li><a href="{a.URL}">{nav.LANG}</a></li>
@@ -48,7 +44,7 @@
 </div>
 
 <!-- IF INACTIVE -->
-<div class="warning">
+<div class="w">
 	<h2>{L_ARTIST_INACTIVE}</h2>
 	<p>{L_ARTIST_INACTIVE_DESC}</p>
 </div>
@@ -59,20 +55,50 @@
 </div>
 
 <div class="is_right">
+	<!-- BEGIN ub_poll -->
+	<div class="poll ls">
+		<div class="h"><h3>{L_UB_RATE}</h3></div>
+		<!-- BEGIN options -->
+		<form action="{options.S_VOTE_ACTION}" method="post" name="vote_ub" onsubmit="return _.glob.in_sending('avote');">
+		<!-- END options -->
+		<ul>
+			<!-- BEGIN results -->
+			<!-- BEGIN item -->
+			<li>
+				<div class="caption">{item.CAPTION} <span class="_">({item.RESULT})</span></div>
+				<div class="bar"><div style="width: {item.PERCENT}%;">&nbsp;</div></div>
+			</li>
+			<!-- END item -->
+			<!-- END results -->
+			<!-- BEGIN options -->
+			<!-- BEGIN item -->
+			<li><input class="none" type="radio" id="vo_{item.ID}" name="vote_id" value="{item.ID}" /> <label for="vo_{item.ID}">{item.CAPTION}</label></li>
+			<!-- END item -->
+			<!-- END options -->
+		</ul>
+		<!-- BEGIN options -->
+		<div class="pad_top a_mid"><input class="submit" type="submit" name="vote" value="{L_VOTE}" /></div>
+		<!-- END options -->
+		<!-- BEGIN options -->
+		</form>
+		<!-- END options -->
+	</div>
+	<!-- END ub_poll -->
+
 	<!-- BEGIN ud_block -->
-	<div class="<!-- IF ud_block.S_ROW_COUNT -->pad_top<!-- ENDIF --> ls_none">
-		<div class="sec"><h3>{ud_block.LANG}</h3></div>
+	<div class="<!-- IF ud_block.S_ROW_COUNT -->pad_top<!-- ENDIF --> ls">
+		<div class="h"><h3>{ud_block.LANG}</h3></div>
 		<ul>
 			<!-- BEGIN item -->
-			<li class="<!-- BEGIN strong -->relevant<!-- END strong -->"><!-- BEGIN a --><a href="{a.URL}"><!-- END a -->{item.TITLE}<!-- BEGIN a --></a><!-- END a --></li>
+			<li class="<!-- BEGIN strong -->hg<!-- END strong -->"><!-- BEGIN a --><a href="{a.URL}"><!-- END a -->{item.TITLE}<!-- BEGIN a --></a><!-- END a --></li>
 			<!-- END item -->
 		</ul>
 	</div>
 	<!-- END ud_block -->
 	
 	<!-- BEGIN events_gallery -->
-	<div class="pad_top ls_none">
-		<div class="sec"><h3>Galer&iacute;a</h3></div>
+	<div class="pad_top ls">
+		<div class="h"><h3>{L_UE_GALLERY}</h3></div>
 		<ul>
 			<!-- BEGIN item -->
 			<li><a href="{item.URL}" title="{item.DATETIME}">{item.TITLE}</a></li>
@@ -83,7 +109,7 @@
 	
 	<!-- BEGIN mods -->
 	<div class="pad_top ls_none">
-		<div class="sec"><h3>{L_UB_AUTH_MEMBERS}</h3></div>
+		<div class="h"><h3>{L_UB_AUTH_MEMBERS}</h3></div>
 		<ul>
 			<!-- BEGIN item -->
 			<li><a href="{item.PROFILE}">{item.USERNAME}</a></li>
@@ -91,7 +117,7 @@
 		</ul>
 		
 		<!-- BEGIN manage -->
-		<div class="pad_top a_center"><a href="{manage.URL}">{L_UB_MANAGE_MODS}</a></div>
+		<div class="pad_top a_mid"><a href="{manage.URL}">{L_UB_MANAGE_MODS}</a></div>
 		<!-- END manage -->
 	</div>
 	<!-- END mods -->

@@ -4,12 +4,11 @@
 	<form action="{S_CONFIRM_ACTION}" method="post">
 		{S_HIDDEN_FIELDS}
 		
-		<div class="sec"><h3>{L_CONFIRM}</h3></div>
-		
+		<div class="h"><h3>{L_CONFIRM}</h3></div>
 		<ul>
-			<li class="a_center">{MESSAGE_TEXT}</li>
+			<li>{MESSAGE_TEXT}</li>
 			<!-- IF isset(DELETE_FOREVER) && DELETE_FOREVER -->
-			<li class="a_center rows5_top_4"><input type="checkbox" name="delete_forever" value="1" /> {L_CONTROL_A_APOSTS_DELETE_FOREVER}</li>
+			<li class="pad_top a_mid"><input type="checkbox" name="delete_forever" value="1" /> {L_CONTROL_A_APOSTS_DELETE_FOREVER}</li>
 			<!-- ENDIF -->
 		</ul>
 		

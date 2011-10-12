@@ -1,22 +1,18 @@
 <!-- INCLUDE page.header.htm -->
 
-<div class="section"><h1><a href="{U_EVENTS}">{L_UE}</a></h1></div>
-
-<!-- BEGIN error -->
-<a name="e"></a><div class="rows5_top_2"><div class="error_block"><h2>{L_ERROR}</h2><p>{error.MESSAGE}</p></div></div>
-<!-- END error -->
+<div class="h"><h3><a href="{U_EVENTS}">{L_UE}</a></h3></div>
 
 <form action="{S_UPLOAD_ACTION}" name="post" method="post" enctype="multipart/form-data">
 <input type="hidden" name="MAX_FILE_SIZE" value="{MAX_FILESIZE}" /><input type="file" name="add_zip[]" size="40" />
 
-<div class="rows5_top_2">Evento<br />
+<div class="pad_top">Evento<br />
 <select name="event_id">
 <!-- BEGIN event_list -->
 <option value="{event_list.EVENT_ID}">{event_list.EVENT_TITLE} - {event_list.EVENT_DATE}</option>
 <!-- END event_list -->
 </select></div>
 
-<div class="rows5_top_1 a_center">{S_HIDDEN}<input type="submit" class="submit" name="submit" value="{L_SUBMIT}" /></div>
+<div class="pad_top a_mid">{S_HIDDEN}<input type="submit" class="submit" name="submit" value="{L_SUBMIT}" /></div>
 </form>
 
 <!-- INCLUDE page.footer.htm -->

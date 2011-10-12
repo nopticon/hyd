@@ -1,5 +1,5 @@
 <form action="{S_DOWNLOAD_ACTION}" method="post" onsubmit="return _.glob.in_timed_disable('download');">
-<div class="section"><h1>{DL_TITLE}</h1></div>
+<div class="h"><h3>{DL_TITLE}</h3></div>
 
 <div class="z_center a_center">
 <div class="a_center rows5_top_1">
@@ -70,7 +70,7 @@ swfobject.embedSWF("{S_SERVER}/lib/play.swf", "play_", "174", "60", "7.0.0", fal
 		<!-- END options -->
 		</div>
 		<!-- BEGIN options -->
-		<div class="sep2-top" align="center"><input class="w50 bold" type="submit" id="dvote" name="submit" value="{L_VOTE}" /></div>
+		<div class="sep2-top a_mid"><input type="submit" id="dvote" name="submit" value="{L_VOTE}" /></div>
 		<!-- END options -->
 		</div>
 		</div>
@@ -95,7 +95,7 @@ swfobject.embedSWF("{S_SERVER}/lib/play.swf", "play_", "174", "60", "7.0.0", fal
 		</form>
 		<!-- END dl_post_box -->
 		<!-- BEGIN dl_no_post_auth -->
-		<div align="center" class="pad6">
+		<div class="pad6 a_mid">
 		<strong>{L_UB_BAN_POST}</strong>
 		<!-- BEGIN until -->
 		<br /><br />{L_UB_BAN_POST_UNTIL}:<br /><span class="bold red">{until.UNTIL_DATETIME}</span>
@@ -103,7 +103,7 @@ swfobject.embedSWF("{S_SERVER}/lib/play.swf", "play_", "174", "60", "7.0.0", fal
 		</div>
 		<!-- END dl_no_post_auth -->
 		<!-- BEGIN dl_no_guest_posting -->
-		<div align="center" class="pad6">{dl_no_guest_posting.LEGEND}</div>
+		<div class="pad6 a_mid">{dl_no_guest_posting.LEGEND}</div>
 		<!-- END dl_no_guest_posting -->
 		</div>
 		</div>
@@ -133,7 +133,7 @@ swfobject.embedSWF("{S_SERVER}/lib/play.swf", "play_", "174", "60", "7.0.0", fal
 <!-- IF DMSG_PAGES_PREV != '' || DMSG_PAGES_NEXT != '' -->
 <div class="sep2-top pad6 box3 dark-color ie-widthfix float-holder">
 	<div class="pages orange"><!-- IF DMSG_PAGES_PREV -->{DMSG_PAGES_PREV}<!-- ELSE -->&nbsp;<!-- ENDIF --></div>
-	<div class="pages" align="center">{DMSG_PAGES_ON}</div>
+	<div class="pages a_mid">{DMSG_PAGES_ON}</div>
 	<div class="pages orange" align="right"><!-- IF DMSG_PAGES_NEXT -->{DMSG_PAGES_NEXT}<!-- ELSE -->&nbsp;<!-- ENDIF --></div>
 </div>
 <!-- ENDIF -->

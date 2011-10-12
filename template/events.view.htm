@@ -15,25 +15,26 @@ $(function() {
 <div class="share">&nbsp;</div>
 
 <div class="is_left">
-	<div class="sec"><h3>{EVENT_NAME}</h3></div>
-	<div class="low_color">{EVENT_DATE}</div>
+	<div class="h"><h3>{EVENT_NAME}</h3></div>
+	<div class="_">{EVENT_DATE}</div>
 	
 	<!-- BEGIN collab -->
-	<div class="low_color">{L_EVENT_PHOTO_THANKS}
+	<div class="_">{L_EVENT_PHOTO_THANKS}
 		<!-- BEGIN row -->
 		<a href="{row.PROFILE}">{row.USERNAME}</a>
 		<!-- END row -->
 	</div>
 	<!-- END collab -->
 </div>
-<div class="is_right">
-	<input type="submit" id="submit_photos" value="&iquest;Tienes fotos de este evento? Env&iacute;alas" />
-</div>
 
 <span class="clear"></span>
 
+<div class="a_right">
+	<input type="submit" id="submit_photos" value="&iquest;Tienes fotos de este evento? Env&iacute;alas" />
+</div>
+
 <div id="submit_photos_box">
-	Envianos las fotos que hayas tomado en el evento y quieras compartir con la comunidad.
+	Envianos las fotos que hayas tomado en el evento para compartirlas en la comunidad.
 	
 	<form action="" method="post" enctype="multipart/form-data">
 		
@@ -77,8 +78,8 @@ $(function() {
 <!-- END thumbnails -->
 
 <!-- BEGIN posting_box -->
-<div id="posting_box" class="rows5_top_2 post_comment">
-<div class="sec"><h3>{L_SEND_POST} <a class="smile" href="{S_EMOTICONS}">@</a></h3></div>
+<div class="pad_top post_comment">
+<div class="h"><h3>{L_SEND_POST} <a class="smile" href="{S_EMOTICONS}">@</a></h3></div>
 <form action="{S_COMMENTS}" method="post" name="post"><input type="hidden" name="ref" value="{box.REF}" />
 <div><textarea id="comment" name="message"></textarea></div>
 <div><input class="submit" type="submit" name="post" value="{L_SUBMIT}" /></div>
@@ -101,12 +102,12 @@ $(function() {
 <!-- IF MSG_PAGES_NUMS != ' <strong>1</strong>' --><div class="pagination">{MSG_PAGES_NUMS}</div><!-- ENDIF -->
 <!-- END posts -->
 
+<!-- BEGIN thumbnails -->
 <div id="cache" class="z">
-	<!-- BEGIN thumbnails -->
 	<!-- BEGIN item -->
 	<div><img src="{item.RIMAGE}" alt="" /></div>
 	<!-- END item -->
-	<!-- END thumbnails -->
 </div>
+<!-- END thumbnails -->
 
 <!-- INCLUDE page.footer.htm -->

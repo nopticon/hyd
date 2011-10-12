@@ -1,19 +1,19 @@
 <!-- INCLUDE page.header.htm -->
 
-<div class="sec"><h3>{L_RADIO}</h3></div>
+<div class="h"><h3>{L_RADIO}</h3></div>
 
-<div id="radio_listen">
-<ul class="ul_none">
-	<li><a class="winamp" href="http://www.rockrepublik.net/home/radio/player/listen.pls">Winamp</a></li>
-	<li><a class="windowsmedia" href="http://www.rockrepublik.net/home/radio/player/wmp.asx">Windows Media</a></li>
-	<li><a class="itunes" href="http://www.rockrepublik.net/home/radio/player/itunes.m3u">iTunes</a></li>
-	<li><a class="realplayer" href="http://www.rockrepublik.net/home/radio/player/realplayer.ram">Real Player</a></li>
-	<li><a class="vlc" href="http://www.rockrepublik.net/home/radio/player/vlc.pls">VLC</a></li>
-</ul>
+<div id="radio_listen" class="ls_non">
+	<ul>
+		<li><a class="winamp" href="http://www.rockrepublik.net/home/radio/player/listen.pls">Winamp</a></li>
+		<li><a class="windowsmedia" href="http://www.rockrepublik.net/home/radio/player/wmp.asx">Windows Media</a></li>
+		<li><a class="itunes" href="http://www.rockrepublik.net/home/radio/player/itunes.m3u">iTunes</a></li>
+		<li><a class="realplayer" href="http://www.rockrepublik.net/home/radio/player/realplayer.ram">Real Player</a></li>
+		<li><a class="vlc" href="http://www.rockrepublik.net/home/radio/player/vlc.pls">VLC</a></li>
+	</ul>
 </div>
 
-<div id="player" class="rows5_top_4 rows5_bot_1 a_center">
-	<!-- BEGIN hidden -->
+<!-- BEGIN hidden -->
+<div class="pad_top a_mid">
 	<object id="radioplayer" width="350" height="61" classid="CLSID:6BF52A52-394A-11d3-B153-00C04F79FAA6" type="application/x-oleobject">
 	<param name="url" value="http://216.66.69.4:9594/">
 	<param name="SendPlayStateChangeEvents" VALUE="True">
@@ -24,10 +24,10 @@
 	<param name="AutoRewind" value="0">
 	<embed type="application/x-mplayer2" pluginspage="http://www.microsoft.com/Windows/MediaPlayer/" name="radioplayere" autostart="false" width="350" height="51" transparentstart="1" showstatusbar="1" loop="0" controller="true" src="http://216.66.69.4:9594/" stretchToFit="true"></embed>
 	</object>
-	<!-- END hidden -->
 </div>
+<!-- END hidden -->
 
-<div id="radio_container" class="float-holder ie-widthfix">
+<div id="radio_container">
 	<div id="radio_list">
 	<ul>
 	<!-- BEGIN day -->
@@ -37,7 +37,7 @@
 	</div>
 </div>
 
-<div class="section"><h1>Informaci&oacute;n</h1></div>
+<div class="h"><h3>Informaci&oacute;n</h3></div>
 
 <div class="col_fr a_left">
 	<p>Rock Republik Radio fue fundada en Guatemala en junio 2006. Podr&aacute;s escucharnos las 24 horas y encontrar&aacute;s m&uacute;sica de todos los sub-g&eacute;neros de rock y metal por medio de nuestros programas en vivo.</p>

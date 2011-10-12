@@ -14,7 +14,7 @@
 <!-- BEGIN hide -->
 <div class="ie-widthfix float-holder">
 	<div class="col75 float_left">
-		<div class="section"><h1>{L_UNREAD_ITEMS}</h1></div>
+		<div class="h"><h3>{L_UNREAD_ITEMS}</h3></div>
 	</div>
 	<div class="col24 float_right a_right">
 		<form action="{S_UNREAD_ACTION}" method="post" name="post">
@@ -33,17 +33,16 @@
 </div>
 <!-- END hide -->
 
-<div class="rows5_top_2 rows5_bot_2">
+<div class="pad_top ls">
 <div class="col_3 float_left">
 	<!-- BEGIN items -->
 	<form action="{S_UNREAD_ACTION}" method="post">
 	{S_HIDDEN_FIELDS}
 	<!-- BEGIN notes -->
-	<div class="float-holder ie-widthfix item_block_3">
-	<div class="section"><h1>{L_DCONVS}</h1></div>
-	<ul class="ul_none">
+	<div class="h"><h3>{L_DCONVS}</h3></div>
+	<ul>
 		<!-- BEGIN item -->
-		<li class="rows5_top_1">
+		<li class="pad_top">
 			<div class="float-holder ie-widthfix">
 			<div class="float_left col75"><input type="checkbox" class="none" name="items[{notes.ELEMENT}][]" value="{item.S_MARK_ID}" />&nbsp;<a class="bold" href="{item.U_READ}">{item.SUBJECT}</a></div>
 			<div class="float_right col25 a_right"><a class="relevant uunique"href="{item.U_USERNAME}">{item.USERNAME}</a><br />{item.DATETIME}</div>
@@ -51,11 +50,11 @@
 		</li>
 		<!-- END item -->
 	</ul>
-	</div>
 	<!-- END notes -->
+	
 	<!-- BEGIN friends -->
 	<div class="rows5_top_2 float-holder ie-widthfix item_block_3">
-	<div class="section"><h1>{L_FRIENDS_LIST}</h1></div>
+	<div class="h"><h3>{L_FRIENDS_LIST}</h3></div>
 	<ul class="ul_none">
 		<!-- BEGIN item -->
 		<li class="rows5_top_1">
@@ -68,9 +67,10 @@
 	</ul>
 	</div>
 	<!-- END friends -->
+	
 	<!-- BEGIN userpagem -->
 	<div class="rows5_top_2 float-holder ie-widthfix item_block_3">
-	<div class="section"><h1>{L_USERPAGE_UNREAD_MESSAGES}</h1></div>
+	<div class="h"><h3>{L_USERPAGE_UNREAD_MESSAGES}</h3></div>
 	<ul class="ul_none">
 		<!-- BEGIN item -->
 		<li class="rows5_top_1">
@@ -83,9 +83,10 @@
 	</ul>
 	</div>
 	<!-- END userpagem -->
+	
 	<!-- BEGIN news -->
 	<div class="rows5_top_2 float-holder ie-widthfix item_block_3">
-	<div class="section"><h1>{L_NEWS}</h1></div>
+	<div class="h"><h3>{L_NEWS}</h3></div>
 	<ul class="ul_none">
 		<!-- BEGIN item -->
 		<li class="rows5_top_1">
@@ -98,9 +99,10 @@
 	</ul>
 	</div>
 	<!-- END news -->
+	
 	<!-- BEGIN forums -->
 	<div class="rows5_top_2 float-holder ie-widthfix item_block_3">
-	<div class="section"><h1>{L_NEW_FORUM}</h1></div>
+	<div class="h"><h3>{L_NEW_FORUM}</h3></div>
 	<ul class="ul_none">
 		<!-- BEGIN item -->
 		<li>
@@ -113,9 +115,10 @@
 	</ul>
 	</div>
 	<!-- END forums -->
+	
 	<!-- BEGIN a_messages -->
 	<div class="rows5_top_2 float-holder ie-widthfix item_block_3">
-	<div class="section"><h1>{L_NEW_UB_MSG}</h1></div>
+	<div class="h"><h3>{L_NEW_UB_MSG}</h3></div>
 	<ul class="ul_none">
 		<!-- BEGIN item -->
 		<li class="rows5_top_1">
@@ -128,9 +131,10 @@
 	</ul>
 	</div>
 	<!-- END a_messages -->
+	
 	<!-- BEGIN d_messages -->
 	<div class="rows5_top_2 float-holder ie-widthfix item_block_3">
-	<div class="section"><h1>{L_NEW_DL_MSG}</h1></div>
+	<div class="h"><h3>{L_NEW_DL_MSG}</h3></div>
 	<ul class="ul_none">
 		<!-- BEGIN item -->
 		<li class="rows5_top_1">
@@ -143,9 +147,10 @@
 	</ul>
 	</div>
 	<!-- END d_messages -->
+	
 	<!-- BEGIN a_fav -->
 	<div class="rows5_top_2 float-holder ie-widthfix item_block_3">
-	<div class="section"><h1>{L_NEW_FANS}</h1></div>
+	<div class="h"><h3>{L_NEW_FANS}</h3></div>
 	<ul class="ul_none">
 		<!-- BEGIN item -->
 		<li class="rows5_top_1">
@@ -160,9 +165,6 @@
 	<!-- END a_fav -->
 	</form>
 	<!-- END items -->
-	<!-- BEGIN no_items -->
-	<div class="black_box a_center">{L_NO_NEW_ITEMS}</div>
-	<!-- END no_items -->
 </div>
 </div>
 

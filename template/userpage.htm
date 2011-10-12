@@ -61,7 +61,7 @@
 		
 		<!-- BEGIN lastfm -->
 		<div class="rows5_top_2 float-holder ie-widthfix item_block_3">
-		<div class="sec"><h3>Canciones en Last.FM</h3></div>	
+		<div class="h"><h3>Canciones en Last.FM</h3></div>	
 		<ul class="ul_none">
 			<!-- BEGIN row -->
 			<li class="rows5_top_6"><strong>{row.TIME}</strong>: <a href="{row.URL}" title="{row.ALBUM}" target="_blank">{row.ARTIST} - {row.NAME}</a></li>
@@ -73,7 +73,7 @@
 		
 		<!-- BEGIN thumbnails -->
 		<div class="<!-- IF !(thumbnails.S_ROW_COUNT) -->rows5_top_2 <!-- ENDIF -->float-holder ie-widthfix">
-			<div class="sec"><h3>{thumbnails.L_TITLE}</h1></div>
+			<div class="h"><h3>{thumbnails.L_TITLE}</h1></div>
 			<ul class="ul_none">
 				<!-- BEGIN row -->
 				<!-- BEGIN col -->
@@ -86,7 +86,7 @@
 		
 		<!-- BEGIN lastboard -->
 		<div class="rows5_top_2 float-holder ie-widthfix ul_style">
-		<div class="sec"><h3>{L_BOARD_LATEST}</h3></div>	
+		<div class="h"><h3>{L_BOARD_LATEST}</h3></div>	
 		<ul class="ul_none">
 			<!-- BEGIN row -->
 			<li>
@@ -101,7 +101,7 @@
 	<div class="float_right col66">
 		<!-- BEGIN post_comment_box -->
 		<div class="post_comment">
-		<div class="sec"><h3>{L_SEND_POST} <a class="smile" href="{S_EMOTICONS}">@</a></a></h3></div>
+		<div class="h"><h3>{L_SEND_POST} <a class="smile" href="{S_EMOTICONS}">@</a></a></h3></div>
 		<form action="{S_COMMENTS}" method="post" name="m-messages">
 		<input type="hidden" name="ref" value="{post_comment_box.REF}" />
 		<div class="rows5_top_1"><textarea id="a-comments" name="message"></textarea></div>

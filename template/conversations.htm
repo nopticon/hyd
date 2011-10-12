@@ -1,17 +1,13 @@
 <!-- INCLUDE page.header.htm -->
 
-<div class="sec"><h3>{L_CONV}</h3></div>
-
-<!-- BEGIN dc_total -->
-<div class="cols5_left rows5_top_1 high"><strong>{dc_total.TOTAL}</strong> <!-- IF dc_total.TOTAL == 1 -->{L_DCONV_READ}<!-- ELSE -->{L_DCONVS_READ}<!-- ENDIF --></div>
-<!-- END dc_total -->
+<div class="h"><h3>{L_CONV}</h3></div>
 <!-- BEGIN back_dc -->
-<div class="cols5_left rows5_top_1"><a href="{back_dc.URL}">{L_INBOX}</a></div>
+<div class="pad_top pad_left"><a href="{back_dc.URL}">{L_INBOX}</a></div>
 <!-- END back_dc -->
 
 <div class="is_left">
 	<!-- BEGIN conv -->
-	<div class="sec"><h3>{conv.SUBJECT}</h3></div>
+	<div class="h"><h3>{conv.SUBJECT}</h3></div>
 	
 	<div class="pad_top a_right">
 		<form action="{S_ACTION}" method="post">
@@ -24,12 +20,12 @@
 	<form action="{S_ACTION}" method="post">
 		{S_HIDDEN_FIELDS}
 		<!-- BEGIN error -->
-		<div class="warning">{error.MESSAGE}</div>
+		<div class="w">{error.MESSAGE}</div>
 		<!-- END error -->
 		
 		<!-- BEGIN dc_start -->
 		<div class="post_comment">
-		<div class="section"><h1>{L_DCONV_START}</h1></div>
+		<div class="h"><h3>{L_DCONV_START}</h3></div>
 		<div><label for="comment_member">{L_DCS_MEMBER}</label></div>
 		<div><input id="comment_member" name="member" maxlength="30" value="{dc_start.MEMBER}" /></div>
 		<div><label for="comment">{L_POST}</label></div>
@@ -59,12 +55,12 @@
 			</ul>
 		</div>
 		
-		<div class="rows5_top_2"><input class="submit" type="submit" name="delete" value="{L_DELETE_MARKED}" /></div>
-		<!-- IF PAGES_NUMS != ' <strong>1</strong>' --><div class="rows5_top pagination">{PAGES_NUMS}</div><!-- ENDIF -->
+		<div class="pad_top"><input class="submit" type="submit" name="delete" value="{L_DELETE_MARKED}" /></div>
+		<!-- IF PAGES_NUMS != ' <strong>1</strong>' --><div class="pad_top pagination">{PAGES_NUMS}</div><!-- ENDIF -->
 		<!-- END messages -->
 		
 		<!-- BEGIN no_messages -->
-		<div class="warning">{L_EMPTY_DC}</div>
+		<div class="w">{L_EMPTY_DC}</div>
 		<!-- END no_messages -->
 		
 		<!-- BEGIN conv -->
@@ -86,7 +82,7 @@
 		
 		<!-- IF message.CAN_REPLY -->
 		<div class="post_comment">
-			<div class="sec"><h3>{L_SEND_REPLY}</h3></div>
+			<div class="h"><h3>{L_SEND_REPLY}</h3></div>
 			<div><label for="comment">{L_POST}</label></div>
 			<div><textarea id="comment" name="message" cols="150" rows="10"></textarea></div>
 			<div><input class="submit" type="submit" name="post" value="{L_SUBMIT}" /></div>

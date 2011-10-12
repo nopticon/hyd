@@ -14,7 +14,7 @@
 
 	<!-- BEGIN news -->
 	<div class="news ls">
-		<div class="sec"><h3>{L_LATEST_NEWS}</h3></div>
+		<div class="h"><h3>{L_LATEST_NEWS}</h3></div>
 		<ul>
 			<!-- BEGIN row -->
 			<li>
@@ -43,7 +43,7 @@
 	
 	<!-- BEGIN board_general -->
 	<div class="is_mid pad_top ls">
-		<div class="sec"><h3>{L_BOARD_LATEST}</h3></div>
+		<div class="h"><h3>{L_BOARD_LATEST}</h3></div>
 		<ul>
 			<!-- BEGIN item -->
 			<li>
@@ -59,7 +59,7 @@
 	
 	<!-- BEGIN board_events -->
 	<div class="is_mid pad_top ls">
-		<div class="sec"><h3>{L_BOARD_EVENTS}</h3></div>
+		<div class="h"><h3>{L_BOARD_EVENTS}</h3></div>
 		<ul>
 			<!-- BEGIN item -->
 			<li>
@@ -76,7 +76,7 @@
 
 <div class="is_right">	
 	<div class="ls_none">
-		<div class="sec"><h3><a href="{U_EVENTS}">{L_EVENTS_NEXT}</a></h3></div>
+		<div class="h"><h3><a href="{U_EVENTS}">{L_EVENTS_NEXT}</a></h3></div>
 		<ul>
 			<!-- BEGIN next_event -->
 			<li>
@@ -91,7 +91,7 @@
 	
 	<!-- BEGIN thumbnails -->
 	<div class="pad_top ls_none">
-		<div class="sec"><h3>{L_ARTISTS}</h3></div>
+		<div class="h"><h3>{L_ARTISTS}</h3></div>
 		<ul>
 			<!-- BEGIN item -->
 			<li>
@@ -109,24 +109,22 @@
 	<!-- BEGIN hide -->
 	<!-- BEGIN poll -->
 	<div id="poll" class="pad_top">
-		<div class="sec"><h3>{poll.POLL_TITLE}</h3></div>
+		<div class="h"><h3>{poll.POLL_TITLE}</h3></div>
 		<!-- BEGIN options -->
 		<form method="post" action="{options.S_VOTE_ACTION}">
 		<!-- END options -->
-		
-		<div class="rows5_top_1">
-		<ul class="ul_none">
+		<ul>
 		<!-- BEGIN results -->
 		<!-- BEGIN item -->
 		<li>
-		<div class="caption">{item.CAPTION} <span>({item.RESULT})</span></div>
-		<div class="bar"><div style="width: {item.PERCENT}%;">&nbsp;</div></div>
+			<div class="caption">{item.CAPTION} <span>({item.RESULT})</span></div>
+			<div class="bar"><div style="width: {item.PERCENT}%;">&nbsp;</div></div>
 		</li>
 		<!-- END item -->
 		<!-- END results -->
 		<!-- BEGIN options -->
 		<!-- BEGIN item -->
-		<li class="a_left rows5_top_1"><input type="radio" id="vo_{item.POLL_OPTION_ID}" name="vote_id" value="{item.POLL_OPTION_ID}" /> <label for="vo_{item.POLL_OPTION_ID}">{item.POLL_OPTION_CAPTION}</label></li>
+		<li><input type="radio" id="vo_{item.POLL_OPTION_ID}" name="vote_id" value="{item.POLL_OPTION_ID}" /> <label for="vo_{item.POLL_OPTION_ID}">{item.POLL_OPTION_CAPTION}</label></li>
 		<!-- END item -->
 		<!-- END options -->
 		</ul>
@@ -134,7 +132,6 @@
 		<div class="pad_top a_mid"><input class="submit" type="submit" name="vote" value="{L_VOTE}" /></div>
 		<!-- END options -->
 		<div class="a_right"><a href="{poll.U_POLL_TOPIC}">{poll.S_REPLIES} <!-- IF poll.S_REPLIES == 1 -->{L_POLL_COMMENT}<!-- ELSE -->{L_POLL_COMMENTS}<!-- ENDIF --></a></div>
-		</div>
 		<!-- BEGIN options -->
 		</form>
 		<!-- END options -->

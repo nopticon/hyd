@@ -1,6 +1,7 @@
 <!-- INCLUDE page.header.htm -->
 
-<div class="g2"><h1><a href="{U_NEWS}">{L_NEWS}</a> &raquo; <a href="{CAT_URL}">{CAT_NAME}</a> &raquo; {POST_SUBJECT}</h1> </div>
+<div class="h"><h3>{POST_SUBJECT}</h3></div>
+<div class="_"><a href="{U_NEWS}">{L_NEWS}</a> &mdash; <a href="{CAT_URL}">{CAT_NAME}</a></div>
 
 <div class="comments">
 <a name="mainpost"></a>
@@ -8,18 +9,16 @@
 <div id="comment-{item.S_ROW_COUNT}">
 <h3><strong>f</strong><span>.</span> <em><a href="{mainpost.PROFILE}"><img src="{mainpost.USER_AVATAR}" alt="{mainpost.USERNAME}'s Avatar" /></a></em><cite><a href="{mainpost.PROFILE}">{mainpost.USERNAME}</a></cite> <span>dijo:</span></h3>
 <blockquote>
-<div class="col_fr nowraptext">{mainpost.MESSAGE}</div>
+<div class="nowraptext">{mainpost.MESSAGE}</div>
 <p class="dtposted">{mainpost.POST_TIME} &raquo; {POST_VIEWS} Visitas</p>
 </blockquote>
 <hr /></div>
 <!-- END mainpost -->
 
-<div align="center"><a name="fb_share" type="button_count" href="http://www.facebook.com/sharer.php">Share</a><script src="http://static.ak.fbcdn.net/connect.php/js/FB.Share" type="text/javascript"></script></div>
-
 <!-- IF PAGES_NUMS != ' <strong>1</strong>' --><div class="pagination">{PAGES_NUMS}</div><!-- ENDIF -->
-
 </div>
 
+<!-- BEGIN hide -->
 <div align="center">
 	<script type="text/javascript"><!--
 	google_ad_client = "pub-5371491382621943";
@@ -29,10 +28,10 @@
 	//-->
 	</script>
 	<script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
-</div>		
+</div>
+<!-- END hide -->
 
 <div class="comments">
-
 <!-- BEGIN posts -->
 <div class="rows5_top">
 <!-- BEGIN item -->
@@ -54,7 +53,7 @@
 <!-- BEGIN posting_box -->
 <a name="reply"></a>
 <div class="rows5_top_2 post_comment">
-<div class="section"><h1>{L_SEND_POST}</h1></div>
+<div class="h"><h3>{L_SEND_POST}</h3></div>
 <!-- BEGIN box -->
 <form action="{S_COMMENTS}" method="post" name="post"><input type="hidden" name="ref" value="{box.REF}" />
 <div><label for="comment">{L_POST}</label> - <a class="relevant" onclick="return popup('{S_EMOTICONS}', '_emoticons', 300, 450);" href="{S_EMOTICONS}" target="_blank">{L_EMOTICONS}</a></div>

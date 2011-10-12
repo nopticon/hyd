@@ -1,158 +1,153 @@
 <!-- INCLUDE page.header.htm -->
 
-<div class="section"><h1>{L_CONTROL_PANEL}</h1></div>
+<div class="h"><h3>{L_CONTROL_PANEL}</h3></div>
 <!-- IF TOP_NAV != '' -->
-<div class="rows5_bot_1 a_center"><a href="{S_CONTROLPANEL}">{L_HOME}</a> &raquo; {TOP_NAV}</div>
+<div class="_ a_mid"><a href="{S_CONTROLPANEL}">{L_HOME}</a> &raquo; {TOP_NAV}</div>
 <!-- ENDIF -->
-
-<!-- BEGIN error -->
-<a name="e"></a><div class="rows5_top_2"><div class="error_block"><h2>{L_ERROR}</h2><p>{error.MESSAGE}</p></div></div>
-<!-- END error -->
 
 <!-- IF MODE == 'home' -->
 <!-- BEGIN menu -->
-<div class="float-holder ie-widthfix a_center">
-<ul class="ul_none">
-	<!-- BEGIN item -->
-	<li><a href="{item.URL}">{item.NAME}</a></li>
-	<!-- END item -->
-</ul>
+<div class="pad_top a_mid ls">
+	<ul>
+		<!-- BEGIN item -->
+		<li><a href="{item.URL}">{item.NAME}</a></li>
+		<!-- END item -->
+	</ul>
 </div>
 <!-- END menu -->
 
 <!-- BEGIN select_a -->
-<div class="float-holder ie-widthfix">
-<ul class="ul_none">
-	<!-- BEGIN row -->
-	<!-- BEGIN col -->
-	<li class="row_1f col_1f float_left pad_2 a_center"><a class="relevant_artist" href="{col.URL}">{col.NAME}</a><br />{col.GENRE}<br /><br />{col.LOCATION}<br /><br /><a href="{col.URL}"><img src="{col.IMAGE}" alt="{col.NAME}" /></a></li>
-	<!-- END col -->
-	<!-- END row -->
-</ul>
+<div class="pad_top ls">
+	<ul>
+		<!-- BEGIN row -->
+		<!-- BEGIN col -->
+		<li>
+			<ul>
+				<li><a class="relevant_artist" href="{col.URL}">{col.NAME}</a></li>
+				<li>{col.GENRE}</li>
+				<li>{col.LOCATION}</li>
+				<li><a href="{col.URL}"><img src="{col.IMAGE}" alt="{col.NAME}" /></a></li>
+			</ul>
+		</li>
+		<!-- END col -->
+		<!-- END row -->
+	</ul>
 </div>
 <!-- END select_a -->
-<!-- ELSEIF MODE == 'news' -->
-<div class="section"><h1>{L_CONTROL_A_NEWS}</h1></div>
 
-<a name="create"></a>
+<!-- ELSEIF MODE == 'news' -->
+<div class="h"><h3>{L_CONTROL_A_NEWS}</h3></div>
+
 <div class="post_comment">
 <form action="{S_CONTROL}" method="post">{S_HIDDEN}
 <div><label for="comment_np">{L_TOPIC_TITLE}</label></div>
-<div class="rows5_top_1"><input id="comment_title" name="title" size="150" value="{TOPIC_TITLE}" /></div>
-<div class="rows5_top_1"><label for="comment">{L_POST}</label> - <a class="relevant" onclick="return popup('{S_EMOTICONS}', '_emoticons', 300, 450);" href="{S_EMOTICONS}" target="_blank">{L_EMOTICONS}</a><!-- BEGIN addpoll --> - <span class="relevant" onclick="Element.toggle('addpollbox');">{L_ADD_POLL}</span><!-- END addpoll --></div>
-<div class="rows5_top_1"><textarea id="comment" name="message" cols="150" rows="10">{MESSAGE}</textarea></div>
-<div class="rows5_top_1 a_center"><input class="submit" type="submit" name="submit" value="{L_SUBMIT}" /></div>
+<div class="pad_top"><input id="comment_title" name="title" size="150" value="{TOPIC_TITLE}" /></div>
+<div class="pad_top"><label for="comment">{L_POST}</label> - <a class="relevant" onclick="return popup('{S_EMOTICONS}', '_emoticons', 300, 450);" href="{S_EMOTICONS}" target="_blank">{L_EMOTICONS}</a><!-- BEGIN addpoll --> - <span class="relevant" onclick="Element.toggle('addpollbox');">{L_ADD_POLL}</span><!-- END addpoll --></div>
+<div class="pad_top"><textarea id="comment" name="message" cols="150" rows="10">{MESSAGE}</textarea></div>
+<div class="pad_top a_mid"><input class="submit" type="submit" name="submit" value="{L_SUBMIT}" /></div>
 </form>
 </div>
 <!-- ELSEIF MODE == 'aposts' || MODE == 'dposts' || MODE == 'arposts' -->
-<div class="section"><h1>{L_CONTROL_A_APOSTS}</h1></div>
+<div class="h"><h3>{L_CONTROL_A_APOSTS}</h3></div>
 
-<a name="create"></a>
 <div class="post_comment">
 <form action="{S_CONTROL}" method="post">{S_HIDDEN}
 <div><label for="comment_member">{L_MEMBER}</label></div>
-<div class="rows5_top_1"><input id="comment_member" name="member" size="150" value="{P_MEMBER}" disabled="disabled" /></div>
-<div class="rows5_top_1"><label for="comment">{L_POST}</label> - <a class="relevant" onclick="return popup('{S_EMOTICONS}', '_emoticons', 300, 450);" href="{S_EMOTICONS}" target="_blank">{L_EMOTICONS}</a><!-- BEGIN addpoll --> - <span class="relevant" onclick="Element.toggle('addpollbox');">{L_ADD_POLL}</span><!-- END addpoll --></div>
-<div class="rows5_top_1"><textarea id="comment" name="message" cols="150" rows="10">{MESSAGE}</textarea></div>
-<div class="rows5_top_1 a_center"><input class="submit" type="submit" name="submit" value="{L_SUBMIT}" /></div>
+<div class="pad_top"><input id="comment_member" name="member" size="150" value="{P_MEMBER}" disabled="disabled" /></div>
+<div class="pad_top"><label for="comment">{L_POST}</label> - <a class="relevant" onclick="return popup('{S_EMOTICONS}', '_emoticons', 300, 450);" href="{S_EMOTICONS}" target="_blank">{L_EMOTICONS}</a><!-- BEGIN addpoll --> - <span class="relevant" onclick="Element.toggle('addpollbox');">{L_ADD_POLL}</span><!-- END addpoll --></div>
+<div class="pad_top"><textarea id="comment" name="message" cols="150" rows="10">{MESSAGE}</textarea></div>
+<div class="pad_top a_mid"><input class="submit" type="submit" name="submit" value="{L_SUBMIT}" /></div>
 </form>
 </div>
 <!-- ELSEIF MODE == 'auth' -->
 <form action="{S_CONTROL}" method="post">{S_HIDDEN}
-<div class="section"><h1>{L_CONTROL_A_AUTH}</h1></div>
+<div class="h"><h3>{L_CONTROL_A_AUTH}</h3></div>
 
-<div class="rows5_bot_1 a_controls a_left"><a href="{ADD_MEMBER_URL}">{L_CONTROL_A_AUTH_ADD}</a></div>
+<div class="ctl"><a href="{ADD_MEMBER_URL}">{L_CONTROL_A_AUTH_ADD}</a></div>
 
 <!-- IF MANAGE == 'add' -->
-<!-- IF SHOW_INPUT --><label for="member">{L_MEMBER}</label>: <input  type="text" id="member" name="s_member" size="35" maxlength="20" /><br />
-<div class="sep3-top"><small>{L_CONTROL_A_AUTH_ADD_LEGEND}</small></div>
-<!-- ELSE --><div class="sep3-top"><small>{L_CONTROL_A_AUTH_ADD_LEGEND2}</small></div><!-- ENDIF --><br />
+<!-- IF SHOW_INPUT -->
+<label for="member">{L_MEMBER}</label>: <input  type="text" id="member" name="s_member" size="35" maxlength="20" /><br />
+<div class="pad_top">{L_CONTROL_A_AUTH_ADD_LEGEND}</div>
+<!-- ELSE -->
+<div class="pad_top">{L_CONTROL_A_AUTH_ADD_LEGEND2}</div>
+<!-- ENDIF -->
 <!-- ENDIF -->
 
 <!-- BEGIN members -->
-<div class="float-holder ie-widthfix">
-<ul class="ul_none">
-	<!-- BEGIN row -->
-	<!-- BEGIN col -->
-	<li class="row_5 col_1f float_left pad_2 a_center"><input type="checkbox" class="none" name="s_members[]" value="{col.USER_ID}"<!-- IF !(col.DELETE) --> disabled="true"<!-- ENDIF --><!-- IF col.CHECK --> checked="true"<!-- ENDIF --> /><br /><a href="{col.PROFILE}"><img src="{col.AVATAR}" alt="{col.USERNAME}" /></a><br /><a href="{col.PROFILE}">{col.USERNAME}</a></li>
-	<!-- END col -->
-	<!-- END row -->
-</ul>
+<div class="pad_top ls">
+	<ul>
+		<!-- BEGIN row -->
+		<!-- BEGIN col -->
+		<li><input type="checkbox" class="none" name="s_members[]" value="{col.USER_ID}"<!-- IF !(col.DELETE) --> disabled="true"<!-- ENDIF --><!-- IF col.CHECK --> checked="true"<!-- ENDIF --> /><a href="{col.PROFILE}"><img src="{col.AVATAR}" alt="{col.USERNAME}" /></a><br /><a href="{col.PROFILE}">{col.USERNAME}</a></li>
+		<!-- END col -->
+		<!-- END row -->
+	</ul>
 </div>
 <!-- END members -->
-
-<!-- BEGIN no_members -->
-<div class="rows5_top_2"><div class="error_block"><h2>{L_INFORMATION}</h2><p>{no_members.MESSAGE}</p></div></div>
-<!-- END no_members -->
 
 <!-- IF (MANAGE == 'home' && RESULTS) || (MANAGE == 'add') -->
-<div class="a_center"><input type="submit" class="submit" name="submit" value="<!-- IF MANAGE == 'add' -->{L_SUBMIT}<!-- ELSE -->{L_DELETE_MARKED}<!-- ENDIF -->" /></div>
+<div class="a_mid"><input type="submit" class="submit" name="submit" value="<!-- IF MANAGE == 'add' -->{L_SUBMIT}<!-- ELSE -->{L_DELETE_MARKED}<!-- ENDIF -->" /></div>
 <!-- ENDIF -->
 </form>
+
 <!-- ELSEIF MODE == 'log' -->
-<div class="section"><h1>{L_CONTROL_A_LOG}<!-- IF MEMBER --> &raquo; <a href="{PROFILE}">{USERNAME}</a><!-- ENDIF --></h1></div>
+<div class="h"><h3>{L_CONTROL_A_LOG}<!-- IF MEMBER --> &raquo; <a href="{PROFILE}">{USERNAME}</a><!-- ENDIF --></h3></div>
 
 <!-- BEGIN members -->
-<div class="pad6 ie-widthfix">
-<table width="100%" cellpadding="6" class="t-collapse">
-<!-- BEGIN row -->
-	<tr>
-	<!-- BEGIN col -->
-	<td class="<!-- IF col.S_ROW_COUNT -->box2l<!-- ENDIF -->" align="center" valign="bottom" width="25%">
-	<a href="{col.U_VIEWLOG}"><img src="{col.AVATAR}" title="{col.USERNAME}" /></a><div class="sep-top"><a style="color:#{col.COLOR}; font-weight: bold" href="{col.U_VIEWLOG}">{col.USERNAME}</a></div><div class="sep3-top"><small><strong>{col.TOTAL}</strong> {col.ACTION}</small></div>
-	</td>
-	<!-- END col -->
-	<!-- BEGIN blank -->
-	<td class="box2l" width="25%">&nbsp;</td>
-	<!-- END blank -->
-</tr>
-<!-- END row -->
-</table>
+<div class="pad_top ls">
+	<ul>
+		<!-- BEGIN row -->
+		<!-- BEGIN col -->
+		<li><a href="{col.U_VIEWLOG}"><img src="{col.AVATAR}" title="{col.USERNAME}" /></a><div class="sep-top"><a style="color:#{col.COLOR}; font-weight: bold" href="{col.U_VIEWLOG}">{col.USERNAME}</a></div><div class="sep3-top"><small><strong>{col.TOTAL}</strong> {col.ACTION}</small></div></li>
+		<!-- END col -->
+		<!-- END row -->
+	</ul>
 </div>
 <!-- END members -->
-<!-- BEGIN no_members -->
-<div class="box2 dark-color"><div class="pad12" align="center"><div class="sep"><img class="icon" src="/net/images/logout.png" width="18" height="18" /></div>{no_members.MESSAGE}</div></div>
-<!-- END no_members -->
+
 <!-- ELSEIF MODE == 'biography' -->
-<div class="section"><h1>{L_CONTROL_A_BIOGRAPHY}</h1></div>
+<div class="h"><h3>{L_CONTROL_A_BIOGRAPHY}</h3></div>
 
 <!-- BEGIN updated -->
-<div class="rows5_top_2"><div class="error_block"><h2>{L_INFORMATION}</h2><p>{L_CONTROL_A_BIOGRAPHY_UPDATED}</p></div></div>
+<div class="w">{L_CONTROL_A_BIOGRAPHY_UPDATED}</div>
 <!-- END updated -->
 
 <div class="post_comment">
-<form action="{S_CONTROL}" method="post">{S_HIDDEN}
-<div class="rows5_top_1"><label for="comment">{L_POST}</label> - <a class="relevant" onclick="return popup('{S_EMOTICONS}', '_emoticons', 300, 450);" href="{S_EMOTICONS}" target="_blank">{L_EMOTICONS}</a><!-- BEGIN addpoll --> - <span class="relevant" onclick="Element.toggle('addpollbox');">{L_ADD_POLL}</span><!-- END addpoll --></div>
-<div class="rows5_top_1"><textarea id="comment" name="message" cols="150" rows="30">{MESSAGE}</textarea></div>
-<div class="rows5_top_1 a_center"><input class="submit" type="submit" name="submit" value="{L_SUBMIT}" /></div>
-</form>
+	<form action="{S_CONTROL}" method="post">{S_HIDDEN}
+	<div class="pad_top"><label for="comment">{L_POST}</label> - <a class="relevant" onclick="return popup('{S_EMOTICONS}', '_emoticons', 300, 450);" href="{S_EMOTICONS}" target="_blank">{L_EMOTICONS}</a><!-- BEGIN addpoll --> - <span class="relevant" onclick="Element.toggle('addpollbox');">{L_ADD_POLL}</span><!-- END addpoll --></div>
+	<div class="pad_top"><textarea id="comment" name="message" cols="150" rows="30">{MESSAGE}</textarea></div>
+	<div class="pad_top a_mid"><input class="submit" type="submit" name="submit" value="{L_SUBMIT}" /></div>
+	</form>
 </div>
+
 <!-- ELSEIF MODE == 'gallery' -->
-<div class="section"><h1>{L_CONTROL_A_GALLERY}</h1></div>
+<div class="h"><h3>{L_CONTROL_A_GALLERY}</h3></div>
 
 <!-- IF MANAGE == 'home' -->
-<div class="rows5_bot_1 a_controls a_left"><a href="{ADD_IMAGE_URL}">{L_CONTROL_A_GALLERY_ADD}</a></div>
+<div class="pad_top ctl"><a href="{ADD_IMAGE_URL}">{L_CONTROL_A_GALLERY_ADD}</a></div>
 <!-- ENDIF -->
 
 <form action="{S_CONTROL}" method="post"<!-- IF MANAGE == 'add' --> enctype="multipart/form-data"<!-- ENDIF --> name="post">
 
 <!-- IF MANAGE == 'add' -->
 <div>{L_CONTROL_A_GALLERY_ADD_LEGEND}</div>
-<div class="rows5_top_1"><input type="hidden" name="MAX_FILE_SIZE" value="{MAX_FILESIZE}" /><input type="file" name="add_image[]" size="25" /></div>
-<div class="rows5_top_1 a_center">{S_HIDDEN}<input class="submit" type="submit" name="submit" value="{L_SUBMIT}" /></div>
+<div class="pad_top"><input type="hidden" name="MAX_FILE_SIZE" value="{MAX_FILESIZE}" /><input type="file" name="add_image[]" size="25" /></div>
+<div class="pad_top a_center">{S_HIDDEN}<input class="submit" type="submit" name="submit" value="{L_SUBMIT}" /></div>
 <!-- ENDIF -->
 
 <!-- BEGIN gallery -->
-<div class="float-holder ie-widthfix">
-<ul class="ul_none">
-	<!-- BEGIN row -->
-	<!-- BEGIN col -->
-	<li class="row_5 col_1f float_left pad_2 a_center"><input type="checkbox" class="none" name="ls_images[]" value="{col.ITEM}" /><br /><a href="{col.RIMAGE}" title="{col.TFOOTER}"><img src="{col.IMAGE}" alt="" /></a><br /><span id="_footer_{col.ITEM}">{col.TFOOTER}</span></li>
-	<!-- END col -->
-	<!-- END row -->
-</ul>
+<div class="pad_top ls">
+	<ul>
+		<!-- BEGIN row -->
+		<!-- BEGIN col -->
+		<li><input type="checkbox" class="none" name="ls_images[]" value="{col.ITEM}" /><br /><a href="{col.RIMAGE}" title="{col.TFOOTER}"><img src="{col.IMAGE}" alt="" /></a><br /><span id="_footer_{col.ITEM}">{col.TFOOTER}</span></li>
+		<!-- END col -->
+		<!-- END row -->
+	</ul>
 </div>
-<div class="a_center">{S_HIDDEN}<input type="submit" class="submit" name="submit" value="<!-- IF MANAGE == 'add' -->{L_SUBMIT}<!-- ELSE -->{L_DELETE_MARKED}<!-- ENDIF -->" /></div>
+
+<div class="a_mid">{S_HIDDEN}<input type="submit" class="submit" name="submit" value="<!-- IF MANAGE == 'add' -->{L_SUBMIT}<!-- ELSE -->{L_DELETE_MARKED}<!-- ENDIF -->" /></div>
 <script type="text/javascript">
 //<![CDATA[
 <!-- BEGIN row -->
@@ -160,67 +155,65 @@
 new Ajax.InPlaceEditor('_footer_{col.ITEM}', '{col.U_FOOTER}', {highlightcolor:'#000000',highlightendcolor:'#000000',emptyText:'Editar pie de foto',cancelLink:false,submitOnBlur:true});
 <!-- END col -->
 <!-- END row -->
-
-Event.observe(window, 'load', setupZoom);
 //]]>
 </script>
 <!-- END gallery -->
-
-<!-- BEGIN empty -->
-<div class="rows5_top_2"><div class="error_block"><h2>{L_INFORMATION}</h2><p>{empty.MESSAGE}</p></div></div>
-<!-- END empty -->
-
 </form>
+
 <!-- ELSEIF MODE == 'downloads' -->
-<div class="sep2"><h1>{L_CONTROL_A_DOWNLOADS}<!-- IF MANAGE == 'home' --> &raquo; <a class="orange bold" href="{ADD_DOWNLOAD_URL}">{L_CONTROL_A_DOWNLOADS_ADD}</a><!-- ENDIF --></h1></div>
+<div class="h"><h3>{L_CONTROL_A_DOWNLOADS}<!-- IF MANAGE == 'home' --> &raquo; <a href="{ADD_DOWNLOAD_URL}">{L_CONTROL_A_DOWNLOADS_ADD}</a><!-- ENDIF --></h3></div>
+
 <form action="{S_CONTROL}" method="post"<!-- IF MANAGE == 'add' --> enctype="multipart/form-data"<!-- ENDIF --> name="post">
+	
 <!-- IF MANAGE == 'add' -->
 <div>{L_CONTROL_A_GALLERY_ADD_LEGEND}</div>
-<div class="sep2-top"><input type="hidden" name="MAX_FILE_SIZE" value="{MAX_FILESIZE}" /><input type="file" name="add_image" size="25" /></div>
-<div class="sep2-top"><input type="checkbox" name="allow_dl" value="1" checked="checked" /> {L_CONTROL_A_GALLERY_ALLOW_DL}</div>
-<div align="center" class="sep2-top">{S_HIDDEN}<input type="submit" class="bold w100p" name="submit" value="{L_SUBMIT}" /></div>
+<div class="pad_top"><input type="hidden" name="MAX_FILE_SIZE" value="{MAX_FILESIZE}" /><input type="file" name="add_image" size="25" /></div>
+<div class="pad_top"><input type="checkbox" name="allow_dl" value="1" checked="checked" /> {L_CONTROL_A_GALLERY_ALLOW_DL}</div>
+<div class="pad_top a_mid">{S_HIDDEN}<input type="submit" class="bold w100p" name="submit" value="{L_SUBMIT}" /></div>
 <!-- ENDIF -->
+
 <!-- BEGIN downloads -->
-<div class="pad6 ie-widthfix">
-<table width="100%" class="t-collapse">
-<!-- BEGIN row -->
-<tr>
-	<!-- BEGIN col -->
-	<td width="33%" align="center" valign="bottom">
-	<div class="sep2-top">
-	<a href="{col.URL}"><img class="box" src="{col.IMAGE_TYPE}" /></a><div class="sep3-top bold"><a href="{col.URL}">{col.DOWNLOAD_TITLE}</a></div><div class="sep3-top">{col.VIEWS}v <span class="soft">|</span> {col.DOWNLOADS}d <span class="soft">|</span> <!-- IF col.POSTS --><a class="red" href="{col.POSTS_URL}" target="_blank"><!-- ENDIF -->{col.POSTS}m<!-- IF col.POSTS --></a><!-- ENDIF --></div>
-	<input type="checkbox" class="none" name="s_downloads[]" value="{col.ITEM}" />
-	</div>
-	</td>
-	<!-- END col -->
-</tr>
-<!-- END row -->
-</table>
+<div class="pad_top ls">
+	<ul>
+		<!-- BEGIN row -->
+		<!-- BEGIN col -->
+		<li>
+			<ul>
+				<li><a href="{col.URL}"><img src="{col.IMAGE_TYPE}" /></a></li>
+				<li><a href="{col.URL}">{col.DOWNLOAD_TITLE}</a></li>
+				<li>{col.VIEWS}v <span class="soft">|</span> {col.DOWNLOADS}d <span class="soft">|</span> <!-- IF col.POSTS --><a class="red" href="{col.POSTS_URL}" target="_blank"><!-- ENDIF -->{col.POSTS}m<!-- IF col.POSTS --></a><!-- ENDIF --></li>
+				<li><input type="checkbox" class="none" name="s_downloads[]" value="{col.ITEM}" /></li>
+				<li></li>
+			</ul>
+		</li>
+		<!-- END col -->
+		<!-- END row -->
+	</ul>
 </div>
+
 <div align="center" class="sep2-top">{S_HIDDEN}<input type="submit" class="bold <!-- IF MANAGE == 'add' -->w100p<!-- ELSE -->w150p<!-- ENDIF -->" name="submit" value="<!-- IF MANAGE == 'add' -->{L_SUBMIT}<!-- ELSE -->{L_DELETE_MARKED}<!-- ENDIF -->" /></div>
 <!-- END downloads -->
-<!-- BEGIN empty -->
-<div class="box2 dark-color"><div class="pad12" align="center"><div class="sep"><img class="icon" src="/net/images/logout.png" width="18" height="18" /></div>{empty.MESSAGE}</div></div>
-<!-- END empty -->
+
 </form>
+
 <!-- ELSEIF MODE == 'stats' -->
-<div class="section"><h1>{L_CONTROL_A_STATS}</h1></div>
+<div class="h"><h3>{L_CONTROL_A_STATS}</h3></div>
 
 <div class=""><strong>{L_VISITS_COUNT}:</strong> {BEFORE_VIEWS} {L_MEMBERS_TOTAL}</div>
 <!-- IF SHOW_VIEWS_LEGEND --><br />{L_CONTROL_A_STATS_LEGEND}<!-- ENDIF -->
 
 <!-- BEGIN year -->
 <!-- IF year.S_NUM_ROWS > 1 -->
-<!-- IF year.S_ROW_COUNT == 0 --><div class="rows5_top section"><h1><!-- ENDIF -->
+<!-- IF year.S_ROW_COUNT == 0 --><div class="h"><h3><!-- ENDIF -->
 <!-- IF year.S_ROW_COUNT --> . <!-- ENDIF --><a href="#{year.YEAR}">{year.YEAR}</a>
-<!-- IF year.S_ROW_COUNT == year.S_NUM_ROWS - 1 --></h1></div><!-- ENDIF -->
+<!-- IF year.S_ROW_COUNT == year.S_NUM_ROWS - 1 --></h3></div><!-- ENDIF -->
 <!-- ENDIF -->
 <!-- END year -->
 
 <div id="poll">
 <!-- BEGIN year -->
 <a name="{year.YEAR}"></a>
-<div class="rows5_top_2"><div class="dark_box">
+<div class="pad_top"><div class="dark_box">
 <h2>{year.YEAR}</h2>
 <ul class="ul_none">
 	<!-- BEGIN month -->
@@ -236,23 +229,27 @@ Event.observe(window, 'load', setupZoom);
 </span>
 
 <!-- ELSEIF MODE == 'video' -->
-<div class="section"><h1>{L_CONTROL_A_VIDEO}</h1></div>
+<div class="h"><h3>{L_CONTROL_A_VIDEO}</h3></div>
 
 <!-- IF MANAGE == 'home' -->
-<div class="rows5_top_1 rows5_bot_1 a_controls a_left"><a href="{ADD_VIDEO_URL}">{L_CONTROL_A_VIDEO_ADD}</a></div>
+<div class="pad_top"><a href="{ADD_VIDEO_URL}">{L_CONTROL_A_VIDEO_ADD}</a></div>
 <!-- ELSEIF MANAGE == 'add' -->
 <form action="{S_CONTROL}" method="post">{S_HIDDEN}
 <div>{L_CONTROL_A_VIDEO_ADD_LEGEND}</div>
-<div class="rows5_top_2">T&iacute;tulo del video: <input type="text" name="vname" size="50" /></div>
-<div class="rows5_top_1"><strong>URL o c&oacute;digo:</strong> &nbsp;&nbsp;&nbsp; <input type="text" name="code" size="50" /></div>
-<div class="rows5_top_1 a_center">{S_HIDDEN}<input type="submit" class="submit" name="submit" value="{L_SUBMIT}" /></div>
+<div class="pad_top">T&iacute;tulo del video: <input type="text" name="vname" size="50" /></div>
+<div class="pad_top"><strong>URL o c&oacute;digo:</strong> &nbsp;&nbsp;&nbsp; <input type="text" name="code" size="50" /></div>
+<div class="pad_top a_center">{S_HIDDEN}<input type="submit" class="submit" name="submit" value="{L_SUBMIT}" /></div>
 </form>
 <!-- ENDIF -->
 
 <!-- BEGIN video -->
 <!-- BEGIN row -->
-<div class="rows5_top_1 rows5_bot_1 a_center">
-<object width="425" height="355"><param name="movie" value="http://www.youtube.com/v/{row.CODE}&hl=en"></param><param name="wmode" value="transparent"></param><embed src="http://www.youtube.com/v/{row.CODE}&hl=en" type="application/x-shockwave-flash" wmode="transparent" width="425" height="355"></embed></object>
+<div class="pad_top a_mid">
+	<object width="425" height="355">
+		<param name="movie" value="http://www.youtube.com/v/{row.CODE}&hl=en"></param>
+		<param name="wmode" value="transparent"></param>
+		<embed src="http://www.youtube.com/v/{row.CODE}&hl=en" type="application/x-shockwave-flash" wmode="transparent" width="425" height="355"></embed>
+	</object>
 </div>
 <!-- END row -->
 <!-- END video -->

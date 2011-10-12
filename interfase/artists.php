@@ -842,18 +842,18 @@ class _artists extends layout {
 	
 	public function __construct() {
 		$this->layout = array(
-			'_01' => array('code' => 1, 'text' => 'UB_L01', 'tpl' => 'a_main'),
-			'_02' => array('code' => 2, 'text' => 'UB_L02', 'tpl' => 'a_bio'),
-			'_03' => array('code' => 3, 'text' => 'UB_L03', 'tpl' => 'a_albums'),
-			'_04' => array('code' => 4, 'text' => 'UB_L04', 'tpl' => 'a_gallery'),
-			'_05' => array('code' => 5, 'text' => 'UB_L05', 'tpl' => 'a_tabs'),
-			'_06' => array('code' => 6, 'text' => 'UB_L06', 'tpl' => 'a_lyrics'),
-			'_07' => array('code' => 7, 'text' => 'UB_L07', 'tpl' => 'a_interviews'),
-			'_09' => array('code' => 9, 'text' => 'DOWNLOADS', 'tpl' => 'a_downloads'),
-			'_12' => array('code' => 12, 'text' => 'POSTS', 'tpl' => 'a_messages'),
-			'_13' => array('code' => 13, 'text' => '', 'tpl' => 'a_email'),
-			'_16' => array('code' => 16, 'text' => '', 'tpl' => 'a_news'),
-			'_18' => array('code' => 18, 'text' => 'UB_L17', 'tpl' => 'a_video')
+			'_01' => array('code' => 1, 'text' => 'UB_L01', 'tpl' => 'main'),
+			'_02' => array('code' => 2, 'text' => 'UB_L02', 'tpl' => 'bio'),
+			'_03' => array('code' => 3, 'text' => 'UB_L03', 'tpl' => 'albums'),
+			'_04' => array('code' => 4, 'text' => 'UB_L04', 'tpl' => 'gallery'),
+			'_05' => array('code' => 5, 'text' => 'UB_L05', 'tpl' => 'tabs'),
+			'_06' => array('code' => 6, 'text' => 'UB_L06', 'tpl' => 'lyrics'),
+			'_07' => array('code' => 7, 'text' => 'UB_L07', 'tpl' => 'interviews'),
+			'_09' => array('code' => 9, 'text' => 'DOWNLOADS', 'tpl' => 'downloads'),
+			'_12' => array('code' => 12, 'text' => 'POSTS', 'tpl' => 'messages'),
+			'_13' => array('code' => 13, 'text' => '', 'tpl' => 'email'),
+			'_16' => array('code' => 16, 'text' => '', 'tpl' => 'news'),
+			'_18' => array('code' => 18, 'text' => 'UB_L17', 'tpl' => 'video')
 		);
 		
 		$this->voting = array(
@@ -1768,7 +1768,7 @@ class _artists extends layout {
 				);
 				
 				$template->set_filenames(array(
-					'a_body' => 'artists/' . $this->data['template'] . '.htm')
+					'a_body' => 'artists.' . $this->data['template'] . '.htm')
 				);
 				$template->assign_var_from_handle('UB_BODY', 'a_body');
 				break;
