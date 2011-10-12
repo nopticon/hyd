@@ -388,29 +388,29 @@ hr {
 	color: #9F9FA2 !important;
 }
 
-.control {
+.ctl {
 }
-.control a {
+.ctl a {
 	
 }
 
-.pagination {
+.p {
 	text-align: center;
 	margin-top: 10px;
 	padding: 4px;
 }
-.pagination strong, .pagination a, .pagination span {
+.p strong, .p a, .p span {
 	line-height: 30px;
 	text-decoration: none;
 	padding: 5px;
 	background: #4c5558;
 	font-size: 10pt;
 }
-.pagination span {
+.p span {
 	padding: 0;
 	background: #2f2f30;
 }
-.pagination strong, .pagination a:hover {
+.p strong, .p a:hover {
 	text-decoration: none;
 	background: #5d8812;
 }
