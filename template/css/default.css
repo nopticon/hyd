@@ -31,7 +31,6 @@ p, div, span, input, textarea, select, a, optgroup {
 	color: #d0ced1;
 }
 h1, h2 {
-	letter-spacing: 0.08em! important;
 	color: #868670;
 }
 a {
@@ -406,7 +405,6 @@ hr {
 	text-decoration: none;
 	padding: 5px;
 	background: #4c5558;
-	font-size: 10pt;
 }
 .p span {
 	padding: 0;
@@ -459,7 +457,7 @@ hr {
 	margin: 1em 0 0 0;
 	padding: 1.5em 0 0 0;
 	font-size: 1em;
-	border-top: 1px solid #4c5558;
+	border-top: 1px solid #222;
 	text-align: center;
 }
 .comments h3 strong {
@@ -484,7 +482,7 @@ hr {
 	margin: 4px 0 5px 0;
 }
 .comments blockquote div {
-	font-size: 0.95em;
+	/*font-size: 0.95em;*/
 	line-height: 1.8em;
 	color: #d0ced1;
 }
@@ -492,19 +490,19 @@ hr {
 	position: absolute;
 	top: -0.6em;
 	right: 0;
-	padding-left: 0.5em;
+	/*padding-left: 0.5;*/
 	margin: 0;
-	font-size: 0.85em;
-	line-height: 1em;
-	color: #868670;
+	font-size: 7.5pt;
+	line-height: auto;
+	/*color: #8;*/
 	text-align: right;
-	background: #2f2f30;
+	background: #222;
 }
 .comments blockquote blockquote {
 	overflow: hidden;
 	margin: 1em 0;
 	padding: 0.2em 1.25em 0.2em 24px;
-	background: #101010;
+	background: #222;
 	color:#d0ced1;
 }
 .comments blockquote blockquote {
@@ -519,7 +517,7 @@ hr {
 	width: 77%;
 	margin: 1em 0 0 0;
 	padding: 1.5em 0;
-	border-top: 1px solid #4c5558;
+	border-top: 1px solid #222;
 }
 .comments h3 em img {
 	padding: 1px;

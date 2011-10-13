@@ -506,7 +506,7 @@ $lang += array(
 		'March'		=> 'marzo',
 		'April'		=> 'abril',
 		'May'		=> 'mayo',
-		'June'		=> '=junio',
+		'June'		=> 'junio',
 		'July'		=> 'julio',
 		'August'	=> 'agosto',
 		'September' => 'septiembre',
