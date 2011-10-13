@@ -137,13 +137,13 @@
 		<!-- END posts -->
 		
 		<!-- BEGIN hide_viewers -->
-		<div class="rows5_top_3">
-			<div class="g1"><h1 style="color: #{USERNAME_COLOR};">Visitantes</h1></div>
-			<ul class="ul_none">
+		<div class="pad_top ls">
+			<div class="h"><h3>Visitantes</h3></div>
+			<ul>
 				<!-- BEGIN row -->
 				<!-- BEGIN col -->
 				<!-- IF (row.S_ROW_COUNT < 3) || (row.S_ROW_COUNT == 2 && col.S_ROW_COUNT < 1) -->
-				<li class="a_center float_left row_7 col33"><div><a class="relevant uunique" href="{col.PROFILE}">{col.USERNAME}</a><br />{col.DATETIME}</div><div class="rows5_top"><a href="{col.PROFILE}"><img src="{col.AVATAR}" alt="{col.USERNAME}" /></a></div></li>
+				<li><div><a href="{col.PROFILE}">{col.USERNAME}</a><br />{col.DATETIME}</div><div><a href="{col.PROFILE}"><img src="{col.AVATAR}" alt="{col.USERNAME}" /></a></div></li>
 				<!-- ENDIF -->
 				<!-- END col -->
 				<!-- END row -->
