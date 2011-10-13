@@ -451,12 +451,12 @@ class _comments {
 					case 'user_avatar':
 						if ($row['user_id'] != GUEST) {
 							if ($value != '') {
-								$value = $config['avatar_path'] . '/' . $value;
+								$value = $config['assets_url'] . '/avatars/' . $value;
 							} else {
-								$value = $config['default_avatar_users_url'];
+								$value = $config['assets_url'] . '/style/avatar.gif';
 							}
 						} else {
-							$value = $config['default_avatar_guests_url'];
+							$value = $config['assets_url'] . '/style/avatar.gif';
 						}
 						
 						$data[$key] = $value;
@@ -882,7 +882,7 @@ class _comments {
 			for ($i = 0, $end = sizeof($smilies); $i < $end; $i++) {
 				//$this->options['smilies']['orig'][] = "/(?<=.\W|\W.|^\W)" . preg_quote($smilies[$i]['code'], "/") . "(?=.\W|\W.|\W$)/";
 				$this->options['smilies']['orig'][] = '#(^|[\n ]|\.|\()' . preg_quote($smilies[$i]['code'], '#') . '#';
-				$this->options['smilies']['repl'][] = ' <img class="middle" src="' . $config['smilies_path'] . '/' . $smilies[$i]['smile_url'] . '" alt="' . $smilies[$i]['emoticon'] . '" />';
+				$this->options['smilies']['repl'][] = ' <img src="' . $config['assets_url'] . '/emoticon/' . $smilies[$i]['smile_url'] . '" alt="' . $smilies[$i]['emoticon'] . '" />';
 			}
 		}
 		

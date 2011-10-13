@@ -16,7 +16,7 @@ $(function() {
 
 <div class="is_left">
 	<div class="h"><h3>{EVENT_NAME}</h3></div>
-	<div class="_">{EVENT_DATE}</div>
+	<div class="_ pad_left">{EVENT_DATE}</div>
 	
 	<!-- BEGIN collab -->
 	<div class="_">{L_EVENT_PHOTO_THANKS}
@@ -73,7 +73,7 @@ $(function() {
 </div>
 
 <!-- IF IMG_PAGES_NUMS != ' <strong>1</strong>' -->
-<div class="pagination">{IMG_PAGES_NUMS}</div>
+<div class="p">{IMG_PAGES_NUMS}</div>
 <!-- ENDIF -->
 <!-- END thumbnails -->
 
@@ -99,7 +99,10 @@ $(function() {
 <hr /></div>
 <!-- END item -->
 </div>
-<!-- IF MSG_PAGES_NUMS != ' <strong>1</strong>' --><div class="pagination">{MSG_PAGES_NUMS}</div><!-- ENDIF -->
+
+<!-- IF MSG_PAGES_NUMS != ' <strong>1</strong>' -->
+<div class="p">{MSG_PAGES_NUMS}</div>
+<!-- ENDIF -->
 <!-- END posts -->
 
 <!-- BEGIN thumbnails -->

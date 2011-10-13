@@ -14,7 +14,8 @@
 body {
 	margin: 0;
 	padding: 0;
-	background: url(style/grid.jpg) center top #525252;
+	background:url(style/wood.jpg) fixed #262624
+	/*background: url(style/grid.jpg) center top #525252;*/
 }
 p, div, span, select {
 	cursor: default;
@@ -95,8 +96,8 @@ hr {
 	display: block;
 	width: 300px;
 	height: 47px;
-	border: 1px solid #ccc;
-	/*background: url(images/header.gif) no-repeat;*/
+	/*border: 1px solid #ccc;*/
+	background: url(style/header.gif) no-repeat;
 	text-indent: -10000px;
 }
 .brand h1 a:hover {
@@ -247,9 +248,10 @@ hr {
 }
 .share a {
 	display: block;
+	float: left;
 	width: 32px;
 	height: 32px;
-	background: url(images/share.png);
+	background: url(style/share.png);
 }
 
 .h {
@@ -268,7 +270,7 @@ hr {
 }
 .h h3 a {
 	font-family: 'Ubuntu', Arial, Helvetica, sans-serif !important;
-	font-size: 10px;
+	font-size: 10pt;
 	color: #F5B800;
 }
 .h h3 a:hover {
@@ -567,25 +569,25 @@ html, body {
 	z-index: 1000;
 }
 /*.ps_hd{
-	background: url(images/tr.png) top right no-repeat;
+	background: url(style/tr.png) top right no-repeat;
 	padding: 0 8px 0 0;
 }
 .ps_hd .ps_c {
-	background: url(images/tl.png) top left no-repeat;
+	background: url(style/tl.png) top left no-repeat;
 }
 .ps_ft{
-	background: url(images/br.png) top right no-repeat;
+	background: url(style/br.png) top right no-repeat;
 	padding: 0 8px 0 0;
 }
 .ps_ft .ps_c{
-	background: url(images/bl.png) top left no-repeat;
+	background: url(style/bl.png) top left no-repeat;
 }
 .ps_bd {
-	background: url(images/cr.png) top right repeat-y;
+	background: url(style/cr.png) top right repeat-y;
 	padding: 0 8px 0 0;
 }
 .ps_bd .ps_c {
-	background: url(images/cl.png) top left repeat-y;
+	background: url(style/cl.png) top left repeat-y;
 	padding: 0 0 0 8px;
 }*/
 .ps_bd .ps_s {
@@ -599,7 +601,7 @@ html, body {
 	height: 8px;
 }
 #ps_title {
-	background: url(images/tt_r.png) top right no-repeat;
+	background: url(style/tt_r.png) top right no-repeat;
 	padding: 0 5px 0 0;
 	/*color: #fff;*/
 	font-size: 10px;
@@ -610,7 +612,7 @@ html, body {
 	z-index:999;
 }
 #ps_title .ps_tt_l {
-	background: url(images/tt_l.png) top left no-repeat;
+	background: url(style/tt_l.png) top left no-repeat;
 	line-height: 20px;
 	padding: 0 0 0 5px;
 }

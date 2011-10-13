@@ -1,11 +1,11 @@
 <!-- INCLUDE page.header.htm -->
 
+<div class="share">&nbsp;</div>
+
+<div class="h"><h3><a href="{U_VIEW_FORUM}">{FORUM_NAME}</a> &mdash; <a href="{S_TOPIC_ACTION}">{TOPIC_TITLE}</a></h3></div>
+<div class="_ pad_left">{EVENT_DATE}</div>
+
 <div class="pad_top">
-	<div class="float_left col4 share">&nbsp;</div>
-	<div class="float_left col71">
-		<div class="h"><h3><a href="{U_VIEW_FORUM}">{FORUM_NAME}</a> &raquo; <a href="{S_TOPIC_ACTION}">{TOPIC_TITLE}</a></h3></div>
-		<div class="cols5_left low_color">{EVENT_DATE}</div>
-	</div>
 	<div class="float_right a_right col25">
 		<!-- BEGIN post_box -->
 		<a href="#reply">{L_POST_REPLY}</a>
@@ -53,7 +53,7 @@
 <!-- END poll -->
 
 <!-- IF PAGES_NUMS != ' <strong>1</strong>' -->
-<div class="pad_top pagination">{PAGES_NUMS}</div>
+<div class="pad_top p">{PAGES_NUMS}</div>
 <!-- ENDIF -->
 
 <!-- BEGIN posts -->
@@ -84,12 +84,11 @@
 <!-- END posts -->
 
 <!-- IF PAGES_NUMS != ' <strong>1</strong>' -->
-<div class="pagination">{PAGES_NUMS}</div>
+<div class="p">{PAGES_NUMS}</div>
 <!-- ENDIF -->
 
 <!-- BEGIN post_box -->
 <div class="pad_top post_comment">
-<div class="ie-widthfix float-holder">
 	<div class="col75 float_left">
 		<div class="h"><h3>{L_SEND_POST} <a class="smile" href="{S_EMOTICONS}">@</a></h3></div>
 		<form action="{post_box.S_POST_ACTION}" method="post">
@@ -115,8 +114,7 @@
 		<script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
 	</div>
 	<!-- END hide -->
-</div>		
-<!-- END post_box -->
 </div>
+<!-- END post_box -->
 
 <!-- INCLUDE page.footer.htm -->
