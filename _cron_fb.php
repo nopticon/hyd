@@ -17,31 +17,65 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 define('IN_NUCLEO', true);
-require('./interfase/common.php');
+require_once('./interfase/common.php');
+
+header('Content-type: text/html; charset=utf-8');
+
+require_once(ROOT . 'interfase/facebook.php');
 
 $user->init(false, true);
 
-$socket = curl_init();
-curl_setopt($socket, CURLOPT_URL, 'http://graph.facebook.com/rockrepublik');
-curl_setopt($socket, CURLOPT_VERBOSE, 0);
-curl_setopt($socket, CURLOPT_HEADER, 0);
-//curl_setopt($socket, CURLOPT_POST, 1);
-curl_setopt($socket, CURLOPT_RETURNTRANSFER, 1);
+$facebook_page = '48722647107';
 
-$call = curl_exec($socket); 
-if(!curl_errno($socket)) {
-	$info = curl_getinfo($socket);
-} else {
-	$info = curl_error($socket);
-}
-curl_close($socket);
+$facebook = new Facebook(array(
+	'appId'  => '',
+	'secret' => ''
+));
 
-$facebook = json_decode($call);
-
-if (isset($facebook->likes)) {
-	$cache->save('fb_likes', $facebook->likes);
+if ($d === false) {
+	$d = decode_ht('.htfat');
 }
 
-_pre($facebook->likes, true);
+foreach (w('at') as $i => $k)
+{
+	$htk[$k] = _decode($d[$i]);
+}
+
+$attr = array(
+	'access_token' => ''
+);
+
+$likes = (object) $facebook->api($facebook_page);
+
+if (isset($likes->likes)) {
+	$cache->save('fb_likes', $likes->likes);
+}
+
+$wall = $facebook->api($facebook_page . '/albums/', $attr);
+
+$official_posts = array();
+foreach ($wall['data'] as $row) {
+	if ($row['from']['id'] != $facebook_page) {
+		continue;
+	}
+	
+	$created_time = strtotime($row['created_time']);
+	
+	/*$sql_insert = array(
+		'' => '',
+	);
+	$sql = 'INSERT INTO _news' . sql_build('INSERT', $sql_insert);
+	sql_query($sql);
+	*/
+	
+	
+	
+	//echo $row['created_time'] . ' ---- ' . $created_time . '<br>';
+	
+	$official_posts[] = $row;
+}
+
+_pre($likes);
+_pre($official_posts, true);
 
 ?>

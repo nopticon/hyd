@@ -1074,6 +1074,29 @@ function _die($str) {
 	exit;
 }
 
+function curl_get($url, $method = 'get') {
+	$socket = curl_init();
+	curl_setopt($socket, CURLOPT_URL, $url);
+	curl_setopt($socket, CURLOPT_VERBOSE, 0);
+	curl_setopt($socket, CURLOPT_HEADER, 0);
+	
+	if ($method == 'post') {
+		curl_setopt($socket, CURLOPT_POST, 1);
+	}
+	
+	curl_setopt($socket, CURLOPT_RETURNTRANSFER, 1);
+	
+	$call = curl_exec($socket); 
+	if(!curl_errno($socket)) {
+		$info = curl_getinfo($socket);
+	} else {
+		$info = curl_error($socket);
+	}
+	curl_close($socket);
+	
+	return $call;
+}
+
 function _shoutcast() {
 	global $config;
 	
