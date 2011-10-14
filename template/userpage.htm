@@ -21,11 +21,11 @@
 		<div class="rows5_top">{POSTER_RANK}</div>
 	</div>
 	
-	<div class="rows5_top_2 a_controls">
-	<ul class="ul_none left">
+	<div class="pad_top ls ctl">
+	<ul>
 		<!-- BEGIN selected_panel -->
 		<!-- BEGIN strong -->
-		<li class="relevant"><span>{selected_panel.LANG}</span></li>
+		<li class="hg">{selected_panel.LANG}</li>
 		<!-- END strong -->
 		<!-- BEGIN a -->
 		<li><a href="{a.URL}">{selected_panel.LANG}</a></li>
@@ -123,7 +123,7 @@
 		<h3><strong>{item.S_ROW_COUNT}</strong><span>.</span> <em><!-- BEGIN username --><a href="{item.PROFILE}"><!-- END username --><img src="{item.USER_AVATAR}" alt="{item.USERNAME}'s Avatar" /><!-- BEGIN username --></a><!-- END username --></em><cite><!-- BEGIN username --><a href="{item.PROFILE}"><!-- END username -->{item.USERNAME}<!-- BEGIN username --></a><!-- END username --></cite> <span>dijo:</span></h3>
 		<blockquote>
 		<!-- IF item.S_DELETE -->
-		<div class="rows5_bot_1 a_controls a_right"><a class="red" href="{item.S_DELETE}">{L_DELETE}</a></div>
+		<div class="pad_top ctl a_right"><a class="red" href="{item.S_DELETE}">{L_DELETE}</a></div>
 		<!-- ENDIF -->
 		<div class="nowraptext">{item.MESSAGE}</div>
 		<!-- IF item.USER_SIG != '' -->
