@@ -39,7 +39,7 @@ $user->setup();
 $board->msg = new _comments();
 
 $board->index();
-$board->birthdays();
+$board->popular();
 
 page_layout('FORUM_INDEX', 'board');
 

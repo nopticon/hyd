@@ -33,6 +33,7 @@ $comm = new community();
 $cover->founders();
 $comm->team();
 $comm->recent_members();
+$comm->birthdays();
 $comm->vars();
 
 //

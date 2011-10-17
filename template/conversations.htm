@@ -1,15 +1,12 @@
 <!-- INCLUDE page.header.htm -->
 
-<div class="h"><h3>{L_CONV}</h3></div>
-<!-- BEGIN back_dc -->
-<div class="pad_top pad_left"><a href="{back_dc.URL}">{L_INBOX}</a></div>
-<!-- END back_dc -->
-
 <div class="is_left">
 	<!-- BEGIN conv -->
-	<div class="h"><h3>{conv.SUBJECT}</h3></div>
+	<div class="h el_left"><h3><a href="{back_dc.URL}">{L_CONV}</a> &mdash; {conv.SUBJECT}</h3></div>
+	<!-- END conv -->
 	
-	<div class="pad_top a_right">
+	<!-- BEGIN conv -->
+	<div class="el_right ctl">
 		<form action="{S_ACTION}" method="post">
 			{S_HIDDEN_FIELDS}
 			<input class="submit" type="submit" name="delete" value="{L_DELETE_DC}" />
@@ -39,7 +36,7 @@
 		<div class="pad_top p">{PAGES_NUMS}</div>
 		<!-- ENDIF -->
 		
-		<div class="pad_top ls_none">
+		<div class="pad_top ln">
 			<ul>
 				<!-- BEGIN item -->
 				<li>
@@ -91,7 +88,7 @@
 		<!-- END message -->
 	
 		<!-- BEGIN header -->
-		<div class="pad_top ls_none">
+		<div class="pad_top ln">
 			<ul>
 				<li rel="{header.READ_MESSAGE}"><a href="{header.READ_MESSAGE}">+ {L_DC_READ_MESSAGE}</a>: <a href="{header.READ_MESSAGE}">{header.USERNAME}</a>: {header.POST_DATE}></li>
 			</ul>

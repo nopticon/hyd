@@ -1,54 +1,79 @@
 <!-- INCLUDE page.header.htm -->
 
-<div class="ls_none">
-	<div class="h"><h3>Rock Republik Networks</h3></div>
-	<ul class="ul_none">
-		<li>Apoyando el rock desde el <strong>{START_DATE}</strong></li>
+<div class="ls">
+	<div class="h"><h3>{L_APPLICATION_FULL}</h3></div>
+	<ul>
+		<li>{L_APPLICATION_START}</li>
 		<li><strong>{MEMBERS_COUNT}</strong> {L_MEMBERS_ALL}</li>
 	</ul>
 </div>
 
+<!-- BEGIN birthday -->
+<div class="pad_top ln l6">
+	<div class="h"><h3>{L_TODAY_BIRTHS}</h3></div>
+	<ul>
+		<!-- BEGIN row -->
+		<li class="a_mid pad_top">
+			<ul>
+				<li class="_"><a href="{row.PROFILE}">{row.USERNAME}</a></li>
+				<li><a href="{row.PROFILE}"><img src="{row.AVATAR}" alt="{row.USERNAME}" /></a></li>
+			</ul>
+		</li>
+		<!-- END row -->
+	</ul>
+</div>
+<!-- END birthday -->
+
+<span class="clear"></span>
+
 <div class="pad_top">
-	<div class="is_left">
+	<div class="is_left_i">
 		<div id="online">
 			<!-- INCLUDE community.online.htm -->
 		</div>
 	</div>
 	
-	<div class="is_right">
-		<div class="ls_none">
+	<div class="is_right_i">
+		<div class="ln l2">
 		<div class="h"><h3>Administraci&oacute;n</h3></div>
 		<ul>
 			<!-- BEGIN founders -->
-			<li class="el_left a_center">
+			<li class="a_mid">
 				<ul>
+					<!-- BEGIN hide -->
 					<li><a href="{founders.PROFILE}">{founders.USERNAME}</a></li>
-					<li>{founders.REALNAME}</li>
+					<!-- END hide -->
+					<li class="_">{founders.REALNAME}</li>
 					<li><a href="{founders.PROFILE}"><img src="{founders.AVATAR}" alt="" /></a></li>
-					<li></li>
 				</ul>
 			</li>
 			<!-- END founders -->
 		</ul>
 		</div>
 		
+		<span class="clear"></span>
+		
 		<!-- BEGIN team -->
-		<div class="pad_top ls_none">
+		<div class="pad_top ln l6">
 			<div class="h"><h3>{team.TEAM_NAME}</h3></div>
 			<ul>
 				<!-- BEGIN row -->
 				<!-- BEGIN member -->
-				<li class="el_left a_center">
+				<li class="a_mid">
 					<ul>
+						<!-- BEGIN hide -->
 						<li><a href="{member.PROFILE}">{member.USERNAME}</a></li>
-						<li><!-- IF member.REALNAME != '' -->{member.REALNAME}<!-- ELSE -->--<!-- ENDIF --></li>
-						<li><a href="{member.PROFILE}"><img src="{member.AVATAR}" alt="" /></a></li>
+						<li class="_"><!-- IF member.REALNAME != '' -->{member.REALNAME}<!-- ELSE -->--<!-- ENDIF --></li>
+						<!-- END hide -->
+						<li><a href="{member.PROFILE}"><img src="{member.AVATAR}" alt="{member.USERNAME}" /></a></li>
 					</ul>
 				</li>
 				<!-- END member -->
 				<!-- END row -->
 			</ul>
 		</div>
+		
+		<span class="clear"></span>
 		<!-- END team -->
 	</div>
 </div>

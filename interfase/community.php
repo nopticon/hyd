@@ -205,6 +205,39 @@ class community {
 		}
 	}
 	
+	public function birthdays() {
+		global $template;
+		
+		$sql = "SELECT user_id, username, username_base, user_color, user_avatar, user_posts
+			FROM _members
+			WHERE user_birthday LIKE ?
+				AND user_type NOT IN (??, ??)
+			ORDER BY user_posts DESC, username";
+		if (!$result = sql_rowset(sql_filter($sql, '%' . date('md'), USER_INACTIVE, USER_IGNORE))) {
+			return false;
+		}
+		
+		include('./interfase/comments.php');
+		$comments = new _comments();
+		
+		$template->assign_block_vars('birthday', array());
+		
+		foreach ($result as $row) {
+			$profile = $comments->user_profile($row);
+			//$profile = $this->msg->user_profile($row);
+			
+			$template->assign_block_vars('birthday.row', array(
+				'USERNAME' => $profile['username'],
+				'PROFILE' => $profile['profile'],
+				'COLOR' => $profile['user_color'],
+				'AVATAR' => $profile['user_avatar'],
+				'POSTS' => $profile['user_posts'])
+			);
+		}
+
+		return true;
+	}
+	
 	public function recent_members() {
 		global $user, $template;
 		

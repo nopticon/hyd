@@ -236,7 +236,7 @@ switch ($mode) {
 			ORDER BY c.privmsgs_date';
 		if ($result = sql_rowset(sql_filter($sql, $msg_data['parent_id']))) {
 			$template->assign_block_vars('conv', array(
-				'SUBJECT' => $row['privmsgs_subject'])
+				'SUBJECT' => $result[0]['privmsgs_subject'])
 			);
 			
 			foreach ($result as $row) {

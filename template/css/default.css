@@ -287,7 +287,16 @@ hr {
 	font-weight: bold;
 }
 .w {
-	
+	width: 50%;
+	margin: 20px auto;
+	padding: 4px;
+	border
+	border-radius: 5px;
+	background: #161C26;
+}
+.w h3, .w p {
+	margin: 0;
+	text-align: center;
 }
 .z {
 	display: none !important;
@@ -349,17 +358,19 @@ hr {
 	float: left;
 }
 .l2 ul li img, .l3 ul li img {
-	width: 100%;
+	/*width: 100%;*/
 }
-.l2 ul li ul li, .l3 ul li ul li {
+.l2 ul li ul li, .l3 ul li ul li, .l6 ul li ul li {
 	margin: 0;
 	width: 100%;
 	float: none;
+	overflow: visible;
+	height: auto;
 }
-.l2 ._, .lc ._, .l3 ._ {
+.l2 ._, .lc ._, .l3 ._, .l6 ._ {
 	margin: 5px 0 5px 5px;
 }
-.l2 .__, .lc .__, .l3 .__ {
+.l2 .__, .lc .__, .l3 .__, .l6 .__ {
 	margin: 5px 0 5px 0;
 }
 .lc ul li {
@@ -374,7 +385,13 @@ hr {
 	width: 32%;
 	float: left;
 }
-
+.l6 ul li {
+	margin: 0px 0 0 5px;
+	width: 16%;
+	height: 100px;
+	float: left;
+	overflow: hidden;
+}
 
 .el_left {
 	float: left;

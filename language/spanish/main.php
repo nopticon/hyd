@@ -22,7 +22,9 @@ if (!is_array($lang) || empty($lang)) {
 
 $lang += array(
 	'APPLICATION' => 'Rock Republik',
+	'APPLICATION_FULL' => 'Rock Republik Networks',
 	'APPLICATION_DESC' => 'La comunidad m&aacute;s grande de Rock en Guatemala',
+	'APPLICATION_START' => 'Apoyando el rock desde el <strong>15 de marzo de 2004</strong>',
 
 	'ENCODING' => "iso-8859-1",
 	'DIRECTION' => '',
@@ -690,9 +692,9 @@ $lang += array(
 	
 	'NO_ARTIST_EXIST' => 'La banda seleccionada no existe.<br /><br /><a href="%s">Click AQUI</a> para ir al men&uacute; de bandas.',
 	'ARTIST_INACTIVE' => 'Banda inactiva',
-	'ARTIST_INACTIVE_DESC' => 'Si tienes informaci�n env&iacute;alo a <a class="orange" href="/community/">nuestro correo electr&oacute;nico</a>.',
-	'UB_BANNED' => 'Ha sido bloqueado tu acceso a esta banda, <a class="orange" href="/community/">contacta a un Administrador</a> para m&aacute;s detalles.',
-	'UB_BANNED_UNTIL' => 'Ha sido bloqueado tu acceso a esta banda hasta: <span class="red bold">%s</span>',
+	'ARTIST_INACTIVE_DESC' => 'Si tienes informaci&oacute;n env&iacute;alo a <a href="/community/">nuestro correo electr&oacute;nico</a>.',
+	'UB_BANNED' => 'Ha sido bloqueado tu acceso a esta banda, <a href="/community/">contacta a un Administrador</a> para m&aacute;s detalles.',
+	'UB_BANNED_UNTIL' => 'Ha sido bloqueado tu acceso a esta banda hasta: <span>%s</span>',
 	'UB_BAN_POST' => 'Se ha restringido tu env&iacute;o de mensajes!',
 	'UB_BAN_POST_UNTIL' => 'Se permite de nuevo',
 	'UB_NO_GUEST_POSTING' => '<strong>%s</strong> s&oacute;lo permite comentarios de miembros registrados.<br /><br />Por favor <a href="#top"><i>inicia sesi&oacute;n</i></a> &oacute; <a class="bold" href="%s">suscribete</a>.<br />',
