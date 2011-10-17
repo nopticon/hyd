@@ -113,54 +113,6 @@ class layout extends downloads {
 		}
 		
 		//
-		// Poll
-		//
-		$user_voted = false;
-		if ($this->auth['user'] && !$this->auth['mod']) {
-			$sql = 'SELECT *
-				FROM _artists_voters
-				WHERE ub = ?
-					AND user_id = ?';
-			if (sql_fieldrow(sql_filter($sql, $this->data['ub'], $user->data['user_id']))) {
-				$user_voted = true;
-			}
-		}
-		
-		$template->assign_block_vars('ub_poll', array());
-		
-		if ($this->auth['mod'] || !$this->auth['user'] || $user_voted) {
-			$sql = 'SELECT option_id, vote_result
-				FROM _artists_votes
-				WHERE ub = ?
-				ORDER BY option_id';
-			$results = sql_rowset(sql_filter($sql, $this->data['ub']), 'option_id', 'vote_result');
-			
-			$template->assign_block_vars('ub_poll.results', array());
-			
-			foreach ($this->voting['ub'] as $item) {
-				$vote_result = (isset($results[$item])) ? intval($results[$item]) : 0;
-				$vote_percent = ($this->data['votes'] > 0) ? $vote_result / $this->data['votes'] : 0;
-
-				$template->assign_block_vars('ub_poll.results.item', array(
-					'CAPTION' => $user->lang['UB_VC' . $item],
-					'RESULT' => $vote_result,
-					'PERCENT' => sprintf("%.1d", ($vote_percent * 100)))
-				);
-			}
-		} else {
-			$template->assign_block_vars('ub_poll.options', array(
-				'S_VOTE_ACTION' => s_link('a', array($this->data['subdomain'], 17)))
-			);
-			
-			foreach ($this->voting['ub'] as $item) {
-				$template->assign_block_vars('ub_poll.options.item', array(
-					'ID' => $item,
-					'CAPTION' => $user->lang['UB_VC' . $item])
-				);
-			}
-		}
-		
-		//
 		// Auth Members
 		//
 		if ($this->auth['mod'] || $this->data['mods_legend']) {
@@ -857,7 +809,7 @@ class _artists extends layout {
 		);
 		
 		$this->voting = array(
-			'ub' => array(1, 2, 3, 5, 6),
+			'ub' => array(1, 2, 3, 5),
 			'ud' => array(1, 2, 3, 4, 5)
 		);
 	}
@@ -1600,6 +1552,54 @@ class _artists extends layout {
 								'SRC' => SDATA . 'events/future/' . $item['id'] . '.jpg')
 							);
 						}
+					}
+				}
+				
+				//
+				// Poll
+				//
+				$user_voted = false;
+				if ($this->auth['user'] && !$this->auth['mod']) {
+					$sql = 'SELECT *
+						FROM _artists_voters
+						WHERE ub = ?
+							AND user_id = ?';
+					if (sql_fieldrow(sql_filter($sql, $this->data['ub'], $user->data['user_id']))) {
+						$user_voted = true;
+					}
+				}
+				
+				$template->assign_block_vars('ub_poll', array());
+				
+				if ($this->auth['mod'] || !$this->auth['user'] || $user_voted) {
+					$sql = 'SELECT option_id, vote_result
+						FROM _artists_votes
+						WHERE ub = ?
+						ORDER BY option_id';
+					$results = sql_rowset(sql_filter($sql, $this->data['ub']), 'option_id', 'vote_result');
+					
+					$template->assign_block_vars('ub_poll.results', array());
+					
+					foreach ($this->voting['ub'] as $item) {
+						$vote_result = (isset($results[$item])) ? intval($results[$item]) : 0;
+						$vote_percent = ($this->data['votes'] > 0) ? $vote_result / $this->data['votes'] : 0;
+		
+						$template->assign_block_vars('ub_poll.results.item', array(
+							'CAPTION' => $user->lang['UB_VC' . $item],
+							'RESULT' => $vote_result,
+							'PERCENT' => sprintf("%.1d", ($vote_percent * 100)))
+						);
+					}
+				} else {
+					$template->assign_block_vars('ub_poll.options', array(
+						'S_VOTE_ACTION' => s_link('a', array($this->data['subdomain'], 17)))
+					);
+					
+					foreach ($this->voting['ub'] as $item) {
+						$template->assign_block_vars('ub_poll.options.item', array(
+							'ID' => $item,
+							'CAPTION' => $user->lang['UB_VC' . $item])
+						);
 					}
 				}
 				

@@ -14,7 +14,7 @@
 body {
 	margin: 0;
 	padding: 0;
-	background:url(style/wood.jpg) fixed #262624
+	background:url(style/wood.jpg) fixed center #262624;
 	/*background: url(style/grid.jpg) center top #525252;*/
 }
 p, div, span, select {
@@ -22,7 +22,7 @@ p, div, span, select {
 }
 p, div, span, input, textarea, select, a, optgroup, h1, h2 {
 	margin: 0;
-	font-family: 'Ubuntu', 'Verdana', Helvetica, sans-serif;
+	font-family: 'Ubuntu', Verdana, Arial, Helvetica, sans-serif;
 	text-decoration: none;
 	/*text-shadow: 1px 1px 1px #222;*/
 }
@@ -71,7 +71,7 @@ hr {
 #content {
 	padding: 10px;
 	clear: both;
-	border: 1px solid #222;
+	border: 1px solid #161C26;
 	background: rgba(0,0,0,0.6);
 	border-radius: 10px;
 }
@@ -314,9 +314,9 @@ hr {
 	color: #A4DB00;
 }
 
-.ls_none, .ls_inline {
+.ln, .ls_inline {
 }
-.ls_none ul, .ls_inline ul {
+.ln ul, .ls_inline ul {
 	list-style: none;
 	margin: 0;
 	padding: 0;
@@ -343,6 +343,38 @@ hr {
 .ls ul li li {
 	padding: 0;
 }
+.l2 ul li {
+	margin: 3px 0 0 5px;
+	width: 49%;
+	float: left;
+}
+.l2 ul li img, .l3 ul li img {
+	width: 100%;
+}
+.l2 ul li ul li, .l3 ul li ul li {
+	margin: 0;
+	width: 100%;
+	float: none;
+}
+.l2 ._, .lc ._, .l3 ._ {
+	margin: 5px 0 5px 5px;
+}
+.l2 .__, .lc .__, .l3 .__ {
+	margin: 5px 0 5px 0;
+}
+.lc ul li {
+	margin-bottom: 10px;
+}
+.lc ul li ul li {
+	margin-bottom: 0;
+	text-align: center;
+}
+.l3 ul li {
+	margin: 10px 0 0 5px;
+	width: 32%;
+	float: left;
+}
+
 
 .el_left {
 	float: left;
@@ -352,7 +384,7 @@ hr {
 }
 
 .is_left {
-	width: 75%;
+	width: 73%;
 	float: left;
 }
 .is_right {
@@ -385,14 +417,43 @@ hr {
 .a_right { text-align: right; }
 .a_mid { text-align: center; }
 
-._, ._ a {
+._, ._ a, .__, .__ a {
 	color: #9F9FA2 !important;
 }
 
 .ctl {
 }
-.ctl a {
-	
+.ctl_lf {
+	margin: 15px 0 0 43px;
+}
+.ctl_lw {
+	margin: 25px 0 0 33px;
+}
+.ctl ul {
+	list-style: none;
+	margin: 0 0 0 0;
+	padding: 0;
+	border: 0;
+}
+.ctl ul li {
+	float: left;
+	margin-right: 25px;
+}
+.ctl ul li a, .ctl ul li span, .ctl input, .ctl ul li small {
+	padding: 4px;
+	border-radius: 4px;
+	background: #5DA209;
+	color: #fff;
+}
+.ctl ul li span {
+	border: 1px solid #999;
+}
+.ctl ul li a:hover {
+	text-decoration: none;
+	background: #518c08;
+}
+.p {
+	margin: 15px 0 15px 0;
 }
 
 .p {
@@ -457,7 +518,7 @@ hr {
 	margin: 1em 0 0 0;
 	padding: 1.5em 0 0 0;
 	font-size: 1em;
-	border-top: 1px solid #222;
+	border-top: 1px solid #161C26;
 	text-align: center;
 }
 .comments h3 strong {
@@ -496,7 +557,7 @@ hr {
 	line-height: auto;
 	/*color: #8;*/
 	text-align: right;
-	background: #222;
+	background: #161C26;
 }
 .comments blockquote blockquote {
 	overflow: hidden;
@@ -517,7 +578,7 @@ hr {
 	width: 77%;
 	margin: 1em 0 0 0;
 	padding: 1.5em 0;
-	border-top: 1px solid #222;
+	border-top: 1px solid #161C26;
 }
 .comments h3 em img {
 	padding: 1px;
@@ -527,7 +588,7 @@ hr {
 }
 .poll .bar {
 	display: block;
-	border: 1px solid #222;
+	border: 1px solid #161C26;
 	height: 5px;
 }
 .poll .bar div {
@@ -535,7 +596,7 @@ hr {
 	height: 5px;
 	line-height: 5px;
 	background: #70a416;
-	border-right: 1px solid #222;
+	border-right: 1px solid #161C26;
 }
 
 /* Clear Fix */

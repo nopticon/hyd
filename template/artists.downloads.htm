@@ -1,37 +1,45 @@
-<form action="{S_DOWNLOAD_ACTION}" method="post" onsubmit="return _.glob.in_timed_disable('download');">
-<div class="h"><h3>{DL_TITLE}</h3></div>
-
-<div class="z_center a_center">
-<div class="a_center rows5_top_1">
-<script type="text/javascript">
-//<![CDATA[
-var params = { };
-var attributes = { };
-var flashvars = { };
-flashvars.a = "{DL_A}";
-flashvars.b = "{DL_ID}";
-swfobject.embedSWF("{S_SERVER}/lib/play.swf", "play_", "174", "60", "7.0.0", false, flashvars, params, attributes);
-//]]>
-</script>
+<div class="pad_top">
+	<form action="{S_DOWNLOAD_ACTION}" method="post" onsubmit="return _.glob.in_timed_disable('download');">
+	
+	<div class="ctl_lw">
+		<div class="h"><h3>{DL_TITLE}</h3></div>
+		
+		<div class="pad_top">
+		<script type="text/javascript">
+		//<![CDATA[
+		var params = { };
+		var attributes = { };
+		var flashvars = { };
+		flashvars.a = "{DL_A}";
+		flashvars.b = "{DL_ID}";
+		swfobject.embedSWF("{S_SERVER}/lib/play.swf", "play_", "174", "60", "7.0.0", false, flashvars, params, attributes);
+		//]]>
+		</script>
+		<div id="play_"></div>
+		</div>
+		
+		<div class="pad_top pad_left _">
+			<!-- BEGIN dl_fav -->
+			<a href="{dl_fav.URL}">{L_DL_FAV}</a>
+			<!-- END dl_fav -->
+			
+			<div class="pad_top">
+				<input class="submit" type="submit" id="download" name="download" value="{L_UE_DOWNLOAD}" />
+			</div>
+			
+			<div class="pad_top ls">
+			<ul>
+				<!-- IF DL_ALBUM != '' --><li>{DL_ALBUM}</li><!-- ENDIF -->
+				<!-- IF DL_YEAR != '' --><li>{DL_YEAR}</li><!-- ENDIF -->
+				<li>{DL_DURATION}m - {DL_FILESIZE}</li>
+				<li>{DL_STATS}</li>
+			</ul>
+			</div>
+		</div>
+	</div>
+	
+	</form>
 </div>
-
-<div id="play_"></div>
-<!-- BEGIN dl_fav -->
-<div class="rows5_top_1"><a class="relevant" href="{dl_fav.URL}">{L_DL_FAV}</a></div>
-<!-- END dl_fav -->
-
-<div class="rows5_top_2"><input class="submit" type="submit" id="download" name="download" value="{L_UE_DOWNLOAD}" /></div>
-
-<div class="rows5_top_2">
-<ul class="ul_none">
-	<!-- IF DL_ALBUM != '' --><li>{DL_ALBUM}</li><!-- ENDIF -->
-	<!-- IF DL_YEAR != '' --><li>{DL_YEAR}</li><!-- ENDIF -->
-	<li>{DL_DURATION}m - {DL_FILESIZE}</li>
-	<li>{DL_STATS}</li>
-</ul>
-</div>
-</div>
-</form>
 
 <!-- BEGIN hidden -->
 <div class="pad6 sub-color boxt">

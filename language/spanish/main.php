@@ -808,6 +808,7 @@ $lang += array(
 	'EVENT_TOMORROW' => 'ProgamadO para <strong>ma&ntilde;ana</strong>',
 	'EVENT_YESTERDAY' => 'Se realiz&oacute; <strong>ayer</strong>',
 	'EVENT_PHOTO_THANKS' => 'Fotos gracias a:',
+	'EVENT_PHOTOS_SHARE' => '&iquest;Tienes fotos del evento? Comp&aacute;rtelas',
 	
 	'UE_CORRESP' => 'Corresponsales',
 	'UE_SEND_PHOTOS' => 'Enviar Fotos',

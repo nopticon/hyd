@@ -91,6 +91,7 @@ class _events extends downloads {
 			$template->assign_block_vars('next_event', array(
 				'URL' => s_link('events', $row['id']),
 				'TITLE' => $row['title'],
+				'DATE' => $user->format_date($row['date'], $user->lang['DATE_FORMAT']),
 				'IMAGE' => $this->filename)
 			); 
 		}
@@ -240,7 +241,7 @@ class _events extends downloads {
 				}
 				
 				// Get event thumbnails
-				$t_per_page = 8;
+				$t_per_page = 9;
 				
 				if ($mode == 'view' && $download_id) {
 					$val = 1;
@@ -379,6 +380,8 @@ class _events extends downloads {
 		$g = getdate($midnight);
 		$week = mktime(0, 0, 0, $m, ($d + (7 - ($g['wday'] - 1)) - (!$g['wday'] ? 7 : 0)), $y) - $timezone;
 		
+		$per_page = 6;
+		
 		$sql = 'SELECT *
 			FROM _events
 			ORDER BY date ASC';
@@ -410,7 +413,7 @@ class _events extends downloads {
 			$gallery = $this->data['is_gallery'];
 			@krsort($gallery);
 			
-			$gallery = array_slice($gallery, $gallery_offset, 4);
+			$gallery = array_slice($gallery, $gallery_offset, $per_page);
 			
 			$event_ids = array();
 			foreach ($gallery as $item)
@@ -443,7 +446,7 @@ class _events extends downloads {
 				);
 			}
 			
-			build_num_pagination(s_link('events', 'g%d'), $total_gallery, 4, $gallery_offset);
+			build_num_pagination(s_link('events', 'g%d'), $total_gallery, $per_page, $gallery_offset);
 			
 			unset($this->data['is_gallery']);
 		}
@@ -460,7 +463,7 @@ class _events extends downloads {
 					$template->assign_block_vars('future.set.item', array(
 						'ITEM_ID' => $item['id'],
 						'TITLE' => $item['title'],
-						'DATE' => $user->format_date($item['date']),
+						'DATE' => $user->format_date($item['date'], $user->lang['DATE_FORMAT']),
 						'THUMBNAIL' => SDATA . 'events/future/thumbnails/' . $item['id'] . '.jpg',
 						'SRC' => SDATA . 'events/future/' . $item['id'] . '.jpg',
 						'U_TOPIC' => s_link('events', $item['id']))

@@ -16,22 +16,20 @@ $(function() {
 
 <div class="is_left">
 	<div class="h"><h3>{EVENT_NAME}</h3></div>
-	<div class="_ pad_left">{EVENT_DATE}</div>
+	<div class="pad_top pad_left _">{EVENT_DATE}</div>
 	
 	<!-- BEGIN collab -->
-	<div class="_">{L_EVENT_PHOTO_THANKS}
-		<!-- BEGIN row -->
-		<a href="{row.PROFILE}">{row.USERNAME}</a>
-		<!-- END row -->
+	<div class="pad_top pad_left _">{L_EVENT_PHOTO_THANKS}
+		<!-- BEGIN row --><!-- IF row.S_ROW_COUNT -->, <!-- ENDIF --><a href="{row.PROFILE}">{row.USERNAME}</a><!-- END row -->
 	</div>
 	<!-- END collab -->
 </div>
 
-<span class="clear"></span>
-
-<div class="a_right">
-	<input type="submit" id="submit_photos" value="&iquest;Tienes fotos de este evento? Env&iacute;alas" />
+<div class="el_right a_right ctl">
+	<input type="submit" id="submit_photos" value="{L_EVENT_PHOTOS_SHARE}" />
 </div>
+
+<span class="clear"></span>
 
 <div id="submit_photos_box">
 	Envianos las fotos que hayas tomado en el evento para compartirlas en la comunidad.
@@ -64,7 +62,7 @@ $(function() {
 <!-- END selected -->
 
 <!-- BEGIN thumbnails -->
-<div class="pad_top ls_none">
+<div class="pad_top pad_left ln l3">
 <ul>
 	<!-- BEGIN item -->
 	<li><a href="{item.RIMAGE}" title="{item.FOOTER}"><img src="{item.IMAGE}" alt="" /></a></li>
@@ -72,8 +70,10 @@ $(function() {
 </ul>
 </div>
 
+<span class="clear"></span>
+
 <!-- IF IMG_PAGES_NUMS != ' <strong>1</strong>' -->
-<div class="p">{IMG_PAGES_NUMS}</div>
+<div class="ctl">{IMG_PAGES_NUMS}</div>
 <!-- ENDIF -->
 <!-- END thumbnails -->
 
@@ -101,7 +101,7 @@ $(function() {
 </div>
 
 <!-- IF MSG_PAGES_NUMS != ' <strong>1</strong>' -->
-<div class="p">{MSG_PAGES_NUMS}</div>
+<div class="ctl">{MSG_PAGES_NUMS}</div>
 <!-- ENDIF -->
 <!-- END posts -->
 

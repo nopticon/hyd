@@ -308,7 +308,7 @@ function s_link($module = '', $data = false) {
 	
 	$url = 'http://';
 	$is_a = is_array($data);
-	if ($config['server_name'] != 'localhost' && $module == 'a' && $data !== false && ((!$is_a && !preg_match('/^_([0-9]+)$/i', $data)) || ($is_a && count($data) == 2))) {
+	if ($_SERVER['REMOTE_ADDR'] != '127.0.0.1' && $module == 'a' && $data !== false && ((!$is_a && !preg_match('/^_([0-9]+)$/i', $data)) || ($is_a && count($data) == 2))) {
 		$subdomain = ($is_a) ? $data[0] : $data;
 		$url .= str_replace('www', $subdomain, $config['server_name']) . '/';
 		
@@ -418,39 +418,41 @@ function build_num_pagination ($url_format, $total_items, $per_page, $offset, $p
 	$total_pages = ceil($total_items/$per_page);
 	$on_page = floor($offset / $per_page) + 1;
 	
-	$page_string = '';
+	$page_string = '<ul>';
 	if ($total_pages > ((2 * ($begin_end + $from_middle)) + 2)) {
 		$init_page_max = ($total_pages > $begin_end) ? $begin_end : $total_pages;
 
 		for ($i = 1; $i < $init_page_max + 1; $i++) {
-			$page_string .= ($i == $on_page) ? ' <strong>' . $i . '</strong>' : ' <a href="' . sprintf($url_format, (($i - 1) * $per_page)) . '">' . $i . '</a>';
+			$page_string .= ($i == $on_page) ? '<li><span>' . $i . '</span></li>' : '<li><a href="' . sprintf($url_format, (($i - 1) * $per_page)) . '">' . $i . '</a></li>';
 		}
 
 		if ($total_pages > $begin_end) {
 			if ($on_page > 1  && $on_page < $total_pages) {
-				$page_string .= ($on_page > ($begin_end + $from_middle + 1)) ? '<span> ... </span>' : '';
+				$page_string .= ($on_page > ($begin_end + $from_middle + 1)) ? '<li>...</li>' : '';
 
 				$init_page_min = ($on_page > ($begin_end + $from_middle)) ? $on_page : ($begin_end + $from_middle + 1);
 				$init_page_max = ($on_page < $total_pages - ($begin_end + $from_middle)) ? $on_page : $total_pages - ($begin_end + $from_middle);
 
 				for ($i = $init_page_min - $from_middle; $i < $init_page_max + ($from_middle + 1); $i++) {
-					$page_string .= ($i == $on_page) ? ' <strong>' . $i . '</strong>' : ' <a href="' . sprintf($url_format, (($i - 1) * $per_page)) . '">' . $i . '</a>';
+					$page_string .= ($i == $on_page) ? '<li><span>' . $i . '</span></li>' : '<li><a href="' . sprintf($url_format, (($i - 1) * $per_page)) . '">' . $i . '</a></li>';
 				}
 
-				$page_string .= ($on_page < $total_pages - ($begin_end + $from_middle)) ? '<span> ... </span>' : '';
+				$page_string .= ($on_page < $total_pages - ($begin_end + $from_middle)) ? '<li>...</li>' : '';
 			} else {
 				$page_string .= '<span> ... </span>';
 			}
 
 			for ($i = $total_pages - ($begin_end - 1); $i < $total_pages + 1; $i++) {
-				$page_string .= ($i == $on_page) ? ' <strong>' . $i . '</strong>'  : ' <a href="' . sprintf($url_format, (($i - 1) * $per_page)) . '">' . $i . '</a>';
+				$page_string .= ($i == $on_page) ? '<li><span>' . $i . '</span></li>'  : '<li><a href="' . sprintf($url_format, (($i - 1) * $per_page)) . '">' . $i . '</a></li>';
 			}
 		}
 	} else {
 		for ($i = 1; $i < $total_pages + 1; $i++) {
-			$page_string .= ($i == $on_page) ? ' <strong>' . $i . '</strong>' : ' <a href="' . sprintf($url_format, (($i - 1) * $per_page)) . '">' . $i . '</a>';
+			$page_string .= ($i == $on_page) ? '<li><span>' . $i . '</span></li>' : '<li><a href="' . sprintf($url_format, (($i - 1) * $per_page)) . '">' . $i . '</a></li>';
 		}
 	}
+	
+	$page_string .= '</ul>';
 	
 	$prev = $next = '';
 	if ($on_page > 1) {

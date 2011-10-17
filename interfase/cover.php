@@ -30,7 +30,7 @@ class cover {
 				FROM _news n, _news_cat c
 				WHERE n.cat_id = c.cat_id
 				ORDER BY n.post_time DESC
-				LIMIT 3';
+				LIMIT 4';
 			if ($news = sql_rowset($sql)) {
 				$cache->save('news', $news);
 			}

@@ -13,14 +13,13 @@
 	<!-- END banners -->
 
 	<!-- BEGIN news -->
-	<div class="news ls">
+	<div class="ln l2">
 		<div class="h"><h3>{L_LATEST_NEWS}</h3></div>
 		<ul>
 			<!-- BEGIN row -->
 			<li>
 				<ul>
 					<li><a href="{row.URL}"><img src="{row.IMAGE}" alt="" /></a></li>
-					<li><h4><a href="{item.URL}">{row.SUBJECT}</a></h4></li>
 					<li class="_">Publicado el {row.TIMESTAMP}</li>
 					<li>{row.MESSAGE}</li>
 				</ul>
@@ -28,18 +27,23 @@
 			<!-- END row -->
 		</ul>
 		
-		<div class="a_right ls_inline">
-			<ul>
-				<!-- BEGIN create -->
-				<li><a href="{create.U_NEWS_CREATE}">Publicar informaci&oacute;n</a></li>
-				<!-- END create -->
-				<li><a href="{U_NEWS}">Leer m&aacute;s art&iacute;culos</a></li>
-			</ul>
-		</div>
+		<span class="clear"></span>
+		
+	</div>
+	
+	<div class="pad_top pad_left a_right ctl ln">
+		<ul>
+			<!-- BEGIN create -->
+			<li><a href="{create.U_NEWS_CREATE}">Publicar informaci&oacute;n</a></li>
+			<!-- END create -->
+			<li><a href="{U_NEWS}">Leer m&aacute;s art&iacute;culos</a></li>
+		</ul>
 	</div>
 	<!-- END news -->
 	
-	<div id="se_cover_1"></div>
+	<span class="clear"></span>
+	
+	<div class="pad_top" id="se_cover_1"></div>
 	
 	<!-- BEGIN board_general -->
 	<div class="is_mid pad_top ls">
@@ -75,13 +79,14 @@
 </div>
 
 <div class="is_right">	
-	<div class="ls_none">
+	<div class="ln lc">
 		<div class="h"><h3><a href="{U_EVENTS}">{L_EVENTS_NEXT}</a></h3></div>
 		<ul>
 			<!-- BEGIN next_event -->
 			<li>
 				<ul>
 					<li><a href="{next_event.URL}">{next_event.TITLE}</a></li>
+					<li class="_">{next_event.DATE}</li>
 					<li><a href="{next_event.URL}"><img src="{next_event.IMAGE}" alt="" /></a></li>
 				</ul>
 			</li>
@@ -90,14 +95,14 @@
 	</div>
 	
 	<!-- BEGIN thumbnails -->
-	<div class="pad_top ls_none">
+	<div class="ln lc">
 		<div class="h"><h3>{L_ARTISTS}</h3></div>
 		<ul>
 			<!-- BEGIN item -->
 			<li>
 				<ul>
 					<li><a href="{item.URL}">{item.NAME}</a></li>
-					<li>{item.GENRE}</li>
+					<li class="_">{item.GENRE}</li>
 					<li><a href="{item.URL}"><img src="{item.IMAGE}" alt="{item.NAME}" /></a></li>
 				</ul>
 			</li>

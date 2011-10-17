@@ -16,25 +16,20 @@
 <div class="share">&nbsp;</div>
 
 <div class="is_left ls_none">
-	<div class="h b"><h3>{UNAME}</h3>
-		<!-- BEGIN make_fans -->
-		<a href="{make_fans.FAV_URL}">{make_fans.FAV_LANG}</a>
-		<!-- END contact -->
-	</div>
-	<div class="_ pad_left">{GENRE} &mdash; {LOCATION}</div>
-</div>
-
-<div class="is_mid">
-	<div class="pad_top a_right">{FANS} {L_FANS}</div>
+	<div class="h b"><h3>{UNAME}</h3></div>
+	<div class="_ pad_left">{GENRE} &mdash; {LOCATION} &mdash; {FANS} {L_FANS}</div>
 </div>
 
 <span class="clear"></span>
 
-<div class="pad_top ctl">
+<div class="pad_top ctl ctl_lf">
 	<ul>
+		<!-- BEGIN make_fans -->
+		<li><a href="{make_fans.FAV_URL}">{make_fans.FAV_LANG}</a></li>
+		<!-- END make_fans -->
 		<!-- BEGIN nav -->
 		<!-- BEGIN strong -->
-		<li class="hg">{nav.LANG}</li>
+		<li><span>{nav.LANG}</span></li>
 		<!-- END strong -->
 		<!-- BEGIN a -->
 		<li><a href="{a.URL}">{nav.LANG}</a></li>
@@ -42,6 +37,8 @@
 		<!-- END nav -->
 	</ul>
 </div>
+
+<span class="clear"></span>
 
 <!-- IF INACTIVE -->
 <div class="w">
@@ -101,7 +98,10 @@
 		<div class="h"><h3>{L_UE_GALLERY}</h3></div>
 		<ul>
 			<!-- BEGIN item -->
-			<li><a href="{item.URL}" title="{item.DATETIME}">{item.TITLE}</a></li>
+			<li>
+				<a href="{item.URL}">{item.TITLE}</a>
+				<div class="_">{item.DATETIME}</div>
+			</li>
 			<!-- END item -->
 		</ul>
 	</div>
