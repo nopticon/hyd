@@ -433,6 +433,9 @@ hr {
 .a_left { text-align: left; }
 .a_right { text-align: right; }
 .a_mid { text-align: center; }
+.i input, .i textarea {
+	width: 100%;
+}
 
 ._, ._ a, .__, .__ a {
 	color: #9F9FA2 !important;

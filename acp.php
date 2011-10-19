@@ -19,42 +19,74 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 define('IN_NUCLEO', true);
 require('./interfase/common.php');
 
-$user->init();
-$user->setup('control');
-
-if (!$user->data['is_member']) {
-	if ($user->data['is_bot']) {
-		redirect(s_link());
-	}
-	do_login();
-}
-
-if (!$user->_team_auth('all')) {
-	fatal_error();
-}
-
-$module = request_var('module', '');
-if (empty($module) || !preg_match('#[a-z\_]+#i', $module)) {
-	fatal_error();
-}
-
-$filepath = ROOT . 'interfase/acp/' . $module . '.php';
-if (!@file_exists($filepath)) {
-	fatal_error();
-}
-
-$submit = isset($_POST['submit']);
-$u = s_link('acp', $module);
-
-include($filepath);
-
-// Functions
-function _auth($a) {
-	global $user;
+class acp {
+	public $module;
 	
-	if (!$user->_team_auth($a)) {
-		fatal_error();
+	public function __construct() {
+		global $user;
+		
+		$user->init();
+		$user->setup('control');
+		
+		if (!$user->data['is_member']) {
+			if ($user->data['is_bot']) {
+				redirect(s_link());
+			}
+			do_login();
+		}
+		
+		if (!$user->_team_auth('all')) {
+			fatal_error();
+		}
+	}
+	
+	public function run() {
+		$this->module = request_var('module', '');
+		
+		if (empty($this->module) || !preg_match('#[a-z\_]+#i', $this->module)) {
+			fatal_error();
+		}
+		
+		$this->filepath = ROOT . 'interfase/acp/' . $this->module . '.php';
+		
+		if (!@file_exists($this->filepath)) {
+			fatal_error();
+		}
+		
+		require_once($this->filepath);
+		
+		class mac {
+			public $submit;
+			public $url;
+			
+			public function auth($a) {
+				global $user;
+				
+				if (!$user->_team_auth($a)) {
+					return fatal_error();
+				}
+				
+				return true;
+			}
+		}
+		
+		$_object = '__' . $module;
+		if (!class_exists($_object)) {
+			fatal_error();
+		}
+		
+		$module = new $_object();
+		
+		$module->submit = isset($_POST['submit']);
+		$module->url = s_link('acp', $module);
+		
+		$module->home();
+		
+		return true;
 	}
 }
+
+$acp = new acp();
+$acp->run();
 
 ?>

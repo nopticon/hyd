@@ -16,15 +16,9 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-define('IN_NUCLEO', true);
-define('ROOT', './../');
-require('./../interfase/common.php');
-require('./../interfase/artists.php');
-
-$user->init(false);
+require(ROOT . 'interfase/artists.php');
 
 $artists = new _artists();
-
 $artists->get_data();
 
 $a_ary = array();

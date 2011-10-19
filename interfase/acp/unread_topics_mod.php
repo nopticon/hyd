@@ -32,24 +32,18 @@ foreach ($result as $row) {
 	$delete = false;
 	
 	$t = search_topic($row['item']);
-	if ($t !== false)
-	{
-		if (in_array($t['forum_id'], array(16, 17)))
-		{
+	if ($t !== false) {
+		if (in_array($t['forum_id'], array(16, 17))) {
 			$a = $user->_team_auth($auth[$t['forum_id']], $row['user_id']);
-			if (!$a)
-			{
+			if (!$a) {
 				$delete = true;
 			}
 		}
-	}
-	else
-	{
+	} else {
 		$delete = true;
 	}
 	
-	if ($delete)
-	{
+	if ($delete) {
 		$sql = 'DELETE LOW_PRIORITY FROM _members_unread
 			WHERE user_id = ?
 				AND element = 8
@@ -61,7 +55,7 @@ foreach ($result as $row) {
 	}
 }
 
-die();
+exit;
 
 //
 function search_topic($topic_id) {

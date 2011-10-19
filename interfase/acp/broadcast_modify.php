@@ -16,8 +16,18 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-if (!defined('IN_NUCLEO')) {
-	exit;
+if (!defined('IN_NUCLEO')) exit;
+
+class __activate extends mac {
+	public function __construct() {
+		parent::__construct();
+		
+		$this->auth('founder');
+	}
+	
+	public function home() {
+		global $user;
+	}
 }
 
 _auth('founder');
@@ -36,7 +46,7 @@ if (!$ftp->ftp_login('WURJ357411801', 'h29kE5fQ'))
 	_die('Can not login');
 }
 
-$cds_file = './interfase/cds/schedule_playlist.txt';
+$cds_file = ROOT . 'interfase/cds/schedule_playlist.txt';
 
 // Submit
 if ($submit)

@@ -43,8 +43,7 @@ if ($submit)
 	$post_message = $comments->prepare($post_message);
 	
 	//
-	$sql = 'UPDATE _forum_posts
-		SET post_text = ?
+	$sql = 'UPDATE _forum_posts SET post_text = ?
 		WHERE post_id = ?';
 	sql_query(sql_filter($sql, $post_message, $post_id));
 	

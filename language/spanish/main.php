@@ -81,6 +81,7 @@ $lang += array(
 	'FANS' => 'fans',
 	'NAVIGATION' => 'Navegaci&oacute;n',
 	'SEARCH' => 'B&uacute;squeda',
+	'HI' => 'Hola',
 	
 	'PAGES_PREV' => '&lt;&lt; <strong>Anteriores %d</strong>',
 	'PAGES_NEXT' => '<strong>Siguientes %d</strong> &gt;&gt;',

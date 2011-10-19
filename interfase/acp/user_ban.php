@@ -18,39 +18,50 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-_auth('founder');
-
-if ($submit) {
-	$username = request_var('username', '');
-	if (empty($username)) {
-		fatal_error();
+class __activate extends mac {
+	public function __construct() {
+		parent::__construct();
+		
+		$this->auth('founder');
 	}
 	
-	$username = get_username_base($username);
-	
-	$sql = 'SELECT *
-		FROM _members
-		WHERE username_base = ?';
-	if (!$userdata = sql_fieldrow(sql_filter($sql, $username))) {
-		fatal_error();
-	}
-	
-	$sql = 'SELECT *
-		FROM _banlist
-		WHERE ban_userid = ?';
-	if (!$ban = sql_fieldrow(sql_filter($sql, $userdata['user_id'])))
-	{
-		$insert = array(
-			'ban_userid' => (int) $userdata['user_id']
-		);
-		$sql = 'INSERT INTO _banlist' . sql_build('INSERT', $insert);
-		sql_query($sql);
+	public function home() {
+		global $user;
 		
-		$sql = 'DELETE FROM _sessions
-			WHERE session_user_id = ?';
-		sql_query(sql_filter($sql, $userdata['user_id']));
+		if ($submit) {
+			return false;
+		}
 		
-		echo 'El usuario ' . $userdata['username'] . ' fue bloqueado.';
+		$username = request_var('username', '');
+		if (empty($username)) {
+			fatal_error();
+		}
+		
+		$username = get_username_base($username);
+		
+		$sql = 'SELECT *
+			FROM _members
+			WHERE username_base = ?';
+		if (!$userdata = sql_fieldrow(sql_filter($sql, $username))) {
+			fatal_error();
+		}
+		
+		$sql = 'SELECT *
+			FROM _banlist
+			WHERE ban_userid = ?';
+		if (!$ban = sql_fieldrow(sql_filter($sql, $userdata['user_id']))) {
+			$insert = array(
+				'ban_userid' => (int) $userdata['user_id']
+			);
+			$sql = 'INSERT INTO _banlist' . sql_build('INSERT', $insert);
+			sql_query($sql);
+			
+			$sql = 'DELETE FROM _sessions
+				WHERE session_user_id = ?';
+			sql_query(sql_filter($sql, $userdata['user_id']));
+			
+			echo 'El usuario ' . $userdata['username'] . ' fue bloqueado.';
+		}
 	}
 }
 
