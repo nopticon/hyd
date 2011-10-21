@@ -157,10 +157,6 @@ if ($submit_reply || $submit_vote) {
 				}
 			}
 			
-			if ($forum_id == 22) {
-				redirect(s_link('awards'));
-			}
-			
 			redirect(s_link('topic', $topic_id));
 		} else {
 			$post_message = request_var('message', '', true);
@@ -293,22 +289,6 @@ if ($post_id) {
 
 if ($user->data['is_member']) {
 	//
-	// Topic posts order
-	//
-	if (isset($_POST['topicorder'])) {
-		$topicorder = request_var('topicorder', 0);
-		if ($topicorder != $user->data['user_topic_order']) {
-			$topicorder = ($topicorder == 1) ? 1 : 0;
-			
-			$sql = 'UPDATE _members SET user_topic_order = ?
-				WHERE user_id = ?';
-			sql_query(sql_filter($sql, $topicorder, $user->data['user_id']));
-			
-			redirect($topic_url . (($start && !$topicorder) ? 's' . $start . '/' : ''));
-		}
-	}
-	
-	//
 	// Is user watching this topic?
 	//
 	$sql = 'SELECT notify_status
@@ -330,8 +310,6 @@ if ($user->data['is_member']) {
 		
 		$template->assign_block_vars('watch_topic', array());
 	}
-} else {
-	$user->data['user_topic_order'] = 0;
 }
 
 //
@@ -371,22 +349,11 @@ if ($user->data['is_founder']) {
 	}
 }
 
-if ($user->data['is_member']) {
-	$select_order = '';
-	foreach (array(0 => 'OLDEST_FIRST', 1 => 'NEWEST_FIRST') as $option => $value) {
-		$select_order .= '<option value="' . $option . '"' . (($user->data['user_topic_order'] == $option) ? ' selected="selected"' : '') . '>' . $user->lang[$value] . '</option>';
-	}
-	
-	$template->assign_block_vars('order_posts', array(
-		'SELECT_ORDER' => $select_order)
-	);
-}
-
 //
 // Update the topic views
 //
 if (!$start && $user->data['user_id'] != 2) {
-	$sql = 'UPDATE _forum_topics
+	$sql = 'UPDATE _forum_topics 
 		SET topic_views = topic_views + 1
 		WHERE topic_id = ?';
 	sql_query(sql_filter($sql, $topic_id));
@@ -455,14 +422,6 @@ $comments = new _comments();
 //
 // Advanced auth
 //
-$unread_topic = $user->get_unread(UH_T, $topic_id);
-
-/*$mod_auth = $auth->query('forum');
-if ($mod_auth)
-{
-	$mod_edit = $auth->option(array('forum', 'topics', 'edit'));
-	$mod_delete = $auth->option(array('forum', 'topics', 'delete'));
-}*/
 
 $controls = array();
 $user_profile = array();
@@ -477,27 +436,9 @@ foreach ($messages as $row) {
 		$controls[$row['post_id']]['reply'] = s_link('post', array($row['post_id'], 'reply')) . '#reply';
 		
 		if ($mod_auth) {
-			/*if ($user->data['is_founder'])
-			{
-				$controls[$row['post_id']]['ip'] = s_link_control('topic', array('post' => $row['post_id'], 'mode' => 'ip'));
-				
-				if ($row['post_deleted'])
-				{
-					$controls[$row['post_id']]['restore'] = s_link_control('topic', array('post' => $row['post_id'], 'mode' => 'restore'));
-				}
-			}
-			if ($mod_edit)
-			{
-				$controls[$row['post_id']]['edit'] = s_link_control('topic', array('post' => $row['post_id'], 'mode' => 'edit'));
-			}*/
 			$controls[$row['post_id']]['edit'] = s_link('mcp', array('edit', $row['post_id']));
 			$controls[$row['post_id']]['delete'] = s_link('mcp', array('post', $row['post_id']));
 		}
-		/*elseif (!$row['post_reported'])
-		{
-			$controls[$row['post_id']]['report'] = s_link('report', array('post', $row['post_id']));
-		}
-		*/
 	}
 	
 	$user_profile[$row['user_id']] = $comments->user_profile($row, '', $unset_user_profile);	
@@ -508,7 +449,7 @@ foreach ($messages as $row) {
 		'MESSAGE' => $comments->parse_message($row['post_text'], 'bold orange'),
 		'PLAYING' => $row['post_np'],
 		'DELETED' => $row['post_deleted'],
-		'UNREAD' => ($user->data['is_member'] && $unread_topic && ($row['post_time'] > $user->data['user_lastvisit']))
+		'UNREAD' => 0
 	);
 	
 	foreach ($user_profile[$row['user_id']] as $key => $value) {
@@ -557,7 +498,6 @@ build_num_pagination($topic_url . 's%d/', ($topic_data['topic_replies'] + 1), $c
 
 //
 // Posting box
-//
 if (sizeof($error)) {
 	$template->assign_block_vars('post_error', array(
 		'MESSAGE' => parse_error($error))

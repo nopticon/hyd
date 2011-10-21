@@ -1,29 +1,11 @@
-<table width="100%" border="0" cellpadding="10" cellspacing="0">
-	<tr>
-		<td>
-			
-			<table width="100%" cellpadding="5" cellspacing="0" border="0" align="center">
-			<form action="{S_ACTION}" method="post" name="post">{S_HIDDEN}
-				<tr>
-					<td align="center">
-						<table width="100%" border="0" cellpadding="5" cellspacing="1">
-							<tr> 
-								<td width="22%"><span class="gen"><b>{L_SUBJECT}</b></span></td>
-								<td width="78%"><span class="gen"><input type="text" name="subject" size="45" maxlength="100" style="width:100%" value="{SUBJECT}" /></span> </td>
-							</tr>
-							<tr> 
-								<td valign="top"><span class="gen"><b>{L_MESSAGE_BODY}</b></span><br /><span class="gensmall">{L_MESSAGE_BODY_DESC}</span></td>
-								<td><span class="gen"><textarea name="message" rows="25" cols="40" wrap="virtual" style="width:100%" class="post">{MESSAGE}</textarea></span></td>
-							</tr>
-							<tr>
-								<td colspan="2" align="center"><input type="submit" name="submit" value="{L_SEND_EMAIL}" /></td>
-							</tr>
-						</table>
-					</td>
-				</tr>
-			</form>
-			</table>
-			
-		</td>
-	</tr>
-</table>
+<form action="{S_ACTION}" method="post" name="post">{S_HIDDEN}
+	
+	<span class="gen"><b>{L_SUBJECT}</b></span>
+	<input type="text" name="subject" size="45" maxlength="100" style="width:100%" value="{SUBJECT}" />
+	
+	<span class="gen"><b>{L_MESSAGE_BODY}</b></span><br /><span class="gensmall">{L_MESSAGE_BODY_DESC}</span>
+	<textarea name="message" rows="25" cols="40" wrap="virtual" style="width:100%" class="post">{MESSAGE}</textarea>
+	
+	<input type="submit" name="submit" value="{L_SEND_EMAIL}" />
+	
+</form>

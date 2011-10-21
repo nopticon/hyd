@@ -71,14 +71,10 @@ $(function() {
 </div>
 
 <span class="clear"></span>
-
-<!-- IF IMG_PAGES_NUMS != ' <strong>1</strong>' -->
-<div class="ctl">{IMG_PAGES_NUMS}</div>
-<!-- ENDIF -->
 <!-- END thumbnails -->
 
 <!-- BEGIN posting_box -->
-<div class="pad_top post_comment">
+<div class="pad_top publish">
 <div class="h"><h3>{L_SEND_POST} <a class="smile" href="{S_EMOTICONS}">@</a></h3></div>
 <form action="{S_COMMENTS}" method="post" name="post"><input type="hidden" name="ref" value="{box.REF}" />
 <div><textarea id="comment" name="message"></textarea></div>
@@ -87,23 +83,23 @@ $(function() {
 </div>
 <!-- END posting_box -->
 
-<!-- BEGIN posts -->
+<!-- BEGIN messages -->
 <div class="comments">
-<!-- BEGIN item -->
-<div id="comment-{item.S_ROW_COUNT}">
-<h3><strong>{item.S_ROW_COUNT}</strong><span>.</span> <em><!-- BEGIN username --><a href="{item.PROFILE}"><!-- END username --><img src="{item.USER_AVATAR}" alt="{item.USERNAME}'s Avatar" /><!-- BEGIN username --></a><!-- END username --></em><cite><!-- BEGIN username --><a href="{item.PROFILE}"><!-- END username -->{item.USERNAME}<!-- BEGIN username --></a><!-- END username --></cite> <span>dijo:</span></h3>
+<!-- BEGIN row -->
+<div id="comment-{row.S_ROW_COUNT}">
+<h3><strong>{row.S_ROW_COUNT}</strong><span>.</span> <em><a href="{row.PROFILE}"><img src="{row.USER_AVATAR}" alt="{row.USERNAME}'s Avatar" /></a></em><cite><a href="{row.PROFILE}">{row.USERNAME}</a></cite> <span>dijo:</span></h3>
 <blockquote>
-<p>{item.MESSAGE}</p>
-<p class="dtposted">{item.DATETIME}</p>
+<p>{row.MESSAGE}</p>
+<p class="dtposted">{row.DATETIME}</p>
 </blockquote>
 <hr /></div>
-<!-- END item -->
+<!-- END row -->
 </div>
 
 <!-- IF MSG_PAGES_NUMS != ' <strong>1</strong>' -->
 <div class="ctl">{MSG_PAGES_NUMS}</div>
 <!-- ENDIF -->
-<!-- END posts -->
+<!-- END messages -->
 
 <!-- BEGIN thumbnails -->
 <div id="cache" class="z">

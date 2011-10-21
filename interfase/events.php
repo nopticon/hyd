@@ -37,7 +37,7 @@ EVENT_TEXT		TEXT
 EVENT_POINTS	VARCHAR(10)
 */
 
-include('./interfase/downloads.php');
+include(ROOT . 'interfase/downloads.php');
 
 class _events extends downloads { 
 	public $data = array();
@@ -86,7 +86,7 @@ class _events extends downloads {
 		$result = sql_rowset(sql_filter($sql, $this->timetoday));
 		
 		foreach ($result as $row) {
-			$this->filename = SDATA . 'events/future/thumbnails/' . $row['id'] . '.jpg';
+			$this->filename = $config['assets_url'] . 'events/future/thumbnails/' . $row['id'] . '.jpg';
 
 			$template->assign_block_vars('next_event', array(
 				'URL' => s_link('events', $row['id']),
@@ -118,7 +118,7 @@ class _events extends downloads {
 			$template->assign_block_vars('last_event', array(
 				'URL' => s_link('events', $row['id']),
 				'TITLE' => $row['title'],
-				'IMAGE' => SDATA . 'events/gallery/' . $row['id'] . '/thumbnails/' . $row2['image'] . '.jpg')
+				'IMAGE' => $config['assets_url'] . 'events/gallery/' . $row['id'] . '/thumbnails/' . $row2['image'] . '.jpg')
 			);
 		}
 		
@@ -201,7 +201,7 @@ class _events extends downloads {
 					sql_query(sql_filter($sql, $this->data['id'], $imagedata['image']));
 					
 					$template->assign_block_vars('selected', array(
-						'IMAGE' => SDATA . 'events/gallery/' . $this->data['id'] . '/' . $imagedata['image'] . '.jpg',
+						'IMAGE' => $config['assets_url'] . 'events/gallery/' . $this->data['id'] . '/' . $imagedata['image'] . '.jpg',
 						'WIDTH' => $imagedata['width'], 
 						'HEIGHT' => $imagedata['height'],
 						'FOOTER' => $imagedata['image_footer'])
@@ -277,8 +277,8 @@ class _events extends downloads {
 					foreach ($result as $row) {
 						$template->assign_block_vars('thumbnails.item', array(
 							'URL' => s_link('events', array($this->data['id'], $row['image'], 'view')),
-							'IMAGE' => SDATA . 'events/gallery/' . $this->data['id'] . '/thumbnails/' . $row['image'] . '.jpg',
-							'RIMAGE' => SDATA . 'events/gallery/' . $this->data['id'] . '/' . $row['image'] . '.jpg',
+							'IMAGE' => $config['assets_url'] . 'events/gallery/' . $this->data['id'] . '/thumbnails/' . $row['image'] . '.jpg',
+							'RIMAGE' => $config['assets_url'] . 'events/gallery/' . $this->data['id'] . '/' . $row['image'] . '.jpg',
 							'FOOTER' => $row['image_footer'],
 							'WIDTH' => $row['width'], 
 							'HEIGHT' => $row['height'])
@@ -303,7 +303,7 @@ class _events extends downloads {
 					}
 				} else {
 					$template->assign_block_vars('event_flyer', array(
-						'IMAGE_SRC' => SDATA . 'events/future/' . $this->data['id'] . '.jpg')
+						'IMAGE_SRC' => $config['assets_url'] . 'events/future/' . $this->data['id'] . '.jpg')
 					);
 				}
 				
@@ -333,30 +333,77 @@ class _events extends downloads {
 					'EVENT_DATE' => $event_date_format)
 				);
 				
-				require('./interfase/comments.php');
+				require(ROOT . 'interfase/comments.php');
 				$comments = new _comments();
 				
-				$comments_ref = ($t_offset) ? s_link('events', array($this->data['id'], 's' . $t_offset)) : s_link('events', $this->data['id']);
+				$posts_offset = request_var('ps', 0);
+				$topic_id = $this->data['event_topic'];
 				
-				if ($this->data['posts']) {
-					$posts_offset = intval(request_var('ps', 0));
-					$comments->ref = $comments_ref;
+				$sql = 'SELECT p.*, u.user_id, u.username, u.username_base, u.user_color, u.user_avatar, u.user_posts, u.user_gender, u.user_rank/*, u.user_sig*/
+					FROM _forum_posts p, _members u
+					WHERE p.topic_id = ?
+						AND u.user_id = p.poster_id
+						AND p.post_deleted = 0
+					ORDER BY p.post_time DESC
+					LIMIT ??, ??';
+				if (!$messages = sql_rowset(sql_filter($sql, $topic_id, $posts_offset, $config['posts_per_page']))) {
+					redirect(s_link('topic', $topic_id));
+				}
+				
+				if (!$posts_offset) {
+					unset($messages[0]);
+				}
+				
+				$i = 0;
+				foreach ($messages as $row) {
+					if (!$i) {
+						$controls = array();
+						$user_profile = array();
+						$unset_user_profile = array('user_id', 'user_posts', 'user_gender');
+						
+						$template->assign_block_vars('messages', array());
+					}
 					
-					$sql = 'SELECT p.*, m.user_id, m.username, m.username_base, m.user_color, m.user_avatar, m.user_rank, m.user_posts, m.user_gender, m.user_sig
-						FROM _events_posts p, _members m
-						WHERE p.event_id = ?
-							AND p.post_active = 1
-							AND p.poster_id = m.user_id
-						ORDER BY p.post_time DESC
-						LIMIT ??, ??';
+					if ($user->data['is_member']) {
+						$controls[$row['post_id']]['reply'] = s_link('post', array($row['post_id'], 'reply')) . '#reply';
+						
+						if ($mod_auth) {
+							$controls[$row['post_id']]['edit'] = s_link('mcp', array('edit', $row['post_id']));
+							$controls[$row['post_id']]['delete'] = s_link('mcp', array('post', $row['post_id']));
+						}
+					}
 					
-					$comments->data = array(
-						'A_LINKS_CLASS' => 'bold red',
-						'SQL' => sql_filter($sql, $this->data['id'], $posts_offset, $config['s_posts'])
+					$user_profile[$row['user_id']] = $comments->user_profile($row, '', $unset_user_profile);	
+					
+					$data = array(
+						'POST_ID' => $row['post_id'],
+						'DATETIME' => $user->format_date($row['post_time']),
+						'MESSAGE' => $comments->parse_message($row['post_text']),
+						'PLAYING' => $row['post_np'],
+						'DELETED' => $row['post_deleted'],
+						'UNREAD' => 0
 					);
 					
-					$comments->view($posts_offset, 'ps', $this->data['posts'], $config['s_posts'], '', 'MSG_', 'TOPIC_');
+					foreach ($user_profile[$row['user_id']] as $key => $value) {
+						$data[strtoupper($key)] = $value;
+					}
+					
+					$template->assign_block_vars('messages.row', $data);
+				
+					if (isset($controls[$row['post_id']])) {
+						$template->assign_block_vars('messages.row.controls', array());
+						
+						foreach ($controls[$row['post_id']] as $item => $url) {
+							$template->assign_block_vars('messages.row.controls.'.$item, array(
+								'URL' => $url)
+							);
+						}
+					}
+					
+					$i++;
 				}
+				
+				$comments_ref = ($posts_offset) ? s_link('events', array($this->data['id'], 's' . $t_offset)) : s_link('events', $this->data['id']);
 				
 				// Posting box
 				if ($user->data['is_member']) {
@@ -441,7 +488,7 @@ class _events extends downloads {
 				$template->assign_block_vars('gallery.item', array(
 					'URL' => s_link('events', $item['id']),
 					'TITLE' => $item['title'],
-					'IMAGE' => SDATA . 'events/gallery/' . $item['id'] . '/thumbnails/' . $random_images[$item['id']] . '.jpg',
+					'IMAGE' => $config['assets_url'] . 'events/gallery/' . $item['id'] . '/thumbnails/' . $random_images[$item['id']] . '.jpg',
 					'DATETIME' => $user->format_date($item['date'], $user->lang['DATE_FORMAT']))
 				);
 			}
@@ -464,8 +511,8 @@ class _events extends downloads {
 						'ITEM_ID' => $item['id'],
 						'TITLE' => $item['title'],
 						'DATE' => $user->format_date($item['date'], $user->lang['DATE_FORMAT']),
-						'THUMBNAIL' => SDATA . 'events/future/thumbnails/' . $item['id'] . '.jpg',
-						'SRC' => SDATA . 'events/future/' . $item['id'] . '.jpg',
+						'THUMBNAIL' => $config['assets_url'] . 'events/future/thumbnails/' . $item['id'] . '.jpg',
+						'SRC' => $config['assets_url'] . 'events/future/' . $item['id'] . '.jpg',
 						'U_TOPIC' => s_link('events', $item['id']))
 					);
 				}
