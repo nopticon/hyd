@@ -1,7 +1,13 @@
 <!-- INCLUDE page.header.htm -->
 
-<div class="h"><h3>{POST_SUBJECT}</h3></div>
-<div class="_"><a href="{U_NEWS}">{L_NEWS}</a> &mdash; <a href="{CAT_URL}">{CAT_NAME}</a></div>
+<div class="share">&nbsp;</div>
+
+<div class="is_left">
+	<div class="h"><h3>{POST_SUBJECT}</h3></div>
+	<div class="pad_top pad_left _"><a href="{U_NEWS}">{L_NEWS}</a> &mdash; <a href="{CAT_URL}">{CAT_NAME}</a></div>
+</div>
+
+<span class="clear"></span>
 
 <div class="comments">
 <a name="mainpost"></a>
@@ -15,8 +21,10 @@
 <hr /></div>
 <!-- END mainpost -->
 
-<!-- IF PAGES_NUMS != ' <strong>1</strong>' -->
+<!-- IF PAGES_NUMS != '' -->
 <div class="p">{PAGES_NUMS}</div>
+
+<span class="clear"></span>
 <!-- ENDIF -->
 </div>
 
@@ -50,24 +58,23 @@
 <!-- END posts -->
 </div>
 
-<!-- IF PAGES_NUMS != ' <strong>1</strong>' -->
+<!-- IF PAGES_NUMS != '' -->
 <div class="p">{PAGES_NUMS}</div>
+
+<span class="clear"></span>
 <!-- ENDIF -->
 
 <!-- BEGIN posting_box -->
-<div class="rows5_top_2 post_comment">
-<div class="h"><h3>{L_SEND_POST}</h3></div>
 <!-- BEGIN box -->
-<form action="{S_COMMENTS}" method="post" name="post"><input type="hidden" name="ref" value="{box.REF}" />
-<div><label for="comment">{L_POST}</label> - <a class="relevant" onclick="return popup('{S_EMOTICONS}', '_emoticons', 300, 450);" href="{S_EMOTICONS}" target="_blank">{L_EMOTICONS}</a></div>
-<div class="rows5_top_1"><textarea id="comment" name="message" cols="150" rows="10"></textarea></div>
-<div class="rows5_top_1"><input class="submit" type="submit" name="post" value="{L_SUBMIT}" /></div>
-</form>
-<!-- END box -->
-<!-- BEGIN only_registered -->
-<div class="black_box a_center">{only_registered.LEGEND}</div>
-<!-- END only_registered -->
+<div class="pad_top publish">
+	<div class="h"><h3>{L_SEND_POST} <a class="smile" href="{S_EMOTICONS}">@</a></h3></div>
+	<form action="{S_COMMENTS}" method="post" name="post">
+		<input type="hidden" name="ref" value="{box.REF}" />
+		<textarea id="comment" name="message"></textarea>
+		<input type="submit" name="post" value="{L_SUBMIT}" />
+	</form>
 </div>
+<!-- END box -->
 <!-- END posting_box -->
 
 <!-- INCLUDE page.footer.htm -->

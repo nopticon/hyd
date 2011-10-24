@@ -429,6 +429,9 @@ hr {
 .pad_top {
 	margin-top: 10px;
 }
+.x2 {
+	margin-top: 10px;
+}
 
 .a_left { text-align: left; }
 .a_right { text-align: right; }
@@ -459,53 +462,78 @@ hr {
 	float: left;
 	margin-right: 25px;
 }
-.ctl ul li a, .ctl ul li span, .ctl input, .ctl ul li small {
+.ctl ul li a, .ctl ul li strong, .ctl ul li span, .ctl input, .ctl ul li small {
 	padding: 4px;
 	border-radius: 4px;
 	background: #5DA209;
 	color: #fff;
 }
-.ctl ul li span {
+.ctl ul li span, .ctl ul li strong {
 	border: 1px solid #999;
 }
 .ctl ul li a:hover {
 	text-decoration: none;
 	background: #518c08;
 }
-.p {
-	margin: 15px 0 15px 0;
-}
 
 .p {
+	margin: 15px 0 15px 0;
 	text-align: center;
-	margin-top: 10px;
 	padding: 4px;
 }
-.p strong, .p a, .p span {
+.p ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+.p ul li {
+	float: left;
+	margin-right: 15px;
+}
+.p strong, .p a {
 	line-height: 30px;
 	text-decoration: none;
 	padding: 5px;
-	background: #4c5558;
-}
-.p span {
-	padding: 0;
-	background: #2f2f30;
+	border-radius: 4px;
+	background: #202837;
 }
 .p strong, .p a:hover {
 	text-decoration: none;
 	background: #5d8812;
 }
-.post_comment {
+.publish {
 	margin: 0 auto;
 }
-.post_comment textarea, .post_comment input {
+.publish form {
+	padding: 8px;
+}
+.publish input {
+	display: block;
+	margin: 10px 0 0 0;
+	padding: 4px 8px 4px 8px;
+	border-radius: 4px;
+	background: #5DA209;
+	color: #fff;
+}
+.publish textarea, .publish input.f {
+	background: rgba(150,150,150,0.3);
+}
+.publish textarea {
+	margin: 0 auto;
+	display: block;
 	width: 100%;
 }
-.post_comment textarea {
-	display: block;
-	width: 97.5%;
-	height: 45px;
-	margin: 0 auto;
+.publish label {
+	padding: 10px 0 0 0;
+	margin: 0 10px 0 0;
+}
+.publish .f {
+	display: inline;
+	width: 25%;
+}
+.tt {
+	background: #fff;
 }
 
 .nowrapcell {
@@ -583,7 +611,7 @@ hr {
 	overflow: hidden;
 	margin: 1em 0;
 	padding: 0.2em 1.25em 0.2em 24px;
-	background: #222;
+	background: rgba(0,0,0,0.6);
 	color:#d0ced1;
 }
 .comments blockquote blockquote {

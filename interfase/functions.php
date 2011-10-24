@@ -416,6 +416,11 @@ function build_num_pagination ($url_format, $total_items, $per_page, $offset, $p
 	$from_middle = 1;
 
 	$total_pages = ceil($total_items/$per_page);
+	
+	if ($total_pages < 2) {
+		return;
+	}
+	
 	$on_page = floor($offset / $per_page) + 1;
 	
 	$page_string = '<ul>';
@@ -423,32 +428,32 @@ function build_num_pagination ($url_format, $total_items, $per_page, $offset, $p
 		$init_page_max = ($total_pages > $begin_end) ? $begin_end : $total_pages;
 
 		for ($i = 1; $i < $init_page_max + 1; $i++) {
-			$page_string .= ($i == $on_page) ? '<li><span>' . $i . '</span></li>' : '<li><a href="' . sprintf($url_format, (($i - 1) * $per_page)) . '">' . $i . '</a></li>';
+			$page_string .= ($i == $on_page) ? '<li><strong>' . $i . '</strong></li>' : '<li><a href="' . sprintf($url_format, (($i - 1) * $per_page)) . '">' . $i . '</a></li>';
 		}
 
 		if ($total_pages > $begin_end) {
 			if ($on_page > 1  && $on_page < $total_pages) {
-				$page_string .= ($on_page > ($begin_end + $from_middle + 1)) ? '<li>...</li>' : '';
+				$page_string .= ($on_page > ($begin_end + $from_middle + 1)) ? '<li><span>...</span></li>' : '';
 
 				$init_page_min = ($on_page > ($begin_end + $from_middle)) ? $on_page : ($begin_end + $from_middle + 1);
 				$init_page_max = ($on_page < $total_pages - ($begin_end + $from_middle)) ? $on_page : $total_pages - ($begin_end + $from_middle);
 
 				for ($i = $init_page_min - $from_middle; $i < $init_page_max + ($from_middle + 1); $i++) {
-					$page_string .= ($i == $on_page) ? '<li><span>' . $i . '</span></li>' : '<li><a href="' . sprintf($url_format, (($i - 1) * $per_page)) . '">' . $i . '</a></li>';
+					$page_string .= ($i == $on_page) ? '<li><strong>' . $i . '</strong></li>' : '<li><a href="' . sprintf($url_format, (($i - 1) * $per_page)) . '">' . $i . '</a></li>';
 				}
 
-				$page_string .= ($on_page < $total_pages - ($begin_end + $from_middle)) ? '<li>...</li>' : '';
+				$page_string .= ($on_page < $total_pages - ($begin_end + $from_middle)) ? '<li><span>...</span></li>' : '';
 			} else {
-				$page_string .= '<span> ... </span>';
+				$page_string .= '<li><span>...</span></li>';
 			}
 
 			for ($i = $total_pages - ($begin_end - 1); $i < $total_pages + 1; $i++) {
-				$page_string .= ($i == $on_page) ? '<li><span>' . $i . '</span></li>'  : '<li><a href="' . sprintf($url_format, (($i - 1) * $per_page)) . '">' . $i . '</a></li>';
+				$page_string .= ($i == $on_page) ? '<li><strong>' . $i . '</strong></li>'  : '<li><a href="' . sprintf($url_format, (($i - 1) * $per_page)) . '">' . $i . '</a></li>';
 			}
 		}
 	} else {
 		for ($i = 1; $i < $total_pages + 1; $i++) {
-			$page_string .= ($i == $on_page) ? '<li><span>' . $i . '</span></li>' : '<li><a href="' . sprintf($url_format, (($i - 1) * $per_page)) . '">' . $i . '</a></li>';
+			$page_string .= ($i == $on_page) ? '<li><strong>' . $i . '</strong></li>' : '<li><a href="' . sprintf($url_format, (($i - 1) * $per_page)) . '">' . $i . '</a></li>';
 		}
 	}
 	
@@ -456,11 +461,15 @@ function build_num_pagination ($url_format, $total_items, $per_page, $offset, $p
 	
 	$prev = $next = '';
 	if ($on_page > 1) {
-		$prev = ' <a href="' . sprintf($url_format, (($on_page - 2) * $per_page)) . '">' . sprintf($user->lang[(($lang_prefix != '') ? $lang_prefix : '') . 'PAGES_PREV'], $per_page) . '</a>';
+		$prev = '<a href="' . sprintf($url_format, (($on_page - 2) * $per_page)) . '">' . sprintf($user->lang[(($lang_prefix != '') ? $lang_prefix : '') . 'PAGES_PREV'], $per_page) . '</a>';
 	}
 	
 	if ($on_page < $total_pages) {
 		$next = '<a href="' . sprintf($url_format, ($on_page * $per_page)) . '">' . sprintf($user->lang[(($lang_prefix != '') ? $lang_prefix : '') . 'PAGES_NEXT'], $per_page) . '</a>';
+	}
+	
+	if ($page_string == ' <strong>1</strong>') {
+		$page_string = '';
 	}
 	
 	$template->assign_vars(array(

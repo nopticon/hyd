@@ -30,7 +30,7 @@ $comm = new community();
 //
 // Team | Members
 //
-$cover->founders();
+$comm->founders();
 $comm->team();
 $comm->recent_members();
 $comm->birthdays();

@@ -13,9 +13,9 @@
 </div>
 <!-- END hide -->
 
-<div class="float_left col25 a_center"><img src="{AVATAR_IMG}" alt="{USERNAME}" /></div>
+<div class="el_left"><img src="{AVATAR_IMG}" alt="{USERNAME}" /></div>
 
-<div class="float_right col75">
+<div class="el_left pad_left">
 	<div class="">
 		<div class="profile"><h3>{USERNAME}</h3></div>
 		<div class="rows5_top">{POSTER_RANK}</div>
@@ -25,14 +25,15 @@
 	<ul>
 		<!-- BEGIN selected_panel -->
 		<!-- BEGIN strong -->
-		<li class="hg">{selected_panel.LANG}</li>
+		<li><strong>{selected_panel.LANG}</strong></li>
 		<!-- END strong -->
 		<!-- BEGIN a -->
 		<li><a href="{a.URL}">{selected_panel.LANG}</a></li>
 		<!-- END a -->
 		<!-- END selected_panel -->
-		
+		<!-- BEGIN messages -->
 		<li><a href="{PM}">{L_DCONV_START}</a></li>
+		<!-- END messages -->
 		<!-- BEGIN block_member -->
 		<li><a href="{block_member.URL}">{block_member.LANG}</a></li>
 		<!-- END block_member -->
@@ -104,12 +105,12 @@
 	
 	<div class="is_right_i">
 		<!-- BEGIN post_comment_box -->
-		<div class="post_comment">
+		<div class="publish">
 		<div class="h"><h3>{L_SEND_POST} <a class="smile" href="{S_EMOTICONS}">@</a></a></h3></div>
 		<form action="{S_COMMENTS}" method="post" name="m-messages">
 		<input type="hidden" name="ref" value="{post_comment_box.REF}" />
-		<div class="pad_top"><textarea id="a-comments" name="message"></textarea></div>
-		<div class="pad_top a_mid"><input class="submit" type="submit" name="submit" value="Enviar mensaje" /></div>
+		<textarea id="a-comments" name="message"></textarea>
+		<input class="submit" type="submit" name="submit" value="Enviar mensaje" />
 		</form>
 		</div>
 		<!-- END post_comment_box -->
@@ -123,7 +124,7 @@
 		<h3><strong>{item.S_ROW_COUNT}</strong><span>.</span> <em><!-- BEGIN username --><a href="{item.PROFILE}"><!-- END username --><img src="{item.USER_AVATAR}" alt="{item.USERNAME}'s Avatar" /><!-- BEGIN username --></a><!-- END username --></em><cite><!-- BEGIN username --><a href="{item.PROFILE}"><!-- END username -->{item.USERNAME}<!-- BEGIN username --></a><!-- END username --></cite> <span>dijo:</span></h3>
 		<blockquote>
 		<!-- IF item.S_DELETE -->
-		<div class="pad_top ctl a_right"><a class="red" href="{item.S_DELETE}">{L_DELETE}</a></div>
+		<div class="pad_top ctl a_right"><a href="{item.S_DELETE}">{L_DELETE}</a></div>
 		<!-- ENDIF -->
 		<div class="nowraptext">{item.MESSAGE}</div>
 		<!-- IF item.USER_SIG != '' -->
@@ -155,11 +156,11 @@
 <!-- END main -->
 
 <!-- BEGIN friends -->
-<div class="ls">
+<div class="pad_top ln l6">
 	<ul>
 		<!-- BEGIN row -->
 		<!-- BEGIN col -->
-		<li>
+		<li class="a_mid pad_top">
 			<div><a href="{col.PROFILE}">{col.USERNAME}</a><br />{col.DATETIME}</div>
 			<div class="pad_top"><a href="{col.PROFILE}"><img src="{col.AVATAR}" alt="{col.USERNAME}" /></a></div></li>
 		<!-- END col -->

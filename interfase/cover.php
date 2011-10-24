@@ -112,50 +112,6 @@ class cover {
 		return;
 	}
 	
-	public function founders() {
-		global $cache, $user, $template;
-		
-		$founders = array();
-		if (!$founders = $cache->get('founders')) {
-			global $config;
-			
-			$sql = 'SELECT user_id, username, username_base, user_color, user_email, user_avatar
-				FROM _members
-				WHERE user_id IN (2,3)
-				ORDER BY user_id';
-			$result = sql_rowset($sql);
-			
-			foreach ($result as $row) {
-				$row['realname'] = ($row['user_id'] == 2) ? 'Guillermo Azurdia' : 'Gerardo Medina';
-				$row['user_avatar'] = $config['avatar_path'] . '/' . $row['user_avatar'];
-				$row['user_profile'] = s_link('m', $row['username_base']);
-				
-				$founders[$row['user_id']] = $row;
-			}
-			
-			$cache->save('founders', $founders);
-		}
-		
-		foreach ($founders as $user_id => $data) {
-			$template->assign_block_vars('founders', array(
-				'REALNAME' => $data['realname'],
-				'USERNAME' => $data['username'],
-				'RANK' => $user->lang['COMM_FOUNDER'],
-				'COLOR' => $data['user_color'],
-				'AVATAR' => $data['user_avatar'],
-				'PROFILE' => $data['user_profile'])
-			);
-		}
-	}
-	
-	public function extra() {
-		global $config, $user, $template;
-		
-		$ttime = time();
-		
-		return;
-	}
-	
 	public function board_general() {
 		global $user, $config, $template;
 		

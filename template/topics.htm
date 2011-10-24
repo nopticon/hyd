@@ -3,15 +3,15 @@
 <div class="h"><h3><a href="{U_VIEW_FORUM}">{FORUM_NAME}</a></h3></div>
 
 <!-- BEGIN create_topic -->
-<div class="is_mid ctl a_mid">
-	<a href="#create">{L_POST_NEWTOPIC}</a>
-</div>
-<div class="is_mid ctl a_mid">&nbsp;</div>
+<div class="ctl"><a href="#create">{L_POST_NEWTOPIC}</a></div>
 <!-- END create_topic -->
 
 <span class="clear"></span>
 
-<!-- IF PAGES_NUMS != ' <strong>1</strong>' --><div class="pad_top p">{PAGES_NUMS}</div><!-- ENDIF -->
+<!-- IF PAGES_NUMS != '' -->
+<div class="p">{PAGES_NUMS}</div>
+<span class="clear"></span>
+<!-- ENDIF -->
 
 <!-- BEGIN topics -->
 <div class="pad_top ls">
@@ -19,14 +19,16 @@
 	<!-- BEGIN item -->
 	<li>
 		<a href="{item.U_TOPIC}">{item.TOPIC_TITLE}</a> ({item.REPLIES} m<!-- IF item.VIEWS -->, {item.VIEWS} v<!-- ENDIF -->)
-		<div clas="_">{item.TOPIC_AUTHOR} @ {item.LAST_POST_TIME}</div>
+		<div class="_">{item.TOPIC_AUTHOR} @ {item.LAST_POST_TIME}</div>
 	</li>
 	<!-- END item -->
 </ul>
 </div>
 <!-- END topics -->
 
-<!-- IF PAGES_NUMS != ' <strong>1</strong>' --><div class="pad_top p">{PAGES_NUMS}</div><!-- ENDIF -->
+<!-- IF PAGES_NUMS != '' -->
+<div class="p">{PAGES_NUMS}</div>
+<!-- ENDIF -->
 
 <!-- BEGIN posting_box -->
 <!-- BEGIN box -->

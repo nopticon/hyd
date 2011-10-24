@@ -317,7 +317,7 @@ class userpage {
 		//
 		// GET USERPAGE MESSAGES
 		//
-		$comments_ref = s_link('m', array($profiledata['username_base'], 'messages'));
+		$comments_ref = s_link('m', array($profiledata['username_base']));
 		
 		if ($user->data['is_member']) {
 			$template->assign_block_vars('main.post_comment_box', array(
@@ -336,8 +336,8 @@ class userpage {
 			$bd_month = gmmktime(0, 0, 0, substr($profiledata['user_birthday'], 4, 2) + 1, 0, 0);
 			$birthday = (int) substr($profiledata['user_birthday'], 6, 2) . ' ' . $user->format_date($bd_month, 'F') . ' ' . substr($profiledata['user_birthday'], 0, 4);
 			
-			$age = date('Y', $current_time) - intval(substr($profiledata['user_birthday'], 0, 4));
-			if (intval(substr($profiledata['user_birthday'], 4, 4)) > date('md', $current_time)) {
+			$age = date('Y', time()) - intval(substr($profiledata['user_birthday'], 0, 4));
+			if (intval(substr($profiledata['user_birthday'], 4, 4)) > date('md', time())) {
 				$age--;
 			}
 			$age .= ' ' . $user->lang['YEARS'];

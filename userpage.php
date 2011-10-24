@@ -83,6 +83,7 @@ if ($user->data['is_member'] && $user->data['user_id'] != $profiledata['user_id'
 			FROM _members_ban
 			WHERE user_id = ?
 				AND banned_user = ?';
+		$banned_user_lang = 'BLOCKED_MEMBER_ADD';
 		if ($banned_row = sql_fieldrow(sql_filter($sql, $user->data['user_id'], $profiledata['user_id']))) {
 			$is_blocked_member = true;
 			$banned_user_lang = 'BLOCKED_MEMBER_REMOVE';
@@ -158,8 +159,16 @@ switch ($mode) {
 }
 
 $panel_selection = array(
-	'main' => array('L' => 'MAIN', 'U' => false),
-	'dc' => array('L' => 'DC', 'U' => s_link('my', 'dc')),
+	'main' => array('L' => 'MAIN', 'U' => false)
+);
+
+if ($user->data['user_id'] != $profiledata['user_id']) {
+	$panel_selection['start'] = array('L' => 'DCONV_START', 'U' => s_link('my', array('dc', 'start', $profiledata['username_base'])));
+} else {
+	$panel_selection['dc'] = array('L' => 'DC', 'U' => s_link('my', 'dc'));
+}
+
+$panel_selection += array(
 	'friends' => array('L' => 'FRIENDS', 'U' => false)
 );
 

@@ -18,7 +18,7 @@
 <span class="clear"></span>
 
 <!-- IF PAGES_NUMS != '' -->
-<div class="pad_top ctl p">{PAGES_NUMS}</div>
+<div class="p">{PAGES_NUMS}</div>
 <!-- ENDIF -->
 
 <span class="clear"></span>
@@ -42,9 +42,9 @@
 		<div class="h"><h3>{set.L_TITLE}</h3></div>
 		<ul>
 			<!-- BEGIN item -->
-			<li class="el_left a_mid">
+			<li class="a_mid">
 				<ul>
-					<li>{item.TITLE}</li>
+					<li><a href="{item.U_TOPIC}">{item.TITLE}</a></li>
 					<li class="__">{item.DATE}</li>
 					<li><a href="{item.U_TOPIC}"><img src="{item.SRC}" alt="" /></a></li>
 				</ul>
@@ -52,6 +52,7 @@
 			<!-- END item -->
 		</ul>
 	</div>
+	<span class="clear"></span>
 	<!-- END set -->
 </div>
 <!-- END future -->

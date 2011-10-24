@@ -351,7 +351,7 @@ class _events extends downloads {
 				}
 				
 				if (!$posts_offset) {
-					unset($messages[0]);
+					//unset($messages[0]);
 				}
 				
 				$i = 0;
@@ -403,12 +403,12 @@ class _events extends downloads {
 					$i++;
 				}
 				
-				$comments_ref = ($posts_offset) ? s_link('events', array($this->data['id'], 's' . $t_offset)) : s_link('events', $this->data['id']);
+				$publish_ref = ($posts_offset) ? s_link('events', array($this->data['id'], 's' . $t_offset)) : s_link('events', $this->data['id']);
 				
 				// Posting box
 				if ($user->data['is_member']) {
-					$template->assign_block_vars('posting_box', array(
-						'REF' => $comments_ref)
+					$template->assign_block_vars('publish', array(
+						'REF' => $publish_ref)
 					);
 				}
 				

@@ -19,6 +19,43 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 if (!defined('IN_NUCLEO')) exit;
 
 class community {
+	public $comments;
+	
+	public function __construct() {
+		include('./interfase/comments.php');
+		$this->comments = new _comments();
+	}
+	
+	public function founders() {
+		global $cache, $user, $template;
+		
+		$founders = array();
+		if (!$founders = $cache->get('founders')) {
+			global $config;
+			
+			$sql = 'SELECT user_id, username, username_base, user_avatar
+				FROM _members
+				WHERE user_id IN (2,3)
+				ORDER BY user_id';
+			$result = sql_rowset($sql);
+			
+			foreach ($result as $row) {
+				$founders[$row['user_id']] = $this->comments->user_profile($row);
+			}
+			
+			$cache->save('founders', $founders);
+		}
+		
+		foreach ($founders as $user_id => $data) {
+			$template->assign_block_vars('founders', array(
+				'REALNAME' => $data['username'],
+				'USERNAME' => $data['username'],
+				'AVATAR' => $data['user_avatar'],
+				'PROFILE' => $data['profile'])
+			);
+		}
+	}
+	
 	public function team() {
 		global $cache, $template;
 		
@@ -48,9 +85,6 @@ class community {
 		if (!sizeof($team) || !sizeof($team_members)) {
 			return;
 		}
-		
-		include('./interfase/comments.php');
-		$comments = new _comments();
 		
 		$sql_members = array();
 		foreach ($team_members as $data) {
@@ -83,7 +117,7 @@ class community {
 					$template->assign_block_vars('team.row', array());
 				}
 				
-				$up = $comments->user_profile($members_data[$tm_data['member_id']]);
+				$up = $this->comments->user_profile($members_data[$tm_data['member_id']]);
 				
 				$template->assign_block_vars('team.row.member', array(
 					'MOD' => ($tm_data['member_id'] == $t_data['team_mod']),
@@ -208,30 +242,30 @@ class community {
 	public function birthdays() {
 		global $template;
 		
-		$sql = "SELECT user_id, username, username_base, user_color, user_avatar, user_posts
+		//$last_year = time() - (31536000 * 5);
+		
+		$sql = "SELECT user_id, username, username_base, user_color, user_avatar
 			FROM _members
 			WHERE user_birthday LIKE ?
 				AND user_type NOT IN (??, ??)
 			ORDER BY user_posts DESC, username";
+		//if (!$result = sql_rowset(sql_filter($sql, '%' . date('md'), USER_INACTIVE, USER_IGNORE), $last_year)) {
 		if (!$result = sql_rowset(sql_filter($sql, '%' . date('md'), USER_INACTIVE, USER_IGNORE))) {
 			return false;
 		}
 		
-		include('./interfase/comments.php');
-		$comments = new _comments();
-		
-		$template->assign_block_vars('birthday', array());
-		
-		foreach ($result as $row) {
-			$profile = $comments->user_profile($row);
-			//$profile = $this->msg->user_profile($row);
+		foreach ($result as $i => $row) {
+			if (!$i) {
+				$template->assign_block_vars('birthday', array());
+			}
+			
+			$profile = $this->comments->user_profile($row);
 			
 			$template->assign_block_vars('birthday.row', array(
 				'USERNAME' => $profile['username'],
 				'PROFILE' => $profile['profile'],
 				'COLOR' => $profile['user_color'],
-				'AVATAR' => $profile['user_avatar'],
-				'POSTS' => $profile['user_posts'])
+				'AVATAR' => $profile['user_avatar'])
 			);
 		}
 

@@ -3,20 +3,23 @@
 <div class="share">&nbsp;</div>
 
 <div class="h"><h3><a href="{U_VIEW_FORUM}">{FORUM_NAME}</a> &mdash; <a href="{S_TOPIC_ACTION}">{TOPIC_TITLE}</a></h3></div>
-<div class="_ pad_left">{EVENT_DATE}</div>
 
-<div class="pad_top">
-	<div class="float_right a_right col25">
+<span class="clear"></span>
+
+<div class="pad_top pad_left">
+<div class="ctl ls">
+	<ul>
 		<!-- BEGIN post_box -->
-		<a href="#reply">{L_POST_REPLY}</a>
+		<li><a href="#reply">{L_POST_REPLY}</a></li>
 		<!-- END post_box -->
 		<!-- BEGIN mcppoints -->
-		<a href="{mcppoints.U_FEAT}">{mcppoints.V_LANG}</a>
+		<li><a href="{mcppoints.U_FEAT}">{mcppoints.V_LANG}</a></li>
 		<!-- END mcppoints -->
 		<!-- BEGIN feature -->
-		<a href="{feature.U_FEAT}">{feature.V_LANG}</a>
+		<li><a href="{feature.U_FEAT}">{feature.V_LANG}</a></li>
 		<!-- END feature -->
-	</div>
+	</ul>
+</div>
 </div>
 
 <!-- BEGIN poll -->
@@ -52,8 +55,8 @@
 </div>
 <!-- END poll -->
 
-<!-- IF PAGES_NUMS != ' <strong>1</strong>' -->
-<div class="pad_top p">{PAGES_NUMS}</div>
+<!-- IF PAGES_NUMS != '' -->
+<div class="p">{PAGES_NUMS}</div>
 <!-- ENDIF -->
 
 <!-- BEGIN posts -->
@@ -83,37 +86,24 @@
 </div>
 <!-- END posts -->
 
-<!-- IF PAGES_NUMS != ' <strong>1</strong>' -->
+<!-- IF PAGES_NUMS != '' -->
 <div class="p">{PAGES_NUMS}</div>
 <!-- ENDIF -->
 
 <!-- BEGIN post_box -->
-<div class="pad_top post_comment">
-	<div class="col75 float_left">
-		<div class="h"><h3>{L_SEND_POST} <a class="smile" href="{S_EMOTICONS}">@</a></h3></div>
-		<form action="{post_box.S_POST_ACTION}" method="post">
-		<div class="pad_top"><textarea id="comment" name="message"></textarea></div>
+<div class="pad_top publish">
+	<div class="h"><h3>{L_SEND_POST} <a class="smile" href="{S_EMOTICONS}">@</a></h3></div>
+	<form action="{post_box.S_POST_ACTION}" method="post">
+		<textarea id="comment" name="message"></textarea>
 		<!-- BEGIN reply -->
-		<div class="pad_top"><label for="comment_reply">{L_ORIGINAL_POST}</label></div>
-		<div class="pad_top"><textarea id="comment_reply" name="reply_message" cols="100" rows="10">{reply.MESSAGE}</textarea></div>
+		<label for="comment_reply">{L_ORIGINAL_POST}</label>
+		<textarea id="comment_reply" name="reply_message" rows="2">{reply.MESSAGE}</textarea>
 		<!-- END reply -->
-		<div class="pad_top"><label for="comment_np">{L_NOWPLAYING}</label></div>
-		<div class="pad_top"><input id="comment_np" name="np" size="100" value="{post_box.NP}" /></div>
-		<div class="pad_top a_mid"><input class="submit" type="submit" name="post" value="{L_SUBMIT}" /></div>
+		<label for="comment_np">{L_NOWPLAYING}</label>
+		<input class="f" id="comment_np" name="np" value="{post_box.NP}" />
+		<input class="submit" type="submit" name="post" value="{L_SUBMIT}" />
 		</form>
 	</div>
-	<!-- BEGIN hide -->
-	<div class="cols5_left_2 info float_right">
-		<script type="text/javascript"><!--
-		google_ad_client = "ca-pub-5371491382621943";
-		google_ad_slot = "4930576188";
-		google_ad_width = 200;
-		google_ad_height = 200;
-		//-->
-		</script>
-		<script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
-	</div>
-	<!-- END hide -->
 </div>
 <!-- END post_box -->
 
