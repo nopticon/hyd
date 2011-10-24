@@ -14,8 +14,7 @@
 body {
 	margin: 0;
 	padding: 0;
-	background:url(style/wood.jpg) fixed center #262624;
-	/*background: url(style/grid.jpg) center top #525252;*/
+	background: /*url(style/wood.jpg) */fixed center #262624;
 }
 p, div, span, select {
 	cursor: default;
@@ -523,6 +522,7 @@ hr {
 	margin: 0 auto;
 	display: block;
 	width: 100%;
+	border-radius: 4px;
 }
 .publish label {
 	padding: 10px 0 0 0;

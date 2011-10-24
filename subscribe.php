@@ -22,26 +22,19 @@ require('./interfase/common.php');
 $user->init();
 $user->setup();
 
-if ($user->data['is_member'])
-{
+if ($user->data['is_member']) {
 	redirect(s_link('my', 'profile'));
-}
-else if ($user->data['is_bot'])
-{
+} else if ($user->data['is_bot']) {
 	redirect(s_link());
 }
 
 //
 $mode = request_var('mode', '');
 $code_invite = request_var('invite', '');
-if ($mode == 'created')
-{
+if ($mode == 'created') {
 	trigger_error('MEMBERSHIP_ADDED');
 }
 
-//
-// Set vars
-//
 $v_fields = array();
 $fields = array(
 	'username' => '',
@@ -57,13 +50,12 @@ $fields = array(
 	'refop' => 0,
 	'refby' => ''
 );
-foreach ($fields as $k => $v)
-{
+
+foreach ($fields as $k => $v) {
 	$v_fields[$k] = $v;
 }
 
-if (!empty($code_invite))
-{
+if (!empty($code_invite)) {
 	$sql = 'SELECT i.invite_email, m.user_email
 		FROM _members_ref_invite i, _members m
 		WHERE i.invite_code = ?
@@ -84,7 +76,7 @@ if (!empty($code_invite))
 $error = array();
 
 if (isset($_POST['submit'])) {
-	include('./interfase/functions_validate.php');
+	require_once(ROOT . 'interfase/functions_validate.php');
 	
 	foreach ($fields as $k => $v) {
 		$v_fields[$k] = request_var($k, $v);
@@ -170,8 +162,8 @@ if (isset($_POST['submit'])) {
 			'user_regip' => $user->ip,
 			'user_session_time' => 0,
 			'user_lastpage' => '',
-			'user_lastvisit' => $user->time,
-			'user_regdate' => $user->time,
+			'user_lastvisit' => time(),
+			'user_regdate' => time(),
 			'user_level' => 0,
 			'user_posts' => 0,
 			'userpage_posts' => 0,
@@ -217,13 +209,11 @@ if (isset($_POST['submit'])) {
 		$emailer = new emailer();
 		
 		// Pending points
-		if ($v_fields['refop'] == 1 && !empty($v_fields['refby']) && !preg_match('/^[a-z0-9&\'\.\-_\+]+@[a-z0-9\-]+\.([a-z0-9\-]+\.)*?[a-z]+$/is', $v_fields['refby']))
-		{
+		if ($v_fields['refop'] == 1 && !empty($v_fields['refby']) && !email_format($v_fields['refby'])) {
 			$v_fields['refby'] = '';
 		}
 		
-		if ($v_fields['refop'] == 1 && !empty($v_fields['refby']))
-		{
+		if ($v_fields['refop'] == 1 && !empty($v_fields['refby'])) {
 			$sql = 'SELECT user_id
 				FROM _members
 				WHERE user_email = ?';

@@ -37,7 +37,7 @@ if (strtolower($_SERVER['REQUEST_METHOD']) == 'post') {
 	}
 }
 
-$file_content = @file('../template/exceptions/missing.htm');
+$file_content = @file('./template/exceptions/missing.htm');
 
 $matches = array(
 	'<!--#echo var="HTTP_HOST" -->' => $_SERVER['HTTP_HOST'],

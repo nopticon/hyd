@@ -22,8 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // Also checks if it includes the " character, which we don't allow in usernames.
 // Used for registering, changing names, and posting anonymously with a username
 //
-function validate_username($username)
-{
+function validate_username($username) {
 	global $user;
 
 	// Remove doubled up spaces
@@ -68,8 +67,7 @@ function validate_username($username)
 // Check to see if email address is banned
 // or already present in the DB
 //
-function validate_email($email)
-{
+function validate_email($email) {
 	global $user;
 
 	if ($email != '') {

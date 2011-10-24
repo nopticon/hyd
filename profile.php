@@ -21,9 +21,6 @@ require('./interfase/common.php');
 
 $user->init();
 
-//
-// Set init vars
-//
 $mode = request_var('mode', '');
 $submit = (isset($_POST['submit'])) ? true : false;
 
@@ -37,7 +34,6 @@ if (($mode == 'password' || $mode == 'verify')) {
 	}
 	
 	$user->setup();
-	
 }
 
 switch ($mode) {
@@ -50,7 +46,7 @@ switch ($mode) {
 				fatal_error();
 			}
 			
-			if (!preg_match('/^[a-z0-9&\'\.\-_\+]+@[a-z0-9\-]+\.([a-z0-9\-]+\.)*?[a-z]+$/is', $email)) {
+			if (!email_format($email)) {
 				fatal_error();
 			}
 			
@@ -147,7 +143,7 @@ switch ($mode) {
 				require('./interfase/emailer.php');
 				$emailer = new emailer();
 				
-				$emailer->from('info@rockrepublik.net');
+				$emailer->from('Rock Republik Networks <info@rockrepublik.net>');
 				$emailer->use_template('user_confirm_passwd', $config['default_lang']);
 				$emailer->email_address($crypt_data['user_email']);
 				
@@ -199,12 +195,11 @@ switch ($mode) {
 		sql_query(sql_filter($sql, $code, $user_id));
 		
 		// Unread
-		$u_topics = array(288, 1455, 2524, 3168, 4121);
+		$u_topics = array(288, 1455);
 		foreach ($u_topics as $v)
 		{
 			$user->save_unread(UH_T, $v, 0, $user_id);
 		}
-		$user->save_unread(UH_U, $user_id);
 		$user->points_add(3, $user_id);
 		
 		//
@@ -292,11 +287,6 @@ if (!$user->data['is_member']) {
 //
 $user->setup();
 
-$current_time = time();
-
-//
-// MAIN CODE
-//
 switch ($mode) {
 	case 'profile':
 		$user_fields = array(
@@ -337,9 +327,7 @@ switch ($mode) {
 		$error = array();
 		$dateset = array(
 			'd M Y H:i',
-			'd M Y h:i a',
-			'M d, Y H:i',
-			'M d, Y h:i a'
+			'M d, Y H:i'
 		);
 		
 		if ($submit) {
@@ -355,7 +343,6 @@ switch ($mode) {
 					$multibyte = false;
 				}
 				$$name = request_var($name, $value, $multibyte);
-				//echo $name . ' > ' . $$name . '<br />';
 			}
 			
 			$password1 = request_var('password1', '');
@@ -575,7 +562,7 @@ switch ($mode) {
 		
 		$dateformat_select = '';
 		foreach ($dateset as $id => $value) {
-			$dateformat_select .= '<option value="' . $id . '"' . (($value == $dateformat) ? ' selected="selected"' : '') . '>' . $user->format_date($current_time, $value) . '</option>';
+			$dateformat_select .= '<option value="' . $id . '"' . (($value == $dateformat) ? ' selected="selected"' : '') . '>' . $user->format_date(time(), $value) . '</option>';
 		}
 		
 		$timezone_select = '';

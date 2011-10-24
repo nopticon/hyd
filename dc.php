@@ -60,12 +60,8 @@ if (isset($_POST['delete']) && $mark) {
 			$s_hidden += array('mark[' . $i++ . ']' => $item);
 		}
 		
-		//
-		// Setup user
-		//
 		$user->setup();
 		
-		//
 		// Output to template
 		//
 		$template_vars = array(
@@ -184,10 +180,10 @@ if (sizeof($error)) {
 $s_hidden_fields = array();
 
 switch ($mode) {
-	//
-	// Start new conversation
-	//
 	case 'start':
+		//
+		// Start new conversation
+		//
 		if (!$submit) {
 			$member = request_var('member', '');
 			if ($member != '') {
@@ -209,10 +205,10 @@ switch ($mode) {
 		
 		$s_hidden_fields = array('mode' => 'start');
 		break;
-	//
-	// Show selected conversation
-	//
 	case 'read':
+		//
+		// Show selected conversation
+		//
 		if (!$msg_id) {
 			fatal_error();
 		}
@@ -234,58 +230,39 @@ switch ($mode) {
 			WHERE c.parent_id = ?
 				AND c.privmsgs_from_userid = m.user_id
 			ORDER BY c.privmsgs_date';
-		if ($result = sql_rowset(sql_filter($sql, $msg_data['parent_id']))) {
-			$template->assign_block_vars('conv', array(
-				'SUBJECT' => $result[0]['privmsgs_subject'])
-			);
-			
-			foreach ($result as $row) {
-				$template->assign_block_vars('conv.item', array());
-				
-				if ($msg_id == $row['msg_id']) {
-					$block = 'message';
-					$user_profile = $comments->user_profile($row);
-					
-					$dc_messages = array(
-						'USERNAME' => $user_profile['username'],
-						'AVATAR' => $user_profile['user_avatar'],
-						'USER_RANK' => $user_profile['user_rank'],
-						'SIGNATURE' => ($row['user_sig'] != '') ? $comments->parse_message($row['user_sig'], 'bold orange') : '',
-						'PROFILE' => $user_profile['profile'],
-						'USER_COLOR' => $user_profile['user_color'],
-						'MESSAGE' => $comments->parse_message($row['privmsgs_text'], 'bold orange'),
-						'CAN_REPLY' => $row['msg_can_reply']
-					);
-				} else {
-					$block = 'header';
-					
-					$dc_messages = array(
-						'READ_MESSAGE' => s_link('my', array('dc', 'read', $row['msg_id'])) . '#' . $row['msg_id'],
-						'USERNAME' => $row['username'],
-						'USER_COLOR' => $row['user_color'],
-					);
-				}
-				
-				$dc_messages += array(
-					'POST_ID' => $row['msg_id'],
-					'POST_DATE' => $user->format_date($row['privmsgs_date'])
-				);
-				
-				$template->assign_block_vars('conv.item.' . $block, $dc_messages);
-			}
-		} else {
+		if (!$result = sql_rowset(sql_filter($sql, $msg_data['parent_id']))) {
 			fatal_error();
-		} 
+		}
+		
+		$template->assign_block_vars('conv', array(
+			'URL' => s_link('my', 'dc'),
+			'SUBJECT' => $result[0]['privmsgs_subject'],
+			'CAN_REPLY' => $result[0]['msg_can_reply'],)
+		);
+		
+		foreach ($result as $row) {
+			$user_profile = $comments->user_profile($row);
+			
+			$template->assign_block_vars('conv.row', array(
+				'USERNAME' => $user_profile['username'],
+				'AVATAR' => $user_profile['user_avatar'],
+				'SIGNATURE' => ($row['user_sig'] != '') ? $comments->parse_message($row['user_sig']) : '',
+				'PROFILE' => $user_profile['profile'],
+				'MESSAGE' => $comments->parse_message($row['privmsgs_text'], 'bold orange'),
+				'POST_ID' => $row['msg_id'],
+				'POST_DATE' => $user->format_date($row['privmsgs_date']))
+			);
+		}
 		
 		$s_hidden_fields = array('mark[]' => $msg_data['parent_id'], 'p' => $msg_id, 'parent' => $msg_data['parent_id'], 'mode' => 'reply');
 		break;
-	//
-	// Get all conversations for this member
-	//
 	default:
+		//
+		// Get all conversations for this member
+		//
 		$offset = request_var('offset', 0);
 		
-		$sql_tot = 'SELECT COUNT(msg_id) AS total
+		$sql = 'SELECT COUNT(msg_id) AS total
 			FROM _dc
 			WHERE (privmsgs_to_userid = ? OR privmsgs_from_userid = ?)
 				AND msg_id = parent_id
@@ -324,7 +301,7 @@ switch ($mode) {
 					'DC_COLOR' => $row['user_color'.$dc_with])
 				);
 			}
-
+			
 			build_num_pagination(s_link('my', array('dc', 's%d')), $total_conv, $config['posts_per_page'], $offset);
 		} else if ($total_conv) {
 			redirect(s_link('my', 'dc'));
@@ -336,12 +313,6 @@ switch ($mode) {
 			'TOTAL' => $total_conv)
 		);
 		break;
-}
-
-if ($mode != '') {
-	$template->assign_block_vars('back_dc', array(
-		'URL' => s_link('my', 'dc'))
-	);
 }
 
 //

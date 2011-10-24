@@ -2,60 +2,59 @@
 
 <div class="share">&nbsp;</div>
 
-<div class="h"><h3><a href="{U_VIEW_FORUM}">{FORUM_NAME}</a> &mdash; <a href="{S_TOPIC_ACTION}">{TOPIC_TITLE}</a></h3></div>
+<div class="is_left">
+	<div class="h"><h3><a href="{U_VIEW_FORUM}">{FORUM_NAME}</a> &mdash; <a href="{S_TOPIC_ACTION}">{TOPIC_TITLE}</a></h3></div>
+	
+	<div class="pad_top pad_left ctl ls">
+		<ul>
+			<!-- BEGIN post_box -->
+			<li><a href="#reply">{L_POST_REPLY}</a></li>
+			<!-- END post_box -->
+			<!-- BEGIN mcppoints -->
+			<li><a href="{mcppoints.U_FEAT}">{mcppoints.V_LANG}</a></li>
+			<!-- END mcppoints -->
+			<!-- BEGIN feature -->
+			<li><a href="{feature.U_FEAT}">{feature.V_LANG}</a></li>
+			<!-- END feature -->
+		</ul>
+	</div>
+</div>
 
 <span class="clear"></span>
 
-<div class="pad_top pad_left">
-<div class="ctl ls">
-	<ul>
-		<!-- BEGIN post_box -->
-		<li><a href="#reply">{L_POST_REPLY}</a></li>
-		<!-- END post_box -->
-		<!-- BEGIN mcppoints -->
-		<li><a href="{mcppoints.U_FEAT}">{mcppoints.V_LANG}</a></li>
-		<!-- END mcppoints -->
-		<!-- BEGIN feature -->
-		<li><a href="{feature.U_FEAT}">{feature.V_LANG}</a></li>
-		<!-- END feature -->
-	</ul>
-</div>
-</div>
-
 <!-- BEGIN poll -->
-<div class="pad_top">
-<div id="poll" class="black_box">
-<!-- BEGIN options -->
-<form method="post" action="{options.S_VOTE_ACTION}">
-<!-- END options -->
-
-<div class="relevant a_center">{poll.POLL_TITLE}</div>
-
-<div class="pad_top ls">
-<ul>
-<!-- BEGIN results -->
-<!-- BEGIN item -->
-<li><div class="caption">{item.CAPTION} <span>({item.RESULT})</span></div><div class="bar"><div style="width: {item.PERCENT}%;">&nbsp;</div></div></li>
-<!-- END item -->
-<!-- END results -->
-<!-- BEGIN options -->
-<!-- BEGIN item -->
-<li class="pad_top"><input class="none" type="radio" id="vo_{item.POLL_OPTION_ID}" name="vote_id" value="{item.POLL_OPTION_ID}" /> <label for="vo_{item.POLL_OPTION_ID}">{item.POLL_OPTION_CAPTION}</label></li>
-<!-- END item -->
-<!-- END options -->
-</ul>
-<!-- BEGIN options -->
-<div class="pad_top a_mid"><input class="submit" type="submit" name="vote" value="{L_VOTE}" /></div>
-<!-- END options -->
-</div>
-<!-- BEGIN options -->
-</form>
-<!-- END options -->
-</div>
+<div class="poll ls pad_top">
+	<div class="h"><h3>{poll.POLL_TITLE}</h3></div>
+	<!-- BEGIN options -->
+	<form action="{options.S_VOTE_ACTION}" method="post" name="vote_ub" onsubmit="return _.glob.in_sending('avote');">
+	<!-- END options -->
+	<ul>
+		<!-- BEGIN results -->
+		<!-- BEGIN item -->
+		<li>
+			<div class="caption">{item.CAPTION} <span class="_">({item.RESULT})</span></div>
+			<div class="bar"><div style="width: {item.PERCENT}%;">&nbsp;</div></div>
+		</li>
+		<!-- END item -->
+		<!-- END results -->
+		<!-- BEGIN options -->
+		<!-- BEGIN item -->
+		<li><input class="none" type="radio" id="vo_{item.ID}" name="vote_id" value="{item.ID}" /> <label for="vo_{item.ID}">{item.CAPTION}</label></li>
+		<!-- END item -->
+		<!-- END options -->
+	</ul>
+	<!-- BEGIN options -->
+	<div class="pad_top a_mid"><input class="submit" type="submit" name="vote" value="{L_VOTE}" /></div>
+	<!-- END options -->
+	<!-- BEGIN options -->
+	</form>
+	<!-- END options -->
 </div>
 <!-- END poll -->
 
 <!-- IF PAGES_NUMS != '' -->
+<span class="clear"></span>
+
 <div class="p">{PAGES_NUMS}</div>
 <!-- ENDIF -->
 
@@ -87,10 +86,13 @@
 <!-- END posts -->
 
 <!-- IF PAGES_NUMS != '' -->
+<span class="clear"></span>
 <div class="p">{PAGES_NUMS}</div>
 <!-- ENDIF -->
 
 <!-- BEGIN post_box -->
+<span class="clear"></span>
+
 <div class="pad_top publish">
 	<div class="h"><h3>{L_SEND_POST} <a class="smile" href="{S_EMOTICONS}">@</a></h3></div>
 	<form action="{post_box.S_POST_ACTION}" method="post">
@@ -101,7 +103,7 @@
 		<!-- END reply -->
 		<label for="comment_np">{L_NOWPLAYING}</label>
 		<input class="f" id="comment_np" name="np" value="{post_box.NP}" />
-		<input class="submit" type="submit" name="post" value="{L_SUBMIT}" />
+		<input type="submit" name="post" value="{L_SUBMIT}" />
 		</form>
 	</div>
 </div>

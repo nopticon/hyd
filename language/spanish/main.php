@@ -248,6 +248,7 @@ $lang += array(
 	'DCONVS_READ' => 'Conversaciones',
 	'DCONV_READ' => 'Conversaci&oacute;n',
 	'USERPAGE_DCONV_START' => 'Iniciar Conversaci&oacute;n',
+	'DC_SEND_TO' => 'Enviar este mensaje a ',
 	'DC_WITH' => 'Conversaci&oacute;n con',
 	'DC_READ_MESSAGE' => 'Leer',
 	'FOLDERS' => 'Carpetas',

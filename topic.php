@@ -446,7 +446,7 @@ foreach ($messages as $row) {
 	$data = array(
 		'POST_ID' => $row['post_id'],
 		'POST_DATE' => $user->format_date($row['post_time']),
-		'MESSAGE' => $comments->parse_message($row['post_text'], 'bold orange'),
+		'MESSAGE' => $comments->parse_message($row['post_text']),
 		'PLAYING' => $row['post_np'],
 		'DELETED' => $row['post_deleted'],
 		'UNREAD' => 0
@@ -507,7 +507,6 @@ if (sizeof($error)) {
 $can_reply_closed = $auth->option(array('forum', 'topics', 'delete'));
 
 if ((!$topic_data['forum_locked'] && !$topic_data['topic_locked']) || $can_reply_closed) {
-	
 	if ($user->data['is_member']) {
 		if ($is_auth['auth_reply']) {
 			$s_post_action = (($reply) ? s_link('post', array($post_id, 'reply')) : $topic_url) . '#e';
@@ -536,20 +535,8 @@ if ((!$topic_data['forum_locked'] && !$topic_data['topic_locked']) || $can_reply
 					'MESSAGE' => $post_reply_message)
 				);
 			}
-		} else {
-			$template->assign_block_vars('post_not_allowed', array(
-				'LEGEND' => sprintf($user->lang['SORRY_AUTH_REPLY'], $is_auth['auth_reply_type']))
-			);
 		}
-	} else {
-		$template->assign_block_vars('post_members', array(
-			'LEGEND' => sprintf($user->lang['LOGIN_TO_POST'], '', s_link('my', 'register')))
-		);
 	}
-} else {
-	$template->assign_block_vars('post_not_allowed', array(
-		'LEGEND' => $user->lang['TOPIC_LOCKED'])
-	);
 }
 
 // MOD: Featured topic
@@ -562,11 +549,13 @@ if ($user->_team_auth('mod')) {
 	);
 	
 	//
+	/*
 	$v_lang = ($topic_data['topic_points']) ? 'REM' : 'ADD';
 	$template->assign_block_vars('mcppoints', array(
 		'U_FEAT' => s_link('mcp', array('points', $topic_data['topic_id'])),
 		'V_LANG' => $user->lang['TOPIC_POINTS_' . $v_lang])
 	);
+	*/
 }
 
 //

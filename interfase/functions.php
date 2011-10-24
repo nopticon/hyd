@@ -589,6 +589,13 @@ function _pre($a, $d = false) {
 	}
 }
 
+function email_format($email) {
+	if (preg_match('/^[a-z0-9&\'\.\-_\+]+@[a-z0-9\-]+\.([a-z0-9\-]+\.)*?[a-z]+$/is', $email)) {
+		return true;
+	}
+	return false;
+}
+
 function entity_decode($s, $compat = true) {
 	if ($compat) {
 		return html_entity_decode($s, ENT_COMPAT, 'UTF-8');
