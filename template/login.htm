@@ -1,39 +1,82 @@
 <!-- INCLUDE page.header.htm -->
 
-<div class="h"><h3>{L_LOGIN_PAGETITLE}</h3></div>
-
-<form action="{U_SESSION}" method="post">
-<input type="hidden" name="ref" value="{S_REDIRECT}" />{S_HIDDEN_FIELDS}
-
-<!-- BEGIN error -->
-<div class="pad_top ls">
-	<div class="h"><h3>{L_ERROR}</h3></div>
-	<ul>
-		<li>{L_LOGIN_ERROR}</li>
-	</ul>
-</div>
-<!-- END error -->
-
-<div class="pad_top a_mid">
-	<!-- IF IS_NEED_AUTH -->
-	{L_LOGIN_ADM}
-	<!-- ELSEIF IS_LOGIN -->
-	{L_LOGINBOX_PAGE}
-	<!-- ELSEIF CUSTOM_MESSAGE -->
-	{CUSTOM_MESSAGE}
-	<!-- ELSE  -->
-	{L_LOGIN_PAGE}
+<div class="is_mid">
+	<div class="h"><h3>{L_LOGIN_PAGETITLE}</h3></div>
+	
+	<form action="{U_SESSION}" method="post">
+	<input type="hidden" name="ref" value="{S_REDIRECT}" />{S_HIDDEN_FIELDS}
+	
+	<!-- BEGIN error -->
+	<div class="pad_top ls">
+		<div class="h"><h3>{L_ERROR}</h3></div>
+		<ul>
+			<li>{L_LOGIN_ERROR}</li>
+		</ul>
+	</div>
+	<!-- END error -->
+	
+	<div class="pad_top a_mid">
+		<!-- IF IS_NEED_AUTH -->
+		{L_LOGIN_ADM}
+		<!-- ELSEIF IS_LOGIN -->
+		{L_LOGINBOX_PAGE}
+		<!-- ELSEIF CUSTOM_MESSAGE -->
+		{CUSTOM_MESSAGE}
+		<!-- ELSE  -->
+		<!-- ENDIF -->
+	</div>
+	
+	<span class="clear"></span>
+	
+	<div class="pad_top x3">
+		<div class="is_mid a_right"><label for="username" class="in_right">{L_USERNAME}</label></div>
+		<div class="is_mid"><input type="text" id="username" name="username" size="20" maxlength="20" /></div>
+	</div>
+	
+	<span class="clear"></span>
+	
+	<div class="pad_top">
+		<div class="is_mid a_right"><label for="password" class="in_right">{L_PASSWORD}</label></div>
+		<div class="is_mid"><input type="password" id="password" name="password" size="20" maxlength="32" value="" /></div>
+	</div>
+	
+	<span class="clear"></span>
+	
+	<div class="pad_top a_mid ctl"><input type="submit" name="login" value="{L_LOGIN}" /></div>
+	</form>
+	
+	<div class="h x3"><h3>{L_PASSWORD_RESET}</h3></div>
+	
+	<!-- IF PAGE_MODE == 'nosubmit' || PAGE_MODE == 'verify' -->
+	<form action="{S_ACTION}" method="post">
+	<!-- ENDIF -->
+	
+	<div class="ish">
+	<!-- IF PAGE_MODE == 'nosubmit' -->
+	{L_SENDPASSWORD_EXPLAIN}
+	<!-- ELSEIF PAGE_MODE == 'submit' -->
+	{L_SENDPASSWORD2_EXPLAIN}
+	<!-- ELSEIF PAGE_MODE == 'updated' -->
+	{L_SENDPASSWORD4_EXPLAIN}
+	<!-- ELSEIF PAGE_MODE == 'verify' -->
+	{L_SENDPASSWORD3_EXPLAIN}
+	<!-- ENDIF -->
+	</div>
+	
+	<!-- IF PAGE_MODE == 'nosubmit' || PAGE_MODE == 'verify' -->
+	<div class="pad_top">
+	<!-- IF PAGE_MODE == 'nosubmit' -->
+	<label for="email1">{L_EMAIL}:</label> <input type="text" id="address" name="address" size="40" maxlength="255" value="" /> <input type="submit" name="submit" value="{L_CONTINUE}" />
+	<!-- ENDIF -->
+	<!-- IF PAGE_MODE == 'verify' -->
+	<label for="email1">{L_NEW_PASSWORD}:</label> <input type="password" id="newkey" name="newkey" size="40" maxlength="255" value="" /> <input type="submit" name="submit" value="{L_CONTINUE}" />
+	<!-- ENDIF -->
+	</div>
+	</form>
 	<!-- ENDIF -->
 </div>
 
-<!-- IF !(IS_NEED_AUTH) -->
-<div class="a_mid pad_top">{L_LOGIN_PAGE_REGISTER}</div>
-<!-- ENDIF -->
-
-<div class="pad_top a_mid">{L_USERNAME}: <input type="text" name="username" size="20" maxlength="20" /> &nbsp; {L_PASSWORD}: <input type="password" name="password" size="20" maxlength="32" value="" /></div>
-<div class="pad_top a_mid ctl"><input type="submit" name="login" value="{L_LOGIN}" /></div>
-
-<div class="pad_top a_mid"><a href="{U_SPASSWORD}">{L_PASSWORD_RESET}</a></div>
-</form>
+<div class="is_mid">
+</div>
 
 <!-- INCLUDE page.footer.htm -->

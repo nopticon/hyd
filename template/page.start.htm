@@ -52,26 +52,12 @@
 			</fieldset>
 		</form>
 		
-		<div id="search_result" class="ie-widthfix float-holder"></div>	
+		<div id="search_result"></div>	
 		</div>
 		<!-- ELSE -->
-		<div id="sign" class="ie-widthfix float-holder">
+		<div id="sign">
 			<ul>
-				<li><a class="expand" id="signup" href="{U_REGISTER}">{L_REGISTER}</a></li>
-				<li><a class="expand" id="signin" href="{U_SESSION}">{L_LOGIN2}</a>
-					<ul id="expand_signin">
-						<li>
-							<form action="{U_SESSION}" method="post">
-								<input type="hidden" name="ref" value="{S_REDIRECT}" />
-								<fieldset>
-								{L_USERNAME}: <input type="text" name="username" maxlength="25" value="" /> 
-								{L_PASSWORD}: <input type="password" name="password" maxlength="32" value="" /> 
-								<input class="special" type="submit" name="login" value="{L_LOGIN}" />
-								</fieldset>
-							</form>
-						</li>
-					</ul>
-				</li>
+				<li><a id="signup" href="{U_SESSION}">{L_USER_IDENTITY}</a></li>
 			</ul>
 		</div>
 		<!-- ENDIF -->

@@ -14,7 +14,7 @@
 body {
 	margin: 0;
 	padding: 0;
-	background: /*url(style/wood.jpg) */fixed center #262624;
+	background: url(style/wood.jpg) fixed top center #202837;
 }
 p, div, span, select {
 	cursor: default;
@@ -140,11 +140,15 @@ hr {
 	list-style: none;
 }
 #sign ul li a {
-	padding: 2px;
-	background: #444;
-	color: #EEE;
-	border: 1px solid #383838;
+	padding: 4px;
+	background: #F5B800;
+	color: #000;
+	border: 1px solid #DBA400;
 	border-radius: 5px;
+}
+#sign ul li a:hover {
+	text-decoration: none;
+	background: #DBA400;
 }
 #sign ul li ul {
 	display: none;
@@ -430,6 +434,12 @@ hr {
 }
 .x2 {
 	margin-top: 10px;
+}
+.x3 {
+	margin-top: 30px;
+}
+.in_right {
+	padding-right: 10px;
 }
 
 .a_left { text-align: left; }

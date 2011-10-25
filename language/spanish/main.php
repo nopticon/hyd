@@ -142,13 +142,15 @@ $lang += array(
 	'PROFILE' => 'Perfil',
 	'MEMBER_OPTIONS' => 'Opciones de Usuario',
 	
+	'USER_IDENTITY' => 'Tu identidad de usuario en Rock Republik',
+	
 	'SENDPASSWORD' => 'Olvid&eacute; mi contrase&ntilde;a',
 	'SENDPASSWORD2' => 'Crear contrase&ntilde;a de usuario',
 	'SENDPASSWORD_EXPLAIN' => 'Ingresa tu correo electr&oacute;nico para recibir una nueva contrase&ntilde;a.',
 	'SENDPASSWORD2_EXPLAIN' => 'Por razones de seguridad no podemos mostrarte si el correo fue enviado. Si has ingresado una direcci&oacute;n v&aacute;lida, en un momento recibir&aacute;s en tu buz&oacute;n de email un c&oacute;digo para actualizar tu contrase&ntilde;a de usuario.',
 	'SENDPASSWORD3_EXPLAIN' => 'Por favor ingresa una nueva contrase&ntilde;a para tu usuario de Rock Republik.',
 	'SENDPASSWORD4_EXPLAIN' => 'Gracias por actualizar tu contrase&ntilde;a.<br /><br />Hemos enviado a tu correo electr&oacute;nico m&aacute;s informaci&oacute;n sobre este cambio de contrase&ntilde;a.',
-	'PASSWORD_RESET' => '&iquest;Has olvivado tu contrase&ntilde;a?<br />Visita la secci&oacute;n para recuperaci&oacute;n.',
+	'PASSWORD_RESET' => 'Olvid&eacute; mis datos de usuario',
 	
 	'LOGIN_PAGETITLE' => 'Area para Miembros',
 	'LOGIN_PAGE' => 'Para accesar en esta secci&oacute;n, debes ser miembro registrado',
