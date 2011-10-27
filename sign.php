@@ -58,8 +58,6 @@ switch ($mode) {
 		}
 
 		do_login();
-		
-		redirect(s_link());
 		break;
 	case 'logout':
 		if ($user->data['is_member']) {
@@ -238,7 +236,9 @@ switch ($mode) {
 					'user_birthday' => (string) $v_fields['birthday'],
 					'user_mark_items' => 0,
 					'user_topic_order' => 0,
-					'user_email_dc' => 1
+					'user_email_dc' => 1,
+					'user_refop' => $v_fields['refop'],
+					'user_refby' => $v_fields['refby']
 				);
 				$sql = 'INSERT INTO _members' . sql_build('INSERT', $member_data);
 				$user_id = sql_query_nextid($sql);
@@ -269,21 +269,14 @@ switch ($mode) {
 					$sql = 'SELECT user_id
 						FROM _members
 						WHERE user_email = ?';
-					
-					$send_invite = true;
 					if ($ref_friend = sql_field(sql_filter($sql, $v_fields['refby']), 'user_id', 0)) {
-						$send_invite = false;
-						
 						$sql_insert = array(
 							'ref_uid' => $user_id,
 							'ref_orig' => $ref_friend
 						);
 						$sql = 'INSERT INTO _members_ref_assoc' . sql_build('INSERT', $sql_insert);
 						sql_query($sql);
-					}
-					
-					if ($send_invite)
-					{
+					} else {
 						$invite_user = explode('@', $v_fields['refby']);
 						$invite_code = substr(md5(unique_id()), 0, 6);
 						
@@ -295,7 +288,7 @@ switch ($mode) {
 						$sql = 'INSERT INTO _members_ref_invite' . sql_build('INSERT', $sql_insert);
 						sql_query($sql);
 						
-						$emailer->from('info@rockrepublik.net');
+						$emailer->from('Rock Republiik Networks <info@rockrepublik.net>');
 						$emailer->use_template('user_invite');
 						$emailer->email_address($v_fields['refby']);
 						
@@ -309,13 +302,8 @@ switch ($mode) {
 					}
 				}
 				
-				// Update ref
-				$sql = 'UPDATE _members SET user_refop = ?, user_refby = ?
-					WHERE user_id = ?';
-				sql_query(sql_filter($sql, $v_fields['refop'], $v_fields['refby'], $user_id));
-				
 				// Send confirm email
-				$emailer->from('info@rockrepublik.net');
+				$emailer->from('Rock Republik Networks <info@rockrepublik.net>');
 				$emailer->use_template('user_welcome');
 				$emailer->email_address($v_fields['email']);
 				
@@ -326,7 +314,9 @@ switch ($mode) {
 				$emailer->send();
 				$emailer->reset();
 				
-				redirect(s_link('my', array('register', 'created')));
+				$user->session_create($user_id);
+				
+				redirect(s_link('my', 'profile'));
 			}
 		}
 		
