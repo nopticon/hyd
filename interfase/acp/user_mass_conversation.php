@@ -20,7 +20,7 @@ if (!defined('IN_NUCLEO')) exit;
 
 _auth('founder');
 
-require('./interfase/comments.php');
+require_once(ROOT . 'interfase/comments.php');
 $comments = new _comments();
 
 $message = '';

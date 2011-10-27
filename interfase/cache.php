@@ -46,7 +46,7 @@ class cache {
 		$filename = './cache/' . /*md5*/($var) . '.php';
 		
 		if (@file_exists($filename)) {
-			if (!@include($filename)) {
+			if (!@require_once($filename)) {
 				$this->delete($var);
 				return;
 			}

@@ -37,7 +37,7 @@ if ($submit)
 	}
 	
 	//
-	require('./interfase/comments.php');
+	require_once(ROOT . 'interfase/comments.php');
 	$comments = new _comments();
 	
 	$post_message = $comments->prepare($post_message);

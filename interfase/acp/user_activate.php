@@ -75,7 +75,7 @@ class __activate extends mac {
 			$user->save_unread(UH_T, 1455, 0, $user_id);
 			$user->save_unread(UH_U, $user_id);
 			
-			require('./interfase/emailer.php');
+			require_once(ROOT . 'interfase/emailer.php');
 			$emailer = new emailer();
 			
 			$emailer->from('info@rockrepublik.net');

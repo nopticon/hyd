@@ -571,7 +571,7 @@ class layout extends downloads {
 					WHERE ub = ?';
 				sql_query(sql_filter($sql, $current_time, $user->data['user_id'], $this->data['ub']));
 				
-				include(ROOT.'interfase/emailer.php');
+				require_once(ROOT . 'interfase/emailer.php');
 				$emailer = new emailer($config['smtp_delivery']);
 
 				$emailer->from($user->data['user_email']);

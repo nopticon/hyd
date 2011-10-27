@@ -31,7 +31,7 @@ if (strtolower($_SERVER['REQUEST_METHOD']) == 'post') {
 		if (@file_exists($module_path)) {
 			$user->init(false);
 			
-			@include($module_path);
+			@require_once($module_path);
 			return;
 		}
 	}

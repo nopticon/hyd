@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 define('IN_NUCLEO', true);
-require('./interfase/common.php');
+require_once('./interfase/common.php');
 
 $user->init();
 
@@ -152,7 +152,7 @@ else if ( isset($HTTP_POST_VARS['joingroup']) && $group_id )
 	
 	if (!$is_autogroup_enable)
 	{
-		include(ROOT.'interfase/emailer.php');
+		require_once(ROOT . 'interfase/emailer.php');
 		
 		$emailer = new emailer();
 		$emailer->from($config['board_email']);
@@ -335,7 +335,7 @@ else if ( $group_id )
 
 					$group_name = $group_name_row['group_name'];
 
-					include(ROOT.'interfase/emailer.php');
+					require_once(ROOT . 'interfase/emailer.php');
 					$emailer = new emailer();
 
 					$emailer->from($config['board_email']);
@@ -454,7 +454,7 @@ else if ( $group_id )
 						$group_name_row = $db->sql_fetchrow($result);
 						$group_name = $group_name_row['group_name'];
 
-						include(ROOT.'interfase/emailer.php');
+						require_once(ROOT . 'interfase/emailer.php');
 						$emailer = new emailer();
 
 						$emailer->from($config['board_email']);

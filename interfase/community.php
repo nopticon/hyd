@@ -22,7 +22,7 @@ class community {
 	public $comments;
 	
 	public function __construct() {
-		include('./interfase/comments.php');
+		require_once(ROOT . 'interfase/comments.php');
 		$this->comments = new _comments();
 	}
 	

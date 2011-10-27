@@ -25,7 +25,7 @@ $i_size *= 1048576;
 $error = array();
 
 if ($submit) {
-	require('./interfase/upload.php');
+	require_once(ROOT . 'interfase/upload.php');
 	$upload = new upload();
 	
 	$event_id = request_var('event_id', 0);

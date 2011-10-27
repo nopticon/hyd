@@ -41,7 +41,7 @@ if ($submit || $submit2) {
 			_die('Campos requeridos.');
 		}
 		
-		require('./interfase/comments.php');
+		require_once(ROOT . 'interfase/comments.php');
 		$comments = new _comments();
 		
 		$post_message = $comments->prepare($post_message);

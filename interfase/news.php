@@ -140,7 +140,7 @@ class _news {
 			WHERE user_id = ?';
 		$userinfo = sql_fieldrow(sql_filter($sql, $this->data['poster_id']));
 		
-		include('./interfase/comments.php');
+		require_once(ROOT . 'interfase/comments.php');
 		$comments = new _comments();
 		
 		$user_profile = $comments->user_profile($userinfo);

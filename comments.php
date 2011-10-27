@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 define('IN_NUCLEO', true);
-require('./interfase/common.php');
+require_once('./interfase/common.php');
 
 if ($config['request_method'] != 'post' || !isset($_POST)) {
 	redirect(s_link());
@@ -33,7 +33,7 @@ if (!$user->data['is_member']) {
 	do_login();
 }
 
-require('./interfase/comments.php');
+require_once(ROOT . 'interfase/comments.php');
 $comments = new _comments;
 
 $comments->ref = (isset($_POST['ref']) && !empty($_POST['ref'])) ? request_var('ref', '', true) : $user->data['session_page'];

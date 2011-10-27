@@ -32,7 +32,7 @@ I			ARTISTS IMAGES				-
 */
 
 define('IN_NUCLEO', true);
-require('./interfase/common.php');
+require_once('./interfase/common.php');
 
 $user->init();
 
@@ -168,10 +168,10 @@ $sql = 'SELECT element
 	ORDER BY element, item';
 if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
 	
-	require('./interfase/downloads.php');
-	$downloads = new downloads();
+	require_once(ROOT . 'interfase/downloads.php');
+	require_once(ROOT . './interfase/unread.php');
 	
-	require('./interfase/unread.php');
+	$downloads = new downloads();
 	$unread = new unread();
 	
 	$template->assign_block_vars('items', array());

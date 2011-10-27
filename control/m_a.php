@@ -37,7 +37,7 @@ class a extends common {
 	public $comments;
 
 	public function __construct() {
-		require('./interfase/comments.php');
+		require_once(ROOT . 'interfase/comments.php');
 		$this->comments = new _comments();
 
 		return;
@@ -399,7 +399,7 @@ class a extends common {
 		}
 
 		if (isset($_POST['confirm'])) {
-			include('./interfase/functions_admin.php');
+			require_once(ROOT . 'interfase/functions_admin.php');
 
 			$sql_a = array();
 
@@ -696,7 +696,7 @@ class a extends common {
 				GROUP BY m.user_id
 				ORDER BY m.username';
 			if ($result = sql_rowset(sql_filter($sql, $this->data['ub']))) {
-				include('./interfase/comments.php');
+				require_once(ROOT . 'interfase/comments.php');
 				$comments = new _comments();
 
 				$no_results = false;
@@ -756,7 +756,7 @@ class a extends common {
 	public function __auth_table($row, $check_unique = false) {
 		global $user, $template;
 
-		include('./interfase/comments.php');
+		require_once(ROOT . 'interfase/comments.php');
 		$comments = new _comments();
 
 		$tcol = $trow = $items = 0;
@@ -1188,7 +1188,7 @@ class a extends common {
 
 		$filesize = 3000 * 1024;
 		if (isset($_POST['submit']) && isset($_FILES['add_image'])) {
-			require('./interfase/upload.php');
+			require_once(ROOT . 'interfase/upload.php');
 			$upload = new upload();
 
 			$filepath = '..' . SDATA . 'artists/' . $this->data['ub'] . '/';

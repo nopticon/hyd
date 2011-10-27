@@ -36,7 +36,7 @@ if ($submit)
 		WHERE user_id = ?';
 	sql_query(sql_filter($sql, '4D5358', $userdata['user_id']));
 	
-	require('./interfase/comments.php');
+	require_once(ROOT . './interfase/comments.php');
 	$comments = new _comments();
 	
 	$_conv = "Saludos %s,

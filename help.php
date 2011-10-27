@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 define('IN_NUCLEO', true);
-require('./interfase/common.php');
+require_once('./interfase/common.php');
 
 $user->init();
 
@@ -134,7 +134,7 @@ if ($module_id || $help) {
 	} else {
 		$dhelp = $help_faq[$help];
 		
-		include('./interfase/comments.php');
+		require_once(ROOT . 'interfase/comments.php');
 		$comments = new _comments();
 		
 		$template->assign_block_vars('module.faq', array(

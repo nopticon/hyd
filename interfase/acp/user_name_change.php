@@ -61,7 +61,7 @@ class __activate extends mac {
 			WHERE user_id = ?';
 		sql_query(sql_filter($sql, $username2, $username_base2, $userdata['user_id']));
 		
-		require('./interfase/emailer.php');
+		require_once(ROOT . 'interfase/emailer.php');
 		$emailer = new emailer();
 		
 		$emailer->from('info@rockrepublik.net');

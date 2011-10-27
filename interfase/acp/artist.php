@@ -33,7 +33,7 @@ class __activate extends mac {
 			return false;
 		}
 		
-		require('./interfase/ftp.php');
+		require_once(ROOT . 'interfase/ftp.php');
 		$ftp = new ftp();
 		
 		if (!$ftp->ftp_connect())

@@ -21,7 +21,7 @@ if (!defined('ROOT')) {
 	define('ROOT', './');
 }
 
-require(ROOT . 'interfase/common.php');
+require_once(ROOT . 'interfase/common.php');
 
 $user->init(false);
 $user->setup();
@@ -64,7 +64,7 @@ if ($etag_client == $etag_server && $f_last_modified == $http_if_modified_since)
 	exit;
 }
 
-require(ROOT . 'interfase/jsmin.php');
+require_once(ROOT . 'interfase/jsmin.php');
 
 $is_firefox = (strstr($user->browser, 'Gecko')) ? true : false;
 $is_ie = (strstr($user->browser, 'IE')) ? true : false;

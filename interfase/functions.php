@@ -985,7 +985,7 @@ function sidebar() {
 			continue;
 		}
 		
-		@include($include_file);
+		@require_once($include_file);
 	}
 }
 
@@ -1133,7 +1133,7 @@ function _shoutcast() {
 	@fclose($connection);
 	unset($connection);
 	
-	require('./interfase/xml.php');
+	require_once(ROOT . 'interfase/xml.php');
 	$shoutcast = XML_unserialize(strstr($s_response, '<?xml'));
 	$shoutcast = $shoutcast['SHOUTCASTSERVER'];
 	

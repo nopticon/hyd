@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 define('IN_NUCLEO', true);
 define('NO_A_META', true);
-require('./interfase/common.php');
+require_once('./interfase/common.php');
 
 $user->init();
 $user->setup();

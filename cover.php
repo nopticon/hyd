@@ -17,16 +17,16 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 define('IN_NUCLEO', true);
-require('./interfase/common.php');
+require_once('./interfase/common.php');
 
 $user->init();
 $user->setup();
 
 srand((double)microtime()*1000000);
 
-require('./interfase/cover.php');
-require('./interfase/artists.php');
-require('./interfase/events.php');
+require_once(ROOT . 'interfase/cover.php');
+require_once(ROOT . 'interfase/artists.php');
+require_once(ROOT . 'interfase/events.php');
 
 $cover = new cover();
 $artists = new _artists();

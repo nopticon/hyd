@@ -26,7 +26,7 @@ $error = array();
 
 if ($submit)
 {
-	require('./interfase/upload.php');
+	require_once(ROOT . 'interfase/upload.php');
 	$upload = new upload();
 	
 	$filepath = '..' . SDATA . 'events/';

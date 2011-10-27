@@ -603,7 +603,7 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 				
 				if (sizeof($bcc_list_ary))
 				{
-					include(ROOT . 'interfase/emailer.php');
+					require_once(ROOT . 'interfase/emailer.php');
 					$emailer = new emailer();
 
 					$server_name = trim($config['server_name']);

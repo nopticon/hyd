@@ -85,7 +85,7 @@ class _chat {
 	public $comments;
 	
 	public function __construct() {
-		require('./interfase/comments.php');
+		require_once(ROOT . 'interfase/comments.php');
 		$this->comments = new _comments;
 		
 		return;

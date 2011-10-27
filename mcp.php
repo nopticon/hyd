@@ -17,8 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 define('IN_NUCLEO', true);
-include('./interfase/common.php');
-include('./interfase/emailer.php');
+require_once('./interfase/common.php');
+require_once(ROOT . 'interfase/emailer.php');
 
 $user->init();
 $user->setup();
@@ -355,7 +355,7 @@ foreach ($result as $row) {
 		
 		if ($submit)
 		{
-			require('./interfase/comments.php');
+			require_once(ROOT . 'interfase/comments.php');
 			$comments = new _comments();
 			
 			$topic_title = request_var('topic_title', '');

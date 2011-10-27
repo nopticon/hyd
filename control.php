@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 define('IN_NUCLEO', true);
-require('./interfase/common.php');
+require_once('./interfase/common.php');
 
 $user->init();
 
@@ -38,14 +38,14 @@ if (!$user->data['user_auth_control']) {
 //
 // Start control
 //
-require('./interfase/control.php');
+require_once(ROOT . 'interfase/control.php');
 $control = new control(request_var('module', ''));
 
 $user->setup('control');
 
 if (!empty($control->module_path)) {
-	require('./control/common.php');
-	require($control->module_path);
+	require_once(ROOT . 'control/common.php');
+	require_once($control->module_path);
 	
 	kernel_function('c', $control->module);
 	

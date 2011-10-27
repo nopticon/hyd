@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-include('./interfase/downloads.php');
+require_once(ROOT . 'interfase/downloads.php');
 
 class _art extends downloads {
 	public $data = array();
@@ -141,7 +141,7 @@ class _art extends downloads {
 		}
 		
 		//
-		require('./interfase/comments.php');
+		require_once(ROOT . 'interfase/comments.php');
 		$comments = new _comments();
 		
 		$sql = 'SELECT user_id, username, username_base, user_color, user_avatar

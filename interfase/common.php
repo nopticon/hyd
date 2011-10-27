@@ -73,12 +73,12 @@ if (!defined('REQC')) {
 	define('REQC', (strtolower(ini_get('request_order')) == 'gp'));
 }
 
-require(ROOT.'interfase/constants.php');
-require(ROOT.'interfase/db.mysqli.php');
-require(ROOT.'interfase/template.php');
-require(ROOT.'interfase/session.php');
-require(ROOT.'interfase/functions.php');
-require(ROOT.'interfase/cache.php');
+require_once(ROOT . 'interfase/constants.php');
+require_once(ROOT . 'interfase/db.mysqli.php');
+require_once(ROOT . 'interfase/template.php');
+require_once(ROOT . 'interfase/session.php');
+require_once(ROOT . 'interfase/functions.php');
+require_once(ROOT . 'interfase/cache.php');
 
 set_error_handler('msg_handler');
 

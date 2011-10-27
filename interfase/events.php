@@ -37,7 +37,7 @@ EVENT_TEXT		TEXT
 EVENT_POINTS	VARCHAR(10)
 */
 
-include(ROOT . 'interfase/downloads.php');
+require_once(ROOT . 'interfase/downloads.php');
 
 class _events extends downloads { 
 	public $data = array();
@@ -333,7 +333,7 @@ class _events extends downloads {
 					'EVENT_DATE' => $event_date_format)
 				);
 				
-				require(ROOT . 'interfase/comments.php');
+				require_once(ROOT . 'interfase/comments.php');
 				$comments = new _comments();
 				
 				$posts_offset = request_var('ps', 0);

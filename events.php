@@ -17,12 +17,12 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 define('IN_NUCLEO', true);
-require('./interfase/common.php');
+require_once('./interfase/common.php');
 
 $user->init();
 $user->setup();
 
-require('./interfase/events.php');
+require_once(ROOT . 'interfase/events.php');
 $events = new _events();
 
 if ($events->_setup()) {

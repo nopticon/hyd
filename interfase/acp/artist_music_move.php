@@ -20,7 +20,7 @@ if (!defined('IN_NUCLEO')) exit;
 
 _auth('founder');
 
-require('./interfase/ftp.php');
+require_once(ROOT . 'interfase/ftp.php');
 $ftp = new ftp();
 
 if (!$ftp->ftp_connect())

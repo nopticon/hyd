@@ -22,7 +22,7 @@ if (!defined('ROOT')) {
 	define('ROOT', './');
 }
 
-require(ROOT . 'interfase/common.php');
+require_once(ROOT . 'interfase/common.php');
 
 $user->init(false);
 $user->setup();

@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 define('IN_NUCLEO', true);
-require('./interfase/common.php');
+require_once('./interfase/common.php');
 
 $user->init();
 
@@ -63,7 +63,7 @@ if (!$dlist = sql_rowset(sql_filter($sql, $mode_id), 'id')) {
 
 $user->setup();
 
-require('./interfase/downloads.php');
+require_once(ROOT . 'interfase/downloads.php');
 $downloads = new downloads();
 
 foreach ($dlist as $id => $data)

@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 define('IN_NUCLEO', true);
-require('./interfase/common.php');
+require_once('./interfase/common.php');
 
 $user->init();
 
@@ -63,10 +63,10 @@ if (empty($mode)) {
 
 $user->setup();
 
-require('./interfase/comments.php');
-$comments = new _comments();
+require_once(ROOT . 'interfase/comments.php');
+require_once(ROOT . 'interfase/userpage.php');
 
-require('./interfase/userpage.php');
+$comments = new _comments();
 $userpage = new userpage();
 
 $current_time = time();

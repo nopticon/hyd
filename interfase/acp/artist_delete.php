@@ -144,7 +144,7 @@ class __activate extends mac {
 			//
 			if (count($emails))
 			{
-				require('./interfase/emailer.php');
+				require_once(ROOT . 'interfase/emailer.php');
 				$emailer = new emailer();
 				
 				//

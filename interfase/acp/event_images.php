@@ -25,7 +25,7 @@ $i_size *= 1048576;
 
 if ($submit)
 {
-	require('./interfase/upload.php');
+	require_once(ROOT . 'interfase/upload.php');
 	$upload = new upload();
 	
 	$event_id = request_var('event_id', 0);
@@ -40,8 +40,8 @@ if ($submit)
 	{
 		@set_time_limit(0);
 		
-		require('./interfase/f_zip.php');
-		require('./interfase/ftp.php');
+		require_once(ROOT . 'interfase/f_zip.php');
+		require_once(ROOT . 'interfase/ftp.php');
 		$ftp = new ftp();
 		
 		if (!$ftp->ftp_connect())

@@ -363,7 +363,7 @@ class Template {
 		$theme_info = &$$template;
 		
 		if ($filename) {
-			include($filename);
+			require_once($filename);
 		} else {
 			eval($code);
 		}

@@ -89,7 +89,7 @@ class comments extends common {
 	public function _help_home() {
 		global $user, $template;
 		
-		include('./interfase/comments.php');
+		require_once(ROOT . 'interfase/comments.php');
 		$comments = new _comments();
 		
 		$ha = $this->auth->query('comments');

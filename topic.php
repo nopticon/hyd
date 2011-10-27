@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 define('IN_NUCLEO', true);
-require('./interfase/common.php');
+require_once('./interfase/common.php');
 
 //
 // Topic vars
@@ -184,7 +184,7 @@ if ($submit_reply || $submit_vote) {
 			}
 			
 			if (!sizeof($error)) {
-				require('./interfase/comments.php');
+				require_once(ROOT . 'interfase/comments.php');
 				$comments = new _comments();
 				
 				$update_topic = array();
@@ -416,7 +416,7 @@ if ($topic_data['topic_vote']) {
 //
 // Process the topic posts
 //
-require('./interfase/comments.php');
+require_once(ROOT . 'interfase/comments.php');
 $comments = new _comments();
 
 //

@@ -279,7 +279,7 @@ class _comments {
 			
 			if ($notify) {
 				if ($this->param[0] == 'm') {
-					require('./interfase/emailer.php');
+					require_once(ROOT . 'interfase/emailer.php');
 					$emailer = new emailer();
 					
 					$emailer->from('Rock Republik <info@rockrepublik.net>');

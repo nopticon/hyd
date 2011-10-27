@@ -32,7 +32,7 @@ class __activate extends mac {
 
 _auth('founder');
 
-require('./interfase/ftp.php');
+require_once(ROOT . 'interfase/ftp.php');
 $ftp = new ftp();
 
 if (!$ftp->ftp_connect('209.51.162.170'))

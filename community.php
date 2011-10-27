@@ -17,9 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 define('IN_NUCLEO', true);
-require('./interfase/common.php');
-require('./interfase/cover.php');
-require('./interfase/community.php');
+require_once('./interfase/common.php');
+require_once(ROOT . 'interfase/cover.php');
+require_once(ROOT . 'interfase/community.php');
 
 $user->init();
 $user->setup();

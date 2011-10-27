@@ -28,7 +28,7 @@ $error = array();
 
 if ($submit)
 {
-	require('./interfase/upload.php');
+	require_once(ROOT . 'interfase/upload.php');
 	$upload = new upload();
 	
 	$a_id = request_var('artist', 0);
@@ -39,7 +39,7 @@ if ($submit)
 	
 	if (!sizeof($upload->error) && $f !== false)
 	{
-		require('./interfase/id3/getid3/getid3.php');
+		require_once(ROOT . 'interfase/id3/getid3/getid3.php');
 		$getID3 = new getID3;
 		
 		$sql = 'SELECT MAX(id) AS total

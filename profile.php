@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 define('IN_NUCLEO', true);
-require('./interfase/common.php');
+require_once('./interfase/common.php');
 
 $user->init();
 
@@ -76,7 +76,7 @@ switch ($mode) {
 			}
 			
 			if ($process) {
-				require('./interfase/emailer.php');
+				require_once(ROOT . 'interfase/emailer.php');
 				$emailer = new emailer();
 				
 				$verification_code = md5(unique_id());
@@ -140,7 +140,7 @@ switch ($mode) {
 				sql_query(sql_filter($sql, $code, $crypt_data['user_id']));
 				
 				// Send email
-				require('./interfase/emailer.php');
+				require_once(ROOT . 'interfase/emailer.php');
 				$emailer = new emailer();
 				
 				$emailer->from('Rock Republik Networks <info@rockrepublik.net>');
@@ -245,7 +245,7 @@ switch ($mode) {
 		}
 		
 		//
-		require('./interfase/emailer.php');
+		require_once(ROOT . 'interfase/emailer.php');
 		$emailer = new emailer();
 		
 		$emailer->from('info@rockrepublik.net');
@@ -468,7 +468,7 @@ switch ($mode) {
 			}
 			
 			if (!sizeof($error)) {
-				require('./interfase/functions_avatar.php');
+				require_once(ROOT . 'interfase/functions_avatar.php');
 				
 				if ($xavatar->process()) {
 					$avatar = $xavatar->file();
@@ -476,7 +476,7 @@ switch ($mode) {
 			}
 			
 			if (!sizeof($error)) {
-				require('./interfase/comments.php');
+				require_once(ROOT . 'interfase/comments.php');
 				$comments = new _comments();
 				
 				if (!empty($sig)) {
