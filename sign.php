@@ -21,10 +21,10 @@ require_once('./interfase/common.php');
 
 $user->init(false);
 
-$mode = request_var('mode', '');
+$action = request_var('mode', '');
 
-switch ($mode) {
-	case 'login':
+switch ($action) {
+	case 'in':
 		if ($user->data['is_member'] && !isset($_POST['admin'])) {
 			redirect(s_link());
 		}
@@ -56,27 +56,15 @@ switch ($mode) {
 			
 			do_login('', $adm);
 		}
-
-		do_login();
 		break;
-	case 'logout':
+	case 'out':
 		if ($user->data['is_member']) {
 			$user->session_kill();
 		}
 		
-		if ($user->data['is_founder']) {
-			redirect(s_link());
-		}
-		
-		$user->setup();
-		
-		$ref = s_link();
-		$message = $user->lang['LOGOUT_THANKS'] . '<br /><br />' . sprintf($user->lang['CLICK_RETURN_COVER'], '<a href="' . $ref . '">', '</a>');
-		
-		meta_refresh(15, $ref);
-		trigger_error($message);
+		redirect(s_link());
 		break;
-	case 'in':
+	case 'up':
 		if ($user->data['is_member']) {
 			redirect(s_link('my', 'profile'));
 		} else if ($user->data['is_bot']) {
@@ -95,10 +83,8 @@ switch ($mode) {
 			'birthday_month' => 0,
 			'birthday_day' => 0,
 			'birthday_year' => 0,
-			'country' => 0,
 			'tos' => 0,
-			'refop' => 0,
-			'refby' => ''
+			'ref' => 0
 		);
 		
 		foreach ($fields as $k => $v) {
@@ -201,6 +187,8 @@ switch ($mode) {
 			}
 			
 			if (!sizeof($error)) {
+				$v_fields['country'] = strtolower(geoip_country_code_by_name($user->ip));
+				
 				$v_fields['birthday'] = leading_zero($v_fields['birthday_year']) . leading_zero($v_fields['birthday_month']) . leading_zero($v_fields['birthday_day']);
 				
 				$member_data = array(
@@ -319,58 +307,16 @@ switch ($mode) {
 				redirect(s_link('my', 'profile'));
 			}
 		}
-		
-		//
-		// Form
-		//
-		if (!$members_refop = $cache->get('members_refop'))
-		{
-			$sql = 'SELECT *
-				FROM _members_ref_options
-				ORDER BY option_order';
-			$members_refop = sql_rowset($sql, 'option_id');
-			
-			$cache->save('members_refop', $members_refop);
-		}
-		
-		if (!$country = $cache->get('country'))
-		{
-			$sql = 'SELECT *
-				FROM _countries
-				ORDER BY country_name';
-			$country = sql_rowset($sql, 'country_id');
-			
-			$cache->save('country', $country);
-		}
-		
-		$country_codes = array();
-		foreach ($country as $item)
-		{
-			$country_codes[$item['country_short']] = $item['country_id'];
-		}
-		
-		$country_code = strtolower(geoip_country_code_by_name($user->ip));
-		
-		$v_fields['country'] = ($v_fields['country']) ? $v_fields['country'] : ((isset($country_codes[$country_code])) ? $country_codes[$country_code] : $country_codes['gt']);
-		foreach ($country as $item)
-		{
-			$template->assign_block_vars('country', array(
-				'OPTION_ID' => $item['country_id'],
-				'OPTION_NAME' => $item['country_name'],
-				'OPTION_S' => ($v_fields['country'] == $item['country_id']))
-			);
-		}
-		
-		$v_fields['refop'] = ($v_fields['refop']) ? $v_fields['refop'] : 1;
-		foreach ($members_refop as $item)
-		{
-			$template->assign_block_vars('refop', array(
-				'OPTION_ID' => $item['option_id'],
-				'OPTION_NAME' => $item['option_name'],
-				'OPTION_S' => ($v_fields['refop'] == $item['option_id']))
-			);
-		}
-		
+		break;
+	default:
+		fatal_error();
+		break;
+}
+
+//
+// Signup data
+//
+
 		if (sizeof($error))
 		{
 			$template->assign_block_vars('error', array(
@@ -437,9 +383,7 @@ switch ($mode) {
 		}
 		
 		page_layout('NEW_ACCOUNT_SUBJECT', 'subscribe', $tv);
-		break;
-}
 
-redirect(s_link());
+do_login();
 
 ?>
