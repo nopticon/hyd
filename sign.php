@@ -23,6 +23,41 @@ $user->init(false);
 
 $action = request_var('mode', '');
 
+$v_fields = array();
+$fields = array(
+	'username' => '',
+	'email' => '',
+	'key' => '',
+	'key_confirm' => '',
+	'gender' => 0,
+	'birthday_month' => 0,
+	'birthday_day' => 0,
+	'birthday_year' => 0,
+	'tos' => 0,
+	'ref' => 0
+);
+
+foreach ($fields as $k => $v) {
+	$v_fields[$k] = $v;
+}
+
+$code_invite = request_var('invite', '');
+
+if (!empty($code_invite)) {
+	$sql = 'SELECT i.invite_email, m.user_email
+		FROM _members_ref_invite i, _members m
+		WHERE i.invite_code = ?
+			AND i.invite_uid = m.user_id';
+	if (!$code_invite_row = sql_fieldrow(sql_filter($sql, $code_invite))) {
+		fatal_error();
+	}
+	
+	$v_fields['refop'] = 1;
+	$v_fields['refby'] = $code_invite_row['user_email'];
+	$v_fields['email'] = $code_invite_row['invite_email'];
+	unset($code_invite_row);
+}
+
 switch ($action) {
 	case 'in':
 		if ($user->data['is_member'] && !isset($_POST['admin'])) {
@@ -69,41 +104,6 @@ switch ($action) {
 			redirect(s_link('my', 'profile'));
 		} else if ($user->data['is_bot']) {
 			redirect(s_link());
-		}
-		
-		$code_invite = request_var('invite', '');
-		
-		$v_fields = array();
-		$fields = array(
-			'username' => '',
-			'email' => '',
-			'key' => '',
-			'key_confirm' => '',
-			'gender' => 0,
-			'birthday_month' => 0,
-			'birthday_day' => 0,
-			'birthday_year' => 0,
-			'tos' => 0,
-			'ref' => 0
-		);
-		
-		foreach ($fields as $k => $v) {
-			$v_fields[$k] = $v;
-		}
-		
-		if (!empty($code_invite)) {
-			$sql = 'SELECT i.invite_email, m.user_email
-				FROM _members_ref_invite i, _members m
-				WHERE i.invite_code = ?
-					AND i.invite_uid = m.user_id';
-			if (!$code_invite_row = sql_fieldrow(sql_filter($sql, $code_invite))) {
-				fatal_error();
-			}
-			
-			$v_fields['refop'] = 1;
-			$v_fields['refby'] = $code_invite_row['user_email'];
-			$v_fields['email'] = $code_invite_row['invite_email'];
-			unset($code_invite_row);
 		}
 		
 		//
@@ -316,73 +316,72 @@ switch ($action) {
 //
 // Signup data
 //
+if (sizeof($error))
+{
+	$template->assign_block_vars('error', array(
+		'MESSAGE' => parse_error($error))
+	);
+}
 
-		if (sizeof($error))
-		{
-			$template->assign_block_vars('error', array(
-				'MESSAGE' => parse_error($error))
-			);
-		}
-		
-		foreach ($user->lang['MEMBERSHIP_BENEFITS2'] as $item)
-		{
-			$template->assign_block_vars('list_benefits', array(
-				'ITEM' => $item)
-			);
-		}
-		
-		$s_genres_select = '';
-		$genres = array(1 => 'MALE', 2 => 'FEMALE');
-		foreach ($genres as $id => $value)
-		{
-			$s_genres_select .= '<option value="' . $id . '"' . (($v_fields['gender'] == $id) ? ' selected="true"' : '') . '>' . $user->lang[$value] . '</option>';
-		}
-		
-		$s_bday_select = '<option value="">&nbsp;</option>';
-		for ($i = 1; $i < 32; $i++)
-		{
-			$s_bday_select .= '<option value="' . $i . '"' . (($v_fields['birthday_day'] == $i) ? 'selected="true"' : '') . '>' . $i . '</option>';
-		}
-		
-		$s_bmonth_select = '<option value="">&nbsp;</option>';
-		$months = array(1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April', 5 => 'May', 6 => 'June', 7 => 'July', 8 => 'August', 9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December');
-		foreach ($months as $id => $value)
-		{
-			$s_bmonth_select .= '<option value="' . $id . '"' . (($v_fields['birthday_month'] == $id) ? ' selected="true"' : '') . '>' . $user->lang['datetime'][$value] . '</option>';
-		}
-		
-		$s_byear_select = '<option value="">&nbsp;</option>';
-		for ($i = 2005; $i > 1899; $i--)
-		{
-			$s_byear_select .= '<option value="' . $i . '"' . (($v_fields['birthday_year'] == $i) ? ' selected="true"' : '') . '>' . $i . '</option>';
-		}
-		
-		$tv = array(
-			'U_ACTION' => s_link('my', 'register'),
-			
-			'V_USERNAME' => $v_fields['username'],
-			'V_KEY' => $v_fields['key'],
-			'V_KEY_CONFIRM' => $v_fields['key_confirm'],
-			'V_EMAIL' => $v_fields['email'],
-			'V_REFBY' => $v_fields['refby'],
-			'V_GENDER' => $s_genres_select,
-			'V_BIRTHDAY_DAY' => $s_bday_select,
-			'V_BIRTHDAY_MONTH' => $s_bmonth_select,
-			'V_BIRTHDAY_YEAR' => $s_byear_select,
-			'V_TOS' => ($v_fields['tos']) ? ' checked="true"' : ''
-		);
-		
-		if (isset($error['birthday']))
-		{
-			$fields['birthday'] = true;
-		}
-		
-		foreach ($fields as $k => $v)
-		{
-			$tv['E_' . strtoupper($k)] = (isset($error[$k])) ? true : false;
-		}
-		
-		page_layout('NEW_ACCOUNT_SUBJECT', 'subscribe', $tv);
+foreach ($user->lang['MEMBERSHIP_BENEFITS2'] as $item)
+{
+	$template->assign_block_vars('list_benefits', array(
+		'ITEM' => $item)
+	);
+}
+
+$s_genres_select = '';
+$genres = array(1 => 'MALE', 2 => 'FEMALE');
+foreach ($genres as $id => $value)
+{
+	$s_genres_select .= '<option value="' . $id . '"' . (($v_fields['gender'] == $id) ? ' selected="true"' : '') . '>' . $user->lang[$value] . '</option>';
+}
+
+$s_bday_select = '<option value="">&nbsp;</option>';
+for ($i = 1; $i < 32; $i++)
+{
+	$s_bday_select .= '<option value="' . $i . '"' . (($v_fields['birthday_day'] == $i) ? 'selected="true"' : '') . '>' . $i . '</option>';
+}
+
+$s_bmonth_select = '<option value="">&nbsp;</option>';
+$months = array(1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April', 5 => 'May', 6 => 'June', 7 => 'July', 8 => 'August', 9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December');
+foreach ($months as $id => $value)
+{
+	$s_bmonth_select .= '<option value="' . $id . '"' . (($v_fields['birthday_month'] == $id) ? ' selected="true"' : '') . '>' . $user->lang['datetime'][$value] . '</option>';
+}
+
+$s_byear_select = '<option value="">&nbsp;</option>';
+for ($i = 2005; $i > 1899; $i--)
+{
+	$s_byear_select .= '<option value="' . $i . '"' . (($v_fields['birthday_year'] == $i) ? ' selected="true"' : '') . '>' . $i . '</option>';
+}
+
+$tv = array(
+	'U_ACTION' => s_link('my', 'register'),
+	
+	'V_USERNAME' => $v_fields['username'],
+	'V_KEY' => $v_fields['key'],
+	'V_KEY_CONFIRM' => $v_fields['key_confirm'],
+	'V_EMAIL' => $v_fields['email'],
+	'V_REFBY' => $v_fields['refby'],
+	'V_GENDER' => $s_genres_select,
+	'V_BIRTHDAY_DAY' => $s_bday_select,
+	'V_BIRTHDAY_MONTH' => $s_bmonth_select,
+	'V_BIRTHDAY_YEAR' => $s_byear_select,
+	'V_TOS' => ($v_fields['tos']) ? ' checked="true"' : ''
+);
+
+if (isset($error['birthday']))
+{
+	$fields['birthday'] = true;
+}
+
+foreach ($fields as $k => $v)
+{
+	$tv['E_' . strtoupper($k)] = (isset($error[$k])) ? true : false;
+}
+
+//page_layout('NEW_ACCOUNT_SUBJECT', 'subscribe', $tv);
 
 do_login();
 
