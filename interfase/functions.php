@@ -370,6 +370,10 @@ function strnoupper($in) {
 //
 // Check if is number
 //
+function is_numb($v) {
+	return @preg_match('/^\d+$/', $v);
+}
+
 function is_number($number = '') {
 	if (preg_match('/^([0-9]+)$/', $number)) {
 		return true;
@@ -1156,6 +1160,60 @@ function html_entity_decode_utf8($string) {
 	}
 	
 	return strtr($string, $trans_tbl);
+}
+
+function artist_build($ary) {
+	return implode('/', $ary);
+}
+
+function artist_path($alias, $id, $build = true, $check = false) {
+	global $config;
+	
+	$response = array($alias{0}, $alias{1}, $id);
+	
+	if ($check) {
+		artist_check($response);
+	}
+	
+	if ($build) {
+		$response = $config['artists_path'] . artist_build($response) . '/';
+	}
+	
+	return $response;
+}
+
+function artist_check($ary) {
+	global $config;
+	
+	$fullpath = $config['artists_path'];
+	
+	foreach ($ary as $row) {
+		$fullpath .= $row . '/';
+		
+		if (!@file_exists($fullpath)) {
+			if (!@mkdir($fullpath, $config['mask'])) {
+				return false;
+			}
+			@chmod($fullpath, $config['mask']);
+		}
+	}
+	
+	return true;
+}
+
+function upload_maxsize() {
+	return intval(ini_get('upload_max_filesize')) * 1048576;
+}
+
+function friendly($s) {
+	$s = preg_replace("`\[.*\]`U" ,"", $s);
+	$s = preg_replace('#&([a-zA-Z]+)acute;#is', '\\1', $s);
+	$s = preg_replace('`&(amp;)?#?[a-z0-9]+;`i', '-', $s);
+	$s = htmlentities($s, ENT_COMPAT, 'utf-8');
+	$s = preg_replace("`&([a-z])(acute|uml|circ|grave|ring|cedil|slash|tilde|caron|lig|quot|rsquo);`i", "\\1", $s);
+	$s = preg_replace(array("`[^a-z0-9]`i", "`[-]+`") , "-", $s);
+	
+	return strtolower(trim($s, '-'));
 }
 
 // Returns the utf string corresponding to the unicode value (from php.net, courtesy - romans@void.lv)

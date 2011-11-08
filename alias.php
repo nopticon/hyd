@@ -16,24 +16,20 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-if (!defined('IN_NUCLEO')) exit;
+define('IN_NUCLEO', true);
+require_once('./interfase/common.php');
 
-$qqq = set_time_limit(0);
+$sql = 'SELECT id, title
+	FROM _events
+	ORDER BY id';
+$events = sql_rowset($sql);
 
-_auth('founder');
-
-//Creating the file to compress:
-echo 'Compressing...';
-
-flush();
-//Run the command and print out the result string
-exec('tar cfvz /home/rknet/public_html/themusic.tar.gz /home/rknet/public_html/themusic/');
-flush();
-
-//Check out the compressed file:
-echo '<br /><a href="/themusic.tar.gz">Descargar</a>';
-flush();
-
-set_time_limit($qqq);
+foreach ($events as $row) {
+	$sql = 'UPDATE _events SET event_alias = ?
+		WHERE id = ?';
+	sql_query(sql_filter($sql, friendly($row['title']), $row['id']));
+	
+	echo $row['id'] . ' > ' . friendly($row['title']) . '<br />';
+}
 
 ?>

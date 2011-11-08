@@ -18,25 +18,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-/*
-STRUCT
----
-EVENT_ID			INT(11)
-EVENT_TITLE		VARCHAR(255)
-EVENT_INFO		TEXT
-EVENT_ARCHIVE	VARCHAR(50)
-EVENT_IMAGE		VARCHAR(50)
-EVENT_VIEWS		INT(11)
-EVENT_TIME		INT(11)
-EVENT_IMAGES	TINYTINT(3)
-EVENT_ALLOWD	TINYTINT(1)
-EVENT_DIMAGES	INT(11)
-
-EVENT_USER_ID	MEDIUMINT(8)
-EVENT_TEXT		TEXT
-EVENT_POINTS	VARCHAR(10)
-*/
-
 require_once(ROOT . 'interfase/downloads.php');
 
 class _events extends downloads { 
@@ -57,13 +38,15 @@ class _events extends downloads {
 	}
 	
 	public function _setup() {
-		$event_id = intval(request_var('id', 0));
-		if ($event_id > 0) {
+		$event_id = request_var('id', '');
+		
+		if (!empty($event_id)) {
+			$event_field = (!is_numb($event_id)) ? 'event_alias' : 'id';
+			
 			$sql = 'SELECT *
 				FROM _events
-				WHERE id = ?
-				ORDER BY id';
-			if ($row = sql_fieldrow(sql_filter($sql, $event_id))) {
+				WHERE ?? = ?';
+			if ($row = sql_fieldrow(sql_filter($sql, $event_field, $event_id))) {
 				$row['id'] = intval($row['id']);
 				$this->data = $row;
 				
@@ -78,6 +61,7 @@ class _events extends downloads {
 		global $config, $user, $template;
 		
 		$nevent = array();
+		
 		$sql = 'SELECT *
 			FROM _events
 			WHERE date >= ?
@@ -86,13 +70,13 @@ class _events extends downloads {
 		$result = sql_rowset(sql_filter($sql, $this->timetoday));
 		
 		foreach ($result as $row) {
-			$this->filename = $config['assets_url'] . 'events/future/thumbnails/' . $row['id'] . '.jpg';
+			$filename = $config['events_url'] . 'future/thumbnails/' . $row['id'] . '.jpg';
 
 			$template->assign_block_vars('next_event', array(
-				'URL' => s_link('events', $row['id']),
+				'URL' => s_link('events', $row['event_alias']),
 				'TITLE' => $row['title'],
 				'DATE' => $user->format_date($row['date'], $user->lang['DATE_FORMAT']),
-				'IMAGE' => $this->filename)
+				'IMAGE' => $filename)
 			); 
 		}
 		
@@ -115,10 +99,12 @@ class _events extends downloads {
 				ORDER BY RAND()';
 			$row2 = sql_fieldrow(sql_filter($sql, $row['id']));
 			
+			$filename = $config['events_url'] . 'gallery/' . $row['id'] . '/thumbnails/' . $row2['image'] . '.jpg';
+			
 			$template->assign_block_vars('last_event', array(
-				'URL' => s_link('events', $row['id']),
+				'URL' => s_link('events', $row['event_alias']),
 				'TITLE' => $row['title'],
-				'IMAGE' => $config['assets_url'] . 'events/gallery/' . $row['id'] . '/thumbnails/' . $row2['image'] . '.jpg')
+				'IMAGE' => $filename)
 			);
 		}
 		
@@ -134,7 +120,7 @@ class _events extends downloads {
 			$download_id = request_var('download_id', 0);
 			
 			if (!$download_id) {
-				redirect(s_link('events', $this->data['id']));
+				redirect(s_link('events', $this->data['event_alias']));
 			}
 			
 			if ($mode == 'view') {
@@ -157,7 +143,7 @@ class _events extends downloads {
 			}
 			
 			if (!$imagedata = sql_fieldrow($sql)) {
-				redirect(s_link('events', $this->data['id']));
+				redirect(s_link('events', $this->data['event_alias']));
 			}
 		}
 		
@@ -187,7 +173,7 @@ class _events extends downloads {
 					$sql = 'INSERT INTO _events_fav' . sql_build('INSERT', $sql_insert);
 					sql_query($sql);
 				}
-				redirect(s_link('events', array($this->data['id'], $imagedata['image'], 'view')));
+				redirect(s_link('events', array($this->data['event_alias'], $imagedata['image'], 'view')));
 				break;
 			case 'view':
 			default:
@@ -276,7 +262,7 @@ class _events extends downloads {
 					
 					foreach ($result as $row) {
 						$template->assign_block_vars('thumbnails.item', array(
-							'URL' => s_link('events', array($this->data['id'], $row['image'], 'view')),
+							'URL' => s_link('events', array($this->data['event_alias'], $row['image'], 'view')),
 							'IMAGE' => $config['assets_url'] . 'events/gallery/' . $this->data['id'] . '/thumbnails/' . $row['image'] . '.jpg',
 							'RIMAGE' => $config['assets_url'] . 'events/gallery/' . $this->data['id'] . '/' . $row['image'] . '.jpg',
 							'FOOTER' => $row['image_footer'],
@@ -403,7 +389,7 @@ class _events extends downloads {
 					$i++;
 				}
 				
-				$publish_ref = ($posts_offset) ? s_link('events', array($this->data['id'], 's' . $t_offset)) : s_link('events', $this->data['id']);
+				$publish_ref = ($posts_offset) ? s_link('events', array($this->data['event_alias'], 's' . $t_offset)) : s_link('events', $this->data['event_alias']);
 				
 				// Posting box
 				if ($user->data['is_member']) {
@@ -486,7 +472,7 @@ class _events extends downloads {
 			foreach ($gallery as $item)
 			{
 				$template->assign_block_vars('gallery.item', array(
-					'URL' => s_link('events', $item['id']),
+					'URL' => s_link('events', $item['event_alias']),
 					'TITLE' => $item['title'],
 					'IMAGE' => $config['assets_url'] . 'events/gallery/' . $item['id'] . '/thumbnails/' . $random_images[$item['id']] . '.jpg',
 					'DATETIME' => $user->format_date($item['date'], $user->lang['DATE_FORMAT']))
