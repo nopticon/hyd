@@ -910,7 +910,7 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 	//
 	// Footer
 	//
-	$u_login_logout = ($user->d('is_member')) ? 'logout' : 'login';
+	$u_login_logout = ($user->d('is_member')) ? 'signout' : 'signin';
 	
 	if (preg_match('#.*?my/confirm.*?#is', $user->d('session_page'))) {
 		$user->data['session_page'] = '';
@@ -921,7 +921,7 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 		
 		'U_SESSION' => s_link($u_login_logout),
 		'U_PROFILE' => s_link('m', $user->d('username_base')),
-		'U_REGISTER' => s_link('my', 'register'),
+		'U_REGISTER' => s_link('signup'),
 		'U_EDITPROFILE' => s_link('my', 'profile'),
 		'U_SPASSWORD' => s_link('my', 'password'),
 		'U_FAQ' => s_link('faq'),
