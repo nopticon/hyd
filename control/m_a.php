@@ -83,7 +83,7 @@ class a extends common {
 	}
 
 	public function home() {
-		global $user, $template;
+		global $config, $user, $template;
 
 		if ($this->setup()) {
 			$template->assign_block_vars('menu', array());
@@ -134,15 +134,15 @@ class a extends common {
 
 				$tcol = 0;
 				foreach ($selected_artists as $ub => $data) {
-					$image = ($data['images']) ? $ub . '/thumbnails/' . $random_images[$ub] . '.jpg' : 'default/shadow.gif';
-
 					if (!$tcol) {
 						$template->assign_block_vars('select_a.row', array());
 					}
+					
+					$image = ($data['images']) ? $ub . '/thumbnails/' . $random_images[$ub] . '.jpg' : 'default/shadow.gif';
 
 					$template->assign_block_vars('select_a.row.col', array(
 						'NAME' => $data['name'],
-						'IMAGE' => SDATA . 'artists/' . $image,
+						'IMAGE' => $config['artists_url'] . $image,
 						'URL' => s_link_control('a', array('a' => $data['subdomain'])),
 						'LOCATION' => ($data['local']) ? 'Guatemala' : $data['location'],
 						'GENRE' => $data['genre'])

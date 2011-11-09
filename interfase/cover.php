@@ -22,7 +22,7 @@ class cover {
 	public $msg;
 	
 	public function news() {
-		global $cache, $user, $template;
+		global $config, $cache, $user, $template;
 		
 		$news = array();
 		if (!$news = $cache->get('news')) {
@@ -42,13 +42,21 @@ class cover {
 		
 		include_once(ROOT . 'interfase/comments.php');
 		$comments = new _comments();
-		$images_dir = SDATA . 'news/';
 		
-		$template->assign_block_vars('news', array());
-		
-		foreach ($news as $row) {
-			$image = $images_dir . $row['news_id'] . '.jpg';
-			$image = (@file_exists('..' . $image)) ? $image : $images_dir . 'default.jpg';
+		foreach ($news as $i => $row) {
+			if (!$i) {
+				$template->assign_block_vars('news', array());
+				
+				$news_path = $config['assets_url'] . 'news/';
+			}
+			
+			$news_image = $news_path;
+			
+			if (@file_exists($news_path . $row['news_id'] . '.jpg')) {
+				$news_image .= $row['news_id'] . '.jpg';
+			} else {
+				$news_image .= 'd.jpg';
+			}
 			
 			$template->assign_block_vars('news.row', array(
 				'TIMESTAMP' => $user->format_date($row['post_time'], 'j \d\e F Y'),
@@ -57,7 +65,7 @@ class cover {
 				'CAT' => $row['cat_name'],
 				'U_CAT' => s_link('news', $row['cat_url']),
 				'MESSAGE' => $comments->parse_message($row['post_desc']),
-				'IMAGE' => $image)
+				'IMAGE' => $news_image)
 			);
 		}
 		
@@ -86,7 +94,7 @@ class cover {
 	}
 	
 	public function banners() {
-		global $cache, $user, $template;
+		global $cache, $config, $user, $template;
 		
 		$banners = array();
 		if (!$banners = $cache->get('banners')) {
@@ -104,7 +112,7 @@ class cover {
 		foreach ($banners as $item) {
 			$template->assign_block_vars('banners.item', array(
 				'URL' => (!empty($item['banner_url'])) ? $item['banner_url'] : '',
-				'IMAGE' => SDATA . 'base/' . $item['banner_id'] . '.gif',
+				'IMAGE' => $config['assets_url'] . 'base/' . $item['banner_id'] . '.gif',
 				'ALT' => $item['banner_alt'])
 			);
 		}

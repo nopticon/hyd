@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 if (!defined('IN_NUCLEO')) exit;
 
 function a_thumbnails($selected_artists, $random_images, $lang_key, $block, $item_per_col = 2) {
-	global $user, $template;
+	global $config, $user, $template;
 	
 	$template->assign_block_vars('main.' . $block, array(
 		'L_TITLE' => $user->lang[$lang_key])
@@ -27,15 +27,15 @@ function a_thumbnails($selected_artists, $random_images, $lang_key, $block, $ite
 	
 	$col = 0;
 	foreach ($selected_artists as $ub => $data) {
-		$image = ($data['images']) ? $ub . '/thumbnails/' . $random_images[$ub] . '.jpg' : 'default/shadow.gif';
-		
 		if (!$col) {
 			$template->assign_block_vars('main.' . $block . '.row', array());
 		}
 		
+		$image = ($data['images']) ? $ub . '/thumbnails/' . $random_images[$ub] . '.jpg' : 'default/shadow.gif';
+		
 		$template->assign_block_vars('main.' . $block . '.row.col', array(
 			'NAME' => $data['name'],
-			'IMAGE' => SDATA . 'artists/' . $image,
+			'IMAGE' => $config['artists_url'] . $image,
 			'URL' => s_link('a', $data['subdomain']),
 			'LOCATION' => ($data['local']) ? 'Guatemala' : $data['location'],
 			'GENRE' => $data['genre'])

@@ -47,6 +47,18 @@ if (!$topic_data = sql_fieldrow($sql)) {
 	fatal_error();
 }
 
+switch ($topic_data['forum_alias']) {
+	case 'events':
+		$sql = 'SELECT event_alias
+			FROM _events
+			WHERE event_topic = ?';
+		if ($event_alias = sql_field(sql_filter($sql, $topic_data['topic_id']), 'event_alias', '')) {
+			redirect(s_link('events', $event_alias));
+		}
+		_pre($topic_data, true);
+		break;
+}
+
 //
 // Init member
 //

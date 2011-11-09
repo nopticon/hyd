@@ -99,12 +99,10 @@ class _events extends downloads {
 				ORDER BY RAND()';
 			$row2 = sql_fieldrow(sql_filter($sql, $row['id']));
 			
-			$filename = $config['events_url'] . 'gallery/' . $row['id'] . '/thumbnails/' . $row2['image'] . '.jpg';
-			
 			$template->assign_block_vars('last_event', array(
 				'URL' => s_link('events', $row['event_alias']),
 				'TITLE' => $row['title'],
-				'IMAGE' => $filename)
+				'IMAGE' => $config['events_url'] . 'gallery/' . $row['id'] . '/thumbnails/' . $row2['image'] . '.jpg')
 			);
 		}
 		
@@ -187,7 +185,7 @@ class _events extends downloads {
 					sql_query(sql_filter($sql, $this->data['id'], $imagedata['image']));
 					
 					$template->assign_block_vars('selected', array(
-						'IMAGE' => $config['assets_url'] . 'events/gallery/' . $this->data['id'] . '/' . $imagedata['image'] . '.jpg',
+						'IMAGE' => $config['events_url'] . 'gallery/' . $this->data['id'] . '/' . $imagedata['image'] . '.jpg',
 						'WIDTH' => $imagedata['width'], 
 						'HEIGHT' => $imagedata['height'],
 						'FOOTER' => $imagedata['image_footer'])
@@ -263,8 +261,8 @@ class _events extends downloads {
 					foreach ($result as $row) {
 						$template->assign_block_vars('thumbnails.item', array(
 							'URL' => s_link('events', array($this->data['event_alias'], $row['image'], 'view')),
-							'IMAGE' => $config['assets_url'] . 'events/gallery/' . $this->data['id'] . '/thumbnails/' . $row['image'] . '.jpg',
-							'RIMAGE' => $config['assets_url'] . 'events/gallery/' . $this->data['id'] . '/' . $row['image'] . '.jpg',
+							'IMAGE' => $config['events_url'] . 'gallery/' . $this->data['id'] . '/thumbnails/' . $row['image'] . '.jpg',
+							'RIMAGE' => $config['events_url'] . 'gallery/' . $this->data['id'] . '/' . $row['image'] . '.jpg',
 							'FOOTER' => $row['image_footer'],
 							'WIDTH' => $row['width'], 
 							'HEIGHT' => $row['height'])
@@ -289,7 +287,7 @@ class _events extends downloads {
 					}
 				} else {
 					$template->assign_block_vars('event_flyer', array(
-						'IMAGE_SRC' => $config['assets_url'] . 'events/future/' . $this->data['id'] . '.jpg')
+						'IMAGE_SRC' => $config['events_url'] . 'future/' . $this->data['id'] . '.jpg')
 					);
 				}
 				
@@ -333,7 +331,7 @@ class _events extends downloads {
 					ORDER BY p.post_time DESC
 					LIMIT ??, ??';
 				if (!$messages = sql_rowset(sql_filter($sql, $topic_id, $posts_offset, $config['posts_per_page']))) {
-					redirect(s_link('topic', $topic_id));
+					//redirect(s_link('topic', $topic_id));
 				}
 				
 				if (!$posts_offset) {
@@ -474,7 +472,7 @@ class _events extends downloads {
 				$template->assign_block_vars('gallery.item', array(
 					'URL' => s_link('events', $item['event_alias']),
 					'TITLE' => $item['title'],
-					'IMAGE' => $config['assets_url'] . 'events/gallery/' . $item['id'] . '/thumbnails/' . $random_images[$item['id']] . '.jpg',
+					'IMAGE' => $config['events_url'] . 'gallery/' . $item['id'] . '/thumbnails/' . $random_images[$item['id']] . '.jpg',
 					'DATETIME' => $user->format_date($item['date'], $user->lang['DATE_FORMAT']))
 				);
 			}
@@ -497,8 +495,8 @@ class _events extends downloads {
 						'ITEM_ID' => $item['id'],
 						'TITLE' => $item['title'],
 						'DATE' => $user->format_date($item['date'], $user->lang['DATE_FORMAT']),
-						'THUMBNAIL' => $config['assets_url'] . 'events/future/thumbnails/' . $item['id'] . '.jpg',
-						'SRC' => $config['assets_url'] . 'events/future/' . $item['id'] . '.jpg',
+						'THUMBNAIL' => $config['events_url'] . 'future/thumbnails/' . $item['id'] . '.jpg',
+						'SRC' => $config['events_url'] . 'future/' . $item['id'] . '.jpg',
 						'U_TOPIC' => s_link('events', $item['id']))
 					);
 				}

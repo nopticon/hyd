@@ -41,11 +41,11 @@ class layout extends downloads {
 				$default_image = 'default2.jpg';
 			}
 			
-			$image = 'data/artists/default/' . $default_image;
+			$image = 'default/' . $default_image;
 		}
 		
 		$template->assign_block_vars('ub_image', array(
-			'IMAGE' => '/' . $image)
+			'IMAGE' => $config['artists_url'] . '/' . $image)
 		);
 		
 		if ($this->data['images'] > 1) {
@@ -154,11 +154,11 @@ class layout extends downloads {
 	// Biography
 	//
 	public function _2() {
-		global $template;
+		global $config, $template;
 		
 		if ($this->data['featured_image']) {
 			$template->assign_block_vars('featured_image', array(
-				'IMAGE' => SDATA . 'artists/' . $this->data['ub'] . '/gallery/' . $this->data['featured_image'] . '.jpg',
+				'IMAGE' => $config['artists_url'] . $this->data['ub'] . '/gallery/' . $this->data['featured_image'] . '.jpg',
 				'URL' => s_link('a', array($this->data['subdomain'], 4, $this->data['featured_image'], 'view')))
 			);
 		}
@@ -167,7 +167,7 @@ class layout extends downloads {
 		// Parse Biography
 		//		
 		$template->assign_vars(array(
-			'UB_BIO' => $this->msg->parse_message($this->data['bio'], 'bold red'))
+			'UB_BIO' => $this->msg->parse_message($this->data['bio']))
 		);
 		
 		return;
@@ -242,7 +242,7 @@ class layout extends downloads {
 					}
 					
 					$template->assign_block_vars('selected', array(
-						'IMAGE' => SDATA . 'artists/' . $this->data['ub'] . '/gallery/' . $imagedata['image'] . '.jpg',
+						'IMAGE' => $config['artists_url'] . $this->data['ub'] . '/gallery/' . $imagedata['image'] . '.jpg',
 						'WIDTH' => $imagedata['width'], 
 						'HEIGHT' => $imagedata['height'])
 					);
@@ -280,7 +280,7 @@ class layout extends downloads {
 					
 					$template->assign_block_vars('thumbnails.row.col', array(
 						'URL' => s_link('a', array($this->data['subdomain'], 4, $row['image'], 'view')),
-						'IMAGE' => SDATA . 'artists/' . $this->data['ub'] . '/thumbnails/' . $row['image'] . '.jpg',
+						'IMAGE' => $config['artists_url'] . $this->data['ub'] . '/thumbnails/' . $row['image'] . '.jpg',
 						'RIMAGE' => get_a_imagepath(SDATA . 'artists/' . $this->data['ub'], $row['image'] . '.jpg', array('x1', 'gallery')),
 						'WIDTH' => $row['width'], 
 						'HEIGHT' => $row['height'],
@@ -324,23 +324,6 @@ class layout extends downloads {
 		}
 		
 		switch ($mode) {
-			case 'save':
-				$lyric_data['text'] = str_replace("\n", "\r\n", $lyric_data['text']);
-				
-				$orig_file = implode("\r\n", @file('../net/template/lyrics.txt'));
-				$orig_vars = array('{ARTIST}', '{EMAIL}', '{WEBSITE}', '{LYRIC_TITLE}', '{LYRIC_AUTHOR}', '{LYRIC_TEXT}');
-				$repl_vars = array($this->data['name'], $this->data['email'], $this->data['www'], $lyric_data['title'], $lyric_data['author'], $lyric_data['text']);
-				
-				if (!$this->auth['mod']) {
-					$sql = 'UPDATE _artists_lyrics SET downloads = downloads + 1
-						WHERE id = ?
-							AND ub = ?';
-					sql_query(sql_filter($sql, $lyric_data['id'], $this->data['ub']));
-				}
-				
-				$this->filename = $this->data['name'] . '_' . $lyric_data['title'] . '.txt';
-				$this->dl_file('', '', str_replace($orig_vars, $repl_vars, $orig_file), 'text/txt');
-				break;
 			case 'view':
 			default:
 				if ($mode == 'view') {
@@ -357,9 +340,7 @@ class layout extends downloads {
 						'TITLE' => $lyric_data['title'],
 						'AUTHOR' => $lyric_data['author'],
 						'TEXT' => str_replace("\n", '<br />', $lyric_data['text']),
-						'VIEWS' => $lyric_data['views'],
-						'DOWNLOADS' => $lyric_data['downloads'],
-						'U_DOWNLOAD' => s_link('a', array($this->data['subdomain'], 6, $lyric_data['id'], 'save')))
+						'VIEWS' => $lyric_data['views'])
 					);
 				}
 				
@@ -760,9 +741,8 @@ class layout extends downloads {
 			ORDER BY video_added DESC';
 		$result = sql_rowset(sql_filter($sql, $this->data['ub']));
 		
-		$video = 0;
-		foreach ($result as $row) {
-			if (!$video) {
+		foreach ($result as $i => $row) {
+			if (!$i) {
 				$template->assign_block_vars('video', array());
 			}
 			
@@ -771,8 +751,6 @@ class layout extends downloads {
 				'CODE' => $row['video_code'],
 				'TIME' => $user->format_date($row['video_added']))
 			);
-			
-			$video++;
 		}
 		
 		return;
@@ -948,7 +926,7 @@ class _artists extends layout {
 	}
 	
 	public function last_records() {
-		global $user, $cache, $template;
+		global $user, $config, $cache, $template;
 		
 		if (!$a_records = $cache->get('a_records')) {
 			$sql = 'SELECT ub, subdomain, name, genre
@@ -991,7 +969,7 @@ class _artists extends layout {
 				$ai_select = array_rand($ai_records[$row['ub']]);
 				
 				$template->assign_block_vars('a_records.item.image', array(
-					'IMAGE' => SDATA . 'artists/' . $row['ub'] . '/thumbnails/' . $ai_records[$row['ub']][$ai_select] . '.jpg')
+					'IMAGE' => $config['artists_url'] . $row['ub'] . '/thumbnails/' . $ai_records[$row['ub']][$ai_select] . '.jpg')
 				);
 			}
 		}
@@ -1020,7 +998,7 @@ class _artists extends layout {
 	}
 	
 	public function top_stats() {
-		global $user, $template;
+		global $user, $config, $template;
 		
 		$template->assign_block_vars('a_stats', array());
 		
@@ -1044,7 +1022,7 @@ class _artists extends layout {
 				$selected_image = array_rand($a_random);
 				if (isset($a_random[$selected_image])) {
 					$template->assign_block_vars('a_stats.gallery', array(
-						'IMAGE' => SDATA . 'artists/' . $all_data['datetime']['ub'] . '/thumbnails/' . $a_random[$selected_image] . '.jpg',
+						'IMAGE' => $config['artists_url'] . $all_data['datetime']['ub'] . '/thumbnails/' . $a_random[$selected_image] . '.jpg',
 						'URL' => s_link('a', $all_data['datetime']['subdomain']))
 					);
 				}
@@ -1067,7 +1045,7 @@ class _artists extends layout {
 	}
 	
 	public function thumbnails() {
-		global $cache, $template;
+		global $cache, $config, $template;
 		
 		if (!$a_recent = $cache->get('a_recent')) {
 			$sql = 'SELECT ub
@@ -1122,7 +1100,7 @@ class _artists extends layout {
 			foreach ($a_ary as $ub => $data) {
 				$template->assign_block_vars('thumbnails.item', array(
 					'NAME' => $data['name'],
-					'IMAGE' => SDATA . 'artists/' . $ub . '/thumbnails/' . $random_images[$ub] . '.jpg',
+					'IMAGE' => $config['artists_url'] . $ub . '/thumbnails/' . $random_images[$ub] . '.jpg',
 					'URL' => s_link('a', $data['subdomain']),
 					'LOCATION' => ($data['local']) ? 'Guatemala' : $data['location'],
 					'GENRE' => $data['genre'])
@@ -1138,7 +1116,7 @@ class _artists extends layout {
 			return;
 		}
 		
-		$gallery_path = 'data/artists/';
+		global $config;
 		
 		if ($mainframe) {
 			$sql = 'SELECT i.* 
@@ -1159,7 +1137,7 @@ class _artists extends layout {
 		if ($ub && !$mainframe) {
 			if ($row = sql_fieldrow($sql)) {
 				$this->images[$row['ub']][$row['image']] = array(
-					'path' => $gallery_path . $row['ub'] . '/gallery/' . $row['image'] . '.jpg',
+					'path' => $config['artists_url'] . $row['ub'] . '/gallery/' . $row['image'] . '.jpg',
 					'image' => $row['image'],
 					'allow_dl' => $row['allow_dl']
 				);
@@ -1172,7 +1150,7 @@ class _artists extends layout {
 		
 		foreach ($result as $row) {
 			$this->images[$row['ub']][$row['image']] = array(
-				'path' => $gallery_path . $row['ub'] . '/gallery/' . $row['image'] . '.jpg',
+				'path' => $config['artists_url'] . $row['ub'] . '/gallery/' . $row['image'] . '.jpg',
 				'image' => $row['image'],
 				'allow_dl' => $row['allow_dl']
 			);
@@ -1306,7 +1284,7 @@ class _artists extends layout {
 			
 			$template->assign_block_vars('search_match.row.col', array(
 				'NAME' => $data['name'],
-				'IMAGE' => SDATA . 'artists/' . $image,
+				'IMAGE' => $config['artists_url'] . $image,
 				'URL' => s_link('a', $data['subdomain']),
 				'LOCATION' => ($data['local']) ? 'Guatemala' : $data['location'],
 				'GENRE' => $data['genre'])
@@ -1548,8 +1526,8 @@ class _artists extends layout {
 								'ITEM_ID' => $item['id'],
 								'TITLE' => $item['title'],
 								'DATE' => $user->format_date($item['date']),
-								'THUMBNAIL' => SDATA . 'events/future/thumbnails/' . $item['id'] . '.jpg',
-								'SRC' => SDATA . 'events/future/' . $item['id'] . '.jpg')
+								'THUMBNAIL' => $config['events_url'] . 'future/thumbnails/' . $item['id'] . '.jpg',
+								'SRC' => $config['events_url'] . 'future/' . $item['id'] . '.jpg')
 							);
 						}
 					}
@@ -1798,7 +1776,7 @@ class _artists extends layout {
 			
 			$template->assign_block_vars('random_a', array(
 				'NAME' => $row['name'],
-				'IMAGE' => SDATA . 'artists/' . ((isset($row['rand_image'])) ? $row['ub'] . '/thumbnails/' . $row['rand_image'] . '.jpg' : 'default/shadow.gif'),
+				'IMAGE' => $config['artists_url'] . ((isset($row['rand_image'])) ? $row['ub'] . '/thumbnails/' . $row['rand_image'] . '.jpg' : 'default/shadow.gif'),
 				'URL' => s_link('a', $row['subdomain']),
 				'LOCATION' => ($row['local']) ? 'Guatemala' : $row['location'],
 				'GENRE' => $row['genre'])
