@@ -306,7 +306,7 @@ function _substr($a, $k, $r = '...') {
 function s_link($module = '', $data = false) {
 	global $config;
 	
-	$url = 'http://';
+	$url = '//';
 	$is_a = is_array($data);
 	if ($_SERVER['REMOTE_ADDR'] != '127.0.0.1' && $module == 'a' && $data !== false && ((!$is_a && !preg_match('/^_([0-9]+)$/i', $data)) || ($is_a && count($data) == 2))) {
 		$subdomain = ($is_a) ? $data[0] : $data;

@@ -1270,7 +1270,7 @@ class Template {
 				'PHP' => 'php',
 				'LANG' => $config['default_lang'],
 				
-				'S_SERVER' => 'http://' . $config['server_name'],
+				'S_SERVER' => '//' . $config['server_name'],
 				'S_ASSETS' => $config['assets_url'],
 				'S_COMMENTS' => s_link('comments'),
 				'S_EMOTICONS' => s_link('emoticons'),
@@ -1280,7 +1280,8 @@ class Template {
 				'TEMPLATE_NAME' => $this->tpl,
 				
 				'IS_MEMBER' => (isset($user->data['is_member'])) ? (int) $user->data['is_member'] : 0,
-				'MEMBER_COLOR' => $user->data['user_color']
+				'MEMBER_COLOR' => $user->data['user_color'],
+				'FOOTER_YEAR' => date('Y')
 			);
 			
 			$this->vars = array_merge($this->vars, $extra_template);
