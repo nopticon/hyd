@@ -25,16 +25,21 @@ require_once(ROOT . 'interfase/facebook.php');
 
 $user->init(false, true);
 
+$d = decode_ht('.htf_');
+
+$fbd = new stdClass();
+foreach (w('page appid secret token') as $i => $k)
+{
+	$fbd->$k = _decode($d[$i]);
+}
+unset($d);
+
 $facebook_page = '48722647107';
 
 $facebook = new Facebook(array(
-	'appId'  => '',
-	'secret' => ''
-));
-
-if ($d === false) {
-	$d = decode_ht('.htfat');
-}
+	'appId'  => $fbd->appid,
+	'secret' => $fbd->secret)
+);
 
 foreach (w('at') as $i => $k)
 {
@@ -42,7 +47,7 @@ foreach (w('at') as $i => $k)
 }
 
 $attr = array(
-	'access_token' => ''
+	'access_token' => $fbd->token
 );
 
 $likes = (object) $facebook->api($facebook_page);
@@ -51,7 +56,7 @@ if (isset($likes->likes)) {
 	$cache->save('fb_likes', $likes->likes);
 }
 
-$wall = $facebook->api($facebook_page . '/albums/', $attr);
+$wall = $facebook->api($facebook_page . '/feed/', $attr);
 
 $official_posts = array();
 foreach ($wall['data'] as $row) {
