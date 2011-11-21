@@ -56,15 +56,42 @@ if (isset($likes->likes)) {
 	$cache->save('fb_likes', $likes->likes);
 }
 
-$wall = $facebook->api($facebook_page . '/feed/', $attr);
+$wall = $facebook->api($fbd->page . '/feed/', $attr);
+
+$wall_feed = array_reverse($wall['data']);
+$from_time = 1321336800;
 
 $official_posts = array();
-foreach ($wall['data'] as $row) {
+foreach ($wall_feed as $row) {
 	if ($row['from']['id'] != $facebook_page) {
 		continue;
 	}
 	
 	$created_time = strtotime($row['created_time']);
+	
+	if ($created_time < $from_time) {
+		continue;
+	}
+	
+	$sql = 'SELECT *
+		FROM _news
+		WHERE news_fbid = ?';
+	if (sql_fieldrow(sql_filter($sql, $row['id']))) {
+		continue;
+	}
+	
+	if (isset($row['picture'])) {
+		if (strpos($row['picture'], 'safe_image') !== false) {
+			$row['picture'] = explode('&', $row['picture']);
+			
+			foreach ($row['picture'] as $picture_row) {
+				if (($url_pos = strpos($picture_row, 'url=')) !== false) {
+					$row['picture'] = urldecode(substr($picture_row, 4));
+					break;
+				}
+			}
+		}
+	}
 	
 	/*$sql_insert = array(
 		'' => '',
@@ -80,7 +107,7 @@ foreach ($wall['data'] as $row) {
 	$official_posts[] = $row;
 }
 
-_pre($likes);
+//_pre($likes);
 _pre($official_posts, true);
 
 ?>
