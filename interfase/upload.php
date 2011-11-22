@@ -42,114 +42,179 @@ class upload {
 		return array_values($file_ary);
 	}
 	
-	function get_extension($file) {
+	public function get_extension($file) {
 		return strtolower(str_replace('.', '', substr($file, strrpos($file, '.'))));
 	}
 	
-	function rename($a, $b) {
-		$filename = str_replace($a['random_name'], $b, $a['filepath']);
-		@rename($a['filepath'], $filename);
-		@chmod($filename, 0644);
+	public function rename($a, $b) {
+		global $config;
+		
+		$filename = str_replace($a->random, $b, $a->filepath);
+		@rename($a->filepath, $filename);
+		@chmod($filename, $config['mask']);
 		
 		return $filename;
 	}
 	
-	function _row($filepath, $filename) {
-		$row = array(
+	public function _row($filepath, $filename) {
+		$row = (object) array(
 			'extension' => $this->get_extension($filename),
 			'name' => strtolower($filename),
-			'random_name' => time() . '_' . substr(md5(unique_id()), 6)
+			'random' => time() . '_' . substr(md5(unique_id()), 0, 6)
 		);
 		
-		$row['filename'] = $row['random_name'] . '.' . $row['extension'];
-		$row['filepath'] = $filepath . $row['filename'];
+		$row->filename = $row->random . '.' . $row->extension;
+		$row->filepath = $filepath . $row->filename;
 		
 		return $row;
 	}
 	
-	function process($filepath, $files, $extension, $filesize, $safe = true) {
-		global $user;
+	public function remote($filepath, $locations, $extension, $filesize = false, $safe = true) {
+		global $user, $config;
 		
+		$files = array();
 		$umask = umask(0);
-		$files = $this->array_merge($files);
-		if (!sizeof($files)) {
+		
+		if (!sizeof($locations)) {
 			$this->error[] = 'FILES_NO_FILES';
 			return false;
 		}
 		
-		foreach ($files as $i => $row) {
-			$row['extension'] = $this->get_extension($row['name']);
-			$row['name'] = strtolower($row['name']);
+		foreach ($locations as $location) {
+			$row = $this->_row($filepath, $location);
 			
-			if (!in_array($row['extension'], $extension)) {
-				$this->error[] = sprintf($user->lang['UPLOAD_INVALID_EXT'], $row['name']);
-				$row['error'] = 1;
-			} elseif ($safe) {
-				if (preg_match('/\.(cgi|pl|js|asp|php|html|htm|jsp|jar|exe|dll|bat)/', $row['name'])) {
-					$row['extension'] = 'txt';
+			if (!in_array($row->extension, $extension)) {
+				$this->error[] = sprintf($user->lang['UPLOAD_INVALID_EXT'], $row->name);
+				$row->error = 1;
+				continue;
+			}
+			
+			if ($safe) {
+				if (preg_match('/\.(cgi|pl|js|asp|php|html|htm|jsp|jar|exe|dll|bat)/', $row->name)) {
+					$row->extension = 'txt';
 				}
-			} elseif ($row['size'] > $filesize) {
-				$this->error[] = sprintf($user->lang['UPLOAD_TOO_BIG'], $row['name'], ($filesize / 1048576));
-				$row['error'] = 1;
 			}
 			
-			if (isset($row['error']) && $row['error'] === 1) {
-				unset($files[$i]);
+			if (!@copy($location, $row->filepath)) {
+				$this->error[] = sprintf($user->lang['UPLOAD_FAILED'], $row->name);
+				$row->error = 1;
 				continue;
 			}
-			$files[$i] = $row;
-		}
-		
-		foreach ($files as $i => $row) {
-			$row['random_name'] = time() . '_' . substr(md5(unique_id()), 6);
-			$row['filename'] = $row['random_name'] . '.' . $row['extension'];
-			$row['filepath'] = $filepath . $row['filename'];
 			
-			if (@move_uploaded_file($row['tmp_name'], $row['filepath'])) {
-				@chmod($row['filepath'], 0644);
-			} else {
-				$this->error[] = sprintf($user->lang['UPLOAD_FAILED'], $row['name']);
-				$row['error'] = 1;
-			}
+			$umask = umask(0);
+			@chmod($row->filepath, $config['mask']);
+			@umask($umask);
 			
-			if (@filesize($row['filepath']) > $filesize) {
-				$this->error[] = sprintf($user->lang['UPLOAD_TOO_BIG'], $row['name'], ($filesize / 1048576));
-				$row['error'] = 1;
-			}
-			
-			if (isset($row['error']) && $row['error'] === 1) {
-				@unlink($row['filepath']);
-				unset($files[$i]);
-				continue;
-			}
-			$files[$i] = $row;
+			$files[] = $row;
 		}
 		
 		@umask($umask);
 		return (count($files)) ? $files : false;
 	}
 	
-	function resize(&$row, $folder_a, $folder_b, $filename, $measure, $mscale = true, $watermark = true, $remove = false, $watermark_file = false) {
-		$a_filename = $filename . '.' . $row['extension'];
-		$source = $folder_a . $row['filename'];
-		$destination = $folder_b . $a_filename;
+	public function process($filepath, $files, $extension, $filesize = false, $safe = true) {
+		global $user, $config;
 		
-		// Get source image data
-		list($width, $height, $type, $void) = @getimagesize($source);
-		if ($width < 1 && $height < 1) {
+		$umask = umask(0);
+		$files = $this->array_merge($files);
+		
+		if (!sizeof($files)) {
+			$this->error[] = 'FILES_NO_FILES';
 			return false;
 		}
 		
-		if ($width < $measure[0] && $height < $measure[1]) {
-			$measure[0] = $width;
-			$measure[1] = $height;
+		if ($filesize === false) {
+			$filesize = upload_maxsize();
 		}
 		
-		$scale_mode = ($mscale === true) ? 'c' : 'v';
-		$row = array_merge($row, array('width' => $width, 'height' => $height, 'mwidth' => $measure[0], 'mheight' => $measure[1]));
-		$row = array_merge($row, $this->scale($scale_mode, $row));
+		foreach ($files as $i => $row) {
+			$r = $this->_row($filepath, $row['name']);
+			
+			$r->size = $row['size'];
+			$r->tmp = $row['tmp_name'];
+			
+			if ($safe && preg_match('/\.(cgi|pl|js|asp|php|html|htm|jsp|jar|exe|dll|bat)/', $r->name)) {
+				$r->extension = 'txt';
+			}
+			
+			if (!in_array($r->extension, $extension)) {
+				$this->error[] = sprintf($user->lang['UPLOAD_INVALID_EXT'], $r->name);
+				$r->error = 1;
+				continue;
+			}
+			
+			if ($r->size > $filesize) {
+				$this->error[] = sprintf($user->lang['UPLOAD_TOO_BIG'], $r->name, ($filesize / 1048576));
+				$r->error = 1;
+				continue;
+			}
+			
+			if (!@move_uploaded_file($r->tmp, $r->filepath)) {
+				$this->error[] = sprintf($user->lang['UPLOAD_FAILED'], $r->name);
+				$r->error = 1;
+				continue;
+			}
+			
+			@chmod($row['filepath'], 0644);
+			
+			if (@filesize($r->filepath) > $filesize) {
+				@unlink($r->filepath);
+				$this->error[] = sprintf($user->lang['UPLOAD_TOO_BIG'], $r->name, ($filesize / 1048576));
+				$r->error = 1;
+				continue;
+			}
+			
+			$files[$i] = $r;
+		}
 		
-		switch ($type) {
+		@umask($umask);
+		return (count($files)) ? $files : false;
+	}
+	
+	public function resize(&$row, $folder_a, $folder_b, $filename, $measure, $do_scale = true, $watermark = true, $remove = false, $watermark_file = false) {
+		global $config;
+		
+		$t = (object) array(
+			'filename' => $filename . '.' . $row->extension,
+			'source' => $folder_a . $row->filename
+		);
+		
+		if (!@is_readable($t->source)) {
+			$row->error = 'not_readable';
+			return false;
+		}
+		
+		$t->destination = $folder_b . $t->filename;
+		
+		foreach ($t as $tk => $tv) {
+			$row->$tk = $tv;
+		}
+		
+		// Get source image data
+		$dim = @getimagesize($t->source);
+		
+		if ($dim[0] < 1 && $dim[1] < 1) {
+			$row->error = 'bad_size';
+			return false;
+		}
+		
+		if ($dim[0] < $measure[0] && $dim[1] < $measure[1]) {
+			$measure[0] = $dim[0];
+			$measure[1] = $dim[1];
+		}
+		
+		$row->width = $dim[0];
+		$row->height = $dim[1];
+		$row->mwidth = $measure[0];
+		$row->mheight = $measure[1];
+		
+		$mode = ($do_scale === true) ? 'c' : 'v';
+		$scale = $this->scale($mode, $row);
+		
+		$row->width = $scale->width;
+		$row->height = $scale->height;
+		
+		switch ($dim[2]) {
 			case IMG_JPG:
 				$image_f = 'imagecreatefromjpeg';
 				$image_g = 'imagejpeg';
@@ -167,95 +232,82 @@ class upload {
 				break;
 		}
 		
-		if (!$image = @$image_f($source)) {
+		if (!$generated = $image_f($t->source)) {
 			return false;
 		}
 		
-		@imagealphablending($image, true);
-		$thumb = @imagecreatetruecolor($row['width'], $row['height']);
-		@imagecopyresampled($thumb, $image, 0, 0, 0, 0, $row['width'], $row['height'], $width, $height);
+		imagealphablending($generated, true);
+		$thumb = imagecreatetruecolor($row->width, $row->height);
+		imagecopyresampled($thumb, $generated, 0, 0, 0, 0, $row->width, $row->height, $dim[0], $dim[1]);
 		
 		// Watermark
 		if ($watermark) {
 			if ($watermark_file === false) {
-				$watermark_file = 'w';
+				$watermark_file = $config['watermark'];
 			}
 			
-			$wm = imagecreatefrompng('../home/style/images/' . $watermark_file . '.png');
-			$wm_w = imagesx($wm);
-			$wm_h = imagesy($wm);
-			
-			if ($watermark_file == 'w') {
-				$dest_x = $row['width'] - $wm_w - 5;
-				$dest_y = $row['height'] - $wm_h - 5;
+			if (!empty($watermark_file)) {
+				$wm = imagecreatefrompng($watermark_file);
+				$wm_w = imagesx($wm);
+				$wm_h = imagesy($wm);
 				
-				imagecopymerge($thumb, $wm, $dest_x, $dest_y, 0, 0, $wm_w, $wm_h, 100);
-				imagedestroy($wm);
-			} else {
-				$dest_x = round(($row['width'] / 2) - ($wm_w / 2));
-				$dest_y = round(($row['height'] / 2) - ($wm_h / 2));
-				
-				$thumb = $this->alpha_overlay($thumb, $wm, $wm_w, $wm_h, $dest_x, $dest_y, 100);
+				if ($watermark_file == 'w') {
+					$dest_x = $row->width - $wm_w - 5;
+					$dest_y = $row->height - $wm_h - 5;
+					
+					imagecopymerge($thumb, $wm, $dest_x, $dest_y, 0, 0, $wm_w, $wm_h, 100);
+					imagedestroy($wm);
+				} else {
+					$dest_x = round(($row->width / 2) - ($wm_w / 2));
+					$dest_y = round(($row->height / 2) - ($wm_h / 2));
+					
+					$thumb = $this->alpha_overlay($thumb, $wm, $wm_w, $wm_h, $dest_x, $dest_y, 100);
+				}
 			}
-			
-			/*
-			if ($watermark_file === false) {
-				$watermark_file = 'w';
-			}
-			$wm = imagecreatefrompng('../home/style/images/' . $watermark_file . '.png');
-			$wm_w = imagesx($wm);
-			$wm_h = imagesy($wm);
-			
-			if ($watermark_file == 'w') {}
-				$dest_x = $row['width'] - $wm_w - 5;
-				$dest_y = $row['height'] - $wm_h - 5;
-			} else {
-				$dest_x = round(($row['width'] / 2) - ($wm_w / 2));
-				$dest_y = round(($row['height'] / 2) - ($wm_h / 2));
-			}
-			
-			imagecopymerge($thumb, $wm, $dest_x, $dest_y, 0, 0, $wm_w, $wm_h, 100);
-			imagedestroy($wm);
-			*/
 		}
 		
-		eval('$created = @' . $image_g . '($thumb, $destination' . (($type == IMG_JPG) ? ', 85' : '') . ');');
-		if (!$created || !@file_exists($destination)) {
+		if ($type == IMG_JPG) {
+			$created = @$image_g($thumb, $t->destination, 85);
+		} else {
+			$created = @$image_g($thumb, $t->destination);
+		}
+		
+		if (!$created || !file_exists($t->destination)) {
+			$row->error = 'not_created';
 			return false;
 		}
 		
-		@chmod($destination, 0644);
-		@imagedestroy($thumb);
-		@imagedestroy($image);
+		chmod($t->destination, $config['mask']);
+		imagedestroy($thumb);
+		imagedestroy($image);
 		
-		if ($remove && @file_exists($source)) {
-			@unlink($source);
+		if ($remove && file_exists($t->source)) {
+			unlink($t->source);
 		}
 		
-		$row['filename'] = $a_filename;
-		return $row;
+		return true;
 	}
 	
-	function scale($mode, $a) {
+	public function scale($mode, $a) {
 		switch ($mode) {
 			case 'c':
-				$width = $a['mwidth'];
-				$height = round(($a['height'] * $a['mwidth']) / $a['width']);
+				$width = $a->mwidth;
+				$height = round(($a->height * $a->mwidth) / $a->width);
 				break;
 			case 'v':
-				if ($a['width'] > $a['height']) {
-					$width = round($a['width'] * ($a['mwidth'] / $a['width']));
-					$height = round($a['height'] * ($a['mwidth'] / $a['width']));
+				if ($a->width > $a->height) {
+					$width = round($a->width * ($a->mwidth / $a->width));
+					$height = round($a->height * ($a->mwidth / $a->width));
 				} else {
-					$width = round($a['width'] * ($a['mwidth'] / $a['height']));
-					$height = round($a['height'] * ($a['mwidth'] / $a['height']));
+					$width = round($a->width * ($a->mwidth / $a->height));
+					$height = round($a->height * ($a->mwidth / $a->height));
 				}
 				break;
 		}
-		return array('width' => $width, 'height' => $height);
+		return (object) array('width' => $width, 'height' => $height);
 	}
 	
-	function alpha_overlay($destImg, $overlayImg, $imgW, $imgH, $onx, $ony, $alpha = 0) {
+	public function alpha_overlay($destImg, $overlayImg, $imgW, $imgH, $onx, $ony, $alpha = 0) {
 		for ($y = 0; $y < $imgH; $y++) {
 			for ($x = 0; $x < $imgW; $x++) {
 				$ovrARGB = imagecolorat($overlayImg, $x, $y);
@@ -291,11 +343,11 @@ class upload {
 		return $destImg;
 	}
 	
-	function picnik_import() {
+	public function picnik_import() {
 		global $config;
 	}
 	
-	function picnik_export() {
+	public function picnik_export() {
 		global $config;
 	}
 }

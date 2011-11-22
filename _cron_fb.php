@@ -22,8 +22,15 @@ require_once('./interfase/common.php');
 header('Content-type: text/html; charset=utf-8');
 
 require_once(ROOT . 'interfase/facebook.php');
+require_once(ROOT . 'interfase/upload.php');
 
 $user->init(false, true);
+
+$upload = new upload();
+
+// ------------------------------------------------------------------
+
+//------------------------------------------------------------
 
 $d = decode_ht('.htf_');
 
@@ -40,6 +47,8 @@ $facebook = new Facebook(array(
 	'appId'  => $fbd->appid,
 	'secret' => $fbd->secret)
 );
+
+$upload = new upload();
 
 foreach (w('at') as $i => $k)
 {
@@ -91,6 +100,19 @@ foreach ($wall_feed as $row) {
 				}
 			}
 		}
+		
+		$f = $upload->remote($config['news_path'], array($row['picture']), array('jpg', 'jpeg', 'png'));
+				
+		foreach ($f as $row) {
+			$mini = $upload->resize($row, $config['news_path'], $config['news_path'], 1, array(100, 75), false, false, true);
+		}
+		
+		echo '<pre>';
+		print_r($upload);
+		print_r($f);
+		echo '</pre>';
+		exit;
+		
 	}
 	
 	/*$sql_insert = array(
@@ -98,6 +120,8 @@ foreach ($wall_feed as $row) {
 	);
 	$sql = 'INSERT INTO _news' . sql_build('INSERT', $sql_insert);
 	sql_query($sql);
+	 * 
+	 * rk user (1433)
 	*/
 	
 	
