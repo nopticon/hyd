@@ -28,28 +28,24 @@ class __activate extends mac {
 	public function home() {
 		global $user;
 		
-		if (!$this->submit)
-		{
+		if (!$this->submit) {
 			return false;
 		}
 		
 		require_once(ROOT . 'interfase/ftp.php');
 		$ftp = new ftp();
 		
-		if (!$ftp->ftp_connect())
-		{
+		if (!$ftp->ftp_connect()) {
 			_die('Can not connnect');
 		}
 		
-		if (!$ftp->ftp_login())
-		{
+		if (!$ftp->ftp_login()) {
 			$ftp->ftp_quit();
 			_die('Can not login');
 		}
 		
 		$v = array('name' => '', 'local' => 0, 'location' => '', 'genre' => '', 'email' => '', 'www' => '', 'mods' => '');
-		foreach ($v as $k => $vv)
-		{
+		foreach ($v as $k => $vv) {
 			${$k} = request_var($k, $vv);
 		}
 		
@@ -109,13 +105,11 @@ class __activate extends mac {
 				//
 				$update = array('user_type' => USER_ARTIST, 'user_auth_control' => 1);
 				
-				if ($userdata['user_color'] == '4D5358')
-				{
+				if ($userdata['user_color'] == '4D5358') {
 					$update['user_color'] = '492064';
 				}
 				
-				if (!$userdata['user_rank'])
-				{
+				if (!$userdata['user_rank']) {
 					$update['user_rank'] = (int) $config['default_a_rank'];
 				}
 				

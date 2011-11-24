@@ -131,7 +131,7 @@ class __artist_delete extends mac {
 			$d_sql[] = sql_filter('DELETE FROM _artists
 				WHERE ub = ?', $a_data['ub']);
 			
-			if (!s_dir('../data/artists/' . $a_data['ub']))
+			if (!$this->s_dir('../data/artists/' . $a_data['ub']))
 			{
 				echo 'error en carpetas';
 				return;
@@ -181,7 +181,7 @@ class __artist_delete extends mac {
 		}
 	}
 	
-	function s_dir($path) {
+	private function s_dir($path) {
 		if (!@file_exists($path)) {
 			echo 'No folder ' . $path;
 			return false;

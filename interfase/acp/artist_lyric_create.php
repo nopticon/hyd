@@ -18,31 +18,39 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-_auth('founder');
-
-if ($submit)
-{
-	$request = array('ub' => 0, 'title' => '', 'author' => '', 'text' => '');
-	foreach ($request as $k => $v)
-	{
-		$request[$k] = request_var($k, $v);
+class artist_lyric_create extends mac {
+	public function __construct() {
+		parent::__construct();
+		
+		$this->auth('founder');
 	}
 	
-	$sql = 'SELECT *
-		FROM _artists
-		WHERE ub = ?';
-	if (!$ad = sql_fieldrow(sql_filter($sql, $request['ub']))) {
-		fatal_error();
+	public function home() {
+		if ($this->submit)
+		{
+			$request = array('ub' => 0, 'title' => '', 'author' => '', 'text' => '');
+			foreach ($request as $k => $v)
+			{
+				$request[$k] = request_var($k, $v);
+			}
+			
+			$sql = 'SELECT *
+				FROM _artists
+				WHERE ub = ?';
+			if (!$ad = sql_fieldrow(sql_filter($sql, $request['ub']))) {
+				fatal_error();
+			}
+			
+			$sql = 'INSERT INTO _artists_lyrics' . sql_build('INSERT', $request);
+			sql_query($sql);
+			
+			$sql = 'UPDATE _artists SET lirics = lirics + 1
+				WHERE ub = ?';
+			sql_query(sql_filter($sql, $request['ub']));
+			
+			redirect(s_link('a', $ad['subdomain']));
+		}
 	}
-	
-	$sql = 'INSERT INTO _artists_lyrics' . sql_build('INSERT', $request);
-	sql_query($sql);
-	
-	$sql = 'UPDATE _artists SET lirics = lirics + 1
-		WHERE ub = ?';
-	sql_query(sql_filter($sql, $request['ub']));
-	
-	redirect(s_link('a', $ad['subdomain']));
 }
 
 ?>

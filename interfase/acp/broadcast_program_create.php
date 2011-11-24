@@ -18,82 +18,92 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-_auth('founder');
-
-if ($submit)
-{
-	$v = array(
-		'name' => '',
-		'base' => '',
-		'genre' => '',
-		'start' => 0,
-		'end' => 0,
-		'day' => 0,
-		'dj' => ''
-	);
-	foreach ($v as $vv => $d)
-	{
-		$v[$vv] = request_var($vv, $d);
-	}
-	
-	$sql = 'SELECT show_id
-		FROM _radio
-		WHERE show_base = ?';
-	if ($row = sql_fieldrow(sql_filter($sql, $v['base']))) {
-		//_die('El programa ya existe');
-	}
-	
-	$time_start = mktime($v['start'] - $user->data['user_timezone'], 0, 0, 0, 0, 0);
-	$time_end = mktime($v['end'] - $user->data['user_timezone'], 0, 0, 0, 0, 0);
-	
-	$v['start'] = date('H', $time_start);
-	$v['end'] = date('H', $time_end);
-	
-	$dj_list = $v['dj'];
-	unset($v['dj']);
-	
-	foreach ($v as $vv => $d)
-	{
-		$v['show_' . $vv] = $d;
-		unset($v[$vv]);
-	}
-	
-	$sql = 'INSERT INTO _radio' . sql_build('INSERT', $v);
-	$show_id = sql_query_nextid();
-	
-	$e_dj = explode("\n", $dj_list);
-	foreach ($e_dj as $rowu) {
-		$rowu = get_username_base($rowu);
+class broadcast_program_create extends mac {
+	public function __construct() {
+		parent::__construct();
 		
-		$sql = 'SELECT *
-			FROM _members
-			WHERE username = ?';
-		if ($row = sql_fieldrow(sql_filter($sql, $rowu))) {
-			$sql_insert = array(
-				'dj_show' => $show_id,
-				'dj_uid' => $row['user_id']
-			);
-			$sql = 'INSERT INTO _radio_dj' . sql_build('INSERT', $sql_insert);
-			sql_query($sql);
-			
-			$sql = 'SELECT *
-				FROM _team_members
-				WHERE team_id = 4
-					AND member_id = ?';
-			if (!$row2 = sql_fieldrow(sql_filter($sql, $row['user_id']))) {
-				$sql_insert = array(
-					'team_id' => 4,
-					'member_id' =>  $row['user_id'],
-					'real_name' => '',
-					'member_mod' => 0
-				);
-				$sql = 'INSERT INTO _team_members' . sql_build('INSERT', $sql_insert);
-				sql_query($sql);
-			}
-		}
+		$this->auth('founder');
 	}
 	
-	$cache->delete('team_members');
+	public function home() {
+		if ($this->submit)
+		{
+			$v = array(
+				'name' => '',
+				'base' => '',
+				'genre' => '',
+				'start' => 0,
+				'end' => 0,
+				'day' => 0,
+				'dj' => ''
+			);
+			foreach ($v as $vv => $d)
+			{
+				$v[$vv] = request_var($vv, $d);
+			}
+			
+			$sql = 'SELECT show_id
+				FROM _radio
+				WHERE show_base = ?';
+			if ($row = sql_fieldrow(sql_filter($sql, $v['base']))) {
+				//_die('El programa ya existe');
+			}
+			
+			$time_start = mktime($v['start'] - $user->data['user_timezone'], 0, 0, 0, 0, 0);
+			$time_end = mktime($v['end'] - $user->data['user_timezone'], 0, 0, 0, 0, 0);
+			
+			$v['start'] = date('H', $time_start);
+			$v['end'] = date('H', $time_end);
+			
+			$dj_list = $v['dj'];
+			unset($v['dj']);
+			
+			foreach ($v as $vv => $d)
+			{
+				$v['show_' . $vv] = $d;
+				unset($v[$vv]);
+			}
+			
+			$sql = 'INSERT INTO _radio' . sql_build('INSERT', $v);
+			$show_id = sql_query_nextid();
+			
+			$e_dj = explode("\n", $dj_list);
+			foreach ($e_dj as $rowu) {
+				$rowu = get_username_base($rowu);
+				
+				$sql = 'SELECT *
+					FROM _members
+					WHERE username = ?';
+				if ($row = sql_fieldrow(sql_filter($sql, $rowu))) {
+					$sql_insert = array(
+						'dj_show' => $show_id,
+						'dj_uid' => $row['user_id']
+					);
+					$sql = 'INSERT INTO _radio_dj' . sql_build('INSERT', $sql_insert);
+					sql_query($sql);
+					
+					$sql = 'SELECT *
+						FROM _team_members
+						WHERE team_id = 4
+							AND member_id = ?';
+					if (!$row2 = sql_fieldrow(sql_filter($sql, $row['user_id']))) {
+						$sql_insert = array(
+							'team_id' => 4,
+							'member_id' =>  $row['user_id'],
+							'real_name' => '',
+							'member_mod' => 0
+						);
+						$sql = 'INSERT INTO _team_members' . sql_build('INSERT', $sql_insert);
+						sql_query($sql);
+					}
+				}
+			}
+			
+			$cache->delete('team_members');
+		}
+		
+		return;
+	}
 }
 
 ?>
