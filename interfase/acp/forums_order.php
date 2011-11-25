@@ -18,70 +18,47 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-_auth('founder');
-
-//
-// Do the job ...
-//
-if ($submit)
-{
-	$list = request_var('listContainer', array(0));
-	
-	$orderid = 10;
-	foreach ($list as $catid) {
-		$sql = 'UPDATE _forums SET forum_order = ?
-			WHERE forum_id = ?';
-		sql_query(sql_filter($sql, $orderid, $catid));
+class __forum_order extends mac {
+	public function __construct() {
+		parent::__construct();
 		
-		$orderid += 10;
+		$this->auth('founder');
 	}
 	
-	_die('Update.');
-}
-
-?><!DOCTYPE HTML>
-<html>
-<head>
-<title>Forum order</title>
-<link rel="stylesheet" type="text/css" href="style.css">
-<script src="/net/scripts/prototype.js"></script>
-<script src="/net/scripts/scriptaculous.js"></script>
-
-<script>
-Event.observe(window, 'load', init, false);
-
-function init() {
-	Sortable.create('listContainer',{tag:'div',onUpdate:updateList});
-}
-
-function updateList(container) {
-	var url = '_acp.forumorder.php';
-	var params = Sortable.serialize(container.id);
-	var ajax = new Ajax.Request(url,{
-		method: 'post',
-		parameters: 'submit=1&' + params,
-		onLoading: function(){$('workingMsg').show()},
-		onLoaded: function(){$('workingMsg').hide()}
-	});
-}
-</script>
-</head>
-
-<body>
-<div id="listContainer">
-	<?php
-	
-	$sql = 'SELECT forum_id, forum_name
-		FROM _forums
-		ORDER BY forum_order ASC';
-	$result = sql_rowset($sql);
-	
-	foreach ($result as $row) {
-		echo '<div id="item_' . $row['forum_id'] . '">' . $row['forum_name'] . '</div>';
+	public function _home() {
+		global $config, $user, $cache, $template;
+		
+		if (!$this->submit) {
+			$sql = 'SELECT forum_id, forum_name
+				FROM _forums
+				ORDER BY forum_order ASC';
+			$result = sql_rowset($sql);
+			
+			foreach ($result as $i => $row) {
+				if (!$i) $template->assign_block_vars('forums', array());
+				
+				$template->assign_block_vars('forums.row', array(
+					'FORUM_ID' => $row['forum_id'],
+					'FORUM_NAME' => $row['forum_name'])
+				);
+			}	
+			
+			return false;
+		}
+		
+		$list = request_var('listContainer', array(0));
+		
+		$orderid = 10;
+		foreach ($list as $catid) {
+			$sql = 'UPDATE _forums SET forum_order = ?
+				WHERE forum_id = ?';
+			sql_query(sql_filter($sql, $orderid, $catid));
+			
+			$orderid += 10;
+		}
+		
+		_pre('Update.', true);
 	}
-	?>
-</div>
+}
 
-<div id="workingMsg" style="display:none;">Actualizando...</div>
-</body>
-</html>
+?>

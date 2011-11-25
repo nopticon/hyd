@@ -18,42 +18,47 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-_auth('founder');
-
-if ($submit)
-{
-	$post_id = request_var('pid', '');
-	$post_message = request_var('post_text', '', true);
-	if (empty($post_id) || empty($post_message))
-	{
-		_die();
+class __forums_post_modify extends mac {
+	public function __construct() {
+		parent::__construct();
+		
+		$this->auth('founder');
 	}
 	
-	$sql = 'SELECT *
-		FROM _forum_posts
-		WHERE post_id = ?';
-	if (!$postdata = sql_fieldrow(sql_filter($sql, $post_id))) {
-		_die('El mensaje no existe.');
+	public function _home() {
+		global $config, $user, $cache, $template;
+		
+		if (!$this->submit) {
+			return false;
+		}
+		
+		$post_id = request_var('pid', '');
+		$post_message = request_var('post_text', '', true);
+		
+		if (empty($post_id) || empty($post_message)) {
+			fatal_error();
+		}
+		
+		$sql = 'SELECT *
+			FROM _forum_posts
+			WHERE post_id = ?';
+		if (!$postdata = sql_fieldrow(sql_filter($sql, $post_id))) {
+			fatal_error();
+		}
+		
+		//
+		require_once(ROOT . 'interfase/comments.php');
+		$comments = new _comments();
+		
+		$post_message = $comments->prepare($post_message);
+		
+		//
+		$sql = 'UPDATE _forum_posts SET post_text = ?
+			WHERE post_id = ?';
+		sql_query(sql_filter($sql, $post_message, $post_id));
+		
+		return redirect(s_link('post', $post_id));
 	}
-	
-	//
-	require_once(ROOT . 'interfase/comments.php');
-	$comments = new _comments();
-	
-	$post_message = $comments->prepare($post_message);
-	
-	//
-	$sql = 'UPDATE _forum_posts SET post_text = ?
-		WHERE post_id = ?';
-	sql_query(sql_filter($sql, $post_message, $post_id));
-	
-	redirect(s_link('post', $post_id));
 }
 
 ?>
-
-<form action="<?php echo $u; ?>" method="post">
-<input type="text" name="pid" value="" size="8" /><br />
-<textarea name="post_text" cols="50" rows="15"></textarea><br />
-<input type="submit" name="submit" value="Cambiar" />
-</form>

@@ -18,6 +18,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
+class __event_images extends mac {
+	public function __construct() {
+		parent::__construct();
+		
+		$this->auth('founder');
+	}
+	
+	public function _home() {
+		global $config, $user, $cache, $template;
+		
+		return;
+	}
+}
+
 _auth('founder');
 
 $i_size = intval(ini_get('upload_max_filesize'));

@@ -19,6 +19,26 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 define('IN_NUCLEO', true);
 require_once('./interfase/common.php');
 
+class mac {
+	public $submit;
+	public $url;
+	public $tv = array();
+	
+	public function __construct() {
+		return;
+	}
+	
+	public function auth($a) {
+		global $user;
+		
+		if (!$user->_team_auth($a)) {
+			return fatal_error();
+		}
+		
+		return true;
+	}
+}
+
 class acp {
 	public $module;
 	
@@ -55,22 +75,7 @@ class acp {
 		
 		require_once($this->filepath);
 		
-		class mac {
-			public $submit;
-			public $url;
-			
-			public function auth($a) {
-				global $user;
-				
-				if (!$user->_team_auth($a)) {
-					return fatal_error();
-				}
-				
-				return true;
-			}
-		}
-		
-		$_object = '__' . $module;
+		$_object = '__' . $this->module;
 		if (!class_exists($_object)) {
 			fatal_error();
 		}
@@ -78,9 +83,27 @@ class acp {
 		$module = new $_object();
 		
 		$module->submit = isset($_POST['submit']);
-		$module->url = s_link('acp', $module);
+		$module->url = s_link('acp', $this->module);
+		$module->alias = $this->module;
 		
 		$module->home();
+		
+		if (!isset($module->template)) {
+			$module->template = 'acp/' . $this->module;
+		}
+		
+		$local_tv = array(
+			'MODULE_URL' => $module->url,
+			
+			'UPLOAD_MAXSIZE' => upload_maxsize(),
+			'UPLOAD_MAXSIZE_MB' => (upload_maxsize() / 1024 / 1024)
+		);
+		
+		if (isset($module->tv)) {
+			$local_tv = array_merge($local_tv, $module->tv);
+		}
+		
+		page_layout($this->module, $module->template, $local_tv);
 		
 		return true;
 	}

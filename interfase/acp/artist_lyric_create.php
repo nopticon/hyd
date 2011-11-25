@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-class artist_lyric_create extends mac {
+class __artist_lyric_create extends mac {
 	public function __construct() {
 		parent::__construct();
 		
@@ -26,11 +26,11 @@ class artist_lyric_create extends mac {
 	}
 	
 	public function home() {
-		if ($this->submit)
-		{
+		global $config, $user, $cache, $template;
+		
+		if ($this->submit) {
 			$request = array('ub' => 0, 'title' => '', 'author' => '', 'text' => '');
-			foreach ($request as $k => $v)
-			{
+			foreach ($request as $k => $v) {
 				$request[$k] = request_var($k, $v);
 			}
 			
@@ -50,26 +50,23 @@ class artist_lyric_create extends mac {
 			
 			redirect(s_link('a', $ad['subdomain']));
 		}
+		
+		$sql = 'SELECT ub, name
+			FROM _artists
+			ORDER BY name';
+		$result = sql_rowset($sql);
+		
+		foreach ($result as $i => $row) {
+			if (!$i) $template->assign_block_vars('artists');
+			
+			$template->assign_block_vars('artists.row', array(
+				'ARTIST_ID' => $row['ub'],
+				'ARTIST_NAME' => $row['name'])
+			);
+		}
+		
+		return;
 	}
 }
 
 ?>
-
-<form action="<?php echo $u; ?>" method="post">
-Banda: <select name="ub"><?php
-
-$sql = 'SELECT ub, name
-	FROM _artists
-	ORDER BY name';
-$result = sql_rowset($sql);
-
-foreach ($result as $row) {
-	echo '<option value="' . $row['ub'] . '">' . $row['name'] . '</option>';
-}
-
-?></select><br />
-T&iacute;tulo: <input type="text" name="title" value="" /><br />
-Autor: <input type="text" name="author" value="" /><br />
-Letra: <textarea name="text" cols="50" rows="20"></textarea><br />
-<input type="submit" name="submit" value="Agregar Letra" />
-</form>

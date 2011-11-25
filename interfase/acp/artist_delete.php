@@ -26,10 +26,9 @@ class __artist_delete extends mac {
 	}
 	
 	public function home() {
-		global $user;
+		global $config, $user, $cache, $template;
 		
-		if ($this->submit)
-		{
+		if ($this->submit) {
 			$name = request_var('name', '');
 			
 			$sql = 'SELECT *
@@ -40,6 +39,8 @@ class __artist_delete extends mac {
 			}
 			
 			$emails = array();
+			$mods = array();
+			
 			if (!empty($a_data['email'])) {
 				$emails[] = $a_data['email'];
 			}
@@ -50,16 +51,13 @@ class __artist_delete extends mac {
 					AND a.user_id = m.user_id';
 			$result = sql_rowset(sql_filter($sql, $a_data['ub']));
 			
-			$mods = array();
 			foreach ($result as $row) {
 				$emails[] = $row['user_email'];
 				$mods[] = $row['user_id'];
 			}
 			
-			if (count($mods))
-			{
-				foreach ($mods as $i => $each)
-				{
+			if (count($mods)) {
+				foreach ($mods as $i => $each) {
 					$sql = 'SELECT COUNT(user_id) AS total
 						FROM _artists_auth
 						WHERE user_id = ?';
@@ -71,8 +69,9 @@ class __artist_delete extends mac {
 				}
 			}
 			
-			if (count($mods))
-			{
+			$emails = array_unique($emails);
+			
+			if (count($mods)) {
 				$sql = 'UPDATE _members SET user_auth_control = 0
 					WHERE user_id IN (??)';
 				$d_sql[] = sql_filter($sql, implode(',', $mods));
@@ -104,8 +103,7 @@ class __artist_delete extends mac {
 				WHERE topic_ub = ?';
 			$topics = sql_rowset(sql_filter($sql, $a_data['ub']), false, 'topic_id');
 			
-			if (count($topics))
-			{
+			if (count($topics)) {
 				$d_sql[] = sql_filter('DELETE FROM _forum_posts
 					WHERE topic_id IN (??)', implode(',', $topics));
 			}
@@ -131,8 +129,7 @@ class __artist_delete extends mac {
 			$d_sql[] = sql_filter('DELETE FROM _artists
 				WHERE ub = ?', $a_data['ub']);
 			
-			if (!$this->s_dir('../data/artists/' . $a_data['ub']))
-			{
+			if (!$this->s_dir($config['artists_path'] . $a_data['ub'])) {
 				echo 'error en carpetas';
 				return;
 			}
@@ -142,22 +139,20 @@ class __artist_delete extends mac {
 			//
 			// Send email
 			//
-			if (count($emails))
-			{
+			if (count($emails)) {
 				require_once(ROOT . 'interfase/emailer.php');
 				$emailer = new emailer();
 				
 				//
 				$a_emails = array_unique($emails);
 				
-				$emailer->from('info@rockrepublik.net');
-				$emailer->use_template('artist_deleted');
+				$emailer->from('info');
+				$emailer->use_template('artist_delete');
 				$emailer->email_address($a_emails[0]);
-				$emailer->bcc('info@rockrepublik.net');
+				$emailer->bcc('info');
 				
 				$cc_emails = array_splice($a_emails, 1);
-				foreach ($cc_emails as $each_email)
-				{
+				foreach ($cc_emails as $each_email) {
 					$emailer->cc($each_email);
 				}
 				
@@ -173,11 +168,7 @@ class __artist_delete extends mac {
 			
 			echo 'La banda ha sido eliminada y notificada.';
 			
-			echo '<pre>';
-			print_r($a_emails);
-			echo '</pre>';
-			
-			die();
+			_pre($a_emails, true);
 		}
 	}
 	
@@ -215,8 +206,3 @@ class __artist_delete extends mac {
 }
 
 ?>
-
-<form action="<?php echo $u; ?>" method="post">
-<input type="text" name="name" value="" />
-<input type="submit" name="submit" value="Eliminar artista" />
-</form>

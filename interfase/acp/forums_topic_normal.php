@@ -18,30 +18,36 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-_auth('founder');
-
-if ($submit)
-{
-	$topic = request_var('topic', 0);
-	
-	$sql = 'SELECT *
-		FROM _forum_topics
-		WHERE topic_id = ?';
-	if (!$topicdata = sql_fieldrow(sql_filter($sql, $topic))) {
-		fatal_error();
+class __forums_topic_normal extends mac {
+	public function __construct() {
+		parent::__construct();
+		
+		$this->auth('founder');
 	}
 	
-	$sql = 'UPDATE _forum_topics
-		SET topic_color = ?, topic_announce = 0, topic_important = 0
-		WHERE topic_id = ?';
-	sql_query(sql_filter($sql, '', $topic));
-	
-	echo 'El tema <strong>' . $topicdata['topic_title'] . '</strong> ha sido normalizado.';
+	public function _home() {
+		global $config, $user, $cache, $template;
+		
+		if (!$this->submit) {
+			return false;
+		}
+		
+		$topic = request_var('topic', 0);
+		
+		$sql = 'SELECT *
+			FROM _forum_topics
+			WHERE topic_id = ?';
+		if (!$topicdata = sql_fieldrow(sql_filter($sql, $topic))) {
+			fatal_error();
+		}
+		
+		$sql = 'UPDATE _forum_topics
+			SET topic_color = ?, topic_announce = 0, topic_important = 0
+			WHERE topic_id = ?';
+		sql_query(sql_filter($sql, '', $topic));
+		
+		return _pre('El tema <strong>' . $topicdata['topic_title'] . '</strong> ha sido normalizado.', true);
+	}
 }
 
 ?>
-
-<form action="<?php echo $u; ?>" method="post">
-<input type="text" name="topic" value="" />
-<input type="submit" name="submit" value="Normalizar tema" />
-</form>

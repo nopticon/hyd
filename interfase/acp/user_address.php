@@ -18,15 +18,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-class __activate extends mac {
+class __user_address extends mac {
 	public function __construct() {
 		parent::__construct();
 		
 		$this->auth('founder');
 	}
 	
-	public function home() {
-		global $user;
+	public function _home() {
+		global $config, $user, $cache, $template;
 		
 		$limit = 225;
 		$steps = 0;
@@ -69,7 +69,7 @@ class __activate extends mac {
 			$items++;
 		}
 		
-		page_layout('ACP', 'acp_address');
+		return;
 	}
 }
 

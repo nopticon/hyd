@@ -18,31 +18,36 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-_auth('founder');
-
-if ($submit)
-{
-	$topic = request_var('topic', 0);
-	$title = request_var('title', '');
-	
-	$sql = 'SELECT *
-		FROM _forum_topics
-		WHERE topic_id = ?';
-	if (!$topicdata = sql_fieldrow(sql_filter($sql, $topic))) {
-		fatal_error();
+class __forums_topic_title extends mac {
+	public function __construct() {
+		parent::__construct();
+		
+		$this->auth('founder');
 	}
 	
-	$sql = 'UPDATE _forum_topics SET topic_title = ?
-		WHERE topic_id = ?';
-	sql_query(sql_filter($sql, $title, $topic));
-	
-	echo 'El titulo del tema <strong>' . $topicdata['topic_title'] . '</strong> ha sido cambiado por <strong>' . $title . '</strong>.';
+	public function _home() {
+		global $config, $user, $cache, $template;
+		
+		if (!$this->submit) {
+			return false;
+		}
+		
+		$topic = request_var('topic', 0);
+		$title = request_var('title', '');
+		
+		$sql = 'SELECT *
+			FROM _forum_topics
+			WHERE topic_id = ?';
+		if (!$topicdata = sql_fieldrow(sql_filter($sql, $topic))) {
+			fatal_error();
+		}
+		
+		$sql = 'UPDATE _forum_topics SET topic_title = ?
+			WHERE topic_id = ?';
+		sql_query(sql_filter($sql, $title, $topic));
+		
+		return _pre('El titulo del tema <strong>' . $topicdata['topic_title'] . '</strong> ha sido cambiado por <strong>' . $title . '</strong>.', true);
+	}
 }
 
 ?>
-
-<form action="<?php echo $u; ?>" method="post">
-<input type="text" name="topic" value="" size="5" />
-<input type="text" name="title" value="" size="50" />
-<input type="submit" name="submit" value="Cambiar titulo" />
-</form>

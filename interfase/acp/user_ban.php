@@ -18,17 +18,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-class __activate extends mac {
+class __user_ban extends mac {
 	public function __construct() {
 		parent::__construct();
 		
 		$this->auth('founder');
 	}
 	
-	public function home() {
-		global $user;
+	public function _home() {
+		global $config, $user, $cache, $template;
 		
-		if ($submit) {
+		if ($this->submit) {
 			return false;
 		}
 		
@@ -62,19 +62,9 @@ class __activate extends mac {
 			
 			echo 'El usuario ' . $userdata['username'] . ' fue bloqueado.';
 		}
+		
+		return;
 	}
 }
 
 ?>
-<html>
-<head>
-<title>Ban users</title>
-</head>
-
-<body>
-<form action="<?php echo $u; ?>" method="post">
-Nombre de usuario: <input type="text" name="username" size="100" /><br />
-<input type="submit" name="submit" value="Enviar" />
-</form>
-</body>
-</html>

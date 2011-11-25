@@ -18,66 +18,65 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-_auth('founder');
-
-if ($submit)
-{
-	$msg_id = request_var('msg_id', 0);
-	
-	$sql = 'SELECT *
-		FROM _members_posts
-		WHERE post_id = ?';
-	if (!$d = sql_fieldrow(sql_filter($sql, $msg_id))) {
-		exit;
+class __user_post_bandelete extends mac {
+	public function __construct() {
+		parent::__construct();
+		
+		$this->auth('founder');
 	}
 	
-	$sql = 'DELETE FROM _members_posts
-		WHERE post_id = ?';
-	sql_query(sql_filter($sql, $msg_id));
-	
-	$sql = 'UPDATE _members SET userpage_posts = userpage_posts - 1
-		WHERE user_id = ?';
-	sql_query(sql_filter($sql, $d['userpage_id']));
-	
-	if (isset($_POST['user']))
-	{
-		$sql = 'SELECT ban_id
-			FROM _banlist
-			WHERE ban_userid = ?';
-		if (!$row = sql_fieldrow(sql_filter($sql, $d['poster_id']))) {
-			$sql_insert = array(
-				'ban_userid' => $d['poster_id']
-			);
-			$sql = 'INSERT INTO _banlist' . sql_build('INSERT', $sql_insert);
-			sql_query($sql);
+	public function _home() {
+		global $config, $user, $cache, $template;
+		
+		if (!$this->submit) {
+			return false;
 		}
-	}
-	
-	if (isset($_POST['ip']))
-	{
-		$sql = 'SELECT ban_id
-			FROM _banlist
-			WHERE ban_ip = ?';
-		if (!$row = sql_fieldrow(sql_filter($sql, $d['post_ip']))) {
-			$sql_insert = array(
-				'ban_ip' => $d['post_ip']
-			);
-			$sql = 'INSERT INTO _banlist' . sql_build('INSERT', $sql_insert);
-			sql_query($sql);
+		
+		$msg_id = request_var('msg_id', 0);
+		
+		$sql = 'SELECT *
+			FROM _members_posts
+			WHERE post_id = ?';
+		if (!$d = sql_fieldrow(sql_filter($sql, $msg_id))) {
+			fatal_error();
 		}
+		
+		$sql = 'DELETE FROM _members_posts
+			WHERE post_id = ?';
+		sql_query(sql_filter($sql, $msg_id));
+		
+		$sql = 'UPDATE _members SET userpage_posts = userpage_posts - 1
+			WHERE user_id = ?';
+		sql_query(sql_filter($sql, $d['userpage_id']));
+		
+		if (isset($_POST['user'])) {
+			$sql = 'SELECT ban_id
+				FROM _banlist
+				WHERE ban_userid = ?';
+			if (!$row = sql_fieldrow(sql_filter($sql, $d['poster_id']))) {
+				$sql_insert = array(
+					'ban_userid' => $d['poster_id']
+				);
+				$sql = 'INSERT INTO _banlist' . sql_build('INSERT', $sql_insert);
+				sql_query($sql);
+			}
+		}
+		
+		if (isset($_POST['ip'])) {
+			$sql = 'SELECT ban_id
+				FROM _banlist
+				WHERE ban_ip = ?';
+			if (!$row = sql_fieldrow(sql_filter($sql, $d['post_ip']))) {
+				$sql_insert = array(
+					'ban_ip' => $d['post_ip']
+				);
+				$sql = 'INSERT INTO _banlist' . sql_build('INSERT', $sql_insert);
+				sql_query($sql);
+			}
+		}
+		
+		return _pre($d, true);
 	}
-	
-	echo '<pre>';
-	print_r($d);
-	echo '</pre>';
 }
 
 ?>
-
-<form action="<?php echo $u; ?>" method="post">
-<input type="text" name="msg_id" value="" /><br /><br />
-<strong>Bloquear:</strong><br />
-<input type="checkbox" name="user" value="1" /> Usuario<br />
-<input type="checkbox" name="ip" value="1" /> IP<br /><br />
-<input type="submit" name="submit" value="Borrar" />
-</form>

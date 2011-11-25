@@ -18,58 +18,80 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-_auth('founder');
-
-if ($submit)
-{
-	$t = request_var('topic_id', 0);
-	$f = request_var('forum_id', 0);
-	
-	if (!$f || !$t)
-	{
-		_die();
+class __forums_topic_move extends mac {
+	public function __construct() {
+		parent::__construct();
+		
+		$this->auth('founder');
 	}
 	
-	//
-	$sql = 'SELECT *
-		FROM _forum_topics
-		WHERE topic_id = ?';
-	if (!$tdata = sql_fieldrow(sql_filter($sql, $t))) {
-		_die();
+	public function _home() {
+		global $config, $user, $cache, $template;
+		
+		if (!$this->submit) {
+			$sql = 'SELECT forum_id, forum_name
+				FROM _forums
+				ORDER BY forum_order';
+			$result = sql_rowset($sql);
+			
+			foreach ($result as $i => $row) {
+				if (!$i) $template->assign_block_vars('forums', array());
+				
+				$template->assign_block_vars('forums.row', array(
+					'FORUM_ID' => $row['forum_id'],
+					'FORUM_NAME' => $row['forum_name'])
+				);
+			}
+			
+			return false;
+		}
+		
+		$t = request_var('topic_id', 0);
+		$f = request_var('forum_id', 0);
+		
+		if (!$f || !$t) {
+			fatal_error();
+		}
+		
+		//
+		$sql = 'SELECT *
+			FROM _forum_topics
+			WHERE topic_id = ?';
+		if (!$tdata = sql_fieldrow(sql_filter($sql, $t))) {
+			fatal_error();
+		}
+		
+		//
+		$sql = 'SELECT *
+			FROM _forums
+			WHERE forum_id = ?';
+		if (!$fdata = sql_fieldrow(sql_filter($sql, $f))) {
+			fatal_error();
+		}
+		
+		//
+		$sql = 'UPDATE _forum_topics SET forum_id = ?
+			WHERE topic_id = ?';
+		sql_query(sql_filter($sql, $f, $t));
+		
+		$sql = 'UPDATE _forum_posts SET forum_id = ?
+			WHERE topic_id = ?';
+		sql_query(sql_filter($sql, $f, $t));
+		
+		if (in_array($f, array(20, 39))) {
+			topic_feature($t, 0);
+			topic_arkane($t, 0);
+		}
+		
+		sync($f);
+		sync($tdata['forum_id']);
+		
+		//redirect(s_link('forum', $f));
+		
+		return;
 	}
-	
-	//
-	$sql = 'SELECT *
-		FROM _forums
-		WHERE forum_id = ?';
-	if (!$fdata = sql_fieldrow(sql_filter($sql, $f))) {
-		_die();
-	}
-	
-	//
-	$sql = 'UPDATE _forum_topics SET forum_id = ?
-		WHERE topic_id = ?';
-	sql_query(sql_filter($sql, $f, $t));
-	
-	$sql = 'UPDATE _forum_posts SET forum_id = ?
-		WHERE topic_id = ?';
-	sql_query(sql_filter($sql, $f, $t));
-	
-	if (in_array($f, array(20, 39))) {
-		topic_feature($t, 0);
-		topic_arkane($t, 0);
-	}
-	
-	sync($f);
-	sync($tdata['forum_id']);
-	
-	//
-	//redirect(s_link('forum', $f));
 }
 
-/*
-FUNCTIONS
-*/
 function sync($id)
 {
 	$last_topic = 0;
@@ -100,32 +122,3 @@ function sync($id)
 }
 
 ?>
-
-<html>
-<head>
-<title>Move topics</title>
-</head>
-
-<body>
-<form action="<?php echo $u; ?>" method="post">
-# Tema: <input type="text" name="topic_id" /><br /><br />
-Foro: <select name="forum_id">
-<?php
-
-$sql = 'SELECT forum_id, forum_name
-	FROM _forums
-	ORDER BY forum_order';
-$result = sql_rowset($sql);
-
-foreach ($result as $row) {
-	echo '<option value="' . $row['forum_id'] . '">' . $row['forum_name'] . '</option>';
-}
-
-?>
-</select>
-
-<br /><br />
-<input type="submit" name="submit" value="Enviar" />
-</form>
-</body>
-</html>

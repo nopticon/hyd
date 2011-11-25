@@ -18,15 +18,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-class __activate extends mac {
+class __user_name_changes extends mac {
 	public function __construct() {
 		parent::__construct();
 		
 		$this->auth('founder');
 	}
 	
-	public function home() {
-		global $user;
+	public function _home() {
+		global $config, $user, $cache, $template;
 		
 		if (!$this->submit) {
 			return false;
@@ -34,9 +34,8 @@ class __activate extends mac {
 		
 		$username1 = request_var('username1', '');
 		$username2 = request_var('username2', '');
-		if (empty($username1) || empty($username2))
-		{
-			_die();
+		if (empty($username1) || empty($username2)) {
+			fatal_error();
 		}
 		
 		$username_base1 = get_username_base($username1);
@@ -46,14 +45,14 @@ class __activate extends mac {
 			FROM _members
 			WHERE username_base = ?';
 		if (!$userdata = sql_fieldrow(sql_filter($sql, $username_base1))) {
-			_die('El usuario no existe.');
+			_pre('El usuario no existe.', true);
 		}
 		
 		$sql = 'SELECT *
 			FROM _members
 			WHERE username_base = ?';
 		if ($void = sql_fieldrow(sql_filter($sql, $username_base2))) {
-			_die('El usuario ya existe.');
+			_pre('El usuario ya existe.', true);
 		}
 		
 		//
@@ -77,13 +76,9 @@ class __activate extends mac {
 		$emailer->reset();
 		
 		redirect(s_link('m', $username_base2));
+		
+		return;
 	}
 }
 
 ?>
-
-<form action="<?php echo $u; ?>" method="post">
-<input type="text" name="username1" value="" /><br />
-<input type="text" name="username2" value="" /><br />
-<input type="submit" name="submit" value="Cambiar" />
-</form>

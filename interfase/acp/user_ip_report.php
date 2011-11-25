@@ -18,66 +18,61 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-_auth('founder');
-
-$username = request_var('username', '');
-$ip = request_var('ip', '');
-
-if ($submit && ($username || $ip))
-{
-	if ($username)
-	{
-		$username_base = get_username_base($username);
+class __user_ip_report extends mac {
+	public function __construct() {
+		parent::__construct();
 		
-		$sql = 'SELECT m.username, l.*
-			FROM _members m, _members_iplog l
-			WHERE m.user_id = l.log_user_id
-				AND m.username_base = ?
-			ORDER BY l.log_time DESC';
-		$sql = sql_filter($sql, $username_base);
-	}
-	else if ($ip)
-	{
-		$sql = 'SELECT m.username, l.*
-			FROM _members m, _members_iplog l
-			WHERE m.user_id = l.log_user_id
-				AND l.log_ip = ?
-			ORDER BY l.log_time DESC';
-		$sql = sql_filter($sql, $ip);
-	}
-	$result = sql_rowset($sql);
-	
-	echo '<table border="1">
-	<tr>
-		<td>uid</td>
-		<td>Usuario</td>
-		<td>Inicio</td>
-		<td>Fin</td>
-		<td>Tiempo</td>
-		<td>IP</td>
-		<td>Agent</td>
-	</tr>';
-	
-	foreach ($result as $row) {
-		echo '<tr>
-	<td>' . $row['log_user_id'] . '</td>
-	<td>' . $row['username'] . '</td>
-	<td>' . $user->format_date($row['log_time']) . '</td>
-	<td>' . (($row['log_endtime']) ? $user->format_date($row['log_endtime']) : '&nbsp;') . '</td>
-	<td>' . (($row['log_endtime']) ? implode(' ', timeDiff($row['log_endtime'], $row['log_time'], true, 1)) : '&nbsp;') . '</td>
-	<td>' . $row['log_ip'] . '</td>
-	<td>' . $row['log_agent'] . '</td>
-</tr>';
+		$this->auth('founder');
 	}
 	
-	echo '</table><br /><br />';
+	public function _home() {
+		global $config, $user, $cache, $template;
+		
+		$username = request_var('username', '');
+		$ip = request_var('ip', '');
+		
+		if ($this->submit && ($username || $ip)) {
+			if ($username) {
+				$username_base = get_username_base($username);
+				
+				$sql = 'SELECT m.username, l.*
+					FROM _members m, _members_iplog l
+					WHERE m.user_id = l.log_user_id
+						AND m.username_base = ?
+					ORDER BY l.log_time DESC';
+				$sql = sql_filter($sql, $username_base);
+			} else if ($ip) {
+				$sql = 'SELECT m.username, l.*
+					FROM _members m, _members_iplog l
+					WHERE m.user_id = l.log_user_id
+						AND l.log_ip = ?
+					ORDER BY l.log_time DESC';
+				$sql = sql_filter($sql, $ip);
+			}
+			$result = sql_rowset($sql);
+			
+			foreach ($result as $i => $row) {
+				if (!$i) $template->assign_block_vars('log', array());
+				
+				$template->assign_block_vars('log.row', array(
+					'UID' => $row['log_user_id'],
+					'USERNAME' => $row['username'],
+					'TIME' => $user->format_date($row['log_time']),
+					'ENDTIME' => (($row['log_endtime']) ? $user->format_date($row['log_endtime']) : '&nbsp;'),
+					'DIFFTIME' => (($row['log_endtime']) ? implode(' ', timeDiff($row['log_endtime'], $row['log_time'], true, 1)) : '&nbsp;'),
+					'IP' => $row['log_ip'],
+					'AGENT' => $row['log_agent'])
+				);
+			}
+		}
+		
+		return;
+	}
 }
 
-function timeDiff($timestamp, $now = 0, $detailed = false, $n = 0)
-{
+function timeDiff($timestamp, $now = 0, $detailed = false, $n = 0) {
 	// If the difference is positive "ago" - negative "away"
-	if (!$now)
-	{
+	if (!$now) {
 		$now = time();
 	}
 	
@@ -93,11 +88,9 @@ function timeDiff($timestamp, $now = 0, $detailed = false, $n = 0)
 	
 	$i = sizeof($lengths);
 	$time = '';
-	while ($i >= $n)
-	{
+	while ($i >= $n) {
 		$item = $lengths[$i - 1];
-		if ($diff < $item)
-		{
+		if ($diff < $item) {
 			$i--;
 			continue;
 		}
@@ -106,8 +99,7 @@ function timeDiff($timestamp, $now = 0, $detailed = false, $n = 0)
 		$diff -= ($val * $item);
 		$result[] = $val . $periods[($i - 1)];
 		
-		if (!$detailed)
-		{
+		if (!$detailed) {
 			$i = 0;
 		}
 		$i--;
@@ -116,16 +108,4 @@ function timeDiff($timestamp, $now = 0, $detailed = false, $n = 0)
 	return (count($result)) ? $result : false;
 }
 
-?><html>
-<head>
-<title>Log IPs</title>
-</head>
-
-<body>
-<form action="<?php echo $u; ?>" method="post">
-Usuario: <input type="text" name="username" /><br /><br />
-IP: <input type="text" name="ip" /><br /><br />
-<input type="submit" name="submit" value="Enviar" />
-</form>
-</body>
-</html>
+?>

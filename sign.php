@@ -23,6 +23,8 @@ $user->init(false);
 
 $action = request_var('mode', '');
 
+_pre($action, true);
+
 $v_fields = array();
 $fields = array(
 	'username' => '',

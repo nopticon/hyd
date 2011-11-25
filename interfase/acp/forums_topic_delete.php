@@ -18,110 +18,122 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-_auth('founder');
-
-if ($submit)
-{
-	$topics = request_var('topic_id', '');
-	$topics = array_map('intval', explode(',', $topics));
-	
-	$forums_id_sql = array();
-	$topics_id = array();
-	
-	$sql = 'SELECT forum_id, topic_id
-		FROM _forum_topics
-		WHERE topic_id IN (??)';
-	$result = sql_rowset(sql_filter($sql, implode(', ', $topics)));
-	
-	foreach ($result as $row) {
-		$forums_id_sql[] = (int) $row['forum_id'];
-		$topics_id[] = (int) $row['topic_id'];
+class __forums_topic_delete extends mac {
+	public function __construct() {
+		parent::__construct();
+		
+		$this->auth('founder');
 	}
 	
-	$topic_id_sql = implode(',', $topics_id);
-	
-	//
-	$sql = 'SELECT post_id
-		FROM _forum_posts
-		WHERE topic_id IN (??)';
-	$posts_id = sql_rowset(sql_filter($sql, $topic_id_sql), false, 'post_id');
-	$post_id_sql = implode(',', $posts_id);
-	
-	//
-	$sql = 'SELECT vote_id
-		FROM _poll_options
-		WHERE topic_id IN (??)';
-	$votes_id = sql_rowset(sql_filter($sql, $topic_id_sql), false, 'vote_id');
-	$vote_id_sql = implode(',', $votes_id);
-	
-	//
-	$sql = 'SELECT poster_id, COUNT(post_id) AS posts
-		FROM _forum_posts
-		WHERE topic_id IN (??)
-		GROUP BY poster_id';
-	$result = sql_rowset(sql_filter($sql, $topic_id_sql));
-	
-	$members_sql = array();
-	foreach ($result as $row) {
-		$sql = 'UPDATE _members SET user_posts = user_posts - ??
-			WHERE user_id = ?';
-		$members_sql[] = sql_filter($sql, $row['posts'], $row['poster_id']);
-	}
-	
-	sql_query($members_sql);
-	
-	//
-	// Got all required info so go ahead and start deleting everything
-	//
-	$sql = 'DELETE
-		FROM _forum_topics
-		WHERE topic_id IN (??)';
-	sql_query(sql_filter($sql, $topic_id_sql));
-	
-	$sql = 'DELETE
-		FROM _forum_topics_fav
-		WHERE topic_id IN (??)';
-	sql_query(sql_filter($sql, $topic_id_sql));
-	
-	if ($post_id_sql != '') {
-		$sql = 'DELETE
+	public function _home() {
+		global $config, $user, $cache, $template;
+		
+		if (!$this->submit) {
+			return false;
+		}
+		
+		$topics = request_var('topic_id', '');
+		$topics = array_map('intval', explode(',', $topics));
+		
+		$forums_id_sql = array();
+		$topics_id = array();
+		
+		$sql = 'SELECT forum_id, topic_id
+			FROM _forum_topics
+			WHERE topic_id IN (??)';
+		$result = sql_rowset(sql_filter($sql, implode(', ', $topics)));
+		
+		foreach ($result as $row) {
+			$forums_id_sql[] = (int) $row['forum_id'];
+			$topics_id[] = (int) $row['topic_id'];
+		}
+		
+		$topic_id_sql = implode(',', $topics_id);
+		
+		//
+		$sql = 'SELECT post_id
 			FROM _forum_posts
-			WHERE post_id IN (??)';
-		sql_query(sql_filter($sql, $post_id_sql));
-	}
-
-	if ($vote_id_sql != '') {
-		$sql = 'DELETE
+			WHERE topic_id IN (??)';
+		$posts_id = sql_rowset(sql_filter($sql, $topic_id_sql), false, 'post_id');
+		$post_id_sql = implode(',', $posts_id);
+		
+		//
+		$sql = 'SELECT vote_id
 			FROM _poll_options
-			WHERE vote_id IN (??)';
-		sql_query(sql_filter($sql, $vote_id_sql));
+			WHERE topic_id IN (??)';
+		$votes_id = sql_rowset(sql_filter($sql, $topic_id_sql), false, 'vote_id');
+		$vote_id_sql = implode(',', $votes_id);
+		
+		//
+		$sql = 'SELECT poster_id, COUNT(post_id) AS posts
+			FROM _forum_posts
+			WHERE topic_id IN (??)
+			GROUP BY poster_id';
+		$result = sql_rowset(sql_filter($sql, $topic_id_sql));
+		
+		$members_sql = array();
+		foreach ($result as $row) {
+			$sql = 'UPDATE _members SET user_posts = user_posts - ??
+				WHERE user_id = ?';
+			$members_sql[] = sql_filter($sql, $row['posts'], $row['poster_id']);
+		}
+		
+		sql_query($members_sql);
+		
+		//
+		// Got all required info so go ahead and start deleting everything
+		//
+		$sql = 'DELETE
+			FROM _forum_topics
+			WHERE topic_id IN (??)';
+		sql_query(sql_filter($sql, $topic_id_sql));
 		
 		$sql = 'DELETE
-			FROM _poll_results
-			WHERE vote_id IN (??)';
-		sql_query(sql_filter($sql, $vote_id_sql));
+			FROM _forum_topics_fav
+			WHERE topic_id IN (??)';
+		sql_query(sql_filter($sql, $topic_id_sql));
 		
-		$sql = 'DELETE
-			FROM _poll_voters
-			WHERE vote_id IN (??)';
-		sql_query(sql_filter($sql, $vote_id_sql));
-	}
+		if ($post_id_sql != '') {
+			$sql = 'DELETE
+				FROM _forum_posts
+				WHERE post_id IN (??)';
+			sql_query(sql_filter($sql, $post_id_sql));
+		}
 	
-	//
-	$sql = 'DELETE FROM _members_unread
-		WHERE element = 8
-			AND item IN (??)';
-	sql_query(sql_filter($sql, $topic_id_sql));
-	
-	//
-	foreach ($forums_id_sql as $forum_id)
-	{
-		sync($forum_id);
+		if ($vote_id_sql != '') {
+			$sql = 'DELETE
+				FROM _poll_options
+				WHERE vote_id IN (??)';
+			sql_query(sql_filter($sql, $vote_id_sql));
+			
+			$sql = 'DELETE
+				FROM _poll_results
+				WHERE vote_id IN (??)';
+			sql_query(sql_filter($sql, $vote_id_sql));
+			
+			$sql = 'DELETE
+				FROM _poll_voters
+				WHERE vote_id IN (??)';
+			sql_query(sql_filter($sql, $vote_id_sql));
+		}
+		
+		//
+		$sql = 'DELETE FROM _members_unread
+			WHERE element = 8
+				AND item IN (??)';
+		sql_query(sql_filter($sql, $topic_id_sql));
+		
+		//
+		foreach ($forums_id_sql as $forum_id)
+		{
+			sync($forum_id);
+		}
+		
+		return _pre('El tema fue eliminado.', true);
 	}
 }
 
-function sync($id)
-{
+function sync($id) {
 	$last_topic = 0;
 	$total_posts = 0;
 	$total_topics = 0;
@@ -149,15 +161,3 @@ function sync($id)
 }
 
 ?>
-<html>
-<head>
-<title>Delete posts</title>
-</head>
-
-<body>
-<form action="<?php echo $u; ?>" method="post">
-# Temas: <input type="text" name="topic_id" size="100" /><br /><br />
-<input type="submit" name="submit" value="Enviar" />
-</form>
-</body>
-</html>

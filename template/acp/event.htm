@@ -1,0 +1,19 @@
+<!-- INCLUDE page.header.htm -->
+
+<div class="section"><h1><a href="{U_EVENTS}">{L_UE}</a></h1></div>
+
+<!-- BEGIN error -->
+<a name="e"></a><div class="rows5_top_2"><div class="error_block"><h2>{L_ERROR}</h2><p>{error.MESSAGE}</p></div></div>
+<!-- END error -->
+
+<form action="{MODULE_URL}" name="post" method="post" enctype="multipart/form-data">
+<input type="hidden" name="MAX_FILE_SIZE" value="{UPLOAD_MAXSIZE}" /><input type="file" name="add_image[]" size="25" />
+
+<br /><br />Titulo:<br /><input type="text" name="e_title" value="" />
+<br /><br />Fecha (d/m/y//h:m):<br /><input type="text" name="e_day" size="2" value="" /> <input type="text" name="e_month" size="2" value="" /> <input type="text" name="e_year" size="5" value="" /> ////  <input type="text" name="e_hour" size="2" value="" /> <input type="text" name="e_mins" size="2" value="" />
+<br /><br />Artistas:<br /><textarea name="e_artist" cols="50" rows="15"></textarea>
+
+<div class="a_center">{S_HIDDEN}<input type="submit" name="submit" value="{L_SUBMIT}" /></div>
+</form>
+
+<!-- INCLUDE page.footer.htm -->

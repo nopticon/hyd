@@ -217,6 +217,10 @@ function requested_page() {
 	return $current_page;
 }
 
+function array_key($a, $k) {
+	return (isset($a[$k])) ? $a[$k] : false;
+}
+
 //
 // Parse error lang
 //

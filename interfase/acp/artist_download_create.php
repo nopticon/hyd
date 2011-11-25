@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-class artist_download_create extends mac {
+class __artist_download_create extends mac {
 	public function __construct() {
 		parent::__construct();
 		
@@ -26,7 +26,7 @@ class artist_download_create extends mac {
 	}
 	
 	public function home() {
-		global $config, $user, $template;
+		global $config, $user, $cache, $template;
 		
 		$limit = set_time_limit(0);
 		$error = array();
@@ -44,10 +44,11 @@ class artist_download_create extends mac {
 				fatal_error();
 			}
 			
-			$filepath = artist_path($artist_data['subdomain'], $artist_data['ub'], true, true);
+			//$filepath = artist_path($artist_data['subdomain'], $artist_data['ub'], true, true);
+			$filepath = $config['artists_path'] . $artist_data['ub'] . '/';
 			$filepath_1 = $filepath . 'media/';
 			
-			$f = $upload->process($filepath_1, $_FILES['add_dl'], w('mp3'), upload_maxsize());
+			$f = $upload->process($filepath_1, $_FILES['add_dl'], w('mp3'));
 			
 			if (!sizeof($upload->error) && $f !== false) {
 				require_once(ROOT . 'interfase/id3/getid3/getid3.php');
@@ -58,8 +59,7 @@ class artist_download_create extends mac {
 				$a = sql_field($sql, 'total', 0);
 				
 				$proc = 0;
-				foreach ($f as $row)
-				{
+				foreach ($f as $row) {
 					$a++;
 					$proc++;
 					
@@ -99,12 +99,13 @@ class artist_download_create extends mac {
 				sql_query(sql_filter($sql, $proc, $a_id));
 				
 				$cache->delete('downloads_list');
+				
 				redirect(s_link('topic', $topic_id));
-			} else {
-				$template->assign_block_vars('error', array(
-					'MESSAGE' => parse_error($upload->error))
-				);
 			}
+			
+			$template->assign_block_vars('error', array(
+				'MESSAGE' => parse_error($upload->error))
+			);
 		}
 		
 		$sql = 'SELECT *
@@ -123,13 +124,7 @@ class artist_download_create extends mac {
 			);
 		}
 		
-		$template_vars = array(
-			'S_UPLOAD_ACTION' => $u,
-			'MAX_FILESIZE' => upload_maxsize(),
-			'MAX_FILESIZE2' => (upload_maxsize() / 1024 / 1024)
-		);
-		
-		page_layout('DL', 'acp/a_download', $template_vars, false);
+		return;
 	}
 }
 

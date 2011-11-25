@@ -18,44 +18,41 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-_auth('founder');
-
-// submission
-if ($submit)
-{
-	$username = request_var('username', '');
-	if (empty($username))
-	{
-		die();
+class __unread_all_delete extends mac {
+	public function __construct() {
+		parent::__construct();
+		
+		$this->auth('founder');
 	}
 	
-	$username = get_username_base($username);
-	
-	$sql = 'SELECT user_id
-		FROM _members
-		WHERE username_base = ?';
-	if (!$row = sql_fieldrow(sql_filter($sql, $username))) {
-		die();
+	public function _home() {
+		global $config, $user, $cache, $template;
+		
+		if (!$this->submit) {
+			return false;
+		}
+		
+		$username = request_var('username', '');
+		if (empty($username)) {
+			fatal_error();
+		}
+		
+		$username = get_username_base($username);
+		
+		$sql = 'SELECT user_id
+			FROM _members
+			WHERE username_base = ?';
+		if (!$row = sql_fieldrow(sql_filter($sql, $username))) {
+			fatal_error();
+		}
+		
+		$sql = 'DELETE FROM _members_unread
+			WHERE user_id = ?
+				AND element <> ?';
+		sql_query(sql_filter($sql, $row['user_id'], 16));
+		
+		return _pre('Deleted', true);
 	}
-	
-	$sql = 'DELETE FROM _members_unread
-		WHERE user_id = ?
-			AND element <> ?';
-	sql_query(sql_filter($sql, $row['user_id'], 16));
-
-	echo 'Deleted';
 }
-/* */
 
-?><html>
-<head>
-<title>Delete message center</title>
-</head>
-
-<body>
-<form action="<?php echo $u; ?>" method="post">
-Usuario: <input type="text" name="username" /><br /><br />
-<input type="submit" name="submit" value="Enviar" />
-</form>
-</body>
-</html>
+?>

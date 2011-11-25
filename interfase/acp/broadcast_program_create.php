@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-class broadcast_program_create extends mac {
+class __broadcast_program_create extends mac {
 	public function __construct() {
 		parent::__construct();
 		
@@ -26,8 +26,9 @@ class broadcast_program_create extends mac {
 	}
 	
 	public function home() {
-		if ($this->submit)
-		{
+		global $config, $user, $cache, $template;
+		
+		if ($this->submit) {
 			$v = array(
 				'name' => '',
 				'base' => '',
@@ -37,8 +38,8 @@ class broadcast_program_create extends mac {
 				'day' => 0,
 				'dj' => ''
 			);
-			foreach ($v as $vv => $d)
-			{
+			
+			foreach ($v as $vv => $d) {
 				$v[$vv] = request_var($vv, $d);
 			}
 			
@@ -58,8 +59,7 @@ class broadcast_program_create extends mac {
 			$dj_list = $v['dj'];
 			unset($v['dj']);
 			
-			foreach ($v as $vv => $d)
-			{
+			foreach ($v as $vv => $d) {
 				$v['show_' . $vv] = $d;
 				unset($v[$vv]);
 			}
@@ -107,29 +107,3 @@ class broadcast_program_create extends mac {
 }
 
 ?>
-<html>
-<head>
-<title>Add Radio Show</title>
-</head>
-
-<body>
-<form action="<?php echo $u; ?>" method="post">
-Nombre: <input type="text" name="name" size="100" /><br />
-Nombre base: <input type="text" name="base" size="100" /><br />
-G�neros: <input type="text" name="genre" size="100" /><br />
-Inicio UTC -6: <input type="text" name="start" size="100" /><br />
-Final UTC -6: <input type="text" name="end" size="100" /><br />
-D&iacute;a: <select name="day">
-<option value="1">Lunes</option>
-<option value="2">Martes</option>
-<option value="3">Miercoles</option>
-<option value="4">Jueves</option>
-<option value="5">Viernes</option>
-<option value="6">Sabado</option>
-<option value="7">Domingo </option>
-</select><br />
-Locutores: <textarea name="dj" rows="5" cols="15"></textarea><br />
-<input type="submit" name="submit" value="Enviar" />
-</form>
-</body>
-</html>

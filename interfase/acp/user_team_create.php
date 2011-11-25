@@ -18,83 +18,87 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-_auth('founder');
-
-if ($submit)
-{
-	$team = request_var('team', 0);
-	$username = request_var('username', '');
-	$username = get_username_base($username);
-	$realname = request_var('realname', '');
-	$ismod = request_var('ismod', 0);
-	
-	$sql = 'SELECT *
-		FROM _team
-		WHERE team_id = ?';
-	if (!$teamd = sql_fieldrow(sql_filter($sql, $team))) {
-		fatal_error();
+class __user_team_create extends mac {
+	public function __construct() {
+		parent::__construct();
+		
+		$this->auth('founder');
 	}
 	
-	$sql = 'SELECT user_id, username
-		FROM _members
-		WHERE username_base = ?';
-	if (!$userdata = sql_fieldrow(sql_filter($sql, $username))) {
-		fatal_error();
-	}
-	
-	$insert = true;
-	
-	$sql = 'SELECT *
-		FROM _team_members
-		WHERE team_id = ?
-			AND member_id = ?';
-	if ($row = sql_fieldrow(sql_filter($sql, $team, $userdata['user_id']))) {
-		if ($ismod && !$row['member_mod']) {
-			$sql = 'UPDATE _team_members SET member_mod = 1
-				WHERE team_id = ?
-					AND member_id = ?';
-			sql_query(sql_filter($sql, $team, $userdata['user_id']));
+	public function _home() {
+		global $config, $user, $cache, $template;
+		
+		if (!$this->submit) {
+			$sql = 'SELECT *
+				FROM _team
+				ORDER BY team_name';
+			$result = sql_rowset($sql);
+			
+			foreach ($result as $i => $row) {
+				if (!$i) $template->assign_block_vars('team', array());
+				
+				$template->assign_block_vars('team.row', array(
+					'TEAM_ID' => $row['team_id'],
+					'TEAM_NAME' => $row['team_name'])
+				);
+			}
+			
+			return false;
 		}
 		
-		$insert = false;
+		$team = request_var('team', 0);
+		$username = request_var('username', '');
+		$username = get_username_base($username);
+		$realname = request_var('realname', '');
+		$ismod = request_var('ismod', 0);
+		
+		$sql = 'SELECT *
+			FROM _team
+			WHERE team_id = ?';
+		if (!$teamd = sql_fieldrow(sql_filter($sql, $team))) {
+			fatal_error();
+		}
+		
+		$sql = 'SELECT user_id, username
+			FROM _members
+			WHERE username_base = ?';
+		if (!$userdata = sql_fieldrow(sql_filter($sql, $username))) {
+			fatal_error();
+		}
+		
+		$insert = true;
+		
+		$sql = 'SELECT *
+			FROM _team_members
+			WHERE team_id = ?
+				AND member_id = ?';
+		if ($row = sql_fieldrow(sql_filter($sql, $team, $userdata['user_id']))) {
+			if ($ismod && !$row['member_mod']) {
+				$sql = 'UPDATE _team_members SET member_mod = 1
+					WHERE team_id = ?
+						AND member_id = ?';
+				sql_query(sql_filter($sql, $team, $userdata['user_id']));
+			}
+			
+			$insert = false;
+		}
+		
+		if ($insert)
+		{
+			$insert = array(
+				'team_id' => $team,
+				'member_id' => $userdata['user_id'],
+				'real_name' => $realname,
+				'member_mod' => $ismod
+			);
+			$sql = 'INSERT INTO _team_members' . sql_build('INSERT', $insert);
+			sql_query($sql);
+		}
+		
+		$cache->delete('team', 'team_all', 'team_members', 'team_mod', 'team_radio', 'team_colab');
+		
+		return _pre('El usuario <strong>' . $userdata['username'] . '</strong> fue agregado al grupo <strong>' . $teamd['team_name'] . '</strong>.', true);
 	}
-	
-	if ($insert)
-	{
-		$insert = array(
-			'team_id' => $team,
-			'member_id' => $userdata['user_id'],
-			'real_name' => $realname,
-			'member_mod' => $ismod
-		);
-		$sql = 'INSERT INTO _team_members' . sql_build('INSERT', $insert);
-		sql_query($sql);
-	}
-	
-	$cache->delete('team', 'team_all', 'team_members', 'team_mod', 'team_radio', 'team_colab');
-	
-	echo 'El usuario <strong>' . $userdata['username'] . '</strong> fue agregado al grupo <strong>' . $teamd['team_name'] . '</strong>.';
 }
 
 ?>
-
-<form action="<?php echo $u; ?>" method="post">
-Equipo: <select name="team">
-<?php
-
-$sql = 'SELECT *
-	FROM _team
-	ORDER BY team_name';
-$result = sql_rowset($sql);
-
-foreach ($result as $row) {
-	echo '<option value="' . $row['team_id'] . '">' . $row['team_name'] . '</option>';
-}
-
-?>
-</select><br />
-Usuario: <input type="text" name="username" value="" /><br />
-Nombre real: <input type="text" name="realname" value="" /><br />
-Moderador: <input type="checkbox" name="ismod" value="1" /><br />
-<input type="submit" name="submit" value="Agregar usuario" />
-</form>

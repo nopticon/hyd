@@ -18,47 +18,41 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-_auth('founder');
-
-$submit = isset($HTTP_POST_VARS['submit']);
-
-// submission
-if ($submit)
-{
-	$topic_id = request_var('topic_id', 0);
-	
-	if (!$topic_id)
-	{
-		die();
-	}
-
-	$sql = 'SELECT *
-		FROM _forum_topics
-		WHERE topic_id = ?';
-	if (!$data = sql_fieldrow(sql_filter($sql, $topic_id))) {
-		die('NO FROM TOPIC: ' . $sql);
+class __forums_topic_case extends mac {
+	public function __construct() {
+		parent::__construct();
+		
+		$this->auth('founder');
 	}
 	
-	$title = ucfirst(strtolower($data['topic_title']));
+	public function _home() {
+		global $config, $user, $cache, $template;
+		
+		if (!$this->submit) {
+			return false;
+		}
+		
+		$topic_id = request_var('topic_id', 0);
+		
+		if (!$topic_id) {
+			fatal_error();
+		}
 	
-	$sql = 'UPDATE _forum_topics SET topic_title = ?
-		WHERE topic_id = ?';
-	sql_query(sql_filter($sql, $title, $topic_id));
-	
-	echo $data['topic_title'] . '<br /><br />';
-	echo $title . '<br /><br />';
+		$sql = 'SELECT *
+			FROM _forum_topics
+			WHERE topic_id = ?';
+		if (!$data = sql_fieldrow(sql_filter($sql, $topic_id))) {
+			fatal_error();
+		}
+		
+		$title = ucfirst(strtolower($data['topic_title']));
+		
+		$sql = 'UPDATE _forum_topics SET topic_title = ?
+			WHERE topic_id = ?';
+		sql_query(sql_filter($sql, $title, $topic_id));
+		
+		return _pre($data['topic_title'] . ' > ' . $title, true);
+	}
 }
-/* */
 
-?><html>
-<head>
-<title>Topic title case</title>
-</head>
-
-<body>
-<form action="<?php echo $u; ?>" method="post">
-Tema a cambiar: <input type="text" name="topic_id" /><br /><br />
-<input type="submit" name="submit" value="Enviar" />
-</form>
-</body>
-</html>
+?>

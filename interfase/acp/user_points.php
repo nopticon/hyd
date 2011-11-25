@@ -18,22 +18,34 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-_auth('all');
-
-$sql = 'SELECT user_id, username, username_base, user_points
-	FROM _members
-	WHERE user_points <> 0
-	ORDER BY user_points DESC, username';
-$result = sql_rowset($sql);
-
-echo '<ul>';
-foreach ($result as $row) {
-	echo '<li><a href="' . s_link('m', $row['username_base']) . '">' . $row['username'] . '</a> - ' . $row['user_points'] . '</li>';
+class __user_points extends mac {
+	public function __construct() {
+		parent::__construct();
+		
+		$this->auth('founder');
+	}
+	
+	public function _home() {
+		global $config, $user, $cache, $template;
+		
+		$sql = 'SELECT user_id, username, username_base, user_points
+			FROM _members
+			WHERE user_points <> 0
+			ORDER BY user_points DESC, username';
+		$result = sql_rowset($sql);
+		
+		foreach ($result as $i => $row) {
+			if (!$i) $template->assign_block_vars('members', array());
+			
+			$template->assign_block_vars('members.row', array(
+				'BASE' => s_link('m', $row['username_base']),
+				'USERNAME' => $row['username'],
+				'POINTS' => $row['user_points'])
+			);
+		}
+		
+		return;
+	}
 }
-
-echo '</ul>';
-
-sql_close();
-exit;
 
 ?>

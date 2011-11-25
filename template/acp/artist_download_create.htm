@@ -1,0 +1,24 @@
+<!-- INCLUDE page.header.htm -->
+
+<form name="post" action="{MODULE_URL}" method="post" enctype="multipart/form-data">
+	<div>Los archivos deben ser formato MP3:</div>
+	<div class="pad_top">
+		<input type="hidden" name="MAX_FILE_SIZE" value="{UPLOAD_MAXSIZE}" />
+		<input type="file" name="add_dl[]" size="50" />
+	</div>
+
+	<div class="pad_top">
+		<!-- BEGIN artists -->
+		<div>Artista:</div>
+		<select name="artist">
+			<!-- BEGIN row -->
+			<option value="{row.ARTIST_ID}">{row.ARTIST_NAME}</option>
+			<!-- END row -->
+		</select>
+		<!-- END artists -->
+		
+		<div class="pad_top a_mid">{S_HIDDEN}<input type="submit" class="submit" name="submit" value="{L_SUBMIT}" /></div>
+	</div>
+</form>
+
+<!-- INCLUDE page.footer.htm -->

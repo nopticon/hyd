@@ -18,17 +18,34 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-_auth('founder');
-
-$sql = 'SELECT topic_id, topic_title, topic_views, topic_replies
-	FROM _forum_topics
-	WHERE forum_id  NOT IN (38)
-	ORDER BY topic_time DESC
-	LIMIT 100';
-$result = sql_rowset($sql);
-
-foreach ($result as $row) {
-	echo '<div><a href="/topic/' . $row['topic_id'] . '/">' . $row['topic_title'] . '</a> (' . $row['topic_views'] . 'v, ' . $row['topic_replies'] . 'm)</div>';
+class __forums_topics_last extends mac {
+	public function __construct() {
+		parent::__construct();
+		
+		$this->auth('founder');
+	}
+	
+	public function _home() {
+		global $config, $user, $cache, $template;
+		
+		$sql = 'SELECT topic_id, topic_title, topic_views, topic_replies
+			FROM _forum_topics
+			WHERE forum_id  NOT IN (38)
+			ORDER BY topic_time DESC
+			LIMIT 100';
+		$result = sql_rowset($sql);
+		
+		foreach ($result as $i => $row) {
+			$template->assign_block_vars('topics', array(
+				'TOPIC_ID' => s_link('topic', $row['topic_id']),
+				'TOPIC_TITLE' => $row['topic_title'],
+				'TOPIC_VIEWS' => $row['topic_views'],
+				'TOPIC_REPLIES' => $row['topic_replies'])
+			);
+		}
+		
+		return;
+	}
 }
 
 ?>

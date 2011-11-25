@@ -18,115 +18,118 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-_auth('mod');
-
-// submission
-if ($submit)
-{
-	$from_topic = request_var('from_topic', 0);
-	$to_topic = request_var('to_topic', 0);
-	
-	if (!$from_topic || !$to_topic || $from_topic == $to_topic)
-	{
-		_die();
-	}
-
-	$sql = 'SELECT *
-		FROM _forum_topics
-		WHERE topic_id = ?';
-	if (!$row = sql_fieldrow(sql_filter($sql, $from_topic))) {
-		_die();
+class __forums_topic_merge extends mac {
+	public function __construct() {
+		parent::__construct();
+		
+		$this->auth('mod');
 	}
 	
-	$sql = 'SELECT *
-		FROM _forum_topics
-		WHERE topic_id = ?';
-	if (!$row = sql_fieldrow(sql_filter($sql, $to_topic))) {
-		_die();
-	}
-	
-	$from_forum_id = (int) $row['forum_id'];
-	$from_poll = (int) $row['topic_vote'];
-	$to_forum_id = (int) $row['forum_id'];
-	$to_poll = (int) $row['topic_vote'];
-	
-	if ($from_poll)
-	{
-		if ($to_poll)
-		{
-			$sql = 'SELECT vote_id
-				FROM _poll_options
-				WHERE topic_id = ?';
-			if ($vote_id = sql_field(sql_filter($sql, $from_topic), 'vote_id', 0))
-			{
-				$sql = array(
-					sql_filter('DELETE FROM _poll_voters WHERE vote_id = ?', $vote_id),
-					sql_filter('DELETE FROM _poll_results WHERE vote_id = ?', $vote_id),
-					sql_filter('DELETE FROM _poll_options WHERE vote_id = ?', $vote_id)
-				);
-				sql_query($sql);
-			}
-		} else {
-			$sql = 'UPDATE _poll_options SET topic_id = ?
-				WHERE topic_id = ?';
-			sql_query(sql_filter($sql, $to_topic, $from_topic));
+	public function _home() {
+		global $config, $user, $cache, $template;
+		
+		if (!$this->submit) {
+			return false;
 		}
-	}
+		
+		$from_topic = request_var('from_topic', 0);
+		$to_topic = request_var('to_topic', 0);
+		
+		if (!$from_topic || !$to_topic || $from_topic == $to_topic) {
+			fatal_error();
+		}
 	
-	// Update destination toic
-	$sql = 'SELECT topic_views
-		FROM _forum_topics
-		WHERE topic_id = ?';
-	if ($topic_views = sql_field(sql_filter($sql, $from_topic), 'topic_views', 0)) {
-		$sql = 'UPDATE _forum_topics SET topic_views = topic_views + ??
+		$sql = 'SELECT *
+			FROM _forum_topics
 			WHERE topic_id = ?';
-		sql_query(sql_filter($sql, $view_row['topic_views'], $to_topic));
-	}
-	
-	//
-	//
-	$sql = 'SELECT *
-		FROM _forum_topics_fav
-		WHERE topic_id = ?';
-	$user_ids = sql_rowset(sql_filter($sql, $to_topic), false, 'user_id');
-	
-	$sql_user = (sizeof($user_ids)) ? ' AND user_id NOT IN (' . implode(', ', $user_ids) . ')' : '';
-	
-	$sql = array(
-		sql_filter('UPDATE _forum_topics_fav SET topic_id = ? WHERE topic_id = ?', $to_topic, $from_topic) . $sql_user,
-		sql_filter('DELETE FROM _forum_topics_fav WHERE topic_id = ?', $from_topic),
-		sql_filter('UPDATE _forum_posts SET forum_id = ?, topic_id = ? WHERE topic_id = ?', $to_forum_id, $to_topic, $from_topic),
-		sql_filter('DELETE FROM _forum_topics WHERE topic_id = ?', $from_topic),
-		sql_filter('DELETE FROM _members_unread WHERE element = ? AND item = ?', UH_T, $from_topic),
-	);
-	
-	if ($from_poll && !$to_poll) {
-		$sql[] = sql_filter('UPDATE _forum_topics SET topic_vote = 1 WHERE topic_id = ?', $to_topic);
-	}
-	sql_query($sql);
-	
-	$user->save_unread(UH_T, $to_topic);
-	
-	if (in_array($to_forum_id, array(20, 39)))
-	{
-		topic_feature($to_topic, 0);
-		topic_arkane($to_topic, 0);
-	}
-	
-	sync('topic', $to_topic);
-	sync('forum', $to_forum_id);
-	
-	if ($from_forum_id != $to_forum_id)
-	{
-		sync('forum', $from_forum_id);
+		if (!$row = sql_fieldrow(sql_filter($sql, $from_topic))) {
+			fatal_error();
+		}
+		
+		$sql = 'SELECT *
+			FROM _forum_topics
+			WHERE topic_id = ?';
+		if (!$row = sql_fieldrow(sql_filter($sql, $to_topic))) {
+			_die();
+		}
+		
+		$from_forum_id = (int) $row['forum_id'];
+		$from_poll = (int) $row['topic_vote'];
+		$to_forum_id = (int) $row['forum_id'];
+		$to_poll = (int) $row['topic_vote'];
+		
+		if ($from_poll) {
+			if ($to_poll) {
+				$sql = 'SELECT vote_id
+					FROM _poll_options
+					WHERE topic_id = ?';
+				if ($vote_id = sql_field(sql_filter($sql, $from_topic), 'vote_id', 0)) {
+					$sql = array(
+						sql_filter('DELETE FROM _poll_voters WHERE vote_id = ?', $vote_id),
+						sql_filter('DELETE FROM _poll_results WHERE vote_id = ?', $vote_id),
+						sql_filter('DELETE FROM _poll_options WHERE vote_id = ?', $vote_id)
+					);
+					sql_query($sql);
+				}
+			} else {
+				$sql = 'UPDATE _poll_options SET topic_id = ?
+					WHERE topic_id = ?';
+				sql_query(sql_filter($sql, $to_topic, $from_topic));
+			}
+		}
+		
+		// Update destination toic
+		$sql = 'SELECT topic_views
+			FROM _forum_topics
+			WHERE topic_id = ?';
+		if ($topic_views = sql_field(sql_filter($sql, $from_topic), 'topic_views', 0)) {
+			$sql = 'UPDATE _forum_topics SET topic_views = topic_views + ??
+				WHERE topic_id = ?';
+			sql_query(sql_filter($sql, $view_row['topic_views'], $to_topic));
+		}
+		
+		//
+		//
+		$sql = 'SELECT *
+			FROM _forum_topics_fav
+			WHERE topic_id = ?';
+		$user_ids = sql_rowset(sql_filter($sql, $to_topic), false, 'user_id');
+		
+		$sql_user = (sizeof($user_ids)) ? ' AND user_id NOT IN (' . implode(', ', $user_ids) . ')' : '';
+		
+		$sql = array(
+			sql_filter('UPDATE _forum_topics_fav SET topic_id = ? WHERE topic_id = ?', $to_topic, $from_topic) . $sql_user,
+			sql_filter('DELETE FROM _forum_topics_fav WHERE topic_id = ?', $from_topic),
+			sql_filter('UPDATE _forum_posts SET forum_id = ?, topic_id = ? WHERE topic_id = ?', $to_forum_id, $to_topic, $from_topic),
+			sql_filter('DELETE FROM _forum_topics WHERE topic_id = ?', $from_topic),
+			sql_filter('DELETE FROM _members_unread WHERE element = ? AND item = ?', UH_T, $from_topic),
+		);
+		
+		if ($from_poll && !$to_poll) {
+			$sql[] = sql_filter('UPDATE _forum_topics SET topic_vote = 1 WHERE topic_id = ?', $to_topic);
+		}
+		sql_query($sql);
+		
+		$user->save_unread(UH_T, $to_topic);
+		
+		if (in_array($to_forum_id, array(20, 39))) {
+			topic_feature($to_topic, 0);
+			topic_arkane($to_topic, 0);
+		}
+		
+		sync('topic', $to_topic);
+		sync('forum', $to_forum_id);
+		
+		if ($from_forum_id != $to_forum_id) {
+			sync('forum', $from_forum_id);
+		}
+
+		return;
 	}
 }
 
-/* */
-function sync($type, $id = false)
-{
-	switch($type)
-	{
+function sync($type, $id = false) {
+	switch($type) {
 		case 'all forums':
 			$sql = 'SELECT forum_id
 				FROM _forums';
@@ -186,7 +189,5 @@ function sync($type, $id = false)
 	
 	return true;
 }
-
-page_layout('Unir temas', 'acp/a_merge', false);
 
 ?>

@@ -26,7 +26,7 @@ class emailer {
 	public $extra_headers;
 	public $addresses;
 	public $reply_to;
-	public$from;
+	public $from;
 
 	public $tpl_msg = array();
 
@@ -47,18 +47,42 @@ class emailer {
 	}
 
 	public function cc($address) {
+		if (strpos($address, '@') === false) {
+			global $config;
+			
+			$address = $config['sitename'] . ' <' . $address . '@' . array_key(explode('@', $config['board_email']), 1) . '>';
+		}
+		
 		$this->addresses['cc'][] = trim($address);
 	}
 
 	public function bcc($address) {
+		if (strpos($address, '@') === false) {
+			global $config;
+			
+			$address = $config['sitename'] . ' <' . $address . '@' . array_key(explode('@', $config['board_email']), 1) . '>';
+		}
+		
 		$this->addresses['bcc'][] = trim($address);
 	}
 
 	public function replyto($address) {
+		if (strpos($address, '@') === false) {
+			global $config;
+			
+			$address = $address . '@' . array_key(explode('@', $config['board_email']), 1);
+		}
+		
 		$this->reply_to = trim($address);
 	}
 
 	public function from($address) {
+		if (strpos($address, '@') === false) {
+			global $config;
+			
+			$address = $config['sitename'] . ' <' . $address . '@' . array_key(explode('@', $config['board_email']), 1) . '>';
+		}
+		
 		$this->from = trim($address);
 	}
 

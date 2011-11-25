@@ -1,0 +1,20 @@
+<!-- INCLUDE page.header.htm -->
+
+<form action="<?php echo $u; ?>" method="post">
+Banda: 
+	<!-- BEGIN artists -->
+	<select name="ub">
+		<!-- BEGIN row -->
+		<option value="{row.ARTIST_ID}">{row.ARTIST_NAME}</option>
+		<!-- END row -->
+	</select>
+	<!-- END artists -->
+	<br />
+	T&iacute;tulo: <input type="text" name="title" value="" /><br />
+	Autor: <input type="text" name="author" value="" /><br />
+	Letra: <textarea name="text" cols="50" rows="20"></textarea><br />
+	
+	<input type="submit" name="submit" value="Agregar Letra" />
+</form>
+
+<!-- INCLUDE page.footer.htm -->

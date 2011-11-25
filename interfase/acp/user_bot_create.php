@@ -18,15 +18,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-class __activate extends mac {
+class __user_bot_create extends mac {
 	public function __construct() {
 		parent::__construct();
 		
 		$this->auth('founder');
 	}
 	
-	public function home() {
-		global $user;
+	public function _home() {
+		global $config, $user, $cache, $template;
 		
 		if ($submit) {
 			return false;
@@ -82,21 +82,9 @@ class __activate extends mac {
 		sql_query(sql_filter($sql, $bot_name));
 		
 		$cache->delete('bots');
+		
+		return;
 	}
 }
 
 ?>
-<html>
-<head>
-<title>Add bots</title>
-</head>
-
-<body>
-<form action="<?php echo $u; ?>" method="post">
-Nombre: <input type="text" name="bot_name" size="100" /><br />
-Agente: <input type="text" name="bot_agent" size="100" /><br />
-IP: <input type="text" name="bot_ip" size="100" /><br />
-<input type="submit" name="submit" value="Enviar" />
-</form>
-</body>
-</html>

@@ -18,84 +18,71 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-
-
-_auth('founder');
-
-if ($submit) {
-	$folder = request_var('folder', '');
-	$list = request_var('list', '');
-	
-	//
-	// Folder
-	if (!empty($folder)) {
-		$real_path = '../net/smiles/' . $folder;
+class __emoticon_update extends mac {
+	public function __construct() {
+		parent::__construct();
 		
-		$images = array();
-		
-		$fp = @opendir($real_path);
-		while ($file = @readdir($fp)) {
-			if (preg_match('#([a-z0-9]+)\.(gif|png)#is', $file, $split)) {
-				$images[] = $split;
-			}
-		}
-		@closedir($fp);
-		
-		$emots = array();
-		$skip = array();
-		$process = array();
-		
-		$sql = 'SELECT *
-			FROM _smilies
-			ORDER BY code';
-		$emots = sql_rowset($sql, 'code');
-		
-		//
-		foreach ($images as $each) {
-			$code = ':' . $each[1] . ':';
-			
-			if (isset($emots[$code])) {
-				$skip[] = $code;
-				continue;
-			}
-			
-			$path = $folder . '/' . $each[0];
-			
-			$insert = array(
-				'code' => $code,
-				'smile_url' => $path
-			);
-			$sql = 'INSERT INTO _smilies' . sql_build('INSERT', $insert);
-			sql_query($sql);
-			
-			$process[] = $insert;
-		}
-		
-		$cache->delete('smilies');
-		
-		echo '<pre>';
-		print_r($process);
-		echo '<br /><br />';
-		print_r($skip);
-		echo '</pre>';
-		
-		die();
+		$this->auth('founder');
 	}
 	
-	//
-	// List
-	
+	public function _home() {
+		global $config, $user, $cache, $template;
+		
+		if ($this->submit) {
+			$folder = request_var('folder', '');
+			$list = request_var('list', '');
+			
+			//
+			// Folder
+			if (!empty($folder)) {
+				$emoticon_path = $config['assets_path'] . 'emoticon/' . $folder;
+				
+				$images = array();
+				
+				$fp = @opendir($emoticon_path);
+				while ($file = @readdir($fp)) {
+					if (preg_match('#([a-z0-9]+)\.(gif|png)#is', $file, $split)) {
+						$images[] = $split;
+					}
+				}
+				@closedir($fp);
+				
+				$emots = array();
+				$skip = array();
+				$process = array();
+				
+				$sql = 'SELECT *
+					FROM _smilies
+					ORDER BY code';
+				$emots = sql_rowset($sql, 'code');
+				
+				foreach ($images as $each) {
+					$code = ':' . $each[1] . ':';
+					
+					if (isset($emots[$code])) {
+						$skip[] = $code;
+						continue;
+					}
+					
+					$path = $folder . '/' . $each[0];
+					
+					$insert = array(
+						'code' => $code,
+						'smile_url' => $path
+					);
+					$sql = 'INSERT INTO _smilies' . sql_build('INSERT', $insert);
+					sql_query($sql);
+					
+					$process[] = $insert;
+				}
+				
+				$cache->delete('smilies');
+				
+				_pre($process);
+				_pre($skip, true);
+			}
+		}
+	}
 }
 
-?><html>
-<head>
-<title>Insert emots</title>
-</head>
-
-<body>
-<form action="<?php echo $u; ?>" method="post">
-Folder: <input type="text" name="folder" /><br />
-<input type="submit" name="submit" value="Enviar" />
-</form>
-</body>
-</html>
+?>

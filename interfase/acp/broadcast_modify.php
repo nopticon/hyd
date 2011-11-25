@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-class broadcast_modify extends mac {
+class __broadcast_modify extends mac {
 	public function __construct() {
 		parent::__construct();
 		
@@ -26,7 +26,7 @@ class broadcast_modify extends mac {
 	}
 	
 	public function home() {
-		global $user;
+		global $config, $user, $cache, $template;
 		
 		require_once(ROOT . 'interfase/ftp.php');
 		$ftp = new ftp();
@@ -82,8 +82,7 @@ class broadcast_modify extends mac {
 			echo '<br />';
 		}
 		
-		if (!@file_exists($cds_file))
-		{
+		if (!@file_exists($cds_file)) {
 			fatal_error();
 		}
 		
@@ -125,16 +124,3 @@ function oclock($a) {
 }
 
 ?>
-
-<html>
-<head>
-<title>CDS</title>
-</head>
-
-<body>
-<form action="<?php echo $u; ?>" method="post">
-
-<input type="submit" name="submit" value="Enviar" />
-</form>
-</body>
-</html>

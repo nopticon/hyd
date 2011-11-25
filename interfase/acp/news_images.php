@@ -18,54 +18,51 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-_auth('all');
-
-$i_size = intval(ini_get('upload_max_filesize'));
-$i_size *= 1048576;
-$error = array();
-
-if ($submit)
-{
-	require_once(ROOT . 'interfase/upload.php');
-	$upload = new upload();
+class __news_images extends mac {
+	public function __construct() {
+		parent::__construct();
+		
+		$this->auth('all');
+	}
 	
-	$news_id = request_var('news_id', 0);
-	$filepath_1 = '..' . SDATA . 'news/';
-	$f = $upload->process($filepath_1, $_FILES['add_image'], array('jpg', 'jpeg'), $i_size);
-	
-	if (!sizeof($upload->error) && $f !== false)
-	{
-		foreach ($f as $row)
-		{
-			$xa = $upload->resize($row, $filepath_1, $filepath_1, $news_id, array(100, 75), false, false, true);
+	public function _home() {
+		global $config, $user, $cache, $template;
+		
+		if ($this->submit) {
+			require_once(ROOT . 'interfase/upload.php');
+			$upload = new upload();
+			
+			$news_id = request_var('news_id', 0);
+			$filepath_1 = $config['news_path'];
+			$f = $upload->process($filepath_1, $_FILES['add_image'], array('jpg', 'jpeg'), $i_size);
+			
+			if (!sizeof($upload->error) && $f !== false) {
+				foreach ($f as $row) {
+					$xa = $upload->resize($row, $filepath_1, $filepath_1, $news_id, array(100, 75), false, false, true);
+				}
+				
+				redirect(s_link());
+			}
+			
+			$template->assign_block_vars('error', array(
+				'MESSAGE' => parse_error($upload->error))
+			);
 		}
 		
-		redirect(s_link());
-	}
-	else
-	{
-		$template->assign_block_vars('error', array(
-			'MESSAGE' => parse_error($upload->error))
-		);
+		$sql = 'SELECT *
+			FROM _news
+			ORDER BY post_time DESC';
+		$result = sql_rowset($sql);
+		
+		foreach ($result as $row) {
+			$template->assign_block_vars('news_list', array(
+				'NEWS_ID' => $row['news_id'],
+				'NEWS_TITLE' => $row['post_subject'])
+			);
+		}
+		
+		return;
 	}
 }
-
-$sql = 'SELECT *
-	FROM _news
-	ORDER BY post_time DESC';
-$result = sql_rowset($sql);
-
-foreach ($result as $row) {
-	$template->assign_block_vars('news_list', array(
-		'NEWS_ID' => $row['news_id'],
-		'NEWS_TITLE' => $row['post_subject'])
-	);
-}
-
-$template_vars = array(
-	'S_UPLOAD_ACTION' => $u,
-	'MAX_FILESIZE' => $i_size
-);
-page_layout('NEWS IMAGES UPLOADER', 'news_images_body', $template_vars, false);
 
 ?>

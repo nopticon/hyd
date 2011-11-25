@@ -18,19 +18,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-class __activate extends mac {
+class __user_activate extends mac {
 	public function __construct() {
 		parent::__construct();
 		
 		$this->auth('founder');
 	}
 	
-	public function home() {
-		global $user;
+	public function _home() {
+		global $config, $user, $cache, $template;
 		
 		$user_id = request_var('uid', 0);
 		
-		if ($submit || $user_id)
+		if ($this->submit || $user_id)
 		{
 			$username = request_var('username', '');
 			$user_email = request_var('user_email', '');
@@ -88,31 +88,29 @@ class __activate extends mac {
 			$emailer->send();
 			$emailer->reset();
 			
-			echo 'La cuenta de <strong>' . $userdata['username'] . '</strong> ha sido activada.<br /><br />';
+			_pre('La cuenta de <strong>' . $userdata['username'] . '</strong> ha sido activada.', true);
 		}
+		
+		$sql = 'SELECT *
+			FROM _members
+			WHERE user_type = 1
+			ORDER BY username';
+		$result = sql_rowset($sql);
+		
+		foreach ($result as $i => $row) {
+			if (!$i) $template->assign_block_vars('list', array());
+			
+			$template->assign_block_vars('list.row', array(
+				'LINK' => s_link($this->name, $row['user_id']),
+				'USERNAME' => $row['username'],
+				'EMAIL' => $row['user_email'],
+				'DATE' => $row['user_regdate'],
+				'IP' => $row['user_regip'])
+			);
+		}
+		
+		return;
 	}
-}
-
-?>
-
-<form action="<?php echo $u; ?>" method="post">
-Nombre de usuario: <input type="text" name="username" value="" /><br />
-Correo: <input type="test" name="user_email" value="" /><br />
-<input type="submit" name="submit" value="Cambiar" />
-</form>
-
-<br /><br /><br />
-
-<?php
-
-$sql = 'SELECT *
-	FROM _members
-	WHERE user_type = 1
-	ORDER BY username';
-$result = sql_rowset($sql);
-
-foreach ($result as $row) {
-	echo '<a href="/nucleo/acp.php?module=activate&amp;uid=' . $row['user_id'] . '">Activar</a> -- ' . $row['username'] . ' -- ' . $row['user_email'] . ' -- ' . $user->format_date($row['user_regdate']) . ' -- ' . $row['user_regip'] . '<br />';
 }
 
 ?>

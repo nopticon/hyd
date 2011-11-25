@@ -18,45 +18,55 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-_auth('founder');
-
-if ($submit)
-{
-	$event = request_var('event', 0);
-	$artist = request_var('artist', '', true);
-	if (!$event || empty($artist))
-	{
-		_die();
-	}
-	
-	$sql = 'SELECT *
-		FROM _events
-		WHERE id = ?';
-	if (!$row = sql_fieldrow(sql_filter($sql, $event))) {
-		_die();
-	}
-	
-	$e_artist = explode("\n", $artist);
-	foreach ($e_artist as $row) {
-		$subdomain = get_subdomain($row);
+class __event_artist_delete extends mac {
+	public function __construct() {
+		parent::__construct();
 		
-		$sql = 'SELECT *
-			FROM _artists
-			WHERE subdomain = ?';
-		if ($a_row = sql_fieldrow(sql_filter($sql, $subdomain))) {
-			$sql = 'DELETE FROM _artists_events
-				WHERE a_artist = ?
-					AND a_event = ?';
-			sql_query(sql_filter($sql, $a_row['ub'], $event));
+		$this->auth('founder');
+	}
+	
+	public function _home() {
+		global $config, $user, $cache, $template;
+		
+		if ($this->submit)
+		{
+			$event = request_var('event', 0);
+			$artist = request_var('artist', '', true);
+			
+			if (!$event || empty($artist)) {
+				_die();
+			}
+			
+			$sql = 'SELECT *
+				FROM _events
+				WHERE id = ?';
+			if (!$row = sql_fieldrow(sql_filter($sql, $event))) {
+				_die();
+			}
+			
+			$e_artist = explode("\n", $artist);
+			foreach ($e_artist as $row) {
+				$subdomain = get_subdomain($row);
+				
+				$sql = 'SELECT *
+					FROM _artists
+					WHERE subdomain = ?';
+				if ($a_row = sql_fieldrow(sql_filter($sql, $subdomain))) {
+					$sql = 'DELETE FROM _artists_events
+						WHERE a_artist = ?
+							AND a_event = ?';
+					sql_query(sql_filter($sql, $a_row['ub'], $event));
+				}
+			}
+			
+			echo 'Actualizado.<br /><br />';
 		}
 	}
-	
-	echo 'Actualizado.<br /><br />';
 }
 
 ?>
 
-<form action="<?php echo $u; ?>" method="post">
+<form action="{MODULE_URL}" method="post">
 <select name="event">
 <?php
 

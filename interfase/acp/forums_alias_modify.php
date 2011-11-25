@@ -18,45 +18,43 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-_auth('founder');
-
-if ($submit)
-{
-	$forum_id = request_var('fid', 0);
-	$forum_alias = request_var('falias', '');
+class __forums_alias_modify extends mac {
+	public function __construct() {
+		parent::__construct();
+		
+		$this->auth('founder');
+	}
 	
-	$sql = 'UPDATE _forums SET forum_alias = ?
-		WHERE forum_id = ?';
-	sql_query(sql_filter($sql, $forum_alias, $forum_id));
-	
-	echo $forum_id . ' > ' . $forum_alias . '<br />';
+	public function _home() {
+		global $config, $user, $cache, $template;
+		
+		if ($this->submit) {
+			$forum_id = request_var('fid', 0);
+			$forum_alias = request_var('falias', '');
+			
+			$sql = 'UPDATE _forums SET forum_alias = ?
+				WHERE forum_id = ?';
+			sql_query(sql_filter($sql, $forum_alias, $forum_id));
+			
+			_pre($forum_id . ' > ' . $forum_alias, true);
+		}
+		
+		$sql = 'SELECT forum_id, forum_name
+			FROM _forums
+			ORDER BY forum_order';
+		$result = sql_rowset($sql);
+		
+		foreach ($result as $i => $row) {
+			if (!$i) $template->assign_block_vars('forums', array());
+			
+			$template->assign_block_vars('forums.row', array(
+				'FORUM_ID' => $row['forum_id'],
+				'FORUM_NAME' => $row['forum_name'])
+			);
+		}
+		
+		return;
+	}
 }
 
 ?>
-<html>
-<head>
-<title>Forum Alias</title>
-</head>
-
-<body>
-<form action="<?php echo $u; ?>" method="post">
-<select name="fid">
-<?php
-
-$sql = 'SELECT forum_id, forum_name
-	FROM _forums
-	ORDER BY forum_order';
-$result = sql_rowset($sql);
-
-foreach ($result as $row) {
-	echo '<option value="' . $row['forum_id'] . '">' . $row['forum_name'] . '</option>';
-}
-
-?></select><br />
-
-
-Alias: <input type="text" name="falias" size="100" /><br />
-<input type="submit" name="submit" value="Enviar" />
-</form>
-</body>
-</html>

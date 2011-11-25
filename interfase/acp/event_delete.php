@@ -18,6 +18,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
+class __event_delete extends mac {
+	public function __construct() {
+		parent::__construct();
+		
+		$this->auth('founder');
+	}
+	
+	public function _home() {
+		global $config, $user, $cache, $template;
+		
+		return;
+	}
+}
+
 _auth('colab_admin');
 
 if ($submit)
@@ -41,7 +55,7 @@ if ($submit)
 
 ?>
 
-<form action="<?php echo $u; ?>" method="post">
+<form action="{MODULE_URL}" method="post">
 <input type="text" name="event" value="" />
 <input type="submit" name="submit" value="Borrar evento" />
 </form>

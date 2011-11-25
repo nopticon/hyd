@@ -18,74 +18,73 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-_auth('founder');
-
-if ($submit)
-{
-	$username = request_var('username', '');
-	$username = get_username_base($username);
-	
-	$sql = 'SELECT *
-		FROM _members
-		WHERE username_base = ?';
-	if (!$userdata = sql_fieldrow(sql_filter($sql, $username))) {
-		fatal_error();
-	}
-	
-	$sql = array();
-	
-	$ary_sql = array(
-		'DELETE FROM _members WHERE user_id = ?',
-		'DELETE FROM _banlist WHERE ban_userid = ?',
-		'DELETE FROM _members_group WHERE user_id = ?',
-		'DELETE FROM _members_iplog WHERE log_user_id = ?',
-		'DELETE FROM _members_ref_invite WHERE invite_uid = ?',
-		'DELETE FROM _members_unread WHERE user_id = ?',
-		'DELETE FROM _poll_voters WHERE vote_user_id = ?',
-		'DELETE FROM _artists_auth WHERE user_id = ?',
-		'DELETE FROM _artists_viewers WHERE user_id = ?',
-		'DELETE FROM _artists_voters WHERE user_id = ?',
-		'DELETE FROM _dl_voters WHERE user_id = ?',
+class __user_delete extends mac {
+	public function __construct() {
+		parent::__construct();
 		
-		'UPDATE _members_posts SET poster_id = 1 WHERE poster_id = ?',
-		'UPDATE _news_posts SET poster_id = 1 WHERE poster_id = ?',
-		'UPDATE _artists_posts SET poster_id = 1 WHERE poster_id = ?',
-		'UPDATE _dl_posts SET poster_id = 1 WHERE poster_id = ?',
-		'UPDATE _events_posts SET poster_id = 1 WHERE poster_id = ?',
-		'UPDATE _forum_posts SET poster_id = 1 WHERE poster_id = ?',
-		'UPDATE _forum_topics SET topic_poster = 1 WHERE topic_poster = ?'
-	);
-	
-	foreach ($ary_sql as $row) {
-		$sql[] = sql_filter($row, $userdata['user_id']);
+		$this->auth('founder');
 	}
 	
-	$ary_sql = array(
-		'DELETE FROM _members_ban WHERE user_id = ? OR banned_user = ?',
-		'DELETE FROM _members_friends WHERE user_id = ? OR buddy_id = ?',
-		'DELETE FROM _members_ref_assoc WHERE ref_uid = ? OR ref_orig = ?',
-		'DELETE FROM _members_viewers WHERE viewer_id = ? OR user_id = ?',
-	);
-	
-	foreach ($ary_sql as $row) {
-		$sql[] = sql_filter($row, $userdata['user_id'], $userdata['user_id']);
+	public function _home() {
+		global $config, $user, $cache, $template;
+		
+		if (!$this->submit) {
+			return false;
+		}
+		
+		$username = request_var('username', '');
+		$username = get_username_base($username);
+		
+		$sql = 'SELECT *
+			FROM _members
+			WHERE username_base = ?';
+		if (!$userdata = sql_fieldrow(sql_filter($sql, $username))) {
+			fatal_error();
+		}
+		
+		$sql = array();
+		
+		$ary_sql = array(
+			'DELETE FROM _members WHERE user_id = ?',
+			'DELETE FROM _banlist WHERE ban_userid = ?',
+			'DELETE FROM _members_group WHERE user_id = ?',
+			'DELETE FROM _members_iplog WHERE log_user_id = ?',
+			'DELETE FROM _members_ref_invite WHERE invite_uid = ?',
+			'DELETE FROM _members_unread WHERE user_id = ?',
+			'DELETE FROM _poll_voters WHERE vote_user_id = ?',
+			'DELETE FROM _artists_auth WHERE user_id = ?',
+			'DELETE FROM _artists_viewers WHERE user_id = ?',
+			'DELETE FROM _artists_voters WHERE user_id = ?',
+			'DELETE FROM _dl_voters WHERE user_id = ?',
+			
+			'UPDATE _members_posts SET poster_id = 1 WHERE poster_id = ?',
+			'UPDATE _news_posts SET poster_id = 1 WHERE poster_id = ?',
+			'UPDATE _artists_posts SET poster_id = 1 WHERE poster_id = ?',
+			'UPDATE _dl_posts SET poster_id = 1 WHERE poster_id = ?',
+			'UPDATE _events_posts SET poster_id = 1 WHERE poster_id = ?',
+			'UPDATE _forum_posts SET poster_id = 1 WHERE poster_id = ?',
+			'UPDATE _forum_topics SET topic_poster = 1 WHERE topic_poster = ?'
+		);
+		
+		foreach ($ary_sql as $row) {
+			$sql[] = sql_filter($row, $userdata['user_id']);
+		}
+		
+		$ary_sql = array(
+			'DELETE FROM _members_ban WHERE user_id = ? OR banned_user = ?',
+			'DELETE FROM _members_friends WHERE user_id = ? OR buddy_id = ?',
+			'DELETE FROM _members_ref_assoc WHERE ref_uid = ? OR ref_orig = ?',
+			'DELETE FROM _members_viewers WHERE viewer_id = ? OR user_id = ?',
+		);
+		
+		foreach ($ary_sql as $row) {
+			$sql[] = sql_filter($row, $userdata['user_id'], $userdata['user_id']);
+		}
+		
+		sql_query($sql);
+		
+		return _pre('El registro de <strong>' . $userdata['username'] . '</strong> fue eliminado.', true);
 	}
-	
-	sql_query($sql);
-	
-	_die('El registro de <strong>' . $userdata['username'] . '</strong> fue eliminado.');
 }
 
 ?>
-<html>
-<head>
-<title>Delete users</title>
-</head>
-
-<body>
-<form action="<?php echo $u; ?>" method="post">
-Nombre de usuario: <input type="text" name="username" size="100" />
-<input type="submit" name="submit" value="Consultar" />
-</form>
-</body>
-</html>
