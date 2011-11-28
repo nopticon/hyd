@@ -115,7 +115,7 @@ function decode_ht($path) {
 function set_config($config_name, $config_value) {
 	global $config;
 
-	$sql = 'UPDATE _config SET config_value = ?
+	$sql = 'UPDATE _application SET config_value = ?
 		WHERE config_name = ?';
 	sql_query(sql_filter($sql, $config_value, $config_name));
 	
@@ -124,7 +124,7 @@ function set_config($config_name, $config_value) {
 			'config_name' => $config_name,
 			'config_value' => $config_value
 		);
-		$sql = 'INSERT INTO _config' . sql_build('INSERT', $sql_insert);
+		$sql = 'INSERT INTO _application' . sql_build('INSERT', $sql_insert);
 		sql_query($sql);
 	}
 
