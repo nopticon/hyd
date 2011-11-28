@@ -85,10 +85,10 @@ set_error_handler('msg_handler');
 $db = new database();
 $user = new user();
 $auth	= new auth();
-_pre('here', true);
-
 $cache = new cache();
 $template	= new template();
 $config = $cache->config();
+
+_pre('here', true);
 
 ?>
