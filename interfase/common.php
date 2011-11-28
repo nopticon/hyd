@@ -82,11 +82,11 @@ require_once(ROOT . 'interfase/cache.php');
 
 set_error_handler('msg_handler');
 
-_pre('here', true);
-
 $db = new database();
 $user = new user();
 $auth	= new auth();
+_pre('here', true);
+
 $cache = new cache();
 $template	= new template();
 $config = $cache->config();
