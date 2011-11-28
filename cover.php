@@ -19,12 +19,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 define('IN_NUCLEO', true);
 //require_once('./interfase/common.php');
 
-die('here1', true);
-
 $user->init();
 $user->setup();
-
-_pre('here2', true);
 
 srand((double)microtime()*1000000);
 
