@@ -82,6 +82,8 @@ require_once(ROOT . 'interfase/cache.php');
 
 set_error_handler('msg_handler');
 
+_pre('here', true);
+
 $db = new database();
 $user = new user();
 $auth	= new auth();
