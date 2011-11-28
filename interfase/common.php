@@ -89,4 +89,6 @@ $cache = new cache();
 $template	= new template();
 $config = $cache->config();
 
+_pre('here0', true);
+
 ?>
