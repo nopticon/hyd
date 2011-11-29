@@ -32,11 +32,6 @@ class database extends dcom {
 		}
 		unset($this->_access);
 		
-		/*echo '<pre>';
-		print_r($this->connect);
-		echo '</pre>';
-		exit;
-		*/
 		return true;
 	}
 	
