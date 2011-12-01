@@ -65,7 +65,7 @@ switch ($mode) {
 				FROM _crypt_confirm
 				WHERE crypt_userid = ?';
 			if (sql_fieldrow($sql, $userdata['user_id'])) {
-				fatal_error();
+				//fatal_error();
 			}
 			
 			$sql = 'SELECT *
@@ -135,9 +135,8 @@ switch ($mode) {
 				sql_query(sql_filter($sql, $crypt_password, $crypt_data['user_id']));
 				
 				$sql = 'DELETE FROM _crypt_confirm
-					WHERE crypt_code = ?
-						AND crypt_userid = ?';
-				sql_query(sql_filter($sql, $code, $crypt_data['user_id']));
+					WHERE crypt_userid = ?';
+				sql_query(sql_filter($sql, $crypt_data['user_id']));
 				
 				// Send email
 				require_once(ROOT . 'interfase/emailer.php');
