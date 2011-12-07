@@ -90,7 +90,7 @@ switch ($mode) {
 				sql_query($sql);
 				
 				// Send email
-				$emailer->from('info@rockrepublik.net');
+				$emailer->from('info');
 				$emailer->use_template('user_activate_passwd', $config['default_lang']);
 				$emailer->email_address($userdata['user_email']);
 				
@@ -142,7 +142,7 @@ switch ($mode) {
 				require_once(ROOT . 'interfase/emailer.php');
 				$emailer = new emailer();
 				
-				$emailer->from('Rock Republik Networks <info@rockrepublik.net>');
+				$emailer->from('info');
 				$emailer->use_template('user_confirm_passwd', $config['default_lang']);
 				$emailer->email_address($crypt_data['user_email']);
 				
@@ -247,7 +247,7 @@ switch ($mode) {
 		require_once(ROOT . 'interfase/emailer.php');
 		$emailer = new emailer();
 		
-		$emailer->from('info@rockrepublik.net');
+		$emailer->from('info');
 		$emailer->use_template('user_welcome_confirm');
 		$emailer->email_address($crypt_data['user_email']);
 		

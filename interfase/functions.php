@@ -507,7 +507,7 @@ function obtain_bots(&$bots) {
 	return;
 }
 
-function do_login($box_text = '', $need_auth = false) {
+function do_login($box_text = '', $need_auth = false, $extra_vars = false) {
 	global $user, $template;
 	
 	if (empty($user->data)) {
@@ -538,6 +538,10 @@ function do_login($box_text = '', $need_auth = false) {
 		'CUSTOM_MESSAGE' => $box_text,
 		'S_HIDDEN_FIELDS' => s_hidden($s_hidden)
 	);
+	
+	if ($extra_vars !== false) {
+		$template_vars = array_merge($template_vars, $extra_vars);
+	}
 	
 	page_layout('LOGIN2', 'login', $template_vars);
 }
@@ -724,7 +728,7 @@ function fatal_error($mode = '404', $bp_message = '') {
 				require_once('./interfase/emailer.php');
 				$emailer = new emailer();
 				
-				$emailer->from('info@rockrepublik.net');
+				$emailer->from('info');
 				$emailer->set_subject('MySQL error');
 				$emailer->use_template('mcp_delete', $config['default_lang']);
 				$emailer->email_address('info@rockrepublik.net');
@@ -827,8 +831,12 @@ function redirect($url, $moved = false) {
 	sql_close();
 	
 	// If relative path, prepend board url
-	if (strpos($url, '://') === false) {
+	if (strpos($url, '//') === false) {
 		$url = 'http://' . $config['server_name'] . trim($url);
+	}
+	
+	if (strpos($url, 'http') === false) {
+		$url = 'http:' . $url;
 	}
 	
 	if ($moved !== false) {

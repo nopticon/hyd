@@ -358,6 +358,7 @@ $lang += array(
 	
 	'EMPTY_PASSWORD' => 'Debes especificar una contrase&ntilde;a para tu cuenta',
 	'EMPTY_PASSWORD_CONFIRM' => 'Debes re-escribir la contrase&ntilde;a para tu cuenta',
+	'EMAIL_MISMATCH' => 'Los correos ingresados no coinciden',
 	'PASSWORD_MISMATCH' => 'Las contrase&ntilde;as ingresadas no coinciden',
 	'PASSWORD_LONG' => 'Tu contrase&ntilde;a es demasiado larga',
 	'CURRENT_PASSWORD_MISMATCH' => 'La contrase&ntilde;a ingresada no coincide con la almacenada en la base de datos',

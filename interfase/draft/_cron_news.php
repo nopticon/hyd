@@ -190,7 +190,7 @@ Intenta enviar la noticia nuevamente.";
 	//
 	// Send email
 	//
-	$emailer->from('info@rockrepublik.net');
+	$emailer->from('info');
 	$emailer->set_subject('Rock Republik: ' . $email_subject);
 	$emailer->use_template('mcp_news', $config['default_lang']);
 	$emailer->email_address($from);

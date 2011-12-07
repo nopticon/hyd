@@ -63,7 +63,7 @@ class __user_name_changes extends mac {
 		require_once(ROOT . 'interfase/emailer.php');
 		$emailer = new emailer();
 		
-		$emailer->from('info@rockrepublik.net');
+		$emailer->from('info');
 		$emailer->use_template('username_change', $config['default_lang']);
 		$emailer->email_address($userdata['user_email']);
 		

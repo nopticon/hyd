@@ -96,7 +96,7 @@ switch ($mode) {
 		//
 		$emailer = new emailer();
 		
-		$emailer->from('info@rockrepublik.net');
+		$emailer->from('info');
 		$emailer->set_subject('Featured topic by ' . $user->data['username']);
 		$emailer->use_template('mcp_delete', $config['default_lang']);
 		$emailer->email_address('bot.a@rockrepublik.net');
@@ -129,7 +129,7 @@ switch ($mode) {
 		//
 		$emailer = new emailer();
 		
-		$emailer->from('info@rockrepublik.net');
+		$emailer->from('info');
 		$emailer->set_subject('Arkaned topic by ' . $user->data['username']);
 		$emailer->use_template('mcp_delete', $config['default_lang']);
 		$emailer->email_address('bot.a@rockrepublik.net');
@@ -662,7 +662,7 @@ function smail($member, $data, $to = 'a') {
 	
 	$emailer = new emailer();
 	
-	$emailer->from('info@rockrepublik.net');
+	$emailer->from('info');
 	$emailer->set_subject('Deleted by ' . $member['username']);
 	$emailer->use_template('mcp_delete', $config['default_lang']);
 	$emailer->email_address('bot.' . $to . '@rockrepublik.net');

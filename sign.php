@@ -20,15 +20,18 @@ define('IN_NUCLEO', true);
 require_once('./interfase/common.php');
 
 $user->init(false);
+$user->setup();
 
 $action = request_var('mode', '');
+$code_invite = request_var('invite', '');
+$adm = (isset($_POST['admin'])) ? 1 : 0;
 
-_pre($action, true);
+$error = array();
 
-$v_fields = array();
-$fields = array(
+$v_fields = array(
 	'username' => '',
 	'email' => '',
+	'email_confirm' => '',
 	'key' => '',
 	'key_confirm' => '',
 	'gender' => 0,
@@ -39,12 +42,6 @@ $fields = array(
 	'ref' => 0
 );
 
-foreach ($fields as $k => $v) {
-	$v_fields[$k] = $v;
-}
-
-$code_invite = request_var('invite', '');
-
 if (!empty($code_invite)) {
 	$sql = 'SELECT i.invite_email, m.user_email
 		FROM _members_ref_invite i, _members m
@@ -54,8 +51,7 @@ if (!empty($code_invite)) {
 		fatal_error();
 	}
 	
-	$v_fields['refop'] = 1;
-	$v_fields['refby'] = $code_invite_row['user_email'];
+	$v_fields['ref'] = $code_invite_row['user_email'];
 	$v_fields['email'] = $code_invite_row['invite_email'];
 	unset($code_invite_row);
 }
@@ -67,31 +63,31 @@ switch ($action) {
 		}
 		
 		if (isset($_POST['login']) && (!$user->data['is_member'] || isset($_POST['admin']))) {
-			$username = phpbb_clean_username(request_var('username', ''));
+			$username = request_var('username', '');
 			$password = request_var('password', '');
 			$ref = request_var('ref', '');
 			
-			$adm = (isset($_POST['admin'])) ? 1 : 0;
-			
 			if (!empty($username) && !empty($password)) {
-				$sql = 'SELECT user_id, username, user_password, user_type, user_return_unread, user_country, user_avatar, user_location, user_gender, user_birthday
+				$username_base = get_username_base($username);
+				
+				$sql = 'SELECT user_id, username, user_password, user_type, user_country, user_avatar, user_location, user_gender, user_birthday
 					FROM _members
 					WHERE username = ?';
 				if ($row = sql_fieldrow(sql_filter($sql, $username))) {
-					if ((user_password($password) == $row['user_password']) && ($row['user_type'] != USER_INACTIVE && $row['user_type'] != USER_IGNORE)) {
+					$exclude_type = array(USER_INACTIVE, USER_IGNORE); 
+					
+					if ((user_password($password) == $row['user_password']) && (!in_array($row['user_type'], $exclude_type))) {
 						$user->session_create($row['user_id'], $adm);
-						
-						$ref = ($ref == '' || ($row['user_return_unread'] && preg_match('#' . $config['server_name'] . '/$#', $ref))) ? s_link('new') : $ref;
 						
 						if (!$row['user_country'] || !$row['user_location'] || !$row['user_gender'] || !$row['user_birthday'] || !$row['user_avatar']) {
 							$ref = s_link('my', 'profile');
+						} else {
+							$ref = (empty($ref) || (preg_match('#' . $config['server_name'] . '/$#', $ref))) ? s_link('new') : $ref;
 						}
 						redirect($ref);
 					}
 				}
 			}
-			
-			do_login('', $adm);
 		}
 		break;
 	case 'out':
@@ -108,15 +104,10 @@ switch ($action) {
 			redirect(s_link());
 		}
 		
-		//
-		// If the user submitted the form
-		//
-		$error = array();
-		
 		if (isset($_POST['submit'])) {
 			require_once(ROOT . 'interfase/functions_validate.php');
 			
-			foreach ($fields as $k => $v) {
+			foreach ($v_fields as $k => $v) {
 				$v_fields[$k] = request_var($k, $v);
 			}
 			
@@ -157,13 +148,24 @@ switch ($action) {
 				}
 			}
 			
-			if (!empty($v_fields['email'])) {
-				$result = validate_email($v_fields['email']);
-				if ($result['error']) {
-					$error['email'] = $result['error_msg'];
+			if (empty($v_fields['email']) || empty($v_fields['email_confirm'])) {
+				if (empty($v_fields['email'])) {
+					$error['email'] = 'EMPTY_EMAIL';
+				}
+				
+				if (empty($v_fields['email_confirm'])) {
+					$error['email_confirm'] = 'EMPTY_EMAIL_CONFIRM';
 				}
 			} else {
-				$error['email'] = 'EMPTY_EMAIL';
+				if ($v_fields['email'] == $v_fields['email_confirm']) {
+					$result = validate_email($v_fields['email']);
+					if ($result['error']) {
+						$error['email'] = $result['error_msg'];
+					}
+				} else {
+					$error['email'] = 'EMAIL_MISMATCH';
+					$error['email_confirm'] = 'EMAIL_MISMATCH';
+				}
 			}
 			
 			if (!empty($v_fields['key']) && !empty($v_fields['key_confirm'])) {
@@ -227,8 +229,8 @@ switch ($action) {
 					'user_mark_items' => 0,
 					'user_topic_order' => 0,
 					'user_email_dc' => 1,
-					'user_refop' => $v_fields['refop'],
-					'user_refby' => $v_fields['refby']
+					'user_refop' => 0,
+					'user_refby' => $v_fields['ref']
 				);
 				$sql = 'INSERT INTO _members' . sql_build('INSERT', $member_data);
 				$user_id = sql_query_nextid($sql);
@@ -250,50 +252,57 @@ switch ($action) {
 				require_once(ROOT . 'interfase/emailer.php');
 				$emailer = new emailer();
 				
-				// Pending points
-				if ($v_fields['refop'] == 1 && !empty($v_fields['refby']) && !email_format($v_fields['refby'])) {
-					$v_fields['refby'] = '';
-				}
+				$valid_ref = email_format($v_fields['ref']);
 				
-				if ($v_fields['refop'] == 1 && !empty($v_fields['refby'])) {
-					$sql = 'SELECT user_id
-						FROM _members
-						WHERE user_email = ?';
-					if ($ref_friend = sql_field(sql_filter($sql, $v_fields['refby']), 'user_id', 0)) {
-						$sql_insert = array(
-							'ref_uid' => $user_id,
-							'ref_orig' => $ref_friend
-						);
-						$sql = 'INSERT INTO _members_ref_assoc' . sql_build('INSERT', $sql_insert);
-						sql_query($sql);
-					} else {
-						$invite_user = explode('@', $v_fields['refby']);
-						$invite_code = substr(md5(unique_id()), 0, 6);
-						
-						$sql_insert = array(
-							'invite_code' => $invite_code,
-							'invite_email' => $v_fields['refby'],
-							'invite_uid' => $user_id
-						);
-						$sql = 'INSERT INTO _members_ref_invite' . sql_build('INSERT', $sql_insert);
-						sql_query($sql);
-						
-						$emailer->from('Rock Republiik Networks <info@rockrepublik.net>');
-						$emailer->use_template('user_invite');
-						$emailer->email_address($v_fields['refby']);
-						
-						$emailer->assign_vars(array(
-							'INVITED' => $invite_user[0],
-							'USERNAME' => $v_fields['username'],
-							'U_REGISTER' => s_link('my', array('register', 'a', $invite_code)))
-						);
-						$emailer->send();
-						$emailer->reset();
+				if (!empty($v_fields['ref'])) {
+					if ($valid_ref) {
+						$sql = 'SELECT user_id
+							FROM _members
+							WHERE user_email = ?';
+						if ($ref_friend = sql_field(sql_filter($sql, $v_fields['ref']), 'user_id', 0)) {
+							$sql_insert = array(
+								'ref_uid' => $user_id,
+								'ref_orig' => $ref_friend
+							);
+							$sql = 'INSERT INTO _members_ref_assoc' . sql_build('INSERT', $sql_insert);
+							sql_query($sql);
+							
+							$sql_insert = array(
+								'user_id' => $user_id,
+								'buddy_id' => $ref_friend,
+								'friend_time' => time()
+							);
+							$sql = 'INSERT INTO _members_friends' . sql_build('INSERT', $sql_insert);
+							sql_query($sql);
+						} else {
+							$invite_user = explode('@', $v_fields['ref']);
+							$invite_code = substr(md5(unique_id()), 0, 6);
+							
+							$sql_insert = array(
+								'invite_code' => $invite_code,
+								'invite_email' => $v_fields['ref'],
+								'invite_uid' => $user_id
+							);
+							$sql = 'INSERT INTO _members_ref_invite' . sql_build('INSERT', $sql_insert);
+							sql_query($sql);
+							
+							$emailer->from('info');
+							$emailer->use_template('user_invite');
+							$emailer->email_address($v_fields['ref']);
+							
+							$emailer->assign_vars(array(
+								'INVITED' => $invite_user[0],
+								'USERNAME' => $v_fields['username'],
+								'U_REGISTER' => s_link('my', array('register', 'a', $invite_code)))
+							);
+							$emailer->send();
+							$emailer->reset();
+						}
 					}
 				}
 				
 				// Send confirm email
-				$emailer->from('Rock Republik Networks <info@rockrepublik.net>');
+				$emailer->from('info');
 				$emailer->use_template('user_welcome');
 				$emailer->email_address($v_fields['email']);
 				
@@ -318,42 +327,33 @@ switch ($action) {
 //
 // Signup data
 //
-if (sizeof($error))
-{
+if (sizeof($error)) {
 	$template->assign_block_vars('error', array(
 		'MESSAGE' => parse_error($error))
 	);
 }
 
-foreach ($user->lang['MEMBERSHIP_BENEFITS2'] as $item)
-{
-	$template->assign_block_vars('list_benefits', array(
-		'ITEM' => $item)
-	);
-}
-
 $s_genres_select = '';
 $genres = array(1 => 'MALE', 2 => 'FEMALE');
-foreach ($genres as $id => $value)
-{
+foreach ($genres as $id => $value) {
 	$s_genres_select .= '<option value="' . $id . '"' . (($v_fields['gender'] == $id) ? ' selected="true"' : '') . '>' . $user->lang[$value] . '</option>';
 }
 
-$s_bday_select = '<option value="">&nbsp;</option>';
-for ($i = 1; $i < 32; $i++)
-{
+$s_bday_select = '';
+for ($i = 1; $i < 32; $i++) {
 	$s_bday_select .= '<option value="' . $i . '"' . (($v_fields['birthday_day'] == $i) ? 'selected="true"' : '') . '>' . $i . '</option>';
 }
 
-$s_bmonth_select = '<option value="">&nbsp;</option>';
+$s_bmonth_select = '';
 $months = array(1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April', 5 => 'May', 6 => 'June', 7 => 'July', 8 => 'August', 9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December');
 foreach ($months as $id => $value)
 {
 	$s_bmonth_select .= '<option value="' . $id . '"' . (($v_fields['birthday_month'] == $id) ? ' selected="true"' : '') . '>' . $user->lang['datetime'][$value] . '</option>';
 }
 
-$s_byear_select = '<option value="">&nbsp;</option>';
-for ($i = 2005; $i > 1899; $i--)
+$s_byear_select = '';
+$current_year = date('Y');
+for ($i = ($current_year - 1); $i > $current_year - 102; $i--)
 {
 	$s_byear_select .= '<option value="' . $i . '"' . (($v_fields['birthday_year'] == $i) ? ' selected="true"' : '') . '>' . $i . '</option>';
 }
@@ -373,18 +373,14 @@ $tv = array(
 	'V_TOS' => ($v_fields['tos']) ? ' checked="true"' : ''
 );
 
-if (isset($error['birthday']))
-{
-	$fields['birthday'] = true;
+if (isset($error['birthday'])) {
+	$v_fields['birthday'] = true;
 }
 
-foreach ($fields as $k => $v)
-{
+foreach ($v_fields as $k => $v) {
 	$tv['E_' . strtoupper($k)] = (isset($error[$k])) ? true : false;
 }
 
-//page_layout('NEW_ACCOUNT_SUBJECT', 'subscribe', $tv);
-
-do_login();
+do_login('', $adm, $tv);
 
 ?>

@@ -78,7 +78,7 @@ class __user_activate extends mac {
 			require_once(ROOT . 'interfase/emailer.php');
 			$emailer = new emailer();
 			
-			$emailer->from('info@rockrepublik.net');
+			$emailer->from('info');
 			$emailer->use_template('user_welcome_confirm');
 			$emailer->email_address($userdata['user_email']);
 			

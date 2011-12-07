@@ -282,7 +282,7 @@ class _comments {
 					require_once(ROOT . 'interfase/emailer.php');
 					$emailer = new emailer();
 					
-					$emailer->from('Rock Republik <info@rockrepublik.net>');
+					$emailer->from('info');
 					$emailer->use_template('user_message');
 					$emailer->email_address($post_data['user_email']);
 					$emailer->set_subject($user->data['username'] . ' te envio un mensaje en Rock Republik');
@@ -640,7 +640,7 @@ class _comments {
 			include_once('./interfase/emailer.php');
 			$emailer = new emailer();
 			
-			$emailer->from('info@rockrepublik.net');
+			$emailer->from('info');
 			$emailer->set_subject('Rock Republik: ' . $from['username'] . ' te ha enviado un mensaje');
 			$emailer->use_template('dc_email');
 			$emailer->email_address($to['user_email']);

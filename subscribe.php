@@ -243,7 +243,7 @@ if (isset($_POST['submit'])) {
 				$sql = 'INSERT INTO _members_ref_invite' . sql_build('INSERT', $sql_insert);
 				sql_query($sql);
 				
-				$emailer->from('info@rockrepublik.net');
+				$emailer->from('info');
 				$emailer->use_template('user_invite');
 				$emailer->email_address($v_fields['refby']);
 				
@@ -263,7 +263,7 @@ if (isset($_POST['submit'])) {
 		sql_query(sql_filter($sql, $v_fields['refop'], $v_fields['refby'], $user_id));
 		
 		// Send confirm email
-		$emailer->from('info@rockrepublik.net');
+		$emailer->from('info');
 		$emailer->use_template('user_welcome');
 		$emailer->email_address($v_fields['email']);
 		

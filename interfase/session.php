@@ -594,6 +594,13 @@ class user extends session {
 		}
 
 		$format = (!$format) ? $this->date_format : $format;
+		
+		$current_year = date('Y');
+		$this_year = date('Y', $gmepoch);
+		
+		if ($current_year == $this_year) {
+			$format = str_replace(' Y', '\, ', $format);
+		}
 
 		if (!$midnight) {
 			list($d, $m, $y) = explode(' ', gmdate('j n Y', time() + $this->timezone + $this->dst));

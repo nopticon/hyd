@@ -102,6 +102,13 @@
 		<span class="clear"></span>
 		
 		<div class="pad_top">
+			<div class="is_mid a_right"><label for="email_confirm" class="in_right">{L_CONFIRM_EMAIL}</label></div>
+			<div class="is_mid"><input<!-- IF E_EMAIL_CONFIRM --> class="error"<!-- ENDIF --> type="text" id="email_confirm" name="email_confirm" size="20" autocomplete="off" maxlength="32" value="{V_EMAIL_CONFIRM}" /></div>
+		</div>
+		
+		<span class="clear"></span>
+		
+		<div class="pad_top">
 			<div class="is_mid a_right"><label for="key" class="in_right">{L_PASSWORD}</label></div>
 			<div class="is_mid"><input<!-- IF E_KEY --> class="error"<!-- ENDIF --> type="password" id="key" name="key" size="20" autocomplete="off" maxlength="32" value="{V_KEY}" /></div>
 		</div>
@@ -117,7 +124,12 @@
 		
 		<div class="pad_top">
 			<div class="is_mid a_right"><label for="gender" class="in_right">{L_GENDER}</label></div>
-			<div class="is_mid"><select<!-- IF E_GENDER --> class="error"<!-- ENDIF --> id="gender" name="gender">{V_GENDER}</select></div>
+			<div class="is_mid">
+				<select<!-- IF E_GENDER --> class="error"<!-- ENDIF --> id="gender" name="gender">
+					<option value=""></option>
+					{V_GENDER}
+				</select>
+			</div>
 		</div>
 		
 		<span class="clear"></span>
@@ -125,9 +137,18 @@
 		<div class="pad_top">
 			<div class="is_mid a_right"><label for="birthday_day" class="in_right">{L_BIRTHDAY} (D&iacute;a, Mes, A&ntilde;o)</label></div>
 			<div class="is_mid">
-				<select<!-- IF E_BIRTHDAY --> class="error"<!-- ENDIF --> name="birthday_day">{V_BIRTHDAY_DAY}</select> 
-				<select<!-- IF E_BIRTHDAY --> class="error"<!-- ENDIF --> name="birthday_month">{V_BIRTHDAY_MONTH}</select> 
-				<select<!-- IF E_BIRTHDAY --> class="error"<!-- ENDIF --> name="birthday_year">{V_BIRTHDAY_YEAR}</select>
+				<select<!-- IF E_BIRTHDAY --> class="error"<!-- ENDIF --> name="birthday_day">
+					<option value=""></option>
+					{V_BIRTHDAY_DAY}
+				</select> 
+				<select<!-- IF E_BIRTHDAY --> class="error"<!-- ENDIF --> name="birthday_month">
+					<option value=""></option>
+					{V_BIRTHDAY_MONTH}
+				</select> 
+				<select<!-- IF E_BIRTHDAY --> class="error"<!-- ENDIF --> name="birthday_year">
+					<option value=""></option>
+					{V_BIRTHDAY_YEAR}
+				</select>
 			</div>
 		</div>
 		
