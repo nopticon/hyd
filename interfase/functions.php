@@ -507,17 +507,603 @@ function obtain_bots(&$bots) {
 	return;
 }
 
-function do_login($box_text = '', $need_auth = false, $extra_vars = false) {
-	global $user, $template;
+function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
+	global $config, $user, $template;
 	
 	if (empty($user->data)) {
-		$user->init();
+		$user->init(false);
 	}
 	if (empty($user->lang)) {
 		$user->setup();
 	}
 	
-	if (isset($_POST['login'])) {
+	$error = array();
+	
+	$action = request_var('mode', '');
+	$code_invite = request_var('invite', '');
+	$admin = (isset($_POST['admin'])) ? true : false;
+	$login = (isset($_POST['login'])) ? true : false;
+	$submit = (isset($_POST['submit'])) ? true : false;
+	
+	if ($admin) {
+		$need_auth = true;
+	}
+	
+	$v_fields = array(
+		'username' => '',
+		'email' => '',
+		'email_confirm' => '',
+		'key' => '',
+		'key_confirm' => '',
+		'gender' => 0,
+		'birthday_month' => 0,
+		'birthday_day' => 0,
+		'birthday_year' => 0,
+		'tos' => 0,
+		'ref' => 0
+	);
+	
+	if (!empty($code_invite)) {
+		$sql = 'SELECT i.invite_email, m.user_email
+			FROM _members_ref_invite i, _members m
+			WHERE i.invite_code = ?
+				AND i.invite_uid = m.user_id';
+		if (!$invite_row = sql_fieldrow(sql_filter($sql, $code_invite))) {
+			fatal_error();
+		}
+		
+		$v_fields['ref'] = $invite_row['user_email'];
+		$v_fields['email'] = $invite_row['invite_email'];
+		unset($invite_row);
+	}
+	
+	switch ($action) {
+		case 'in':
+			if ($user->data['is_member'] && !$admin) {
+				redirect(s_link());
+			}
+			
+			if ($login && (!$user->data['is_member'] || $admin)) {
+				$username = request_var('username', '');
+				$password = request_var('password', '');
+				$ref = request_var('ref', '');
+				
+				if (!empty($username) && !empty($password)) {
+					$username_base = get_username_base($username);
+					
+					$sql = 'SELECT user_id, username, user_password, user_type, user_country, user_avatar, user_location, user_gender, user_birthday
+						FROM _members
+						WHERE username_base = ?';
+					if ($row = sql_fieldrow(sql_filter($sql, $username_base))) {
+						$exclude_type = array(USER_INACTIVE, USER_IGNORE); 
+						
+						if ((user_password($password) == $row['user_password']) && (!in_array($row['user_type'], $exclude_type))) {
+							$user->session_create($row['user_id'], $adm);
+							
+							if (!$row['user_country'] || !$row['user_location'] || !$row['user_gender'] || !$row['user_birthday'] || !$row['user_avatar']) {
+								$ref = s_link('my', 'profile');
+							} else {
+								$ref = (empty($ref) || (preg_match('#' . $config['server_name'] . '/$#', $ref))) ? s_link('new') : $ref;
+							}
+							redirect($ref);
+						}
+					}
+				}
+			}
+			break;
+		case 'out':
+			if ($user->data['is_member']) {
+				$user->session_kill();
+			}
+			
+			redirect(s_link());
+			break;
+		case 'up':
+			if ($user->data['is_member']) {
+				redirect(s_link('my', 'profile'));
+			} else if ($user->data['is_bot']) {
+				redirect(s_link());
+			}
+			
+			$code = request_var('code', '');
+			if (!preg_match('#([a-z0-9]+)#is', $code)) {
+				fatal_error();
+			}
+			
+			$sql = 'SELECT c.*, m.user_id, m.username, m.username_base, m.user_email
+				FROM _crypt_confirm c, _members m
+				WHERE c.crypt_code = ?
+					AND c.crypt_userid = m.user_id';
+			if (!$crypt_data = sql_fieldrow(sql_filter($sql, $code))) {
+				fatal_error();
+			}
+			
+			$user_id = $crypt_data['user_id'];
+			
+			$sql = 'UPDATE _members SET user_type = ?
+				WHERE user_id = ?';
+			sql_query(sql_filter($sql, USER_NORMAL, $user_id));
+			
+			$sql = 'DELETE FROM _crypt_confirm
+				WHERE crypt_code = ?
+					AND crypt_userid = ?';
+			sql_query(sql_filter($sql, $code, $user_id));
+			
+			// Unread
+			$u_topics = array(288, 1455);
+			foreach ($u_topics as $v)
+			{
+				$user->save_unread(UH_T, $v, 0, $user_id);
+			}
+			$user->points_add(3, $user_id);
+			
+			//
+			$sql = 'SELECT *
+				FROM _members_ref_assoc
+				WHERE ref_uid = ?';
+			if ($ref_assoc = sql_fieldrow(sql_filter($sql, $user_id))) {
+				if ($user_id != $ref_assoc['ref_orig']) {
+					$user->points_add(3, $ref_assoc['ref_orig']);
+					
+					$sql_insert = array(
+						'user_id' => $user_id,
+						'buddy_id' => $ref_assoc['ref_orig'],
+						'friend_time' => time()
+					);
+					$sql = 'INSERT INTO _members_friends' . sql_build('INSERT', $sql_insert);
+					sql_query($sql);
+					
+					$sql_insert = array(
+						'user_id' => $ref_assoc['ref_orig'],
+						'buddy_id' => $user_id,
+						'friend_time' => time()
+					);
+					$sql = 'INSERT INTO _members_friends' . sql_build('INSERT', $sql_insert);
+					sql_query($sql);
+				
+					$user->save_unread(UH_FRIEND, $user_id, 0, $ref_assoc['ref_orig']);
+				}
+				
+				$sql = 'DELETE FROM _members_ref_assoc
+					WHERE ref_id = ?';
+				sql_query(sql_filter($sql, $ref_assoc['ref_id']));
+			}
+			
+			//
+			$sql = 'SELECT *
+				FROM _members_ref_invite
+				WHERE invite_email = ?';
+			if ($row = sql_fieldrow(sql_filter($sql, $crypt_data['user_email']))) {
+				$sql = 'DELETE FROM _members_ref_invite
+					WHERE invite_code = ?';
+				sql_query(sql_filter($sql, $row['invite_code']));
+			}
+			
+			//
+			require_once(ROOT . 'interfase/emailer.php');
+			$emailer = new emailer();
+			
+			$emailer->from('info');
+			$emailer->use_template('user_welcome_confirm');
+			$emailer->email_address($crypt_data['user_email']);
+			
+			$emailer->assign_vars(array(
+				'USERNAME' => $crypt_data['username'])
+			);
+			$emailer->send();
+			$emailer->reset();
+			
+			//
+			if (empty($user->data)) {
+				$user->init();
+			}
+			if (empty($user->lang)) {
+				$user->setup();
+			}
+			
+			$custom_vars = array(
+				'S_REDIRECT' => '',
+				'MESSAGE_TITLE' => $user->lang['INFORMATION'],
+				'MESSAGE_TEXT' => $user->lang['MEMBERSHIP_ADDED_CONFIRM']
+			);
+			page_layout('INFORMATION', 'message', $custom_vars);
+			
+			if ($submit) {
+				require_once(ROOT . 'interfase/functions_validate.php');
+				
+				foreach ($v_fields as $k => $v) {
+					$v_fields[$k] = request_var($k, $v);
+				}
+				
+				if (empty($v_fields['username'])) {
+					$error['username'] = 'EMPTY_USERNAME';
+				} else {
+					$len_username = strlen($v_fields['username']);
+						
+					if (($len_username < 2) || ($len_username > 20) || !get_username_base($v_fields['username'], true)) {
+						$error['username'] = 'USERNAME_INVALID';
+					}
+					
+					if (!sizeof($error)) {
+						$result = validate_username($v_fields['username']);
+						if ($result['error']) {
+							$error['username'] = $result['error_msg'];
+						}
+					}
+					
+					if (!sizeof($error)) {
+						$v_fields['username_base'] = get_username_base($v_fields['username']);
+						
+						$sql = 'SELECT user_id
+							FROM _members
+							WHERE username_base = ?';
+						if (sql_field(sql_filter($sql, $v_fields['username_base']), 'user_id', 0)) {
+							$error['username'] = 'USERNAME_TAKEN';
+						}
+					}
+					
+					if (!sizeof($error)) {
+						$sql = 'SELECT ub
+							FROM _artists
+							WHERE subdomain = ?';
+						if (sql_field(sql_filter($sql, $v_fields['username_base']), 'ub', 0)) {
+							$error['username'] = 'USERNAME_TAKEN';
+						}
+					}
+				}
+				
+				if (empty($v_fields['email']) || empty($v_fields['email_confirm'])) {
+					if (empty($v_fields['email'])) {
+						$error['email'] = 'EMPTY_EMAIL';
+					}
+					
+					if (empty($v_fields['email_confirm'])) {
+						$error['email_confirm'] = 'EMPTY_EMAIL_CONFIRM';
+					}
+				} else {
+					if ($v_fields['email'] == $v_fields['email_confirm']) {
+						$result = validate_email($v_fields['email']);
+						if ($result['error']) {
+							$error['email'] = $result['error_msg'];
+						}
+					} else {
+						$error['email'] = 'EMAIL_MISMATCH';
+						$error['email_confirm'] = 'EMAIL_MISMATCH';
+					}
+				}
+				
+				if (!empty($v_fields['key']) && !empty($v_fields['key_confirm'])) {
+					if ($v_fields['key'] != $v_fields['key_confirm']) {
+						$error['key'] = 'PASSWORD_MISMATCH';
+					} else if (strlen($v_fields['key']) > 32) {
+						$error['key'] = 'PASSWORD_LONG';
+					}
+				} else {
+					if (empty($v_fields['key'])) {
+						$error['key'] = 'EMPTY_PASSWORD';
+					} elseif (empty($v_fields['key_confirm'])) {
+						$error['key_confirm'] = 'EMPTY_PASSWORD_CONFIRM';
+					}
+				}
+				
+				if (!$v_fields['birthday_month'] || !$v_fields['birthday_day'] || !$v_fields['birthday_year']) {
+					$error['birthday'] = 'EMPTY_BIRTH_MONTH';
+				}
+				
+				if (!$v_fields['tos']) {
+					$error['tos'] = 'AGREETOS_ERROR';
+				}
+				
+				if (!sizeof($error)) {
+					$v_fields['country'] = strtolower(geoip_country_code_by_name($user->ip));
+					$v_fields['birthday'] = leading_zero($v_fields['birthday_year']) . leading_zero($v_fields['birthday_month']) . leading_zero($v_fields['birthday_day']);
+					
+					$member_data = array(
+						'user_type' => USER_INACTIVE,
+						'user_active' => 1,
+						'username' => $v_fields['username'],
+						'username_base' => $v_fields['username_base'],
+						'user_password' => user_password($v_fields['key']),
+						'user_regip' => $user->ip,
+						'user_session_time' => 0,
+						'user_lastpage' => '',
+						'user_lastvisit' => time(),
+						'user_regdate' => time(),
+						'user_level' => 0,
+						'user_posts' => 0,
+						'userpage_posts' => 0,
+						'user_points' => 0,
+						'user_color' => '4D5358',
+						'user_timezone' => $config['board_timezone'],
+						'user_dst' => $config['board_dst'],
+						'user_lang' => $config['default_lang'],
+						'user_dateformat' => $config['default_dateformat'],
+						'user_country' => (int) $v_fields['country'],
+						'user_rank' => 0,
+						'user_avatar' => '',
+						'user_avatar_type' => 0,
+						'user_email' => $v_fields['email'],
+						'user_lastlogon' => 0,
+						'user_totaltime' => 0,
+						'user_totallogon' => 0,
+						'user_totalpages' => 0,
+						'user_gender' => $v_fields['gender'],
+						'user_birthday' => (string) $v_fields['birthday'],
+						'user_mark_items' => 0,
+						'user_topic_order' => 0,
+						'user_email_dc' => 1,
+						'user_refop' => 0,
+						'user_refby' => $v_fields['ref']
+					);
+					$sql = 'INSERT INTO _members' . sql_build('INSERT', $member_data);
+					$user_id = sql_query_nextid($sql);
+					
+					set_config('max_users', $config['max_users'] + 1);
+					
+					// Confirmation code
+					$verification_code = md5(unique_id());
+					
+					$insert = array(
+						'crypt_userid' => $user_id,
+						'crypt_code' => $verification_code,
+						'crypt_time' => $user->time
+					);
+					$sql = 'INSERT INTO _crypt_confirm' . sql_build('INSERT', $insert);
+					sql_query($sql);
+					
+					// Emailer
+					require_once(ROOT . 'interfase/emailer.php');
+					$emailer = new emailer();
+					
+					if (!empty($v_fields['ref'])) {
+						$valid_ref = email_format($v_fields['ref']);
+						
+						if ($valid_ref) {
+							$sql = 'SELECT user_id
+								FROM _members
+								WHERE user_email = ?';
+							if ($ref_friend = sql_field(sql_filter($sql, $v_fields['ref']), 'user_id', 0)) {
+								$sql_insert = array(
+									'ref_uid' => $user_id,
+									'ref_orig' => $ref_friend
+								);
+								$sql = 'INSERT INTO _members_ref_assoc' . sql_build('INSERT', $sql_insert);
+								sql_query($sql);
+								
+								$sql_insert = array(
+									'user_id' => $user_id,
+									'buddy_id' => $ref_friend,
+									'friend_time' => time()
+								);
+								$sql = 'INSERT INTO _members_friends' . sql_build('INSERT', $sql_insert);
+								sql_query($sql);
+							} else {
+								$invite_user = explode('@', $v_fields['ref']);
+								$invite_code = substr(md5(unique_id()), 0, 6);
+								
+								$sql_insert = array(
+									'invite_code' => $invite_code,
+									'invite_email' => $v_fields['ref'],
+									'invite_uid' => $user_id
+								);
+								$sql = 'INSERT INTO _members_ref_invite' . sql_build('INSERT', $sql_insert);
+								sql_query($sql);
+								
+								$emailer->from('info');
+								$emailer->use_template('user_invite');
+								$emailer->email_address($v_fields['ref']);
+								
+								$emailer->assign_vars(array(
+									'INVITED' => $invite_user[0],
+									'USERNAME' => $v_fields['username'],
+									'U_REGISTER' => s_link('my', array('register', 'a', $invite_code)))
+								);
+								$emailer->send();
+								$emailer->reset();
+							}
+						}
+					}
+					
+					// Send confirm email
+					$emailer->from('info');
+					$emailer->use_template('user_welcome');
+					$emailer->email_address($v_fields['email']);
+					
+					$emailer->assign_vars(array(
+						'USERNAME' => $v_fields['username'],
+						'U_ACTIVATE' => s_link('my', array('confirm', $verification_code)))
+					);
+					$emailer->send();
+					$emailer->reset();
+					
+					$user->session_create($user_id);
+					
+					redirect(s_link('my', 'profile'));
+				}
+			}
+			break;
+		case 'r':
+			if ($user->data['is_member']) {
+				redirect(s_link('my', 'profile'));
+			} else if ($user->data['is_bot']) {
+				redirect(s_link());
+			}
+			
+			$code = request_var('code', '');
+			if (!preg_match('#([a-z0-9]+)#is', $code)) {
+				fatal_error();
+			}
+			
+			$sql = 'SELECT c.*, m.user_id, m.username, m.username_base, m.user_email
+				FROM _crypt_confirm c, _members m
+				WHERE c.crypt_code = ?
+					AND c.crypt_userid = m.user_id';
+			if (!$crypt_data = sql_fieldrow(sql_filter($sql, $code))) {
+				fatal_error();
+			}
+			
+			if ($submit) {
+				$password = request_var('newkey', '');
+				
+				if (!empty($password)) {
+					$crypt_password = user_password($password);
+					
+					$sql = 'UPDATE _members SET user_password = ?
+						WHERE user_id = ?';
+					sql_query(sql_filter($sql, $crypt_password, $crypt_data['user_id']));
+					
+					$sql = 'DELETE FROM _crypt_confirm
+						WHERE crypt_userid = ?';
+					sql_query(sql_filter($sql, $crypt_data['user_id']));
+					
+					// Send email
+					require_once(ROOT . 'interfase/emailer.php');
+					$emailer = new emailer();
+					
+					$emailer->from('info');
+					$emailer->use_template('user_confirm_passwd', $config['default_lang']);
+					$emailer->email_address($crypt_data['user_email']);
+					
+					$emailer->assign_vars(array(
+						'USERNAME' => $crypt_data['username'],
+						'PASSWORD' => $password,
+						'U_PROFILE' => s_link('m', $crypt_data['username_base']))
+					);
+					$emailer->send();
+					$emailer->reset();
+					
+					//
+					$template_vars = array(
+						'PAGE_MODE' => 'updated'
+					);
+					page_layout('SENDPASSWORD', 'password', $template_vars);
+				}
+			}
+			
+			$template_vars = array(
+				'PAGE_MODE' => 'verify',
+				'S_ACTION' => s_link('my', array('verify', $code))
+			);
+			page_layout('SENDPASSWORD', 'password', $template_vars);
+			
+			if ($submit) {
+				$email = request_var('address', '');
+				if (empty($email) || !email_format($email)) {
+					fatal_error();
+				}
+				
+				$sql = 'SELECT *
+					FROM _members
+					WHERE user_email = ?
+						AND user_type NOT IN (??, ??, ??)
+						AND user_active = 1';
+				if ($userdata = sql_fieldrow(sql_filter($sql, $email, USER_INACTIVE, USER_IGNORE, USER_FOUNDER))) {
+					$sql = 'SELECT *
+						FROM _banlist
+						WHERE ban_userid = ?';
+					if (!sql_fieldrow($sql, $userdata['user_id'])) {
+						require_once(ROOT . 'interfase/emailer.php');
+						$emailer = new emailer();
+						
+						$verification_code = md5(unique_id());
+						
+						$sql = 'DELETE FROM _crypt_confirm
+							WHERE crypt_userid = ?';
+						sql_query(sql_filter($sql, $userdata['user_id']));
+						
+						$insert = array(
+							'crypt_userid' => $userdata['user_id'],
+							'crypt_code' => $verification_code,
+							'crypt_time' => $user->time
+						);
+						$sql = 'INSERT INTO _crypt_confirm' . sql_build('INSERT', $insert);
+						sql_query($sql);
+						
+						// Send email
+						$emailer->from('info');
+						$emailer->use_template('user_activate_passwd', $config['default_lang']);
+						$emailer->email_address($userdata['user_email']);
+						
+						$emailer->assign_vars(array(
+							'USERNAME' => $userdata['username'],
+							'U_ACTIVATE' => s_link('my', array('verify', $verification_code)))
+						);
+						$emailer->send();
+						$emailer->reset();
+					}
+				}
+			}
+			break;
+		default:
+			break;
+	}
+	
+	//
+	// Signup data
+	//
+	if (sizeof($error)) {
+		$template->assign_block_vars('error', array(
+			'MESSAGE' => parse_error($error))
+		);
+	}
+	
+	$s_genres_select = '';
+	$genres = array(1 => 'MALE', 2 => 'FEMALE');
+	foreach ($genres as $id => $value) {
+		$s_genres_select .= '<option value="' . $id . '"' . (($v_fields['gender'] == $id) ? ' selected="true"' : '') . '>' . $user->lang[$value] . '</option>';
+	}
+	
+	$s_bday_select = '';
+	for ($i = 1; $i < 32; $i++) {
+		$s_bday_select .= '<option value="' . $i . '"' . (($v_fields['birthday_day'] == $i) ? 'selected="true"' : '') . '>' . $i . '</option>';
+	}
+	
+	$s_bmonth_select = '';
+	$months = array(1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April', 5 => 'May', 6 => 'June', 7 => 'July', 8 => 'August', 9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December');
+	foreach ($months as $id => $value)
+	{
+		$s_bmonth_select .= '<option value="' . $id . '"' . (($v_fields['birthday_month'] == $id) ? ' selected="true"' : '') . '>' . $user->lang['datetime'][$value] . '</option>';
+	}
+	
+	$s_byear_select = '';
+	$current_year = date('Y');
+	for ($i = ($current_year - 1); $i > $current_year - 102; $i--)
+	{
+		$s_byear_select .= '<option value="' . $i . '"' . (($v_fields['birthday_year'] == $i) ? ' selected="true"' : '') . '>' . $i . '</option>';
+	}
+	
+	if (isset($error['birthday'])) {
+		$v_fields['birthday'] = true;
+	}
+	
+	$template_vars = array(
+		'IS_NEED_AUTH' => $need_auth,
+		'IS_LOGIN' => $login,
+		'CUSTOM_MESSAGE' => $box_text,
+		'S_HIDDEN_FIELDS' => s_hidden($s_hidden),
+		
+		'U_SIGNIN' => s_link('signin'),
+		'U_SIGNUP' => s_link('signup'),
+		'U_SIGNOUT' => s_link('signout'),
+		'U_PASSWORD' => s_link('signr'),
+		
+		'V_USERNAME' => $v_fields['username'],
+		'V_KEY' => $v_fields['key'],
+		'V_KEY_CONFIRM' => $v_fields['key_confirm'],
+		'V_EMAIL' => $v_fields['email'],
+		'V_REFBY' => $v_fields['refby'],
+		'V_GENDER' => $s_genres_select,
+		'V_BIRTHDAY_DAY' => $s_bday_select,
+		'V_BIRTHDAY_MONTH' => $s_bmonth_select,
+		'V_BIRTHDAY_YEAR' => $s_byear_select,
+		'V_TOS' => ($v_fields['tos']) ? ' checked="true"' : ''
+	);
+	
+	foreach ($v_fields as $k => $v) {
+		$template_vars['E_' . strtoupper($k)] = (isset($error[$k])) ? true : false;
+	}
+	
+	if ($login) {
 		$ref = request_var('ref', '');
 		
 		$template->assign_block_vars('error', array(
@@ -530,18 +1116,7 @@ function do_login($box_text = '', $need_auth = false, $extra_vars = false) {
 		$s_hidden = array('admin' => 1);
 	}
 	
-	$box_text = ($box_text != '') ? ((isset($user->lang[$box_text])) ? $user->lang[$box_text] : $box_text) : '';
-	
-	$template_vars = array(
-		'IS_NEED_AUTH' => $need_auth,
-		'IS_LOGIN' => isset($_POST['login']),
-		'CUSTOM_MESSAGE' => $box_text,
-		'S_HIDDEN_FIELDS' => s_hidden($s_hidden)
-	);
-	
-	if ($extra_vars !== false) {
-		$template_vars = array_merge($template_vars, $extra_vars);
-	}
+	$box_text = (!empty($box_text)) ? ((isset($user->lang[$box_text])) ? $user->lang[$box_text] : $box_text) : '';
 	
 	page_layout('LOGIN2', 'login', $template_vars);
 }

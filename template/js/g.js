@@ -5,7 +5,6 @@
 <!-- INCLUDE js/j.textarea.js -->
 <!-- INCLUDE js/j.social.js -->
 <!-- INCLUDE js/j.search.js -->
-<!-- INCLUDE js/j.uniform.js -->
 <!-- INCLUDE js/png.js -->
 
 function popup(url, name, width, height) {
@@ -40,7 +39,7 @@ $(function() {
 		limit: 250
 	});
 	
-	$("select, input:checkbox, input:radio, input:file").uniform();
+	//$("select, input:checkbox, input:radio, input:file").uniform();
 	
 	/*
 	
