@@ -83,18 +83,21 @@
 	<!-- END news -->
 	
 	<!-- BEGIN forums -->
-	<div class="rows5_top_2 float-holder ie-widthfix item_block_3">
-	<div class="h"><h3>{L_NEW_FORUM}</h3></div>
-	<ul class="ul_none">
-		<!-- BEGIN item -->
-		<li>
-			<div class="float-holder ie-widthfix">
-			<div class="float_left col75"><input type="checkbox" class="none" name="items[{forums.ELEMENT}][]" value="{item.S_MARK_ID}" checked="checked" />&nbsp;<a class="relevant<!-- IF item.FOR_MODS --> funique<!-- ENDIF -->"<!-- IF item.TOPIC_COLOR --> style="color:#{item.TOPIC_COLOR};"<!-- ENDIF --> href="{item.TOPIC_URL}">{item.TOPIC_TITLE}</a> ({item.TOPIC_REPLIES})</div>
-			<div class="float_right col25 a_right"><!-- IF item.USER_ID != 1 --><a class="relevant uunique" href="{item.USER_PROFILE}">{item.USERNAME}</a><!-- ELSE --><span class="relevant">*{item.USERNAME}</span><!-- ENDIF --><br />{item.DATETIME}</div>
-			</div>
-		</li>
-		<!-- END item -->
-	</ul>
+	<div class="<!-- IF items.S_ROW_COUNT -->pad_top <!-- ENDIF -->ln">
+		<div class="h"><h3>{L_NEW_FORUM}</h3></div>
+		<ul class="vcheck">
+			<!-- BEGIN item -->
+			<li>
+				<ul>
+					<li class="v">
+						<input type="checkbox" name="items[{forums.ELEMENT}][]" value="{item.S_MARK_ID}" checked="checked" />
+						<span><a class="<!-- IF item.FOR_MODS --> funique<!-- ENDIF -->"<!-- IF item.TOPIC_COLOR --> style="color:#{item.TOPIC_COLOR};"<!-- ENDIF --> href="{item.U_READ}">{item.TOPIC_TITLE}</a> ({item.TOPIC_REPLIES})</span>
+					</li>
+					<li class="_">Enviado por <a href="{item.USER_PROFILE}">{item.USERNAME}</a>, el {item.DATETIME}</li>
+				</ul>
+			</li>
+			<!-- END item -->
+		</ul>
 	</div>
 	<!-- END forums -->
 	
