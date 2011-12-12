@@ -173,6 +173,54 @@ class _events extends downloads {
 				}
 				redirect(s_link('events', array($this->data['event_alias'], $imagedata['image'], 'view')));
 				break;
+			case 'rsvp':
+				$choice = array_key(array_keys(request_var('choice', array(0 => ''))), 0);
+				$topic_id = $this->data['event_topic'];
+				
+				if (!$topic_id) {
+					fatal_error();
+				}
+				
+				if (!$choice) {
+					redirect(s_link('events', $this->data['event_alias']));
+				}
+				
+				if (!$user->data['is_member']) {
+					do_login();
+				}
+				
+				$sql = 'SELECT vd.vote_id    
+					FROM _poll_options vd, _poll_results vr
+					WHERE vd.topic_id = ?
+						AND vr.vote_id = vd.vote_id 
+						AND vr.vote_option_id = ?
+					GROUP BY vd.vote_id';
+				if (!$vote_id = sql_field(sql_filter($sql, $topic_id, $choice), 'vote_id', 0)) {
+					fatal_error();
+				}
+				
+				$sql = 'SELECT *
+					FROM _poll_voters
+					WHERE vote_id = ?
+						AND vote_user_id = ?';
+				if (!sql_fieldrow(sql_filter($sql, $vote_id, $user->data['user_id']))) {
+					$sql = 'UPDATE _poll_results SET vote_result = vote_result + 1 
+						WHERE vote_id = ?
+							AND vote_option_id = ?';
+					sql_query(sql_filter($sql, $vote_id, $choice));
+					
+					$insert_vote = array(
+						'vote_id' => (int) $vote_id,
+						'vote_user_id' => (int) $user->data['user_id'],
+						'vote_user_ip' => $user->ip,
+						'vote_cast' => (int) $choice
+					);
+					$sql = 'INSERT INTO _poll_voters' . sql_build('INSERT', $insert_vote);
+					sql_query($sql);
+				}
+				
+				redirect(s_link('events', $this->data['event_alias']));
+				break;
 			case 'view':
 			default:
 				$t_offset = intval(request_var('offset', 0));
@@ -294,7 +342,7 @@ class _events extends downloads {
 				list($d, $m, $y) = explode(' ', gmdate('j n Y', time() + $user->timezone + $user->dst));
 				$midnight = gmmktime(0, 0, 0, $m, $d, $y) - $user->timezone - $user->dst;
 				
-				$event_date = $user->format_date($this->data['date'], 'j F Y');
+				$event_date = $user->format_date($this->data['date'], 'j F Y \a \l\a\s H:i') . ' horas.';
 				
 				if ($this->data['date'] >= $midnight) {
 					if ($this->data['date'] >= $midnight && $this->data['date'] < $midnight + 86400) {
@@ -322,6 +370,60 @@ class _events extends downloads {
 				
 				$posts_offset = request_var('ps', 0);
 				$topic_id = $this->data['event_topic'];
+				
+				// START RSVP
+				if ($topic_id) {
+					$sql = 'SELECT vd.vote_id, vd.vote_text, vd.vote_start, vd.vote_length, vr.vote_option_id, vr.vote_option_text, vr.vote_result
+						FROM _poll_options vd, _poll_results vr
+						WHERE vd.topic_id = ?
+							AND vr.vote_id = vd.vote_id
+						ORDER BY vr.vote_option_order, vr.vote_option_id ASC';
+					if ($vote_info = sql_rowset(sql_filter($sql, $topic_id))) {
+						$sql = 'SELECT vote_id
+							FROM _poll_voters
+							WHERE vote_id = ?
+								AND vote_user_id = ?';
+						$user_voted = sql_field(sql_filter($sql, $vote_info[0]['vote_id'], $user->data['user_id']), 'vote_id', 0);
+						$poll_expired = ($vote_info[0]['vote_length']) ? (($vote_info[0]['vote_start'] + $vote_info[0]['vote_length'] < time()) ? true : false) : false;
+						
+						$template->assign_block_vars('poll', array(
+							'POLL_TITLE' => $vote_info[0]['vote_text'])
+						);
+				
+						if ($user_voted || $poll_expired) {
+							$template->assign_block_vars('poll.results', array());
+							
+							foreach ($vote_info as $row) {
+								if ($this->data['date'] >= $midnight) {
+									$caption = ($row['vote_result'] == 1) ? $user->lang['RSVP_FUTURE_ONE'] : $user->lang['RSVP_FUTURE_MORE'];
+								} else {
+									$caption = ($row['vote_result'] == 1) ? $user->lang['RSVP_PAST_ONE'] : $user->lang['RSVP_PAST_MORE'];
+								}
+								
+								$template->assign_block_vars('poll.results.item', array(
+									'CAPTION' => $caption,
+									'RESULT' => $row['vote_result'])
+								);
+								break;
+							}
+						} else {
+							$template->assign_block_vars('poll.options', array(
+								'S_VOTE_ACTION' => s_link('events', array($this->data['event_alias'], 1, 'rsvp')))
+							);
+							
+							foreach ($vote_info as $row) {
+								$caption = ($this->data['date'] >= $midnight) ? $user->lang['RSVP_FUTURE'] : $user->lang['RSVP_PAST'];
+								
+								$template->assign_block_vars('poll.options.item', array(
+									'ID' => $row['vote_option_id'],
+									'CAPTION' => $caption)
+								);
+								break;
+							}
+						}
+					}
+				}
+				// END RSVP
 				
 				$sql = 'SELECT p.*, u.user_id, u.username, u.username_base, u.user_color, u.user_avatar, u.user_posts, u.user_gender, u.user_rank/*, u.user_sig*/
 					FROM _forum_posts p, _members u
@@ -364,8 +466,7 @@ class _events extends downloads {
 						'DATETIME' => $user->format_date($row['post_time']),
 						'MESSAGE' => $comments->parse_message($row['post_text']),
 						'PLAYING' => $row['post_np'],
-						'DELETED' => $row['post_deleted'],
-						'UNREAD' => 0
+						'DELETED' => $row['post_deleted']
 					);
 					
 					foreach ($user_profile[$row['user_id']] as $key => $value) {
@@ -482,26 +583,30 @@ class _events extends downloads {
 			unset($this->data['is_gallery']);
 		}
 		
-		if (sizeof($this->data)) {
-			$template->assign_block_vars('future', array());
+		if (!sizeof($this->data)) {
+			return;
+		}
+		
+		$template->assign_block_vars('future', array());
+		
+		foreach ($this->data as $is_date => $data) {
+			$template->assign_block_vars('future.set', array(
+				'L_TITLE' => $user->lang['UE_' . strtoupper($is_date)])
+			);
 			
-			foreach ($this->data as $is_date => $data) {
-				$template->assign_block_vars('future.set', array(
-					'L_TITLE' => $user->lang['UE_' . strtoupper($is_date)])
+			foreach ($data as $item) {
+				$template->assign_block_vars('future.set.item', array(
+					'ITEM_ID' => $item['id'],
+					'TITLE' => $item['title'],
+					'DATE' => $user->format_date($item['date'], $user->lang['DATE_FORMAT']),
+					'THUMBNAIL' => $config['events_url'] . 'future/thumbnails/' . $item['id'] . '.jpg',
+					'SRC' => $config['events_url'] . 'future/' . $item['id'] . '.jpg',
+					'U_TOPIC' => s_link('events', $item['id']))
 				);
-				
-				foreach ($data as $item) {
-					$template->assign_block_vars('future.set.item', array(
-						'ITEM_ID' => $item['id'],
-						'TITLE' => $item['title'],
-						'DATE' => $user->format_date($item['date'], $user->lang['DATE_FORMAT']),
-						'THUMBNAIL' => $config['events_url'] . 'future/thumbnails/' . $item['id'] . '.jpg',
-						'SRC' => $config['events_url'] . 'future/' . $item['id'] . '.jpg',
-						'U_TOPIC' => s_link('events', $item['id']))
-					);
-				}
 			}
 		}
+		
+		return;
 	}
 }
 

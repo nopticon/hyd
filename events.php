@@ -29,7 +29,7 @@ if ($events->_setup()) {
 	$events->view();
 	
 	$pagehtml = 'events.view';
-	$page_title = $user->lang['UE'] . ' | ' . $events->data['title'];
+	$page_title = $events->data['title'];
 } else {
 	$events->home();
 	

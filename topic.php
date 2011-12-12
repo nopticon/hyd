@@ -55,7 +55,6 @@ switch ($topic_data['forum_alias']) {
 		if ($event_alias = sql_field(sql_filter($sql, $topic_data['topic_id']), 'event_alias', '')) {
 			redirect(s_link('events', $event_alias));
 		}
-		_pre($topic_data, true);
 		break;
 }
 
@@ -127,10 +126,6 @@ if ($submit_reply || $submit_vote) {
 		}
 		
 		if (!sizeof($error)) {
-			if ($forum_id == 22) {
-				redirect(s_link('awards'));
-			}
-			
 			redirect($topic_url);
 		}
 	}

@@ -808,6 +808,14 @@ $lang += array(
 	'UE_NO_IMAGES' => 'No hay fotos del evento, pronto ser&aacute;n publicadas.<br /><br />Mientras tanto escribe tu opini&oacute;n!',
 	'UE_PHOTOS' => 'fotograf&iacute;as',
 	
+	'RSVP_FUTURE' => '&iexcl;Si asistir&eacute;!',
+	'RSVP_PAST' => '&iexcl;Estuve presente!',
+	
+	'RSVP_FUTURE_ONE' => 'persona asistir&aacute; al evento.',
+	'RSVP_FUTURE_MORE' => 'personas asistir&aacute;n al evento.',
+	'RSVP_PAST_ONE' => 'persona asisti&oacute; al evento.',
+	'RSVP_PAST_MORE' => 'personas asistieron al evento.',
+	
 	'EVENT_ASSIST' => '&iquest;Asistir&aacute;s?',
 	'EVENT_AFTER' => 'Programado para el %s',
 	'EVENT_BEFORE' => 'Se realiz&oacute; el %s',

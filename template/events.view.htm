@@ -20,9 +20,27 @@ $(function() {
 	
 	<!-- BEGIN collab -->
 	<div class="pad_top pad_left _">{L_EVENT_PHOTO_THANKS}
-		<!-- BEGIN row --><!-- IF row.S_ROW_COUNT -->, <!-- ENDIF --><a href="{row.PROFILE}">{row.USERNAME}</a><!-- END row -->
+		<!-- BEGIN row --><!-- IF row.S_ROW_COUNT --><!-- IF row.S_NUM_ROWS == (row.S_ROW_COUNT + 1) --> y <!-- ELSE -->, <!-- ENDIF --><!-- ENDIF --><a href="{row.PROFILE}">{row.USERNAME}</a><!-- END row -->
 	</div>
 	<!-- END collab -->
+	
+	<!-- BEGIN poll -->
+	<div class="poll pad_left pad_top ctl">
+	<!-- BEGIN results -->
+	<!-- BEGIN item -->
+	<!-- IF item.S_ROW_COUNT -->, <!-- ENDIF -->{item.RESULT} {item.CAPTION}
+	<!-- END item -->
+	<!-- END results -->
+	
+	<!-- BEGIN options -->
+	<form action="{options.S_VOTE_ACTION}" method="post" id="event_poll" name="event_poll">
+	<!-- BEGIN item -->
+	<input type="submit" id="choice_{item.ID}" name="choice[{item.ID}]" value="{item.CAPTION}" />
+	<!-- END item -->
+	</form>
+	<!-- END options -->
+	</div>
+	<!-- END poll -->
 </div>
 
 <div class="el_right a_right ctl">
