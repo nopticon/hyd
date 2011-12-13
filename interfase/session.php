@@ -599,7 +599,7 @@ class user extends session {
 		$this_year = date('Y', $gmepoch);
 		
 		if ($current_year == $this_year) {
-			$format = str_replace(' Y', '\, ', $format);
+			$format = str_replace(' Y', ((strpos($format, 'H') !== false) ? '\, ' : ''), $format);
 		}
 
 		if (!$midnight) {
