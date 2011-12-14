@@ -61,10 +61,8 @@ foreach ($podcast as $i => $row) {
 	);
 }
 
-_pre($podcast, true);
-
 $template_vars = array();
 
-page_layout('PODCAST', 'broadcast', $template_vars, false);
+page_layout('BROADCAST', 'broadcast', $template_vars, false);
 
 ?>

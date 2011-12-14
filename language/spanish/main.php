@@ -686,6 +686,9 @@ $lang += array(
 	'ARTISTS' => 'Artistas',
 	//
 	
+	// BROADCAST
+	'BROADCAST' => 'Radio',
+	
 	// INDEX STATS
 	'UB_TOP_DATETIME' => 'Nueva',
 	'UB_TOP_VIEWS' => 'M&aacute;s visitada',

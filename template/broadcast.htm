@@ -2,30 +2,55 @@
 
 <div class="h"><h3>{L_RADIO}</h3></div>
 
-<div id="radio_listen" class="ls_non">
+<div class="is_left">
+	<!-- BEGIN podcast -->
 	<ul>
-		<li><a class="winamp" href="http://www.rockrepublik.net/home/radio/player/listen.pls">Winamp</a></li>
-		<li><a class="windowsmedia" href="http://www.rockrepublik.net/home/radio/player/wmp.asx">Windows Media</a></li>
-		<li><a class="itunes" href="http://www.rockrepublik.net/home/radio/player/itunes.m3u">iTunes</a></li>
-		<li><a class="realplayer" href="http://www.rockrepublik.net/home/radio/player/realplayer.ram">Real Player</a></li>
-		<li><a class="vlc" href="http://www.rockrepublik.net/home/radio/player/vlc.pls">VLC</a></li>
+		<!-- BEGIN row -->
+		<li>
+			<div class="h"><h3>{row.POST_TITLE}</h3></div>
+			<div>{row.POST_DATE}</div>
+			<div class="pad_top">{row.POST_CONTENT}</div>
+		</li>
+		<!-- END row -->
 	</ul>
+	<!-- END podcast -->
+	
+	<!-- BEGIN category -->
+	<div class="<!-- IF category.S_ROW_COUNT -->pad_top <!-- ENDIF -->ls">
+		<div class="h"><h3>{category.DESCRIPTION}</h3></div>
+		<ul>
+			<!-- BEGIN forums -->
+			<li>
+				<ul>
+					<li><a href="{forums.U_FORUM}">{forums.FORUM_NAME}</a></li>
+					<li class="_">{forums.FORUM_DESC}</li>
+				</ul>
+			</li>
+			<!-- END forums -->
+		</ul>
+	</div>
+	<!-- END category -->
 </div>
 
-<!-- BEGIN hidden -->
-<div class="pad_top a_mid">
-	<object id="radioplayer" width="350" height="61" classid="CLSID:6BF52A52-394A-11d3-B153-00C04F79FAA6" type="application/x-oleobject">
-	<param name="url" value="http://216.66.69.4:9594/">
-	<param name="SendPlayStateChangeEvents" VALUE="True">
-	<param name="AutoStart" value="False">
-	<param name="stretchToFit" value="True">
-	<param name="uiMode" value="full">
-	<param name="PlayCount" value="1">
-	<param name="AutoRewind" value="0">
-	<embed type="application/x-mplayer2" pluginspage="http://www.microsoft.com/Windows/MediaPlayer/" name="radioplayere" autostart="false" width="350" height="51" transparentstart="1" showstatusbar="1" loop="0" controller="true" src="http://216.66.69.4:9594/" stretchToFit="true"></embed>
-	</object>
+<div class="is_right">
+	<!-- BEGIN top_posters -->
+	<div class="pad_top ls_none">
+		<div class="h"><h3>{L_TODAY_BIRTHS}</h3></div>
+		<ul>
+			<!-- BEGIN item -->
+			<li>
+				<ul>
+					<li><a href="{item.PROFILE}">{item.USERNAME}</a></li>
+					<li>{item.POSTS} {L_POSTS}</li>
+					<li><a href="{item.PROFILE}"><img src="{item.AVATAR}" alt="{item.USERNAME}" /></a></li>
+				</ul>
+			</li>
+			<!-- END item -->
+		</ul>
+	</div>
+	<!-- END top_posters -->
 </div>
-<!-- END hidden -->
+
 
 <div id="radio_container">
 	<div id="radio_list">
@@ -36,30 +61,5 @@
 	</ul>
 	</div>
 </div>
-
-<div class="h"><h3>Informaci&oacute;n</h3></div>
-
-<div class="col_fr a_left">
-	<p>Rock Republik Radio fue fundada en Guatemala en junio 2006. Podr&aacute;s escucharnos las 24 horas y encontrar&aacute;s m&uacute;sica de todos los sub-g&eacute;neros de rock y metal por medio de nuestros programas en vivo.</p>
-	<p><strong>&iquest;Quieres que tu banda suene en RK Radio?</strong><br />
-	Env&iacute;anos a <span class="red">music&#64;rkradio.net</span> tu m&uacute;sica junto con biograf&iacute;a, direcci&oacute;n de contacto y direcci&oacute;n de correo electr&oacute;nico para estar en comunicaci&oacute;n.</p>
-	
-	<p><strong>&iquest;Quieres formar parte de nuestro equipo de locutores?</strong><br />
-	Para ser locutor necesitas tener computadora y micr&oacute;fono en buen estado y conexi&oacute;n de 512kbps.<br />
-	Si cumples con lo anterior, env&iacute;anos tu propuesta junto con tus datos a <span class="red">info&#64;rkradio.net</span>, la analizaremos y te enviaremos una respuesta con m&aacute;s informaci&oacute;n.</p>
-</div>
-
-<!-- BEGIN active -->
-<!-- BEGIN songs -->
-<div id="s_playlist">
-<h1>{L_RADIO_SONGS}</h1>
-<ul id="playlist">
-<!-- BEGIN item -->
-<li id="{item.TIMESTAMP}">{item.TIME} <strong>{item.TITLE}</strong></li>
-<!-- END item -->
-</ul>
-</div>
-<!-- END songs -->
-<!-- END active -->
 
 <!-- INCLUDE page.footer.htm -->
