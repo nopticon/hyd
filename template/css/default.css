@@ -2,19 +2,19 @@
   font-family: 'Ubuntu';
   font-style: normal;
   font-weight: normal;
-  src: local('Ubuntu'), url('http://themes.googleusercontent.com/font?kit=_xyN3apAT_yRRDeqB3sPRg') format('woff');
+  src: local('Ubuntu'), url(style/Ubuntu-Regular.woff) format('woff');
 }
 @font-face {
   font-family: 'Ubuntu';
   font-style: normal;
   font-weight: bold;
-  src: local('Ubuntu Bold'), local('Ubuntu-Bold'), url('http://themes.googleusercontent.com/font?kit=0ihfXUL2emPh0ROJezvraD8E0i7KZn-EPnyo3HZu7kw') format('woff');
+  src: local('Ubuntu Bold'), local('Ubuntu-Bold'), url(style/Ubuntu-Bold.woff) format('woff');
 }
 
 body {
 	margin: 0;
 	padding: 0;
-	background: url(style/wood.jpg) fixed top center #202837;
+	background: /*url(style/wood.jpg) */fixed top center #202837;
 }
 p, div, span, select {
 	cursor: default;

@@ -36,14 +36,13 @@ $cover->news();
 $cover->banners();
 $cover->board_general();
 $cover->board_events();
-$cover->poll();
-$cover->twitter();
+//$cover->poll();
+//$cover->twitter();
 
 $artists->get_data();
 $artists->thumbnails();
 
 $events->_nextevent();
-//$events->_lastevent();
 
 page_layout('HOME', 'cover', false, false);
 

@@ -22,6 +22,47 @@ require_once('./interfase/common.php');
 $user->init();
 $user->setup();
 
+$offset = request_var('offset', 0);
+$category = request_var('category', '');
+
+if (!empty($category)) {
+	$sql = 'SELECT *
+		FROM _terms
+		WHERE slug = ?';
+	if (!$term_category = sql_fieldrowo(sql_filter($sql, $category))) {
+		fatal_error();
+	}
+	
+	$sql = 'SELECT *
+		FROM _posts p, _terms t, _term_relationships rs
+		WHERE t.slug = ?
+			AND p.post_status = ?
+			AND rs.object_id = p.ID
+			AND rs.term_taxonomy_id = t.term_id
+		ORDER BY p.post_date DESC
+		LIMIT ??, ??';
+	$podcast = sql_rowset(sql_filter($sql, $category, 'publish', $offset, 25));
+} else {
+	$sql = 'SELECT *
+		FROM _posts
+		WHERE post_status = ?
+		ORDER BY post_date DESC
+		LIMIT ??, ??';
+	$podcast = sql_rowset(sql_filter($sql, 'publish', $offset, 25));
+}
+
+foreach ($podcast as $i => $row) {
+	if (!$i) $template->assign_block_vars('podcast', array());
+	
+	$template->assign_block_vars('podcast.row', array(
+		'POST_DATE' => $row['post_date'],
+		'POST_CONTENT' => $row['post_content'],
+		'POST_TITLE' => $row['post_title'])
+	);
+}
+
+_pre($podcast, true);
+
 $template_vars = array();
 
 page_layout('PODCAST', 'broadcast', $template_vars, false);
