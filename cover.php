@@ -36,8 +36,7 @@ $cover->news();
 $cover->banners();
 $cover->board_general();
 $cover->board_events();
-//$cover->poll();
-//$cover->twitter();
+$cover->poll();
 
 $artists->get_data();
 $artists->thumbnails();

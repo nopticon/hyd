@@ -26,15 +26,25 @@ class _events extends downloads {
 	public $timetoday = 0;
 	
 	public function __construct($get_timetoday = false) {
-		if ($get_timetoday) {
-			global $user;
-			
-			$current_time = time();
-			$minutes = date('is', $current_time);
-			$this->timetoday = (int) ($current_time - (60 * intval($minutes[0].$minutes[1])) - intval($minutes[2].$minutes[3])) - (3600 * $user->format_date($current_time, 'H'));
+		if (!$get_timetoday) {
+			return;
 		}
 		
+		global $user;
+		
+		$current_time = time();
+		$minutes = date('is', $current_time);
+		$this->timetoday = (int) ($current_time - (60 * intval($minutes[0].$minutes[1])) - intval($minutes[2].$minutes[3])) - (3600 * $user->format_date($current_time, 'H'));
+		
 		return;
+	}
+	
+	public function v($property) {
+		if (!isset($this->data[$property])) {
+			return false;
+		}
+		
+		return $this->data[$property];
 	}
 	
 	public function _setup() {
@@ -46,12 +56,11 @@ class _events extends downloads {
 			$sql = 'SELECT *
 				FROM _events
 				WHERE ?? = ?';
-			if ($row = sql_fieldrow(sql_filter($sql, $event_field, $event_id))) {
-				$row['id'] = intval($row['id']);
-				$this->data = $row;
-				
+			if ($this->data = sql_fieldrow(sql_filter($sql, $event_field, $event_id))) {
 				return true;
 			}
+			
+			fatal_error();
 		}
 		
 		return false;
@@ -59,8 +68,6 @@ class _events extends downloads {
 	
 	public function _nextevent() {
 		global $config, $user, $template;
-		
-		$nevent = array();
 		
 		$sql = 'SELECT *
 			FROM _events
@@ -70,13 +77,11 @@ class _events extends downloads {
 		$result = sql_rowset(sql_filter($sql, $this->timetoday));
 		
 		foreach ($result as $row) {
-			$filename = $config['events_url'] . 'future/thumbnails/' . $row['id'] . '.jpg';
-
 			$template->assign_block_vars('next_event', array(
 				'URL' => s_link('events', $row['event_alias']),
 				'TITLE' => $row['title'],
 				'DATE' => $user->format_date($row['date'], $user->lang['DATE_FORMAT']),
-				'IMAGE' => $filename)
+				'IMAGE' => $config['events_url'] . 'future/thumbnails/' . $row['id'] . '.jpg')
 			); 
 		}
 		
@@ -114,35 +119,38 @@ class _events extends downloads {
 		
 		$mode = request_var('mode', '');
 		
-		if ($mode == 'view' || $mode == 'fav') {
-			$download_id = request_var('download_id', 0);
-			
-			if (!$download_id) {
-				redirect(s_link('events', $this->data['event_alias']));
-			}
-			
-			if ($mode == 'view') {
-				$sql = 'SELECT e.*, COUNT(e2.image) AS prev_images
-					FROM _events_images e, _events_images e2
-					WHERE e.event_id = ?
-						AND e.event_id = e2.event_id
-						AND e.image = ?
-						AND e2.image <= ?
-					GROUP BY e.image 
-					ORDER BY e.image ASC';
-				$sql = sql_filter($sql, $this->data['id'], $download_id, $download_id);
-			} else {
-				$sql = 'SELECT e2.*
-					FROM _events_images e2
-					LEFT JOIN _events e ON e.id = e2.event_id
-					WHERE e2.event_id = ?
-						AND e2.image = ?';
-				$sql = sql_filter($sql, $this->data['id'], $download_id);
-			}
-			
-			if (!$imagedata = sql_fieldrow($sql)) {
-				redirect(s_link('events', $this->data['event_alias']));
-			}
+		switch ($mode) {
+			case 'view':
+			case 'fav':
+			case 'rsvp':
+				$download_id = request_var('download_id', 0);
+				if (!$download_id) {
+					redirect(s_link('events', $this->v('event_alias')));
+				}
+				
+				if ($mode == 'view') {
+					$sql = 'SELECT e.*, COUNT(e2.image) AS prev_images
+						FROM _events_images e, _events_images e2
+						WHERE e.event_id = ?
+							AND e.event_id = e2.event_id
+							AND e.image = ?
+							AND e2.image <= ?
+						GROUP BY e.image 
+						ORDER BY e.image ASC';
+					$sql = sql_filter($sql, $this->v('id'), $download_id, $download_id);
+				} else {
+					$sql = 'SELECT e2.*
+						FROM _events_images e2
+						LEFT JOIN _events e ON e.id = e2.event_id
+						WHERE e2.event_id = ?
+							AND e2.image = ?';
+					$sql = sql_filter($sql, $this->v('id'), $download_id);
+				}
+				
+				if (!$imagedata = sql_fieldrow($sql)) {
+					redirect(s_link('events', $this->v('event_alias')));
+				}
+				break;
 		}
 		
 		switch ($mode) {
@@ -156,14 +164,14 @@ class _events extends downloads {
 					WHERE event_id = ?
 						AND image_id = ?
 						AND member_id = ?';
-				if ($row = sql_fieldrow(sql_filter($sql, $this->data['id'], $imagedata['image'], $user->data['user_id']))) {
+				if ($row = sql_fieldrow(sql_filter($sql, $this->v('id'), $imagedata['image'], $user->data['user_id']))) {
 					$sql = 'UPDATE _events_fav SET fav_date = ?
 						WHERE event_id = ?
 							AND image_id = ?';
-					sql_query(sql_filter($sql, time(), $this->data['id'], $imagedata['image']));
+					sql_query(sql_filter($sql, time(), $this->v('id'), $imagedata['image']));
 				} else {
 					$sql_insert = array(
-						'event_id' => (int) $this->data['id'],
+						'event_id' => (int) $this->v('id'),
 						'image_id' => (int) $imagedata['image'],
 						'member_id' => (int) $user->data['user_id'],
 						'fav_date' => time()
@@ -171,18 +179,18 @@ class _events extends downloads {
 					$sql = 'INSERT INTO _events_fav' . sql_build('INSERT', $sql_insert);
 					sql_query($sql);
 				}
-				redirect(s_link('events', array($this->data['event_alias'], $imagedata['image'], 'view')));
+				redirect(s_link('events', array($this->v('event_alias'), $imagedata['image'], 'view')));
 				break;
 			case 'rsvp':
 				$choice = array_key(array_keys(request_var('choice', array(0 => ''))), 0);
-				$topic_id = $this->data['event_topic'];
+				$topic_id = $this->v('event_topic');
 				
 				if (!$topic_id) {
 					fatal_error();
 				}
 				
 				if (!$choice) {
-					redirect(s_link('events', $this->data['event_alias']));
+					redirect(s_link('events', $this->v('event_alias')));
 				}
 				
 				if (!$user->data['is_member']) {
@@ -219,7 +227,7 @@ class _events extends downloads {
 					sql_query($sql);
 				}
 				
-				redirect(s_link('events', $this->data['event_alias']));
+				redirect(s_link('events', $this->v('event_alias')));
 				break;
 			case 'view':
 			default:
@@ -230,10 +238,10 @@ class _events extends downloads {
 						SET views = views + 1
 						WHERE event_id = ?
 							AND image = ?';
-					sql_query(sql_filter($sql, $this->data['id'], $imagedata['image']));
+					sql_query(sql_filter($sql, $this->v('id'), $imagedata['image']));
 					
 					$template->assign_block_vars('selected', array(
-						'IMAGE' => $config['events_url'] . 'gallery/' . $this->data['id'] . '/' . $imagedata['image'] . '.jpg',
+						'IMAGE' => $config['events_url'] . 'gallery/' . $this->v('id') . '/' . $imagedata['image'] . '.jpg',
 						'WIDTH' => $imagedata['width'], 
 						'HEIGHT' => $imagedata['height'],
 						'FOOTER' => $imagedata['image_footer'])
@@ -242,7 +250,7 @@ class _events extends downloads {
 					if ($user->_team_auth('founder')) {
 						$template->assign_block_vars('selected.update', array(
 							'URL' => s_link('ajax', 'eif'),
-							'EID' => $this->data['id'],
+							'EID' => $this->v('id'),
 							'PID' => $imagedata['image'])
 						);
 					}
@@ -254,21 +262,21 @@ class _events extends downloads {
 							WHERE event_id = ?
 								AND image_id = ?
 								AND member_id = ?';
-						if (sql_field(sql_filter($sql, $this->data['id'], $imagedata['image'], $user->data['user_id']), 'member_id', 0)) {
+						if (sql_field(sql_filter($sql, $this->v('id'), $imagedata['image'], $user->data['user_id']), 'member_id', 0)) {
 							$is_fav = true;
 						}
 					}
 					
 					if (!$is_fav || !$user->data['is_member']) {
 						$template->assign_block_vars('selected.fav', array(
-							'URL' => s_link('events', array($this->data['id'], $imagedata['image'], 'fav')))
+							'URL' => s_link('events', array($this->v('id'), $imagedata['image'], 'fav')))
 						);
 					}
 				} else {
 					if (!$t_offset && $user->data['user_type'] != USER_FOUNDER) {
 						$sql = 'UPDATE _events SET views = views + 1
 							WHERE id = ?';
-						sql_query(sql_filter($sql, $this->data['id']));
+						sql_query(sql_filter($sql, $this->v('id')));
 					}
 				}
 				
@@ -281,14 +289,14 @@ class _events extends downloads {
 					$sql = 'SELECT MAX(image) AS total
 						FROM _events_images
 						WHERE event_id = ?';
-					if ($maximage = sql_field(sql_filter($sql, $this->data['id']), 'total', 0)) {
+					if ($maximage = sql_field(sql_filter($sql, $this->v('id')), 'total', 0)) {
 						$val = ($download_id == $maximage) ? 2 : 1;
 					}
 					
 					$t_offset = floor(($imagedata['prev_images'] - $val) / $t_per_page) * $t_per_page;
 				}
 				
-				if ($this->data['images']) {
+				if ($this->v('images')) {
 					$exception_sql = (isset($download_id) && $download_id) ? sql_filter(' AND g.image <> ? ', $download_id) : '';
 					
 					$sql = 'SELECT g.*
@@ -298,19 +306,19 @@ class _events extends downloads {
 							$exception_sql . '
 						ORDER BY g.image ASC 
 						LIMIT ??, ??';
-					if (!$result = sql_rowset(sql_filter($sql, $this->data['id'], $t_offset, $t_per_page))) {
-						redirect(s_link('events', $this->data['id']));
+					if (!$result = sql_rowset(sql_filter($sql, $this->v('id'), $t_offset, $t_per_page))) {
+						redirect(s_link('events', $this->v('id')));
 					}
 					
-					build_num_pagination(s_link('events', array($this->data['id'], 's%d')), $this->data['images'], $t_per_page, $t_offset, 'IMG_');
+					build_num_pagination(s_link('events', array($this->v('id'), 's%d')), $this->v('images'), $t_per_page, $t_offset, 'IMG_');
 					
 					$template->assign_block_vars('thumbnails', array());
 					
 					foreach ($result as $row) {
 						$template->assign_block_vars('thumbnails.item', array(
-							'URL' => s_link('events', array($this->data['event_alias'], $row['image'], 'view')),
-							'IMAGE' => $config['events_url'] . 'gallery/' . $this->data['id'] . '/thumbnails/' . $row['image'] . '.jpg',
-							'RIMAGE' => $config['events_url'] . 'gallery/' . $this->data['id'] . '/' . $row['image'] . '.jpg',
+							'URL' => s_link('events', array($this->v('event_alias'), $row['image'], 'view')),
+							'IMAGE' => $config['events_url'] . 'gallery/' . $this->v('id') . '/thumbnails/' . $row['image'] . '.jpg',
+							'RIMAGE' => $config['events_url'] . 'gallery/' . $this->v('id') . '/' . $row['image'] . '.jpg',
 							'FOOTER' => $row['image_footer'],
 							'WIDTH' => $row['width'], 
 							'HEIGHT' => $row['height'])
@@ -323,7 +331,7 @@ class _events extends downloads {
 						WHERE c.colab_event = ?
 							AND c.colab_uid = m.user_id
 						ORDER BY m.username';
-					if ($result = sql_rowset(sql_filter($sql, $this->data['id']))) {
+					if ($result = sql_rowset(sql_filter($sql, $this->v('id')))) {
 						$template->assign_block_vars('collab', array());
 						
 						foreach ($result as $row) {
@@ -335,25 +343,25 @@ class _events extends downloads {
 					}
 				} else {
 					$template->assign_block_vars('event_flyer', array(
-						'IMAGE_SRC' => $config['events_url'] . 'future/' . $this->data['id'] . '.jpg')
+						'IMAGE_SRC' => $config['events_url'] . 'future/' . $this->v('id') . '.jpg')
 					);
 				}
 				
 				list($d, $m, $y) = explode(' ', gmdate('j n Y', time() + $user->timezone + $user->dst));
 				$midnight = gmmktime(0, 0, 0, $m, $d, $y) - $user->timezone - $user->dst;
 				
-				$event_date = $user->format_date($this->data['date'], 'j F Y \a \l\a\s H:i') . ' horas.';
+				$event_date = $user->format_date($this->v('date'), 'j F Y \a \l\a\s H:i') . ' horas.';
 				
-				if ($this->data['date'] >= $midnight) {
-					if ($this->data['date'] >= $midnight && $this->data['date'] < $midnight + 86400) {
+				if ($this->v('date') >= $midnight) {
+					if ($this->v('date') >= $midnight && $this->v('date') < $midnight + 86400) {
 						$event_date_format = $user->lang['EVENT_TODAY'];
-					} else if ($this->data['date'] >= $midnight + 86400 && $this->data['date'] < $midnight + (86400 * 2)) {
+					} else if ($this->v('date') >= $midnight + 86400 && $this->v('date') < $midnight + (86400 * 2)) {
 						$event_date_format = $user->lang['EVENT_TOMORROW'];
 					} else {
 						$event_date_format = sprintf($user->lang['EVENT_AFTER'], $event_date);
 					}
 				} else {
-					if ($this->data['date'] >= ($midnight - 86400)) {
+					if ($this->v('date') >= ($midnight - 86400)) {
 						$event_date_format = $user->lang['EVENT_YESTERDAY'];
 					} else {
 						$event_date_format = sprintf($user->lang['EVENT_BEFORE'], $event_date);
@@ -361,7 +369,7 @@ class _events extends downloads {
 				}
 				
 				$template->assign_vars(array(
-					'EVENT_NAME' => $this->data['title'],
+					'EVENT_NAME' => $this->v('title'),
 					'EVENT_DATE' => $event_date_format)
 				);
 				
@@ -369,7 +377,7 @@ class _events extends downloads {
 				$comments = new _comments();
 				
 				$posts_offset = request_var('ps', 0);
-				$topic_id = $this->data['event_topic'];
+				$topic_id = $this->v('event_topic');
 				
 				// START RSVP
 				if ($topic_id) {
@@ -394,7 +402,7 @@ class _events extends downloads {
 							$template->assign_block_vars('poll.results', array());
 							
 							foreach ($vote_info as $row) {
-								if ($this->data['date'] >= $midnight) {
+								if ($this->v('date') >= $midnight) {
 									$caption = ($row['vote_result'] == 1) ? $user->lang['RSVP_FUTURE_ONE'] : $user->lang['RSVP_FUTURE_MORE'];
 								} else {
 									$caption = ($row['vote_result'] == 1) ? $user->lang['RSVP_PAST_ONE'] : $user->lang['RSVP_PAST_MORE'];
@@ -408,11 +416,11 @@ class _events extends downloads {
 							}
 						} else {
 							$template->assign_block_vars('poll.options', array(
-								'S_VOTE_ACTION' => s_link('events', array($this->data['event_alias'], 1, 'rsvp')))
+								'S_VOTE_ACTION' => s_link('events', array($this->v('event_alias'), 1, 'rsvp')))
 							);
 							
 							foreach ($vote_info as $row) {
-								$caption = ($this->data['date'] >= $midnight) ? $user->lang['RSVP_FUTURE'] : $user->lang['RSVP_PAST'];
+								$caption = ($this->v('date') >= $midnight) ? $user->lang['RSVP_FUTURE'] : $user->lang['RSVP_PAST'];
 								
 								$template->assign_block_vars('poll.options.item', array(
 									'ID' => $row['vote_option_id'],
@@ -488,7 +496,7 @@ class _events extends downloads {
 					$i++;
 				}
 				
-				$publish_ref = ($posts_offset) ? s_link('events', array($this->data['event_alias'], 's' . $t_offset)) : s_link('events', $this->data['event_alias']);
+				$publish_ref = ($posts_offset) ? s_link('events', array($this->v('event_alias'), 's' . $t_offset)) : s_link('events', $this->v('event_alias'));
 				
 				// Posting box
 				if ($user->data['is_member']) {

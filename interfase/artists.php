@@ -780,7 +780,6 @@ class _artists extends layout {
 			'_06' => array('code' => 6, 'text' => 'UB_L06', 'tpl' => 'lyrics'),
 			'_07' => array('code' => 7, 'text' => 'UB_L07', 'tpl' => 'interviews'),
 			'_09' => array('code' => 9, 'text' => 'DOWNLOADS', 'tpl' => 'downloads'),
-			'_12' => array('code' => 12, 'text' => 'POSTS', 'tpl' => 'messages'),
 			'_13' => array('code' => 13, 'text' => '', 'tpl' => 'email'),
 			'_16' => array('code' => 16, 'text' => '', 'tpl' => 'news'),
 			'_18' => array('code' => 18, 'text' => 'UB_L17', 'tpl' => 'video')
@@ -790,6 +789,19 @@ class _artists extends layout {
 			'ub' => array(1, 2, 3, 5),
 			'ud' => array(1, 2, 3, 4, 5)
 		);
+	}
+	
+	public function v($property, $value = -5000) {
+		if ($value != -5000) {
+			$this->data[$property] = $value;
+			return $value;
+		}
+		
+		if (!isset($this->data[$property])) {
+			return false;
+		}
+		
+		return $this->data[$property];
 	}
 	
 	public function get_data() {
@@ -811,10 +823,7 @@ class _artists extends layout {
 					FROM _artists
 					WHERE subdomain = ? 
 					LIMIT 1';
-				if ($row = sql_fieldrow(sql_filter($sql, strtolower($_a)))) {
-					$row['ub'] = (int) $row['ub'];
-					$this->data = $row;
-					
+				if ($this->data = sql_fieldrow(sql_filter($sql, strtolower($_a)))) {
 					return true;
 				}
 			}
@@ -1394,8 +1403,15 @@ class _artists extends layout {
 					$current_month = date('Ym', $current_time);
 					
 					if ($this->auth['user']) {
-						$sql_viewers = array('datetime' => (int) $current_time, 'user_ip' => $user->ip);
-						$sql_viewers2 = array('ub' => (int) $this->data['ub'], 'user_id' => (int) $user->data['user_id']);
+						$sql_viewers = array(
+							'datetime' => (int) $current_time,
+							'user_ip' => $user->ip
+						);
+						
+						$sql_viewers2 = array(
+							'ub' => (int) $this->data['ub'],
+							'user_id' => (int) $user->data['user_id']
+						);
 						
 						$sql = 'UPDATE _artists_viewers SET ??
 							WHERE ??';
@@ -1611,7 +1627,7 @@ class _artists extends layout {
 				//
 				// Art
 				//
-				if ($this->data['arts']) {
+				/*if ($this->data['arts']) {
 					$template->assign_block_vars('art_block', array());
 						
 					$sql = 'SELECT *
@@ -1630,7 +1646,7 @@ class _artists extends layout {
 						
 						$template->assign_block_vars('art_block.item.a', array('URL' => s_link('art', $row['id'])));
 					}
-				}
+				}*/
 				
 				//
 				// Messages
@@ -1725,7 +1741,7 @@ class _artists extends layout {
 				if (!$this->auth['mod'] && !$this->auth['smod']) {
 					$template->assign_block_vars('make_fans', array(
 						'FAV_URL' => s_link('a', array($this->data['subdomain'], 15)),
-						'FAV_LANG' => ($this->auth['fav']) ? $user->lang['UB_FAV_DEL'] : $user->lang['UB_FAV_ADD'])
+						'FAV_LANG' => ($this->auth['fav']) ? '' : $user->lang['UB_FAV_ADD']) //$user->lang['UB_FAV_DEL']
 					);
 				}
 				

@@ -27,10 +27,11 @@ class cover {
 		$news = array();
 		if (!$news = $cache->get('news')) {
 			$sql = 'SELECT n.news_id, n.post_time, n.poster_id, n.post_subject, n.post_desc, c.*
-				FROM _news n, _news_cat c
-				WHERE n.cat_id = c.cat_id
+				FROM _news n
+				INNER JOIN _news_cat c ON n.cat_id = c.cat_id
+				WHERE n.news_active = 1
 				ORDER BY n.post_time DESC
-				LIMIT 4';
+				LIMIT 6';
 			if ($news = sql_rowset($sql)) {
 				$cache->save('news', $news);
 			}
@@ -46,16 +47,12 @@ class cover {
 		foreach ($news as $i => $row) {
 			if (!$i) {
 				$template->assign_block_vars('news', array());
-				
-				$news_path = $config['assets_url'] . 'news/';
 			}
 			
-			$news_image = $news_path;
+			$news_image = $config['news_url'] . $row['news_id'] . '.jpg';
 			
-			if (@file_exists($news_path . $row['news_id'] . '.jpg')) {
-				$news_image .= $row['news_id'] . '.jpg';
-			} else {
-				$news_image .= 'd.jpg';
+			if (!@file_exists($news_image)) {
+				$news_image = $config['news_url'] . 'd.jpg';
 			}
 			
 			$template->assign_block_vars('news.row', array(
@@ -78,43 +75,36 @@ class cover {
 		return;
 	}
 
-	public function twitter() {
-		/*
-		foreach ($timeline as $tweet) {
-			$date = '<br /><a href="http://www.twitter.com/rock_republik/status/' . $tweet->id . '">' . date('d.m.y, g:i a', strtotime($tweet->created_at)) . '</a>';
-			//$date = date('M j @ H:i', strtotime($tweet->created_at));
-			
-			// Turn links into links
-			$text = eregi_replace('(((f|ht){1}tp://)[-a-zA-Z0-9@:%_\+.~#?&//=]+)', '<a href="\\1" target="_blank">\\1</a>', $text); 
-			
-			// Turn twitter @username into links to the users Twitter page
-			$text = eregi_replace('@([-a-zA-Z0-9_]+)', '@<a href="http://twitter.com/\\1" target="_blank">\\1</a>', $text); 
-		}
-		*/
-	}
-	
-	public function banners() {
+	public function monetize() {
 		global $cache, $config, $user, $template;
 		
-		$banners = array();
-		if (!$banners = $cache->get('banners')) {
+		if (!$monetize = $cache->get('monetize')) {
 			$sql = 'SELECT *
-				FROM _banners
-				ORDER BY banner_order';
-			if ($banners = sql_rowset($sql, 'banner_id')) {
-				$cache->save('banners', $banners);
+				FROM _monetize
+				ORDER BY monetize_order';
+			if ($monetize = sql_rowset($sql, 'monetize_id')) {
+				$cache->save('monetize', $elements);
 			}
 		}
 		
-		if (!sizeof($banners)) return;
+		$set_blocks = array();
 		
-		$template->assign_block_vars('banners', array());
-		foreach ($banners as $item) {
-			$template->assign_block_vars('banners.item', array(
-				'URL' => (!empty($item['banner_url'])) ? $item['banner_url'] : '',
-				'IMAGE' => $config['assets_url'] . 'base/' . $item['banner_id'] . '.gif',
-				'ALT' => $item['banner_alt'])
+		$i = 0;
+		foreach ($monetize as $row) {
+			if (!$i) $template->assign_block_vars('monetize', array());
+			
+			if (!isset($set_blocks[$row['banner_position']])) {
+				$template->assign_block_vars('monetize.' . $row['monetize_position'], array());
+				$set_blocks[$row['monetize_position']] = true;
+			}
+			
+			$template->assign_block_vars('monetize.' . $row['monetize_position'] . '.row', array(
+				'URL' => $row['monetize_url'],
+				'IMAGE' => $config['assets_url'] . 'base/' . $row['monetize_image'],
+				'ALT' => $row['monetize_alt'])
 			);
+			
+			$i++;
 		}
 		
 		return;

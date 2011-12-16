@@ -29,7 +29,7 @@ if ($events->_setup()) {
 	$events->view();
 	
 	$pagehtml = 'events.view';
-	$page_title = $events->data['title'];
+	$page_title = $events->v('title');
 } else {
 	$events->home();
 	
