@@ -44,27 +44,29 @@ class _news {
 	}
 	
 	public function _setup() {
-		$post_id = request_var('id', 0);
-		if (!$post_id) {
+		$news_id = request_var('id', 0);
+		if (!$news_id) {
 			return false;
 		}
 		
+		$news_field = (!is_numb($news_id)) ? 'news_alias' : 'news_id';
+		
 		$sql = 'SELECT n.*, c.*
 			FROM _news n, _news_cat c
-			WHERE n.news_id = ?
+			WHERE n.?? = ?
 				AND n.cat_id = c.cat_id';
-		if (!$row = sql_fieldrow(sql_filter($sql, $post_id))) {
+		if (!$this->data = sql_fieldrow(sql_filter($sql, $news_field, $news_id))) {
 			fatal_error();
 		}
 		
-		$this->data = $row;
 		return true;
 	}
 	
 	public function _main() {
 		global $user, $cache, $template;
 		
-		$cat = request_var('cat', '');
+		$cat = request_var('id', '');
+		
 		if (!empty($cat)) {
 			$sql = 'SELECT *
 				FROM _news_cat
