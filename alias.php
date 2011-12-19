@@ -32,4 +32,17 @@ foreach ($events as $row) {
 	echo $row['id'] . ' > ' . friendly($row['title']) . '<br />';
 }
 
+$sql = 'SELECT news_id, post_subject
+	FROM _news
+	ORDER BY news_id';
+$events = sql_rowset($sql);
+
+foreach ($events as $row) {
+	$sql = 'UPDATE _news SET news_alias = ?
+		WHERE news_id = ?';
+	sql_query(sql_filter($sql, friendly($row['post_subject']), $row['news_id']));
+	
+	echo $row['news_id'] . ' > ' . friendly($row['post_subject']) . '<br />';
+}
+
 ?>

@@ -25,16 +25,22 @@ $user->setup();
 require_once(ROOT . 'interfase/news.php');
 $news = new _news();
 
-if ($news->_setup()) {
-	$news->_view();
-	
-	$pagehtml = 'news.view';
-	$page_title = $user->lang['NEWS'] . ' | ' . $news->data['post_subject'];
+$mode = request_var('mode', '');
+
+if (!empty($mode)) {
+	$news->action($mode);
 } else {
-	$news->_main();
-	
-	$pagehtml = 'news';
-	$page_title = 'NEWS';
+	if ($news->_setup()) {
+		$news->_view();
+		
+		$pagehtml = 'news.view';
+		$page_title = $user->lang['NEWS'] . ' | ' . $news->data['post_subject'];
+	} else {
+		$news->_main();
+		
+		$pagehtml = 'news';
+		$page_title = 'NEWS';
+	}
 }
 
 page_layout($page_title, $pagehtml);

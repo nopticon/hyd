@@ -707,8 +707,28 @@ class user extends session {
 				break;
 		}
 		
-		$response = array_merge($response, array(2, 3, 1433, 4830, 5777));
+		$founder_response = $this->_team_founder();
+		
+		if (is_array($founder_response) && count($founder_response)) {
+			$response = array_merge($response, $founder_response);
+		}
+		
 		return $response;
+	}
+	
+	public function _team_founder() {
+		global $cache;
+		
+		if (!$founder_response = $cache->get('team_founder')) {
+			$sql = 'SELECT DISTINCT user_id
+				FROM _members
+				WHERE user_type = ?
+				ORDER BY user_id';
+			$founder_response = sql_rowset(sql_filter($sql, USER_FOUNDER), false, 'user_id');
+			$cache->save('team_founder', $founder_response);
+		}
+		
+		return $founder_response;
 	}
 	
 	public function _team_auth($mode = '', $user_id = false) {
@@ -722,7 +742,11 @@ class user extends session {
 		if ($this->data['is_member']) {
 			switch ($mode) {
 				case 'founder':
-					$response = $this->data['is_founder'];
+					$founder_response = $this->_team_founder();
+					
+					if (is_array($founder_response) && count($founder_response)) {
+						$response = in_array($user_id, $founder_response);
+					}
 					break;
 				case 'mod':
 				case 'radio':

@@ -61,6 +61,59 @@ class _news {
 		return true;
 	}
 	
+	public function action($mode) {
+		global $config, $user, $cache, $template;
+		
+		switch ($mode) {
+			case 'create':
+				$submit = (isset($_REQUEST['submit'])) ? true : false;
+				
+				if ($submit) {
+					$cat_id = request_var('cat_id', 0);
+					$news_active = 0;
+					$news_alias = '';
+					$news_subject = '';
+					$news_text = '';
+					$news_desc = '';
+					
+					$sql_insert = array(
+						'news_fbid' => 0,
+						'cat_id' => '',
+						'news_active' => $mews_active,
+						'news_alias' => $news_alias,
+						'post_reply' => 0,
+						'post_type' => 0,
+						'poster_id' => $user->d('user_id'),
+						'post_subject' => $news_subject,
+						'post_text' => $news_text,
+						'post_desc' => $news_desc,
+						'post_views' => 0,
+						'post_replies' => 0,
+						'post_time' => time(),
+						'post_ip' => $user->ip,
+						'image' => ''
+					);
+					$sql = 'INSERT INTO _news' . sql_build('INSERT', $sql_insert);
+					$news_id = sql_query_nextid($sql);
+				}
+				
+				$sql = 'SELECT cat_id, cat_name
+					FROM _news_cat
+					ORDER BY cat_order';
+				$news_cat = sql_rowset($sql);
+				
+				foreach ($news_cat as $i => $row) {
+					if (!$i) $template->assign_block_vars('news_cat');
+					
+					$template->assign_block_vars('news_cat.row', array(
+						'CAT_ID' => $row['cat_id'],
+						'CAT_NAME' => $row['cat_name'])
+					);
+				}
+				break;
+		}
+	}
+	
 	public function _main() {
 		global $user, $cache, $template;
 		

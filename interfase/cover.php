@@ -24,7 +24,6 @@ class cover {
 	public function news() {
 		global $config, $cache, $user, $template;
 		
-		$news = array();
 		if (!$news = $cache->get('news')) {
 			$sql = 'SELECT n.news_id, n.post_time, n.poster_id, n.post_subject, n.post_desc, c.*
 				FROM _news n
@@ -41,19 +40,13 @@ class cover {
 			return;
 		}
 		
-		include_once(ROOT . 'interfase/comments.php');
+		require_once(ROOT . 'interfase/comments.php');
 		$comments = new _comments();
 		
 		foreach ($news as $i => $row) {
-			if (!$i) {
-				$template->assign_block_vars('news', array());
-			}
+			if (!$i) $template->assign_block_vars('news', array());
 			
-			$news_image = $config['news_url'] . $row['news_id'] . '.jpg';
-			
-			if (!@file_exists($news_image)) {
-				$news_image = $config['news_url'] . 'd.jpg';
-			}
+			$news_image = (@file_exists($config['news_path'] . $row['news_id'] . '.jpg')) ? $row['news_id'] : 'd';
 			
 			$template->assign_block_vars('news.row', array(
 				'TIMESTAMP' => $user->format_date($row['post_time'], 'j \d\e F Y'),
@@ -62,7 +55,7 @@ class cover {
 				'CAT' => $row['cat_name'],
 				'U_CAT' => s_link('news', $row['cat_url']),
 				'MESSAGE' => $comments->parse_message($row['post_desc']),
-				'IMAGE' => $news_image)
+				'IMAGE' => $config['news_url'] . $news_image . '.jpg')
 			);
 		}
 		
@@ -75,41 +68,6 @@ class cover {
 		return;
 	}
 
-	public function monetize() {
-		global $cache, $config, $user, $template;
-		
-		if (!$monetize = $cache->get('monetize')) {
-			$sql = 'SELECT *
-				FROM _monetize
-				ORDER BY monetize_order';
-			if ($monetize = sql_rowset($sql, 'monetize_id')) {
-				$cache->save('monetize', $elements);
-			}
-		}
-		
-		$set_blocks = array();
-		
-		$i = 0;
-		foreach ($monetize as $row) {
-			if (!$i) $template->assign_block_vars('monetize', array());
-			
-			if (!isset($set_blocks[$row['banner_position']])) {
-				$template->assign_block_vars('monetize.' . $row['monetize_position'], array());
-				$set_blocks[$row['monetize_position']] = true;
-			}
-			
-			$template->assign_block_vars('monetize.' . $row['monetize_position'] . '.row', array(
-				'URL' => $row['monetize_url'],
-				'IMAGE' => $config['assets_url'] . 'base/' . $row['monetize_image'],
-				'ALT' => $row['monetize_alt'])
-			);
-			
-			$i++;
-		}
-		
-		return;
-	}
-	
 	public function board_general() {
 		global $user, $config, $template;
 		

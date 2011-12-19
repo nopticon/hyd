@@ -34,11 +34,9 @@ class __event_images extends mac {
 
 _auth('founder');
 
-$i_size = intval(ini_get('upload_max_filesize'));
-$i_size *= 1048576;
+$i_size = upload_maxsize();
 
-if ($submit)
-{
+if ($submit) {
 	require_once(ROOT . 'interfase/upload.php');
 	$upload = new upload();
 	
@@ -55,21 +53,6 @@ if ($submit)
 		@set_time_limit(0);
 		
 		require_once(ROOT . 'interfase/f_zip.php');
-		require_once(ROOT . 'interfase/ftp.php');
-		$ftp = new ftp();
-		
-		if (!$ftp->ftp_connect())
-		{
-			_die('Can not connnect');
-		}
-		
-		if (!$ftp->ftp_login())
-		{
-			$ftp->ftp_quit();
-			_die('Can not login');
-		}
-		
-		// /httpdocs/data/tmp/
 		
 		foreach ($f as $row)
 		{
@@ -127,7 +110,7 @@ if ($submit)
 			
 			if (count($check_is))
 			{
-				echo $user->lang['DIS'.'_INV'.'ALID'];
+				echo $user->lang['DIS_INVALID'];
 				
 				foreach ($check_is as $row)
 				{

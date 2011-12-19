@@ -33,7 +33,6 @@ $artists = new _artists();
 $events = new _events(true);
 
 $cover->news();
-$cover->banners();
 $cover->board_general();
 $cover->board_events();
 $cover->poll();

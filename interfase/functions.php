@@ -131,6 +131,41 @@ function set_config($config_name, $config_value) {
 	$config[$config_name] = $config_value;
 }
 
+function monetize() {
+	global $cache, $config, $user, $template;
+	
+	if (!$monetize = $cache->get('monetize')) {
+		$sql = 'SELECT *
+			FROM _monetize
+			ORDER BY monetize_order';
+		if ($monetize = sql_rowset($sql, 'monetize_id')) {
+			$cache->save('monetize', $monetize);
+		}
+	}
+	
+	$set_blocks = array();
+	
+	$i = 0;
+	foreach ($monetize as $row) {
+		if (!$i) $template->assign_block_vars('monetize', array());
+		
+		if (!isset($set_blocks[$row['monetize_position']])) {
+			$template->assign_block_vars('monetize.' . $row['monetize_position'], array());
+			$set_blocks[$row['monetize_position']] = true;
+		}
+		
+		$template->assign_block_vars('monetize.' . $row['monetize_position'] . '.row', array(
+			'URL' => $row['monetize_url'],
+			'IMAGE' => $config['assets_url'] . 'base/' . $row['monetize_image'],
+			'ALT' => $row['monetize_alt'])
+		);
+		
+		$i++;
+	}
+	
+	return;
+}
+
 function leading_zero($number) {
 	return (($number < 10) ? '0' : '') . $number;
 }
@@ -1383,7 +1418,7 @@ function msg_handler($errno, $msg_text, $errfile, $errline) {
 			}
 			
 			if (empty($template->root)) {
-				$template->set_template(ROOT.'template');
+				$template->set_template(ROOT . 'template');
 			}
 			
 			$custom_vars = array(
@@ -1405,7 +1440,7 @@ function redirect($url, $moved = false) {
 	
 	sql_close();
 	
-	// If relative path, prepend board url
+	// If relative path, prepend application url
 	if (strpos($url, '//') === false) {
 		$url = 'http://' . $config['server_name'] . trim($url);
 	}
@@ -1452,8 +1487,6 @@ function topic_arkane($topic_id, $value) {
 function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive = true) {
 	global $config, $user, $cache, $starttime, $template;
 	
-	define('HEADER_INC', true);
-	
 	//
 	// gzip_compression
 	//
@@ -1463,29 +1496,13 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 		ob_start('ob_gzhandler');
 	}
 	
-	// Artists meta
-	$ub_meta = array();
-	if (!defined('NO_A_META')) {
-		if (!$ub_meta = $cache->get('ub_list')) {
-			$sql = 'SELECT name
-				FROM _artists
-				ORDER BY name';
-			$ub_meta = sql_rowset($sql, false, 'name');
-			$cache->save('ub_list', $ub_meta);
-		}
-	}
+	monetize();
 	
 	// Get unread items count
 	$sql = 'SELECT COUNT(element) AS total
 		FROM _members_unread
 		WHERE user_id = ?';
 	$unread_items = sql_field(sql_filter($sql, $user->d('user_id')), 'total', 0);
-	
-	// Context Menu Blocking
-	$s_context_menu = '';
-	if (!$user->d('is_founder')) {
-		$s_context_menu = ' oncontextmenu="return false"';
-	}
 	
 	//
 	// Send headers
@@ -1497,7 +1514,7 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 	//
 	// Footer
 	//
-	$u_login_logout = ($user->d('is_member')) ? 'signout' : 'signin';
+	$u_session = ($user->d('is_member')) ? 'out' : 'in';
 	
 	if (preg_match('#.*?my/confirm.*?#is', $user->d('session_page'))) {
 		$user->data['session_page'] = '';
@@ -1506,14 +1523,15 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 	$common_vars = array(
 		'PAGE_TITLE' => (isset($user->lang[$page_title])) ? $user->lang[$page_title] : $page_title,
 		
-		'U_SESSION' => s_link($u_login_logout),
-		'U_PROFILE' => s_link('m', $user->d('username_base')),
 		'U_REGISTER' => s_link('signup'),
+		'U_SESSION' => s_link('sign' . $u_session),
+		'U_PROFILE' => s_link('m', $user->d('username_base')),
 		'U_EDITPROFILE' => s_link('my', 'profile'),
 		'U_SPASSWORD' => s_link('my', 'password'),
+		
+		'U_COVER' => s_link(),
 		'U_FAQ' => s_link('faq'),
 		'U_WHATS_NEW' => s_link('new'),
-		'U_COVER' => s_link(),
 		'U_ARTISTS'	=> s_link('a'),
 		'U_RADIO' => s_link('radio'),
 		'U_CHAT' => s_link('chat'),
@@ -1523,7 +1541,6 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 		'U_ART' => s_link('art'),
 		'U_COMMUNITY'	=> s_link('community'),
 		'U_ALLIES'	=> s_link('allies'),		
-		'U_WWW' => s_link('bounce'),
 		'U_TOS' => s_link('tos'),
 		'U_HELP' => s_link('help'),
 		'U_RSS_NEWS' => s_link('rss', 'news'),
@@ -1531,8 +1548,8 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 	
 		'S_KEYWORDS' => $config['meta_keys'],
 		'S_DESCRIPTION' => $config['meta_desc'],
+		
 		'S_REDIRECT' => $user->d('session_page'),
-		'S_CONTEXT_MENU' => $s_context_menu,
 		'S_USERNAME' => $user->d('username'),
 		'S_CONTROLPANEL' => (!isset($template->vars['S_CONTROLPANEL'])) ? (($user->d('is_member') && $user->d('user_auth_control')) ? s_link('control') : '') : $template->vars['S_CONTROLPANEL'],
 		'S_UNREAD_ITEMS' => (($unread_items == 1) ? sprintf($user->lang['UNREAD_ITEM_COUNT'], $unread_items) : sprintf($user->lang['UNREAD_ITEMS_COUNT'], $unread_items)),
@@ -1549,10 +1566,6 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 	$mtime = explode(' ', microtime());
 	$common_vars['F_TIME'] = sprintf('%.2f', ($mtime[0] + $mtime[1] - $starttime));
 	
-	
-	//
-	// End template output
-	//
 	$template->assign_vars($common_vars);
 	
 	$template->set_filenames(array(
@@ -1578,6 +1591,8 @@ function sidebar() {
 		
 		@require_once($include_file);
 	}
+	
+	return;
 }
 
 //
@@ -1725,7 +1740,7 @@ function _shoutcast() {
 	unset($connection);
 	
 	require_once(ROOT . 'interfase/xml.php');
-	$shoutcast = XML_unserialize(strstr($s_response, '<?xml'));
+	$shoutcast = xml2array(strstr($s_response, '<?xml'));
 	$shoutcast = $shoutcast['SHOUTCASTSERVER'];
 	
 	return $shoutcast;
@@ -1793,12 +1808,12 @@ function upload_maxsize() {
 }
 
 function friendly($s) {
-	$s = preg_replace("`\[.*\]`U" ,"", $s);
+	$s = preg_replace("`\[.*\]`U", '', $s);
 	$s = preg_replace('#&([a-zA-Z]+)acute;#is', '\\1', $s);
 	$s = preg_replace('`&(amp;)?#?[a-z0-9]+;`i', '-', $s);
 	$s = htmlentities($s, ENT_COMPAT, 'utf-8');
 	$s = preg_replace("`&([a-z])(acute|uml|circ|grave|ring|cedil|slash|tilde|caron|lig|quot|rsquo);`i", "\\1", $s);
-	$s = preg_replace(array("`[^a-z0-9]`i", "`[-]+`") , "-", $s);
+	$s = preg_replace(array("`[^a-z0-9]`i", "`[-]+`") , '-', $s);
 	
 	return strtolower(trim($s, '-'));
 }
@@ -1815,7 +1830,7 @@ function code2utf($num) {
 if (!function_exists('bcdiv')) {
 	function bcdiv($first, $second, $scale = 0) {
 		$res = $first / $second;
-		return round( $res, $scale );
+		return round($res, $scale);
 	}
 }
 

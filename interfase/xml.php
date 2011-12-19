@@ -1,117 +1,128 @@
-<?php
-###################################################################################
-#
-# XML Library, by Keith Devens, version 1.2b
-# http://keithdevens.com/software/phpxml
-#
-# This code is Open Source, released under terms similar to the Artistic License.
-# Read the license at http://keithdevens.com/software/license
-#
-###################################################################################
-
-###################################################################################
-# XML_unserialize: takes raw XML as a parameter (a string)
-# and returns an equivalent PHP data structure
-###################################################################################
-function & XML_unserialize(&$xml){
-	$xml_parser = &new XML();
-	$data = &$xml_parser->parse($xml);
-	$xml_parser->destruct();
-	return $data;
-}
-###################################################################################
-# XML_serialize: serializes any PHP data structure into XML
-# Takes one parameter: the data to serialize. Must be an array.
-###################################################################################
-function & XML_serialize(&$data, $level = 0, $prior_key = NULL){
-	if($level == 0){ ob_start(); echo '<?xml version="1.0" ?>',"\n"; }
-	while(list($key, $value) = each($data))
-		if(!strpos($key, ' attr')) #if it's not an attribute
-			#we don't treat attributes by themselves, so for an empty element
-			# that has attributes you still need to set the element to NULL
-
-			if(is_array($value) and array_key_exists(0, $value)){
-				XML_serialize($value, $level, $key);
-			}else{
-				$tag = $prior_key ? $prior_key : $key;
-				echo str_repeat("\t", $level),'<',$tag;
-				if(array_key_exists("$key attr", $data)){ #if there's an attribute for this element
-					while(list($attr_name, $attr_value) = each($data["$key attr"]))
-						echo ' ',$attr_name,'="',htmlspecialchars($attr_value),'"';
-					reset($data["$key attr"]);
-				}
-
-				if(is_null($value)) echo " />\n";
-				elseif(!is_array($value)) echo '>',htmlspecialchars($value),"</$tag>\n";
-				else echo ">\n",XML_serialize($value, $level+1),str_repeat("\t", $level),"</$tag>\n";
-			}
-	reset($data);
-	if($level == 0){ $str = &ob_get_contents(); ob_end_clean(); return $str; }
-}
-###################################################################################
-# XML class: utility class to be used with PHP's XML handling functions
-###################################################################################
-class XML{
-	var $parser;   #a reference to the XML parser
-	var $document; #the entire XML structure built up so far
-	var $parent;   #a pointer to the current parent - the parent will be an array
-	var $stack;    #a stack of the most recent parent at each nesting level
-	var $last_opened_tag; #keeps track of the last tag opened.
-
-	function XML(){
- 		$this->parser = &xml_parser_create();
-		xml_parser_set_option(&$this->parser, XML_OPTION_CASE_FOLDING, false);
-		xml_set_object(&$this->parser, &$this);
-		xml_set_element_handler(&$this->parser, 'open','close');
-		xml_set_character_data_handler(&$this->parser, 'data');
+<?php 
+/** 
+ * xml2array() will convert the given XML text to an array in the XML structure. 
+ * Link: http://www.bin-co.com/php/scripts/xml2array/ 
+ * Arguments : $contents - The XML text 
+ *                $get_attributes - 1 or 0. If this is 1 the function will get the attributes as well as the tag values - this results in a different array structure in the return value.
+ *                $priority - Can be 'tag' or 'attribute'. This will change the way the resulting array sturcture. For 'tag', the tags are given more importance.
+ * Return: The parsed XML in an array form. Use print_r() to see the resulting array structure. 
+ * Examples: $array =  xml2array(file_get_contents('feed.xml')); 
+ *              $array =  xml2array(file_get_contents('feed.xml', 1, 'attribute')); 
+ */ 
+function xml2array($contents, $get_attributes = 1, $priority = 'tag') {
+	if (!$contents) return array();
+	
+	if (!function_exists('xml_parser_create')) {
+		return array();
 	}
-	function destruct(){ xml_parser_free(&$this->parser); }
-	function & parse(&$data){
-		$this->document = array();
-		$this->stack    = array();
-		$this->parent   = &$this->document;
-		return xml_parse(&$this->parser, &$data, true) ? $this->document : NULL;
-	}
-	function open(&$parser, $tag, $attributes){
-		$this->data = ''; #stores temporary cdata
-		$this->last_opened_tag = $tag;
-		if(is_array($this->parent) and array_key_exists($tag,$this->parent)){ #if you've seen this tag before
-			if(is_array($this->parent[$tag]) and array_key_exists(0,$this->parent[$tag])){ #if the keys are numeric
-				#this is the third or later instance of $tag we've come across
-				$key = count_numeric_items($this->parent[$tag]);
-			}else{
-				#this is the second instance of $tag that we've seen. shift around
-				if(array_key_exists("$tag attr",$this->parent)){
-					$arr = array('0 attr'=>&$this->parent["$tag attr"], &$this->parent[$tag]);
-					unset($this->parent["$tag attr"]);
-				}else{
-					$arr = array(&$this->parent[$tag]);
-				}
-				$this->parent[$tag] = &$arr;
-				$key = 1;
-			}
-			$this->parent = &$this->parent[$tag];
-		}else{
-			$key = $tag;
+	
+	//Get the XML parser of PHP - PHP must have this module for the parser to work
+	$parser = xml_parser_create('');
+	xml_parser_set_option($parser, XML_OPTION_TARGET_ENCODING, "UTF-8"); # http://minutillo.com/steve/weblog/2004/6/17/php-xml-and-character-encodings-a-tale-of-sadness-rage-and-data-loss
+	xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, 0);
+	xml_parser_set_option($parser, XML_OPTION_SKIP_WHITE, 1);
+	xml_parse_into_struct($parser, trim($contents), $xml_values);
+	xml_parser_free($parser);
+	
+	if (!$xml_values) return;
+	
+	//Initializations
+	$xml_array = array();
+	$parents = array();
+	$opened_tags = array();
+	$arr = array();
+	
+	$current = &$xml_array; //Refference
+	
+	//Go through the tags.
+	$repeated_tag_index = array();//Multiple tags with same name will be turned into an array
+	foreach ($xml_values as $data) {
+		unset($attributes,$value);//Remove existing values, or there will be trouble
+		
+		//This command will extract these variables into the foreach scope
+		// tag(string), type(string), level(int), attributes(array).
+		extract($data);//We could use the array by itself, but this cooler.
+		
+		$result = array();
+		$attributes_data = array();
+		
+		if (isset($value)) {
+			if ($priority == 'tag') $result = $value;
+			else $result['value'] = $value; //Put the value in a assoc array if we are in the 'Attribute' mode
 		}
-		if($attributes) $this->parent["$key attr"] = $attributes;
-		$this->parent  = &$this->parent[$key];
-		$this->stack[] = &$this->parent;
-	}
-	function data(&$parser, $data){
-		if($this->last_opened_tag != NULL) #you don't need to store whitespace in between tags
-			$this->data .= $data;
-	}
-	function close(&$parser, $tag){
-		if($this->last_opened_tag == $tag){
-			$this->parent = $this->data;
-			$this->last_opened_tag = NULL;
+		
+		//Set the attributes too.
+		if (isset($attributes) and $get_attributes) {
+			foreach ($attributes as $attr => $val) {
+				if ($priority == 'tag') $attributes_data[$attr] = $val;
+				else $result['attr'][$attr] = $val; //Set all the attributes in a array called 'attr'
+			}
 		}
-		array_pop($this->stack);
-		if($this->stack) $this->parent = &$this->stack[count($this->stack)-1];
+		
+		//See tag status and do the needed.
+		if ($type == "open") {//The starting of the tag '<tag>'
+			$parent[$level-1] = &$current;
+			if (!is_array($current) or (!in_array($tag, array_keys($current)))) { //Insert New tag
+				$current[$tag] = $result;
+				if ($attributes_data) $current[$tag. '_attr'] = $attributes_data;
+				$repeated_tag_index[$tag.'_'.$level] = 1;
+				
+				$current = &$current[$tag];
+			} else { //There was another element with the same tag name
+				if (isset($current[$tag][0])) {//If there is a 0th element it is already an array
+					$current[$tag][$repeated_tag_index[$tag.'_'.$level]] = $result;
+					$repeated_tag_index[$tag.'_'.$level]++;
+				} else {//This section will make the value an array if multiple tags with the same name appear together
+					$current[$tag] = array($current[$tag],$result);//This will combine the existing item and the new item together to make an array
+					$repeated_tag_index[$tag.'_'.$level] = 2;
+					
+					if (isset($current[$tag.'_attr'])) { //The attribute of the last(0th) tag must be moved as well
+						$current[$tag]['0_attr'] = $current[$tag.'_attr'];
+						unset($current[$tag.'_attr']);
+					}
+				}
+				
+				$last_item_index = $repeated_tag_index[$tag.'_'.$level]-1;
+				$current = &$current[$tag][$last_item_index];
+			}
+		} elseif ($type == "complete") { //Tags that ends in 1 line '<tag />'
+			//See if the key is already taken.
+			if (!isset($current[$tag])) { //New Key
+				$current[$tag] = $result;
+				$repeated_tag_index[$tag.'_'.$level] = 1;
+				if ($priority == 'tag' and $attributes_data) $current[$tag. '_attr'] = $attributes_data;
+			} else { //If taken, put all things inside a list(array)
+				if(isset($current[$tag][0]) and is_array($current[$tag])) {//If it is already an array...
+					// ...push the new element into that array.
+					$current[$tag][$repeated_tag_index[$tag.'_'.$level]] = $result;
+					
+					if ($priority == 'tag' and $get_attributes and $attributes_data) {
+						$current[$tag][$repeated_tag_index[$tag.'_'.$level] . '_attr'] = $attributes_data;
+					}
+					
+					$repeated_tag_index[$tag.'_'.$level]++;
+				} else { //If it is not an array...
+					$current[$tag] = array($current[$tag],$result); //...Make it an array using using the existing value and the new value
+					$repeated_tag_index[$tag.'_'.$level] = 1;
+					
+					if ($priority == 'tag' and $get_attributes) {
+						if(isset($current[$tag.'_attr'])) { //The attribute of the last(0th) tag must be moved as well
+							$current[$tag]['0_attr'] = $current[$tag.'_attr'];
+							unset($current[$tag.'_attr']);
+						}
+						
+						if ($attributes_data) {
+							$current[$tag][$repeated_tag_index[$tag.'_'.$level] . '_attr'] = $attributes_data;
+						}
+					}
+					
+					$repeated_tag_index[$tag.'_'.$level]++; //0 and 1 index is already taken
+				}
+			}
+		} elseif($type == 'close') { //End of tag '</tag>'
+			$current = &$parent[$level-1];
+		}
 	}
+	
+	return($xml_array);
 }
-function count_numeric_items(&$array){
-	return is_array($array) ? count(array_filter(array_keys($array), 'is_numeric')) : 0;
-}
-?>

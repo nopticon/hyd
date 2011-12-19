@@ -29,16 +29,14 @@ class community {
 	public function founders() {
 		global $cache, $user, $template;
 		
-		$founders = array();
 		if (!$founders = $cache->get('founders')) {
-			global $config;
-			
 			$sql = 'SELECT user_id, username, username_base, user_avatar
 				FROM _members
-				WHERE user_id IN (2,3)
+				WHERE user_type = ?
 				ORDER BY user_id';
-			$result = sql_rowset($sql);
+			$result = sql_rowset(sql_filter($sql, USER_FOUNDER));
 			
+			$founders = array();
 			foreach ($result as $row) {
 				$founders[$row['user_id']] = $this->comments->user_profile($row);
 			}
@@ -59,9 +57,6 @@ class community {
 	public function team() {
 		global $cache, $template;
 		
-		$team = array();
-		$team_members = array();
-		
 		if (!$team = $cache->get('team')) {
 			$sql = 'SELECT *
 				FROM _team
@@ -81,7 +76,6 @@ class community {
 			}
 		}
 		
-		//
 		if (!sizeof($team) || !sizeof($team_members)) {
 			return;
 		}
@@ -109,13 +103,9 @@ class community {
 			
 			$tcol = 0;
 			foreach ($team_members as $tm_data) {
-				if ($t_data['team_id'] != $tm_data['team_id']) {
-					continue;
-				}
+				if ($t_data['team_id'] != $tm_data['team_id']) continue;
 				
-				if (!$tcol) {
-					$template->assign_block_vars('team.row', array());
-				}
+				if (!$tcol) $template->assign_block_vars('team.row', array());
 				
 				$up = $this->comments->user_profile($members_data[$tm_data['member_id']]);
 				

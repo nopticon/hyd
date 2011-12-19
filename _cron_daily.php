@@ -30,15 +30,15 @@ $start_2 = mktime(0, 0, 0, $d['mon'], ($d['mday'] - 14), $d['year']);
 $banner_end = mktime(23, 59, 0, $d['mon'], $d['mday'], $d['year']);
 
 $sql = 'SELECT *
-	FROM _banners
-	WHERE banner_end > ' . (int) $_end . '
-	ORDER BY banner_end';
-$deleted = sql_rowset(sql_filter($sql, $_end), false, 'banner_id');
+	FROM _monetize
+	WHERE monetize_end > ' . (int) $_end . '
+	ORDER BY monetize_end';
+$deleted = sql_rowset(sql_filter($sql, $_end), false, 'monetize_id');
 
 if (count($deleted))
 {
-	$sql = 'DELETE FROM _banners
-		WHERE banner_id IN (??)';
+	$sql = 'DELETE FROM _monetize
+		WHERE monetize_id IN (??)';
 	sql_query(sql_filter($sql, implode(',', $deleted)));
 	
 	$cache->delete('banners');
