@@ -273,7 +273,7 @@ class _events extends downloads {
 						);
 					}
 				} else {
-					if (!$t_offset && $user->data['user_type'] != USER_FOUNDER) {
+					if (!$t_offset && $user->data['is_founder']) {
 						$sql = 'UPDATE _events SET views = views + 1
 							WHERE id = ?';
 						sql_query(sql_filter($sql, $this->v('id')));

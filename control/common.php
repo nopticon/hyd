@@ -41,7 +41,7 @@ class common {
 	public function auth_access($member) {
 		global $user;
 		
-		if ($user->data['user_type'] == USER_FOUNDER) {
+		if ($user->data['is_founder']) {
 			return true;
 		}
 		

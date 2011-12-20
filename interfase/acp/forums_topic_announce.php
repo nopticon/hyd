@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-class __forum_topic_announce extends mac {
+class __forums_topic_announce extends mac {
 	public function __construct() {
 		parent::__construct();
 		

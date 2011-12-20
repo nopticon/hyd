@@ -286,12 +286,13 @@ if ($submit_topic)
 	}
 }
 //
-// END SUBMIT TOPIC
+// End Submit
 //
 
 $topics_count = ($forum_row['forum_topics']) ? $forum_row['forum_topics'] : 1;
-$topic_rowset = array();
 
+$topics = new stdClass();
+$total = new stdClass();
 //
 // All announcement data
 //
@@ -303,13 +304,8 @@ $sql = 'SELECT t.*, u.user_id, u.username, u.username_base, u.user_color, u2.use
 		AND p.poster_id = u2.user_id
 		AND t.topic_announce = 1
 	ORDER BY t.topic_last_post_id DESC';
-$result = sql_rowset(sql_filter($sql, $forum_id));
-
-$total_announcements = 0;
-foreach ($result as $row) {
-	$topic_rowset[] = $row;
-	$total_announcements++;
-}
+$topics->important = sql_rowset(sql_filter($sql, $forum_id));
+$total->important = count($topics->important);
 
 //
 // Grab all the topics data for this forum
@@ -324,13 +320,8 @@ $sql = 'SELECT t.*, u.user_id, u.username, u.username_base, u.user_color, u2.use
 		AND t.topic_announce = 0
 	ORDER BY t.topic_important DESC, /*t.topic_last_post_id*/p2.post_time DESC
 	LIMIT ??, ??';
-$result = sql_rowset(sql_filter($sql, $forum_id, $start, $config['topics_per_page']));
-
-$total_topics = 0;
-foreach ($result as $row) {
-	$topic_rowset[] = $row;
-	$total_topics++;
-}
+$topics->normal = sql_rowset(sql_filter($sql, $forum_id, $start, $config['topics_per_page']));
+$total->normal = count($topics->normal);
 
 //
 // Total topics ...
@@ -341,7 +332,9 @@ $total_topics += $total_announcements;
 // Post URL generation for templating vars
 //
 if ($is_auth['auth_post'] || $is_auth['auth_mod']) {
-	$template->assign_block_vars('create_topic', array());
+	$template->assign_block_vars('topic_create', array(
+		'L_POST_NEW_TOPIC' => ($forum_row['forum_locked']) ? $user->lang['FORUM_LOCKED'] : $user->lang['POST_NEWTOPIC'])
+	);
 }
 
 //
@@ -350,133 +343,108 @@ if ($is_auth['auth_post'] || $is_auth['auth_mod']) {
 $template->assign_vars(array(
 	'FORUM_ID' => $forum_id,
 	'FORUM_NAME' => $forum_row['forum_name'],
-	'U_VIEW_FORUM' => s_link('forum', $forum_row['forum_alias']),
-
-	'L_POST_NEW_TOPIC' => ($forum_row['forum_locked']) ? $user->lang['FORUM_LOCKED'] : $user->lang['POST_NEWTOPIC'])
+	'U_VIEW_FORUM' => s_link('forum', $forum_row['forum_alias']))
 );
 //
 // End header
 //
 
 //
-// Okay, lets dump out the page ...
+// Let's build the topics
 //
-if ($total_topics) {
-	$template->assign_block_vars('topics', array());
-	
-	for ($i = 0; $i < $total_topics; $i++) {
-		$topic_id = $topic_rowset[$i]['topic_id'];
-		$topic_title = $topic_rowset[$i]['topic_title'];
-		$replies = $topic_rowset[$i]['topic_replies'];
-		//$topic_type = $topic_rowset[$i]['topic_important'];
-		$topic_featured = $topic_rowset[$i]['topic_featured'];
-		$topic_author_id = $topic_rowset[$i]['user_id'];
-		
-		/*$topic_type = '';
-		if ($topic_type)
-		{
-			$topic_type = $user->lang['TOPIC_ANNOUNCEMENT'] . ' ';
-		}
+$i = 0;
 
-		if ($topic_rowset[$i]['topic_vote'])
-		{
-			$topic_type .= $user->lang['TOPIC_POLL'] . ' ';
+foreach ($topics as $alias => $list) {
+	foreach ($list as $j => $row) {
+		if (!$i) {
+			$template->assign_block_vars('topics', array());
+			
+			$topics_count -= $total->important;
+		
+			build_num_pagination(s_link('forum', array($forum_row['forum_alias'], 's%d')), $topics_count, $config['topics_per_page'], $start, '', 'TOPICS_');
 		}
 		
-		if (!$topic_featured && $user->data['is_founder'])
-		{
-			$topic_type .= '^ ';
-		}*/
+		if (!$j) {
+			$template->assign_block_vars('topics.alias', array(
+				'NAME' => $user->lang['TOPIC_' . strtoupper($alias)],
+				'SHOW' => ($total->important && $total->normal > 1))
+			);
+		}
 		
-		if ($topic_author_id != GUEST) {
-			$topic_author = '<a class="relevant uunique" href="' . s_link('m', $topic_rowset[$i]['username_base2']) . '">' . $topic_rowset[$i]['username2'] . '</a>';
+		$row = (object) $row;
+		
+		if ($row->user_id != GUEST) {
+			$row->author = '<a  href="' . s_link('m', $row->username_base2) . '">' . $row->username2 . '</a>';
 		} else {
-			$topic_author = '<span class="relevant">*' . (($topic_rowset[$i]['post_username2'] != '') ? $topic_rowset[$i]['post_username2'] : $user->lang['GUEST']) . '</span>';
+			$row->author = '<span>*' . (($row->post_username2 != '') ? $row->post_username2 : $user->lang['GUEST']) . '</span>';
 		}
 		
-		if ($topic_rowset[$i]['user_id2'] != GUEST) {
-			$last_post_author = '<a class="relevant uunique" href="' . s_link('m', $topic_rowset[$i]['username_base2']) . '">' . $topic_rowset[$i]['username2'] . '</a>';
+		if ($row->user_id2 != GUEST) {
+			$row->poster = '<a href="' . s_link('m', $row->username_base2) . '">' . $row->username2 . '</a>';
 		} else {
-			$last_post_author = '<span class="relevant">*' . (($topic_rowset[$i]['post_username2'] != '') ? $topic_rowset[$i]['post_username2'] : $user->lang['GUEST']) . '</span>';
+			$row->poster = '<span>*' . (($row->post_username2 != '') ? $row->post_username2 : $user->lang['GUEST']) . '</span>';
 		}
 		
-		$template->assign_block_vars('topics.item', array(
+		$template->assign_block_vars('topics.alias.row', array(
 			'FORUM_ID' => $forum_id,
-			'TOPIC_ID' => $topic_id,
-			'TOPIC_AUTHOR' => $topic_author, 
-			'REPLIES' => $replies,
-			'VIEWS' => ($user->data['is_member'] && ($user->data['user_type'] == USER_FOUNDER)) ? $topic_rowset[$i]['topic_views'] : '',
-			'TOPIC_TITLE' => $topic_title,
-			//'TOPIC_TYPE' => $topic_type,
-			'TOPIC_CREATION_TIME' => $user->format_date($topic_rowset[$i]['topic_time']),
-			'LAST_POST_TIME' => $user->format_date($topic_rowset[$i]['post_time']),
-			'LAST_POST_AUTHOR' => $last_post_author, 
-
-			'U_TOPIC' => s_link('topic', $topic_id))
+			'TOPIC_ID' => $row->topic_id,
+			'TOPIC_AUTHOR' => $row->author, 
+			'REPLIES' => $row->topic_replies,
+			'VIEWS' => ($user->data['is_founder']) ? $row->topic_views : '',
+			
+			'TOPIC_TITLE' => $row->topic_title,
+			'TOPIC_CREATION_TIME' => $user->format_date($row->topic_time),
+			'LAST_POST_TIME' => $user->format_date($row->post_time),
+			'LAST_POST_AUTHOR' => $row->poster, 
+			'U_TOPIC' => s_link('topic', $row->topic_id))
 		);
+		
+		$i++;
 	}
+}
 
-	$topics_count -= $total_announcements;
-
-	build_num_pagination(s_link('forum', array($forum_row['forum_alias'], 's%d')), $topics_count, $config['topics_per_page'], $start, '', 'TOPICS_');
-} else {
+if (!$total_topics) {
 	if ($start) {
 		redirect(s_link('forum', $forum_row['forum_alias']), true);
 	}
-	$template->assign_block_vars('no_topics', array() );
+	$template->assign_block_vars('no_topics', array());
 }
 
 //
 // Posting box
 //
 if (!empty($error_msg) || (!$is_auth['auth_mod'] && $forum_row['forum_locked']) || (!$is_auth['auth_post'] && $forum_row['auth_post'] == AUTH_REG) || $is_auth['auth_post']) {
-	$template->assign_block_vars('posting_box', array());
-	
-	if (!empty($error_msg)) {
-		$template->assign_block_vars('posting_box.error', array(
-			'MESSAGE' => $error_msg)
-		);
-	}
-	
-	if (!$is_auth['auth_mod'] && $forum_row['forum_locked']) {
-		$template->assign_block_vars('posting_box.not_allowed', array(
-			'LEGEND' => $user->lang['FORUM_LOCKED'])
-		);
-	} else if (!$is_auth['auth_post'] && $forum_row['auth_post'] == AUTH_REG) {
-		$template->assign_block_vars('posting_box.only_registered', array(
-			'LEGEND' => sprintf($user->lang['LOGIN_TO_POST'], '', s_link('my', 'register'))
-		));
-	} else if ($is_auth['auth_post']) {
+	if ($is_auth['auth_post']) {
 		if (!empty($poll_options)) {
 			$poll_options = implode("\n", $poll_options);
 		}
 		
-		$template->assign_block_vars('posting_box.box', array(
+		$template->assign_block_vars('publish', array(
+			'S_POST_ACTION' => s_link('forum', $forum_row['forum_alias']),
+			
 			'TOPIC_TITLE' => $post_title,
 			'MESSAGE' => $post_message,
 			'NP' => $post_np,
+			
 			'POLL_TITLE' => $poll_title,
 			'POLL_OPTIONS' => $poll_options,
-			'POLL_LENGTH' => $poll_length,
-			'S_POST_ACTION' => s_link('forum', $forum_row['forum_alias']) . '#e')
+			'POLL_LENGTH' => $poll_length)
 		);
 		
 		if ($is_auth['auth_pollcreate']) {
-			$template->assign_block_vars('posting_box.box.addpoll', array());
+			$template->assign_block_vars('publish.poll', array());
 			
 			if (empty($poll_options)) {
-				$template->assign_block_vars('posting_box.box.addpoll.hide', array());
+				$template->assign_block_vars('publish.poll.hide', array());
 			}
 		}
 	}
-}
-
-// Auth: Kick DJ
-if ($forum_id == $config['forum_for_radio'] && $user->_team_auth('radio')) {
-	$template->assign_block_vars('rdjk', array(
-		'U_KICK' => s_link('forum', 'djs'),
-		'V_HASH' => _encode($user->data['username_base'] . '.' . $user->data['username_base']))
-	);
+	
+	if (!empty($error_msg)) {
+		$template->assign_block_vars('publish.alert', array(
+			'MESSAGE' => $error_msg)
+		);
+	}
 }
 
 $template_file = 'topics';

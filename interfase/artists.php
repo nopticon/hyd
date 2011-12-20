@@ -186,7 +186,7 @@ class layout extends downloads {
 		$mode = request_var('mode', '');
 		$download_id = intval(request_var('download_id', 0));
 		
-		if ($mode == 'save' || $mode == 'view') {
+		if ($mode == 'view') {
 			if (!$download_id) {
 				redirect(s_link('a', array($this->data['subdomain'], 4)));
 			}
@@ -217,20 +217,6 @@ class layout extends downloads {
 		
 		switch ($mode)
 		{
-			case 'save':
-				if (!$imagedata['allow_dl']) {
-					redirect(s_link('a', array($this->data['subdomain'], 4, $imagedata['image'], 'view')));
-				}
-				
-				$sql = 'UPDATE _artists_images SET downloads = downloads + 1
-					WHERE ub = ?
-						AND image = ?';
-				sql_query(sql_filter($sql, $this->data['ub'], $imagedata['image']));
-				
-				$this->filename = $this->data['name'] . '_' . $imagedata['image'] . '.jpg';
-				$this->filepath = 'data/artists/' . $this->data['ub'] . '/gallery/' . $imagedata['image'] . '.jpg';
-				$this->dl_file();				
-				break;
 			case 'view':
 			default:
 				if ($mode == 'view') {
@@ -264,7 +250,8 @@ class layout extends downloads {
 				$sql = 'SELECT g.*
 					FROM _artists a, _artists_images g
 					WHERE a.ub = ' . $this->data['ub'] . '
-						AND a.ub = g.ub' . $sql_image . '
+						AND a.ub = g.ub
+						' . $sql_image . '
 					ORDER BY image DESC';
 				if (!$result = sql_rowset(sql_filter($sql, $this->data['ub']))) {
 					redirect(s_link('a', array($this->data['subdomain'], 4)));
@@ -274,14 +261,12 @@ class layout extends downloads {
 				$template->assign_block_vars('thumbnails', array());
 				
 				foreach ($result as $row) {
-					if (!$tcol) {
-						$template->assign_block_vars('thumbnails.row', array());
-					}
+					if (!$tcol) $template->assign_block_vars('thumbnails.row', array());
 					
 					$template->assign_block_vars('thumbnails.row.col', array(
 						'URL' => s_link('a', array($this->data['subdomain'], 4, $row['image'], 'view')),
 						'IMAGE' => $config['artists_url'] . $this->data['ub'] . '/thumbnails/' . $row['image'] . '.jpg',
-						'RIMAGE' => get_a_imagepath(SDATA . 'artists/' . $this->data['ub'], $row['image'] . '.jpg', array('x1', 'gallery')),
+						'RIMAGE' => get_a_imagepath($config['artists_path'], $config['artists_url'], 'artists/' . $this->data['ub'], $row['image'] . '.jpg', array('x1', 'gallery')),
 						'WIDTH' => $row['width'], 
 						'HEIGHT' => $row['height'],
 						'FOOTER' => $row['image_footer'])
@@ -838,7 +823,7 @@ class _artists extends layout {
 		global $user;
 		
 		$this->auth['user'] = ($user->data['is_member']) ? true : false;
-		$this->auth['adm'] = (($user->data['user_type'] == USER_FOUNDER) && $this->auth['user']) ? true : false;
+		$this->auth['adm'] = ($user->data['is_founder']) ? true : false;
 		$this->auth['mod'] = ($this->auth['adm']) ? true : false;
 		$this->auth['smod'] = false;
 		$this->auth['fav'] = false;

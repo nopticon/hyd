@@ -86,7 +86,7 @@ class acp {
 		$module->url = s_link('acp', $this->module);
 		$module->alias = $this->module;
 		
-		$module->home();
+		$module->_home();
 		
 		if (!isset($module->template)) {
 			$module->template = 'acp/' . $this->module;

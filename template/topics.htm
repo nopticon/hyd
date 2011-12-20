@@ -2,10 +2,9 @@
 
 <div class="h"><h3><a href="{U_VIEW_FORUM}">{FORUM_NAME}</a></h3></div>
 
-<!-- BEGIN create_topic -->
-<div class="ctl"><a href="#create">{L_POST_NEWTOPIC}</a></div>
-<!-- END create_topic -->
-
+<!-- BEGIN topic_create -->
+<div class="ctl"><a href="#create">{topic_create.L_POST_NEWTOPIC}</a></div>
+<!-- END topic_create -->
 <span class="clear"></span>
 
 <!-- IF PAGES_NUMS != '' -->
@@ -14,33 +13,49 @@
 <!-- ENDIF -->
 
 <!-- BEGIN topics -->
+<!-- BEGIN alias -->
+<!-- IF alias.SHOW -->
+<div class="x2">
+	<div class="h"><h3>{alias.NAME}</h3></div>
+</div>
+<!-- ENDIF -->
+
 <div class="pad_top ls">
 <ul>
-	<!-- BEGIN item -->
+	<!-- BEGIN row -->
 	<li>
-		<a href="{item.U_TOPIC}">{item.TOPIC_TITLE}</a> ({item.REPLIES} m<!-- IF item.VIEWS -->, {item.VIEWS} v<!-- ENDIF -->)
-		<div class="_">{item.TOPIC_AUTHOR} @ {item.LAST_POST_TIME}</div>
+		<a href="{row.U_TOPIC}">{row.TOPIC_TITLE}</a>
+		<div class="_">{row.TOPIC_AUTHOR} @ {row.LAST_POST_TIME}</div>
 	</li>
-	<!-- END item -->
+	<!-- END row -->
 </ul>
 </div>
+<!-- END alias -->
 <!-- END topics -->
 
 <!-- IF PAGES_NUMS != '' -->
 <div class="p">{PAGES_NUMS}</div>
 <!-- ENDIF -->
 
-<!-- BEGIN posting_box -->
-<!-- BEGIN box -->
+<!-- BEGIN publish -->
+<span class="clear"></span>
+
+<div class="pad_top publish">
+	<div class="h"><h3>{L_POST_NEWTOPIC} <a class="smile" href="{S_EMOTICONS}">@</a></h3></div>
+	<form action="{publish.S_POST_ACTION}" method="post">
+		<label for="comment_title">{L_TOPIC_TITLE}</label>
+		<input class="f" id="comment_title" name="topic_title" value="{publish.TOPIC_TITLE}" />
+		<textarea id="comment" name="message">{publish.MESSAGE}</textarea>
+		<label for="comment_np">{L_NOWPLAYING}</label>
+		<input class="f" id="comment_np" name="np" value="{publish.NP}" />
+		<input type="submit" name="post" value="{L_SUBMIT}" />
+	</form>
+</div>
+
 <div class="pad_top post_comment">
 	<div class="h"><h3>{L_POST_NEWTOPIC}</h3></div>
 	<form action="{box.S_POST_ACTION}" method="post">
-		<div><label for="comment_np">{L_TOPIC_TITLE}</label></div>
-		<div class="rows5_top_1"><input id="comment_title" name="topic_title" size="150" value="{box.TOPIC_TITLE}" /></div>
-		<div class="rows5_top_1"><label for="comment">{L_POST}</label> - <a class="relevant" onclick="return popup('{S_EMOTICONS}', '_emoticons', 300, 450);" href="{S_EMOTICONS}" target="_blank">{L_EMOTICONS}</a><!-- BEGIN addpoll --> - <span class="relevant" onclick="Element.toggle('addpollbox');">{L_ADD_POLL}</span><!-- END addpoll --></div>
-		<div class="rows5_top_1"><textarea id="comment" name="message" cols="150" rows="10">{box.MESSAGE}</textarea></div>
-		<div class="rows5_top_1"><label for="comment_np">{L_NOWPLAYING}</label></div>
-		<div class="rows5_top_1"><input id="comment_np" name="np" size="150" value="{box.NP}" /></div>
+		
 		
 		<!-- BEGIN addpoll -->
 		<div id="addpollbox" class="rows5_top_1">
@@ -52,11 +67,9 @@
 			<div class="rows5_top_1"><textarea id="t-polloptions" name="poll_options" cols="150" rows="10">{box.POLL_OPTIONS}</textarea></div>
 		</div>
 		<!-- END addpoll -->
-		
-		<div class="rows5_top_1 a_center"><input class="submit" type="submit" name="post" value="{L_SUBMIT}" /></div>
 	</form>
 </div>
-<!-- END box -->
-<!-- END posting_box -->
+
+<!-- END publish -->
 
 <!-- INCLUDE page.footer.htm -->

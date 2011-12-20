@@ -1661,12 +1661,12 @@ function get_yt_code($a) {
 	return $s2[1];
 }
 
-function get_a_imagepath($path, $filename, $folders) {
+function get_a_imagepath($abs_path, $domain_path, $directory, $filename, $folders) {
 	foreach ($folders as $row) {
-		$a = $path . '/' . $row . '/' . $filename;
-		if (@file_exists('..' . $a)) {
-			return $a;
-		}
+		$a = $abs_path . $directory . '/' . $row . '/' . $filename;
+		//if (@file_exists($a)) {
+			return $domain_path . $directory . '/' . $row . '/' . $filename;
+		//}
 	}
 	return false;
 }

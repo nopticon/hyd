@@ -160,7 +160,7 @@ class _comments {
 		$current_time = time();
 		
 		$this->auth['user'] = ($user->data['is_member']) ? true : false;
-		$this->auth['adm'] = (($user->data['user_type'] == USER_FOUNDER) && $this->auth['user']) ? true : false;
+		$this->auth['adm'] = ($user->data['is_founder']) ? true : false;
 		
 		/*
 		//

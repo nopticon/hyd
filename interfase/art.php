@@ -132,7 +132,7 @@ class _art extends downloads {
 			redirect(s_link('art'));
 		}
 		
-		if ($user->data['user_type'] != USER_FOUNDER && $user->data['user_id'] != $this->data['user_id']) {
+		if (!$user->data['is_founder'] && $user->data['user_id'] != $this->data['user_id']) {
 			$sql = 'UPDATE _art SET views = views + 1
 				WHERE art_id = ?';
 			sql_query(sql_filter($sql, $this->data['art_id']));
