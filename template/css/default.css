@@ -85,7 +85,7 @@ hr {
 	overflow: hidden;
 }
 .brand {
-	width: 50%;
+	width: 75%;
 	float: left;
 }
 .brand h1 {
@@ -229,17 +229,22 @@ hr {
 }
 .flying {
 	display: none;
-	background: #444;
+	background: rgba(0,0,0,0.6);
 	color: #EEE;
+	position: absolute;
+	padding: 3px;
+	overflow: auto;
+	
 	border-right: 1px solid #383838;
 	border-left: 1px solid #383838;
 	border-bottom: 1px solid #383838;
-	position: absolute;
-	right: 14px;
-	top: 23px;
-	width: 212px;
-	padding: 3px;
-	overflow: auto;
+	
+	border-top-right-radius: 10px;
+	border-bottom-right-radius: 10px;
+}
+.flying li {
+	float: none !important;
+	margin: 30px;
 }
 
 #facebook {

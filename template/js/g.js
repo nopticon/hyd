@@ -26,7 +26,12 @@ $(function() {
 	
 	$('.expand').click(function(event) {
 		event.preventDefault();
-		$('#expand_' + $(this).attr('id')).toggle('slow');
+		
+		position = $(this).position();
+		$('#expand_' + $(this).attr('id')).css('top', position.top + $(this).height());
+		$('#expand_' + $(this).attr('id')).css('left', position.left);
+		
+		$('#expand_' + $(this).attr('id')).slideToggle('medium');
 		return false;
 	});
 	
