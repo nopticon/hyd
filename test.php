@@ -25,4 +25,10 @@ echo '<br /><br />';
 
 _pre($user->session_id . '*', true);
 
+echo '<br /><br />';
+
+_pre($_SERVER, true);
+
+
+
 ?>
