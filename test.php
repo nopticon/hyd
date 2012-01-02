@@ -23,7 +23,7 @@ _pre($user->cookie_data['u'] . '*');
 
 echo '<br /><br />';
 
-_pre($user->session_id . '*', true);
+_pre($user->session_id . '*');
 
 echo '<br /><br />';
 
