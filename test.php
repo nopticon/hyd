@@ -11,6 +11,10 @@ require_once(ROOT . 'interfase/common.php');
 $user->init(false);
 $user->setup();
 
+_pre($_SERVER['HTTP_X_FORWARDED_FOR']);
+
+echo '<br /><br />';
+
 _pre($_REQUEST);
 
 echo '<br /><br />';
