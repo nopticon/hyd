@@ -40,13 +40,13 @@ function set_var(&$result, $var, $type, $multibyte = false) {
 // Get value of request var
 //
 function request_var($var_name, $default, $multibyte = false) {
-	if (REQC) {
+	//if (REQC) {
 		global $config;
 		
 		if (strstr($var_name, $config['cookie_name']) && isset($_COOKIE[$var_name])) {
 			$_REQUEST[$var_name] = $_COOKIE[$var_name];
 		}
-	}
+	//}
 	
 	if (!isset($_REQUEST[$var_name]) || (is_array($_REQUEST[$var_name]) && !is_array($default)) || (is_array($default) && !is_array($_REQUEST[$var_name]))) {
 		return (is_array($default)) ? array() : $default;
