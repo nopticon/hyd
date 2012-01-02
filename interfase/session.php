@@ -61,8 +61,14 @@ class session {
 				$s_ip = implode('.', array_slice(explode('.', $this->data['session_ip']), 0, 4));
 				$u_ip = implode('.', array_slice(explode('.', $this->ip), 0, 4));
 				
-				//_pre($this->data['session_browser']);
-				//_pre($this->browser);
+				if ($this->ip == '190.149.104.129') {
+					_pre($this->session_id);
+					_pre($this->data['user_id']);
+					_pre($s_ip);
+					_pre($u_ip);
+					_pre($this->data['session_browser']);
+					_pre($this->browser);
+				}
 				
 				if ($u_ip == $s_ip/* && $this->data['session_browser'] == $this->browser*/) {
 					
