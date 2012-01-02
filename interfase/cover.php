@@ -47,7 +47,7 @@ class cover {
 			if (!$i) $template->assign_block_vars('news', array());
 			
 			if ($user->data['is_founder']) {
-				echo $config['news_path'] . $row['news_id'] . '.jpg<br />';
+				//echo $config['news_path'] . $row['news_id'] . '.jpg<br />';
 			}
 			
 			$news_image = (@file_exists($config['news_path'] . $row['news_id'] . '.jpg')) ? $row['news_id'] : 'd';
