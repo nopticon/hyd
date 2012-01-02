@@ -271,18 +271,32 @@ class userpage {
 			WHERE f.user_id = ?
 				AND f.ub = a.ub
 			ORDER BY RAND()';
-		if ($result = sql_rowset(sql_filter($sql, $profiledata['user_id']))) {
-			$total_a = 0;
-			$selected_artists = array();
+		if ($result2 = sql_rowset(sql_filter($sql, $profiledata['user_id']), 'ub')) {
 			
-			foreach ($result as $row) {
+			$sql = 'SELECT ub, image
+				FROM _artists_images
+				WHERE ub IN (??)
+				ORDER BY RAND()';
+			$result_images = sql_rowset(sql_filter($sql, implode(',', array_keys($result2))));
+			
+			$random_images2 = array();
+			foreach ($result_images as $row) {
+				if (!isset($random_images2[$row['ub']])) {
+					$random_images2[$row['ub']] = $row['image'];
+				}
+			}
+			
+			$total_a = 0;
+			$selected_artists2 = array();
+			
+			foreach ($result2 as $row) {
 				if ($total_a < 6) {
-					$selected_artists[$row['ub']] = $row;
+					$selected_artists2[$row['ub']] = $row;
 				}
 				$total_a++;
 			}
 			
-			a_thumbnails($selected_artists, $random_images, 'USERPAGE_AFAVS', 'thumbnails');
+			a_thumbnails($result2, $random_images2, 'USERPAGE_AFAVS', 'thumbnails');
 			
 			if ($total_a > 6) {
 				$template->assign_block_vars('main.thumbnails.all', array());
