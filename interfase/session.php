@@ -64,7 +64,7 @@ class session {
 				//_pre($this->data['session_browser']);
 				//_pre($this->browser);
 				
-				if ($u_ip == $s_ip && $this->data['session_browser'] == $this->browser) {
+				if ($u_ip == $s_ip/* && $this->data['session_browser'] == $this->browser*/) {
 					
 					// Only update session DB a minute or so after last update or if page changes
 					if ($this->time - $this->data['session_time'] > 60 || $this->data['session_page'] != $this->page) {
