@@ -11,9 +11,11 @@ require_once(ROOT . 'interfase/common.php');
 $user->init(false);
 $user->setup();
 
-$a = is_readable($config['news_path']);
+$a = @is_readable($config['news_path']);
 
 var_dump($a);
+
+echo '&&&&&&&<br />';
 
 var_dump(REQC);
 echo '<br />';
