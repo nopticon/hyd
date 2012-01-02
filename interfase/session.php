@@ -48,11 +48,6 @@ class session {
 			$this->session_id = request_var($config['cookie_name'] . '_sid', '');
 		}
 		
-		if (strpos($this->page, 'test') !== false) {
-			_pre($this->cookie_data);
-			_pre($this->session_id);
-		}
-		
 		// Is session_id is set
 		if (!empty($this->session_id)) {
 			$sql = 'SELECT m.*, s.*
@@ -66,16 +61,7 @@ class session {
 				$s_ip = implode('.', array_slice(explode('.', $this->data['session_ip']), 0, 4));
 				$u_ip = implode('.', array_slice(explode('.', $this->ip), 0, 4));
 				
-				if ($this->ip == '190.149.104.129') {
-					_pre($this->session_id);
-					_pre($this->data['user_id']);
-					_pre($s_ip);
-					_pre($u_ip);
-					_pre($this->data['session_browser']);
-					_pre($this->browser);
-				}
-				
-				if ($u_ip == $s_ip/* && $this->data['session_browser'] == $this->browser*/) {
+				if ($u_ip == $s_ip && $this->data['session_browser'] == $this->browser) {
 					
 					// Only update session DB a minute or so after last update or if page changes
 					if ($this->time - $this->data['session_time'] > 60 || $this->data['session_page'] != $this->page) {
@@ -253,10 +239,6 @@ class session {
 			$sql = 'INSERT INTO _sessions' . sql_build('INSERT', $sql_ary);
 			sql_query($sql);
 		}
-		
-		//_pre($sql_ary);
-		//_pre($this->session_id);
-		//_pre($this->cookie_data);
 		
 		if (!$bot) {
 			$cookie_expire = $this->time + 31536000;
