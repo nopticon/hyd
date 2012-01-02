@@ -45,7 +45,14 @@ function request_var($var_name, $default, $multibyte = false) {
 		
 		if ((strpos($var_name, $config['cookie_name']) !== false) && isset($_COOKIE[$var_name])) {
 			$_REQUEST[$var_name] = $_COOKIE[$var_name];
+			_pre('%%' . $_REQUEST[$var_name]);
+			_pre('%%' . $_COOKIE[$var_name]);
 		}
+		_pre('----------');
+		_pre($var_name);
+		_pre($config['cookie_name']);
+		_pre($_COOKIE);
+		_pre('----------');
 	}
 	
 	if (!isset($_REQUEST[$var_name]) || (is_array($_REQUEST[$var_name]) && !is_array($default)) || (is_array($default) && !is_array($_REQUEST[$var_name]))) {
