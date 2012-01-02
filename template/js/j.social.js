@@ -12,7 +12,7 @@
 
 (function($){$.prettySociable = {version: 1.21};
 
-var pretty_domain = '//assets.orion.com/';
+var pretty_domain = '//assets.rockrepublik.net/';
 
 $.prettySociable = function(settings) {
 	$.prettySociable.settings = jQuery.extend({
