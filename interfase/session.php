@@ -49,8 +49,8 @@ class session {
 		}
 		
 		if ($this->ip == '190.149.104.129') {
-			_pre($this->cookie_data['u']);
-			_pre($this->session_id);
+			_pre($this->cookie_data['u'] . '*');
+			_pre($this->session_id . '*');
 		}
 		
 		// Is session_id is set
