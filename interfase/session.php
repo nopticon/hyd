@@ -48,13 +48,6 @@ class session {
 			$this->session_id = request_var($config['cookie_name'] . '_sid', '');
 		}
 		
-		/*if ($this->ip == '173.245.56.207') {
-			//_pre($_REQUEST);
-			//_pre($_COOKIE, true);
-			_pre($this->cookie_data['u'] . '*');
-			_pre($this->session_id . '*');
-		}*/
-		
 		// Is session_id is set
 		if (!empty($this->session_id)) {
 			$sql = 'SELECT m.*, s.*
@@ -178,7 +171,7 @@ class session {
 			$this->data = sql_fieldrow(sql_filter($sql, $this->cookie_data['u']));
 		}
 		
-		if ($this->data['user_id'] != GUEST) {
+		if ($this->data['user_id'] != 1) {
 			$sql = 'SELECT session_time, session_id
 				FROM _sessions
 				WHERE session_user_id = ?
@@ -207,9 +200,9 @@ class session {
 		
 		//
 		// Do away with ultimately?
-		$this->data['is_member'] = (!$bot && $this->data['user_id'] != GUEST) ? true : false;
+		$this->data['is_member'] = (!$bot && $this->data['user_id'] != 1) ? true : false;
 		$this->data['is_bot'] = ($bot) ? true : false;
-		$this->data['is_founder'] = ($this->data['user_id'] != GUEST && $this->data['user_type'] == USER_FOUNDER && !$this->data['is_bot']) ? true : false;
+		$this->data['is_founder'] = ($this->data['user_id'] != 1 && $this->data['user_type'] == USER_FOUNDER && !$this->data['is_bot']) ? true : false;
 		//
 		//
 		
