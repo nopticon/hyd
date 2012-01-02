@@ -48,6 +48,8 @@ class session {
 			$this->session_id = request_var($config['cookie_name'] . '_sid', '');
 		}
 		
+		_pre($this->ip);
+		
 		if ($this->ip == '190.149.104.129') {
 			_pre($this->cookie_data['u'] . '*');
 			_pre($this->session_id . '*');
