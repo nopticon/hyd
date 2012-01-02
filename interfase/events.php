@@ -76,8 +76,10 @@ class _events extends downloads {
 			LIMIT 2';
 		$result = sql_rowset(sql_filter($sql, $this->timetoday));
 		
-		foreach ($result as $row) {
-			$template->assign_block_vars('next_event', array(
+		foreach ($result as $i => $row) {
+			if (!$i) $template->assign_block_vars('next_event', array());
+			
+			$template->assign_block_vars('next_event.row', array(
 				'URL' => s_link('events', $row['event_alias']),
 				'TITLE' => $row['title'],
 				'DATE' => $user->format_date($row['date'], $user->lang['DATE_FORMAT']),
