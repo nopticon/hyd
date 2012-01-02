@@ -40,7 +40,7 @@ _pre($user->page);
 
 echo '<br /><br />';
 
-_pre($user);
+_pre($user->data);
 
 echo '<br /><br />';
 
