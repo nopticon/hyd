@@ -122,6 +122,7 @@ if (isset($_POST['submit'])) {
 		}
 	}
 	
+	/*
 	if (!empty($color)) {
 		$color = substr($color, 1);
 		if ($color !== $user->data['user_color']) {
@@ -141,7 +142,7 @@ if (isset($_POST['submit'])) {
 				}
 			}
 		}
-	}
+	}*/
 	
 	if (!empty($rank)) {
 		$rank_word = explode(' ', $rank);
