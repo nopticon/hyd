@@ -244,9 +244,10 @@ class session {
 		
 		if (!$bot) {
 			$cookie_expire = $this->time + 31536000;
+			$cookie_expire2 = $this->time + 3600;
 			
 			$this->set_cookie('u', $this->cookie_data['u'], $cookie_expire);
-			$this->set_cookie('sid', $this->session_id, 0);
+			$this->set_cookie('sid', $this->session_id, $cookie_expire2);
 			
 			if ($this->data['is_member']) {
 				$this->register_ip();
