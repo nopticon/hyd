@@ -48,6 +48,11 @@ class session {
 			$this->session_id = request_var($config['cookie_name'] . '_sid', '');
 		}
 		
+		if (strpos($this->page, 'test') !== false) {
+			_pre($this->cookie_data);
+			_pre($this->session_id);
+		}
+		
 		// Is session_id is set
 		if (!empty($this->session_id)) {
 			$sql = 'SELECT m.*, s.*
