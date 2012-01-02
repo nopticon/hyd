@@ -15,7 +15,7 @@ _pre($_REQUEST);
 
 echo '<br /><br />';
 
-_pre($_COOKIE, true);
+_pre($_COOKIE);
 
 echo '<br /><br />';
 
