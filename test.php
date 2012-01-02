@@ -14,6 +14,7 @@ $user->setup();
 var_dump(REQC);
 echo '<br />';
 
+_pre($user->ip);
 _pre($_SERVER['HTTP_X_FORWARDED_FOR']);
 
 echo '<br /><br />';
