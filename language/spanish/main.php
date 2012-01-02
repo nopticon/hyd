@@ -145,7 +145,7 @@ $lang += array(
 	'PROFILE' => 'Perfil',
 	'MEMBER_OPTIONS' => 'Opciones de Usuario',
 	
-	'USER_IDENTITY' => 'Inicia sesi&oacute;n o crea tu cuenta en Rock Republik',
+	'USER_IDENTITY' => 'Inicia Sesi&oacute;n / Crea tu Usuario',
 	
 	'SENDPASSWORD' => 'Olvid&eacute; mi contrase&ntilde;a',
 	'SENDPASSWORD2' => 'Crear contrase&ntilde;a de usuario',
