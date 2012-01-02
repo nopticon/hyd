@@ -32,6 +32,7 @@ _pre($user->session_id . '*');
 echo '<br /><br />';
 
 _pre($user->ip . '*');
+_pre($user->page);
 
 
 echo '<br /><br />';
