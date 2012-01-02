@@ -38,6 +38,9 @@ echo '<br /><br />';
 _pre($user->ip . '*');
 _pre($user->page);
 
+echo '<br /><br />';
+
+_pre($user);
 
 echo '<br /><br />';
 
