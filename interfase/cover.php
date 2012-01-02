@@ -72,11 +72,9 @@ class cover {
 		global $user, $config, $template;
 		
 		$sql = 'SELECT t.topic_id, t.topic_title, t.topic_color, t.topic_replies, p.post_id, p.post_time, u.user_id, u.username, u.username_base
-			FROM _forums f, _forum_topics t, _forum_posts p, _members u
-			WHERE t.topic_id NOT IN (
-					SELECT e.event_topic FROM _events e WHERE e.event_topic > 0
-				)
-				AND t.forum_id = f.forum_id
+			FROM _forum_posts p, _members u, _forum_topics t
+			LEFT OUTER JOIN _events e ON t.topic_id = e.event_topic
+			WHERE e.event_topic IS NULL
 				AND p.post_deleted = 0
 				AND p.post_id = t.topic_last_post_id
 				AND p.poster_id = u.user_id
