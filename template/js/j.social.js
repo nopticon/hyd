@@ -10,8 +10,128 @@
  * http://www.chris-wallace.com/2009/05/28/free-social-media-icons-socialize/
  * ------------------------------------------------------------------------- */
 
-(function($){$.prettySociable={version:1.21};$.prettySociable=function(settings){$.prettySociable.settings=jQuery.extend({animationSpeed:'fast',opacity:0.90,share_label:'Drag to share',label_position:'top',share_on_label:'Share on ',hideflash:false,hover_padding:0,websites:{facebook:{'active':true,'encode':true,'title':'Facebook','url':'http://www.facebook.com/share.php?u=','icon':'/home/style/images/facebook.png','sizes':{'width':70,'height':70}},twitter:{'active':true,'encode':true,'title':'Twitter','url':'http://twitter.com/home?status=','icon':'/home/style/images/twitter.png','sizes':{'width':70,'height':70}},delicious:{'active':true,'encode':true,'title':'Delicious','url':'http://del.icio.us/post?url=','icon':'/home/style/images/delicious.png','sizes':{'width':70,'height':70}},digg:{'active':true,'encode':true,'title':'Digg','url':'http://digg.com/submit?phase=2&url=','icon':'/home/style/images/digg.png','sizes':{'width':70,'height':70}},linkedin:{'active':true,'encode':true,'title':'LinkedIn','url':'http://www.linkedin.com/shareArticle?mini=true&ro=true&url=','icon':'/home/style/images/linkedin.png','sizes':{'width':70,'height':70}},reddit:{'active':true,'encode':true,'title':'Reddit','url':'http://reddit.com/submit?url=','icon':'/home/style/images/reddit.png','sizes':{'width':70,'height':70}},stumbleupon:{'active':true,'encode':false,'title':'StumbleUpon','url':'http://stumbleupon.com/submit?url=','icon':'/home/style/images/stumbleupon.png','sizes':{'width':70,'height':70}},tumblr:{'active':true,'encode':true,'title':'tumblr','url':'http://www.tumblr.com/share?v=3&u=','icon':'/home/style/images/tumblr.png','sizes':{'width':70,'height':70}}},urlshortener:{bitly:{'active':false}},tooltip:{offsetTop:0,offsetLeft:15},popup:{width:900,height:500},callback:function(){}},settings);var websites,settings=$.prettySociable.settings,show_timer,ps_hover;$.each(settings.websites,function(i){var preload=new Image();preload.src=this.icon;});$('a[rel^=prettySociable]').hover(function(){_self=this;_container=this;if($(_self).find('img').size()>0){_self=$(_self).find('img');}else if($.browser.msie){if($(_self).find('embed').size()>0){_self=$(_self).find('embed');$(_self).css({'display':'block'});}}else{if($(_self).find('object').size()>0){_self=$(_self).find('object');$(_self).css({'display':'block'});}}
-$(_self).css({'cursor':'move','position':'relative','z-index':1005});offsetLeft=(parseFloat($(_self).css('borderLeftWidth')))?parseFloat($(_self).css('borderLeftWidth')):0;offsetTop=(parseFloat($(_self).css('borderTopWidth')))?parseFloat($(_self).css('borderTopWidth')):0;offsetLeft+=(parseFloat($(_self).css('paddingLeft')))?parseFloat($(_self).css('paddingLeft')):0;offsetTop+=(parseFloat($(_self).css('paddingTop')))?parseFloat($(_self).css('paddingTop')):0;ps_hover=$('<div id="ps_hover"> \
+(function($){$.prettySociable = {version: 1.21};
+
+var pretty_domain = '//assets.orion.com/';
+
+$.prettySociable = function(settings) {
+	$.prettySociable.settings = jQuery.extend({
+		animationSpeed: 'fast',
+		opacity: 0.90,
+		share_label: 'Drag to share',
+		label_position: 'top',
+		share_on_label: 'Share on ',
+		hideflash: false,
+		hover_padding: 0,
+		websites: {
+			facebook: {
+				'active': true,
+				'encode': true,
+				'title': 'Facebook',
+				'url': 'http://www.facebook.com/share.php?u=',
+				'icon': pretty_domain + 'style/facebook.png',
+				'sizes': {'width': 70, 'height': 70}
+			},
+			twitter: {
+				'active': true,
+				'encode': true,
+				'title': 'Twitter',
+				'url': 'http://twitter.com/home?status=',
+				'icon': pretty_domain + 'style/twitter.png',
+				'sizes': {'width':70, 'height':70}
+			},
+			tumblr:{
+				'active': true,
+				'encode': true,
+				'title': 'Tumblr',
+				'url': 'http://www.tumblr.com/share?v=3&u=',
+				'icon': pretty_domain + 'style/tumblr.png',
+				'sizes': {'width':70, 'height':70}
+			},
+			delicious: {
+				'active': true,
+				'encode': true,
+				'title': 'Delicious',
+				'url': 'http://del.icio.us/post?url=',
+				'icon': pretty_domain + 'style/delicious.png',
+				'sizes': {'width':70, 'height':70}
+			},
+			digg: {
+				'active': true,
+				'encode': true,
+				'title': 'Digg',
+				'url': 'http://digg.com/submit?phase=2&url=',
+				'icon': pretty_domain + 'style/digg.png',
+				'sizes': {'width':70, 'height':70}
+			},
+			linkedin: {
+				'active': true,
+				'encode': true,
+				'title': 'LinkedIn',
+				'url': 'http://www.linkedin.com/shareArticle?mini=true&ro=true&url=',
+				'icon': pretty_domain + 'style/linkedin.png',
+				'sizes': {'width':70, 'height':70}
+			},
+			reddit:{
+				'active': true,
+				'encode': true,
+				'title': 'Reddit',
+				'url': 'http://reddit.com/submit?url=',
+				'icon': pretty_domain + 'style/reddit.png',
+				'sizes': {'width':70, 'height':70}
+			},
+			stumbleupon: {
+				'active': true,
+				'encode': false,
+				'title': 'StumbleUpon',
+				'url': 'http://stumbleupon.com/submit?url=',
+				'icon': pretty_domain + 'style/stumbleupon.png',
+				'sizes': {'width':70, 'height':70}
+			}
+		},
+		urlshortener: {
+			bitly: {'active':false}
+		},
+		tooltip: {
+			offsetTop:0,
+			offsetLeft:15
+		},
+		popup: {width:900, height:500},
+		callback: function(){}
+	},settings);
+	
+	var websites, settings = $.prettySociable.settings, show_timer, ps_hover;
+	
+	$.each(settings.websites, function(i) {
+		var preload = new Image();
+		preload.src = this.icon;
+	});
+	
+	$('a[rel^=prettySociable]').hover(function() {
+		_self = this;
+		_container = this;
+		
+		if ($(_self).find('img').size() > 0) {
+			_self = $(_self).find('img');
+		} else if ($.browser.msie) {
+			if ($(_self).find('embed').size() > 0) {
+				_self = $(_self).find('embed');
+				$(_self).css({'display':'block'});
+			}
+		} else {
+			if ($(_self).find('object').size() > 0) {
+				_self = $(_self).find('object');
+				$(_self).css({'display':'block'});
+			}
+		}
+		
+		$(_self).css({'cursor':'move','position':'relative','z-index':1005});
+		
+		offsetLeft = (parseFloat($(_self).css('borderLeftWidth'))) ? parseFloat($(_self).css('borderLeftWidth')) : 0;
+		offsetTop = (parseFloat($(_self).css('borderTopWidth'))) ? parseFloat($(_self).css('borderTopWidth')) : 0;
+		offsetLeft += (parseFloat($(_self).css('paddingLeft'))) ? parseFloat($(_self).css('paddingLeft')) : 0;
+		offsetTop += (parseFloat($(_self).css('paddingTop'))) ? parseFloat($(_self).css('paddingTop')): 0 ;
+		ps_hover = $('<div id="ps_hover"> \
         <div class="ps_hd"> \
          <div class="ps_c"></div> \
         </div> \

@@ -55,6 +55,7 @@ $lang += array(
 	'TIME' => 'Horas',
 	'GO' => 'Ir',
 	'SUBMIT' => 'Enviar',
+	'SEND_MESSAGE' => 'Enviar mensaje',
 	'SENDING' => 'Enviando...',
 	'RESET' => 'Resetear',
 	'CANCEL' => 'Cancelar',
@@ -390,8 +391,8 @@ $lang += array(
 	'NEW_ACCOUNT_SUBJECT' => 'Nueva cuenta de usuario',
 	'ACCOUNT_ACTIVATED_SUBJECT' => 'Membres&iacute;a activada',
 	
-	'MEMBERSHIP_ADDED' => 'Gracias por crear tu membres&iacute;a.<br /><br />Hemos enviado un mensaje a tu cuenta de email para verificar tu registro.<br />Esperamos tu confirmaci&oacute;n.',
-	'MEMBERSHIP_ADDED_CONFIRM' => 'Gracias por confirmar tu correo.<br />Ahora puedes entrar con tu usuario para participar en nuestro sitio.',
+	'MEMBERSHIP_ADDED' => 'Acabas de crear tu usuario en la comunidad RK.<br /><br />Hemos enviado un mensaje a tu cuenta de email para verificar tu registro y esperamos tu confirmaci&oacute;n.',
+	'MEMBERSHIP_ADDED_CONFIRM' => 'Gracias por confirmar tu correo.<br /><br />Ahora ya eres ciudadan@ de la Republik del Rock y ya puedes interactuar con todos los ciudadanos y compartir tus opiniones e informarte.<br /><br />Bienvenid@!',
 	'CLICK_PROCEED' => 'Click %AQUI%s para ir a la Portada',
 	
 	'MEMBERSHIP_BENEFITS' => 'Beneficios de los miembros',
@@ -628,9 +629,11 @@ $lang += array(
 	'USERS' => 'Usuarios',
 	'TOP_FORUM' => 'Ultimos %s mensajes del Foro',
 	'ALLIES' => 'Aliados',
+	'AWARDS' => 'RK Awards 2012',
 	
 	'VIEW_INFO' => 'Ver Informaci&oacute;n',
 	'SEND_POST' => 'Env&iacute;a tu comentario',
+	'SEND_NEWS' => 'Env&iacute;a tu publicaci&oacute;n',
 	'OF' => 'de',
 	'OF_COMM' => '\d\e',
 	'IN' => 'en',

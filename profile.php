@@ -262,7 +262,7 @@ if (sizeof($error)) {
 
 if ($user->data['user_avatar']) {
 	$template->assign_block_vars('current_avatar', array(
-		'IMAGE' => $config['avatar_path'] . '/' . $user->data['user_avatar'])
+		'IMAGE' => $config['assets_url'] . 'avatars/' . $user->data['user_avatar'])
 	);
 }
 

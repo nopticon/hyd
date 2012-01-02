@@ -19,31 +19,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 define('IN_NUCLEO', true);
 require_once('./interfase/common.php');
 
-if ($config['request_method'] != 'post' || !isset($_POST)) {
-	redirect(s_link());
-}
-
-// Init member
 $user->init();
+$user->setup();
 
-if (!$user->data['is_member']) {
-	if ($user->data['is_bot']) {
-		redirect(s_link());
-	}
-	do_login();
-}
-
-require_once(ROOT . 'interfase/comments.php');
-$comments = new _comments;
-
-$comments->ref = (isset($_POST['ref']) && !empty($_POST['ref'])) ? request_var('ref', '', true) : $user->data['session_page'];
-
-if (preg_match('#([0-9a-z\-]+)\.(.*?)\.([a-z]+){1,3}(/(.*?))?$#i', $comments->ref, $part)) {
-	$comments->ref = '//' . $part[2] . '.' . $part[3] . '/a/' . $part[1] . $part[4];
-}
-
-$comments->store();
-
-redirect($comments->ref);
+page_layout('AWARDS', 'awards');
 
 ?>

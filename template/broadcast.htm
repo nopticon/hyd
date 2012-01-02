@@ -2,6 +2,38 @@
 
 <div class="h"><h3>{L_RADIO}</h3></div>
 
+<span class="clear"></span>
+
+<!-- BEGIN programs -->
+<div class="x2 a_mid w_broadcast">
+	<!-- BEGIN row -->
+	<!-- IF row.S_ROW_COUNT -->&nbsp;&nbsp;<!-- ENDIF --><a href="{row.URL}"><img width="140" height="250" src="{S_ASSETS}style/official/podcast/{row.IMAGE}.jpg" /></a>
+	<!-- END row -->
+</div>
+<!-- END programs -->
+
+<div class="x3 h"><h3>Programas recientes</h3></div>
+
+<span class="clear"></span>
+
+<div class="is_mid ls w_broadcast">
+	<!-- BEGIN podcast -->
+	<ul>
+		<!-- BEGIN row -->
+		<li>
+			<div><a href="{row.POST_URL}">{row.POST_TITLE}</a></div>
+			<div class="_">{row.POST_DATE}</div>
+		</li>
+		<!-- END row -->
+	</ul>
+	<!-- END podcast -->
+</div>
+
+<div class="is_mid">
+	
+</div>
+
+<!-- BEGIN hide -->
 <div class="is_left">
 	<!-- BEGIN podcast -->
 	<ul>
@@ -61,5 +93,6 @@
 	</ul>
 	</div>
 </div>
+<!-- END hide -->
 
 <!-- INCLUDE page.footer.htm -->

@@ -43,6 +43,7 @@ $(function() {
 	<!-- END poll -->
 </div>
 
+<!-- BEGIN hide -->
 <div class="el_right a_right ctl">
 	<input type="submit" id="submit_photos" value="{L_EVENT_PHOTOS_SHARE}" />
 </div>
@@ -56,6 +57,7 @@ $(function() {
 		
 	</form>
 </div>
+<!-- END hide -->
 
 <!-- BEGIN event_flyer -->
 <div id="placeholder">
@@ -80,29 +82,45 @@ $(function() {
 <!-- END selected -->
 
 <!-- BEGIN thumbnails -->
-<div class="pad_top pad_left ln l3">
+<span class="clear"></span>
+
+<div class="pad_top pad_left ln l6 lf2">
 <ul>
 	<!-- BEGIN item -->
-	<li><a href="{item.RIMAGE}" title="{item.FOOTER}"><img src="{item.IMAGE}" alt="" /></a></li>
+	<li class="a_mid"><a class="fancy" href="{item.RIMAGE}" title="{item.FOOTER}"><img src="{item.IMAGE}" alt="" /></a></li>
 	<!-- END item -->
 </ul>
 </div>
 
 <span class="clear"></span>
+
+<!-- IF IMG_PAGES_NUMS != '' -->
+<div class="pad_top p a_mid">{IMG_PAGES_NUMS}</div>
+<!-- ENDIF -->
+
+<span class="clear"></span>
 <!-- END thumbnails -->
 
 <!-- BEGIN publish -->
-<div class="pad_top publish">
+<div class="x2">
+<div class="publish">
 	<div class="h"><h3>{L_SEND_POST} <a class="smile" href="{S_EMOTICONS}">@</a></h3></div>
-	<form action="{S_COMMENTS}" method="post" name="post">
+	<form action="{EVENT_URL}" method="post" name="post">
+		<!-- BEGIN hide -->
 		<input type="hidden" name="ref" value="{publish.REF}" />
+		<!-- END hide -->
 		<textarea id="comment" name="message"></textarea>
 		<input type="submit" name="post" value="{L_SUBMIT}" />
 	</form>
 </div>
+</div>
 <!-- END publish -->
 
 <!-- BEGIN messages -->
+<!-- IF MSG_PAGES_NUMS != '' -->
+<div class="p">{MSG_PAGES_NUMS}</div>
+<!-- ENDIF -->
+
 <div class="comments">
 <!-- BEGIN row -->
 <div id="comment-{row.S_ROW_COUNT}">
@@ -116,7 +134,7 @@ $(function() {
 </div>
 
 <!-- IF MSG_PAGES_NUMS != '' -->
-<div class="ctl">{MSG_PAGES_NUMS}</div>
+<div class="p">{MSG_PAGES_NUMS}</div>
 <!-- ENDIF -->
 <!-- END messages -->
 

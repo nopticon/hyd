@@ -44,32 +44,13 @@
 	<div class="h"><h3>{L_POST_NEWTOPIC} <a class="smile" href="{S_EMOTICONS}">@</a></h3></div>
 	<form action="{publish.S_POST_ACTION}" method="post">
 		<label for="comment_title">{L_TOPIC_TITLE}</label>
-		<input class="f" id="comment_title" name="topic_title" value="{publish.TOPIC_TITLE}" />
+		<input class="f ff" id="comment_title" name="topic_title" value="{publish.TOPIC_TITLE}" />
 		<textarea id="comment" name="message">{publish.MESSAGE}</textarea>
 		<label for="comment_np">{L_NOWPLAYING}</label>
 		<input class="f" id="comment_np" name="np" value="{publish.NP}" />
 		<input type="submit" name="post" value="{L_SUBMIT}" />
 	</form>
 </div>
-
-<div class="pad_top post_comment">
-	<div class="h"><h3>{L_POST_NEWTOPIC}</h3></div>
-	<form action="{box.S_POST_ACTION}" method="post">
-		
-		
-		<!-- BEGIN addpoll -->
-		<div id="addpollbox" class="rows5_top_1">
-			<div class="h"><h3>{L_ADD_POLL}</h3></div>
-			<div class="rows5_top_1"><label for="t-polltitle">{L_POLL_QUESTION}</label></div>
-			<div class="rows5_top_1"><input id="t-polltitle" name="poll_title" size="62" value="{box.POLL_TITLE}" /></div>
-			<div class="rows5_top_1"><label for="t-polloptions">{L_POLL_OPTION}</label></div>
-			<div class="rows5_top_1"><em>{L_POLL_OPTION_EXPLAIN}</em></div>
-			<div class="rows5_top_1"><textarea id="t-polloptions" name="poll_options" cols="150" rows="10">{box.POLL_OPTIONS}</textarea></div>
-		</div>
-		<!-- END addpoll -->
-	</form>
-</div>
-
 <!-- END publish -->
 
 <!-- INCLUDE page.footer.htm -->

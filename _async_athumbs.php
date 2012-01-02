@@ -42,24 +42,29 @@ foreach ($result as $row) {
 	}
 }
 
-$return_string = '<table width="100%" cellpadding="10" class="t-collapse">';
-
 $tcol = 0;
 foreach ($selected_artists as $ub => $data) {
 	if (!$tcol) {
-		$return_string .= '<tr>';
+		$template->assign_block_vars('row', array());
 	}
 	
-	$return_string .= '<td align="center" valign="bottom"><a class="relevant_artist" href="' . s_link('a', $data['subdomain']) . '"><img class="box" src="/data/artists/' . (($data['images']) ? $ub . '/thumbnails/' . $random_images[$ub] . '.jpg' : 'default/shadow.gif') . '" alt="' . $data['genre'] . '" /></a><br /><div class="sep2-top"><a class="bold" href="' . s_link('a', $data['subdomain']) . '">' . $data['name'] . '</a></div><div><small>' . (($data['local']) ? 'Guatemala' : $data['location']) . '</small></div></td>';
+	$template->assign_block_vars('row.col', array(
+		'NAME' => $data['name'],
+		'IMAGE' => $config['artists_url'] . $ub . '/thumbnails/' . $random_images[$ub] . '.jpg',
+		'URL' => s_link('a', $data['subdomain']),
+		'LOCATION' => ($data['local']) ? 'Guatemala' : $data['location'],
+		'GENRE' => $data['genre'])
+	);
+	
 	$tcol = ($tcol == 3) ? 0 : $tcol + 1;
-	
-	if (!$tcol) {
-		$return_string .= '</tr>';
-	}
 }
 
-$return_string .= '</table>';
+$template->set_filenames(array(
+	'body' => 'artists.thumbs.htm')
+);
+$template->pparse('body');
 
-echo ($return_string);
+sql_close();
+exit;
 
 ?>

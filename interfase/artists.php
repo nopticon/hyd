@@ -45,7 +45,7 @@ class layout extends downloads {
 		}
 		
 		$template->assign_block_vars('ub_image', array(
-			'IMAGE' => $config['artists_url'] . '/' . $image)
+			'IMAGE' => $image)
 		);
 		
 		if ($this->data['images'] > 1) {
@@ -57,9 +57,10 @@ class layout extends downloads {
 		//
 		// News
 		//
-		if ($this->auth['mod']) {
-			$template->assign_block_vars('news_create', array(
-				'URL' => s_link('control', array('_' . $this->data['subdomain'], 'news')))
+		if ($this->auth['user']) {
+			$template->assign_block_vars('publish', array(
+				'TITLE' => ($this->auth['mod']) ? $user->lang['SEND_NEWS'] : $user->lang['SEND_POST'],
+				'URL' => s_link('a', array($this->data['subdomain'])))
 			);
 		}
 		
@@ -266,7 +267,7 @@ class layout extends downloads {
 					$template->assign_block_vars('thumbnails.row.col', array(
 						'URL' => s_link('a', array($this->data['subdomain'], 4, $row['image'], 'view')),
 						'IMAGE' => $config['artists_url'] . $this->data['ub'] . '/thumbnails/' . $row['image'] . '.jpg',
-						'RIMAGE' => get_a_imagepath($config['artists_path'], $config['artists_url'], 'artists/' . $this->data['ub'], $row['image'] . '.jpg', array('x1', 'gallery')),
+						'RIMAGE' => get_a_imagepath($config['artists_path'], $config['artists_url'], $this->data['ub'], $row['image'] . '.jpg', array('x1', 'gallery')),
 						'WIDTH' => $row['width'], 
 						'HEIGHT' => $row['height'],
 						'FOOTER' => $row['image_footer'])
@@ -1057,7 +1058,7 @@ class _artists extends layout {
 		}
 		
 		$a_ary = array();
-		for ($i = 0; $i < 2; $i++) {
+		for ($i = 0; $i < 3; $i++) {
 			$_a = array_rand($a_recent);
 			if (!$this->adata[$_a]['images'] || isset($a_ary[$_a])) {
 				$i--;
@@ -1066,7 +1067,7 @@ class _artists extends layout {
 			$a_ary[$_a] = $this->adata[$_a];
 		}
 		
-		for ($i = 0; $i < 1; $i++) {
+		for ($i = 0; $i < 2; $i++) {
 			$_a = array_rand($this->adata);
 			if (!$this->adata[$_a]['images'] || isset($a_ary[$_a])) {
 				$i--;
@@ -1273,10 +1274,10 @@ class _artists extends layout {
 			$image = ($data['images']) ? $ub . '/thumbnails/' . $random_images[$ub] . '.jpg' : 'default/shadow.gif';
 			
 			if (!$tcol) {
-				$template->assign_block_vars('search_match.row', array());
+				$template->assign_block_vars('row', array());
 			}
 			
-			$template->assign_block_vars('search_match.row.col', array(
+			$template->assign_block_vars('row.col', array(
 				'NAME' => $data['name'],
 				'IMAGE' => $config['artists_url'] . $image,
 				'URL' => s_link('a', $data['subdomain']),
@@ -1373,6 +1374,8 @@ class _artists extends layout {
 						$template->assign_block_vars('nav.strong', array());
 						continue;
 					}
+					
+					if ($data['code'] === 1) $data['code'] = ''; 
 					
 					$template->assign_block_vars('nav.a', array(
 						'URL' => s_link('a', array($this->data['subdomain'], $data['code'])))
@@ -1505,7 +1508,7 @@ class _artists extends layout {
 					$template->assign_block_vars('events_gallery', array());
 					foreach ($gallery as $row) {
 						$template->assign_block_vars('events_gallery.item', array(
-							'URL' => s_link('events', $row['id']),
+							'URL' => s_link('events', $row['event_alias']),
 							'TITLE' => $row['title'],
 							'DATETIME' => $user->format_date($row['date'], $user->lang['DATE_FORMAT']))
 						);
@@ -1523,7 +1526,7 @@ class _artists extends layout {
 						);
 						
 						foreach ($data as $item) {
-							$template->assign_block_vars('events_future.set.item', array(
+							$template->assign_block_vars('events_future.set.row', array(
 								'ITEM_ID' => $item['id'],
 								'TITLE' => $item['title'],
 								'DATE' => $user->format_date($item['date']),
@@ -1761,7 +1764,7 @@ class _artists extends layout {
 	}
 	
 	public function a_sidebar() {
-		global $template;
+		global $config, $template;
 		
 		$sql = 'SELECT *
 			FROM _artists

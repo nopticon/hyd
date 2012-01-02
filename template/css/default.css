@@ -85,7 +85,7 @@ hr {
 	overflow: hidden;
 }
 .brand {
-	width: 75%;
+	width: 70%;
 	float: left;
 }
 .brand h1 {
@@ -109,6 +109,7 @@ hr {
 }
 #menu {
 	display: block;
+	clear: both;
 	float: left;
 	margin-top: 1px;
 }
@@ -229,22 +230,24 @@ hr {
 }
 .flying {
 	display: none;
-	background: rgba(0,0,0,0.6);
-	color: #EEE;
+	background: rgba(0,0,0,0.8);
 	position: absolute;
 	padding: 3px;
 	overflow: auto;
 	
-	border-right: 1px solid #383838;
-	border-left: 1px solid #383838;
-	border-bottom: 1px solid #383838;
+	border-right: 1px solid #161C26;
+	border-left: 1px solid #161C26;
+	border-bottom: 1px solid #161C26;
 	
-	border-top-right-radius: 10px;
+	border-top-left-radius: 10px;
 	border-bottom-right-radius: 10px;
 }
 .flying li {
 	float: none !important;
-	margin: 30px;
+	margin: 15px;
+}
+.flying li a {
+	color: #7AD40C;
 }
 
 #facebook {
@@ -368,20 +371,20 @@ hr {
 	width: 49%;
 	float: left;
 }
-.l2 ul li img, .l3 ul li img {
-	/*width: 100%;*/
-}
-.l2 ul li ul li, .l3 ul li ul li, .l6 ul li ul li {
+/*.l2 ul li img, .l3 ul li img {
+	width: 100%;
+}*/
+.l2 ul li ul li, .l3 ul li ul li, .l4 ul li ul li, .l6 ul li ul li {
 	margin: 0;
 	width: 100%;
 	float: none;
 	overflow: visible;
 	height: auto;
 }
-.l2 ._, .lc ._, .l3 ._, .l6 ._ {
+.l2 ._, .lc ._, .l3 ._, .l3 ._, .l6 ._ {
 	margin: 5px 0 5px 5px;
 }
-.l2 .__, .lc .__, .l3 .__, .l6 .__ {
+.l2 .__, .lc .__, .l3 .__, .l4 .__, .l6 .__ {
 	margin: 5px 0 5px 0;
 }
 .lc ul li {
@@ -396,12 +399,26 @@ hr {
 	width: 32%;
 	float: left;
 }
+.l4 ul li {
+	margin: 10px 0 0 5px;
+	width: 24%;
+	float: left;
+}
 .l6 ul li {
 	margin: 0px 0 0 5px;
 	width: 16%;
 	height: 100px;
 	float: left;
 	overflow: hidden;
+}
+.lf ul li {
+	height: 140px;
+}
+.lf2 ul li {
+	height: 110px;
+}
+.lf ul li ul li, .lf2 ul li ul li {
+	height: auto;
 }
 
 .el_left {
@@ -479,7 +496,7 @@ hr {
 	float: left;
 	margin-right: 25px;
 }
-.ctl ul li a, .ctl ul li strong, .ctl ul li span, .ctl input, .ctl ul li small {
+.ctl ul li a, .ctl ul li strong, .ctl ul li span, .ctl input, .ctl ul li small, input.ctl {
 	padding: 4px;
 	border-radius: 4px;
 	background: #5DA209;
@@ -549,6 +566,9 @@ hr {
 .publish .f {
 	display: inline;
 	width: 25%;
+}
+.publish .ff {
+	margin: 0 0 10px 0;
 }
 .tt {
 	background: #fff;
@@ -806,3 +826,5 @@ html, body {
 .switch input { display: none; }
 
 <!-- INCLUDE css/check.css -->
+<!-- INCLUDE css/player.css -->
+<!-- INCLUDE css/fancy.css -->

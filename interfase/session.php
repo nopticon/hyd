@@ -104,7 +104,7 @@ class session {
 	* garbage collection, (search)bot checking, banned user comparison. Basically
 	* though this method will result in a new session for a specific user.
 	*/
-	public function session_create($user_id = false, $set_admin = false, $update_page = true) {
+	public function session_create($user_id = false, $set_admin = false, $update_page = true, $is_inactive = false) {
 		global $config;
 
 		$this->data = array();
@@ -838,11 +838,17 @@ class user extends session {
 				break;
 			case UH_C:
 			case UH_M:
+				$sql_in = array();
+				
 				$sql = 'SELECT m.user_id 
 					FROM _artists_auth a, _members m
 					WHERE a.ub = ?
 						AND a.user_id = m.user_id';
-				$sql_in = sql_rowset(sql_filter($sql, $where_id));
+				$result = sql_rowset(sql_filter($sql, $where_id));
+				
+				foreach ($result as $row) {
+					$sql_in[] = $row['user_id'];
+				}
 				
 				$sql = 'SELECT u.user_id
 					FROM _artists_fav f, _artists b, _members u

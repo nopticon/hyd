@@ -23,26 +23,33 @@
 		<div class="set_avatar">
 			<div class="h"><h3>{L_AVATAR}</h3></div>
 			<!-- BEGIN current_avatar -->
-			<div class="a_mid"><img src="{current_avatar.IMAGE}" alt="" /></div>
+			<div class="is_left_i a_mid">
+				<img src="{current_avatar.IMAGE}" alt="" />
+			</div>
 			<!-- END current_avatar -->
-			<div class="pad_top"><label for="avatar">{L_AVATAR_EXPLAIN}</label></div>
-			<div class="pad_top">
-				<input type="hidden" name="MAX_FILE_SIZE" value="{AVATAR_MAXSIZE}" />
-				<input type="file" name="avatar" id="avatar" size="20" />
+			<div class="is_right_i">
+				<div class="pad_top"><label for="avatar">{L_AVATAR_EXPLAIN}</label></div>
+				<div class="pad_top">
+					<input type="hidden" name="MAX_FILE_SIZE" value="{AVATAR_MAXSIZE}" />
+					<input type="file" name="avatar" id="avatar" size="20" />
+				</div>
 			</div>
 		</div>
+		<span class="clear"></span>
 		
-		<div class="set_raknk pad_top">
+		<div class="set_rank pad_top">
 			<div class="h"><h3>{L_RANK}</h3></div>
 			<div class="pad_top"><label for="sig">{L_RANK_EXPLAIN}</label></div>
 			<div class="pad_top"><input type="text" id="rank" name="rank" size="45" value="" /></div>
 		</div>
 		
+		<!-- BEGIN hide -->
 		<div class="set_color pad_top">
 			<div class="h"><h3>{L_USERCOLOR}</h3></div>
 			<div class="pad_top"><label for="sig">{L_USERCOLOR_EXPLAIN}</label></div>
 			<div class="pad_top"><input type="hidden" class="color" id="color" name="color" value="#{COLOR}" /></div>
 		</div>
+		<!-- END hide -->
 		
 		<div class="set_info pad_top">
 			<div class="h"><h3>{L_MEMBER_INFO}</h3></div>
@@ -86,27 +93,7 @@
 				<div class="is_right_i i"><input type="text" id="os" name="os" class="col90" size="20" maxlength="255" value="{OS}" /></div>
 			</div>
 			
-			<!-- BEGIN gender -->
 			<span class="clear"></span>
-			
-			<div class="pad_top">
-				<div class="is_left_i"><label for="gender">{L_GENDER}:</label></div>
-				<div class="is_right_i"><select id="gender" name="gender">{gender.GENDER_SELECT}</select></div>
-			</div>
-			<!-- END gender -->
-			
-			<!-- BEGIN birthday -->
-			<span class="clear"></span>
-			
-			<div class="pad_top">
-				<div class="is_left_i">{L_BIRTHDAY}:<br />(D&iacute;a, Mes, A&ntilde;o)</div>
-				<div class="is_right_i"><select name="birthday_day">{birthday.DAY}</select> <select name="birthday_month">{birthday.MONTH}</select> <select name="birthday_year">{birthday.YEAR}</select></div>
-			</div>
-			<!-- END birthday -->
-			
-			<span class="clear"></span>
-			
-			<div class="h"><h3>{L_CONTACT_INFO}</h3></div>
 			
 			<!-- BEGIN hidden -->
 			<div class="pad_top">
@@ -127,9 +114,29 @@
 				<div class="is_left_i"><label for="password2">{L_CONFIRM_PASSWORD}:</label></div>
 				<div class="is_right_i i"><input type="password" id="password2" name="password2" size="20" maxlength="32" value="{PASSWORD2}" /></div>
 			</div>
-			
 			<!-- END hidden -->
+		</div>
+		
+		<div class="set_contact pad_top">
+			<div class="h"><h3>{L_CONTACT_INFO}</h3></div>
+			
+			<!-- BEGIN gender -->
+			<div class="pad_top">
+				<div class="is_left_i"><label for="gender">{L_GENDER}:</label></div>
+				<div class="is_right_i"><select id="gender" name="gender">{gender.GENDER_SELECT}</select></div>
+			</div>
+			
 			<span class="clear"></span>
+			<!-- END gender -->
+			
+			<!-- BEGIN birthday -->
+			<div class="pad_top">
+				<div class="is_left_i">{L_BIRTHDAY}: (D&iacute;a, Mes, A&ntilde;o)</div>
+				<div class="is_right_i"><select name="birthday_day">{birthday.DAY}</select> <select name="birthday_month">{birthday.MONTH}</select> <select name="birthday_year">{birthday.YEAR}</select></div>
+			</div>
+			
+			<span class="clear"></span>
+			<!-- END birthday -->
 			
 			<div class="pad_top">
 				<div class="is_left_i"><label for="public_email">{L_PUBLIC_EMAIL_ADDR}:</label></div>
@@ -150,6 +157,8 @@
 				<div class="is_right_i i"><input type="text" id="website" name="website" class="col90" size="20" maxlength="255" value="{WEBSITE}" /></div>
 			</div>
 		</div>
+		
+		<span class="clear"></span>
 		
 		<div class="set_signature pad_top">
 			<div class="h"><h3>{L_SIGNATURE}</h3></div>

@@ -53,13 +53,15 @@
 				<input type="checkbox" class="none" name="mark[]2" value="{item.S_MARK_ID}" />
 				<!-- END hide -->
 				<a href="{item.U_READ}">{item.SUBJECT}</a> ({item.ROOT_CONV})
-				<div class="_"><a href="{item.DC_PROFILE}">{item.DC_USERNAME}</a> @ {item.POST_DATE}</div>
+				<div class="_"><!-- BEGIN hide --><a href="{item.DC_PROFILE}">{item.DC_USERNAME}</a> @ <!-- END hide -->{item.POST_DATE}</div>
 			</li>
 			<!-- END item -->
 		</ul>
 		</div>
 		
+		<!-- BEGIN hide -->
 		<div class="pad_top ctl"><input type="submit" name="delete" value="{L_DELETE_MARKED}" /></div>
+		<!-- END hide -->
 		
 		<!-- IF PAGES_NUMS != '' -->
 		<div class="pad_top p">{PAGES_NUMS}</div>

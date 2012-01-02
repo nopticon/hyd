@@ -115,7 +115,7 @@ class _events extends downloads {
 	}
 	
 	public function view() {
-		global $user, $config, $template;
+		global $auth, $user, $config, $template;
 		
 		$mode = request_var('mode', '');
 		
@@ -280,8 +280,133 @@ class _events extends downloads {
 					}
 				}
 				
+				$sql = 'SELECT t.topic_id, t.topic_title, t.topic_locked, t.topic_replies, t.topic_time, t.topic_important, t.topic_vote, t.topic_featured, t.topic_points, t.topic_last_post_id, f.forum_alias, f.forum_name, f.forum_locked, f.forum_id, f.auth_view, f.auth_read, f.auth_post, f.auth_reply, f.auth_announce, f.auth_pollcreate, f.auth_vote' . $sql_count . '
+					FROM _forum_topics t, _forums f
+					WHERE t.topic_id = ?
+						AND f.forum_id = t.forum_id';
+				if (!$event_topic = sql_fieldrow(sql_filter($sql, $this->v('event_topic')))) {
+					fatal_error();
+				}
+				
+				require_once(ROOT . 'interfase/comments.php');
+				$comments = new _comments();
+				
+				$error = array();
+				$forum_id = $event_topic['forum_id'];
+				$submit_reply = (isset($_POST['post']));
+				
+				$is_auth = $auth->forum(AUTH_ALL, $forum_id, $event_topic);
+				$u_event_alias = s_link('events', $this->v('event_alias'));
+				
+				if ($submit_reply) {
+					$auth_key = 'auth_reply';
+					
+					if (((!$is_auth['auth_view'] || !$is_auth['auth_read'])) || !$is_auth[$auth_key]) {
+						if (!$user->data['is_member']) {
+							do_login();
+						}
+						
+						$can_reply_closed = $auth->option(array('forum', 'topics', 'delete'));
+						
+						if (!$can_reply_closed && ($event_topic['forum_locked'] || $event_topic['topic_locked'])) {
+							$error[] = 'TOPIC_LOCKED';
+						}
+						
+						if (sizeof($error)) {
+							redirect($u_event_alias);
+						}
+					}
+					
+					$post_message = request_var('message', '', true);
+					
+					// Check message
+					if (empty($post_message)) {
+						$error[] = 'EMPTY_MESSAGE';
+					}
+					
+					if (sizeof($error)) {
+						redirect($u_event_alias);
+					}
+					
+					if (!$mod_auth) {
+						$sql = 'SELECT MAX(post_time) AS last_post_time
+							FROM _forum_posts
+							WHERE poster_id = ?';
+						if ($last_post_time = sql_field(sql_filter($sql, $user->data['user_id']))) {
+							if (intval($last_post_time) > 0 && ($current_time - intval($last_post_time)) < intval($config['flood_interval'])) {
+								$error[] = 'FLOOD_ERROR';
+							}
+						}
+					}
+					
+					if (sizeof($error)) {
+						redirect($u_event_alias);
+					}
+					
+					$update_topic = array();
+					
+					if (strstr($post_message, '-Anuncio-') && $user->_team_auth('mod')) {
+						$topic_announce = 1;
+						$post_message = str_replace('-Anuncio-', '', $post_message);
+						$update_topic['topic_announce'] = $topic_announce;
+					}
+					
+					if (strstr($post_message, '-Cerrado-') && $user->_team_auth('mod')) {
+						$topic_locked = 1;
+						$post_message = str_replace('-Cerrado-', '', $post_message);
+						$update_topic['topic_locked'] = $topic_locked;
+					}
+					
+					$post_message = $comments->prepare($post_message);
+					
+					$insert_data = array(
+						'topic_id' => (int) $this->v('event_topic'),
+						'forum_id' => (int) $forum_id,
+						'poster_id' => (int) $user->data['user_id'],
+						'post_time' => time(),
+						'poster_ip' => $user->ip,
+						'post_text' => $post_message,
+						'post_np' => ''
+					);
+					$sql = 'INSERT INTO _forum_posts' . sql_build('INSERT', $insert_data);
+					$post_id = sql_query_nextid($sql);
+				
+					$user->delete_unread(UH_T, $this->v('event_topic'));
+					$user->save_unread(UH_T, $this->v('event_topic'));
+					
+					//
+					$a_list = forum_for_team_list($forum_id);
+					if (count($a_list)) {
+						$sql_delete_unread = 'DELETE FROM _members_unread
+							WHERE element = ?
+								AND item = ?
+								AND user_id NOT IN (??)';
+						sql_query(sql_filter($sql, 8, $this->v('event_topic'), implode(', ', $a_list)));
+					}
+					
+					$update_topic['topic_last_post_id'] = $post_id;
+					
+					if ($topic_locked) {
+						topic_feature($topic_id, 0);
+					}
+					
+					$sql = 'UPDATE _forums SET forum_posts = forum_posts + 1, forum_last_topic_id = ?
+						WHERE forum_id = ?';
+					sql_query(sql_filter($sql, $this->v('event_topic'), $forum_id));
+					
+					$sql = 'UPDATE _forum_topics SET topic_replies = topic_replies + 1, ' . sql_build('UPDATE', $update_topic) . sql_filter('
+						WHERE topic_id = ?', $this->v('event_topic'));
+					sql_query($sql);
+					
+					$sql = 'UPDATE _members SET user_posts = user_posts + 1
+						WHERE user_id = ?';
+					sql_query(sql_filter($sql, $user->data['user_id']));
+					
+					redirect($u_event_alias);
+				}
+				
 				// Get event thumbnails
-				$t_per_page = 9;
+				$t_per_page = 18;
 				
 				if ($mode == 'view' && $download_id) {
 					$val = 1;
@@ -370,11 +495,9 @@ class _events extends downloads {
 				
 				$template->assign_vars(array(
 					'EVENT_NAME' => $this->v('title'),
-					'EVENT_DATE' => $event_date_format)
+					'EVENT_DATE' => $event_date_format,
+					'EVENT_URL' => $u_event_alias)
 				);
-				
-				require_once(ROOT . 'interfase/comments.php');
-				$comments = new _comments();
 				
 				$posts_offset = request_var('ps', 0);
 				$topic_id = $this->v('event_topic');
@@ -441,7 +564,7 @@ class _events extends downloads {
 					ORDER BY p.post_time DESC
 					LIMIT ??, ??';
 				if (!$messages = sql_rowset(sql_filter($sql, $topic_id, $posts_offset, $config['posts_per_page']))) {
-					//redirect(s_link('topic', $topic_id));
+					redirect(s_link('events', $this->v('event_alias')));
 				}
 				
 				if (!$posts_offset) {
@@ -495,6 +618,8 @@ class _events extends downloads {
 					
 					$i++;
 				}
+				
+				build_num_pagination(s_link('events', array($this->v('event_alias'), 'ps%d')), $event_topic['topic_replies'], $config['posts_per_page'], $posts_offset, 'MSG_');
 				
 				$publish_ref = ($posts_offset) ? s_link('events', array($this->v('event_alias'), 's' . $t_offset)) : s_link('events', $this->v('event_alias'));
 				

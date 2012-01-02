@@ -440,7 +440,7 @@ foreach ($messages as $row) {
 	if ($user->data['is_member']) {
 		$poster = ($row['user_id'] != GUEST) ? $row['username'] : (($row['post_username'] != '') ? $row['post_username'] : $user->lang['GUEST']);
 		
-		$controls[$row['post_id']]['reply'] = s_link('post', array($row['post_id'], 'reply')) . '#reply';
+		$controls[$row['post_id']]['reply'] = s_link('post', array($row['post_id'], 'reply'));
 		
 		if ($mod_auth) {
 			$controls[$row['post_id']]['edit'] = s_link('mcp', array('edit', $row['post_id']));

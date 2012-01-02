@@ -45,6 +45,7 @@
 	<div class="pad_top a_mid ctl"><input type="submit" name="login" value="{L_LOGIN}" /></div>
 	</form>
 	
+	<!-- BEGIN hide -->
 	<div class="h x3"><h3>{L_PASSWORD_RESET}</h3></div>
 	
 	<form action="{S_ACTION}" method="post">
@@ -79,12 +80,13 @@
 	
 	<div class="pad_top a_mid ctl"><input type="submit" name="submit" value="{L_CONTINUE}" /></div>
 	</form>
+	<!-- END hide -->
 </div>
 
 <div class="is_mid">
 	<div class="h"><h3>{L_NEW_ACCOUNT_SUBJECT}</h3></div>
 	
-	<form action="{S_ACTION}" method="post">
+	<form action="{U_REGISTER}" method="post">
 		{S_HIDDEN_FIELDS}
 		
 		<div class="pad_top x3">

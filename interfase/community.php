@@ -38,6 +38,8 @@ class community {
 			
 			$founders = array();
 			foreach ($result as $row) {
+				if ($row['username_base'] == 'rockrepublik') continue;
+				
 				$founders[$row['user_id']] = $this->comments->user_profile($row);
 			}
 			

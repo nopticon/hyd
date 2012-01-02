@@ -109,7 +109,7 @@ class cover {
 	public function board_events() {
 		global $user, $config, $template;
 		
-		$sql = 'SELECT t.topic_id, t.topic_title, t.topic_color, p.post_id, p.post_time, u.user_id, u.username, u.username_base, e.id, e.date
+		$sql = 'SELECT t.topic_id, t.topic_title, t.topic_color, p.post_id, p.post_time, u.user_id, u.username, u.username_base, e.id, e.event_alias, e.date
 			FROM _forum_topics t, _forum_posts p, _events e, _members u
 			WHERE p.post_deleted = 0
 				AND t.topic_featured = 1
@@ -127,7 +127,7 @@ class cover {
 				$username = ($row['user_id'] != GUEST) ? $row['username'] : (($row['post_username'] != '') ? $row['post_username'] : $user->lang['GUEST']);
 				
 				$template->assign_block_vars('board_events.item', array(
-					'U_TOPIC' => s_link('events', $row['id']),
+					'U_TOPIC' => s_link('events', $row['event_alias']),
 					'TOPIC_TITLE' => $row['topic_title'],
 					'TOPIC_COLOR' => $row['topic_color'],
 					'EVENT_DATE' => $user->format_date($row['date'], $user->lang['DATE_FORMAT']),

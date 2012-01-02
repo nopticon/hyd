@@ -9,7 +9,7 @@
 var myPlaylist = [
 
     {
-        mp3:'http://localhost.rockrepublik.net/music-player/demo/mix/1.mp3',
+        mp3:'./mix/1.mp3',
         oga:'mix/1.ogg',
         title:'Sample',
         artist:'Sample',
@@ -17,10 +17,10 @@ var myPlaylist = [
         /*buy:'#',*/
         /*price:'0.99',*/
         duration:'0:30',
-        cover:'http://localhost.rockrepublik.net/music-player/demo/mix/1.png'
+        cover:'http://www.rockrepublik.net/podcast/wp-content/uploads/2011/11/ir-2007.gif'
     },
      {
-        mp3:'http://localhost.rockrepublik.net/music-player/demo/mix/1.mp3',
+        mp3:'./mix/1.mp3',
         oga:'mix/1.ogg',
         title:'Sample',
         artist:'Sample',

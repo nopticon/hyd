@@ -1,5 +1,7 @@
 <div class="pad_top a_mid">
-	<!-- BEGIN ub_image --><!-- BEGIN view --><a href="{view.URL}"><!-- END view --><img src="{S_SERVER}{ub_image.IMAGE}" alt="{UNAME}" /><!-- BEGIN view --></a><!-- END view --><!-- END ub_image -->
+	<!-- BEGIN ub_image -->
+	<!-- BEGIN view --><a href="{view.URL}"><!-- END view --><img src="{ub_image.IMAGE}" alt="{UNAME}" /><!-- BEGIN view --></a><!-- END view -->
+	<!-- END ub_image -->
 </div>
 
 <!-- BEGIN events_future -->
@@ -10,23 +12,32 @@
 	<div<!-- IF set.S_ROW_COUNT --> class="pad_top"<!-- ENDIF -->>
 		<div class="h"><h3>{set.L_TITLE}</h3></div></div>
 		<ul>
-			<!-- BEGIN item -->
+			<!-- BEGIN row -->
 			<li class="a_mid">
 				<ul>
-					<li><span class="hg">{item.TITLE}</span></li>
-					<li>{item.DATE}</li>
-					<li><img src="{item.SRC}" alt="" /></li>
+					<li><span class="hg">{row.TITLE}</span></li>
+					<li>{row.DATE}</li>
+					<li><img src="{row.SRC}" alt="" /></li>
 				</ul>
 			</li>
-			<!-- END item -->
+			<!-- END row -->
 	</ul>
 	<!-- END set -->
 </div>
 <!-- END events_future -->
 
-<!-- BEGIN news_create -->
-<div class="pad_top control"><a href="{news_create.URL}">{L_A_NEWS_CREATE}</a></div>
-<!-- END news_create -->
+<!-- BEGIN publish -->
+<span class="clear"></span>
+
+<div class="pad_top publish">
+	<div class="h"><h3>{publish.TITLE} <a class="smile" href="{S_EMOTICONS}">@</a></h3></div>
+	<form action="{S_COMMENTS}" method="post" name="post">
+		<input type="hidden" name="ref" value="{publish.URL}" />
+		<textarea id="comment" name="message"></textarea>
+		<input type="submit" name="post" value="{L_SEND_MESSAGE}" />
+	</form>
+</div>
+<!-- END publish -->
 
 <!-- BEGIN news -->
 <div class="pad_top comments">

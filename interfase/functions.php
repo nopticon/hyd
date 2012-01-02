@@ -641,39 +641,72 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 			}
 			
 			$code = request_var('code', '');
-			if (!preg_match('#([a-z0-9]+)#is', $code)) {
-				fatal_error();
+			
+			if (!empty($code)) {
+				if (!preg_match('#([a-z0-9]+)#is', $code)) {
+					fatal_error();
+				}
+				
+				$sql = 'SELECT c.*, m.user_id, m.username, m.username_base, m.user_email
+					FROM _crypt_confirm c, _members m
+					WHERE c.crypt_code = ?
+						AND c.crypt_userid = m.user_id';
+				if (!$crypt_data = sql_fieldrow(sql_filter($sql, $code))) {
+					fatal_error();
+				}
+				
+				$user_id = $crypt_data['user_id'];
+				
+				$sql = 'UPDATE _members SET user_type = ?
+					WHERE user_id = ?';
+				sql_query(sql_filter($sql, USER_NORMAL, $user_id));
+				
+				$sql = 'DELETE FROM _crypt_confirm
+					WHERE crypt_code = ?
+						AND crypt_userid = ?';
+				sql_query(sql_filter($sql, $code, $user_id));
+				
+				// Unread
+				$u_topics = array(288, 1455);
+				foreach ($u_topics as $v)
+				{
+					$user->save_unread(UH_T, $v, 0, $user_id);
+				}
+				//$user->points_add(3, $user_id);
+				
+				require_once(ROOT . 'interfase/emailer.php');
+				$emailer = new emailer();
+				
+				$emailer->from('info');
+				$emailer->use_template('user_welcome_confirm');
+				$emailer->email_address($crypt_data['user_email']);
+				
+				$emailer->assign_vars(array(
+					'USERNAME' => $crypt_data['username'])
+				);
+				$emailer->send();
+				$emailer->reset();
+				
+				$user->session_create($user_id, 0);
+				
+				//
+				if (empty($user->data)) {
+					$user->init();
+				}
+				if (empty($user->lang)) {
+					$user->setup();
+				}
+				
+				$custom_vars = array(
+					'S_REDIRECT' => '',
+					'MESSAGE_TITLE' => $user->lang['INFORMATION'],
+					'MESSAGE_TEXT' => $user->lang['MEMBERSHIP_ADDED_CONFIRM']
+				);
+				page_layout('INFORMATION', 'message', $custom_vars);
 			}
-			
-			$sql = 'SELECT c.*, m.user_id, m.username, m.username_base, m.user_email
-				FROM _crypt_confirm c, _members m
-				WHERE c.crypt_code = ?
-					AND c.crypt_userid = m.user_id';
-			if (!$crypt_data = sql_fieldrow(sql_filter($sql, $code))) {
-				fatal_error();
-			}
-			
-			$user_id = $crypt_data['user_id'];
-			
-			$sql = 'UPDATE _members SET user_type = ?
-				WHERE user_id = ?';
-			sql_query(sql_filter($sql, USER_NORMAL, $user_id));
-			
-			$sql = 'DELETE FROM _crypt_confirm
-				WHERE crypt_code = ?
-					AND crypt_userid = ?';
-			sql_query(sql_filter($sql, $code, $user_id));
-			
-			// Unread
-			$u_topics = array(288, 1455);
-			foreach ($u_topics as $v)
-			{
-				$user->save_unread(UH_T, $v, 0, $user_id);
-			}
-			$user->points_add(3, $user_id);
 			
 			//
-			$sql = 'SELECT *
+			/*$sql = 'SELECT *
 				FROM _members_ref_assoc
 				WHERE ref_uid = ?';
 			if ($ref_assoc = sql_fieldrow(sql_filter($sql, $user_id))) {
@@ -742,7 +775,8 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 				'MESSAGE_TEXT' => $user->lang['MEMBERSHIP_ADDED_CONFIRM']
 			);
 			page_layout('INFORMATION', 'message', $custom_vars);
-			
+			 * */
+			 
 			if ($submit) {
 				require_once(ROOT . 'interfase/functions_validate.php');
 				
@@ -830,7 +864,8 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 				}
 				
 				if (!sizeof($error)) {
-					$v_fields['country'] = strtolower(geoip_country_code_by_name($user->ip));
+					//$v_fields['country'] = strtolower(geoip_country_code_by_name($user->ip));
+					$v_fields['country'] = 90;
 					$v_fields['birthday'] = leading_zero($v_fields['birthday_year']) . leading_zero($v_fields['birthday_month']) . leading_zero($v_fields['birthday_day']);
 					
 					$member_data = array(
@@ -946,14 +981,21 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 					
 					$emailer->assign_vars(array(
 						'USERNAME' => $v_fields['username'],
-						'U_ACTIVATE' => s_link('my', array('confirm', $verification_code)))
+						'U_ACTIVATE' => 'http:' . s_link('signup', $verification_code))
 					);
 					$emailer->send();
 					$emailer->reset();
 					
-					$user->session_create($user_id);
+					$custom_vars = array(
+						'MESSAGE_TITLE' => $user->lang['INFORMATION'],
+						'MESSAGE_TEXT' => $user->lang['MEMBERSHIP_ADDED']
+					);
+					page_layout('INFORMATION', 'message', $custom_vars);
+					/*
+					$user->session_create($user_id, 0);
 					
-					redirect(s_link('my', 'profile'));
+					redirect(s_link());
+					*/
 				}
 			}
 			break;
@@ -1528,12 +1570,15 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 		'U_PROFILE' => s_link('m', $user->d('username_base')),
 		'U_EDITPROFILE' => s_link('my', 'profile'),
 		'U_SPASSWORD' => s_link('my', 'password'),
+		'U_DC' => s_link('my', 'dc'),
 		
 		'U_COVER' => s_link(),
 		'U_FAQ' => s_link('faq'),
 		'U_WHATS_NEW' => s_link('new'),
 		'U_ARTISTS'	=> s_link('a'),
+		'U_AWARDS' => s_link('awards'),
 		'U_RADIO' => s_link('radio'),
+		'U_BROADCAST' => s_link('broadcast'),
 		'U_CHAT' => s_link('chat'),
 		'U_NEWS' => s_link('news'),
 		'U_EVENTS' => s_link('events'),

@@ -6,6 +6,9 @@
 <!-- INCLUDE js/j.social.js -->
 <!-- INCLUDE js/j.search.js -->
 <!-- INCLUDE js/j.check.js -->
+<!-- INCLUDE js/j.scroll.js -->
+<!-- INCLUDE js/j.wheel.js -->
+<!-- INCLUDE js/j.fancy.js -->
 <!-- INCLUDE js/png.js -->
 
 function popup(url, name, width, height) {
@@ -28,8 +31,8 @@ $(function() {
 		event.preventDefault();
 		
 		position = $(this).position();
-		$('#expand_' + $(this).attr('id')).css('top', position.top + $(this).height());
-		$('#expand_' + $(this).attr('id')).css('left', position.left);
+		$('#expand_' + $(this).attr('id')).css('top', position.top + $(this).height() + 9);
+		$('#expand_' + $(this).attr('id')).css('left', position.left + 1);
 		
 		$('#expand_' + $(this).attr('id')).slideToggle('medium');
 		return false;
@@ -45,18 +48,23 @@ $(function() {
 		limit: 250
 	});
 	
-	//$("select, input:checkbox, input:radio, input:file").uniform();
-	
-	 $(".vcheck").vchecks();
-	
-	/*
-	
-	$('.expand').click(function() {
-		alert($(this).attr('id') + ' ' + $(this).id + ' ' + this.id);
-		//$('#expand_').toggle('slow');
-		return false;
+	$('.w_broadcast a').click(function(event) {
+		event.preventDefault();
+		
+		popup($(this).attr('href'), '_broadcast', 400, 500);
 	});
-	*/
+	
+	$('.pub').click(function(event) {
+		event.preventDefault();
+		$.scrollTo('.publish');
+	});
+	
+	$('.share').each(function() {
+		if (docurl && doctitle) {
+			$(this).html('<a rel="prettySociable" href="' + docurl + '"></a>');
+		}
+	});
+	
 	$.prettySociable({
 		share_on_label: 'Compartir en ',
 		share_label: 'Comparte',
@@ -67,11 +75,8 @@ $(function() {
 		}
 	});
 	
-	$('.share').each(function() {
-		if (docurl && doctitle) {
-			$(this).html('<a rel="prettySociable" href="' + docurl + '"></a>');
-		}
-	});
+	$(".vcheck").vchecks();
+	$(".fancy").fancybox();
 	
 	$('.smile').each(function() {
 		$(this).html('&#8594;&#9786;');

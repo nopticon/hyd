@@ -8,11 +8,10 @@
 			<div id="menu">
 				<ul>
 					<!-- IF IS_MEMBER -->
-					<li><a class="expand" id="account" href="{U_PROFILE}">{S_USERNAME} &#9660;</a>
+					<li>&nbsp; <a class="expand" id="account" href="{U_PROFILE}">&#9660;</a>
 						<ul id="expand_account">
-							<li><a href="{U_PROFILE}">{S_USERNAME}</a></li>
-							<li><a href="{U_DC}">{L_USERPAGE_DC}</a></li>
 							<li><a href="{U_WHATS_NEW}" title="{S_UNREAD_ITEMS}">{L_THENEW}</a></li>
+							<li><a href="{U_DC}">{L_USERPAGE_DC}</a></li>
 							<li><a href="{U_EDITPROFILE}">{L_PREFERENCES}</a></li>
 							<!-- IF S_CONTROLPANEL != '' -->
 							<li><a href="{S_CONTROLPANEL}">{L_CONTROL_PANEL}</a></li>
@@ -20,15 +19,17 @@
 							<li><a href="{U_SESSION}">{L_LOGOUT2}</a></li>
 						</ul>
 					</li>
+					<li><a href="{U_PROFILE}">{S_USERNAME}</a>
 					<!-- ENDIF -->
 					<li><a href="{U_ARTISTS}" title="{L_UB}">{L_UB}</a></li>
 					<li><a href="{U_EVENTS}" title="{L_UE}">{L_UE}</a></li>
 					<li><a href="{U_FORUM}" title="{L_FORUM}">{L_FORUM}</a></li>
-					<li><a href="{U_COMMUNITY}" title="{L_COMMUNITY}">{L_COMMUNITY}</a></li>
 					<li><a href="{U_BROADCAST}" title="{L_BROADCAST}">{L_BROADCAST}</a></li>
+					<li><a href="{U_COMMUNITY}" title="{L_COMMUNITY}">{L_COMMUNITY}</a></li>
 					<!-- BEGIN hide -->
 					<li><a href="{U_ALLIES}" title="{L_ALLIES}">{L_ALLIES}</a></li>
 					<!-- END hide -->
+					<li><a href="{U_AWARDS}" title="{L_AWARDS}">{L_AWARDS}</a></li>
 					<li><a id="facebook" href="//www.facebook.com/rockrepublik" target="_facebook">Facebook</a>
 						<!-- BEGIN hide -->
 						<ul id="expand_facebook">

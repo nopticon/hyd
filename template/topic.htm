@@ -8,7 +8,7 @@
 	<div class="pad_top pad_left ctl ls">
 		<ul>
 			<!-- BEGIN post_box -->
-			<li><a href="#reply">{L_POST_REPLY}</a></li>
+			<li><a class="pub" href="#reply">{L_POST_REPLY}</a></li>
 			<!-- END post_box -->
 			<!-- BEGIN mcppoints -->
 			<li><a href="{mcppoints.U_FEAT}">{mcppoints.V_LANG}</a></li>
@@ -67,7 +67,16 @@
 <h3><strong>{item.S_ROW_COUNT}</strong><span>.</span> <em><!-- BEGIN username --><a href="{item.PROFILE}"><!-- END username --><img src="{item.USER_AVATAR}" alt="{item.USERNAME}'s Avatar" /><!-- BEGIN username --></a><!-- END username --></em><cite><!-- BEGIN username --><a href="{item.PROFILE}"><!-- END username -->{item.USERNAME}<!-- BEGIN username --></a><!-- END username --></cite> <span>dijo:</span></h3>
 <blockquote>
 <!-- BEGIN controls -->
-<div class="pad_top ctl a_right"><!-- BEGIN reply --><a href="{reply.URL}">{L_CMT_REPLY}</a><!-- END reply --><!-- BEGIN report --> <a href="{report.URL}">{L_CMT_REPORT}</a><!-- END report --><!-- BEGIN ip --> <a href="{ip.URL}">{L_CMT_IP}</a><!-- END ip  --><!-- BEGIN edit --> <a href="{edit.URL}">{L_CMT_EDIT}</a><!-- END edit --><!-- BEGIN restore --> <a href="{restore.URL}"><span class="red">{L_CMT_RESTORE}</span></a><!-- END restore --><!-- BEGIN delete --> <a onclick="return confirm('&iquest;Confirmas borrar el mensaje?');" href="{delete.URL}">{L_CMT_DELETE}</a><!-- END delete --></div>
+<div class="pad_top ctl el_right a_right">
+	<ul>
+		<!-- BEGIN reply --><li><a href="{reply.URL}">{L_CMT_REPLY}</a><!-- END reply -->
+		<!-- BEGIN report --><li><a href="{report.URL}">{L_CMT_REPORT}</a><!-- END report -->
+		<!-- BEGIN edit --><li><a href="{edit.URL}">{L_CMT_EDIT}</a><!-- END edit -->
+		<!-- BEGIN restore --><li><a href="{restore.URL}"><span class="red">{L_CMT_RESTORE}</span></a><!-- END restore -->
+		<!-- BEGIN delete --><li><a onclick="return confirm('&iquest;Confirmas borrar el mensaje?');" href="{delete.URL}">{L_CMT_DELETE}</a><!-- END delete -->
+	</ul>
+</div>
+<span class="clear"></span>
 <!-- END controls -->
 <div class="col_fr nowraptext">
 {item.MESSAGE}
@@ -98,14 +107,32 @@
 	<form action="{post_box.S_POST_ACTION}" method="post">
 		<textarea id="comment" name="message"></textarea>
 		<!-- BEGIN reply -->
-		<label for="comment_reply">{L_ORIGINAL_POST}</label>
-		<textarea id="comment_reply" name="reply_message" rows="2">{reply.MESSAGE}</textarea>
+		<div class="pad_top"><label for="comment_reply">{L_ORIGINAL_POST}</label></div>
+		<div class="pad_top"><textarea class="x2" id="comment_reply" name="reply_message" rows="2">{reply.MESSAGE}</textarea></div>
 		<!-- END reply -->
 		<label for="comment_np">{L_NOWPLAYING}</label>
 		<input class="f" id="comment_np" name="np" value="{post_box.NP}" />
 		<input type="submit" name="post" value="{L_SUBMIT}" />
 	</form>
 </div>
+<!-- END post_box -->
+
+<!-- BEGIN post_box -->
+<!-- BEGIN reply -->
+<script type="text/javascript">
+function sss() {
+	$.scrollTo('.publish');
+		/*var elem = $('.publish');
+		if (elem) {
+			$.scrollTo(elem.left, elem.top);
+		}*/
+}
+
+$(function() {
+	setTimeout("sss();", 100);
+});
+</script>
+<!-- END reply -->
 <!-- END post_box -->
 
 <!-- INCLUDE page.footer.htm -->

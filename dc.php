@@ -131,11 +131,6 @@ if ($submit || $mode == 'start' || $mode == 'reply') {
 			} else {
 				$error[] = 'EMPTY_USER';
 			}
-			
-			$dc_subject = request_var('subject', '');
-			if (empty($dc_subject)) {
-				$error[] = 'EMPTY_DC_SUBJECT';
-			}
 		}
 		
 		if (isset($to_userdata) && isset($to_userdata['user_id'])) {
@@ -234,9 +229,19 @@ switch ($mode) {
 			fatal_error();
 		}
 		
+		$with_user = $msg_data['privmsgs_to_userid'];
+		if ($with_user == $user->data['user_id']) {
+			$with_user = $msg_data['privmsgs_from_userid'];
+		}
+		
+		$sql = 'SELECT username
+			FROM _members
+			WHERE user_id = ?';
+		$with_username = sql_field(sql_filter($sql, $with_user), 'username', '');
+		
 		$template->assign_block_vars('conv', array(
 			'URL' => s_link('my', 'dc'),
-			'SUBJECT' => $result[0]['privmsgs_subject'],
+			'SUBJECT' => $with_username,
 			'CAN_REPLY' => $result[0]['msg_can_reply'],)
 		);
 		
@@ -262,11 +267,14 @@ switch ($mode) {
 		//
 		$offset = request_var('offset', 0);
 		
-		$sql = 'SELECT COUNT(msg_id) AS total
-			FROM _dc
-			WHERE (privmsgs_to_userid = ? OR privmsgs_from_userid = ?)
-				AND msg_id = parent_id
-				AND msg_deleted <> ?';
+		$sql = 'SELECT COUNT(c.msg_id) AS total
+			FROM _dc c, _dc c2, _members m, _members m2
+			WHERE (c.privmsgs_to_userid = ? OR c.privmsgs_from_userid = ?)
+				AND c.msg_id = c.parent_id
+				AND c.msg_deleted <> ?
+				AND c.privmsgs_from_userid = m.user_id
+				AND c.privmsgs_to_userid = m2.user_id
+				AND (IF(c.last_msg_id,c.last_msg_id,c.msg_id) = c2.msg_id)';
 		$total_conv = sql_field(sql_filter($sql, $user->data['user_id'], $user->data['user_id'], $user->data['user_id']), 'total', 0);
 		
 		$sql = 'SELECT c.msg_id, c.parent_id, c.last_msg_id, c.root_conv, c.privmsgs_date, c.privmsgs_subject, c2.privmsgs_date as last_privmsgs_date, m.user_id, m.username, m.username_base, m.user_color, m2.user_id as user_id2, m2.username as username2, m2.username_base as username_base2, m2.user_color as user_color2
@@ -289,11 +297,13 @@ switch ($mode) {
 					$row['last_privmsgs_date'] = $row['privmsgs_date'];
 				}
 				
+				$dc_subject = 'Conversaci&oacute;n con ' . $row['username'.$dc_with];
+				
 				$template->assign_block_vars('messages.item', array(
 					'S_MARK_ID' => $row['parent_id'],
-					'SUBJECT' => $row['privmsgs_subject'],
+					'SUBJECT' => $dc_subject,
 					'U_READ' => s_link('my', array('dc', 'read', $row['last_msg_id'])) . '#' . $row['last_msg_id'],
-					'POST_DATE' => $user->format_date($row['last_privmsgs_date']),
+					'POST_DATE' => $user->format_date($row['last_privmsgs_date'], 'j F Y \a \l\a\s H:i') . ' horas.',
 					'ROOT_CONV' => $row['root_conv'],
 					
 					'DC_USERNAME' => $row['username'.$dc_with],

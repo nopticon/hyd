@@ -56,11 +56,7 @@ class _comments {
 	public function store() {
 		global $user, $config;
 		
-		$ref = $this->ref;
-		$this->ref = str_replace('http://' . $config['server_name'], '', $this->ref);
-		$this->ref = preg_replace('#^/?(.*?)/?$#', '\1', $this->ref);
-		$this->param = explode('/', $this->ref);
-		$this->ref = $ref;
+		$this->param = array_splice(explode('/', array_key(explode('//', $this->ref), 1)), 1, -1);
 		
 		$sql = '';
 		$id = (isset($this->param[3])) ? (int) $this->param[3] : 0;
@@ -94,10 +90,12 @@ class _comments {
 				}
 				break;
 			case 'events':
+				$event_field = (is_numb($this->param[1])) ? 'id' : 'event_alias';
+				
 				$sql = 'SELECT *
 					FROM _events
-					WHERE id = ?';
-				$sql = sql_filter($sql, $this->param[1]);
+					WHERE ?? = ?';
+				$sql = sql_filter($sql, $event_field, $this->param[1]);
 				
 				$this->data = array(
 					'DATA_TABLE' => '_events',
@@ -451,12 +449,12 @@ class _comments {
 					case 'user_avatar':
 						if ($row['user_id'] != GUEST) {
 							if ($value != '') {
-								$value = $config['assets_url'] . '/avatars/' . $value;
+								$value = $config['assets_url'] . 'avatars/' . $value;
 							} else {
-								$value = $config['assets_url'] . '/style/avatar.gif';
+								$value = $config['assets_url'] . 'style/avatar.gif';
 							}
 						} else {
-							$value = $config['assets_url'] . '/style/avatar.gif';
+							$value = $config['assets_url'] . 'style/avatar.gif';
 						}
 						
 						$data[$key] = $value;
