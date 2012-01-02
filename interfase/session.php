@@ -61,7 +61,11 @@ class session {
 				$s_ip = implode('.', array_slice(explode('.', $this->data['session_ip']), 0, 4));
 				$u_ip = implode('.', array_slice(explode('.', $this->ip), 0, 4));
 				
+				//_pre($this->data['session_browser']);
+				//_pre($this->browser);
+				
 				if ($u_ip == $s_ip && $this->data['session_browser'] == $this->browser) {
+					
 					// Only update session DB a minute or so after last update or if page changes
 					if ($this->time - $this->data['session_time'] > 60 || $this->data['session_page'] != $this->page) {
 						$sql_update = array(
@@ -108,6 +112,10 @@ class session {
 		global $config;
 
 		$this->data = array();
+		
+		if (strpos($this->page, 'signin')) {
+			$this->page = '';
+		}
 		
 		// Garbage collection ... remove old sessions updating user information
 		// if necessary. It means (potentially) 11 queries but only infrequently
@@ -235,12 +243,16 @@ class session {
 			sql_query($sql);
 		}
 		
+		//_pre($sql_ary);
+		//_pre($this->session_id);
+		//_pre($this->cookie_data);
+		
 		if (!$bot) {
 			$cookie_expire = $this->time + 31536000;
 			$cookie_expire2 = $this->time + 3600;
 			
 			$this->set_cookie('u', $this->cookie_data['u'], $cookie_expire);
-			$this->set_cookie('sid', $this->session_id, $cookie_expire2);
+			$this->set_cookie('sid', $this->session_id, 0);
 			
 			if ($this->data['is_member']) {
 				$this->register_ip();

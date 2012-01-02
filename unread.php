@@ -36,6 +36,10 @@ require('./interfase/common.php');
 
 $user->init();
 
+//_pre($_COOKIE);
+//_pre($user);
+//_pre($_REQUEST);
+
 if (!$user->data['is_member']) {
 	if ($user->data['is_bot']) {
 		redirect(s_link('cover'));
