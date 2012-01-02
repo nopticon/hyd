@@ -549,13 +549,11 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 	
 	$action = request_var('mode', '');
 	
-	if ($action != 'in') {
-		if (empty($user->data)) {
-			$user->init(false);
-		}
-		if (empty($user->lang)) {
-			$user->setup();
-		}
+	if (empty($user->data)) {
+		$user->init(false);
+	}
+	if (empty($user->lang)) {
+		$user->setup();
 	}
 	
 	$code_invite = request_var('invite', '');
@@ -615,14 +613,14 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 					if ($row = sql_fieldrow(sql_filter($sql, $username_base))) {
 						$exclude_type = array(USER_INACTIVE, USER_IGNORE); 
 						
-						if ((user_password($password) == $row['user_password'])/* && (!in_array($row['user_type'], $exclude_type))*/) {
+						if ((user_password($password) == $row['user_password']) && (!in_array($row['user_type'], $exclude_type))) {
 							$user->session_create($row['user_id'], $adm);
 							
-							//if (!$row['user_country'] || !$row['user_location'] || !$row['user_gender'] || !$row['user_birthday'] || !$row['user_avatar']) {
-							//	$ref = s_link('my', 'profile');
-							//} else {
+							if (!$row['user_country'] || !$row['user_location'] || !$row['user_gender'] || !$row['user_birthday'] || !$row['user_avatar']) {
+								$ref = s_link('my', 'profile');
+							} else {
 								$ref = (empty($ref) || (preg_match('#' . preg_quote($config['server_name']) . '/$#', $ref))) ? s_link('new') : $ref;
-							//}
+							}
 							
 							redirect($ref);
 						}

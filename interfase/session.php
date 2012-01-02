@@ -48,9 +48,6 @@ class session {
 			$this->session_id = request_var($config['cookie_name'] . '_sid', '');
 		}
 		
-		//_pre($config);
-		//_pre($_COOKIE, TRUE);
-		
 		// Is session_id is set
 		if (!empty($this->session_id)) {
 			$sql = 'SELECT m.*, s.*
@@ -58,20 +55,11 @@ class session {
 				WHERE s.session_id = ?
 					AND m.user_id = s.session_user_id';
 			$this->data = sql_fieldrow(sql_filter($sql, $this->session_id));
-
+			
 			// Did the session exist in the DB?
 			if (isset($this->data['user_id'])) {
 				$s_ip = implode('.', array_slice(explode('.', $this->data['session_ip']), 0, 4));
 				$u_ip = implode('.', array_slice(explode('.', $this->ip), 0, 4));
-				
-				/*if ($this->ip == '173.245.56.207') {
-					_pre($this->session_id);
-					_pre($this->data['user_id']);
-					_pre($s_ip);
-					_pre($u_ip);
-					_pre($this->data['session_browser']);
-					_pre($this->browser);
-				}*/
 				
 				if ($u_ip == $s_ip && $this->data['session_browser'] == $this->browser) {
 					
@@ -95,15 +83,15 @@ class session {
 					}
 					
 					// Ultimately to be removed
-					$this->data['is_member'] = ($this->data['user_id'] != GUEST/* && ($this->data['user_type'] == USER_NORMAL || $this->data['user_type'] == USER_FOUNDER)*/) ? true : false;
-					$this->data['is_bot'] = (!$this->data['is_member'] && $this->data['user_id'] != GUEST) ? true : false;
-					$this->data['is_founder'] = ($this->data['user_id'] != GUEST && $this->data['user_type'] == USER_FOUNDER && !$this->data['is_bot']) ? true : false;
+					$this->data['is_member'] = ($this->data['user_id'] != 1/* && ($this->data['user_type'] == USER_NORMAL || $this->data['user_type'] == USER_FOUNDER)*/) ? true : false;
+					$this->data['is_bot'] = (!$this->data['is_member'] && $this->data['user_id'] != 1) ? true : false;
+					$this->data['is_founder'] = ($this->data['user_id'] != 1 && $this->data['user_type'] == USER_FOUNDER && !$this->data['is_bot']) ? true : false;
 					
 					return true;
 				}
 			}
 		}
-		
+
 		// If we reach here then no (valid) session exists. So we'll create a new one
 		return $this->session_create(false, false, $update_page);
 	}
@@ -211,8 +199,9 @@ class session {
 
 		// Is user banned? Are they excluded? Won't return on ban, exists within method
 		// @todo Change to !$this->data['user_type'] & USER_FOUNDER && !$this->data['user_type'] & USER_BOT in time
+		// Fix 1 day problem
 		if ($this->data['user_type'] != USER_FOUNDER) {
-			$this->check_ban();
+			//$this->check_ban();
 		}
 		
 		//
@@ -251,10 +240,6 @@ class session {
 			$sql = 'INSERT INTO _sessions' . sql_build('INSERT', $sql_ary);
 			sql_query($sql);
 		}
-		
-		//_pre($sql_ary);
-		//_pre($this->session_id);
-		//_pre($this->cookie_data);
 		
 		if (!$bot) {
 			$cookie_expire = $this->time + 31536000;
@@ -455,10 +440,7 @@ class session {
 		}
 
 		if ($banned) {
-			// Initiate environment ... since it won't be set at this stage
-			$this->setup();
-
-			fatal_error();
+			//fatal_error();
 			/*
 			// Determine which message to output
 			$till_date = (!empty($row['ban_end'])) ? $this->format_date($row['ban_end']) : '';
@@ -471,7 +453,7 @@ class session {
 			*/
 		}
 		
-		return false;
+		return;
 	}
 	
 	public function d($d = false, $v = false) {
