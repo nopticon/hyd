@@ -50,7 +50,7 @@ class cover {
 				//echo $config['news_path'] . $row['news_id'] . '.jpg<br />';
 			}
 			
-			$news_image = (@is_readable($config['news_path'] . $row['news_id'] . '.jpg')) ? $row['news_id'] : 'd';
+			$news_image = (@file_exists('../data/news/' . $row['news_id'] . '.jpg')) ? $row['news_id'] : 'd';
 			
 			$template->assign_block_vars('news.row', array(
 				'TIMESTAMP' => $user->format_date($row['post_time'], 'j \d\e F Y'),
