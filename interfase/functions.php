@@ -618,11 +618,11 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 						if ((user_password($password) == $row['user_password'])/* && (!in_array($row['user_type'], $exclude_type))*/) {
 							$user->session_create($row['user_id'], $adm);
 							
-							if (!$row['user_country'] || !$row['user_location'] || !$row['user_gender'] || !$row['user_birthday'] || !$row['user_avatar']) {
-								$ref = s_link('my', 'profile');
-							} else {
-								$ref = (empty($ref) || (preg_match('#' . $config['server_name'] . '/$#', $ref))) ? s_link('new') : $ref;
-							}
+							//if (!$row['user_country'] || !$row['user_location'] || !$row['user_gender'] || !$row['user_birthday'] || !$row['user_avatar']) {
+							//	$ref = s_link('my', 'profile');
+							//} else {
+								$ref = (empty($ref) || (preg_match('#' . preg_quote($config['server_name']) . '/$#', $ref))) ? s_link('new') : $ref;
+							//}
 							
 							redirect($ref);
 						}
