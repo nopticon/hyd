@@ -43,7 +43,7 @@ function request_var($var_name, $default, $multibyte = false) {
 	if (REQC) {
 		global $config;
 		
-		if (strpos($var_name, $config['cookie_name']) && isset($_COOKIE[$var_name])) {
+		if ((strpos($var_name, $config['cookie_name']) !== false) && isset($_COOKIE[$var_name])) {
 			$_REQUEST[$var_name] = $_COOKIE[$var_name];
 			_pre('%%' . $_REQUEST[$var_name]);
 			_pre('%%' . $_COOKIE[$var_name]);
