@@ -11,6 +11,9 @@ require_once(ROOT . 'interfase/common.php');
 $user->init(false);
 $user->setup();
 
+var_dump(REQC);
+echo '<br />';
+
 _pre($_SERVER['HTTP_X_FORWARDED_FOR']);
 
 echo '<br /><br />';
