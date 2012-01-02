@@ -23,7 +23,7 @@ $user->init();
 $user->setup();
 
 if (!$user->data['is_member']) {
-	//do_login();
+	do_login();
 }
 
 $user_fields = array(
