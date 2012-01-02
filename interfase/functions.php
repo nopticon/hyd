@@ -545,16 +545,19 @@ function obtain_bots(&$bots) {
 function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 	global $config, $user, $template;
 	
-	if (empty($user->data)) {
-		$user->init(false);
-	}
-	if (empty($user->lang)) {
-		$user->setup();
-	}
-	
 	$error = array();
 	
 	$action = request_var('mode', '');
+	
+	if ($action != 'in') {
+		if (empty($user->data)) {
+			$user->init(false);
+		}
+		if (empty($user->lang)) {
+			$user->setup();
+		}
+	}
+	
 	$code_invite = request_var('invite', '');
 	$admin = (isset($_POST['admin'])) ? true : false;
 	$login = (isset($_POST['login'])) ? true : false;

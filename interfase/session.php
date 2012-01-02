@@ -52,7 +52,7 @@ class session {
 			//_pre($_REQUEST);
 			//_pre($_COOKIE, true);
 			_pre($this->cookie_data['u'] . '*');
-			_pre($this->session_id . '*', true);
+			_pre($this->session_id . '*');
 		}
 		
 		// Is session_id is set
