@@ -46,11 +46,6 @@ function request_var($var_name, $default, $multibyte = false) {
 		if ((strpos($var_name, $config['cookie_name']) !== false) && isset($_COOKIE[$var_name])) {
 			$_REQUEST[$var_name] = $_COOKIE[$var_name];
 		}
-		/*_pre('----------');
-		_pre($var_name);
-		_pre($config['cookie_name']);
-		_pre($_COOKIE);
-		_pre('----------');*/
 	}
 	
 	if (!isset($_REQUEST[$var_name]) || (is_array($_REQUEST[$var_name]) && !is_array($default)) || (is_array($default) && !is_array($_REQUEST[$var_name]))) {
@@ -350,7 +345,7 @@ function _substr($a, $k, $r = '...') {
 function s_link($module = '', $data = false) {
 	global $config;
 	
-	$url = '//';
+	$url = 'http://';
 	$is_a = is_array($data);
 	if ($_SERVER['REMOTE_ADDR'] != '127.0.0.1' && $module == 'a' && $data !== false && ((!$is_a && !preg_match('/^_([0-9]+)$/i', $data)) || ($is_a && count($data) == 2))) {
 		$subdomain = ($is_a) ? $data[0] : $data;
