@@ -200,9 +200,9 @@ class session {
 		// Is user banned? Are they excluded? Won't return on ban, exists within method
 		// @todo Change to !$this->data['user_type'] & USER_FOUNDER && !$this->data['user_type'] & USER_BOT in time
 		// Fix 1 day problem
-		if ($this->data['user_type'] != USER_FOUNDER) {
+		//if ($this->data['user_type'] != USER_FOUNDER) {
 			//$this->check_ban();
-		}
+		//}
 		
 		//
 		// Do away with ultimately?
