@@ -41,7 +41,7 @@ if (count($deleted))
 		WHERE monetize_id IN (??)';
 	sql_query(sql_filter($sql, implode(',', $deleted)));
 	
-	$cache->delete('banners');
+	$cache->delete('monetize');
 }
 
 //
