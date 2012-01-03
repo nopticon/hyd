@@ -102,7 +102,7 @@ function _utf8(&$a) {
 }
 
 function decode_ht($path) {
-	$da_path = ROOT . '../' . $path;
+	$da_path = ROOT . '../../' . $path;
 	
 	if (!@file_exists($da_path) || !$a = @file($da_path)) exit;
 	
