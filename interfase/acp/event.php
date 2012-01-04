@@ -51,7 +51,7 @@ class __event extends mac {
 				$event_year = request_var('event_year', 0);
 				$evemt_month = request_var('event_month', 0);
 				$event_day = request_var('event_day', 0);
-				$event_houra = request_var('event_hours', 0);
+				$event_hours = request_var('event_hours', 0);
 				$event_minutes = request_var('event_minutes', 0);
 				
 				$v_date = gmmktime($event_hours, $event_minutes, 0, $event_month, $event_day, $event_year) - $user->timezone - $user->dst;
