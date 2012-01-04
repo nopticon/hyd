@@ -85,12 +85,18 @@ class __event extends mac {
 							FROM _artists
 							WHERE subdomain = ?';
 						if ($a_row = sql_fieldrow(sql_filter($sql, $subdomain))) {
-							$sql_insert = array(
-								'a_artist' => $a_row['ub'],
-								'a_event' => $event_id
-							);
-							$sql = 'INSERT INTO _artists_events' . sql_build('INSERT', $sql_insert);
-							sql_query($sql);
+							$sql = 'SELECT *
+								FROM _artists_events
+								WHERE a_artist = ?
+									AND a_event = ?';
+							if (!sql_fieldrow(sql_filter($sql, $a_row['ub'], $event_id))) {
+								$sql_insert = array(
+									'a_artist' => $a_row['ub'],
+									'a_event' => $event_id
+								);
+								$sql = 'INSERT INTO _artists_events' . sql_build('INSERT', $sql_insert);
+								sql_query($sql);
+							}
 						}
 					}
 					
@@ -116,7 +122,7 @@ class __event extends mac {
 						'topic_points' => 1
 					);
 					$sql = 'INSERT INTO _forum_topics' . sql_build('INSERT', $insert);
-					$topic_id = sql_query_nextid();
+					$topic_id = sql_query_nextid($sql);
 					
 					$insert = array(
 						'topic_id' => (int) $topic_id,
@@ -128,7 +134,7 @@ class __event extends mac {
 						'post_np' => ''
 					);
 					$sql = 'INSERT INTO _forum_posts' . sql_build('INSERT', $insert);
-					$post_id = sql_query_nextid();
+					$post_id = sql_query_nextid($sql);
 					
 					$sql = 'UPDATE _events SET event_topic = ?
 						WHERE id = ?';
@@ -141,7 +147,7 @@ class __event extends mac {
 						'vote_length' => (int) ($poll_length * 86400)
 					);
 					$sql = 'INSERT INTO _poll_options' . sql_build('INSERT', $insert);
-					$poll_id = sql_query_nextid();
+					$poll_id = sql_query_nextid($sql);
 					
 					$poll_options = array(1 => 'Si asistir&eacute;');
 					
