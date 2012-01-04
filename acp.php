@@ -32,7 +32,6 @@ class mac {
 		global $user;
 		
 		if (!$user->_team_auth($a)) {
-			_pre('not team auth ' . $a, true);
 			return fatal_error();
 		}
 		

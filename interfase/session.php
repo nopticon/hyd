@@ -755,6 +755,7 @@ class user extends session {
 				case 'mod':
 				case 'radio':
 				case 'colab':
+				case 'colab_admin':
 					$mods = $this->_team_auth_list($mode);
 					if (sizeof($mods)) {
 						$response = in_array($user_id, $mods);

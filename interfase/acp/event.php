@@ -22,7 +22,7 @@ class __event extends mac {
 	public function __construct() {
 		parent::__construct();
 		
-		$this->auth('colab_admin');
+		$this->auth('colab');
 	}
 	
 	public function _home() {
