@@ -49,7 +49,7 @@ class __event extends mac {
 				$event_name = request_var('event_name', '');
 				$event_artists = request_var('event_artists', '', true);
 				$event_year = request_var('event_year', 0);
-				$evemt_month = request_var('event_month', 0);
+				$event_month = request_var('event_month', 0);
 				$event_day = request_var('event_day', 0);
 				$event_hours = request_var('event_hours', 0);
 				$event_minutes = request_var('event_minutes', 0);
