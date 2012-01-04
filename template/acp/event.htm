@@ -38,9 +38,10 @@
 		<!-- BEGIN topics -->
 		<label for="event_current_topic">Tema actual (opcional)</label>
 		<select name="event_current_topic">
-		<!-- BEGIN row -->
-		<option value="{row.TOPIC_ID}">{row.TOPIC_TITLE}</option>
-		<!-- END row -->
+			<option value="0">--</option>
+			<!-- BEGIN row -->
+			<option value="{row.TOPIC_ID}">{row.TOPIC_TITLE}</option>
+			<!-- END row -->
 		</select>
 		<!-- END topics -->
 		
