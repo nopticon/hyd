@@ -192,7 +192,6 @@ class _events extends downloads {
 				}
 				
 				if (!$choice) {
-					_pre('a', true);
 					redirect(s_link('events', $this->v('event_alias')));
 				}
 				
@@ -228,6 +227,7 @@ class _events extends downloads {
 					);
 					$sql = 'INSERT INTO _poll_voters' . sql_build('INSERT', $insert_vote);
 					sql_query($sql);
+					_pre('b', true);
 				}
 				
 				redirect(s_link('events', $this->v('event_alias')));
