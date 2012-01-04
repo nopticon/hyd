@@ -39,6 +39,7 @@ $comments = new _comments;
 $comments->ref = (isset($_POST['ref']) && !empty($_POST['ref'])) ? request_var('ref', '', true) : $user->data['session_page'];
 
 if (preg_match('#([0-9a-z\-]+)\.(.*?)\.([a-z]+){1,3}(/(.*?))?$#i', $comments->ref, $part)) {
+	_pre($part, true);
 	$comments->ref = '//' . $part[2] . '.' . $part[3] . '/a/' . $part[1] . $part[4];
 }
 
