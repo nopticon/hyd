@@ -135,6 +135,10 @@ class __event extends mac {
 						$topic_id = $event_current_topic;
 						
 						$post_message .= ' en la secci&oacute;n de eventos';
+						
+						$sql = 'UPDATE _forum_topics SET topic_title = ?
+							WHERE topic_id = ?';
+						sql_query(sql_filter($sql, $event_name, $topic_id));
 					}
 					
 					$post_message .= '.';
