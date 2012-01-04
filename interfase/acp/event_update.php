@@ -34,8 +34,6 @@ class __event_update extends mac {
 
 _auth('all');
 
-$i_size = intval(ini_get('upload_max_filesize'));
-$i_size *= 1048576;
 $error = array();
 
 if ($submit) {
@@ -46,7 +44,7 @@ if ($submit) {
 	$filepath_1 = '..' . SDATA . 'events/future/';
 	$filepath_2 = '..' . SDATA . 'events/future/thumbnails/';
 	
-	$f = $upload->process($filepath_1, $_FILES['add_image'], array('jpg', 'jpeg'), $i_size);
+	$f = $upload->process($filepath_1, $_FILES['add_image'], array('jpg', 'jpeg'));
 	
 	if (!sizeof($upload->error) && $f !== false) {
 		foreach ($f as $row) {

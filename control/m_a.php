@@ -1186,7 +1186,6 @@ class a extends common {
 	public function _gallery_add() {
 		global $user, $template;
 
-		$filesize = 3000 * 1024;
 		if (isset($_POST['submit']) && isset($_FILES['add_image'])) {
 			require_once(ROOT . 'interfase/upload.php');
 			$upload = new upload();
@@ -1196,7 +1195,7 @@ class a extends common {
 			$filepath_2 = $filepath . 'gallery/';
 			$filepath_3 = $filepath . 'thumbnails/';
 
-			$f = $upload->process($filepath_1, $_FILES['add_image'], array('jpg'), $filesize);
+			$f = $upload->process($filepath_1, $_FILES['add_image'], array('jpg'));
 
 			if (!sizeof($upload->error) && $f !== false) {
 				$sql = 'SELECT MAX(image) AS total

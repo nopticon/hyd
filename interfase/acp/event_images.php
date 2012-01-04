@@ -34,8 +34,6 @@ class __event_images extends mac {
 
 _auth('founder');
 
-$i_size = upload_maxsize();
-
 if ($submit) {
 	require_once(ROOT . 'interfase/upload.php');
 	$upload = new upload();
@@ -47,7 +45,7 @@ if ($submit) {
 	$filepath_3 = $filepath_1 . $event_id . '/';
 	$filepath_4 = $filepath_3 . 'thumbnails/';
 	
-	$f = $upload->process($filepath_1, $_FILES['add_zip'], array('zip'), $i_size);
+	$f = $upload->process($filepath_1, $_FILES['add_zip'], array('zip'));
 	if (!sizeof($upload->error) && $f !== false)
 	{
 		@set_time_limit(0);

@@ -1,19 +1,40 @@
 <!-- INCLUDE page.header.htm -->
 
-<div class="section"><h1><a href="{U_EVENTS}">{L_UE}</a></h1></div>
+<!-- INCLUDE acp/error.htm -->
 
-<!-- BEGIN error -->
-<a name="e"></a><div class="rows5_top_2"><div class="error_block"><h2>{L_ERROR}</h2><p>{error.MESSAGE}</p></div></div>
-<!-- END error -->
-
-<form action="{MODULE_URL}" name="post" method="post" enctype="multipart/form-data">
-<input type="hidden" name="MAX_FILE_SIZE" value="{UPLOAD_MAXSIZE}" /><input type="file" name="add_image[]" size="25" />
-
-<br /><br />Titulo:<br /><input type="text" name="e_title" value="" />
-<br /><br />Fecha (d/m/y//h:m):<br /><input type="text" name="e_day" size="2" value="" /> <input type="text" name="e_month" size="2" value="" /> <input type="text" name="e_year" size="5" value="" /> ////  <input type="text" name="e_hour" size="2" value="" /> <input type="text" name="e_mins" size="2" value="" />
-<br /><br />Artistas:<br /><textarea name="e_artist" cols="50" rows="15"></textarea>
-
-<div class="a_center">{S_HIDDEN}<input type="submit" name="submit" value="{L_SUBMIT}" /></div>
-</form>
+<div class="pad_top publish">
+	<div class="h"><h3>{L_UE}</h3></div>
+	<form action="{MODULE_URL}" method="post" enctype="multipart/form-data">
+		<input type="hidden" name="MAX_FILE_SIZE" value="{UPLOAD_MAXSIZE}" />
+		{S_HIDDEN}
+		
+		<input class="f ff" type="file" name="event_image[]" />
+		
+		<span class="clear"></span>
+		
+		<label for="event_name">Nombre de evento</label>
+		<input class="f ff" id="event_name" name="event_name" value="" />
+		
+		<span class="clear"></span>
+		
+		<label for="event_day">Fecha</label>
+		<input class="f ff" type="text" name="event_day" size="2" value="" />
+		<input class="f ff" type="text" name="event_month" size="2" value="" />
+		<input class="f ff" type="text" name="event_year" size="5" value="" />
+		
+		<span class="clear"></span>
+		
+		<label for="event_hours">Hora (24 horas)</label>
+		<input class="f ff" type="text" name="event_hours" size="2" value="" />
+		<input class="f ff" type="text" name="event_minutes" size="2" value="" />
+		
+		<span class="clear"></span>
+		
+		<label for="event_artists">Artistas de Rock Republik</label>
+		<textarea id="event_artists" name="event_artists"></textarea>
+		
+		<input type="submit" name="submit" value="{L_SUBMIT}" />
+	</form>
+</div>
 
 <!-- INCLUDE page.footer.htm -->

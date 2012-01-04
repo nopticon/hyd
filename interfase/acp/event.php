@@ -38,7 +38,7 @@ class __event extends mac {
 			$filepath_1 = $filepath . 'future/';
 			$filepath_2 = $filepath_1 . 'thumbnails/';
 			
-			$f = $upload->process($filepath_1, $_FILES['add_image'], array('jpg', 'jpeg'), $i_size);
+			$f = $upload->process($filepath_1, $_FILES['event_image'], w('jpg jpeg'));
 			
 			if (!sizeof($upload->error) && $f !== false) {
 				$sql = 'SELECT MAX(id) AS total
@@ -46,15 +46,15 @@ class __event extends mac {
 				$img = sql_field($sql, 'total', 0);
 				
 				// Create vars
-				$e_title = request_var('e_title', '');
-				$e_artist = request_var('e_artist', '', true);
-				$e_year = request_var('e_year', 0);
-				$e_month = request_var('e_month', 0);
-				$e_day = request_var('e_day', 0);
-				$e_hour = request_var('e_hour', 0);
-				$e_mins = request_var('e_mins', 0);
+				$event_name = request_var('event_name', '');
+				$event_artists = request_var('event_artists', '', true);
+				$event_year = request_var('event_year', 0);
+				$evemt_month = request_var('event_month', 0);
+				$event_day = request_var('event_day', 0);
+				$event_houra = request_var('event_hours', 0);
+				$event_minutes = request_var('event_minutes', 0);
 				
-				$v_date = gmmktime($e_hour, $e_mins, 0, $e_month, $e_day, $e_year) - $user->timezone - $user->dst;
+				$v_date = gmmktime($event_hours, $event_minutes, 0, $event_month, $event_day, $event_year) - $user->timezone - $user->dst;
 				
 				foreach ($f as $row) {
 					$img++;
@@ -65,9 +65,12 @@ class __event extends mac {
 					}
 					$xb = $upload->resize($row, $filepath_1, $filepath_2, $img, array(100, 75), false, false);
 					
+					$event_alias = friendly($event_name);
+					
 					$insert = array(
 						'id' => (int) $img,
-						'title' => $e_title,
+						'event_alias' => $event_alias,
+						'title' => $event_name,
 						'archive' => '',
 						'date' => (int) $v_date
 					);
@@ -75,8 +78,8 @@ class __event extends mac {
 					$event_id = sql_query_nextid();
 					
 					//
-					$ex_artist = explode("\n", $e_artist);
-					foreach ($ex_artist as $row) {
+					$artists_ary = explode("\n", $event_artists);
+					foreach ($artists_ary as $row) {
 						$subdomain = get_subdomain($row);
 						
 						$sql = 'SELECT *
@@ -95,14 +98,17 @@ class __event extends mac {
 					// Alice: Create topic
 					$event_url = $config['events_url'] . 'future/' . $img  . '.jpg';
 					
-					$post_message = '<div class="a_center"> ' . $event_url . ' </div>';
+					//$post_message = '<div class="a_mid"> ' . $event_url . ' </div>';
+					$post_message = 'Evento publicado.';
 					$post_time = time();
+					$forum_id = 21;
+					$poster_id = 1433;
 					
 					$insert = array(
 						'topic_title' => $e_title,
-						'topic_poster' => 1433,
+						'topic_poster' => $poster_id,
 						'topic_time' => $post_time,
-						'forum_id' => 21,
+						'forum_id' => $forum_id,
 						'topic_locked' => 0,
 						'topic_announce' => 0,
 						'topic_important' => 0,
@@ -115,8 +121,8 @@ class __event extends mac {
 					
 					$insert = array(
 						'topic_id' => (int) $topic_id,
-						'forum_id' => 21,
-						'poster_id' => 1433,
+						'forum_id' => $forum_id,
+						'poster_id' => $poster_id,
 						'post_time' => $post_time,
 						'poster_ip' => $user->ip,
 						'post_text' => $post_message,
@@ -131,24 +137,23 @@ class __event extends mac {
 					
 					$insert = array(
 						'topic_id' => (int) $topic_id,
-						'vote_text' => '&iquest;Asistir&aacute;s a ' . $e_title . '?',
+						'vote_text' => '&iquest;Asistir&aacute;s a ' . $event_name . '?',
 						'vote_start' => time(),
 						'vote_length' => (int) ($poll_length * 86400)
 					);
 					$sql = 'INSERT INTO _poll_options' . sql_build('INSERT', $insert);
 					$poll_id = sql_query_nextid();
 					
-					$poll_options = array('Si asistir&eacute;', 'No asistir&eacute;');
+					$poll_options = array(1 => 'Si asistir&eacute;');
 					
-					$poll_option_id = 1;
-					foreach ($poll_options as $option) {
-						$insert_data['POLLRESULTS'][$poll_option_id] = array(
+					foreach ($poll_options as $option_id => $option_text) {
+						$sql_insert = array(
 							'vote_id' => (int) $poll_id,
-							'vote_option_id' => (int) $poll_option_id,
-							'vote_option_text' => $option,
+							'vote_option_id' => (int) $option_id,
+							'vote_option_text' => $option_text,
 							'vote_result' => 0
 						);
-						$sql = 'INSERT INTO _poll_results' . sql_build('INSERT', $insert_data['POLLRESULTS'][$poll_option_id]);
+						$sql = 'INSERT INTO _poll_results' . sql_build('INSERT', $sql_insert);
 						sql_query($sql);
 						
 						$poll_option_id++;
@@ -164,13 +169,13 @@ class __event extends mac {
 					
 					$sql = 'UPDATE _members SET user_posts = user_posts + 1
 						WHERE user_id = ?';
-					sql_query(sql_filter($sql, $user->data['user_id']));
+					sql_query(sql_filter($sql, $poster_id));
 					
 					// Notify
 					$user->save_unread(UH_T, $topic_id);
 				}
 				
-				redirect(s_link('topic', $topic_id));
+				redirect(s_link('event', $event_alias));
 			}
 
 			$template->assign_block_vars('error', array(
