@@ -150,6 +150,7 @@ class _events extends downloads {
 				}
 				
 				if (!$imagedata = sql_fieldrow($sql)) {
+					_pre('a', true);
 					redirect(s_link('events', $this->v('event_alias')));
 				}
 				break;
@@ -227,7 +228,6 @@ class _events extends downloads {
 					);
 					$sql = 'INSERT INTO _poll_voters' . sql_build('INSERT', $insert_vote);
 					sql_query($sql);
-					_pre('b', true);
 				}
 				
 				redirect(s_link('events', $this->v('event_alias')));
