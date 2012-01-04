@@ -192,6 +192,7 @@ class _events extends downloads {
 				}
 				
 				if (!$choice) {
+					_pre('a', true);
 					redirect(s_link('events', $this->v('event_alias')));
 				}
 				
