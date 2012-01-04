@@ -53,6 +53,7 @@ class __event extends mac {
 				$event_day = request_var('event_day', 0);
 				$event_hours = request_var('event_hours', 0);
 				$event_minutes = request_var('event_minutes', 0);
+				$event_current_topic = request_var('event_current_topic', 0);
 				
 				$v_date = gmmktime($event_hours, $event_minutes, 0, $event_month, $event_day, $event_year) - $user->timezone - $user->dst;
 				
@@ -105,25 +106,38 @@ class __event extends mac {
 					$event_url = $config['events_url'] . 'future/' . $img  . '.jpg';
 					
 					//$post_message = '<div class="a_mid"> ' . $event_url . ' </div>';
-					$post_message = 'Evento publicado.';
+					$post_message = 'Evento publicado';
 					$post_time = time();
 					$forum_id = 21;
 					$poster_id = 1433;
 					
-					$insert = array(
-						'topic_title' => $event_name,
-						'topic_poster' => $poster_id,
-						'topic_time' => $post_time,
-						'forum_id' => $forum_id,
-						'topic_locked' => 0,
-						'topic_announce' => 0,
-						'topic_important' => 0,
-						'topic_vote' => 1,
-						'topic_featured' => 1,
-						'topic_points' => 1
-					);
-					$sql = 'INSERT INTO _forum_topics' . sql_build('INSERT', $insert);
-					$topic_id = sql_query_nextid($sql);
+					$sql = 'SELECT *
+						FROM _forum_topics
+						WHERE topic_id = ?';
+					if (!$row_current_topic = sql_fieldrow(sql_filter($sql, $event_current_topic))) {
+						$insert = array(
+							'topic_title' => $event_name,
+							'topic_poster' => $poster_id,
+							'topic_time' => $post_time,
+							'forum_id' => $forum_id,
+							'topic_locked' => 0,
+							'topic_announce' => 0,
+							'topic_important' => 0,
+							'topic_vote' => 1,
+							'topic_featured' => 1,
+							'topic_points' => 1
+						);
+						$sql = 'INSERT INTO _forum_topics' . sql_build('INSERT', $insert);
+						$topic_id = sql_query_nextid($sql);
+						
+						$event_current_topic = 0;
+					} else {
+						$topic_id = $event_current_topic;
+						
+						$post_message .= ' en la secci&oacute;n de eventos';
+					}
+					
+					$post_message .= '.';
 					
 					$insert = array(
 						'topic_id' => (int) $topic_id,
@@ -165,9 +179,9 @@ class __event extends mac {
 						$poll_option_id++;
 					}
 					
-					$sql = 'UPDATE _forums SET forum_posts = forum_posts + 1, forum_last_topic_id = ?, forum_topics = forum_topics + 1
-						WHERE forum_id = 21';
-					sql_query(sql_filter($sql, $topic_id));
+					$sql = 'UPDATE _forums SET forum_posts = forum_posts + 1, forum_last_topic_id = ?' . ((!$event_current_topic) ? ', forum_topics = forum_topics + 1 ' : '') . '
+						WHERE forum_id = ?';
+					sql_query(sql_filter($sql, $topic_id, $forum_id));
 					
 					$sql = 'UPDATE _forum_topics SET topic_first_post_id = ?, topic_last_post_id = ?
 						WHERE topic_id = ?';
@@ -186,6 +200,20 @@ class __event extends mac {
 
 			$template->assign_block_vars('error', array(
 				'MESSAGE' => parse_error($upload->error))
+			);
+		}
+		
+		$sql = 'SELECT topic_id, topic_title
+			FROM _forum_topics
+			ORDER BY topic_time DESC';
+		$topics = sql_rowset($sql);
+		
+		foreach ($topics as $i => $row) {
+			if (!$i) $template->assign_block_vars('topics', array());
+			
+			$template->assign_block_vars('topics.row', array(
+				'TOPIC_ID' => $row['topic_id'],
+				'TOPIC_TITLE' => $row['topic_title'])
 			);
 		}
 		

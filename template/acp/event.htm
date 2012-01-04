@@ -33,6 +33,17 @@
 		<label for="event_artists">Artistas de Rock Republik</label>
 		<textarea id="event_artists" name="event_artists"></textarea>
 		
+		<span class="clear"></span>
+		
+		<!-- BEGIN topics -->
+		<label for="event_current_topic">Tema actual (opcional)</label>
+		<select name="event_current_topic">
+		<!-- BEGIN row -->
+		<option value="{row.TOPIC_ID}">{row.TOPIC_TITLE}</option>
+		<!-- END row -->
+		</select>
+		<!-- END topics -->
+		
 		<input type="submit" name="submit" value="{L_SUBMIT}" />
 	</form>
 </div>
