@@ -204,8 +204,10 @@ class __event extends mac {
 		}
 		
 		$sql = 'SELECT topic_id, topic_title
-			FROM _forum_topics
-			WHERE forum_id = 21
+			FROM _forum_topics t
+			LEFT OUTER JOIN _events e ON t.topic_id = e.event_topic
+			WHERE e.event_topic IS NULL
+				AND forum_id = 21
 			ORDER BY topic_time DESC';
 		$topics = sql_rowset($sql);
 		
