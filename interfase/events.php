@@ -127,6 +127,7 @@ class _events extends downloads {
 			case 'rsvp':
 				$download_id = request_var('download_id', 0);
 				if (!$download_id) {
+					_pre('aa', true);
 					redirect(s_link('events', $this->v('event_alias')));
 				}
 				
