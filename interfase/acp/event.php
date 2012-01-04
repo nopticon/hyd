@@ -71,7 +71,8 @@ class __event extends mac {
 						'event_alias' => $event_alias,
 						'title' => $event_name,
 						'archive' => '',
-						'date' => (int) $v_date
+						'date' => (int) $v_date,
+						'event_update' => time()
 					);
 					$sql = 'INSERT INTO _events' . sql_build('INSERT', $insert);
 					$event_id = sql_query_nextid($sql);

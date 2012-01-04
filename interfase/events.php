@@ -83,7 +83,7 @@ class _events extends downloads {
 				'URL' => s_link('events', $row['event_alias']),
 				'TITLE' => $row['title'],
 				'DATE' => $user->format_date($row['date'], $user->lang['DATE_FORMAT']),
-				'IMAGE' => $config['events_url'] . 'future/thumbnails/' . $row['id'] . '.jpg')
+				'IMAGE' => $config['events_url'] . 'future/thumbnails/' . $row['id'] . '.jpg?u=' . $row['event_update'])
 			); 
 		}
 		
@@ -109,7 +109,7 @@ class _events extends downloads {
 			$template->assign_block_vars('last_event', array(
 				'URL' => s_link('events', $row['event_alias']),
 				'TITLE' => $row['title'],
-				'IMAGE' => $config['events_url'] . 'gallery/' . $row['id'] . '/thumbnails/' . $row2['image'] . '.jpg')
+				'IMAGE' => $config['events_url'] . 'gallery/' . $row['id'] . '/thumbnails/' . $row2['image'] . '.jpg?u=' . $row['event_update'])
 			);
 		}
 		
@@ -479,7 +479,7 @@ class _events extends downloads {
 					}
 				} else {
 					$template->assign_block_vars('event_flyer', array(
-						'IMAGE_SRC' => $config['events_url'] . 'future/' . $this->v('id') . '.jpg')
+						'IMAGE_SRC' => $config['events_url'] . 'future/' . $this->v('id') . '.jpg?u=' . $this->v('event_update'))
 					);
 				}
 				
@@ -744,7 +744,7 @@ class _events extends downloads {
 					'TITLE' => $item['title'],
 					'DATE' => $user->format_date($item['date'], $user->lang['DATE_FORMAT']),
 					'THUMBNAIL' => $config['events_url'] . 'future/thumbnails/' . $item['id'] . '.jpg',
-					'SRC' => $config['events_url'] . 'future/' . $item['id'] . '.jpg',
+					'SRC' => $config['events_url'] . 'future/' . $item['id'] . '.jpg?u=' . $item['event_update'],
 					'U_TOPIC' => s_link('events', $item['id']))
 				);
 			}

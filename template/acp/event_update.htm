@@ -1,23 +1,26 @@
 <!-- INCLUDE page.header.htm -->
 
-<form action="{MODULE_URL}" method="post" enctype="multipart/form-data" name="post">
-	<div>{L_CONTROL_NEWS_ADD_IMAGE}</div>
-	
-	<div class="pad_top">
+<!-- INCLUDE acp/error.htm -->
+
+<div class="pad_top publish">
+	<div class="h"><h3>{L_UE}</h3></div>
+	<form action="{MODULE_URL}" method="post" enctype="multipart/form-data">
 		<input type="hidden" name="MAX_FILE_SIZE" value="{UPLOAD_MAXSIZE}" />
-		<input type="file" name="add_image[]" size="25" />
-	</div>
-	
-	<div class="pad_top">
-		Evento<br />
-		<select name="event_id">
+		{S_HIDDEN}
+		
+		<input class="f ff" type="file" name="event_image[]" />
+		
+		<span class="clear"></span>
+		
+		<label for="event_name">Nombre de evento</label>
+		<select name="event_name">
 			<!-- BEGIN event_list -->
 			<option value="{event_list.EVENT_ID}">{event_list.EVENT_TITLE} - {event_list.EVENT_DATE}</option>
 			<!-- END event_list -->
-			</select>
-		</div>
+		</select>
 		
-		<div class="pad_top a_mid">{S_HIDDEN}<input type="submit" class="submit" name="submit" value="{L_SUBMIT}" /></div>
-</form>
+		<input type="submit" name="submit" value="{L_SUBMIT}" />
+	</form>
+</div>
 
 <!-- INCLUDE page.footer.htm -->
