@@ -36,13 +36,15 @@
 		<span class="clear"></span>
 		
 		<!-- BEGIN topics -->
-		<label for="event_current_topic">Tema actual (opcional)</label>
+		<div class="pad_top">
+			<label for="event_current_topic">Tema actual (opcional)</label>
 		<select name="event_current_topic">
 			<option value="0">--</option>
 			<!-- BEGIN row -->
 			<option value="{row.TOPIC_ID}">{row.TOPIC_TITLE}</option>
 			<!-- END row -->
 		</select>
+		</div>
 		<!-- END topics -->
 		
 		<input type="submit" name="submit" value="{L_SUBMIT}" />
