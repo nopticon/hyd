@@ -205,6 +205,7 @@ class __event extends mac {
 		
 		$sql = 'SELECT topic_id, topic_title
 			FROM _forum_topics
+			WHERE forum_id = 21
 			ORDER BY topic_time DESC';
 		$topics = sql_rowset($sql);
 		
