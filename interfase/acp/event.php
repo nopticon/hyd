@@ -68,14 +68,13 @@ class __event extends mac {
 					$event_alias = friendly($event_name);
 					
 					$insert = array(
-						'id' => (int) $img,
 						'event_alias' => $event_alias,
 						'title' => $event_name,
 						'archive' => '',
 						'date' => (int) $v_date
 					);
 					$sql = 'INSERT INTO _events' . sql_build('INSERT', $insert);
-					$event_id = sql_query_nextid();
+					$event_id = sql_query_nextid($sql);
 					
 					//
 					$artists_ary = explode("\n", $event_artists);
@@ -105,7 +104,7 @@ class __event extends mac {
 					$poster_id = 1433;
 					
 					$insert = array(
-						'topic_title' => $e_title,
+						'topic_title' => $event_name,
 						'topic_poster' => $poster_id,
 						'topic_time' => $post_time,
 						'forum_id' => $forum_id,
@@ -173,9 +172,9 @@ class __event extends mac {
 					
 					// Notify
 					$user->save_unread(UH_T, $topic_id);
+					
+					redirect(s_link('events', $event_alias));
 				}
-				
-				redirect(s_link('event', $event_alias));
 			}
 
 			$template->assign_block_vars('error', array(
