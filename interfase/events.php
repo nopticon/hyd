@@ -127,33 +127,40 @@ class _events extends downloads {
 			case 'rsvp':
 				$download_id = request_var('download_id', 0);
 				if (!$download_id) {
-					_pre('aa', true);
 					redirect(s_link('events', $this->v('event_alias')));
 				}
 				
-				if ($mode == 'view') {
-					$sql = 'SELECT e.*, COUNT(e2.image) AS prev_images
-						FROM _events_images e, _events_images e2
-						WHERE e.event_id = ?
-							AND e.event_id = e2.event_id
-							AND e.image = ?
-							AND e2.image <= ?
-						GROUP BY e.image 
-						ORDER BY e.image ASC';
-					$sql = sql_filter($sql, $this->v('id'), $download_id, $download_id);
-				} else {
-					$sql = 'SELECT e2.*
-						FROM _events_images e2
-						LEFT JOIN _events e ON e.id = e2.event_id
-						WHERE e2.event_id = ?
-							AND e2.image = ?';
-					$sql = sql_filter($sql, $this->v('id'), $download_id);
+				switch ($mode) {
+					case 'view':
+						$sql = 'SELECT e.*, COUNT(e2.image) AS prev_images
+							FROM _events_images e, _events_images e2
+							WHERE e.event_id = ?
+								AND e.event_id = e2.event_id
+								AND e.image = ?
+								AND e2.image <= ?
+							GROUP BY e.image 
+							ORDER BY e.image ASC';
+						$sql = sql_filter($sql, $this->v('id'), $download_id, $download_id);
+						break;
+					case 'rsvp':
+						$sql = '';
+						break;
+					default:
+						$sql = 'SELECT e2.*
+							FROM _events_images e2
+							LEFT JOIN _events e ON e.id = e2.event_id
+							WHERE e2.event_id = ?
+								AND e2.image = ?';
+						$sql = sql_filter($sql, $this->v('id'), $download_id);
+						break;
 				}
 				
-				if (!$imagedata = sql_fieldrow($sql)) {
-					_pre('a', true);
-					redirect(s_link('events', $this->v('event_alias')));
+				if (!empty($sql)) {
+					if (!$imagedata = sql_fieldrow($sql)) {
+						redirect(s_link('events', $this->v('event_alias')));
+					}
 				}
+				
 				break;
 		}
 		
