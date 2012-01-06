@@ -302,6 +302,8 @@ class _events extends downloads {
 				require_once(ROOT . 'interfase/comments.php');
 				$comments = new _comments();
 				
+				$mod_auth = $user->_team_auth('mod');
+				
 				$error = array();
 				$forum_id = $event_topic['forum_id'];
 				$submit_reply = (isset($_POST['post']));
@@ -593,7 +595,7 @@ class _events extends downloads {
 					}
 					
 					if ($user->data['is_member']) {
-						$controls[$row['post_id']]['reply'] = s_link('post', array($row['post_id'], 'reply')) . '#reply';
+						$controls[$row['post_id']]['reply'] = s_link('events', array($this->v('event_alias'), $row['post_id'], 'reply')) . '#reply';
 						
 						if ($mod_auth) {
 							$controls[$row['post_id']]['edit'] = s_link('mcp', array('edit', $row['post_id']));

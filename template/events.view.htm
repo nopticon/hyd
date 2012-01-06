@@ -128,6 +128,18 @@ $(function() {
 <div id="comment-{row.S_ROW_COUNT}">
 <h3><strong>{row.S_ROW_COUNT}</strong><span>.</span> <em><a href="{row.PROFILE}"><img src="{row.USER_AVATAR}" alt="{row.USERNAME}'s Avatar" /></a></em><cite><a href="{row.PROFILE}">{row.USERNAME}</a></cite> <span>dijo:</span></h3>
 <blockquote>
+<!-- BEGIN controls -->
+<div class="pad_top ctl el_right a_right">
+	<ul>
+		<!-- BEGIN reply --><li><a href="{reply.URL}">{L_CMT_REPLY}</a><!-- END reply -->
+		<!-- BEGIN report --><li><a href="{report.URL}">{L_CMT_REPORT}</a><!-- END report -->
+		<!-- BEGIN edit --><li><a href="{edit.URL}">{L_CMT_EDIT}</a><!-- END edit -->
+		<!-- BEGIN restore --><li><a href="{restore.URL}"><span class="red">{L_CMT_RESTORE}</span></a><!-- END restore -->
+		<!-- BEGIN delete --><li><a onclick="return confirm('&iquest;Confirmas borrar el mensaje?');" href="{delete.URL}">{L_CMT_DELETE}</a><!-- END delete -->
+	</ul>
+</div>
+<span class="clear"></span>
+<!-- END controls -->
 <p>{row.MESSAGE}</p>
 <p class="dtposted">{row.DATETIME}</p>
 </blockquote>
