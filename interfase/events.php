@@ -307,6 +307,11 @@ class _events extends downloads {
 				$error = array();
 				$forum_id = $event_topic['forum_id'];
 				$submit_reply = (isset($_POST['post']));
+				$reply = request_var('reply', 0);
+				
+				if ($reply) {
+					$post_reply = request_var('p', 0);
+				}
 				
 				$is_auth = $auth->forum(AUTH_ALL, $forum_id, $event_topic);
 				$u_event_alias = s_link('events', $this->v('event_alias'));
@@ -331,6 +336,10 @@ class _events extends downloads {
 					}
 					
 					$post_message = request_var('message', '', true);
+					
+					if ($reply) {
+						$post_reply_message = request_var('reply_message', '', true);
+					}
 					
 					// Check message
 					if (empty($post_message)) {
@@ -595,7 +604,7 @@ class _events extends downloads {
 					}
 					
 					if ($user->data['is_member']) {
-						$controls[$row['post_id']]['reply'] = s_link('events', array($this->v('event_alias'), $row['post_id'], 'reply')) . '#reply';
+						$controls[$row['post_id']]['reply'] = s_link('events', array($this->v('event_alias'), $row['post_id'], 'reply'));
 						
 						if ($mod_auth) {
 							$controls[$row['post_id']]['edit'] = s_link('mcp', array('edit', $row['post_id']));

@@ -30,7 +30,7 @@ if (!$topic_id && !$post_id) {
 
 //
 // Load sidebar
-sidebar('events');
+//sidebar('events');
 
 //
 // Get topic data
