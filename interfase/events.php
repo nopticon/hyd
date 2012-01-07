@@ -381,6 +381,20 @@ class _events extends downloads {
 					
 					$post_message = $comments->prepare($post_message);
 					
+					if ($reply && $post_reply_message != '') {
+						$post_reply_message = preg_replace('#(^|[\n ]|\()(http|https|ftp)://([a-z0-9\-\.,\?!%\*_:;~\\&$@/=\+]+)(gif|jpg|jpeg|png)#ie', '', $post_reply_message);
+					}
+					
+					if ($reply && empty($post_reply_message)) {
+						$post_reply_message = '...';
+					}
+	
+					if ($reply && $post_reply_message != '') {
+						$post_message = '<blockquote><strong>' . $topic_data['reply_username'] . "</strong>\n\n" . $post_reply_message . '</blockquote><br /> ' . $post_message;
+					} else {
+						$reply = 0;
+					}
+					
 					$insert_data = array(
 						'topic_id' => (int) $this->v('event_topic'),
 						'forum_id' => (int) $forum_id,
