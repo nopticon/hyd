@@ -28,6 +28,8 @@ _pre($_SERVER['HTTP_USER_AGENT']);
 _pre($_SERVER['REMOTE_ADDR']);
 _pre($_SERVER['HTTP_X_FORWARDED_FOR']);
 
+_pre(get_real_ip());
+
 _pre($_COOKIE);
 _pre($_SESSION);
 
