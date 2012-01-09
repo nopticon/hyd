@@ -22,6 +22,8 @@ require_once('./interfase/common.php');
 $user->init();
 $user->setup();
 
+_pre($user->ip);
+
 _pre($_COOKIE);
 _pre($_SESSION);
 
