@@ -25,6 +25,6 @@ $user->setup();
 _pre($_COOKIE);
 _pre($_SESSION);
 
-_pre($user);
+_pre($user->data);
 
 ?>
