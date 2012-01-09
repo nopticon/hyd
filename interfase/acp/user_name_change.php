@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-class __user_name_changes extends mac {
+class __user_name_change extends mac {
 	public function __construct() {
 		parent::__construct();
 		
