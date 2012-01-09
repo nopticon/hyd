@@ -31,8 +31,7 @@ class session {
 		$this->time = time();
 		$this->browser = (!empty($_SERVER['HTTP_USER_AGENT'])) ? $_SERVER['HTTP_USER_AGENT'] : '';
 		$this->page = requested_page();
-		$this->ip = (!empty($_SERVER['REMOTE_ADDR'])) ? htmlspecialchars($_SERVER['REMOTE_ADDR']) : '';
-		$this->ip = (!empty($this->ip)) ? $this->ip : htmlspecialchars($_SERVER['HTTP_X_FORWARDED_FOR']);
+		$this->ip = htmlspecialchars(get_real_ip());
 		
 		if (empty($this->ip) && !$bypass_empty_ip) {
 			fatal_error('600');

@@ -86,8 +86,12 @@ function request_var($var_name, $default, $multibyte = false) {
 }
 
 function get_real_ip() {
+	$_SERVER['HTTP_X_FORWARDED_FOR'] = (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : ''; 
+	$_SERVER['REMOTE_ADDR'] = (isset($_SERVER['REMOTE_ADDR'])) ? $_SERVER['REMOTE_ADDR'] : '';
+	$_ENV['REMOTE_ADDR'] = (isset($_ENV['REMOTE_ADDR'])) ? $_ENV['REMOTE_ADDR'] : '';
+	
 	if ($_SERVER['HTTP_X_FORWARDED_FOR'] != '') {
-		$client_ip = (!empty($_SERVER['REMOTE_ADDR'])) ? $_SERVER['REMOTE_ADDR'] : ((!empty($_ENV['REMOTE_ADDR'])) ? $_ENV['REMOTE_ADDR'] : 'unknown');
+		$client_ip = (!empty($_SERVER['REMOTE_ADDR'])) ? $_SERVER['REMOTE_ADDR'] : ((!empty($_ENV['REMOTE_ADDR'])) ? $_ENV['REMOTE_ADDR'] : '');
 		
 		// Los proxys van añadiendo al final de esta cabecera
 		// las direcciones ip que van "ocultando". Para localizar la ip real
@@ -112,7 +116,7 @@ function get_real_ip() {
 			}
 		}
 	} else {
-		$client_ip = (!empty($_SERVER['REMOTE_ADDR'])) ? $_SERVER['REMOTE_ADDR'] : ((!empty($_ENV['REMOTE_ADDR'])) ? $_ENV['REMOTE_ADDR'] : 'unknown');
+		$client_ip = (!empty($_SERVER['REMOTE_ADDR'])) ? $_SERVER['REMOTE_ADDR'] : ((!empty($_ENV['REMOTE_ADDR'])) ? $_ENV['REMOTE_ADDR'] : '');
 	}
 	
 	return $client_ip;
