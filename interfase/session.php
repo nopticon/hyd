@@ -230,8 +230,8 @@ class session {
 		
 		$sql = 'UPDATE _sessions SET ??
 			WHERE session_id = ?';
-		sql_query(sql_filter($sql, sql_build('UPDATE', $sql_ary, $this->session_id)));
-
+		sql_query(sql_filter($sql, sql_build('UPDATE', $sql_ary), $this->session_id));
+		
 		if (!$this->session_id || !sql_affectedrows()) {
 			$this->session_id = $this->data['session_id'] = md5(unique_id());
 
@@ -243,7 +243,6 @@ class session {
 		
 		if (!$bot) {
 			$cookie_expire = $this->time + 31536000;
-			$cookie_expire2 = $this->time + 3600;
 			
 			$this->set_cookie('u', $this->cookie_data['u'], $cookie_expire);
 			$this->set_cookie('sid', $this->session_id, 0);
@@ -254,7 +253,7 @@ class session {
 
 			unset($cookie_expire);
 		}
-		
+
 		return true;
 	}
 	
