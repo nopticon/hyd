@@ -311,10 +311,20 @@ class _events extends downloads {
 				
 				if ($reply) {
 					$post_reply = request_var('p', 0);
+					
+					$sql = 'SELECT p.*, u.user_id, u.username
+						FROM _forum_posts p, _members u
+						WHERE p.post_id = ?
+							AND u.user_id = p.poster_id
+							AND p.post_deleted = 0';
+					if (!$post_data = sql_fieldrow(sql_filter($sql, $post_reply))) {
+						redirect(s_link('events', $this->v('event_alias')));
+					}
 				}
 				
 				$is_auth = $auth->forum(AUTH_ALL, $forum_id, $event_topic);
 				$u_event_alias = s_link('events', $this->v('event_alias'));
+				$u_event_publish = ($reply) ? s_link('events', array($this->v('event_alias'), $post_reply, 'reply')) : $u_event_alias;
 				
 				if ($submit_reply) {
 					$auth_key = 'auth_reply';
@@ -390,7 +400,7 @@ class _events extends downloads {
 					}
 	
 					if ($reply && $post_reply_message != '') {
-						$post_message = '<blockquote><strong>' . $topic_data['reply_username'] . "</strong>\n\n" . $post_reply_message . '</blockquote><br /> ' . $post_message;
+						$post_message = '<blockquote><strong>' . $post_data['username'] . "</strong>\n\n" . $post_reply_message . '</blockquote><br /> ' . $post_message;
 					} else {
 						$reply = 0;
 					}
@@ -404,6 +414,10 @@ class _events extends downloads {
 						'post_text' => $post_message,
 						'post_np' => ''
 					);
+					if ($reply) {
+						$insert_data['post_reply'] = $post_reply;
+					}
+					
 					$sql = 'INSERT INTO _forum_posts' . sql_build('INSERT', $insert_data);
 					$post_id = sql_query_nextid($sql);
 				
@@ -532,7 +546,8 @@ class _events extends downloads {
 				$template->assign_vars(array(
 					'EVENT_NAME' => $this->v('title'),
 					'EVENT_DATE' => $event_date_format,
-					'EVENT_URL' => $u_event_alias)
+					'EVENT_URL' => $u_event_alias,
+					'EVENT_PUBLISH' => $u_event_publish)
 				);
 				
 				$posts_offset = request_var('ps', 0);
@@ -664,6 +679,25 @@ class _events extends downloads {
 					$template->assign_block_vars('publish', array(
 						'REF' => $publish_ref)
 					);
+					
+					if ($reply) {
+						if (empty($post_reply_message)) {
+							$post_reply_message = $comments->remove_quotes($post_data['post_text']);
+						}
+						
+						if (!empty($post_reply_message)) {
+							$rx = array('#(^|[\n ]|\()(http|https|ftp)://([a-z0-9\-\.,\?!%\*_:;~\\&$@/=\+]+)(gif|jpg|jpeg|png)#is', '#\[yt:[0-9a-zA-Z\-\=\_]+\]#is', '#\[sb\]#is', '#\[\/sb\]#is');
+							$post_reply_message = preg_replace($rx, '', $post_reply_message);
+						}
+						
+						if (empty($post_reply_message)) {
+							$post_reply_message = '...';
+						}
+						
+						$template->assign_block_vars('publish.reply', array(
+							'MESSAGE' => $post_reply_message)
+						);
+					}
 				}
 				
 				break;

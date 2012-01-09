@@ -528,12 +528,12 @@ if ((!$topic_data['forum_locked'] && !$topic_data['topic_locked']) || $can_reply
 				if (empty($post_reply_message)) {
 					$post_reply_message = $comments->remove_quotes($topic_data['post_text']);
 				}
-
+				
 				if (!empty($post_reply_message)) {
 					$rx = array('#(^|[\n ]|\()(http|https|ftp)://([a-z0-9\-\.,\?!%\*_:;~\\&$@/=\+]+)(gif|jpg|jpeg|png)#is', '#\[yt:[0-9a-zA-Z\-\=\_]+\]#is', '#\[sb\]#is', '#\[\/sb\]#is');
 					$post_reply_message = preg_replace($rx, '', $post_reply_message);
 				}
-
+				
 				if (empty($post_reply_message)) {
 					$post_reply_message = '...';
 				}

@@ -107,15 +107,31 @@ $(function() {
 <div class="x2">
 <div class="publish">
 	<div class="h"><h3>{L_SEND_POST} <a class="smile" href="{S_EMOTICONS}">@</a></h3></div>
-	<form action="{EVENT_URL}" method="post" name="post">
+	<form action="{EVENT_PUBLISH}" method="post" name="post">
 		<!-- BEGIN hide -->
 		<input type="hidden" name="ref" value="{publish.REF}" />
 		<!-- END hide -->
 		<textarea id="comment" name="message"></textarea>
+		<!-- BEGIN reply -->
+		<div class="pad_top"><label for="comment_reply">{L_ORIGINAL_POST}</label></div>
+		<div class="pad_top"><textarea class="x2" id="comment_reply" name="reply_message" rows="2">{reply.MESSAGE}</textarea></div>
+		<!-- END reply -->
 		<input type="submit" name="post" value="{L_SUBMIT}" />
 	</form>
 </div>
 </div>
+
+<!-- BEGIN reply -->
+<script type="text/javascript">
+function sss() {
+	$.scrollTo('.publish');
+}
+
+$(function() {
+	setTimeout("sss();", 100);
+});
+</script>
+<!-- END reply -->
 <!-- END publish -->
 
 <!-- BEGIN messages -->
