@@ -180,6 +180,10 @@ function monetize() {
 		}
 	}
 	
+	if (!is_array($monetize) || !count($monetize)) {
+		return;
+	}
+	
 	$set_blocks = array();
 	
 	$i = 0;
