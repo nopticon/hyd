@@ -619,15 +619,24 @@ foreach ($result as $row) {
 			
 			$sql = 'DELETE FROM _poll_options
 				WHERE vote_id IN (??)';
-			sql_query(sql_filtert($sql, $poll_ary));
+			sql_query(sql_filter($sql, $poll_ary));
 			
 			$sql = 'DELETE FROM _poll_results
 				WHERE vote_id IN (??)';
-			sql_query(sql_filtert($sql, $poll_ary));
+			sql_query(sql_filter($sql, $poll_ary));
 			
 			$sql = 'DELETE FROM _poll_voters
 				WHERE vote_id IN (??)';
-			sql_query(sql_filtert($sql, $poll_ary));
+			sql_query(sql_filter($sql, $poll_ary));
+		}
+		
+		$sql = 'SELECT id
+			FROM _events
+			WHERE event_topic = ?';
+		if ($event_id = sql_field(sql_filter($sql, $topic_id), 'id', 0)) {
+			$sql = 'DELETE FROM _events
+				WHERE id = ?';
+			sql_query(sql_filter($sql, $event_id));
 		}
 	
 		//
