@@ -167,35 +167,10 @@ function sql_rowset($sql, $a = false, $b = false, $global = false, $type = MYSQL
 	return $arr;
 }
 
-function _rowset_style($sql, $style, $prefix = '') {
-	$a = sql_rowset($sql);
-	_rowset_foreach($a, $style, $prefix);
+function sql_truncate($table) {
+	$sql = 'TRUNCATE TABLE ??';
 	
-	return $a;
-}
-
-function _rowset_foreach($rows, $style, $prefix = '') {
-	$i = 0;
-	foreach ($rows as $row) {
-		if (!$i) _style($style);
-		
-		_rowset_style_row($row, $style, $prefix);
-		$i++;
-	}
-	
-	return;
-}
-
-function _rowset_style_row($row, $style, $prefix = '') {
-	if (f($prefix)) $prefix .= '_';
-	
-	$f = w();
-	foreach ($row as $_f => $_v) {
-		$g = array_key(array_slice(explode('_', $_f), -1), 0);
-		$f[strtoupper($prefix . $g)] = $_v;
-	}
-	
-	return _style($style . '.row', $f);
+	return sql_query(sql_filter($sql, $table));
 }
 
 function sql_close() {
@@ -251,6 +226,15 @@ function sql_escape($sql) {
 function sql_build($cmd, $a, $b = false) {
 	global $db;
 	
+	if (is_object($a)) {
+		$_a = array();
+		foreach ($a as $a_k => $a_v) {
+			$_a[$a_k] = $a_v;
+		}
+		
+		$a = $_a;
+	}
+	
 	return '/***/' . $db->build($cmd, $a, $b);
 }
 
@@ -277,6 +261,37 @@ function sql_history() {
 	global $db;
 	
 	return $db->history();
+}
+
+function _rowset_style($sql, $style, $prefix = '') {
+	$a = sql_rowset($sql);
+	_rowset_foreach($a, $style, $prefix);
+	
+	return $a;
+}
+
+function _rowset_foreach($rows, $style, $prefix = '') {
+	$i = 0;
+	foreach ($rows as $row) {
+		if (!$i) _style($style);
+		
+		_rowset_style_row($row, $style, $prefix);
+		$i++;
+	}
+	
+	return;
+}
+
+function _rowset_style_row($row, $style, $prefix = '') {
+	if (f($prefix)) $prefix .= '_';
+	
+	$f = w();
+	foreach ($row as $_f => $_v) {
+		$g = array_key(array_slice(explode('_', $_f), -1), 0);
+		$f[strtoupper($prefix . $g)] = $_v;
+	}
+	
+	return _style($style . '.row', $f);
 }
 
 ?>

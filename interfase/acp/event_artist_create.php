@@ -28,65 +28,58 @@ class __event_artist_create extends mac {
 	public function _home() {
 		global $config, $user, $cache, $template;
 		
-		if ($this->submit)
-		{
-			$event = request_var('event', 0);
-			$artist = request_var('artist', '', true);
-			
-			if (!$event || empty($artist)) {
-				_die();
-			}
-			
+		if (!$this->submit) {
 			$sql = 'SELECT *
 				FROM _events
-				WHERE id = ?';
-			if (!$row = sql_fieldrow(sql_filter($sql, $event))) {
-				_die();
-			}
+				WHERE date > ??
+				ORDER BY date DESC';
+			$events = sql_rowset(sql_filter($sql, time()));
 			
-			$e_artist = explode("\n", $artist);
-			foreach ($e_artist as $row) {
-				$subdomain = get_subdomain($row);
+			foreach ($events as $i => $row) {
+				if (!$i) _style('events');
 				
-				$sql = 'SELECT *
-					FROM _artists
-					WHERE subdomain = ?';
-				if ($a_row = sql_fieldrow(sql_filter($sql, $subdomain))) {
-					$sql_insert = array(
-						'a_artist' => $a_row['ub'],
-						'a_event' => $event
-					);
-					$sql = 'INSERT INTO _artists_events' . sql_build('INSERT', $sql_insert);
-					sql_query($sql);
-				}
+				_style('events.row', array(
+					'ID' => $row['id'],
+					'TITLE' => $row['title'],
+					'DATE' => $user->format_date($row['date']))
+				);
 			}
 			
-			echo 'Actualizado.<br /><br />';
+			return;
 		}
+		
+		$request = _request(array('event' => 0, 'artist' => ''));
+		
+		if (_empty($request)) {
+			_pre('Debe completar la informacion.', true);
+		}
+		
+		$sql = 'SELECT id, event_alias
+			FROM _events
+			WHERE id = ?';
+		if (!$event = sql_fieldrow(sql_filter($sql, $request->event))) {
+			_pre('El evento no existe.', true);
+		}
+		
+		$e_artist = explode("\n", $request->artist);
+		foreach ($e_artist as $row) {
+			$subdomain = get_subdomain($row);
+			
+			$sql = 'SELECT ub
+				FROM _artists
+				WHERE subdomain = ?';
+			if ($a_ub = sql_field(sql_filter($sql, $subdomain), 'ub', 0)) {
+				$sql_insert = array(
+					'a_artist' => $a_ub,
+					'a_event' => $event['id']
+				);
+				$sql = 'INSERT INTO _artists_events' . sql_build('INSERT', $sql_insert);
+				sql_query($sql);
+			}
+		}
+		
+		return redirect(s_link('events', $event['event_alias']));
 	}
 }
 
 ?>
-
-<form action="{MODULE_URL}" method="post">
-
-<select name="event">
-<?php
-
-$sql = 'SELECT *
-	FROM _events
-	WHERE date > ??
-	ORDER BY date DESC';
-$result = sql_rowset(sql_filter($sql, time()));
-
-foreach ($result as $row) {
-	echo '<option value="' . $row['id'] . '">' . $row['title'] . ' - ' . $user->format_date($row['date']) . '</option>';
-}
-
-?>
-</select>
-
-<br />
-<textarea name="artist" cols="50" rows="15"></textarea><br />
-<input type="submit" name="submit" value="Siguiente" />
-</form>

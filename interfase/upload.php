@@ -118,6 +118,10 @@ class upload {
 		$umask = umask(0);
 		$files = $this->array_merge($files);
 		
+		if (!is_array($extension)) {
+			$extension = w($extension);
+		}
+		
 		if (!sizeof($files)) {
 			$this->error[] = 'FILES_NO_FILES';
 			return false;

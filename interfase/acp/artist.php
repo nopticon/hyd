@@ -32,26 +32,21 @@ class __artist extends mac {
 			return false;
 		}
 		
-		$v = array('name' => '', 'local' => 0, 'location' => '', 'genre' => '', 'email' => '', 'www' => '', 'mods' => '');
+		$request = _request(array('name' => '', 'local' => 0, 'location' => '', 'genre' => '', 'email' => '', 'www' => '', 'mods' => ''));
+		$request->subdomain = get_subdomain($request->name);
 		
-		foreach ($v as $k => $vv) {
-			${$k} = request_var($k, $vv);
-		}
-		
-		$subdomain = get_subdomain($name);
-		
-		$insert = array(
+		$sql_insert = array(
 			'a_active' => 1,
-			'subdomain' => $subdomain,
-			'name' => $name,
-			'local' => (int) $local,
+			'subdomain' => $request->subdomain,
+			'name' => $request->name,
+			'local' => (int) $request->local,
 			'datetime' => time(),
-			'location' => $location,
-			'genre' => $genre,
-			'email' => $email,
-			'www' => str_replace('http://', '', $www)
+			'location' => $request->location,
+			'genre' => $requeset->genre,
+			'email' => $request->email,
+			'www' => str_replace('http://', '', $request->www)
 		);
-		$sql = 'INSERT INTO _artists' . sql_build('INSERT', $insert);
+		$sql = 'INSERT INTO _artists' . sql_build('INSERT', $sql_insert);
 		$artist_id = sql_query_nextid($sql);
 		
 		// Cache
@@ -67,19 +62,19 @@ class __artist extends mac {
 		artist_check(array($artist_id, 'x1'));
 		
 		// Mods
-		if (!empty($mods)) {
+		if (!empty($request->mods)) {
 			$usernames = array();
 			
-			$a_mods = explode("\n", $mods);
+			$a_mods = explode("\n", $request->mods);
 			foreach ($a_mods as $each) {
 				$username_base = get_username_base($each);
 				
-				$sql = "SELECT *
+				$sql = 'SELECT *
 					FROM _members
 					WHERE username_base = ?
-						AND user_type NOT IN (" . USER_IGNORE . ", " . USER_INACTIVE . ")
-						AND user_id <> 1";
-				if (!$userdata = sql_fieldrow(sql_filter($sql, $username_base))) {
+						AND user_type NOT IN (??, ??)
+						AND user_id <> ?';
+				if (!$userdata = sql_fieldrow(sql_filter($sql, $username_base, USER_IGNORE, USER_INACTIVE, 1))) {
 					continue;
 				}
 				
@@ -92,10 +87,6 @@ class __artist extends mac {
 				
 				//
 				$update = array('user_type' => USER_ARTIST, 'user_auth_control' => 1);
-				
-				if ($userdata['user_color'] == '4D5358') {
-					$update['user_color'] = '492064';
-				}
 				
 				if (!$userdata['user_rank']) {
 					$update['user_rank'] = (int) $config['default_a_rank'];

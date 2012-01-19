@@ -1,0 +1,654 @@
+<?php
+/*
+<Orion, a web development framework for RK.>
+Copyright (C) <2011>  <Orion>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+if (!defined('IN_NUCLEO')) exit;
+
+class _mcp {
+	public $allow;
+	public $auth;
+	public $id;
+	public $mode;
+	public $object;
+	public $submit;
+	
+	public function __construct() {
+		global $user;
+		
+		$this->mode = request_var('mode', '');
+		$this->auth = $user->_team_auth('mod');
+		$this->submit = isset($_POST['submit']);
+
+		return;
+	}
+	
+	public function run() {
+		global $user;
+		
+		$method = '_' . $this->mode;
+		
+		if (!$user->data['is_member'] || !method_exists($this, $method)) {
+			fatal_error();
+		}
+		
+		switch ($mcp->mode) {
+			case 'ucm':
+				if ($user->data['is_bot']) {
+					fatal_error();
+				}
+				break;
+			default:
+				if (!$mcp->auth) {
+					fatal_error();
+				}
+				break;
+		}
+		
+		return $this->$method();
+	}
+	
+	public function _ucm() {
+		global $user;
+		
+		$this->id = request_var('msg_id', 0);
+		
+		$sql = 'SELECT *
+			FROM _members_posts
+			WHERE post_id = ' . (int) $this->id;
+		if (!$this->object = sql_fieldrow(sql_filter($sql, $this->id))) {
+			fatal_error();
+		}
+		
+		$this->object = (object) $this->object;
+		
+		if (!$user->data['is_founder'] && $user->data['user_id'] != $this->object->userpage_id) {
+			fatal_error();
+		}
+		
+		$sql = 'SELECT username_base
+			FROM _members
+			WHERE user_id = ' . (int) $this->object->userpage_id;
+		$username_base = sql_field(sql_filter($sql, $this->object->userpage_id), 'username_base', '');
+		
+		$sql = 'DELETE FROM _members_posts
+			WHERE post_id = ?';
+		sql_query(sql_filter($sql, $this->id));
+		
+		$sql = 'UPDATE _members
+			SET userpage_posts = userpage_posts - 1
+			WHERE user_id = ?';
+		sql_query(sql_filter($sql, $this->object->userpage_id));
+		
+		$user->delete_unread(UH_UPM, $this->id);
+		
+		if ($this->object->post_time > points_start_date() && $this->object->post_time < 1203314400) {
+			//$user->points_remove(1, $this->object->poster_id);
+		}
+		
+		smail($user->data, $this->object, $to = 'b');
+		
+		redirect(s_link('m', $username_base));
+	}
+	
+	public function _feature() {
+		global $user;
+		
+		$this->id = request_var('msg_id', 0);
+		
+		$sql = 'SELECT *
+			FROM _forum_topics
+			WHERE topic_id = ?';
+		if (!$this->object = sql_fieldrow(sql_filter($sql, $this->id))) {
+			fatal_error();
+		}
+		
+		$this->object = (object) $this->object;
+		
+		$this->object->new_value = ($this->object->topic_featured) ? 0 : 1;
+		topic_feature($this->id, $this->object->new_value);
+		
+		$sql_insert = array(
+			'bio' => $user->data['user_id'],
+			'time' => time(),
+			'ip' => $user->ip,
+			'action' => 'feature',
+			'old' => $this->object->topic_featured,
+			'new' => $this->object->new_value
+		);
+		$sql = 'INSERT INTO _log_mod' . sql_build('INSERT', $sql_insert);
+		sql_query($sql);
+		
+		//
+		redirect(s_link('topic', $this->id));
+	}
+	
+	public function _points() {
+		global $user;
+		
+		$this->id = request_var('msg_id', 0);
+		
+		$sql = 'SELECT *
+			FROM _forum_topics
+			WHERE topic_id = ?';
+		if (!$this->object = sql_fieldrow(sql_filter($sql, $this->id))) {
+			fatal_error();
+		}
+		
+		$this->object = (object) $this->object;
+		
+		$this->object->new_value = ($this->object->topic_points) ? 0 : 1;
+		topic_arkane($this->id, $this->object->new_value);
+		
+		$sql_insert = array(
+			'bio' => $user->data['user_id'],
+			'time' => time(),
+			'ip' => $user->ip,
+			'action' => 'points',
+			'old' => $this->object->topic_points,
+			'new' => $this->object->new_value
+		);
+		$sql = 'INSERT INTO _log_mod' . sql_build('INSERT', $sql_insert);
+		sql_query($sql);
+		
+		//
+		redirect(s_link('topic', $topic_id));
+	}
+	
+	public function _merge() {
+		global $user;
+		
+		if (!$this->submit) {
+			return;
+		}
+		
+		$this->from = request_var('from_topic', 0);
+		$this->to = request_var('to_topic', 0);
+		
+		if (!$this->from || !$this->to) {
+			fatal_error();
+		}
+		
+		$sql = 'SELECT forum_id, topic_vote
+			FROM _forum_topics
+			WHERE topic_id = ?';
+		if (!$row = sql_fieldrow(sql_filter($sql, $from_topic))) {
+			fatal_error();
+		}
+		
+		$from_forum_id = (int) $row['forum_id'];
+		$from_poll = (int) $row['topic_vote'];
+		
+		$sql = 'SELECT forum_id, topic_vote
+			FROM _forum_topics
+			WHERE topic_id = ?';
+		if (!$row = sql_fieldrow(sql_filter($sql, $to_topic))) {
+			fatal_error();
+		}
+		
+		$to_forum_id = (int) $row['forum_id'];
+		$to_poll = (int) $row['topic_vote'];
+		
+		//
+		if ($from_topic == $to_topic) {
+			fatal_error();
+		}
+		
+		if ($from_poll) {
+			if ($to_poll) {
+				$sql = 'SELECT vote_id
+					FROM _poll_options
+					WHERE topic_id = ?';
+				if ($vote_id = sql_field(sql_filter($sql, $from_topic), 'vote_id', 0)) {
+					$sql = array(
+						'DELETE FROM _poll_voters WHERE vote_id = ?',
+						'DELETE FROM _poll_results WHERE vote_id = ?',
+						'DELETE FROM _poll_options WHERE vote_id = ?'
+					);
+					
+					foreach ($sql as $item) {
+						sql_query(sql_filter($item, $vote_id));
+					}
+				}
+			} else {
+				$sql = 'UPDATE _poll_options
+					SET topic_id = ?
+					WHERE topic_id = ?';
+				sql_query(sql_filter($sql, $to_topic, $from_topic));
+			}
+		}
+		
+		//
+		$sql = 'SELECT user_id
+			FROM _forum_topics_fav
+			WHERE topic_id = ?';
+		$user_ids = sql_rowset(sql_filter($sql, $to_topic), false, 'user_id');
+		
+		$sql_user = (sizeof($user_ids)) ? ' AND user_id NOT IN (' . implode(', ', $user_ids) . ')' : '';
+		
+		$sql = 'UPDATE _forum_topics_fav
+			SET topic_id = ' . (int) $to_topic . '
+			WHERE topic_id = ' . (int) $from_topic . $sql_user;
+		sql_query($sql);
+		
+		$sql = 'DELETE FROM _forum_topics_fav
+			WHERE topic_id = ?';
+		sql_query(sql_filter($sql, $from_topic));
+		
+		$sql = 'UPDATE _forum_posts
+			SET forum_id = ?, topic_id = ?
+			WHERE topic_id = ?';
+		sql_query(sql_filter($sql, $to_forum_id, $to_topic, $from_topic));
+		
+		$sql = 'SELECT *
+			FROM _forum_topics
+			WHERE topic_id = ?';
+		$topic_data = sql_fieldrow(sql_filter($sql, $from_topic));
+		
+		$sql = 'DELETE FROM _forum_topics
+			WHERE topic_id = ?';
+		sql_query(sql_filter($sql, $from_topic));
+		
+		// Update the poll status
+		if ($from_poll && !$to_poll) {
+			$sql = 'UPDATE _forum_topics
+				SET topic_vote = 1
+				WHERE topic_id = ?';
+			sql_query(sql_filter($sql, $to_topic));
+		}
+		
+		sync_merge('topic', $to_topic);
+		sync_merge('forum', $to_forum_id);
+		
+		if ($from_forum_id != $to_forum_id) {
+			sync_merge('forum', $from_forum_id);
+		}
+		
+		return;
+	}
+	
+	public function _move() {
+		global $user;
+		
+		$t = request_var('msg_id', 0);
+		
+		$sql = 'SELECT *
+			FROM _forum_topics
+			WHERE topic_id = ?';
+		if (!$tdata = sql_fieldrow(sql_filter($sql, $t))) {
+			fatal_error();
+		}
+		
+		if ($submit) {
+			$f = request_var('forum_id', 0);
+			if (!$f) {
+				fatal_error();
+			}
+			
+			//
+			$sql = 'SELECT *
+				FROM _forums
+				WHERE forum_id = ?';
+			if (!$fdata = sql_fieldrow(sql_filter($sql, $f))) {
+				fatal_error();
+			}
+			
+			//
+			$sql = 'UPDATE _forum_topics
+				SET forum_id = ?
+				WHERE topic_id = ?';
+			sql_query(sql_filter($sql, $f, $t));
+			
+			$sql = 'UPDATE _forum_posts
+				SET forum_id = ?
+				WHERE topic_id = ?';
+			sql_query(sql_filter($sql, $f, $t));
+			
+			sync_move($f);
+			sync_move($tdata['forum_id']);
+			
+			redirect(s_link('topic', $t));
+		}
+		
+		$sql = 'SELECT *
+			FROM _forums';
+		$result = sql_rowset($sql);
+		
+		foreach ($result as $row) {
+			echo '<option value="' . $row['forum_id'] . '">' . $row['forum_name'] . '</option>';
+		}
+	}
+	
+	public function _edit() {
+		global $user;
+		
+		$this->id = request_var('msg_id', 0);
+		
+		$sql = 'SELECT *
+			FROM _forum_posts
+			WHERE post_id = ?';
+		if (!$this->object->post = sql_fieldrow(sql_filter($sql, $this->id))) {
+			fatal_error();
+		}
+		
+		$this->object->post = (object) $this->object->post;
+		
+		$sql = 'SELECT *
+			FROM _forum_topics
+			WHERE topic_id = ?';
+		if (!$this->object->topic = sql_fieldrow(sql_filter($sql, $this->object->post->topic_id))) {
+			fatal_error();
+		}
+		
+		$this->object->topic = (object) $this->object->topic;
+		
+		if ($this->submit) {
+			require_once(ROOT . 'interfase/comments.php');
+			$comments = new _comments();
+			
+			$topic_title = request_var('topic_title', '');
+			$post_message = $comments->prepare(request_var('message', '', true));
+			
+			if (!empty($topic_title) && $topic_title != $this->object->topic->topic_title) {
+				$sql = 'UPDATE _forum_topics SET topic_title = ?
+					WHERE topic_id = ?';
+				sql_query(sql_filter($sql, $topic_title, $this->object->topic->topic_id));
+				
+				$sql = 'SELECT id
+					FROM _events
+					WHERE event_topic = ?';
+				if ($this->object->event_id = sql_field(sql_filter($sql, $this->object->topic->topic_id), 'id', 0)) {
+					$sql = 'UPDATE _events SET title = ?
+						WHERE id = ?';
+					sql_query(sql_filter($sql, $topic_title, $this->object->event_id));
+				}
+			}
+			
+			if ($post_message != $this->object->post->post_text) {
+				$sql = 'UPDATE _forum_posts SET post_text = ?
+					WHERE post_id = ?';
+				sql_query(sql_filter($sql, $post_message, $this->id));
+				
+				$rev = array(
+					'rev_post' => (int) $this->id,
+					'rev_uid' => (int) $user->data['user_id'],
+					'rev_time' => time(),
+					'rev_ip' => $user->ip,
+					'rev_text' => $this->object->post->post_text
+				);
+				$sql = 'INSERT INTO _forum_posts_rev' . sql_build('INSERT', $rev);
+				sql_query($sql);
+			}
+			
+			redirect(s_link('post', $this->msg_id));
+		}
+		
+		$tv = array(
+			'V_TOPIC' => ($user->data['is_founder']) ? $this->object->topic->topic_title : '',
+			'V_MESSAGE' => $this->object->post->post_text,
+			'S_ACTION' => s_link('mcp', array('edit', $this->id))
+		);
+		page_layout('Editar', 'modcp.edit', $tv);
+	}
+	
+	public function _post() {
+		$post_id = request_var('msg_id', 0);
+		if (!$post_id) {
+			fatal_error();
+		}
+		
+		$sql = 'SELECT f.*, t.*, p.*, m.*
+			FROM _forum_posts p, _forum_topics t, _forums f, _members m
+			WHERE p.post_id = ?
+				AND t.topic_id = p.topic_id
+				AND f.forum_id = p.forum_id
+				AND m.user_id = p.poster_id';
+		if (!$post_info = sql_fieldrow(sql_filter($sql, $post_id))) {
+			fatal_error();
+		}
+		
+		$forum_id = $post_info['forum_id'];
+		$topic_id = $post_info['topic_id'];
+		
+		$post_data = array(
+			'poster_post' => ($post_info['poster_id'] == $userdata['user_id']) ? true : false,
+			'first_post' => ($post_info['topic_first_post_id'] == $post_id) ? true : false,
+			'last_post' => ($post_info['topic_last_post_id'] == $post_id) ? true : false,
+			'last_topic' => ($post_info['forum_last_topic_id'] == $topic_id) ? true : false,
+			'has_poll' => ($post_info['topic_vote']) ? true : false
+		);
+		
+		if ($post_data['first_post']) {
+			redirect(s_link('mcp', array('topic', $topic_id)));
+		}
+		
+		if ($post_data['first_post'] && $post_data['has_poll']) {
+			$sql = 'SELECT vote_id
+				FROM _poll_options vd, _poll_results vr
+				WHERE vd.topic_id = ?
+					AND vr.vote_id = vd.vote_id
+				ORDER BY vr.vote_option_id';
+			$poll_id = sql_field(sql_filter($sql, $topic_id), 'vote_id', 0);
+		}
+		
+		//
+		// Process
+		//
+		$sql = 'DELETE FROM _forum_posts
+			WHERE post_id = ?';
+		sql_query(sql_filter($sql, $post_id));
+		
+		if ($post_data['first_post'] && $post_data['last_post']) {
+			$sql = 'DELETE FROM _forum_topics
+				WHERE topic_id = ?';
+			sql_query(sql_filter($sql, $topic_id));
+			
+			$sql = 'DELETE FROM _forum_topics_fav
+				WHERE topic_id = ?';
+			sql_query(sql_filter($sql, $topic_id));
+		}
+		
+		if (!in_array($forum_id, forum_for_team_array()) && $post_info['topic_points'] && $post_info['post_time'] > points_start_date()) {
+			//$user->points_remove(1, $post_info['poster_id']);
+		}
+		
+		/*if ($post_data['has_poll'])
+		{
+			$sql = 'DELETE FROM _poll_options
+				WHERE topic_id = ?';
+			sql_query(sql_filter($sql, $topic_id));
+			
+			$sql = 'DELETE FROM _poll_results
+				WHERE vote_id = ?';
+			sql_query(sql_filter($sql, $poll_id));
+			
+			$sql = 'DELETE FROM _poll_voters
+				WHERE vote_id = ?';
+			sql_query(sql_filter($sql, $poll_id));
+		}*/
+		
+		//
+		// Update stats
+		//
+		$forum_update_sql = 'forum_posts = forum_posts - 1';
+		$topic_update_sql = '';
+	
+		if ($post_data['last_post']) {
+			if ($post_data['first_post']) {
+				$forum_update_sql .= ', forum_topics = forum_topics - 1';
+			} else {
+				$topic_update_sql .= 'topic_replies = topic_replies - 1';
+				
+				$sql = 'SELECT MAX(post_id) AS last_post_id
+					FROM _forum_posts
+					WHERE topic_id = ?';
+				if ($last_post_id = sql_field(sql_filter($sql, $topic_id), 'last_post_id', 0)) {
+					$topic_update_sql .= ', topic_last_post_id = ' . $last_post_id;
+				}
+			}
+	
+			if ($post_data['last_topic']) {
+				$sql = 'SELECT MAX(topic_id) AS last_topic_id
+					FROM _forum_topics
+					WHERE forum_id = ?';
+				if ($last_topic_id = sql_field(sql_filter($sql, $forum_id), 'last_topic_id', 0)) {
+					$forum_update_sql .= ', forum_last_topic_id = ' . $last_topic_id;
+				}
+			}
+		} else if ($post_data['first_post']) {
+			$sql = 'SELECT MIN(post_id) AS first_post_id
+				FROM _forum_posts
+				WHERE topic_id = ?';
+			if ($first_post_id = sql_field(sql_filter($sql, $topic_id), 'first_post_id', 0)) {
+				$topic_update_sql .= 'topic_replies = topic_replies - 1, topic_first_post_id = ' . $first_post_id;
+			}
+		} else {
+			$topic_update_sql .= 'topic_replies = topic_replies - 1';
+		}
+	
+		$sql = 'UPDATE _forums
+			SET ' . $forum_update_sql . '
+			WHERE forum_id = ' . (int) $forum_id;
+		sql_query($sql);
+		
+		if ($topic_update_sql != '') {
+			$sql = 'UPDATE _forum_topics
+				SET ' . $topic_update_sql . '
+				WHERE topic_id = ' . (int) $topic_id;
+			sql_query($sql);
+		}
+	
+		$sql = 'UPDATE _members
+			SET user_posts = user_posts - 1
+			WHERE user_id = ?';
+		sql_query(sql_filter($sql, $post_info['poster_id']));
+		
+		smail($user->data, $post_info);
+		
+		redirect(s_link('topic', $post_info['topic_id']));
+	}
+	
+	public function _topic() {
+		global $user;
+		
+		$topic_id = request_var('msg_id', '');
+		
+		$sql = 'SELECT f.*, t.*
+			FROM _forum_topics t, _forums f
+			WHERE t.topic_id = ?
+				AND f.forum_id = t.forum_id';
+		if (!$topic_data = sql_fieldrow(sql_filter($sql, $topic_id))) {
+			fatal_error();
+		}
+		
+		$sql = 'SELECT t.*, p.*
+			FROM _forum_posts p, _forum_topics t
+			WHERE t.topic_id = p.topic_id
+				AND t.topic_id = ?
+			ORDER BY p.post_time';
+		$result = sql_rowset(sql_filter($sql, $topic_id));
+		
+		$posts_id = array();
+		$topic_posts = array();
+		
+		foreach ($result as $row) {
+			$topic_posts[] = $row;
+			$posts_id[] = $row['post_id'];
+		}
+		
+		$post_id_array = implode(',', $posts_id);
+		
+		//
+		$sql = 'SELECT poster_id, COUNT(post_id) AS posts
+			FROM _forum_posts
+			WHERE topic_id = ?
+			GROUP BY poster_id';
+		$result = sql_rowset(sql_filter($sql, $topic_id));
+		
+		$members_sql = array();
+		foreach ($result as $row) {
+			if (!in_array($topic_data['forum_id'], forum_for_team_array()) && $topic_data['topic_time'] > points_start_date())
+			{
+				//$user->points_remove($row['posts'], $row['poster_id']);
+			}
+			
+			$sql = 'UPDATE _members SET user_posts = user_posts - ?
+				WHERE user_id = ?';
+			sql_query(sql_filter($sql, $row['posts'], $row['poster_id']));
+		}
+		
+		//$user->points_remove(1, $topic_data['topic_poster']);
+		
+		//
+		// Got all required info so go ahead and start deleting everything
+		//
+		$sql = 'DELETE FROM _forum_topics
+			WHERE topic_id = ?';
+		sql_query(sql_filter($sql, $topic_id));
+		
+		$sql = 'DELETE FROM _forum_topics_fav
+			WHERE topic_id = ?';
+		sql_query(sql_filter($sql, $topic_id));
+		
+		$sql = 'DELETE FROM _forum_posts
+			WHERE post_id = ?';
+		sql_query(sql_filter($sql, $topic_id));
+		
+		$sql = 'DELETE FROM _members_unread
+			WHERE element = ?
+				AND item = ?';
+		sql_query(sql_filter($sql, UH_T, $topic_id));
+		
+		//
+		$sql = 'SELECT vote_id
+			FROM _poll_options
+			WHERE topic_id = ?';
+		$poll = sql_rowset(sql_filter($sql, $topic_id), false, 'vote_id');
+		
+		if (count($poll)) {
+			$poll_ary = implode(',', $poll);
+			
+			$sql = 'DELETE FROM _poll_options
+				WHERE vote_id IN (??)';
+			sql_query(sql_filter($sql, $poll_ary));
+			
+			$sql = 'DELETE FROM _poll_results
+				WHERE vote_id IN (??)';
+			sql_query(sql_filter($sql, $poll_ary));
+			
+			$sql = 'DELETE FROM _poll_voters
+				WHERE vote_id IN (??)';
+			sql_query(sql_filter($sql, $poll_ary));
+		}
+		
+		$sql = 'SELECT id
+			FROM _events
+			WHERE event_topic = ?';
+		if ($event_id = sql_field(sql_filter($sql, $topic_id), 'id', 0)) {
+			$sql = 'DELETE FROM _events
+				WHERE id = ?';
+			sql_query(sql_filter($sql, $event_id));
+		}
+	
+		//
+		sync_topic($topic_data['forum_id']);
+		smail($user->data, $topic_posts);
+		
+		redirect(s_link('forum', $topic_data['forum_alias']));
+	}
+}
+
+?>

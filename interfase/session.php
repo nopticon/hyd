@@ -1162,7 +1162,7 @@ class user extends session {
 		
 		if ($not_allowed_ref) {
 			if ($banned) {
-				redirect('net/access?2');
+				fatal_error();
 			}
 			
 			if ($block_ud) {

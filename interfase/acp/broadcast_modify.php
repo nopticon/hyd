@@ -31,33 +31,27 @@ class __broadcast_modify extends mac {
 		require_once(ROOT . 'interfase/ftp.php');
 		$ftp = new ftp();
 		
-		if (!$ftp->ftp_connect('209.51.162.170'))
-		{
-			_die('Can not connect');
+		if (!$ftp->ftp_connect('209.51.162.170')) {
+			_pre('Can not connect', true);
 		}
 		
-		if (!$ftp->ftp_login('WURJ357411801', 'h29kE5fQ'))
-		{
+		if (!$ftp->ftp_login('WURJ357411801', 'h29kE5fQ')) {
 			$ftp->ftp_quit();
-			_die('Can not login');
+			_pre('Can not login', true);
 		}
 		
 		$cds_file = ROOT . 'interfase/cds/schedule_playlist.txt';
 		
 		// Submit
-		if ($submit)
-		{
+		if ($submit) {
 			$hours = request_var('hours', array('' => ''));
 			
 			$build = '';
-			foreach ($hours as $hour => $play)
-			{
+			foreach ($hours as $hour => $play) {
 				$build .= ((!empty($build)) ? "\r\n" : '') . trim($hour) . ':' . trim($play);
 			}
 			
-			$fp = @fopen($cds_file, 'w');
-			if ($fp)
-			{
+			if ($fp = @fopen($cds_file, 'w')) {
 				@flock($fp, LOCK_EX);
 				fputs($fp, $build);
 				@flock($fp, LOCK_UN);
@@ -65,17 +59,12 @@ class __broadcast_modify extends mac {
 				
 				@chmod($cds_file, 0777);
 				
-				if ($ftp->ftp_put('/Schedule/schedule_playlist.txt', $cds_file))
-				{
+				if ($ftp->ftp_put('/Schedule/schedule_playlist.txt', $cds_file)) {
 					echo '<h1>El archivo fue procesado correctamente.</h1>';
-				}
-				else
-				{
+				} else {
 					echo '<h1>Error al procesar, intenta nuevamente.</h1>';
 				}
-			}
-			else
-			{
+			} else {
 				echo 'Error de escritura en archivo local.';
 			}
 			

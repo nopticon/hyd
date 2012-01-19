@@ -28,9 +28,7 @@ $sql = 'SELECT *
 $partners = sql_rowset($sql);
 
 foreach ($partners as $i => $row) {
-	if (!$i) {
-		$template->assign_block_vars('partners', array());
-	}
+	if (!$i) $template->assign_block_vars('partners', array());
 	
 	$template->assign_block_vars('partners.row', array(
 		'NAME' => $row['partner_name'],

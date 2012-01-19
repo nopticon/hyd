@@ -25,19 +25,20 @@ class __artist_lyric_create extends mac {
 		$this->auth('founder');
 	}
 	
-	public function home() {
+	public function _home() {
 		global $config, $user, $cache, $template;
 		
 		if ($this->submit) {
-			$request = array('ub' => 0, 'title' => '', 'author' => '', 'text' => '');
-			foreach ($request as $k => $v) {
-				$request[$k] = request_var($k, $v);
+			$request = _request(array('ub' => 0, 'title' => '', 'author' => '', 'text' => ''));
+			
+			if (_empty($request)) {
+				_pre('Debe completar la informacion.', true);
 			}
 			
 			$sql = 'SELECT *
 				FROM _artists
 				WHERE ub = ?';
-			if (!$ad = sql_fieldrow(sql_filter($sql, $request['ub']))) {
+			if (!$ad = sql_fieldrow(sql_filter($sql, $request->ub))) {
 				fatal_error();
 			}
 			
@@ -46,7 +47,7 @@ class __artist_lyric_create extends mac {
 			
 			$sql = 'UPDATE _artists SET lirics = lirics + 1
 				WHERE ub = ?';
-			sql_query(sql_filter($sql, $request['ub']));
+			sql_query(sql_filter($sql, $request->ub));
 			
 			redirect(s_link('a', $ad['subdomain']));
 		}

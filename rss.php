@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 define('IN_NUCLEO', true);
 require_once('./interfase/common.php');
+require_once(ROOT . 'interfase/rss.php');
 
 $user->init();
 $user->setup();
@@ -27,7 +28,6 @@ if (empty($mode)) {
 	fatal_error();
 }
 
-require_once(ROOT . 'interfase/rss.php');
 $rss = new _rss();
 
 $method = '_' . $mode;

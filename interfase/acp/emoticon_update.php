@@ -28,60 +28,39 @@ class __emoticon_update extends mac {
 	public function _home() {
 		global $config, $user, $cache, $template;
 		
-		if ($this->submit) {
-			$folder = request_var('folder', '');
-			$list = request_var('list', '');
-			
-			//
-			// Folder
-			if (!empty($folder)) {
-				$emoticon_path = $config['assets_path'] . 'emoticon/' . $folder;
+		if (!$this->submit) {
+			return;
+		}
+		
+		$folder = request_var('folder', '');
+		
+		if (empty($folder)) {
+			return;
+		}
+		
+		sql_truncate('_smilies');
+		
+		$emoticon_path = $config['assets_path'] . 'emoticon/';
+		$process = 0;
+		
+		$fp = @opendir($emoticon_path);
+		while ($file = @readdir($fp)) {
+			if (preg_match('#([a-z0-9]+)\.(gif|png)#is', $file, $part)) {
+				$insert = array(
+					'code' => ':' . $part[1] . ':',
+					'smile_url' => $part[0]
+				);
+				$sql = 'INSERT INTO _smilies' . sql_build('INSERT', $insert);
+				sql_query($sql);
 				
-				$images = array();
-				
-				$fp = @opendir($emoticon_path);
-				while ($file = @readdir($fp)) {
-					if (preg_match('#([a-z0-9]+)\.(gif|png)#is', $file, $split)) {
-						$images[] = $split;
-					}
-				}
-				@closedir($fp);
-				
-				$emots = array();
-				$skip = array();
-				$process = array();
-				
-				$sql = 'SELECT *
-					FROM _smilies
-					ORDER BY code';
-				$emots = sql_rowset($sql, 'code');
-				
-				foreach ($images as $each) {
-					$code = ':' . $each[1] . ':';
-					
-					if (isset($emots[$code])) {
-						$skip[] = $code;
-						continue;
-					}
-					
-					$path = $folder . '/' . $each[0];
-					
-					$insert = array(
-						'code' => $code,
-						'smile_url' => $path
-					);
-					$sql = 'INSERT INTO _smilies' . sql_build('INSERT', $insert);
-					sql_query($sql);
-					
-					$process[] = $insert;
-				}
-				
-				$cache->delete('smilies');
-				
-				_pre($process);
-				_pre($skip, true);
+				$process++;
 			}
 		}
+		@closedir($fp);
+		
+		$cache->delete('smilies');
+		
+		return _pre($process . ' emoticons.');
 	}
 }
 

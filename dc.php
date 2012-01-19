@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 define('IN_NUCLEO', true);
 require_once('./interfase/common.php');
+require_once(ROOT . 'interfase/comments.php');
 
 //
 // Cancel 
@@ -41,7 +42,6 @@ if (!$user->data['is_member']) {
 	do_login();
 }
 
-require_once(ROOT . 'interfase/comments.php');
 $comments = new _comments();
 
 //

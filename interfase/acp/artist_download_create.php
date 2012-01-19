@@ -35,20 +35,21 @@ class __artist_download_create extends mac {
 			require_once(ROOT . 'interfase/upload.php');
 			$upload = new upload();
 			
-			$a_id = request_var('artist', 0);
+			$artist_id = request_var('artist', 0);
 			
 			$sql = 'SELECT ub, subdomain
 				FROM _artists
 				WHERE ub = ?';
-			if (!$artist_data = sql_fieldrow(sql_filter($sql, $a_id))) {
+			if (!$artist_data = sql_fieldrow(sql_filter($sql, $artist_id))) {
 				fatal_error();
 			}
 			
 			//$filepath = artist_path($artist_data['subdomain'], $artist_data['ub'], true, true);
+			
 			$filepath = $config['artists_path'] . $artist_data['ub'] . '/';
 			$filepath_1 = $filepath . 'media/';
 			
-			$f = $upload->process($filepath_1, $_FILES['add_dl'], w('mp3'));
+			$f = $upload->process($filepath_1, $_FILES['add_dl'], 'mp3');
 			
 			if (!sizeof($upload->error) && $f !== false) {
 				require_once(ROOT . 'interfase/id3/getid3/getid3.php');
@@ -66,19 +67,16 @@ class __artist_download_create extends mac {
 					$filename = $upload->rename($row, $a);
 					$tags = $getID3->analyze($filename);
 					
-					$clean = array('title', 'genre', 'album', 'year');
-					foreach ($clean as $i) {
-						${'clean_' . $i} = (isset($tags['tags']['id3v1'][$i][0])) ? htmlencode($tags['tags']['id3v1'][$i][0]) : '';
+					$mt = new stdClass();
+					
+					foreach (w('title genre album year') as $i) {
+						$mt->$i = (isset($tags['tags']['id3v1'][$i][0])) ? htmlencode($tags['tags']['id3v1'][$i][0]) : '';
 					}
 					
-					$clean_album = ($clean_album != '') ? $clean_album : 'Single';
-					$clean_genre = ($clean_genre != '') ? $clean_genre : '-';
-					$clean_year = ($clean_year != '') ? $clean_year : '-';
-					
-					$insert_dl = array(
+					$insert_media = array(
 						'ud' => 1,
-						'ub' => $a_id,
-						'title' => $clean_title,
+						'ub' => $artist_id,
+						'title' => $mt->title,
 						'views' => 0,
 						'downloads' => 0,
 						'votes' => 0,
@@ -86,12 +84,12 @@ class __artist_download_create extends mac {
 						'date' => time(),
 						'filesize' => @filesize($filename),
 						'duration' => $tags['playtime_string'],
-						'genre' => $clean_genre,
-						'album' => $clean_album,
-						'year' => $clean_year
+						'genre' => $mt->genre,
+						'album' => $mt->album,
+						'year' => $mt->year
 					);
-					$sql = 'INSERT INTO _dl' . sql_build('INSERT', $insert_dl);
-					$dl_id = sql_query_nextid();
+					$sql = 'INSERT INTO _dl' . sql_build('INSERT', $insert_media);
+					sql_query($sql);
 				}
 				
 				$sql = 'UPDATE _artists SET um = um + ??
@@ -100,7 +98,7 @@ class __artist_download_create extends mac {
 				
 				$cache->delete('downloads_list');
 				
-				redirect(s_link('topic', $topic_id));
+				redirect(s_link('a', $artist_data['subdomain']));
 			}
 			
 			$template->assign_block_vars('error', array(
@@ -114,9 +112,7 @@ class __artist_download_create extends mac {
 		$result = sql_rowset($sql);
 		
 		foreach ($result as $i => $row) {
-			if (!$i) {
-				$template->assign_block_vars('artists', array());
-			}
+			if (!$i) $template->assign_block_vars('artists', array());
 			
 			$template->assign_block_vars('artists.row', array(
 				'ARTIST_ID' => $row['ub'],

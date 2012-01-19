@@ -36,6 +36,35 @@ function set_var(&$result, $var, $type, $multibyte = false) {
 	}
 }
 
+function _request($ary) {
+	$response = new stdClass();
+	
+	foreach ($ary as $ary_k => $ary_v) {
+		$response->$ary_k = request_var($ary_k, $ary_v);
+	}
+	
+	return $response;
+}
+
+function _empty($ary) {
+	$is_empty = true;
+	
+	if (!is_array($ary) && !is_object($ary)) {
+		$ary = array($ary);
+	}
+	
+	foreach ($ary as $ary_k => $ary_v) {
+		if (!$ary_v) {
+			$is_empty = true;
+			break;
+		}
+		
+		$is_empty = false;
+	}
+	
+	return $is_empty;
+}
+
 //
 // Get value of request var
 //
@@ -1452,6 +1481,7 @@ function fatal_error($mode = '404', $bp_message = '') {
 		default:
 			$title = 'Archivo no encontrado';
 			$error .= 'no existe';
+			$bp_message = '';
 			
 			status("404 Not Found");
 			
@@ -1460,9 +1490,11 @@ function fatal_error($mode = '404', $bp_message = '') {
 	}
 	
 	if ($mode != '600') {
-		$error .= ', puedes regresar a<br /><a href="http://www.rockrepublik.net/">p&aacute;gina de inicio de Rock Republik</a> para encontrar informaci&oacute;n.';
+		$error .= ', puedes regresar a<br /><a href="/">p&aacute;gina de inicio de Rock Republik</a> para encontrar informaci&oacute;n.';
 		
-		$error .= '<br /><br />' . $bp_message;
+		if (!empty($bp_message)) {
+			$error .= '<br /><br />' . $bp_message;
+		}
 	}
 	
 	sql_close();
@@ -1852,6 +1884,78 @@ function html_entity_decode_utf8($string) {
 	}
 	
 	return strtr($string, $trans_tbl);
+}
+
+function _style_uv($a) {
+	if (!is_array($a) && !is_object($a)) $a = w();
+	
+	foreach ($a as $i => $v) {
+		$a[strtoupper($i)] = $v;
+	}
+	
+	return $a;
+}
+
+function _style($a, $b = array(), $i = false) {
+	if ($i !== false && $i) {
+		return;
+	}
+	
+	global $style;
+	
+	$style->assign_block_vars($a, _style_uv($b));
+	return true;
+}
+
+function _style_handler($f) {
+	global $style;
+	
+	$style->set_filenames(array('tmp' => $f));
+	$style->assign_var_from_handle('S_TMP', 'tmp');
+	
+	return _style_var('S_TMP');
+}
+
+function _style_vreplace($r = true) {
+	global $style;
+	
+	return $style->set_vreplace($r);
+}
+
+function v_style($a) {
+	global $style;
+	
+	$style->assign_vars(_style_uv($a));
+	return true;
+}
+
+function _style_functions($arg) {
+	if (!isset($arg[1]) || !isset($arg[2])) {
+		return $arg[0];
+	}
+	
+	$f = '_sf_' . strtolower($arg[1]);
+	if (!@function_exists($f)) {
+		return $arg[0];
+	}
+	
+	$e = explode(':', $arg[2]);
+	$f_arg = w();
+	
+	foreach ($e as $row) {
+		if (preg_match('/\((.*?)\)/', $row, $reg)) {
+			$_row = array_map('trim', explode(',', str_replace("'", '', $reg[1])));
+			$row = w();
+			
+			foreach ($_row as $each) {
+				$j = explode(' => ', $each);
+				$row[$j[0]] = $j[1];
+			}
+		}
+		$f_arg[] = $row;
+	}
+	
+	return hook($f, $f_arg);
 }
 
 function artist_build($ary) {

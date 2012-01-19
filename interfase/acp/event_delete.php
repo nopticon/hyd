@@ -22,40 +22,31 @@ class __event_delete extends mac {
 	public function __construct() {
 		parent::__construct();
 		
-		$this->auth('founder');
+		$this->auth('colab_admin');
 	}
 	
 	public function _home() {
 		global $config, $user, $cache, $template;
 		
-		return;
+		if (!$this->submit) {
+			return;
+		}
+		
+		$request = _request(array('event' => 0));
+		
+		$sql = 'SELECT *
+			FROM _events
+			WHERE id = ?';
+		if (!$object = sql_fieldrow(sql_filter($sql, $request->event))) {
+			fatal_error();
+		}
+		
+		$sql = 'DELETE FROM _events
+			WHERE id = ?';
+		sql_query(sql_filter($sql, $request->event));
+		
+		return redirect(s_link('events'));
 	}
-}
-
-_auth('colab_admin');
-
-if ($submit)
-{
-	$event = request_var('event', 0);
-	$username = get_username_base($username);
-	
-	$sql = 'SELECT *
-		FROM _events
-		WHERE id = ?';
-	if (!$eventdata = sql_fieldrow(sql_filter($sql, $event))) {
-		fatal_error();
-	}
-	
-	$sql = 'DELETE FROM _events
-		WHERE id = ?';
-	sql_query(sql_filter($sql, $event));
-	
-	echo 'El evento <strong>' . $eventdata['title'] . '</strong> ha sido borrado.';
 }
 
 ?>
-
-<form action="{MODULE_URL}" method="post">
-<input type="text" name="event" value="" />
-<input type="submit" name="submit" value="Borrar evento" />
-</form>

@@ -38,12 +38,7 @@ class __artist_delete extends mac {
 				fatal_error();
 			}
 			
-			$emails = array();
 			$mods = array();
-			
-			if (!empty($a_data['email'])) {
-				$emails[] = $a_data['email'];
-			}
 			
 			$sql = 'SELECT m.user_id, m.user_email
 				FROM _artists_auth a, _members m
@@ -52,7 +47,6 @@ class __artist_delete extends mac {
 			$result = sql_rowset(sql_filter($sql, $a_data['ub']));
 			
 			foreach ($result as $row) {
-				$emails[] = $row['user_email'];
 				$mods[] = $row['user_id'];
 			}
 			
@@ -69,8 +63,6 @@ class __artist_delete extends mac {
 				}
 			}
 			
-			$emails = array_unique($emails);
-			
 			if (count($mods)) {
 				$sql = 'UPDATE _members SET user_auth_control = 0
 					WHERE user_id IN (??)';
@@ -80,6 +72,7 @@ class __artist_delete extends mac {
 			$d_sql = array();
 			
 			$ary_sql = array(
+				'DELETE FROM _artists WHERE ub = ?',
 				'DELETE FROM _artists_auth WHERE ub = ?',
 				'DELETE FROM _artists_fav WHERE ub = ?',
 				'DELETE FROM _artists_images WHERE ub = ?',
@@ -126,49 +119,16 @@ class __artist_delete extends mac {
 				}
 			}
 			
-			$d_sql[] = sql_filter('DELETE FROM _artists
-				WHERE ub = ?', $a_data['ub']);
-			
 			if (!$this->s_dir($config['artists_path'] . $a_data['ub'])) {
-				echo 'error en carpetas';
-				return;
+				_pre('Error al eliminar directorio de artista.', true);
 			}
 			
 			sql_query($d_sql);
 			
-			//
-			// Send email
-			//
-			if (count($emails)) {
-				require_once(ROOT . 'interfase/emailer.php');
-				$emailer = new emailer();
-				
-				//
-				$a_emails = array_unique($emails);
-				
-				$emailer->from('info');
-				$emailer->use_template('artist_delete');
-				$emailer->email_address($a_emails[0]);
-				$emailer->bcc('info');
-				
-				$cc_emails = array_splice($a_emails, 1);
-				foreach ($cc_emails as $each_email) {
-					$emailer->cc($each_email);
-				}
-				
-				$emailer->assign_vars(array(
-					'ARTIST' => $a_data['name'])
-				);
-				$emailer->send();
-				$emailer->reset();
-			}
-			
 			// Cache
 			$cache->delete('ub_list', 'a_last_images');
 			
-			echo 'La banda ha sido eliminada y notificada.';
-			
-			_pre($a_emails, true);
+			_pre('La banda fue eliminada.', true);
 		}
 	}
 	
