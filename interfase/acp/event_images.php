@@ -18,6 +18,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
+require_once(ROOT . 'interfase/upload.php');
+require_once(ROOT . 'interfase/zip.php');
+
 class __event_images extends mac {
 	public function __construct() {
 		parent::__construct();
@@ -35,7 +38,6 @@ class __event_images extends mac {
 _auth('founder');
 
 if ($submit) {
-	require_once(ROOT . 'interfase/upload.php');
 	$upload = new upload();
 	
 	$event_id = request_var('event_id', 0);
@@ -49,8 +51,6 @@ if ($submit) {
 	if (!sizeof($upload->error) && $f !== false)
 	{
 		@set_time_limit(0);
-		
-		require_once(ROOT . 'interfase/f_zip.php');
 		
 		foreach ($f as $row)
 		{

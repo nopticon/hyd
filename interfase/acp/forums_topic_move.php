@@ -19,6 +19,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 if (!defined('IN_NUCLEO')) exit;
 
 class __forums_topic_move extends mac {
+	private $from;
+	private $to;
+	private $object;
+	
 	public function __construct() {
 		parent::__construct();
 		
