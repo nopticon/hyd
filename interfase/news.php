@@ -18,23 +18,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-/*
-_news
-...
-NEWS_ID					INT(11)
-POST_REPLY			INT(11)
-POST_ANNOUNCE		TINYINT(1)
-POST_LOCAL			TINYINT(1)
-POSTER_ID				MEDIUMINT(8)
-POST_USERNAME		VARCHAR(25)
-POST_SUBJECT		VARCHAR(255)
-POST_TEXT				TEXT
-POST_VIEWS			INT(11)
-POST_REPLIES		INT(11)
-POST_TIME				INT(11)
-POST_IP					VARCHAR(8)
-*/
-
 class _news {
 	public $data = array();
 	public $news = array();
@@ -245,15 +228,13 @@ class _news {
 		//
 		$template->assign_block_vars('posting_box', array());
 		
-		if ($user->data['is_member']) {
+		if ($user->is('member')) {
 			$template->assign_block_vars('posting_box.box', array(
 				'REF' => $comments_ref)
 			);
-		} else {
-			$template->assign_block_vars('posting_box.only_registered', array(
-				'LEGEND' => sprintf($user->lang['LOGIN_TO_POST'], '', s_link('my', 'register'))
-			));
 		}
+		
+		return;
 	}
 }
 

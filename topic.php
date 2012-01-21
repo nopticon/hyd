@@ -111,7 +111,7 @@ if ($submit_reply || $submit_vote) {
 	$auth_key = ($submit_reply) ? 'auth_reply' : 'auth_vote';
 	
 	if (((!$is_auth['auth_view'] || !$is_auth['auth_read']) && $forum_id != 22) || !$is_auth[$auth_key]) {
-		if (!$user->data['is_member']) {
+		if (!$user->is('member')) {
 			do_login();
 		}
 		
@@ -282,7 +282,7 @@ if ($submit_reply || $submit_vote) {
 }
 
 if (!$is_auth['auth_view'] || !$is_auth['auth_read']) {
-	if (!$user->data['is_member']) {
+	if (!$user->is('member')) {
 		do_login();
 	}
 	
@@ -294,7 +294,7 @@ if ($post_id) {
 	$user->data['user_topic_order'] = 0;
 }
 
-if ($user->data['is_member']) {
+if ($user->is('member')) {
 	//
 	// Is user watching this topic?
 	//
@@ -437,7 +437,7 @@ $unset_user_profile = array('user_id', 'user_posts', 'user_gender');
 $template->assign_block_vars('posts', array());
 
 foreach ($messages as $row) {
-	if ($user->data['is_member']) {
+	if ($user->is('member')) {
 		$poster = ($row['user_id'] != GUEST) ? $row['username'] : (($row['post_username'] != '') ? $row['post_username'] : $user->lang['GUEST']);
 		
 		$controls[$row['post_id']]['reply'] = s_link('post', array($row['post_id'], 'reply'));
@@ -514,7 +514,7 @@ if (sizeof($error)) {
 $can_reply_closed = $auth->option(array('forum', 'topics', 'delete'));
 
 if ((!$topic_data['forum_locked'] && !$topic_data['topic_locked']) || $can_reply_closed) {
-	if ($user->data['is_member']) {
+	if ($user->is('member')) {
 		if ($is_auth['auth_reply']) {
 			$s_post_action = (($reply) ? s_link('post', array($post_id, 'reply')) : $topic_url) . '#e';
 			

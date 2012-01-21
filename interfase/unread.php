@@ -38,12 +38,77 @@ function user_profile($row) {
 }
 
 class unread {
+	private $elements;
+	public $downloads;
+	
 	public function __construct() {
+		$this->elements = array(
+			UH_NOTE => 'conversations',
+			UH_FRIEND => 'friends',
+			UH_UPM => 'members_posts',
+			UH_N => 'artists_news',
+			UH_GN => 'site_news',
+			UH_A => 'artists',
+			UH_D => 'downloads',
+			UH_T => 'board',
+			UH_C => 'artists_comments',
+			UH_M => 'downloads_comments',
+			UH_AF => 'artists_fav',
+			UH_E => 'events'
+		);
+		
+		return;
+	}
+	
+	public function clear_all($user_id = false) {
+		global $user;
+		
+		if (!$user->is('member')) {
+			do_login();
+		}
+		
+		$sql = 'DELETE FROM _members_unread
+			WHERE user_id = ?';
+		sql_query(sql_filter($sql, $user->d('user_id')));
+		
+		return true;
+	}
+	
+	public function run() {
+		global $user, $template;
+		
+		$sql = 'SELECT element
+			FROM _members_unread
+			WHERE user_id = ?
+			GROUP BY element
+			ORDER BY element, item';
+		if (!$elements = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
+			return false;
+		}
+		
+		$this->downloads = new downloads();
+		
+		foreach ($elements as $row) {
+			if (!isset($this->elements[$row['element']])) {
+				continue;
+			}
+			
+			if ($response = $this->{$this->elements[$row['element']]}()) {
+				$template->assign_block_vars($this->elements[$row['element']], array(
+					'ID' => $row['element'])
+				);
+				
+				foreach ($response as $_row) {
+					$template->assign_block_vars($this->elements[$row['element']] . '.row', $_row);
+				}
+			}
+		}
+		
 		return;
 	}
 	
 	public function conversations() {
-		global $user, $template;
+		global $user;
 		
 		$sql = 'SELECT c.*, c2.privmsgs_date, m.user_id, m.username, m.username_base, m.user_color
 			FROM _members_unread u, _dc c, _dc c2, _members m
@@ -55,32 +120,26 @@ class unread {
 			ORDER BY c2.privmsgs_date DESC';
 		$result = sql_rowset(sql_filter($sql, $user->data['user_id'], UH_NOTE));
 		
+		$response = w();
 		foreach ($result as $i => $row) {
-			if (!$i) {
-				$template->assign_block_vars('items.notes', array(
-					'ELEMENT' => UH_NOTE)
-				);
-			}
-			
 			$user_profile = user_profile($row);
 			
-			$template->assign_block_vars('items.notes.item', array(
+			$response[] = array(
 				'S_MARK_ID' => $row['parent_id'],
 				'U_READ' => s_link('my', array('dc', 'read', $row['last_msg_id'])) . '#' . $row['last_msg_id'],
 				'SUBJECT' => $row['privmsgs_subject'],
 				'DATETIME' => $user->format_date($row['privmsgs_date']),
 				'USER_ID' => $row['user_id'],
 				'USERNAME' => $row['username'],
-				'USER_COLOR' => $row['user_color'],
-				'U_USERNAME' => $user_profile['profile'])
+				'U_USERNAME' => $user_profile['profile']
 			);
 		}
 		
-		return true;
+		return $response;
 	}
 	
 	public function friends() {
-		global $user, $template;
+		global $user;
 		
 		$sql = 'SELECT u.item, u.datetime, m.user_id, m.username, m.username_base, m.user_color, m.user_rank
 			FROM _members_unread u, _members m
@@ -90,29 +149,23 @@ class unread {
 			ORDER BY u.datetime DESC';
 		$result = sql_rowset(sql_filter($sql, $user->data['user_id'], UH_FRIEND));
 		
+		$response = w();
 		foreach ($result as $i => $row) {
-			if (!$i) {
-				$template->assign_block_vars('items.friends', array(
-					'ELEMENT' => UH_FRIEND)
-				);
-			}
-			
 			$user_profile = user_profile($row);
 			
-			$template->assign_block_vars('items.friends.item', array(
+			$response[] = array(
 				'S_MARK_ID' => $row['user_id'],
 				'U_PROFILE' => s_link('new', array(UH_FRIEND, $row['user_id'])),
 				'POST_TIME' => $user->format_date($row['datetime']),
-				'USERNAME' => $row['username'],
-				'USER_COLOR' => $row['user_color'])
+				'USERNAME' => $row['username']
 			);
 		}
 		
-		return true;
+		return $response;
 	}
 	
 	public function members_posts() {
-		global $user, $template;
+		global $user;
 		
 		$sql = 'SELECT p.*, u.*, m.user_id, m.username, m.username_base, m.user_color
 			FROM _members_unread u, _members_posts p, _members m
@@ -123,29 +176,24 @@ class unread {
 			ORDER BY p.post_time DESC';
 		$result = sql_rowset(sql_filter($sql, $user->data['user_id'], UH_UPM));
 		
+		$response = w();
 		foreach ($result as $i => $row) {
-			if (!$i) {
-				$template->assign_block_vars('items.userpagem', array(
-					'ELEMENT' => UH_UPM)
-				);
-			}
-			
 			$user_profile = user_profile($row);
 			
-			$template->assign_block_vars('items.userpagem.item', array(
+			$response[] = array(
 				'S_MARK_ID' => $row['post_id'],
 				'U_PROFILE' => s_link('new', array(UH_UPM, $row['post_id'])),
 				'POST_TIME' => $user->format_date($row['datetime']),
 				'USERNAME' => $row['username'],
-				'USER_COLOR' => $row['user_color'])
+				'USER_COLOR' => $row['user_color']
 			);
 		}
 		
-		return true;
+		return $response;
 	}
 	
 	public function artists_news() {
-		global $user, $template;
+		global $user;
 		
 		$sql = 'SELECT t.*
 			FROM _members_unread u, _forum_topics t
@@ -155,28 +203,23 @@ class unread {
 			ORDER BY t.topic_time DESC';
 		$result = sql_rowset(sql_filter($sql, $user->data['user_id'], UH_N));
 		
+		$response = w();
 		foreach ($result as $i => $row) {
-			if (!$i) {
-				$template->assign_block_vars('items.a_news', array(
-					'ELEMENT' => UH_N)
-				);
-			}
-			
 			$user_profile = user_profile($row);
 			
-			$template->assign_block_vars('items.a_news.item', array(
+			$response[] = array(
 				'S_MARK_ID' => $row['topic_id'],
 				'POST_URL' => s_link('new', array(UH_N, $row['topic_id'])),
 				'POST_TITLE' => $row['topic_title'],
-				'POST_TIME' => $user->format_date($row['topic_time']))
+				'POST_TIME' => $user->format_date($row['topic_time'])
 			);
 		}
 		
-		return true;
+		return $response;
 	}
 	
 	public function site_news() {
-		global $user, $template;
+		global $user;
 		
 		$sql = 'SELECT n.*
 			FROM _members_unread u, _news n
@@ -186,28 +229,23 @@ class unread {
 			ORDER BY n.post_time DESC';
 		$result = sql_rowset(sql_filter($sql, $user->data['user_id'], UH_GN));
 		
+		$response = w();
 		foreach ($result as $i => $row) {
-			if (!$i) {
-				$template->assign_block_vars('items.news', array(
-					'ELEMENT' => UH_GN)
-				);
-			}
-			
 			$user_profile = user_profile($row);
 			
-			$template->assign_block_vars('items.news.item', array(
+			$response[] = array(
 				'S_MARK_ID' => $row['news_id'],
 				'POST_URL' => s_link('new', array(UH_GN, $row['news_id'])),
 				'POST_TITLE' => $row['post_subject'],
-				'POST_TIME' => $user->format_date($row['post_time']))
+				'POST_TIME' => $user->format_date($row['post_time'])
 			);
 		}
 		
-		return true;
+		return $response;
 	}
 	
 	public function artists() {
-		global $user, $template;
+		global $user;
 		
 		$sql = 'SELECT a.ub, a.name, a.datetime 
 			FROM _members_unread u, _artists a 
@@ -217,26 +255,21 @@ class unread {
 			ORDER BY name';
 		$result = sql_rowset(sql_filter($sql, $user->data['user_id'], UH_A));
 		
+		$response = w();
 		foreach ($result as $i => $row) {
-			if (!$i) {
-				$template->assign_block_vars('items.artists', array(
-					'ELEMENT' => UH_A)
-				);
-			}
-			
-			$template->assign_block_vars('items.artists.item', array(
+			$response[] = array(
 				'S_MARK_ID' => $row['ub'],
 				'UB_URL' => s_link('new', array(UH_A, $row['ub'])),
 				'NAME' => $row['name'],
-				'POST_TIME' => $user->format_date($row['datetime']))
+				'POST_TIME' => $user->format_date($row['datetime'])
 			);
 		}
 		
-		return true;
+		return $response;
 	}
 	
 	public function artists_comments() {
-		global $user, $template;
+		global $user;
 		
 		$sql = 'SELECT b.subdomain, b.name, p.*, m.user_id, m.username, m.username_base, m.user_color 
 			FROM _members_unread u, _artists b, _artists_posts p, _members m 
@@ -249,16 +282,11 @@ class unread {
 			ORDER BY p.post_id DESC';
 		$result = sql_rowset(sql_filter($sql, $user->data['user_id'], UH_C));
 		
+		$response = w();
 		foreach ($result as $i => $row) {
-			if (!$i) {
-				$template->assign_block_vars('items.a_messages', array(
-					'ELEMENT' => UH_C)
-				);
-			}
-			
 			$user_profile = user_profile($row);
 			
-			$template->assign_block_vars('items.a_messages.item', array(
+			$response[] = array(
 				'S_MARK_ID' => $row['post_id'],
 				'ITEM_URL' => s_link('new', array(UH_C, $row['post_id'])),
 				'UB_URL' => s_link('a', $row['subdomain']),
@@ -267,15 +295,15 @@ class unread {
 				'USER_ID' => $row['user_id'],
 				'USER_COLOR' => $user_profile['color'],
 				'USER_PROFILE' => $user_profile['profile'],
-				'USERNAME' => $user_profile['username'])
+				'USERNAME' => $user_profile['username']
 			);
 		}
 		
-		return true;
+		return $response;
 	}
 	
 	public function artists_fav() {
-		global $user, $template;
+		global $user;
 		
 		$sql = 'SELECT f.fan_id, f.joined, a.name, a.subdomain, m.user_id, m.username, m.username_base, m.user_color
 			FROM _members_unread u, _artists a, _artists_fav f, _members m
@@ -287,16 +315,11 @@ class unread {
 			ORDER BY f.joined DESC';
 		$result = sql_rowset(sql_filter($sql, $user->data['user_id'], UH_AF));
 		
+		$response = w();
 		foreach ($result as $i => $row) {
-			if (!$i) {
-				$template->assign_block_vars('items.a_fav', array(
-					'ELEMENT' => UH_AF)
-				);
-			}
-			
 			$user_profile = user_profile($row);
 			
-			$template->assign_block_vars('items.a_fav.item', array(
+			$response[] = array(
 				'S_MARK_ID' => $row['fan_id'],
 				'ITEM_URL' => s_link('new', array(UH_AF, $row['fan_id'])),
 				'UB_URL' => s_link('a', $row['subdomain']),
@@ -305,15 +328,15 @@ class unread {
 				'USER_ID' => $row['user_id'],
 				'USER_COLOR' => $user_profile['color'],
 				'USER_PROFILE' => $user_profile['profile'],
-				'USERNAME' => $user_profile['username'])
+				'USERNAME' => $user_profile['username']
 			);
 		}
 		
-		return true;
+		return $response;
 	}
 	
 	public function downloads() {
-		global $user, $template;
+		global $user;
 		
 		$sql = 'SELECT b.ub, b.subdomain, b.name, d.id, d.ud AS ud_type, d.title, d.date 
 			FROM _members_unread u, _artists b, _dl d 
@@ -324,31 +347,26 @@ class unread {
 			ORDER BY d.id DESC';
 		$result = sql_rowset(sql_filter($sql, $user->data['user_id'], UH_D));
 		
+		$response = w();
 		foreach ($result as $i => $row) {
-			if (!$i) {
-				$template->assign_block_vars('items.downloads', array(
-					'ELEMENT' => UH_D)
-				);
-			}
+			$download_type = $this->downloads->dl_type($row['ud_type']);
 			
-			$download_type = $downloads->dl_type($row['ud_type']);
-			
-			$template->assign_block_vars('items.downloads.item', array(
+			$response[] = array(
 				'S_MARK_ID' => $row['id'],
 				'UB_URL' => s_link('a', $row['subdomain']),
 				'UD_URL' => s_link('new', array(UH_D, $row['id'])),
 				'UD_TYPE' => $download_type['av'],
 				'DATETIME' => $user->format_date($row['date']),
 				'UB' => $row['name'],
-				'UD' => $row['title'])
+				'UD' => $row['title']
 			);
 		}
 		
-		return true;
+		return $response;
 	}
 	
 	public function downloads_comments() {
-		global $user, $template, $downloads;
+		global $user;
 		
 		$sql = "SELECT b.ub, b.subdomain, b.name, d.id AS dl_id, d.ud AS ud_type, d.title, m.*, u.user_id, u.username, u.username_base, u.user_color
 			FROM _members_unread ur, _artists b, _dl d, _dl_posts m, _members u 
@@ -362,17 +380,12 @@ class unread {
 			ORDER BY m.post_id DESC";
 		$result = sql_rowset(sql_filter($sql, $user->data['user_id'], UH_M));
 		
+		$response = w();
 		foreach ($result as $i => $row) {
-			if (!$i) {
-				$template->assign_block_vars('items.d_messages', array(
-					'ELEMENT' => UH_M)
-				);
-			}
-			
-			$download_type = $downloads->dl_type($row['ud_type']);
+			$download_type = $this->downloads->dl_type($row['ud_type']);
 			$user_profile = user_profile($row);
 			
-			$template->assign_block_vars('items.d_messages.item', array(
+			$response[] = array(
 				'S_MARK_ID' => $row['post_id'],
 				'ITEM_URL' => s_link('new', array(UH_M, $row['post_id'])),
 				'UB_URL' => s_link('a', $row['subdomain']),
@@ -384,15 +397,15 @@ class unread {
 				'USER_ID' => $row['user_id'],
 				'USER_COLOR' => $user_profile['color'],
 				'USER_PROFILE' => $user_profile['profile'],
-				'USERNAME' => $user_profile['username'])
+				'USERNAME' => $user_profile['username']
 			);
 		}
 		
-		return true;
+		return $response;
 	}
 	
 	public function board() {
-		global $user, $template;
+		global $user;
 		
 		$sql = 'SELECT t.*, f.forum_alias, f.forum_id, f.forum_name, p.post_id, p.post_username, p.post_time, m.user_id, m.username, m.username_base, m.user_color 
 			FROM _members_unread u, _forums f, _forum_topics t, _forum_posts p, _members m 
@@ -407,16 +420,11 @@ class unread {
 			ORDER BY t.topic_announce DESC, p.post_time DESC';
 		$result = sql_rowset(sql_filter($sql, $user->data['user_id'], '22' . forum_for_team_not(), UH_T));
 		
+		$response = w();
 		foreach ($result as $i => $row) {
-			if (!$i) {
-				$template->assign_block_vars('items.forums', array(
-					'ELEMENT' => UH_T)
-				);
-			}
-			
 			$user_profile = user_profile($row);
 			
-			$template->assign_block_vars('items.forums.item', array(
+			$response[] = array(
 				'S_MARK_ID' => $row['topic_id'],
 				'FOR_MODS' => in_array($row['forum_id'], forum_for_team_array()),
 				'TOPIC_URL' => s_link('post', $row['post_id']) . '#' . $row['post_id'],
@@ -429,11 +437,11 @@ class unread {
 				'USER_ID' => $row['user_id'],
 				'USER_COLOR' => $user_profile['color'],
 				'USER_PROFILE' => $user_profile['profile'],
-				'USERNAME' => $user_profile['username'])
+				'USERNAME' => $user_profile['username']
 			);
 		}
 		
-		return true;
+		return $response;
 	}
 	
 	public function events() {
@@ -441,7 +449,7 @@ class unread {
 	}
 	
 	public function members() {
-		global $user, $template;
+		global $user;
 		
 		$sql = 'SELECT m.user_id, m.username, m.username_base, m.user_color, m.user_regdate 
 			FROM _members_unread u, _members m 
@@ -452,25 +460,20 @@ class unread {
 			ORDER BY m.user_id DESC';
 		$result = sql_rowset(sql_filter($sql, $user->data['user_id'], UH_U));
 		
+		$response = w();
 		foreach ($result as $i => $row) {
-			if (!$i) {
-				$template->assign_block_vars('items.users', array(
-					'ELEMENT' => UH_U)
-				);
-			}
-			
 			$user_profile = user_profile($row);
 			
-			$template->assign_block_vars('items.users.item', array(
+			$response[] = array(
 				'S_MARK_ID' => $row['user_id'],
 				'USER_COLOR' => $user_profile['color'],
 				'USER_PROFILE' => $user_profile['profile'],
 				'USERNAME' => $user_profile['username'],
-				'DATETIME' => $user->format_date($row['user_regdate']))
+				'DATETIME' => $user->format_date($row['user_regdate'])
 			);
 		}
 		
-		return true;
+		return $response;
 	}
 }
 

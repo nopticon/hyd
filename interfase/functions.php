@@ -616,7 +616,6 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 	global $config, $user, $template;
 	
 	$error = array();
-	
 	$action = request_var('mode', '');
 	
 	if (empty($user->data)) {
@@ -624,6 +623,10 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 	}
 	if (empty($user->lang)) {
 		$user->setup();
+	}
+	
+	if ($user->is('bot')) {
+		redirect(s_link());
 	}
 	
 	$code_invite = request_var('invite', '');
@@ -665,11 +668,11 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 	
 	switch ($action) {
 		case 'in':
-			if ($user->data['is_member'] && !$admin) {
+			if ($user->is('member') && !$admin) {
 				redirect(s_link());
 			}
 			
-			if ($login && (!$user->data['is_member'] || $admin)) {
+			if ($login && (!$user->is('member') || $admin)) {
 				$username = request_var('username', '');
 				$password = request_var('password', '');
 				$ref = request_var('ref', '');
@@ -699,16 +702,16 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 			}
 			break;
 		case 'out':
-			if ($user->data['is_member']) {
+			if ($user->is('member')) {
 				$user->session_kill();
 			}
 			
 			redirect(s_link());
 			break;
 		case 'up':
-			if ($user->data['is_member']) {
+			if ($user->is('member')) {
 				redirect(s_link('my', 'profile'));
-			} else if ($user->data['is_bot']) {
+			} else if ($user->is('bot')) {
 				redirect(s_link());
 			}
 			
@@ -1072,9 +1075,9 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 			}
 			break;
 		case 'r':
-			if ($user->data['is_member']) {
+			if ($user->is('member')) {
 				redirect(s_link('my', 'profile'));
-			} else if ($user->data['is_bot']) {
+			} else if ($user->is('bot')) {
 				redirect(s_link());
 			}
 			
@@ -1631,7 +1634,7 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 	//
 	// Footer
 	//
-	$u_session = ($user->d('is_member')) ? 'out' : 'in';
+	$u_session = ($user->is('member')) ? 'out' : 'in';
 	
 	if (preg_match('#.*?my/confirm.*?#is', $user->d('session_page'))) {
 		$user->data['session_page'] = '';
@@ -1671,7 +1674,7 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 		
 		'S_REDIRECT' => $user->d('session_page'),
 		'S_USERNAME' => $user->d('username'),
-		'S_CONTROLPANEL' => (!isset($template->vars['S_CONTROLPANEL'])) ? (($user->d('is_member') && $user->d('user_auth_control')) ? s_link('control') : '') : $template->vars['S_CONTROLPANEL'],
+		'S_CONTROLPANEL' => (!isset($template->vars['S_CONTROLPANEL'])) ? (($user->is('member') && $user->d('user_auth_control')) ? s_link('control') : '') : $template->vars['S_CONTROLPANEL'],
 		'S_UNREAD_ITEMS' => (($unread_items == 1) ? sprintf($user->lang['UNREAD_ITEM_COUNT'], $unread_items) : sprintf($user->lang['UNREAD_ITEMS_COUNT'], $unread_items)),
 		'S_AP_POINTS' => (($user->d('user_points') == 1) ? sprintf($user->lang['AP_POINT'], $user->d('user_points')) : sprintf($user->lang['AP_POINTS'], $user->d('user_points'))),
 		

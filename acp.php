@@ -28,10 +28,10 @@ class mac {
 		return;
 	}
 	
-	public function auth($a) {
+	public function auth($name) {
 		global $user;
 		
-		if (!$user->_team_auth($a)) {
+		if (!$user->_team_auth($name)) {
 			return fatal_error();
 		}
 		
@@ -40,7 +40,7 @@ class mac {
 }
 
 class acp {
-	public $module;
+	private $module;
 	
 	public function __construct() {
 		global $user;
@@ -48,16 +48,11 @@ class acp {
 		$user->init();
 		$user->setup('control');
 		
-		if (!$user->data['is_member']) {
-			if ($user->data['is_bot']) {
-				redirect(s_link());
-			}
+		if (!$user->is('member')) {
 			do_login();
 		}
 		
-		if (!$user->_team_auth('all')) {
-			fatal_error();
-		}
+		return;
 	}
 	
 	public function run() {
@@ -67,7 +62,7 @@ class acp {
 			fatal_error();
 		}
 		
-		$this->filepath = ROOT . 'interfase/acp/' . $this->module . '.php';
+		$this->filepath = ROOT . 'acp/' . $this->module . '.php';
 		
 		if (!@file_exists($this->filepath)) {
 			fatal_error();
@@ -103,9 +98,7 @@ class acp {
 			$local_tv = array_merge($local_tv, $module->tv);
 		}
 		
-		page_layout($this->module, $module->template, $local_tv);
-		
-		return true;
+		return page_layout($this->module, $module->template, $local_tv);
 	}
 }
 

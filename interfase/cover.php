@@ -187,7 +187,7 @@ class cover {
 			return false;
 		}
 		
-		if ($user->data['is_member']) {
+		if ($user->is('member')) {
 			$is_auth = array();
 			$is_auth = $auth->forum(AUTH_VOTE, $forum_id, $topic_data);
 			
@@ -207,7 +207,7 @@ class cover {
 			'POLL_TITLE' => $vote_info[0]['vote_text'])
 		);
 		
-		if (!$user->data['is_member'] || $user_voted || $poll_expired || !$is_auth['auth_vote'] || $topic_data['topic_locked']) {
+		if (!$user->is('member') || $user_voted || $poll_expired || !$is_auth['auth_vote'] || $topic_data['topic_locked']) {
 			$vote_results_sum = 0;
 			foreach ($vote_info as $row) {
 				$vote_results_sum += $row['vote_result'];

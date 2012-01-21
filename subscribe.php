@@ -22,10 +22,12 @@ require_once('./interfase/common.php');
 $user->init();
 $user->setup();
 
-if ($user->data['is_member']) {
-	redirect(s_link('my', 'profile'));
-} else if ($user->data['is_bot']) {
+if ($user->is('bot')) {
 	redirect(s_link());
+}
+
+if ($user->is('member')) {
+	redirect(s_link('my', 'profile'));
 }
 
 //

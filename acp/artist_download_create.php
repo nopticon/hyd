@@ -52,7 +52,7 @@ class __artist_download_create extends mac {
 			$f = $upload->process($filepath_1, $_FILES['add_dl'], 'mp3');
 			
 			if (!sizeof($upload->error) && $f !== false) {
-				require_once(ROOT . 'interfase/id3/getid3/getid3.php');
+				require_once(ROOT . 'interfase/getid3/getid3.php');
 				$getID3 = new getID3;
 				
 				$sql = 'SELECT MAX(id) AS total

@@ -157,8 +157,8 @@ class _comments {
 		$update_sql = '';
 		$current_time = time();
 		
-		$this->auth['user'] = ($user->data['is_member']) ? true : false;
-		$this->auth['adm'] = ($user->data['is_founder']) ? true : false;
+		$this->auth['user'] = $user->is('member');
+		$this->auth['adm'] = $user->is('founder');
 		
 		/*
 		//
@@ -853,7 +853,7 @@ class _comments {
 				)
 			);
 
-			if (!$user->data['is_member'] || $user->data['is_bot']) {
+			if (!$user->is('member')) {
 				$this->options['url']['orig'][4] = '#(^|[\n ]|\()(([a-z0-9&\-_.]+?@)([\w\-]+\.([\w\-\.]+\.)?[\w]+))#se';
 				$this->options['url']['repl'][4] = "'\$1<span class=\"red\">$3'.substr('$4', 0, 4).'...</span>'";
 			}

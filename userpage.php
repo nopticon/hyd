@@ -21,10 +21,7 @@ require_once('./interfase/common.php');
 
 $user->init();
 
-if (!$user->data['is_member']) {
-	if ($user->data['is_bot']) {
-		redirect(s_link());
-	}
+if (!$user->is('member')) {
 	do_login();
 }
 
@@ -76,7 +73,7 @@ $epbi2 = $user->_team_auth('all');
 //
 // UPDATE LAST PROFILE VIEWERS LIST
 // 1 && (0 || 1 && 0 && 1) && 1
-if ($user->data['is_member'] && $user->data['user_id'] != $profiledata['user_id'] && !in_array($mode, array('friend', 'ban'))) {
+if ($user->is('member') && $user->data['user_id'] != $profiledata['user_id'] && !in_array($mode, w('friend ban'))) {
 	$is_blocked_member = false;
 	if (!$epbi) {
 		$sql = 'SELECT ban_id
@@ -193,7 +190,7 @@ foreach ($panel_selection as $link => $data) {
 if ($user->data['user_id'] != $profiledata['user_id']) {
 	$friend_add_lang = true;
 	
-	if ($user->data['is_member']) {
+	if ($user->is('member')) {
 		$friend_add_lang = $userpage->is_friend($user->data['user_id'], $profiledata['user_id']);
 	}
 	

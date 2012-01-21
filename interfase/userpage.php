@@ -55,10 +55,7 @@ class userpage {
 	public function friend_add() {
 		global $user, $profiledata;
 		
-		if (!$user->data['is_member']) {
-			if ($user->data['is_bot']) {
-				redirect(s_link());
-			}
+		if (!$user->is('member')) {
 			do_login();
 		}
 		
@@ -151,10 +148,7 @@ class userpage {
 	public function user_ban() {
 		global $user, $profiledata;
 		
-		if (!$user->data['is_member']) {
-			if ($user->data['is_bot']) {
-				redirect(s_link());
-			}
+		if (!$user->is('member')) {
 			do_login();
 		}
 		
@@ -333,12 +327,10 @@ class userpage {
 		//
 		$comments_ref = s_link('m', array($profiledata['username_base']));
 		
-		if ($user->data['is_member']) {
+		if ($user->is('member')) {
 			$template->assign_block_vars('main.post_comment_box', array(
 				'REF' => $comments_ref)
 			);
-		} else {
-			$template->assign_block_vars('main.post_comment_members', array());
 		}
 		
 		//
@@ -493,12 +485,10 @@ class userpage {
 			$comments->view(0, '', $profiledata['userpage_posts'], $profiledata['userpage_posts'], 'main.posts');
 		}
 		
-		if ($user->data['is_member']) {
+		if ($user->is('member')) {
 			$template->assign_block_vars('main.box', array(
 				'REF' => $comments_ref)
 			);
-		} else {
-			$template->assign_block_vars('main.members', array());
 		}
 		
 		return true;

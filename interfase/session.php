@@ -640,6 +640,10 @@ class user extends session {
 		return (int) sql_field(sql_filter($sql, $this->lang_name), 'lang_id', 0);
 	}
 	
+	public function is($name) {
+		return (isset($this->data['is_' . $name]) && $this->data['is_' . $name]);
+	}
+	
 	public function init_ranks() {
 		global $cache;
 		

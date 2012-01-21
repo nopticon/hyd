@@ -26,10 +26,7 @@ if ($config['request_method'] != 'post' || !isset($_POST)) {
 // Init member
 $user->init();
 
-if (!$user->data['is_member']) {
-	if ($user->data['is_bot']) {
-		redirect(s_link());
-	}
+if (!$user->is('member')) {
 	do_login();
 }
 

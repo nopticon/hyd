@@ -166,7 +166,7 @@ class _events extends downloads {
 		
 		switch ($mode) {
 			case 'fav':
-				if (!$user->data['is_member']) {
+				if (!$user->is('member')) {
 					do_login();
 				}
 				
@@ -204,7 +204,7 @@ class _events extends downloads {
 					redirect(s_link('events', $this->v('event_alias')));
 				}
 				
-				if (!$user->data['is_member']) {
+				if (!$user->is('member')) {
 					do_login();
 				}
 				
@@ -267,7 +267,7 @@ class _events extends downloads {
 					}
 
 					$is_fav = false;
-					if ($user->data['is_member']) {
+					if ($user->is('member')) {
 						$sql = 'SELECT member_id
 							FROM _events_fav
 							WHERE event_id = ?
@@ -278,7 +278,7 @@ class _events extends downloads {
 						}
 					}
 					
-					if (!$is_fav || !$user->data['is_member']) {
+					if (!$is_fav || !$user->is('member')) {
 						$template->assign_block_vars('selected.fav', array(
 							'URL' => s_link('events', array($this->v('id'), $imagedata['image'], 'fav')))
 						);
@@ -330,7 +330,7 @@ class _events extends downloads {
 					$auth_key = 'auth_reply';
 					
 					if (((!$is_auth['auth_view'] || !$is_auth['auth_read'])) || !$is_auth[$auth_key]) {
-						if (!$user->data['is_member']) {
+						if (!$user->is('member')) {
 							do_login();
 						}
 						
@@ -632,7 +632,7 @@ class _events extends downloads {
 						$template->assign_block_vars('messages', array());
 					}
 					
-					if ($user->data['is_member']) {
+					if ($user->is('member')) {
 						$controls[$row['post_id']]['reply'] = s_link('events', array($this->v('event_alias'), $row['post_id'], 'reply'));
 						
 						if ($mod_auth) {
@@ -675,7 +675,7 @@ class _events extends downloads {
 				$publish_ref = ($posts_offset) ? s_link('events', array($this->v('event_alias'), 's' . $t_offset)) : s_link('events', $this->v('event_alias'));
 				
 				// Posting box
-				if ($user->data['is_member']) {
+				if ($user->is('member')) {
 					$template->assign_block_vars('publish', array(
 						'REF' => $publish_ref)
 					);

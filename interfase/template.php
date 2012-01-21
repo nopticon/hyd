@@ -1279,7 +1279,7 @@ class Template {
 				'TEMPLATE' => $tpl,
 				'TEMPLATE_NAME' => $this->tpl,
 				
-				'IS_MEMBER' => (isset($user->data['is_member'])) ? (int) $user->data['is_member'] : 0,
+				'IS_MEMBER' => $user->is('member'),
 				'MEMBER_COLOR' => $user->data['user_color'],
 				'FOOTER_YEAR' => date('Y')
 			);

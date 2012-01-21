@@ -71,7 +71,7 @@ $is_auth = array();
 $is_auth = $auth->forum(AUTH_ALL, $forum_id, $forum_row);
 
 if (!$is_auth['auth_view'] || !$is_auth['auth_read']) {
-	if (!$user->data['is_member']) {
+	if (!$user->is('member')) {
 		do_login();
 	}
 	
@@ -104,7 +104,7 @@ if ($submit_topic)
 	}
 	
 	if (!$is_auth[$auth_key]) {
-		if (!$user->data['is_member']) {
+		if (!$user->is('member')) {
 			do_login();
 		}
 		

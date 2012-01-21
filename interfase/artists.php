@@ -823,8 +823,8 @@ class _artists extends layout {
 	public function _auth() {
 		global $user;
 		
-		$this->auth['user'] = ($user->data['is_member']) ? true : false;
-		$this->auth['adm'] = ($user->data['is_founder']) ? true : false;
+		$this->auth['user'] = ($user->is('member')) ? true : false;
+		$this->auth['adm'] = ($user->is('founder')) ? true : false;
 		$this->auth['mod'] = ($this->auth['adm']) ? true : false;
 		$this->auth['smod'] = false;
 		$this->auth['fav'] = false;
@@ -1745,7 +1745,7 @@ class _artists extends layout {
 					'FANS' => $fan_count,
 					'L_FANS' => ($fan_count == 1) ? $user->lang['FAN'] : $user->lang['FANS'], 
 					
-					'S_CONTROLPANEL' => (($user->data['is_member'] && $user->data['user_auth_control']) ? s_link('control', '_' . $this->data['subdomain']) : ''),
+					'S_CONTROLPANEL' => (($user->is('member') && $user->data['user_auth_control']) ? s_link('control', '_' . $this->data['subdomain']) : ''),
 					'LOCATION' => ($this->data['local']) ? (($this->data['location'] != '') ? $this->data['location'] . ', ' : '') . 'Guatemala' : $this->data['location'])
 				);
 				

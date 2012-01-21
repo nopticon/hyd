@@ -35,10 +35,7 @@ $user->init();
 //
 // Check if member is logged in
 //
-if (!$user->data['is_member']) {
-	if ($user->data['is_bot']) {
-		redirect(s_link());
-	}
+if (!$user->is('member')) {
 	do_login();
 }
 

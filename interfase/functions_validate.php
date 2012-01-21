@@ -32,8 +32,8 @@ function validate_username($username) {
 	$sql = 'SELECT username
 		FROM _members
 		WHERE LOWER(username) = ?';
-	if (sql_fieldrow(sql_filter($sql, strtolower($username)))) {
-		if (($user->data['is_member'] && $row['username'] != $userdata['username']) || !$user->data['is_member']) {
+	if ($userdata = sql_fieldrow(sql_filter($sql, strtolower($username)))) {
+		if (($user->is('member') && $username != $userdata['username']) || !$user->is('member')) {
 			return array('error' => true, 'error_msg' => $user->lang['USERNAME_TAKEN']);
 		}
 	}

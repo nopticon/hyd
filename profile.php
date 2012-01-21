@@ -22,7 +22,7 @@ require_once('./interfase/common.php');
 $user->init();
 $user->setup();
 
-if (!$user->data['is_member']) {
+if (!$user->is('member')) {
 	do_login();
 }
 
