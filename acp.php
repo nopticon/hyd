@@ -52,6 +52,16 @@ class acp {
 			do_login();
 		}
 		
+		if ($arg = request_var('args', '')) {
+			foreach (explode('.', $arg) as $str_pair) {
+				$pair = explode(':', $str_pair);
+				
+				if (isset($pair[0]) && isset($pair[1]) && !empty($pair[0])) {
+					$_REQUEST[$pair[0]] = $pair[1];
+				}
+			}
+		}
+		
 		return;
 	}
 	
@@ -78,7 +88,7 @@ class acp {
 		$module = new $_object();
 		
 		$module->submit = isset($_POST['submit']);
-		$module->url = s_link('acp', $this->module);
+		$module->url = s_link() . substr($_SERVER['REQUEST_URI'], 1);
 		$module->alias = $this->module;
 		
 		$module->_home();

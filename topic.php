@@ -443,8 +443,8 @@ foreach ($messages as $row) {
 		$controls[$row['post_id']]['reply'] = s_link('post', array($row['post_id'], 'reply'));
 		
 		if ($mod_auth) {
-			$controls[$row['post_id']]['edit'] = s_link('mcp', array('edit', $row['post_id']));
-			$controls[$row['post_id']]['delete'] = s_link('mcp', array('post', $row['post_id']));
+			$controls[$row['post_id']]['edit'] = s_link('acp', array('forums_post_modify', 'msg_id' => $row['post_id']));
+			$controls[$row['post_id']]['delete'] = s_link('acp', array('forums_post_delete', 'msg_id' => $row['post_id']));
 		}
 	}
 	

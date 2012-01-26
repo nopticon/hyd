@@ -16,16 +16,31 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-define('IN_NUCLEO', true);
-require_once('./interfase/common.php');
-require_once(ROOT . 'interfase/awards.php');
+if (!defined('IN_NUCLEO')) exit;
 
-$user->init();
-$user->setup();
-
-$awards = new _awards();
-$awards->run();
-
-page_layout('AWARDS', 'awards');
+class _awards {
+	public function __construct() {
+		return;
+	}
+	
+	public function run() {
+		global $template;
+		
+		$sql = 'SELECT *
+			FROM _awards_type
+			ORDER BY type_order';
+		$types = sql_rowset($sql);
+		
+		foreach ($types as $i => $row) {
+			if (!$i) $template->assign_block_vars('awards', array());
+			
+			$template->assign_block_vars('awards.row', array(
+				
+			));
+		}
+		
+		return;
+	}
+}
 
 ?>

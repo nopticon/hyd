@@ -430,8 +430,29 @@ function s_link($module = '', $data = false) {
 	
 	if ($data !== false) {
 		if (is_array($data)) {
-			foreach ($data as $value) {
-				if ($value != '') $url .= $value . '/';
+			switch ($module) {
+				case 'acp':
+					$args = 0;
+					foreach ($data as $data_key => $value) {
+						if (is_numeric($data_key)) {
+							if ($value != '') $url .= ((substr($url, -1) !== '/') ? '/' : '') . $value . '/';
+						} else {
+							if ($value != '') {
+								$url .= (($args) ? '.' : '') . $data_key . ':' .$value;
+								$args++;
+							}
+						}
+					}
+					
+					if (substr($url, -1) !== '/') {
+						$url .= '/';
+					}
+					break;
+				default:
+					foreach ($data as $value) {
+						if ($value != '') $url .= $value . '/';
+					}
+					break;
 			}
 		} else {
 			$url .= $data . '/';
@@ -1610,9 +1631,7 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 	//
 	// gzip_compression
 	//
-	$useragent = (isset($HTTP_SERVER_VARS['HTTP_USER_AGENT'])) ? $HTTP_SERVER_VARS['HTTP_USER_AGENT'] : getenv('HTTP_USER_AGENT');
-
-	if (strstr($useragent,'compatible') || strstr($useragent,'Gecko')) {
+	if (strstr($user->browser,'compatible') || strstr($user->browser,'Gecko')) {
 		ob_start('ob_gzhandler');
 	}
 	

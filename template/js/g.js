@@ -9,6 +9,7 @@
 <!-- INCLUDE js/j.scroll.js -->
 <!-- INCLUDE js/j.wheel.js -->
 <!-- INCLUDE js/j.fancy.js -->
+<!-- INCLUDE js/j.slider.js -->
 <!-- INCLUDE js/png.js -->
 
 function popup(url, name, width, height) {

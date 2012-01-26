@@ -86,15 +86,15 @@ class __forums_post_modify extends mac {
 				sql_query($sql);
 			}
 			
-			redirect(s_link('post', $this->msg_id));
+			redirect(s_link('post', $this->id));
 		}
 		
-		$tv = array(
+		$template->assign_vars(array(
 			'V_TOPIC' => ($user->data['is_founder']) ? $this->object->topic->topic_title : '',
 			'V_MESSAGE' => $this->object->post->post_text,
 			'S_ACTION' => s_link('mcp', array('edit', $this->id))
-		);
-		return page_layout('Editar', 'modcp.edit', $tv);
+		));
+		//return page_layout('Editar', 'modcp.edit', $tv);
 	}
 }
 

@@ -28,10 +28,6 @@ class __forums_post_delete extends mac {
 	public function _home() {
 		global $config, $user, $cache, $template;
 		
-		if ($this->submit) {
-			return false;
-		}
-		
 		$post_id = request_var('post_id', 0);
 		
 		if (!$post_id) {
@@ -142,8 +138,7 @@ class __forums_post_delete extends mac {
 			WHERE user_id = ?';
 		sql_query(sql_filter($sql, $post_info['poster_id']));
 		
-		_pre($post_info);
-		_pre($post_data, true);
+		redirect('topic', $topic_id);
 	}
 }
 
