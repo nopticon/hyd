@@ -18,40 +18,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 define('IN_NUCLEO', true);
 require_once('./interfase/common.php');
+require_once(ROOT . 'objects/win.php');
 
 $user->init();
 $user->setup();
 
-$filename = request_var('filename', '');
-if (empty($filename) || !preg_match('#([a-z0-9\.])#is', $filename)) {
-	fatal_error();
-}
+$win = new _win();
+$win->run();
 
-$filepath = '../home/downloads/' . $filename;
-if (!@file_exists($filepath)) {
-	fatal_error();
-}
-
-$sql = 'UPDATE _downloads
-	SET download_count = download_count + 1
-	WHERE download_filename = ?';
-sql_query(sql_filter($sql, $filename));
-
-if (!sql_affectedrows()) {
-	$insert = array(
-		'download_filename' => $filename,
-		'download_count' => 1
-	);
-	$sql = 'INSERT INTO _downloads' . sql_build('INSERT', $insert);
-	sql_query($sql);
-}
-
-//
-require_once(ROOT . 'interfase/downloads.php');
-$downloads = new downloads();
-
-$downloads->filename = $filename;
-$downloads->filepath = substr($filepath, 3);
-$downloads->dl_file();
+page_layout($win->get_title('WIN'), $win->get_template('win'));
 
 ?>

@@ -18,6 +18,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 define('IN_NUCLEO', true);
 require_once('./interfase/common.php');
+require_once(ROOT . 'interfase/functions_validate.php');
+require_once(ROOT . 'interfase/emailer.php');
 
 $user->init();
 $user->setup();
@@ -78,8 +80,6 @@ if (!empty($code_invite)) {
 $error = array();
 
 if (isset($_POST['submit'])) {
-	require_once(ROOT . 'interfase/functions_validate.php');
-	
 	foreach ($fields as $k => $v) {
 		$v_fields[$k] = request_var($k, $v);
 	}
@@ -207,7 +207,6 @@ if (isset($_POST['submit'])) {
 		sql_query($sql);
 		
 		// Emailer
-		require_once(ROOT . 'interfase/emailer.php');
 		$emailer = new emailer();
 		
 		// Pending points
@@ -232,8 +231,7 @@ if (isset($_POST['submit'])) {
 				sql_query($sql);
 			}
 			
-			if ($send_invite)
-			{
+			if ($send_invite) {
 				$invite_user = explode('@', $v_fields['refby']);
 				$invite_code = substr(md5(unique_id()), 0, 6);
 				
@@ -283,8 +281,7 @@ if (isset($_POST['submit'])) {
 //
 // Form
 //
-if (!$members_refop = $cache->get('members_refop'))
-{
+if (!$members_refop = $cache->get('members_refop')) {
 	$sql = 'SELECT *
 		FROM _members_ref_options
 		ORDER BY option_order';
@@ -293,8 +290,7 @@ if (!$members_refop = $cache->get('members_refop'))
 	$cache->save('members_refop', $members_refop);
 }
 
-if (!$country = $cache->get('country'))
-{
+if (!$country = $cache->get('country')) {
 	$sql = 'SELECT *
 		FROM _countries
 		ORDER BY country_name';
@@ -304,16 +300,14 @@ if (!$country = $cache->get('country'))
 }
 
 $country_codes = array();
-foreach ($country as $item)
-{
+foreach ($country as $item) {
 	$country_codes[$item['country_short']] = $item['country_id'];
 }
 
 $country_code = strtolower(geoip_country_code_by_name($user->ip));
 
 $v_fields['country'] = ($v_fields['country']) ? $v_fields['country'] : ((isset($country_codes[$country_code])) ? $country_codes[$country_code] : $country_codes['gt']);
-foreach ($country as $item)
-{
+foreach ($country as $item) {
 	$template->assign_block_vars('country', array(
 		'OPTION_ID' => $item['country_id'],
 		'OPTION_NAME' => $item['country_name'],
@@ -322,8 +316,7 @@ foreach ($country as $item)
 }
 
 $v_fields['refop'] = ($v_fields['refop']) ? $v_fields['refop'] : 1;
-foreach ($members_refop as $item)
-{
+foreach ($members_refop as $item) {
 	$template->assign_block_vars('refop', array(
 		'OPTION_ID' => $item['option_id'],
 		'OPTION_NAME' => $item['option_name'],
@@ -331,15 +324,13 @@ foreach ($members_refop as $item)
 	);
 }
 
-if (sizeof($error))
-{
+if (sizeof($error)) {
 	$template->assign_block_vars('error', array(
 		'MESSAGE' => parse_error($error))
 	);
 }
 
-foreach ($user->lang['MEMBERSHIP_BENEFITS2'] as $item)
-{
+foreach ($user->lang['MEMBERSHIP_BENEFITS2'] as $item) {
 	$template->assign_block_vars('list_benefits', array(
 		'ITEM' => $item)
 	);
@@ -347,27 +338,23 @@ foreach ($user->lang['MEMBERSHIP_BENEFITS2'] as $item)
 
 $s_genres_select = '';
 $genres = array(1 => 'MALE', 2 => 'FEMALE');
-foreach ($genres as $id => $value)
-{
+foreach ($genres as $id => $value) {
 	$s_genres_select .= '<option value="' . $id . '"' . (($v_fields['gender'] == $id) ? ' selected="true"' : '') . '>' . $user->lang[$value] . '</option>';
 }
 
 $s_bday_select = '<option value="">&nbsp;</option>';
-for ($i = 1; $i < 32; $i++)
-{
+for ($i = 1; $i < 32; $i++) {
 	$s_bday_select .= '<option value="' . $i . '"' . (($v_fields['birthday_day'] == $i) ? 'selected="true"' : '') . '>' . $i . '</option>';
 }
 
 $s_bmonth_select = '<option value="">&nbsp;</option>';
 $months = array(1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April', 5 => 'May', 6 => 'June', 7 => 'July', 8 => 'August', 9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December');
-foreach ($months as $id => $value)
-{
+foreach ($months as $id => $value) {
 	$s_bmonth_select .= '<option value="' . $id . '"' . (($v_fields['birthday_month'] == $id) ? ' selected="true"' : '') . '>' . $user->lang['datetime'][$value] . '</option>';
 }
 
 $s_byear_select = '<option value="">&nbsp;</option>';
-for ($i = 2005; $i > 1899; $i--)
-{
+for ($i = 2005; $i > 1899; $i--) {
 	$s_byear_select .= '<option value="' . $i . '"' . (($v_fields['birthday_year'] == $i) ? ' selected="true"' : '') . '>' . $i . '</option>';
 }
 
@@ -386,13 +373,11 @@ $tv = array(
 	'V_TOS' => ($v_fields['tos']) ? ' checked="true"' : ''
 );
 
-if (isset($error['birthday']))
-{
+if (isset($error['birthday'])) {
 	$fields['birthday'] = true;
 }
 
-foreach ($fields as $k => $v)
-{
+foreach ($fields as $k => $v) {
 	$tv['E_' . strtoupper($k)] = (isset($error[$k])) ? true : false;
 }
 

@@ -18,23 +18,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 define('IN_NUCLEO', true);
 require_once('./interfase/common.php');
-require_once(ROOT . 'interfase/cover.php');
-require_once(ROOT . 'interfase/community.php');
+require_once(ROOT . 'objects/community.php');
 
 $user->init();
 $user->setup();
 
-$cover = new cover();
-$comm = new community();
+$community = new community();
 
 //
 // Team | Members
 //
-$comm->founders();
-$comm->team();
-$comm->recent_members();
-$comm->birthdays();
-$comm->vars();
+$community->founders();
+$community->team();
+$community->recent_members();
+$community->birthdays();
+$community->vars();
 
 //
 // Online
@@ -44,7 +42,7 @@ $sql = 'SELECT u.user_id, u.username, u.username_base, u.user_type, u.user_hideu
 	WHERE s.session_time >= ?
 		AND u.user_id = s.session_user_id
 	ORDER BY u.username ASC, s.session_ip ASC';
-$comm->online(sql_filter($sql, ($user->time - (5 * 60))), 'online', 'MEMBERS_ONLINE');
+$community->online(sql_filter($sql, ($user->time - (5 * 60))), 'online', 'MEMBERS_ONLINE');
 
 //
 // Today Online
@@ -58,7 +56,7 @@ $sql = 'SELECT user_id, username, username_base, user_color, user_hideuser, user
 		AND user_lastvisit >= ?
 		AND user_lastvisit < ? 
 	ORDER BY username';
-$comm->online(sql_filter($sql, $timetoday, ($timetoday + 86399)), 'online', 'MEMBERS_TODAY', 'MEMBERS_VISIBLE');
+$community->online(sql_filter($sql, $timetoday, ($timetoday + 86399)), 'online', 'MEMBERS_TODAY', 'MEMBERS_VISIBLE');
 
 page_layout('COMMUNITY', 'community', false, false);
 

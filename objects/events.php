@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
+require_once(ROOT . 'interfase/comments.php');
 require_once(ROOT . 'interfase/downloads.php');
 
 class _events extends downloads { 
@@ -299,7 +300,6 @@ class _events extends downloads {
 					fatal_error();
 				}
 				
-				require_once(ROOT . 'interfase/comments.php');
 				$comments = new _comments();
 				
 				$mod_auth = $user->_team_auth('mod');

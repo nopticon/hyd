@@ -18,6 +18,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
+require_once(ROOT . 'interfase/comments.php');
+
 class comments extends common {
 	public $methods = array(
 		'emoticons' => array('add', 'edit', 'delete'),
@@ -89,7 +91,6 @@ class comments extends common {
 	public function _help_home() {
 		global $user, $template;
 		
-		require_once(ROOT . 'interfase/comments.php');
 		$comments = new _comments();
 		
 		$ha = $this->auth->query('comments');

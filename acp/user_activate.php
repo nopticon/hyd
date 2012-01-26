@@ -18,6 +18,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
+require_once(ROOT . 'interfase/emailer.php');
+
 class __user_activate extends mac {
 	public function __construct() {
 		parent::__construct();
@@ -75,7 +77,6 @@ class __user_activate extends mac {
 			$user->save_unread(UH_T, 1455, 0, $user_id);
 			$user->save_unread(UH_U, $user_id);
 			
-			require_once(ROOT . 'interfase/emailer.php');
 			$emailer = new emailer();
 			
 			$emailer->from('info');

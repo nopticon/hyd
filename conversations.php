@@ -27,23 +27,18 @@ if (isset($_POST['cancel'])) {
 	redirect(s_link('my', 'dc'));
 }
 
-//
-// Init member data
-//
 $user->init();
+$user->setup();
 
-//
-// Check if member is logged in
-//
 if (!$user->is('member')) {
 	do_login();
 }
 
 $comments = new _comments();
 
-//
-// Delete
-//
+/*
+ * Delete conversations
+ */
 $mark	= request_var('mark', array(0));
 
 if (isset($_POST['delete']) && $mark) {
@@ -56,8 +51,6 @@ if (isset($_POST['delete']) && $mark) {
 		foreach ($mark as $item) {
 			$s_hidden += array('mark[' . $i++ . ']' => $item);
 		}
-		
-		$user->setup();
 		
 		// Output to template
 		//
@@ -72,11 +65,6 @@ if (isset($_POST['delete']) && $mark) {
 	
 	redirect(s_link('my', 'dc'));
 }
-
-//
-// Setup user
-//
-$user->setup();
 
 //
 // Submit

@@ -18,6 +18,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
+require_once(ROOT . 'interfase/emailer.php');
+
 class __user_name_change extends mac {
 	public function __construct() {
 		parent::__construct();
@@ -60,7 +62,6 @@ class __user_name_change extends mac {
 			WHERE user_id = ?';
 		sql_query(sql_filter($sql, $username2, $username_base2, $userdata['user_id']));
 		
-		require_once(ROOT . 'interfase/emailer.php');
 		$emailer = new emailer();
 		
 		$emailer->from('info');

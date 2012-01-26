@@ -18,6 +18,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
+require_once(ROOT . 'interfase/comments.php');
+
 class _news {
 	public $data = array();
 	public $news = array();
@@ -178,7 +180,6 @@ class _news {
 			WHERE user_id = ?';
 		$userinfo = sql_fieldrow(sql_filter($sql, $this->data['poster_id']));
 		
-		require_once(ROOT . 'interfase/comments.php');
 		$comments = new _comments();
 		
 		$user_profile = $comments->user_profile($userinfo);

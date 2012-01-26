@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 define('IN_NUCLEO', true);
 require_once('./interfase/common.php');
+require_once(ROOT . 'interfase/comments.php');
 
 //
 // Topic vars
@@ -100,6 +101,8 @@ if (!$post_id && $reply) {
 // Load user config
 //
 $user->setup();
+
+$comments = new _comments();
 
 //
 // Start member auth
@@ -191,9 +194,6 @@ if ($submit_reply || $submit_vote) {
 			}
 			
 			if (!sizeof($error)) {
-				require_once(ROOT . 'interfase/comments.php');
-				$comments = new _comments();
-				
 				$update_topic = array();
 				
 				if (strstr($post_message, '-Anuncio-') && $user->_team_auth('mod')) {
@@ -419,12 +419,6 @@ if ($topic_data['topic_vote']) {
 		}
 	}
 }
-
-//
-// Process the topic posts
-//
-require_once(ROOT . 'interfase/comments.php');
-$comments = new _comments();
 
 //
 // Advanced auth

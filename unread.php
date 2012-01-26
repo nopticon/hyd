@@ -32,7 +32,8 @@ I			ARTISTS IMAGES				-
 */
 
 define('IN_NUCLEO', true);
-require('./interfase/common.php');
+require_once('./interfase/common.php');
+require_once(ROOT . 'interfase/downloads.php');
 
 $user->init();
 
@@ -173,7 +174,6 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
 	}
 	
 	if (isset($items[UH_D]) || isset($items[UH_M])) {
-		require('./interfase/downloads.php');
 		$downloads = new downloads();
 	}
 	

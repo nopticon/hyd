@@ -18,6 +18,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 define('IN_NUCLEO', true);
 require_once('./interfase/common.php');
+require_once(ROOT . 'interfase/functions_avatar.php');
+require_once(ROOT . 'interfase/comments.php');
 
 $user->init();
 $user->setup();
@@ -206,15 +208,12 @@ if (isset($_POST['submit'])) {
 	}
 	
 	if (!sizeof($error)) {
-		require_once(ROOT . 'interfase/functions_avatar.php');
-		
 		if ($xavatar->process()) {
 			$avatar = $xavatar->file();
 		}
 	}
 	
 	if (!sizeof($error)) {
-		require_once(ROOT . 'interfase/comments.php');
 		$comments = new _comments();
 		
 		if (!empty($sig)) {

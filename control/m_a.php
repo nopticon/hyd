@@ -18,6 +18,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
+require_once(ROOT . 'interfase/comments.php');
+require_once(ROOT . 'interfase/upload.php');
+require_once(ROOT . 'interfase/functions_admin.php');
+
 class a extends common {
 	public $data = array();
 	public $methods = array(
@@ -37,7 +41,6 @@ class a extends common {
 	public $comments;
 
 	public function __construct() {
-		require_once(ROOT . 'interfase/comments.php');
 		$this->comments = new _comments();
 
 		return;
@@ -399,8 +402,6 @@ class a extends common {
 		}
 
 		if (isset($_POST['confirm'])) {
-			require_once(ROOT . 'interfase/functions_admin.php');
-
 			$sql_a = array();
 
 			$sql = 'SELECT poster_id, COUNT(post_id) AS posts
@@ -696,7 +697,6 @@ class a extends common {
 				GROUP BY m.user_id
 				ORDER BY m.username';
 			if ($result = sql_rowset(sql_filter($sql, $this->data['ub']))) {
-				require_once(ROOT . 'interfase/comments.php');
 				$comments = new _comments();
 
 				$no_results = false;
@@ -756,7 +756,6 @@ class a extends common {
 	public function __auth_table($row, $check_unique = false) {
 		global $user, $template;
 
-		require_once(ROOT . 'interfase/comments.php');
 		$comments = new _comments();
 
 		$tcol = $trow = $items = 0;
@@ -1187,7 +1186,6 @@ class a extends common {
 		global $user, $template;
 
 		if (isset($_POST['submit']) && isset($_FILES['add_image'])) {
-			require_once(ROOT . 'interfase/upload.php');
 			$upload = new upload();
 
 			$filepath = '..' . SDATA . 'artists/' . $this->data['ub'] . '/';

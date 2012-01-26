@@ -18,11 +18,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 define('IN_NUCLEO', true);
 require_once('./interfase/common.php');
+require_once(ROOT . 'objects/events.php');
 
 $user->init();
 $user->setup();
 
-require_once(ROOT . 'interfase/events.php');
 $events = new _events();
 
 if ($events->_setup()) {

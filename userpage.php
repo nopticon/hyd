@@ -18,8 +18,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 define('IN_NUCLEO', true);
 require_once('./interfase/common.php');
+require_once(ROOT . 'interfase/comments.php');
+require_once(ROOT . 'objects/userpage.php');
 
 $user->init();
+$user->setup();
 
 if (!$user->is('member')) {
 	do_login();
@@ -57,11 +60,6 @@ if (!$profiledata = sql_fieldrow(sql_filter($sql, $viewprofile, USER_INACTIVE, U
 if (empty($mode)) {
 	$mode = 'main';
 }
-
-$user->setup();
-
-require_once(ROOT . 'interfase/comments.php');
-require_once(ROOT . 'interfase/userpage.php');
 
 $comments = new _comments();
 $userpage = new userpage();

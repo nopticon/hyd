@@ -18,65 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-/*
-
-// * _chat_ch
-...
-CH_ID				MEDIUMINT(8)
-CH_NAME			VARCHAR(25)
-CH_DESC			VARCHAR(255)
-CH_FOUNDER	MEDIUMINT(8)
-CH_TYPE			TINYINT(2)
-CH_AUTH			TINYINT(2)
-CH_USERS		MEDIUMINT(5)
-CH_DEF			TINYINT(1)
-CH_IP				VARCHAR(40)
-CH_LOCKED		TINYINT(1)
-
-// CH_TYPE
-...
-0						OFFICIAL
-1						USER_CUSTOM
-
-// CH_AUTH
-...
-0						ALL
-1						REG
-2						PRIVATE
-3						HIDDEN
-
------------------------
-// * CHAT_SESSIONS_TABLE
-...
-SESSION_ID				VARCHAR(32)
-SESSION_USER_ID		MEDIUMINT(8)
-SESSION_CH_ID			MEDIUMINT(8)
-SESSION_TYPE			TINYINT(2)
-SESSION_IP				VARCHAR(8)
-SESSION_START			INT(11)
-SESSION_TIME			INT(11)
-SESSION_LAST_MESSAGE	INT(11)
-
------------------------
-// * CHAT_AUTH_TABLE
-...
-USER_CHANNEL				MEDIUMINT(8)
-USER_ID							MEDIUMINT(8)
-USER_AUTH						TINYINT(2)
-
------------------------
-// * CHAT_MSG_TABLE
-...
-MSG_ID							INT(11)
-MSG_CH							INT(11)
-MSG_IGNORE					INT(11)
-MSG_MEMBER_ID				INT(11)
-MSG_TEXT						TEXT
-MSG_TIME						INT(11)
-MSG_IP							VARCHAR(40)
-
-
-*/
+require_once(ROOT . 'interfase/comments.php');
 
 class _chat {
 	public $data = array();
@@ -85,7 +27,6 @@ class _chat {
 	public $comments;
 	
 	public function __construct() {
-		require_once(ROOT . 'interfase/comments.php');
 		$this->comments = new _comments;
 		
 		return;

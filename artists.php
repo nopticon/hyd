@@ -18,15 +18,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 define('IN_NUCLEO', true);
 require_once('./interfase/common.php');
+require_once(ROOT . 'objects/artists.php');
+require_once(ROOT . 'interfase/comments.php');
 
 $user->init();
 $user->setup();
 
-require_once('./interfase/artists.php');
 $artists = new _artists();
 
 if ($artists->_setup()) {
-	require_once(ROOT . 'interfase/comments.php');
 	$artists->msg = new _comments();
 	
 	$artists->_panel();

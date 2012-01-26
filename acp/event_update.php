@@ -18,6 +18,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
+require_once(ROOT . 'interfase/upload.php');
+
 class __event_update extends mac {
 	public function __construct() {
 		parent::__construct();
@@ -29,7 +31,6 @@ class __event_update extends mac {
 		global $config, $user, $template;
 		
 		if ($this->submit) {
-			require_once(ROOT . 'interfase/upload.php');
 			$upload = new upload();
 			
 			$event_id = request_var('event_id', 0);

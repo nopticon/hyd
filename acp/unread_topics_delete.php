@@ -18,6 +18,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
+require_once(ROOT . 'interfase/comments.php');
+
 class __unread_topics_delete extends mac {
 	public function __construct() {
 		parent::__construct();
@@ -28,7 +30,6 @@ class __unread_topics_delete extends mac {
 	public function _home() {
 		global $config, $user, $cache, $template;
 		
-		require_once(ROOT . 'interfase/comments.php');
 		$comments = new _comments();
 		
 		$sql = 'SELECT *

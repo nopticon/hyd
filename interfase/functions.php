@@ -16,6 +16,10 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+require_once(ROOT . 'interfase/emailer.php');
+require_once(ROOT . 'interfase/functions_validate.php');
+
 function htmlencode($str) {
 	$result = trim(htmlentities(str_replace(array("\r\n", "\r", '\xFF'), array("\n", "\n", ' '), $str)));
 	$result = (STRIP) ? stripslashes($result) : $result;
@@ -770,7 +774,6 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 				}
 				//$user->points_add(3, $user_id);
 				
-				require_once(ROOT . 'interfase/emailer.php');
 				$emailer = new emailer();
 				
 				$emailer->from('info');
@@ -874,8 +877,6 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 			 * */
 			 
 			if ($submit) {
-				require_once(ROOT . 'interfase/functions_validate.php');
-				
 				foreach ($v_fields as $k => $v) {
 					$v_fields[$k] = request_var($k, $v);
 				}
@@ -1018,7 +1019,6 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 					sql_query($sql);
 					
 					// Emailer
-					require_once(ROOT . 'interfase/emailer.php');
 					$emailer = new emailer();
 					
 					if (!empty($v_fields['ref'])) {
@@ -1130,7 +1130,6 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 					sql_query(sql_filter($sql, $crypt_data['user_id']));
 					
 					// Send email
-					require_once(ROOT . 'interfase/emailer.php');
 					$emailer = new emailer();
 					
 					$emailer->from('info');
@@ -1175,7 +1174,6 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 						FROM _banlist
 						WHERE ban_userid = ?';
 					if (!sql_fieldrow($sql, $userdata['user_id'])) {
-						require_once(ROOT . 'interfase/emailer.php');
 						$emailer = new emailer();
 						
 						$verification_code = md5(unique_id());
@@ -1385,7 +1383,6 @@ function sendmail($to, $from, $subject, $template = '', $vars = array()) {
 	static $included;
 	
 	if (!$included) {
-		require_once(ROOT . 'interfase/emailer.php');
 		$emailer = new emailer();
 		
 		$included = true;
@@ -1473,7 +1470,6 @@ function fatal_error($mode = '404', $bp_message = '') {
 		case 'mysql':
 			if (isset($config['default_lang']) && isset($user->lang)) {
 				// Send email notification
-				require_once('./interfase/emailer.php');
 				$emailer = new emailer();
 				
 				$emailer->from('info');
@@ -1728,7 +1724,7 @@ function sidebar() {
 	}
 	
 	foreach ($sfiles as $each_file) {
-		$include_file = './interfase/sidebar/' . $each_file . '.php';
+		$include_file = ROOT . 'interfase/sidebar/' . $each_file . '.php';
 		if (!file_exists($include_file)) {
 			continue;
 		}

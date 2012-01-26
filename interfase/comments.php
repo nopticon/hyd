@@ -23,6 +23,8 @@ if (class_exists('_comments'))
 	return;
 }
 
+require_once(ROOT . 'interfase/emailer.php');
+
 class _comments {
 	public $ref;
 	public $mesage;
@@ -277,7 +279,6 @@ class _comments {
 			
 			if ($notify) {
 				if ($this->param[0] == 'm') {
-					require_once(ROOT . 'interfase/emailer.php');
 					$emailer = new emailer();
 					
 					$emailer->from('info');

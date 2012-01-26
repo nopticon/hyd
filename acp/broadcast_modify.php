@@ -18,6 +18,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
+require_once(ROOT . 'interfase/ftp.php');
+
 class __broadcast_modify extends mac {
 	public function __construct() {
 		parent::__construct();
@@ -28,7 +30,6 @@ class __broadcast_modify extends mac {
 	public function home() {
 		global $config, $user, $cache, $template;
 		
-		require_once(ROOT . 'interfase/ftp.php');
 		$ftp = new ftp();
 		
 		if (!$ftp->ftp_connect('209.51.162.170')) {

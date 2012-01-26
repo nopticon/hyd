@@ -18,8 +18,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 define('IN_NUCLEO', true);
 require_once('./interfase/common.php');
+require_once(ROOT . 'interfase/comments.php');
 
 $user->init();
+$user->setup();
 
 $help_modules = array();
 $help_cat = array();
@@ -76,11 +78,6 @@ if ($help) {
 }
 
 //
-// Member setup
-//
-$user->setup();
-
-//
 // Categories
 //
 $hm_flip = array_flip($help_modules);
@@ -134,7 +131,6 @@ if ($module_id || $help) {
 	} else {
 		$dhelp = $help_faq[$help];
 		
-		require_once(ROOT . 'interfase/comments.php');
 		$comments = new _comments();
 		
 		$template->assign_block_vars('module.faq', array(

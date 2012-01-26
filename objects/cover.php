@@ -18,6 +18,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
+require_once(ROOT . 'interfase/comments.php');
+
 class cover {
 	public $msg;
 	
@@ -40,7 +42,6 @@ class cover {
 			return;
 		}
 		
-		require_once(ROOT . 'interfase/comments.php');
 		$comments = new _comments();
 		
 		foreach ($news as $i => $row) {

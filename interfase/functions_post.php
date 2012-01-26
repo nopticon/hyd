@@ -18,6 +18,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
+require_once(ROOT . 'interfase/emailer.php');
+
 $html_entities_match = array('#&(?!(\#[0-9]+;))#', '#<#', '#>#');
 $html_entities_replace = array('&amp;', '&lt;', '&gt;');
 
@@ -601,9 +603,7 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 					$update_watched_sql .= ($update_watched_sql != '') ? ', ' . $row['user_id'] : $row['user_id'];
 				}
 				
-				if (sizeof($bcc_list_ary))
-				{
-					require_once(ROOT . 'interfase/emailer.php');
+				if (sizeof($bcc_list_ary)) {
 					$emailer = new emailer();
 
 					$server_name = trim($config['server_name']);

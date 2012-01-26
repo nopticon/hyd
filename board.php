@@ -19,9 +19,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 define('IN_NUCLEO', true);
 require_once('./interfase/common.php');
 require_once(ROOT . 'interfase/comments.php');
-require_once(ROOT . 'interfase/board.php');
+require_once(ROOT . 'objects/board.php');
 
 $user->init();
+$user->setup();
 
 $board = new board();
 $cat = $board->categories();
@@ -31,11 +32,6 @@ if (!$cat || !$forums) {
 	fatal_error();
 }
 
-$user->setup();
-
-//
-// Build forum
-//
 $board->msg = new _comments();
 
 $board->index();

@@ -18,6 +18,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
+require_once(ROOT . 'interfase/upload.php');
+
 class __news_images extends mac {
 	public function __construct() {
 		parent::__construct();
@@ -29,7 +31,6 @@ class __news_images extends mac {
 		global $config, $user, $cache, $template;
 		
 		if ($this->submit) {
-			require_once(ROOT . 'interfase/upload.php');
 			$upload = new upload();
 			
 			$news_id = request_var('news_id', 0);

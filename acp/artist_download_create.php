@@ -18,6 +18,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
+require_once(ROOT . 'interfase/upload.php');
+require_once(ROOT . 'interfase/getid3/getid3.php');
+
 class __artist_download_create extends mac {
 	public function __construct() {
 		parent::__construct();
@@ -32,7 +35,6 @@ class __artist_download_create extends mac {
 		$error = array();
 		
 		if ($this->submit) {
-			require_once(ROOT . 'interfase/upload.php');
 			$upload = new upload();
 			
 			$artist_id = request_var('artist', 0);
@@ -52,7 +54,6 @@ class __artist_download_create extends mac {
 			$f = $upload->process($filepath_1, $_FILES['add_dl'], 'mp3');
 			
 			if (!sizeof($upload->error) && $f !== false) {
-				require_once(ROOT . 'interfase/getid3/getid3.php');
 				$getID3 = new getID3;
 				
 				$sql = 'SELECT MAX(id) AS total

@@ -37,26 +37,12 @@ function user_profile($row) {
 	return $user_profile[$row['user_id']];
 }
 
-class unread {
+class today {
+	private $type = array();
 	private $elements;
 	public $downloads;
 	
 	public function __construct() {
-		$this->elements = array(
-			UH_NOTE => 'conversations',
-			UH_FRIEND => 'friends',
-			UH_UPM => 'members_posts',
-			UH_N => 'artists_news',
-			UH_GN => 'site_news',
-			UH_A => 'artists',
-			UH_D => 'downloads',
-			UH_T => 'board',
-			UH_C => 'artists_comments',
-			UH_M => 'downloads_comments',
-			UH_AF => 'artists_fav',
-			UH_E => 'events'
-		);
-		
 		return;
 	}
 	
@@ -67,8 +53,8 @@ class unread {
 			do_login();
 		}
 		
-		$sql = 'DELETE FROM _members_unread
-			WHERE user_id = ?';
+		$sql = 'DELETE FROM _today_objects
+			WHERE object_bio = ?';
 		sql_query(sql_filter($sql, $user->d('user_id')));
 		
 		return true;
@@ -77,11 +63,12 @@ class unread {
 	public function run() {
 		global $user, $template;
 		
-		$sql = 'SELECT element
-			FROM _members_unread
-			WHERE user_id = ?
-			GROUP BY element
-			ORDER BY element, item';
+		$sql = 'SELECT *
+			FROM _today_objects o
+			INNER JOIN _today_type t ON t.type_id = o.object_type
+			WHERE object_bio = ?
+			GROUP BY o.object_type
+			ORDER BY t.type_order, o.object_relation';
 		if (!$elements = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
 			return false;
 		}
@@ -89,17 +76,13 @@ class unread {
 		$this->downloads = new downloads();
 		
 		foreach ($elements as $row) {
-			if (!isset($this->elements[$row['element']])) {
-				continue;
-			}
-			
-			if ($response = $this->{$this->elements[$row['element']]}()) {
-				$template->assign_block_vars($this->elements[$row['element']], array(
-					'ID' => $row['element'])
+			if ($response = $this->{$row['type_alias']}()) {
+				$template->assign_block_vars($row['type_alias'], array(
+					'ID' => $row['type_id'])
 				);
 				
 				foreach ($response as $_row) {
-					$template->assign_block_vars($this->elements[$row['element']] . '.row', $_row);
+					$template->assign_block_vars($row['type_alias'] . '.row', $_row);
 				}
 			}
 		}
@@ -107,18 +90,30 @@ class unread {
 		return;
 	}
 	
-	public function conversations() {
+	private function _($name) {
+		if (!count($this->type)) {
+			$sql = 'SELECT type_id, type_alias
+				FROM _today_type
+				ORDER BY type_order';
+			$this->type = sql_rowset($sql, 'type_alias', 'type_id');
+		}
+		
+		return (isset($this->type[$name])) ? $this->type[$name] : 0;
+	}
+	
+	private function conversations() {
 		global $user;
 		
 		$sql = 'SELECT c.*, c2.privmsgs_date, m.user_id, m.username, m.username_base, m.user_color
-			FROM _members_unread u, _dc c, _dc c2, _members m
-			WHERE u.user_id = ?
-				AND u.element = ?
-				AND u.item = c.msg_id 
+			FROM _dc c, _dc c2, _members m
+			INNER JOIN _today_objects t ON t.object_bio = m.user_id
+			WHERE t.object_bio = ?
+				AND t.object_type = ?
+				AND t.object_relation = c.msg_id
 				AND c.last_msg_id = c2.msg_id
 				AND c2.privmsgs_from_userid = m.user_id 
 			ORDER BY c2.privmsgs_date DESC';
-		$result = sql_rowset(sql_filter($sql, $user->data['user_id'], UH_NOTE));
+		$result = sql_rowset(sql_filter($sql, $user->data['user_id'], __FUNCTION__));
 		
 		$response = w();
 		foreach ($result as $i => $row) {
@@ -126,7 +121,7 @@ class unread {
 			
 			$response[] = array(
 				'S_MARK_ID' => $row['parent_id'],
-				'U_READ' => s_link('my', array('dc', 'read', $row['last_msg_id'])) . '#' . $row['last_msg_id'],
+				'U_READ' => s_link('my', array('dc', 'read', $row['last_msg_id'])),
 				'SUBJECT' => $row['privmsgs_subject'],
 				'DATETIME' => $user->format_date($row['privmsgs_date']),
 				'USER_ID' => $row['user_id'],
@@ -138,7 +133,7 @@ class unread {
 		return $response;
 	}
 	
-	public function friends() {
+	private function friends() {
 		global $user;
 		
 		$sql = 'SELECT u.item, u.datetime, m.user_id, m.username, m.username_base, m.user_color, m.user_rank
@@ -164,7 +159,7 @@ class unread {
 		return $response;
 	}
 	
-	public function members_posts() {
+	private function members_posts() {
 		global $user;
 		
 		$sql = 'SELECT p.*, u.*, m.user_id, m.username, m.username_base, m.user_color
@@ -192,7 +187,7 @@ class unread {
 		return $response;
 	}
 	
-	public function artists_news() {
+	private function artists_news() {
 		global $user;
 		
 		$sql = 'SELECT t.*
@@ -218,7 +213,7 @@ class unread {
 		return $response;
 	}
 	
-	public function site_news() {
+	private function site_news() {
 		global $user;
 		
 		$sql = 'SELECT n.*
@@ -244,7 +239,7 @@ class unread {
 		return $response;
 	}
 	
-	public function artists() {
+	private function artists() {
 		global $user;
 		
 		$sql = 'SELECT a.ub, a.name, a.datetime 
@@ -268,7 +263,7 @@ class unread {
 		return $response;
 	}
 	
-	public function artists_comments() {
+	private function artists_comments() {
 		global $user;
 		
 		$sql = 'SELECT b.subdomain, b.name, p.*, m.user_id, m.username, m.username_base, m.user_color 
@@ -302,7 +297,7 @@ class unread {
 		return $response;
 	}
 	
-	public function artists_fav() {
+	private function artists_fav() {
 		global $user;
 		
 		$sql = 'SELECT f.fan_id, f.joined, a.name, a.subdomain, m.user_id, m.username, m.username_base, m.user_color
@@ -335,7 +330,7 @@ class unread {
 		return $response;
 	}
 	
-	public function downloads() {
+	private function downloads() {
 		global $user;
 		
 		$sql = 'SELECT b.ub, b.subdomain, b.name, d.id, d.ud AS ud_type, d.title, d.date 
@@ -365,7 +360,7 @@ class unread {
 		return $response;
 	}
 	
-	public function downloads_comments() {
+	private function downloads_comments() {
 		global $user;
 		
 		$sql = "SELECT b.ub, b.subdomain, b.name, d.id AS dl_id, d.ud AS ud_type, d.title, m.*, u.user_id, u.username, u.username_base, u.user_color
@@ -404,7 +399,7 @@ class unread {
 		return $response;
 	}
 	
-	public function board() {
+	private function board() {
 		global $user;
 		
 		$sql = 'SELECT t.*, f.forum_alias, f.forum_id, f.forum_name, p.post_id, p.post_username, p.post_time, m.user_id, m.username, m.username_base, m.user_color 
@@ -444,11 +439,11 @@ class unread {
 		return $response;
 	}
 	
-	public function events() {
+	private function events() {
 		return true;
 	}
 	
-	public function members() {
+	private function members() {
 		global $user;
 		
 		$sql = 'SELECT m.user_id, m.username, m.username_base, m.user_color, m.user_regdate 

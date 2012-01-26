@@ -82,10 +82,6 @@ if ($chat->_setup()) {
 	// SET TEMPLATE
 	$page_title = 'CHAT';
 	$htmlpage = 'chat_body';
-	
-	//
-	// Load sidebar
-	sidebar('artists', 'events');
 }
 
 page_layout($page_title, $htmlpage, false, $keepalive);

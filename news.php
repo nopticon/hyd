@@ -18,11 +18,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 define('IN_NUCLEO', true);
 require_once('./interfase/common.php');
+require_once(ROOT . 'objects/news.php');
 
 $user->init();
 $user->setup();
 
-require_once(ROOT . 'interfase/news.php');
 $news = new _news();
 
 $mode = request_var('mode', '');

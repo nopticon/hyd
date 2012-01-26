@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 define('IN_NUCLEO', true);
 require_once('./interfase/common.php');
+require_once(ROOT . 'interfase/comments.php');
 
 //
 // Init vars
@@ -76,13 +77,6 @@ if (!$is_auth['auth_view'] || !$is_auth['auth_read']) {
 	}
 	
 	fatal_error();
-}
-
-// Auth: Kick DJ
-$ajax = request_var('ajax', 0);
-if (($config['request_method'] == 'post') && $forum_id == $config['forum_for_radio'] && $user->_team_auth('radio') && $ajax) {
-	$config['kick_script'] = true;
-	require_once(ROOT . 'shoutcast_kick.php');
 }
 
 $error_msg = '';
@@ -170,7 +164,6 @@ if ($submit_topic)
 		}
 		
 		if (empty($error_msg)) {
-			require_once(ROOT . 'interfase/comments.php');
 			$comments = new _comments();
 			
 			$topic_announce = 0;

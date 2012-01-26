@@ -18,6 +18,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
+require_once(ROOT . 'interfase/comments.php');
+
 class __news_modify extends mac {
 	public function __construct() {
 		parent::__construct();
@@ -49,7 +51,6 @@ class __news_modify extends mac {
 					_pre('Campos requeridos.', true);
 				}
 				
-				require_once(ROOT . 'interfase/comments.php');
 				$comments = new _comments();
 				
 				$post_message = $comments->prepare($post_message);
