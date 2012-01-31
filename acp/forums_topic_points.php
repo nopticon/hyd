@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-class __ extends mac {
+class __forums_topic_points extends mac {
 	private $id;
 	private $object;
 	

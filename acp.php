@@ -20,6 +20,8 @@ define('IN_NUCLEO', true);
 require_once('./interfase/common.php');
 
 class mac {
+	public $_access;
+	
 	public $submit;
 	public $url;
 	public $tv = array();
@@ -32,10 +34,20 @@ class mac {
 		global $user;
 		
 		if (!$user->_team_auth($name)) {
+			if (defined('_ACP')) {
+				$this->_access = false;
+				
+				return false;
+			}
 			return fatal_error();
 		}
 		
+		$this->_access = true;
 		return true;
+	}
+	
+	public function can() {
+		return $this->_access;
 	}
 }
 
@@ -68,7 +80,11 @@ class acp {
 	public function run() {
 		$this->module = request_var('module', '');
 		
-		if (empty($this->module) || !preg_match('#[a-z\_]+#i', $this->module)) {
+		if (empty($this->module)) {
+			return $this->rights();
+		}
+		
+		if (!preg_match('#[a-z\_]+#i', $this->module)) {
 			fatal_error();
 		}
 		
@@ -109,6 +125,38 @@ class acp {
 		}
 		
 		return page_layout($this->module, $module->template, $local_tv);
+	}
+	
+	private function rights() {
+		$acp_dir = ROOT . 'acp/';
+		
+		$fp = @opendir($acp_dir);
+		while ($row = @readdir($fp)) {
+			if (!preg_match('#([a-z\_]+).php#i', $row, $part) || $row == '_template.php') {
+				continue;
+			}
+			
+			require_once($acp_dir . $row);
+			
+			$object_name = '__' . $part[1];
+			
+			if (!class_exists($object_name)) {
+				continue;
+			}
+			
+			if (!defined('_ACP')) {
+				define('_ACP', true);
+			}
+			
+			$object = new $object_name(true);
+			
+			if ($object->can()) {
+				echo $object_name . '<br />';
+			}
+		}
+		@closedir($fp);
+		
+		return;
 	}
 }
 

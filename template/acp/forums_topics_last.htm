@@ -1,7 +1,16 @@
 <!-- INCLUDE page.header.htm -->
 
 <!-- BEGIN topics -->
-<div><a href="{topics.TOPIC_ID}">{topics.TOPIC_TITLE}</a> ({topics.TOPIC_VIEWS} v, {topics.TOPIC_REPLIES} m)</div>
+<div class="pad_top ls">
+<ul>
+	<!-- BEGIN row -->
+	<li>
+		<a<!-- IF row.TOPIC_EVENT --> style="color:#F5B800;"<!-- ENDIF --> href="{row.TOPIC_ID}">{row.TOPIC_TITLE}</a>
+		<div class="_">{row.TOPIC_FORUM}</div>
+	</li>
+	<!-- END row -->
+</ul>
+</div>
 <!-- END topics -->
 
 <!-- INCLUDE page.footer.htm -->

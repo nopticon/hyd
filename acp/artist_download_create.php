@@ -28,7 +28,7 @@ class __artist_download_create extends mac {
 		$this->auth('founder');
 	}
 	
-	public function home() {
+	public function _home() {
 		global $config, $user, $cache, $template;
 		
 		$limit = set_time_limit(0);

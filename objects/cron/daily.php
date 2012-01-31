@@ -16,10 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-define('IN_NUCLEO', true);
-require_once('./interfase/common.php');
-
-$user->init(false, true);
+if (!defined('IN_NUCLEO')) exit;
 
 $d = getdate();
 $start_1 = mktime(0, 0, 0, $d['mon'], ($d['mday'] - 7), $d['year']);

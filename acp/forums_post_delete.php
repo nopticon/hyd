@@ -142,7 +142,7 @@ class __forums_post_delete extends mac {
 	}
 }
 
-function sync($id) {
+function sync_post_delete($id) {
 	$last_topic = 0;
 	$total_posts = 0;
 	$total_topics = 0;

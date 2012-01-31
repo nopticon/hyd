@@ -21,25 +21,34 @@ require_once('./interfase/common.php');
 
 $user->init(false, true);
 
-$d = getdate();
-$start_1 = mktime(0, 0, 0, $d['mon'], ($d['mday'] - 7), $d['year']);
-$start_2 = mktime(0, 0, 0, $d['mon'], ($d['mday'] - 14), $d['year']);
+$module = request_var('module', '');
 
-$sql = 'DELETE FROM _members_unread
-	WHERE element = ?
-		AND datetime < ??
-		AND item NOT IN (
-			SELECT topic_id
-			FROM _forum_topics
-			WHERE topic_announce = 1
-		)';
-sql_query(sql_filter($sql, UH_T, $start_1));
+if (!empty($module) && preg_match('#^([a-z\_]+)$#i', $module)) {
+	$module_path = ROOT . 'objects/cron/' . $module . '.php';
+	
+	if (@file_exists($module_path)) {
+		$user->setup();
+		
+		@require_once($module_path);
+		return;
+	}
+}
 
-$sql = 'DELETE FROM _members_unread
-	WHERE element = ?
-		AND datetime < ??';
-sql_query(sql_filter($sql, UH_N, $start_2));
+$file_content = @file('./template/exceptions/missing.htm');
 
-_die('Done.');
+$matches = array(
+	'<!--#echo var="HTTP_HOST" -->' => $_SERVER['HTTP_HOST'],
+	'<!--#echo var="REQUEST_URI" -->' => $_SERVER['REQUEST_URI']
+);
+
+$orig = $repl = array();
+
+foreach ($matches as $row_k => $row_v) {
+	$orig[] = $row_k;
+	$repl[] = $row_v;
+}
+
+echo str_replace($orig, $repl, implode('', $file_content));
+exit;
 
 ?>

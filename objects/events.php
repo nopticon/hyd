@@ -804,7 +804,7 @@ class _events extends downloads {
 					'DATE' => $user->format_date($item['date'], $user->lang['DATE_FORMAT']),
 					'THUMBNAIL' => $config['events_url'] . 'future/thumbnails/' . $item['id'] . '.jpg',
 					'SRC' => $config['events_url'] . 'future/' . $item['id'] . '.jpg?u=' . $item['event_update'],
-					'U_TOPIC' => s_link('events', $item['id']))
+					'U_TOPIC' => s_link('events', $item['event_alias']))
 				);
 			}
 		}

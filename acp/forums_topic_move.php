@@ -87,8 +87,8 @@ class __forums_topic_move extends mac {
 			topic_arkane($t, 0);
 		}
 		
-		sync($f);
-		sync($tdata['forum_id']);
+		sync_topic_move($f);
+		sync_topic_move($tdata['forum_id']);
 		
 		//redirect(s_link('forum', $f));
 		
@@ -96,7 +96,7 @@ class __forums_topic_move extends mac {
 	}
 }
 
-function sync($id)
+function sync_topic_move($id)
 {
 	$last_topic = 0;
 	$total_posts = 0;

@@ -26,20 +26,6 @@ class __news_category_move extends mac {
 	}
 	
 	public function _home() {
-		global $config, $user, $cache, $template;
-		
-		return;
-	}
-}
-
-class __news_category_move extends mac {
-	public function __construct() {
-		parent::__construct();
-		
-		$this->auth('founder');
-	}
-	
-	public function _home() {
 		global $config, $cache, $user, $template;
 		
 		if (!$this->submit) {
