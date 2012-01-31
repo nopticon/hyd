@@ -1,255 +1,181 @@
-body
-{
-	background-color:#F1F1F1;
-	font-family:Verdana, Geneva, sans-serif;
-	font-size:12px;
-	color:#999;
-}
 
-.slider
-{
+.slider {
 	margin:50px auto;
 	height:400px;
 }
 
-
-.slider .caption ul
-{
+.slider .caption ul {
 	padding-left:20px;
 }
 
-
 /*this is for example_api.html*/
-#custom_controls
-{
+#custom_controls {
 	width:210px;
 	margin:0px auto;
 }
 
-
 /*this is for the description of each example and the buttons used to navigate through the examples*/
-.advanced-slider
-{
+.advanced-slider {
 	position:relative;
 	overflow:visible;
 	font-family:Arial, Helvetica, sans-serif;
 }
 
-
-.advanced-slider *
-{
+.advanced-slider * {
 	margin:0px;
 	padding:0px;
 }
 
-
-.slider-item
-{
+.slider-item {
 	position:absolute;
 	left:-9999px;	
 }
 
-
-.advanced-slider .slide-wrapper
-{
+.advanced-slider .slide-wrapper {
 	position:absolute;
 	overflow:visible;
 	z-index:2;
 }
 
-
-.advanced-slider .slide
-{
+.advanced-slider .slide {
 	position:absolute;
 	width: 100%;
 	height: 100%;
 	z-index:10;
 }
 
-
-.advanced-slider .slice
-{
+.advanced-slider .slice {
 	display:block;
 	position:absolute;
 }
 
-
-.advanced-slider .preloader
-{
+.advanced-slider .preloader {
 	position:absolute;
 	z-index:15;
 }
 
-
-.advanced-slider .navigation-arrows a
-{
+.advanced-slider .navigation-arrows a {
 	position:absolute;
 	z-index:30;
 	cursor:pointer;
 }
 
-
-.advanced-slider .slideshow-controls
-{
+.advanced-slider .slideshow-controls {
 	position:absolute;
 	z-index:40;
 	cursor:pointer;
 }
 
-
-.advanced-slider .shadow
-{
+.advanced-slider .shadow {
 	position:absolute;
 	z-index:1;
 }
 
-
-.advanced-slider .shadow .shadow-left, .advanced-slider .shadow .shadow-right, .advanced-slider .shadow .shadow-middle
-{
+.advanced-slider .shadow .shadow-left, .advanced-slider .shadow .shadow-right, .advanced-slider .shadow .shadow-middle {
 	float:left;
 }
 
-
-.advanced-slider .timer-animation
-{
+.advanced-slider .timer-animation {
 	position:absolute;
 	z-index:60;
 }
 
-
-
-.advanced-slider .caption
-{
+.advanced-slider .caption {
 	overflow:hidden;
 	position:absolute;
 	z-index:20;
 }
 
-
-.advanced-slider .caption .wrapper
-{
+.advanced-slider .caption .wrapper {
 	position:absolute;
 }
 
-
-.advanced-slider .caption .background
-{
+.advanced-slider .caption .background {
 	position:absolute;
 	z-index:10;
 	width:100%;
 	height:100%;
 }
 
-
-.advanced-slider .caption .content
-{	
+.advanced-slider .caption .content {
 	position:absolute;
 	z-index:20;
 }
 
-
-.advanced-slider .thumbnail
-{
+.advanced-slider .thumbnail {
 	position:relative;
 	overflow:hidden;
 	background: #ff0000;
 }
 
-
-.advanced-slider .navigation-buttons
-{
+.advanced-slider .navigation-buttons {
 	position:absolute;
 	z-index:50;
 }
 
-
-.advanced-slider .navigation-buttons .left, .advanced-slider .navigation-buttons .right, .advanced-slider .navigation-buttons .middle
-{
+.advanced-slider .navigation-buttons .left, .advanced-slider .navigation-buttons .right, .advanced-slider .navigation-buttons .middle {
 	float:left;
 }
 
-
-.advanced-slider .buttons a
-{
+.advanced-slider .buttons a {
 	position:relative;
 	cursor:pointer;
 	float:left;
 }
 
-
-.advanced-slider .buttons .thumbnail
-{
+.advanced-slider .buttons .thumbnail {
 	position:absolute;
 }
 
-.advanced-slider .navigation-thumbnails
-{
+.advanced-slider .navigation-thumbnails {
 	position:absolute;
 	z-index:3;
 }
 
-
-.advanced-slider .navigation-thumbnails .visible-container
-{
+.advanced-slider .navigation-thumbnails .visible-container {
 	position:absolute;
 	overflow:hidden;
 }
 
-
-.advanced-slider .navigation-thumbnails .container
-{
+.advanced-slider .navigation-thumbnails .container {
 	position:absolute;
 	top:0px;
 	left:0px;
 }
 
-
-.advanced-slider .navigation-thumbnails .thumbnail
-{
+.advanced-slider .navigation-thumbnails .thumbnail {
 	cursor:pointer;
 	position:absolute;
 }
 
-
-.advanced-slider .thumbnail .caption
-{
+.advanced-slider .thumbnail .caption {
 	position:absolute;
 	width:100%;
 }
 
-
-.advanced-slider .thumbnail .caption .background
-{
+.advanced-slider .thumbnail .caption .background {
 	position:absolute;	
 	width:100%;
 	height:100%;
 	z-index:10;
 }
 
-
-.advanced-slider .thumbnail .caption .content
-{
+.advanced-slider .thumbnail .caption .content {
 	position:absolute;
 	width:100%;
 	z-index:20;
 }
 
-
-.advanced-slider .navigation-thumbnails .arrows a
-{
+.advanced-slider .navigation-thumbnails .arrows a {
 	position:absolute;
 	cursor:pointer;
 }
 
-
-.advanced-slider .navigation-thumbnails .buttons
-{
+.advanced-slider .navigation-thumbnails .buttons {
 	position:absolute;
 }
 
-
-.advanced-slider .navigation-thumbnails .buttons a
-{	
+.advanced-slider .navigation-thumbnails .buttons a {	
 	position:absolute;
 	cursor:pointer;
 }

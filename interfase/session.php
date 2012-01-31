@@ -657,11 +657,41 @@ class user extends session {
 		
 		return $ranks;
 	}
+	
+	/*
+	 * Auth types
+	 * 
+	 * founder
+	 * mod
+	 * colab
+	 * colab_admin
+	 * radio
+	 * user
+	 * all
+	 *
+	 */
 
 	public function _team_auth_list($mode = '') {
 		global $cache;
 		
 		switch ($mode) {
+			case 'founder':
+				if (!$response = $cache->get('team_founder')) {
+					$sql = 'SELECT DISTINCT user_id
+						FROM _members
+						WHERE user_type = ?
+						ORDER BY user_id';
+					$response = sql_rowset(sql_filter($sql, USER_FOUNDER), false, 'user_id');
+					$cache->save('team_founder', $response);
+				}
+			break;
+			case 'artist':
+				$response = $this->d('user_auth_control');
+			break;
+			case 'user':
+				$response = true;
+			break;
+			break;
 			case 'mod':
 				if (!$response = $cache->get('team_mod')) {
 					$sql = 'SELECT DISTINCT member_id
@@ -671,7 +701,7 @@ class user extends session {
 					$response = sql_rowset($sql, false, 'member_id');
 					$cache->save('team_mod', $response);
 				}
-				break;
+			break;
 			case 'colab':
 				if (!$response = $cache->get('team_colab')) {
 					$sql = 'SELECT DISTINCT member_id
@@ -681,7 +711,7 @@ class user extends session {
 					$response = sql_rowset($sql, false, 'member_id');
 					$cache->save('team_colab', $response);
 				}
-				break;
+			break;
 			case 'colab_admin':
 				if (!$response = $cache->get('team_colab_admin')) {
 					$sql = 'SELECT DISTINCT member_id
@@ -691,7 +721,7 @@ class user extends session {
 					$response = sql_rowset($sql, false, 'member_id');
 					$cache->save('team_colab_admin', $response);
 				}
-				break;				
+			break;
 			case 'radio':
 				if (!$response = $cache->get('team_radio')) {
 					$sql = 'SELECT DISTINCT member_id
@@ -700,7 +730,7 @@ class user extends session {
 					$response = sql_rowset($sql, false, 'member_id');
 					$cache->save('team_radio', $response);
 				}
-				break;
+			break;
 			case 'all':
 			default:
 				if (!$response = $cache->get('team_all')) {
@@ -710,66 +740,31 @@ class user extends session {
 					$response = sql_rowset($sql, false, 'member_id');
 					$cache->save('team_all', $response);
 				}
-				break;
+			break;
 		}
 		
-		$founder_response = $this->_team_founder();
-		
-		if (is_array($founder_response) && count($founder_response)) {
-			$response = array_merge($response, $founder_response);
+		if ($mode != 'founder' && is_array($response)) {
+			if ($response_founder = $this->_team_auth_list('founder')) {
+				$response = array_merge($response, $response_founder);
+			}
 		}
 		
 		return $response;
 	}
 	
-	public function _team_founder() {
-		global $cache;
-		
-		if (!$founder_response = $cache->get('team_founder')) {
-			$sql = 'SELECT DISTINCT user_id
-				FROM _members
-				WHERE user_type = ?
-				ORDER BY user_id';
-			$founder_response = sql_rowset(sql_filter($sql, USER_FOUNDER), false, 'user_id');
-			$cache->save('team_founder', $founder_response);
-		}
-		
-		return $founder_response;
-	}
-	
 	public function _team_auth($mode = '', $user_id = false) {
-		global $cache;
-		
 		if ($user_id === false) {
-			$user_id = $this->data['user_id'];
+			$user_id = $this->d('user_id');
 		}
 		
 		$response = false;
-		if ($this->data['is_member']) {
-			switch ($mode) {
-				case 'founder':
-					$founder_response = $this->_team_founder();
-					
-					if (is_array($founder_response) && count($founder_response)) {
-						$response = in_array($user_id, $founder_response);
-					}
-					break;
-				case 'mod':
-				case 'radio':
-				case 'colab':
-				case 'colab_admin':
-					$mods = $this->_team_auth_list($mode);
-					if (sizeof($mods)) {
-						$response = in_array($user_id, $mods);
-					}
-					break;
-				case 'all':
-				default:
-					$all = $this->_team_auth_list($mode);
-					if (sizeof($all)) {
-						$response = in_array($user_id, $all);
-					}
-					break;
+		if ($this->is('member')) {
+			$all = $this->_team_auth_list($mode);
+			
+			if (is_array($all) && count($all)) {
+				$response = in_array($user_id, $all);
+			} else {
+				$response = $all;
 			}
 		}
 		
@@ -838,10 +833,11 @@ class user extends session {
 			case UH_AF:
 				$sql = 'SELECT m.user_id
 					FROM _artists_auth a, _members m
-					WHERE a.ub = ' . (int) $where_id . '
+					WHERE a.ub = ?
 						AND a.user_id = m.user_id
-						AND m.user_id <> ' . (int) $this->data['user_id'] . '
+						AND m.user_id <> ?
 					ORDER BY m.user_id';
+				$sql = sql_filter($sql, $where_id, $this->data['user_id']);
 				break;
 			case UH_C:
 			case UH_M:

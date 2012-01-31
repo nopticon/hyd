@@ -22,7 +22,7 @@ class __artist_lyric_create extends mac {
 	public function __construct() {
 		parent::__construct();
 		
-		$this->auth('founder');
+		$this->auth('artist');
 	}
 	
 	public function _home() {

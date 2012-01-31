@@ -130,6 +130,8 @@ class acp {
 	private function rights() {
 		$acp_dir = ROOT . 'acp/';
 		
+		$i = 0;
+		
 		$fp = @opendir($acp_dir);
 		while ($row = @readdir($fp)) {
 			if (!preg_match('#([a-z\_]+).php#i', $row, $part) || $row == '_template.php') {
@@ -138,7 +140,9 @@ class acp {
 			
 			require_once($acp_dir . $row);
 			
-			$object_name = '__' . $part[1];
+			$acp_alias = $part[1];
+			$acp_upper = strtoupper($acp_alias);
+			$object_name = '__' . $acp_alias;
 			
 			if (!class_exists($object_name)) {
 				continue;
@@ -148,15 +152,23 @@ class acp {
 				define('_ACP', true);
 			}
 			
-			$object = new $object_name(true);
+			$object = new $object_name();
 			
 			if ($object->can()) {
-				echo $object_name . '<br />';
+				if (!$i) _style('acp_list');
+				
+				_style('acp_list.row', array(
+					'URL' => s_link('acp', $acp_alias),
+					'NAME' => lang('ACP_' . $acp_alias, $acp_alias),
+					'IMAGE' => $acp_alias)
+				);
+				
+				$i++;
 			}
 		}
 		@closedir($fp);
 		
-		return;
+		return page_layout('ACP', 'acp');
 	}
 }
 

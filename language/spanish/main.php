@@ -26,7 +26,7 @@ $lang += array(
 	'APPLICATION_DESC' => 'La comunidad m&aacute;s grande de Rock en Guatemala',
 	'APPLICATION_START' => 'Apoyando el rock desde el <strong>15 de marzo de 2004</strong>',
 
-	'ENCODING' => "iso-8859-1",
+	'ENCODING' => "utf-8",
 	'DIRECTION' => '',
 	'DATE_FORMAT' => 'j F Y',
 	
@@ -619,9 +619,7 @@ $lang += array(
 	
 	'NOWPLAYING' => '&iquest;Qu&eacute; canci&oacute;n est&aacute;s escuchando?',
 	
-	//
 	// PAGE HEADER
-	//
 	'HOME' => 'Inicio',
 	'UB' => 'Artistas',
 	'UB_NEW' => 'Artistas nuevos',
@@ -639,27 +637,21 @@ $lang += array(
 	'IN' => 'en',
 	'PRIVACY_POLICY' => 'Pol&iacute;tica de Privacidad y T&eacute;rminos de servicio',
 	
-	//
 	// SITE NOTICES
-	//
 	'NOTICE_ARTISTS' => '&iquest;Te gustar&iacute;a que tu banda obtenga el apoyo de <strong>Rock Republik</strong>?<br /><br />Env&iacute;anos el material completo a info&#64;rockrepublik.net para tener su propio espacio!',
 	'NOTICE_EVENTS' => '&iquest;Te gustar&iacute;a anunciar un evento o actividad en esta secci&oacute;n?<br /><br />Env&iacute;anos el afiche a info&#64;rockrepublik.net y lo publicaremos. Agradeceremos que incluyas <a href="http://www.rockrepublik.net/home/downloads/logo.zip">nuestro logo</a> en la publicidad del evento.',
 	
 	// ALLIES
 	'ALLIES_DESCRIPTION' => '&iquest;Te gustar&iacute;a formar parte de los Aliados de Rock Republik?<br /><br />Env&iacute;anos la informaci&oacute;n de tu sitio web a: <a class="high" href="mailto:info&#64;rockrepublik.net">info&#64;rockrepublik.net</a>',
 	
-	//
 	// NEWS
-	//
 	'NEWS' => 'Art&iacute;culos',
 	'LATEST_NEWS' => '&Uacute;ltimas noticias',
 	'NEWS2' => 'Art&iacute;culo',
 	'NEWS_LOCAL' => 'Nacional',
 	'NEWS_NON_LOCAL' => 'Internacional',
 	
-	//
 	// UNREAD MESSAGE CENTER
-	//
 	'THENEW' => 'Lo Nuevo',
 	'NEW_MARK' => 'Marcar como leidos autom&aacute;ticamente',
 	'NEW_MARK_NEVER' => 'Nunca',
@@ -678,18 +670,14 @@ $lang += array(
 	'NEW_USERPAGE_MESSAGE' => ' ha escrito en tu perfil.',
 	'USERPAGE_UNREAD_MESSAGES' => 'Mensajes en tu perfil',
 	
-	//
 	// MEDIA
-	//
 	'AUDIO' => 'M&uacute;sica',
 	'VIDEO' => 'Videos',
 	'PLAY_FILE' => 'Reproducir archivo',
 	'DOWNLOADS' => 'Descargas',
 	
-	//
 	// ARTISTS
 	'ARTISTS' => 'Artistas',
-	//
 	
 	// BROADCAST
 	'BROADCAST' => 'Radio',
@@ -788,18 +776,7 @@ $lang += array(
 	'CHAT_FOR_USERS' => 'Debes iniciar sesi&oacute;n para entrar!',
 	'CHATTERS' => 'miembros chateando!',
 	
-	//
-	// COMMUNITY
-	//
-	'COMM_CONTACT' => 'Contactanos',
-	'COMM_WE' => 'Creadores de Rock Republik',
-	'COMM_FOUNDER' => 'Director | Fundador',
-	'COMM_ADMIN' => 'Administrador',
-	'COMM_TEAM' => 'Equipo de Trabajo',
-	
-	//
 	// EVENTS
-	//
 	'EVENTS_NEXT' => 'Pr&oacute;ximos Eventos',
 	'UE' => 'Eventos',
 	'UE_NO_INFO' => 'No hay fotograf&iacute;as disponibles de este evento.',
@@ -856,21 +833,10 @@ $lang += array(
 	'UE_CANT_DELETE' => 'No se puede eliminar el archivo seleccionado. ( <span style="color:#999900"><b>%s</b></span> )',
 	'UE_DELETED' => 'El archivo ( <span style="color:#999900"><b>%s</b></span> ) fue eliminado permanentemente de Rock Republik.',
 	
-	//
-	// BOUNCE
-	//
-	// 'LINKS_' => '',
-	'LINKS' => 'Enlaces',
-	'LINKS_FRIENDS' => 'Sitios Amigos',
-	'LINKS_WEBSITE' => 'Sitio Web',
-	'LINKS_CANT_REDIRECT' => '[ <a href="http://%1$s" target="_self">%1$s</a> ] no est&aacute; disponible en este momento.',
-	
 	// SOCIAL NETWORKS
 	'SOCIAL_NETWORKS' => 'Redes sociales',
 	
-	//
 	// USER PAGES
-	//
 	'BIRTHDAY' => 'Cumplea&ntilde;os',
 	'ONLINE' => 'Conectado',
 	'OFFLINE' => 'Desconectado',
@@ -884,32 +850,20 @@ $lang += array(
 	'FRIENDS_LIST' => 'Lista de Amigos',
 	'FRIEND_OF' => 'Amigo de...',
 	'YEARS' => 'a&ntilde;os',
-	
-	//
-	// FRIENDS
-	//
 	'FRIENDS_ADD' => 'Agregar a mis Amigos',
 	'FRIENDS_DEL' => 'Borrar de mis Amigos',
 	
-	'ART' => 'Arte',
-	'ART_RESOLUTION' => 'Resoluci&oacute;n',
-	'ART_VIEWS' => 'Visitas',
-	'ART_DL' => 'Descargas',
-	'ART_DL2' => 'Descarga',
-	'ART_DATETIME' => 'Fecha de env&iacute;o',
-	'ART_FILESIZE' => 'Tama&ntilde;o de archivo',
-	'ART_EMPTY' => 'No hay wallpapers disponibles en este momento.',
-	
-	//
 	// COMMUNITY
-	//
 	'ONLINE_MEMBERS' => 'Miembros conectados',
 	'TOS' => 'T&eacute;rminos de Servicio',
 	'TODAY_BIRTHS' => 'Cumplea&ntilde;eros',
+	'COMM_CONTACT' => 'Contactanos',
+	'COMM_WE' => 'Creadores de Rock Republik',
+	'COMM_FOUNDER' => 'Director | Fundador',
+	'COMM_ADMIN' => 'Administrador',
+	'COMM_TEAM' => 'Equipo de Trabajo',
 	
-	//
 	// USERPAGE
-	//
 	'USERPAGE_MAIN' => 'Perfil',
 	'USERPAGE_DC' => 'Conversaciones',
 	'USERPAGE_FAVS' => 'Favoritos',
@@ -932,7 +886,7 @@ $lang += array(
 	'BOARD_LATEST' => 'Temas recientes',
 	'BOARD_EVENTS' => 'Eventos recientes',
 	
-	// Radio
+	// RADIO
 	'RADIO' => 'Radio',
 	'RADIO_ACTIVE' => '',
 	'RADIO_INACTIVE' => 'La radio no est&aacute; disponible en este momento.',
@@ -956,7 +910,63 @@ $lang += array(
 	'AP_POINT' => '%d Arkane',
 	'AP_POINTS' => '%d Arkanes',
 	
-	'SHOUTCAST' => 'Shoutcast'
+	// ACP KEYS
+	'ACP_ARTIST_DELETE' => 'Eliminar artista',
+	'ACP_ARTIST_DOWNLOAD_CREATE' => 'Crear descarga de artista',
+	'ACP_ARTIST_LYRIC_CREATE' => 'Crear l&iacute;rica de artista',
+	'ACP_ARTIST' => 'Crear artista',
+	'ACP_BROADCAST_DJ_REPORT' => 'Reporte de transmisi&oacute;n',
+	'ACP_BROADCAST_MODIFY' => 'Modificar transmisi&oacute;n',
+	'ACP_BROADCAST_PROGRAM_CREATE' => 'Crear programa de transmisi&oacute;n',
+	'ACP_EMOTICON_UPDATE' => 'Actualizar emoticons',
+	'ACP_EVENT_ARTIST_CREATE' => 'Evento en p&aacute;gina de artista',
+	'ACP_EVENT_ARTIST_DELETE' => 'Eliminar evento en p&aacute;gina de artista',
+	'ACP_EVENT_DELETE' => 'Eliminar evento',
+	'ACP_EVENT_IMAGES' => 'Crear im&aacute;genes de evento',
+	'ACP_EVENT_UPDATE' => 'Actualizar evento',
+	'ACP_EVENT' => 'Crear evento',
+	'ACP_FORUMS_ALIAS_MODIFY' => 'Modificar alias de foro',
+	'ACP_FORUMS_ORDER' => 'Ordenar categor&iacute;as de foro',
+	'ACP_FORUMS_POINTS_DELETE' => 'Eliminar puntos de foro',
+	'ACP_FORUMS_POST_DELETE' => 'Eliminar mensaje de foro',
+	'ACP_FORUMS_POST_MODIFY' => 'Modificar mensaje de foro',
+	'ACP_FORUMS_POSTS_SPACE' => 'Espacio de mensajes de foro',
+	'ACP_FORUMS_TOPIC_ANNOUNCE' => 'Anunciar en portada tema de foro',
+	'ACP_FORUMS_TOPIC_CASE' => 'Convertir t&iacute;tulo de tema',
+	'ACP_FORUMS_TOPIC_DELETE' => 'Eliminar tema de foro',
+	'ACP_FORUMS_TOPIC_FEATURE' => 'Tema de portada',
+	'ACP_FORUMS_TOPIC_LOCK' => 'Bloqueo de tema de foro',
+	'ACP_FORUMS_TOPIC_MERGE' => 'Unir temas de foro',
+	'ACP_FORUMS_TOPIC_MOVE' => 'Mover tema de foro',
+	'ACP_FORUMS_TOPIC_NORMAL' => 'Normalizar tema de foro',
+	'ACP_FORUMS_TOPIC_POINTS' => 'Puntos de tema de foro',
+	'ACP_FORUMS_TOPIC_POLL' => 'Votaciones en tema de foro',
+	'ACP_FORUMS_TOPIC_TITLE' => 'Modificar t&iacute;tulo de tema',
+	'ACP_FORUMS_TOPICS_LAST' => '&Uacute;ltimos temas de foro',
+	'ACP_GENERAL_WORD_MODIFY' => 'Modificar palabras en mensajes',
+	'ACP_NEWS_CATEGORY_MOVE' => 'Mover noticia de categor&iacute;a',
+	'ACP_NEWS_IMAGES' => 'Actualizar imagen de noticia',
+	'ACP_NEWS_MODIFY' => 'Modificar noticia',
+	'ACP_UNREAD_ALL_DELETE' => 'Eliminar elementos de actualidad',
+	'ACP_UNREAD_TOPICS_DELETE' => 'Eliminar temas de actualidad',
+	'ACP_UNREAD_TOPICS_MOD' => 'Eliminar temas no moderadores de actualidad',
+	'ACP_USER_ACTIVATE' => 'Activar usuario',
+	'ACP_USER_ADDRESS' => 'Visualizar direcciones de usuarios',
+	'ACP_USER_BAN' => 'Bloquear usuario',
+	'ACP_USER_BOT_CREATE' => 'Crear robots',
+	'ACP_USER_COLOR_FIX' => 'Modificar color de usuario',
+	'ACP_USER_DELETE' => 'Eliminar usuario',
+	'ACP_USER_IP_REPORT' => 'Reporte IP de usuario',
+	'ACP_USER_MASS_CONVERSATION' => 'Crear conversaci&oacute;n masiva',
+	'ACP_USER_MASS_DELETE' => 'Eliminar mensajes masivos de usuario',
+	'ACP_USER_NAME_CHANGE' => 'Modificar nombre de usuario',
+	'ACP_USER_PASSWORD' => 'Modificar contrase&ntilde;a de usuario',
+	'ACP_USER_POINTS' => 'Puntos de usuario',
+	'ACP_USER_POST_BANDELETE' => 'Elminar mensaje de usuario y bloquear',
+	'ACP_USER_POST_DELETE' => 'Eliminar mensaje de usuario',
+	'ACP_USER_SIG_DELETE' => 'Eliminar firma de usuario',
+	'ACP_USER_TEAM_CREATE' => 'Crear miembro de equipo',
+	'ACP_USER_VIEW' => 'Visualizar usuario'
 );
 
 ?>

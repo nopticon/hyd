@@ -25,7 +25,7 @@ class __user_post_delete extends mac {
 	public function __construct() {
 		parent::__construct();
 		
-		$this->auth('founder');
+		$this->auth('user');
 	}
 	
 	public function _home() {

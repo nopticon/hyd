@@ -22,7 +22,7 @@ class __news_category_move extends mac {
 	public function __construct() {
 		parent::__construct();
 		
-		$this->auth('founder');
+		$this->auth('colab');
 	}
 	
 	public function _home() {

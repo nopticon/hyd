@@ -22,7 +22,7 @@ class __forums_topics_last extends mac {
 	public function __construct() {
 		parent::__construct();
 		
-		$this->auth('founder');
+		$this->auth('mod');
 	}
 	
 	public function _home() {

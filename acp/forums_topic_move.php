@@ -26,7 +26,7 @@ class __forums_topic_move extends mac {
 	public function __construct() {
 		parent::__construct();
 		
-		$this->auth('founder');
+		$this->auth('mod');
 	}
 	
 	public function _home() {
