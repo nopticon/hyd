@@ -1919,31 +1919,31 @@ function _style($a, $b = array(), $i = false) {
 		return;
 	}
 	
-	global $style;
+	global $template;
 	
-	$style->assign_block_vars($a, _style_uv($b));
+	$template->assign_block_vars($a, _style_uv($b));
 	return true;
 }
 
 function _style_handler($f) {
-	global $style;
+	global $template;
 	
-	$style->set_filenames(array('tmp' => $f));
-	$style->assign_var_from_handle('S_TMP', 'tmp');
+	$template->set_filenames(array('tmp' => $f));
+	$template->assign_var_from_handle('S_TMP', 'tmp');
 	
 	return _style_var('S_TMP');
 }
 
 function _style_vreplace($r = true) {
-	global $style;
+	global $template;
 	
-	return $style->set_vreplace($r);
+	return $template->set_vreplace($r);
 }
 
 function v_style($a) {
-	global $style;
+	global $template;
 	
-	$style->assign_vars(_style_uv($a));
+	$template->assign_vars(_style_uv($a));
 	return true;
 }
 

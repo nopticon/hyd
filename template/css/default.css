@@ -14,7 +14,7 @@
 body {
 	margin: 0;
 	padding: 0;
-	background: url(style/wood.jpg) fixed top center #202837;
+	background: url(style/maya.jpg) fixed top center #202837;
 }
 p, div, span, select {
 	cursor: default;
@@ -829,3 +829,4 @@ html, body {
 <!-- INCLUDE css/player.css -->
 <!-- INCLUDE css/fancy.css -->
 <!-- INCLUDE css/slider.css -->
+<!-- INCLUDE css/awards.css -->

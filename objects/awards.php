@@ -18,6 +18,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
+/*
+ * type_id
+ * type_alias
+ * type_name
+ * type_order
+ */
+
 class _awards {
 	public function __construct() {
 		return;
@@ -32,11 +39,12 @@ class _awards {
 		$types = sql_rowset($sql);
 		
 		foreach ($types as $i => $row) {
-			if (!$i) $template->assign_block_vars('awards', array());
+			if (!$i) _style('awards');
 			
-			$template->assign_block_vars('awards.row', array(
-				
-			));
+			_style('awards.row', array(
+				'NAME' => $row['type_name'],
+				'DESC' => $row['type_desc'])
+			);
 		}
 		
 		return;
