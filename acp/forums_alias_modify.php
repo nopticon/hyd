@@ -45,9 +45,9 @@ class __forums_alias_modify extends mac {
 		$result = sql_rowset($sql);
 		
 		foreach ($result as $i => $row) {
-			if (!$i) $template->assign_block_vars('forums', array());
+			if (!$i) _style('forums', array());
 			
-			$template->assign_block_vars('forums.row', array(
+			_style('forums.row', array(
 				'FORUM_ID' => $row['forum_id'],
 				'FORUM_NAME' => $row['forum_name'])
 			);

@@ -51,11 +51,11 @@ if (count($select)) {
 }
 
 if (!$today->run()) {
-	$template->assign_block_vars('objects_empty', array());
+	_style('objects_empty');
 }
 
-$template->assign_vars(array(
-	'S_UNREAD_ACTION' => s_link('new'))
+v_style(array(
+	'S_UNREAD_ACTION' => s_link('today'))
 );
 
 page_layout('UNREAD_ITEMS', 'unread');

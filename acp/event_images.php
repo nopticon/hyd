@@ -211,7 +211,7 @@ class __event_images extends mac {
 				
 				redirect(s_link('events', $event_id));
 			} else {
-				$template->assign_block_vars('error', array(
+				_style('error', array(
 					'MESSAGE' => parse_error($upload->error))
 				);
 			}
@@ -224,7 +224,7 @@ class __event_images extends mac {
 		$result = sql_rowset(sql_filter($sql, (time() + 86400)));
 		
 		foreach ($result as $row) {
-			$template->assign_block_vars('event_list', array(
+			_style('event_list', array(
 				'EVENT_ID' => $row['id'],
 				'EVENT_TITLE' => (($row['images']) ? '* ' : '') . $row['title'],
 				'EVENT_DATE' => $user->format_date($row['date']))
@@ -235,9 +235,7 @@ class __event_images extends mac {
 			'S_UPLOAD_ACTION' => $u,
 			'MAX_FILESIZE' => $i_size
 		);
-page_layout('EVENTS', 'acp/event_images', $template_vars, false);
-		
-		return;
+		return page_layout('EVENTS', 'acp/event_images', $template_vars, false);
 	}
 }
 

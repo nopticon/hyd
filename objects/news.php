@@ -21,36 +21,53 @@ if (!defined('IN_NUCLEO')) exit;
 require_once(ROOT . 'interfase/comments.php');
 
 class _news {
-	public $data = array();
-	public $news = array();
+	private $data = array();
+	private $_template;
+	private $_title;
 	
 	public function __construct() {
 		return;
 	}
 	
-	public function _setup() {
-		$news_id = request_var('id', 0);
-		if (!$news_id) {
-			return false;
+	public function get_title($default = '') {
+		return (!empty($this->_title)) ? $this->_title : $default;
+	}
+	
+	public function get_template($default = '') {
+		return (!empty($this->_template)) ? $this->_template : $default;
+	}
+	
+	public function run() {
+		$news_alias = request_var('alias', '');
+		$news_module = request_var('module', '');
+		
+		if (!empty($news_module)) {
+			return $this->action($news_module);
 		}
 		
-		$news_field = (!is_numb($news_id)) ? 'news_alias' : 'news_id';
+		if (empty($news_alias)) {
+			return $this->all();
+		}
 		
-		$sql = 'SELECT n.*, c.*
-			FROM _news n, _news_cat c
-			WHERE n.?? = ?
-				AND n.cat_id = c.cat_id';
-		if (!$this->data = sql_fieldrow(sql_filter($sql, $news_field, $news_id))) {
+		if (!preg_match('#[a-z0-9\_\-]+#i', $news_alias)) {
 			fatal_error();
 		}
 		
-		return true;
+		$sql = 'SELECT *
+			FROM _news n
+			INNER JOIN _news_cat c ON n.cat_id = c.cat_id
+			WHERE n.news_alias = ?';
+		if (!$this->data = sql_fieldrow(sql_filter($sql, $news_alias))) {
+			fatal_error();
+		}
+		
+		return $this->object();
 	}
 	
-	public function action($mode) {
-		global $config, $user, $cache, $template;
+	public function action($module) {
+		global $config, $user, $cache;
 		
-		switch ($mode) {
+		switch ($module) {
 			case 'create':
 				$submit = (isset($_REQUEST['submit'])) ? true : false;
 				
@@ -89,9 +106,9 @@ class _news {
 				$news_cat = sql_rowset($sql);
 				
 				foreach ($news_cat as $i => $row) {
-					if (!$i) $template->assign_block_vars('news_cat');
+					if (!$i) _style('news_cat');
 					
-					$template->assign_block_vars('news_cat.row', array(
+					_style('news_cat.row', array(
 						'CAT_ID' => $row['cat_id'],
 						'CAT_NAME' => $row['cat_name'])
 					);
@@ -100,25 +117,10 @@ class _news {
 		}
 	}
 	
-	public function _main() {
-		global $user, $cache, $template;
-		
-		$cat = request_var('id', '');
+	public function all() {
+		global $user, $cache;
 		
 		if (!empty($cat)) {
-			$sql = 'SELECT *
-				FROM _news_cat
-				WHERE cat_url = ?';
-			if (!$cat_data = sql_fieldrow(sql_filter($sql, $cat))) {
-				fatal_error();
-			}
-			
-			$template->assign_block_vars('cat', array(
-				'CAT_URL' => s_link('news', $cat_data['cat_url']),
-				'CAT_NAME' => $cat_data['cat_name'])
-			);
-			
-			//
 			$sql = 'SELECT n.*, m.username, m.username_base, m.user_color
 				FROM _news n, _members m
 				WHERE n.cat_id = ?
@@ -127,7 +129,7 @@ class _news {
 			$result = sql_rowset(sql_filter($sql, $cat_data['cat_id']));
 			
 			foreach ($result as $row) {
-				$template->assign_block_vars('cat.item', array(
+				_style('cat.item', array(
 					'URL' => s_link('news', $row['news_id']),
 					'SUBJECT' => $row['post_subject'],
 					'DESC' => $row['post_desc'],
@@ -137,65 +139,36 @@ class _news {
 					'COLOR' => $row['user_color'])
 				);
 			}
-		} else {
-			if (!$cat = $cache->get('news_cat')) {
-				$sql = 'SELECT c.*, COUNT(n.news_id) AS elements
-					FROM _news_cat c, _news n
-					WHERE c.cat_id = n.cat_id
-					GROUP BY n.cat_id
-					ORDER BY c.cat_order';
-				if ($cat = sql_rowset($sql)) {
-					$cache->save('news_cat', $cat);
-				}
-			}
-			
-			$template->assign_block_vars('list', array());
-			
-			foreach ($cat as $row) {
-				$template->assign_block_vars('list.item', array(
-					'URL' => s_link('news', $row['cat_url']),
-					'NAME' => $row['cat_name'],
-					'DESC' => $row['cat_desc'],
-					'ELEMENTS' => $row['elements'])
-				);
-			}
 		}
 		
 		return;
 	}
 	
-	public function _view() {
-		global $user, $config, $template;
+	public function object() {
+		global $user, $config;
 		
-		$offset = intval(request_var('ps', 0));
+		$comments = new _comments();
+		$offset = request_var('ps', 0);
 		
-		if ($this->data['poster_id'] != $user->data['user_id'] && !$offset) {
+		if ($this->data['poster_id'] != $user->d('user_id') && !$offset) {
 			$sql = 'UPDATE _news SET post_views = post_views + 1
 				WHERE news_id = ?';
 			sql_query(sql_filter($sql, $this->data['news_id']));
 		}
 		
-		$sql = 'SELECT user_id, username, username_base, user_color, user_avatar, user_posts, user_gender, user_rank, user_sig
-			FROM _members
-			WHERE user_id = ?';
-		$userinfo = sql_fieldrow(sql_filter($sql, $this->data['poster_id']));
-		
-		$comments = new _comments();
-		
-		$user_profile = $comments->user_profile($userinfo);
-		
-		$mainpost_data = array(
+		$news_main = array(
 			'MESSAGE' => $comments->parse_message($this->data['post_text']),
 			'POST_TIME' => $user->format_date($this->data['post_time'])
 		);
 		
-		foreach ($user_profile as $key => $value) {
-			$mainpost_data[strtoupper($key)] = $value;
-		}
+		$sql = 'SELECT user_id, username, username_base, user_color, user_avatar, user_posts, user_gender, user_rank
+			FROM _members
+			WHERE user_id = ?';
+		$news_main = array_merge($news_main, _style_uv($comments->user_profile(sql_fieldrow(sql_filter($sql, $this->data['poster_id'])))));
 		
-		$template->assign_block_vars('mainpost', $mainpost_data);
+		_style('mainpost', $news_main);
 		
-		$comments_ref = s_link('news', $this->data['news_id']);
+		$comments_ref = s_link('news', $this->data['news_alias']);
 		
 		if ($this->data['post_replies']) {
 			$comments->reset();
@@ -210,30 +183,30 @@ class _news {
 				LIMIT ??, ??';
 			
 			$comments->data = array(
-				'SQL' => sql_filter($sql, $this->data['news_id'], $offset, $config['s_posts'])
+				'SQL' => sql_filter($sql, $this->data['news_id'], $offset, $config['posts_per_page'])
 			);
 			
-			$comments->view($offset, 'ps', $this->data['post_replies'], $config['s_posts'], '', '', 'TOPIC_');
+			$comments->view($offset, 'ps', $this->data['post_replies'], $config['posts_per_page'], '', '', 'TOPIC_');
 		}
 		
-		$template->assign_vars(array(
+		v_style(array(
 			'CAT_URL' => s_link('news', $this->data['cat_url']),
 			'CAT_NAME' => $this->data['cat_name'],
 			'POST_SUBJECT' => $this->data['post_subject'],
-			'POST_VIEWS' => number_format($this->data['post_views']),
 			'POST_REPLIES' => number_format($this->data['post_replies']))
 		);
 		
 		//
 		// Posting box
 		//
-		$template->assign_block_vars('posting_box', array());
-		
 		if ($user->is('member')) {
-			$template->assign_block_vars('posting_box.box', array(
+			_style('publish', array(
 				'REF' => $comments_ref)
 			);
 		}
+		
+		$this->_template = 'news.view';
+		$this->_title = $this->data['post_subject'];
 		
 		return;
 	}

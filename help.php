@@ -81,10 +81,10 @@ if ($help) {
 // Categories
 //
 $hm_flip = array_flip($help_modules);
-$template->assign_block_vars('cat', array());
+_style('cat');
 
 foreach ($help_cat as $cat_id => $data) {
-	$template->assign_block_vars('cat.item', array(
+	_style('cat.item', array(
 		'URL' => s_link('help', array($hm_flip[$data['help_module']])),
 		'TITLE' => $data['help_es'])
 	);
@@ -111,29 +111,29 @@ if ($module_id || $help) {
 		}
 	}
 	
-	$template->assign_block_vars('module', array(
+	_style('module', array(
 		'HELP' => $help_name)
 	);
 	
 	if (!$help) {
 		if (sizeof($this_cat)) {
-			$template->assign_block_vars('module.main', array());
+			_style('module.main');
 			
 			foreach ($this_cat as $data) {
-				$template->assign_block_vars('module.main.item', array(
+				_style('module.main.item', array(
 					'URL' => s_link('help', $data['faq_id']),
 					'FAQ' => $data['faq_question_es'])
 				);
 			}
 		} else {
-			$template->assign_block_vars('module.empty', array());
+			_style('module.empty');
 		}
 	} else {
 		$dhelp = $help_faq[$help];
 		
 		$comments = new _comments();
 		
-		$template->assign_block_vars('module.faq', array(
+		_style('module.faq', array(
 			'CAT' => s_link('help', $hm_flip[$dhelp['help_id']]),
 			'QUESTION_ES' => $dhelp['faq_question_es'],
 			'QUESTION_EN' => $dhelp['faq_question_e'],

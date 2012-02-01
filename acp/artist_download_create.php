@@ -102,7 +102,7 @@ class __artist_download_create extends mac {
 				redirect(s_link('a', $artist_data['subdomain']));
 			}
 			
-			$template->assign_block_vars('error', array(
+			_style('error', array(
 				'MESSAGE' => parse_error($upload->error))
 			);
 		}
@@ -113,9 +113,9 @@ class __artist_download_create extends mac {
 		$result = sql_rowset($sql);
 		
 		foreach ($result as $i => $row) {
-			if (!$i) $template->assign_block_vars('artists', array());
+			if (!$i) _style('artists');
 			
-			$template->assign_block_vars('artists.row', array(
+			_style('artists.row', array(
 				'ARTIST_ID' => $row['ub'],
 				'ARTIST_NAME' => $row['name'])
 			);

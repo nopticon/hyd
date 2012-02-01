@@ -24,25 +24,8 @@ $user->init();
 $user->setup();
 
 $news = new _news();
+$news->run();
 
-$mode = request_var('mode', '');
-
-if (!empty($mode)) {
-	$news->action($mode);
-} else {
-	if ($news->_setup()) {
-		$news->_view();
-		
-		$pagehtml = 'news.view';
-		$page_title = $user->lang['NEWS'] . ' | ' . $news->data['post_subject'];
-	} else {
-		$news->_main();
-		
-		$pagehtml = 'news';
-		$page_title = 'NEWS';
-	}
-}
-
-page_layout($page_title, $pagehtml);
+page_layout($news->get_title('NEWS'), $news->get_template('news'));
 
 ?>

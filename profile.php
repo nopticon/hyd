@@ -255,13 +255,13 @@ if (isset($_POST['submit'])) {
 if (sizeof($error)) {
 	$error = preg_replace('#^([0-9A-Z_]+)$#e', "(isset(\$user->lang['\\1'])) ? \$user->lang['\\1'] : '\\1'", $error);
 	
-	$template->assign_block_vars('error', array(
+	_style('error', array(
 		'MESSAGE' => (sizeof($error)) ? implode('<br />', $error) : '')
 	);
 }
 
 if ($user->data['user_avatar']) {
-	$template->assign_block_vars('current_avatar', array(
+	_style('current_avatar', array(
 		'IMAGE' => $config['assets_url'] . 'avatars/' . $user->data['user_avatar'])
 	);
 }
@@ -271,7 +271,7 @@ foreach (array(1 => 'MALE', 2 => 'FEMALE') as $id => $value) {
 	$s_genders_select .= '<option value="' . $id . '"' . (($gender == $id) ? ' selected="true"' : '') . '>' . $user->lang[$value] . '</option>';
 }
 
-$template->assign_block_vars('gender', array(
+_style('gender', array(
 	'GENDER_SELECT' => $s_genders_select)
 );
 
@@ -291,7 +291,7 @@ for ($i = 2005; $i > 1899; $i--) {
 	$s_year_select .= '<option value="' . $i . '"' . (($birthday_year == $i) ? ' selected="true"' : '') . '>' . $i . '</option>';
 }
 
-$template->assign_block_vars('birthday', array(
+_style('birthday', array(
 	'DAY' => $s_day_select,
 	'MONTH' => $s_month_select,
 	'YEAR' => $s_year_select)
@@ -321,7 +321,7 @@ foreach ($user_fields as $name => $value) {
 	$output_vars[strtoupper($name)] = $$name;
 }
 
-$template->assign_vars($output_vars);
+v_style($output_vars);
 
 page_layout('MEMBER_OPTIONS', 'profile');
 

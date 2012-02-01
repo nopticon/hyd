@@ -52,9 +52,9 @@ class __user_ip_report extends mac {
 			$result = sql_rowset($sql);
 			
 			foreach ($result as $i => $row) {
-				if (!$i) $template->assign_block_vars('log', array());
+				if (!$i) _style('log');
 				
-				$template->assign_block_vars('log.row', array(
+				_style('log.row', array(
 					'UID' => $row['log_user_id'],
 					'USERNAME' => $row['username'],
 					'TIME' => $user->format_date($row['log_time']),

@@ -365,7 +365,7 @@ class _comments {
 		}
 		
 		$sizeof_controls = sizeof($this->data['CONTROL']);
-		$template->assign_block_vars($tpl_prefix, array());
+		_style($tpl_prefix, array());
 		
 		$controls_data = array();
 		$user_profile = array();
@@ -402,17 +402,17 @@ class _comments {
 				$data[strtoupper($key)] = $value;
 			}
 			
-			$template->assign_block_vars($tpl_prefix . '.item', $data);
-			$template->assign_block_vars($tpl_prefix . '.item.' . (($uid != GUEST) ? 'username' : 'guestuser'), array());
+			_style($tpl_prefix . '.item', $data);
+			_style($tpl_prefix . '.item.' . (($uid != GUEST) ? 'username' : 'guestuser'), array());
 			
 			if ($sizeof_controls) {
-				$template->assign_block_vars($tpl_prefix . '.item.controls', array());
+				_style($tpl_prefix . '.item.controls', array());
 				
 				foreach ($this->data['CONTROL'] as $block => $block_data) {
 					foreach ($block_data as $item => $item_data) {
 						$controls_data[$item_data['ID']][$item] = sprintf($item_data['URL'], $row[$item_data['ID']]);
 					}
-					$template->assign_block_vars($tpl_prefix . '.item.controls.' . $block, $controls_data[$item_data['ID']]);
+					_style($tpl_prefix . '.item.controls.' . $block, $controls_data[$item_data['ID']]);
 				}
 			}
 		}

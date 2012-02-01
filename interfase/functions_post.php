@@ -733,14 +733,11 @@ function username_search($search_match)
 		'S_SEARCH_ACTION' => "search.php?mode=searchuser")
 	);
 
-	if ( $username_list != '' )
-	{
-		$template->assign_block_vars('switch_select_name', array());
+	if ($username_list != '') {
+		_style('switch_select_name');
 	}
 	
-	page_footer();
-
-	return;
+	return page_footer();
 }
 
 ?>

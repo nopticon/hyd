@@ -308,7 +308,7 @@ $country_code = strtolower(geoip_country_code_by_name($user->ip));
 
 $v_fields['country'] = ($v_fields['country']) ? $v_fields['country'] : ((isset($country_codes[$country_code])) ? $country_codes[$country_code] : $country_codes['gt']);
 foreach ($country as $item) {
-	$template->assign_block_vars('country', array(
+	_style('country', array(
 		'OPTION_ID' => $item['country_id'],
 		'OPTION_NAME' => $item['country_name'],
 		'OPTION_S' => ($v_fields['country'] == $item['country_id']))
@@ -317,7 +317,7 @@ foreach ($country as $item) {
 
 $v_fields['refop'] = ($v_fields['refop']) ? $v_fields['refop'] : 1;
 foreach ($members_refop as $item) {
-	$template->assign_block_vars('refop', array(
+	_style('refop', array(
 		'OPTION_ID' => $item['option_id'],
 		'OPTION_NAME' => $item['option_name'],
 		'OPTION_S' => ($v_fields['refop'] == $item['option_id']))
@@ -325,13 +325,13 @@ foreach ($members_refop as $item) {
 }
 
 if (sizeof($error)) {
-	$template->assign_block_vars('error', array(
+	_style('error', array(
 		'MESSAGE' => parse_error($error))
 	);
 }
 
 foreach ($user->lang['MEMBERSHIP_BENEFITS2'] as $item) {
-	$template->assign_block_vars('list_benefits', array(
+	_style('list_benefits', array(
 		'ITEM' => $item)
 	);
 }

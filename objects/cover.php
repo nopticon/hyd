@@ -24,10 +24,10 @@ class cover {
 	public $msg;
 	
 	public function news() {
-		global $config, $cache, $user, $template;
+		global $config, $cache, $user;
 		
 		if (!$news = $cache->get('news')) {
-			$sql = 'SELECT n.news_id, n.post_time, n.poster_id, n.post_subject, n.post_desc, c.*
+			$sql = 'SELECT n.news_id, n.news_alias, n.post_time, n.poster_id, n.post_subject, n.post_desc, c.*
 				FROM _news n
 				INNER JOIN _news_cat c ON n.cat_id = c.cat_id
 				WHERE n.news_active = 1
@@ -45,17 +45,17 @@ class cover {
 		$comments = new _comments();
 		
 		foreach ($news as $i => $row) {
-			if (!$i) $template->assign_block_vars('news', array());
+			if (!$i) _style('news');
 			
-			if ($user->data['is_founder']) {
+			if ($user->is('founder')) {
 				//echo $config['news_path'] . $row['news_id'] . '.jpg<br />';
 			}
 			
 			$news_image = (@file_exists('../data/news/' . $row['news_id'] . '.jpg')) ? $row['news_id'] : 'd';
 			
-			$template->assign_block_vars('news.row', array(
+			_style('news.row', array(
 				'TIMESTAMP' => $user->format_date($row['post_time'], 'j \d\e F Y'),
-				'URL' => s_link('news', $row['news_id']),
+				'URL' => s_link('news', $row['news_alias']),
 				'SUBJECT' => $row['post_subject'],
 				'CAT' => $row['cat_name'],
 				'U_CAT' => s_link('news', $row['cat_url']),
@@ -65,7 +65,7 @@ class cover {
 		}
 		
 		if ($user->_team_auth('mod')) {
-			$template->assign_block_vars('news.create', array(
+			_style('news.create', array(
 				'U_NEWS_CREATE' => s_link('news', 'create'))
 			);
 		}
@@ -74,7 +74,7 @@ class cover {
 	}
 
 	public function board_general() {
-		global $user, $config, $template;
+		global $user, $config;
 		
 		$sql = 'SELECT t.topic_id, t.topic_title, t.topic_color, t.topic_replies, p.post_id, p.post_time, u.user_id, u.username, u.username_base
 			FROM _forum_posts p, _members u, _forum_topics t
@@ -87,14 +87,14 @@ class cover {
 			ORDER BY t.topic_announce DESC, p.post_time DESC
 			LIMIT ??';
 		if ($result = sql_rowset(sql_filter($sql, $config['main_topics']))) {
-			$template->assign_block_vars('board_general', array(
+			_style('board_general', array(
 				'L_TOP_POSTS' => sprintf($user->lang['TOP_FORUM'], count($result)))
 			);
 			
 			foreach ($result as $row) {
 				$username = ($row['user_id'] != GUEST) ? $row['username'] : (($row['post_username'] != '') ? $row['post_username'] : $user->lang['GUEST']);
 				
-				$template->assign_block_vars('board_general.item', array(
+				_style('board_general.item', array(
 					'U_TOPIC' => ($row['topic_replies']) ? s_link('post', $row['post_id']) . '#' . $row['post_id'] : s_link('topic', $row['topic_id']),
 					'TOPIC_TITLE' => $row['topic_title'],
 					'TOPIC_COLOR' => $row['topic_color'],
@@ -110,7 +110,7 @@ class cover {
 	}
 	
 	public function board_events() {
-		global $user, $config, $template;
+		global $user, $config;
 		
 		$sql = 'SELECT t.topic_id, t.topic_title, t.topic_color, p.post_id, p.post_time, u.user_id, u.username, u.username_base, e.id, e.event_alias, e.date
 			FROM _forum_topics t, _forum_posts p, _events e, _members u
@@ -122,14 +122,14 @@ class cover {
 			ORDER BY t.topic_announce DESC, p.post_time DESC
 			LIMIT ??';
 		if ($result = sql_rowset(sql_filter($sql, $config['main_topics']))) {
-			$template->assign_block_vars('board_events', array(
+			_style('board_events', array(
 				'L_TOP_POSTS' => sprintf($user->lang['TOP_FORUM'], count($result)))
 			);
 			
 			foreach ($result as $row) {
 				$username = ($row['user_id'] != GUEST) ? $row['username'] : (($row['post_username'] != '') ? $row['post_username'] : $user->lang['GUEST']);
 				
-				$template->assign_block_vars('board_events.item', array(
+				_style('board_events.item', array(
 					'U_TOPIC' => s_link('events', $row['event_alias']),
 					'TOPIC_TITLE' => $row['topic_title'],
 					'TOPIC_COLOR' => $row['topic_color'],
@@ -146,7 +146,7 @@ class cover {
 	}
 	
 	public function poll() {
-		global $user, $auth, $config, $cache, $template;
+		global $user, $auth, $config, $cache;
 		
 		if (!$topic_id = $cache->get('last_poll_id')) {
 			$sql = 'SELECT t.topic_id
@@ -201,7 +201,7 @@ class cover {
 		
 		$poll_expired = ($vote_info[0]['vote_length']) ? (($vote_info[0]['vote_start'] + $vote_info[0]['vote_length'] < $current_time) ? true : 0) : 0;
 		
-		$template->assign_block_vars('poll', array(
+		_style('poll', array(
 			'U_POLL_TOPIC' => s_link('topic', $topic_id),
 			'S_REPLIES' => $topic_data['topic_replies'],
 			'U_POLL_FORUM' => s_link('forum', $config['main_poll_f']),
@@ -214,24 +214,24 @@ class cover {
 				$vote_results_sum += $row['vote_result'];
 			}
 			
-			$template->assign_block_vars('poll.results', array());
+			_style('poll.results');
 			
 			foreach ($vote_info as $row) {
 				$vote_percent = ($vote_results_sum) ? $row['vote_result'] / $vote_results_sum : 0;
 				
-				$template->assign_block_vars('poll.results.item', array(
+				_style('poll.results.item', array(
 					'CAPTION' => $row['vote_option_text'],
 					'RESULT' => $row['vote_result'],
 					'PERCENT' => sprintf("%.1d", ($vote_percent * 100)))
 				);
 			}
 		} else {
-			$template->assign_block_vars('poll.options', array(
+			_style('poll.options', array(
 				'S_VOTE_ACTION' => s_link('topic', $topic_id))
 			);
 			
 			foreach ($vote_info as $row) {
-				$template->assign_block_vars('poll.options.item', array(
+				_style('poll.options.item', array(
 					'POLL_OPTION_ID' => $row['vote_option_id'],
 					'POLL_OPTION_CAPTION' => $row['vote_option_text'])
 				);

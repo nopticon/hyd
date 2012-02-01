@@ -30,14 +30,6 @@ class comments extends common {
 		return;
 	}
 	
-	public function _emoticons_setup() {
-		return;
-	}
-	
-	public function _help_setup() {
-		return;
-	}
-	
 	public function nav() {
 		global $user;
 		
@@ -56,29 +48,6 @@ class comments extends common {
 		}
 		
 		return;
-	}
-	
-	//
-	// Emoticons
-	//
-	public function emoticons() {
-		$this->call_method();
-	}
-	
-	public function _emoticons_home() {
-		die('_emoticons_home');
-	}
-	
-	public function _emoticons_add() {
-		die('_emoticons_add');
-	}
-	
-	public function _emoticons_edit() {
-		die('_emoticons_edit');
-	}
-	
-	public function emoticons_delete() {
-		die('_emoticons_delete');
 	}
 	
 	//

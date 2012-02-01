@@ -177,7 +177,7 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
 		$downloads = new downloads();
 	}
 	
-	$template->assign_block_vars('items', array(
+	_style('items', array(
 		'TOTAL_ITEMS' => count($result))
 	);
 	
@@ -198,14 +198,14 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
 		
 		foreach ($result as $i => $row) {
 			if (!$i) {
-				$template->assign_block_vars('items.notes', array(
+				_style('items.notes', array(
 					'ELEMENT' => UH_NOTE)
 				);
 			}
 			
 			$user_profile = user_profile($row);
 			
-			$template->assign_block_vars('items.notes.item', array(
+			_style('items.notes.item', array(
 				'S_MARK_ID' => $row['parent_id'],
 				'U_READ' => s_link('my', array('dc', 'read', $row['last_msg_id'])) . '#' . $row['last_msg_id'],
 				'SUBJECT' => $row['privmsgs_subject'],
@@ -230,14 +230,14 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
 		
 		foreach ($result as $i => $row) {
 			if (!$i) {
-				$template->assign_block_vars('items.friends', array(
+				_style('items.friends', array(
 					'ELEMENT' => UH_FRIEND)
 				);
 			}
 			
 			$user_profile = user_profile($row);
 			
-			$template->assign_block_vars('items.friends.item', array(
+			_style('items.friends.item', array(
 				'S_MARK_ID' => $row['user_id'],
 				'U_PROFILE' => s_link('new', array(UH_FRIEND, $row['user_id'])),
 				'POST_TIME' => $user->format_date($row['datetime']),
@@ -260,14 +260,14 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
 		
 		foreach ($result as $i => $row) {
 			if (!$i) {
-				$template->assign_block_vars('items.userpagem', array(
+				_style('items.userpagem', array(
 					'ELEMENT' => UH_UPM)
 				);
 			}
 			
 			$user_profile = user_profile($row);
 			
-			$template->assign_block_vars('items.userpagem.item', array(
+			_style('items.userpagem.item', array(
 				'S_MARK_ID' => $row['post_id'],
 				'U_PROFILE' => s_link('new', array(UH_UPM, $row['post_id'])),
 				'POST_TIME' => $user->format_date($row['datetime']),
@@ -292,14 +292,14 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
 		
 		foreach ($result as $i => $row) {
 			if (!$i) {
-				$template->assign_block_vars('items.a_news', array(
+				_style('items.a_news', array(
 					'ELEMENT' => UH_N)
 				);
 			}
 			
 			$user_profile = user_profile($row);
 			
-			$template->assign_block_vars('items.a_news.item', array(
+			_style('items.a_news.item', array(
 				'S_MARK_ID' => $row['topic_id'],
 				'POST_URL' => s_link('new', array(UH_N, $row['topic_id'])),
 				'POST_TITLE' => $row['topic_title'],
@@ -320,14 +320,14 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
 		
 		foreach ($result as $i => $row) {
 			if (!$i) {
-				$template->assign_block_vars('items.news', array(
+				_style('items.news', array(
 					'ELEMENT' => UH_GN)
 				);
 			}
 			
 			$user_profile = user_profile($row);
 			
-			$template->assign_block_vars('items.news.item', array(
+			_style('items.news.item', array(
 				'S_MARK_ID' => $row['news_id'],
 				'POST_URL' => s_link('new', array(UH_GN, $row['news_id'])),
 				'POST_TITLE' => $row['post_subject'],
@@ -351,12 +351,12 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
 		
 		foreach ($result as $i => $row) {
 			if (!$i) {
-				$template->assign_block_vars('items.artists', array(
+				_style('items.artists', array(
 					'ELEMENT' => UH_A)
 				);
 			}
 			
-			$template->assign_block_vars('items.artists.item', array(
+			_style('items.artists.item', array(
 				'S_MARK_ID' => $row['ub'],
 				'UB_URL' => s_link('new', array(UH_A, $row['ub'])),
 				'NAME' => $row['name'],
@@ -381,14 +381,14 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
 		
 		foreach ($result as $i => $row) {
 			if (!$i) {
-				$template->assign_block_vars('items.downloads', array(
+				_style('items.downloads', array(
 					'ELEMENT' => UH_D)
 				);
 			}
 			
 			$download_type = $downloads->dl_type($row['ud_type']);
 			
-			$template->assign_block_vars('items.downloads.item', array(
+			_style('items.downloads.item', array(
 				'S_MARK_ID' => $row['id'],
 				'UB_URL' => s_link('a', $row['subdomain']),
 				'UD_URL' => s_link('new', array(UH_D, $row['id'])),
@@ -420,14 +420,14 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
 		
 		foreach ($result as $i => $row) {
 			if (!$i) {
-				$template->assign_block_vars('items.forums', array(
+				_style('items.forums', array(
 					'ELEMENT' => UH_T)
 				);
 			}
 			
 			$user_profile = user_profile($row);
 			
-			$template->assign_block_vars('items.forums.item', array(
+			_style('items.forums.item', array(
 				'S_MARK_ID' => $row['topic_id'],
 				'FOR_MODS' => in_array($row['forum_id'], forum_for_team_array()),
 				'TOPIC_URL' => s_link('post', $row['post_id']) . '#' . $row['post_id'],
@@ -463,14 +463,14 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
 		
 		foreach ($result as $i => $row) {
 			if (!$i) {
-				$template->assign_block_vars('items.a_messages', array(
+				_style('items.a_messages', array(
 					'ELEMENT' => UH_C)
 				);
 			}
 			
 			$user_profile = user_profile($row);
 			
-			$template->assign_block_vars('items.a_messages.item', array(
+			_style('items.a_messages.item', array(
 				'S_MARK_ID' => $row['post_id'],
 				'ITEM_URL' => s_link('new', array(UH_C, $row['post_id'])),
 				'UB_URL' => s_link('a', $row['subdomain']),
@@ -503,7 +503,7 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
 		
 		foreach ($result as $i => $row) {
 			if (!$i) {
-				$template->assign_block_vars('items.d_messages', array(
+				_style('items.d_messages', array(
 					'ELEMENT' => UH_M)
 				);
 			}
@@ -511,7 +511,7 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
 			$download_type = $downloads->dl_type($row['ud_type']);
 			$user_profile = user_profile($row);
 			
-			$template->assign_block_vars('items.d_messages.item', array(
+			_style('items.d_messages.item', array(
 				'S_MARK_ID' => $row['post_id'],
 				'ITEM_URL' => s_link('new', array(UH_M, $row['post_id'])),
 				'UB_URL' => s_link('a', $row['subdomain']),
@@ -552,14 +552,14 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
 		
 		foreach ($result as $i => $row) {
 			if (!$i) {
-				$template->assign_block_vars('items.a_fav', array(
+				_style('items.a_fav', array(
 					'ELEMENT' => UH_AF)
 				);
 			}
 			
 			$user_profile = user_profile($row);
 			
-			$template->assign_block_vars('items.a_fav.item', array(
+			_style('items.a_fav.item', array(
 				'S_MARK_ID' => $row['fan_id'],
 				'ITEM_URL' => s_link('new', array(UH_AF, $row['fan_id'])),
 				'UB_URL' => s_link('a', $row['subdomain']),
@@ -589,14 +589,14 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
 		
 		foreach ($result as $i => $row) {
 			if (!$i) {
-				$template->assign_block_vars('items.users', array(
+				_style('items.users', array(
 					'ELEMENT' => UH_U)
 				);
 			}
 			
 			$user_profile = user_profile($row);
 			
-			$template->assign_block_vars('items.users.item', array(
+			_style('items.users.item', array(
 				'S_MARK_ID' => $row['user_id'],
 				'USER_COLOR' => $user_profile['color'],
 				'USER_PROFILE' => $user_profile['profile'],
@@ -606,12 +606,12 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
 		}
 	}
 } else {
-	$template->assign_block_vars('no_items', array());
+	_style('no_items');
 }
 
 $mark_options = array('NEW_MARK_NEVER', 'NEW_MARK_ALWAYS');
 foreach ($mark_options as $i => $mark_item) {
-	$template->assign_block_vars('mark_item', array(
+	_style('mark_item', array(
 		'ITEM' => $i,
 		'NAME' => $user->lang[$mark_item],
 		'SELECTED' => (($i == $user->data['user_mark_items']) ? ' selected="selected"' : ''))
@@ -627,15 +627,15 @@ $sql = 'SELECT d.id, d.title, a.subdomain, a.name
 $result = sql_rowset($sql);
 
 foreach ($result as $row) {
-	$template->assign_block_vars('downloads', array(
+	_style('downloads', array(
 		'URL' => s_link('a', array($row['subdomain'], 9, $row['id'])),
 		'A' => $row['name'],
 		'T' => $row['title'])
 	);
 }
 
-$template->assign_vars(array(
-	'S_UNREAD_ACTION' => s_link('new'))
+v_style(array(
+	'S_UNREAD_ACTION' => s_link('today'))
 );
 
 //

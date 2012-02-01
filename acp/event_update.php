@@ -63,7 +63,7 @@ class __event_update extends mac {
 				redirect(s_link('events', $event_data['event_alias']));
 			}
 			
-			$template->assign_block_vars('error', array(
+			_style('error', array(
 				'MESSAGE' => parse_error($upload->error))
 			);
 		}
@@ -75,7 +75,7 @@ class __event_update extends mac {
 		$result = sql_rowset(sql_filter($sql, time()));
 		
 		foreach ($result as $row) {
-			$template->assign_block_vars('event_list', array(
+			_style('event_list', array(
 				'EVENT_ID' => $row['id'],
 				'EVENT_TITLE' => $row['title'],
 				'EVENT_DATE' => $user->format_date($row['date']))

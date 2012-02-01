@@ -31,7 +31,7 @@ class _win {
 		return (!empty($this->_title)) ? $this->_title : $default;
 	}
 	
-	public function get_template() {
+	public function get_template($default = '') {
 		return (!empty($this->_template)) ? $this->_template : $default;
 	}
 	

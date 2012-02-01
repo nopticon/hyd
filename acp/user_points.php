@@ -35,9 +35,9 @@ class __user_points extends mac {
 		$result = sql_rowset($sql);
 		
 		foreach ($result as $i => $row) {
-			if (!$i) $template->assign_block_vars('members', array());
+			if (!$i) _style('members', array());
 			
-			$template->assign_block_vars('members.row', array(
+			_style('members.row', array(
 				'BASE' => s_link('m', $row['username_base']),
 				'USERNAME' => $row['username'],
 				'POINTS' => $row['user_points'])

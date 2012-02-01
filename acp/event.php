@@ -203,7 +203,7 @@ class __event extends mac {
 				}
 			}
 
-			$template->assign_block_vars('error', array(
+			_style('error', array(
 				'MESSAGE' => parse_error($upload->error))
 			);
 		}
@@ -217,9 +217,9 @@ class __event extends mac {
 		$topics = sql_rowset($sql);
 		
 		foreach ($topics as $i => $row) {
-			if (!$i) $template->assign_block_vars('topics', array());
+			if (!$i) _style('topics');
 			
-			$template->assign_block_vars('topics.row', array(
+			_style('topics.row', array(
 				'TOPIC_ID' => $row['topic_id'],
 				'TOPIC_TITLE' => $row['topic_title'])
 			);

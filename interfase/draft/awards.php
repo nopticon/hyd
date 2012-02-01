@@ -42,7 +42,7 @@ $topics = array(
 );
 
 if (time() >= 1197093599) {
-	$template->assign_block_vars('expired', array());
+	_style('expired');
 } else {
 	//
 	// Get data for all polls
@@ -64,21 +64,21 @@ if (time() >= 1197093599) {
 					AND vote_user_id = ?';
 			$user_voted = sql_field(sql_filter($sql, $vote_info[0]['vote_id'], $user->data['user_id']), 'vote_id', 0);
 	
-			$template->assign_block_vars('poll', array(
+			_style('poll', array(
 				'POLL_TITLE' => $vote_info[0]['vote_text'])
 			);
 			
 			if ($user_voted) {
-				$template->assign_block_vars('poll.results', array());
+				_style('poll.results', array());
 			} else {
-				$template->assign_block_vars('poll.options', array(
+				_style('poll.options', array(
 					'S_VOTE_ACTION' => $topic_url)
 				);
 	
 				for ($i = 0; $i < $vote_options; $i++) {
 					$subdomain = 'http://' . get_username_base($vote_info[$i]['vote_option_text']) . '.rockrepublik.net/';
 					
-					$template->assign_block_vars('poll.options.item', array(
+					_style('poll.options.item', array(
 						'POLL_OPTION_ID' => $vote_info[$i]['vote_option_id'],
 						'POLL_OPTION_CAPTION' => $vote_info[$i]['vote_option_text'],
 						'POLL_OPTION_LINK' => $subdomain)

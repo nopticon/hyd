@@ -315,7 +315,7 @@ if ($user->is('member')) {
 			redirect($topic_url . (($start) ? 's' . $start . '/' : ''));
 		}
 		
-		$template->assign_block_vars('watch_topic', array());
+		_style('watch_topic');
 	}
 }
 
@@ -384,7 +384,7 @@ if ($topic_data['topic_vote']) {
 		
 		$poll_expired = ($vote_info[0]['vote_length']) ? (($vote_info[0]['vote_start'] + $vote_info[0]['vote_length'] < $current_time) ? true : 0) : 0;
 		
-		$template->assign_block_vars('poll', array(
+		_style('poll', array(
 			'POLL_TITLE' => $vote_info[0]['vote_text'])
 		);
 
@@ -394,24 +394,24 @@ if ($topic_data['topic_vote']) {
 				$vote_results_sum += $row['vote_result'];
 			}
 			
-			$template->assign_block_vars('poll.results', array());
+			_style('poll.results');
 			
 			foreach ($vote_info as $row) {
 				$vote_percent = ($vote_results_sum > 0) ? $row['vote_result'] / $vote_results_sum : 0;
 
-				$template->assign_block_vars('poll.results.item', array(
+				_style('poll.results.item', array(
 					'CAPTION' => $row['vote_option_text'],
 					'RESULT' => $row['vote_result'],
 					'PERCENT' => sprintf("%.1d", ($vote_percent * 100)))
 				);
 			}
 		} else {
-			$template->assign_block_vars('poll.options', array(
+			_style('poll.options', array(
 				'S_VOTE_ACTION' => $topic_url)
 			);
 			
 			foreach ($vote_info as $row) {
-				$template->assign_block_vars('poll.options.item', array(
+				_style('poll.options.item', array(
 					'POLL_OPTION_ID' => $row['vote_option_id'],
 					'POLL_OPTION_CAPTION' => $row['vote_option_text'])
 				);
@@ -428,7 +428,7 @@ $controls = array();
 $user_profile = array();
 $unset_user_profile = array('user_id', 'user_posts', 'user_gender');
 
-$template->assign_block_vars('posts', array());
+_style('posts');
 
 foreach ($messages as $row) {
 	if ($user->is('member')) {
@@ -457,14 +457,14 @@ foreach ($messages as $row) {
 		$data[strtoupper($key)] = $value;
 	}
 	
-	$template->assign_block_vars('posts.item', $data);
-	$template->assign_block_vars('posts.item.' . (($row['user_id'] != GUEST) ? 'username' : 'guestuser'), array());
+	_style('posts.item', $data);
+	_style('posts.item.' . (($row['user_id'] != GUEST) ? 'username' : 'guestuser'), array());
 
 	if (isset($controls[$row['post_id']])) {
-		$template->assign_block_vars('posts.item.controls', array());
+		_style('posts.item.controls');
 		
 		foreach ($controls[$row['post_id']] as $item => $url) {
-			$template->assign_block_vars('posts.item.controls.'.$item, array('URL' => $url));
+			_style('posts.item.controls.'.$item, array('URL' => $url));
 		}
 	}
 }
@@ -484,10 +484,10 @@ if ($mod_auth) {
 	}
 	
 	if (sizeof($mod_topic)) {
-		$template->assign_block_vars('auth', array());
+		_style('auth');
 		
 		foreach ($mod_topic as $k => $v) {
-			$template->assign_block_vars('auth.item', array(
+			_style('auth.item', array(
 				'URL' => $v,
 				'LANG' => $user->lang[$k . '_TOPIC'])
 			);
@@ -500,7 +500,7 @@ build_num_pagination($topic_url . 's%d/', ($topic_data['topic_replies'] + 1), $c
 //
 // Posting box
 if (sizeof($error)) {
-	$template->assign_block_vars('post_error', array(
+	_style('post_error', array(
 		'MESSAGE' => parse_error($error))
 	);
 }
@@ -512,7 +512,7 @@ if ((!$topic_data['forum_locked'] && !$topic_data['topic_locked']) || $can_reply
 		if ($is_auth['auth_reply']) {
 			$s_post_action = (($reply) ? s_link('post', array($post_id, 'reply')) : $topic_url) . '#e';
 			
-			$template->assign_block_vars('post_box', array(
+			_style('post_box', array(
 				'MESSAGE' => $post_message,
 				'NP' => $post_np,
 				'S_POST_ACTION' => $s_post_action)
@@ -532,7 +532,7 @@ if ((!$topic_data['forum_locked'] && !$topic_data['topic_locked']) || $can_reply
 					$post_reply_message = '...';
 				}
 				
-				$template->assign_block_vars('post_box.reply', array(
+				_style('post_box.reply', array(
 					'MESSAGE' => $post_reply_message)
 				);
 			}
@@ -544,7 +544,7 @@ if ((!$topic_data['forum_locked'] && !$topic_data['topic_locked']) || $can_reply
 if ($user->_team_auth('mod')) {
 	$v_lang = ($topic_data['topic_featured']) ? 'REM' : 'ADD';
 	
-	$template->assign_block_vars('feature', array(
+	_style('feature', array(
 		'U_FEAT' => s_link('mcp', array('feature', $topic_data['topic_id'])),
 		'V_LANG' => $user->lang['TOPIC_FEATURED_' . $v_lang])
 	);
@@ -552,7 +552,7 @@ if ($user->_team_auth('mod')) {
 	//
 	/*
 	$v_lang = ($topic_data['topic_points']) ? 'REM' : 'ADD';
-	$template->assign_block_vars('mcppoints', array(
+	_style('mcppoints', array(
 		'U_FEAT' => s_link('mcp', array('points', $topic_data['topic_id'])),
 		'V_LANG' => $user->lang['TOPIC_POINTS_' . $v_lang])
 	);
@@ -562,7 +562,7 @@ if ($user->_team_auth('mod')) {
 //
 // Send vars to template
 //
-$template_vars = array(
+$layout_vars = array(
 	'FORUM_NAME' => $topic_data['forum_name'],
 	'TOPIC_TITLE' => $topic_data['topic_title'],
 	'TOPIC_REPLIES' => $topic_data['topic_replies'],
@@ -571,15 +571,15 @@ $template_vars = array(
 	'U_VIEW_FORUM' => s_link('forum', $topic_data['forum_alias'])
 );
 
-$template_file = 'topic';
+$layout_file = 'topic';
 if (@file_exists('./template/custom/topics_' . $forum_id . '.htm')) {
-	$template_file = 'custom/topics_' . $forum_id;
+	$layout_file = 'custom/topics_' . $forum_id;
 }
 
 if (@file_exists('./template/custom/topic_' . $topic_id . '.htm')) {
-	$template_file = 'custom/topic_' . $topic_id;
+	$layout_file = 'custom/topic_' . $topic_id;
 }
 
-page_layout($user->lang['FORUM'] .' | ' . $topic_data['topic_title'], $template_file, $template_vars);
+page_layout($user->lang['FORUM'] .' | ' . $topic_data['topic_title'], $layout_file, $layout_vars);
 
 ?>

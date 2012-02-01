@@ -21,19 +21,19 @@ if (!defined('IN_NUCLEO')) exit;
 function a_thumbnails($selected_artists, $random_images, $lang_key, $block, $item_per_col = 2) {
 	global $config, $user, $template;
 	
-	$template->assign_block_vars('main.' . $block, array(
+	_style('main.' . $block, array(
 		'L_TITLE' => $user->lang[$lang_key])
 	);
 	
 	$col = 0;
 	foreach ($selected_artists as $ub => $data) {
 		if (!$col) {
-			$template->assign_block_vars('main.' . $block . '.row', array());
+			_style('main.' . $block . '.row');
 		}
 		
 		$image = ($data['images']) ? $ub . '/thumbnails/' . $random_images[$ub] . '.jpg' : 'default/shadow.gif';
 		
-		$template->assign_block_vars('main.' . $block . '.row.col', array(
+		_style('main.' . $block . '.row.col', array(
 			'NAME' => $data['name'],
 			'IMAGE' => $config['artists_url'] . $image,
 			'URL' => s_link('a', $data['subdomain']),
@@ -106,17 +106,17 @@ class userpage {
 					AND b.user_id = u.user_id)
 			ORDER BY u.username';
 		if ($result = sql_rowset(sql_filter($sql, $profiledata['user_id'], $profiledata['user_id']))) {
-			$template->assign_block_vars('friends', array());
+			_style('friends', array());
 			
 			$tcol = 0;
 			foreach ($result as $row) {
 				$friend_profile = $comments->user_profile($row);
 				
 				if (!$tcol) {
-					$template->assign_block_vars('friends.row', array());
+					_style('friends.row');
 				}
 				
-				$template->assign_block_vars('friends.row.col', array(
+				_style('friends.row.col', array(
 					'PROFILE' => $friend_profile['profile'],
 					'USERNAME' => $friend_profile['username'],
 					'COLOR' => $friend_profile['user_color'],
@@ -214,11 +214,11 @@ class userpage {
 			}
 			
 			if (!$m) {
-				$template->assign_block_vars('main.stats', array());
+				_style('main.stats');
 				$m = true;
 			}
 			
-			$template->assign_block_vars('main.stats.item', array(
+			_style('main.stats.item', array(
 				'KEY' => $user->lang[$key],
 				'VALUE' => $value)
 			);
@@ -230,7 +230,7 @@ class userpage {
 	public function user_main() {
 		global $user, $profiledata, $comments, $template;
 		
-		$template->assign_block_vars('main', array());
+		_style('main');
 		
 		//
 		// Get artists where this member is an authorized member
@@ -293,7 +293,7 @@ class userpage {
 			a_thumbnails($result2, $random_images2, 'USERPAGE_AFAVS', 'thumbnails');
 			
 			if ($total_a > 6) {
-				$template->assign_block_vars('main.thumbnails.all', array());
+				_style('main.thumbnails.all');
 			}
 		}
 		
@@ -309,11 +309,9 @@ class userpage {
 		$result = sql_rowset(sql_filter($sql, $profiledata['user_id']));
 		
 		foreach ($result as $i => $row) {
-			if (!$i) {
-				$template->assign_block_vars('main.lastboard', array());
-			}
+			if (!$i) _style('main.lastboard');
 			
-			$template->assign_block_vars('main.lastboard.row', array(
+			_style('main.lastboard.row', array(
 				'URL' => s_link('post', $row['post_id']) . '#' . $row['post_id'],
 				'TITLE' => $row['topic_title'],
 				'TOPIC_COLOR' => $row['topic_color'],
@@ -328,7 +326,7 @@ class userpage {
 		$comments_ref = s_link('m', array($profiledata['username_base']));
 		
 		if ($user->is('member')) {
-			$template->assign_block_vars('main.post_comment_box', array(
+			_style('main.post_comment_box', array(
 				'REF' => $comments_ref)
 			);
 		}
@@ -384,11 +382,11 @@ class userpage {
 			}
 			
 			if (!$m) {
-				$template->assign_block_vars('main.general', array());
+				_style('main.general');
 				$m = 1;
 			}
 			
-			$template->assign_block_vars('main.general.item', array(
+			_style('main.general.item', array(
 				'KEY' => $user->lang[$key],
 				'VALUE' => $value)
 			);
@@ -406,14 +404,14 @@ class userpage {
 			
 			if (sizeof($list))
 			{
-				$template->assign_block_vars('main.lastfm', array(
+				_style('main.lastfm', array(
 					'NAME' => $profiledata['user_lastfm'],
 					'URL' => 'http://www.last.fm/user/' . $profiledata['user_lastfm'] . '/')
 				);
 				
 				foreach ($list as $row)
 				{
-					$template->assign_block_vars('main.lastfm.row', array(
+					_style('main.lastfm.row', array(
 						'ARTIST' => $row['ARTIST'],
 						'NAME' => $row['NAME'],
 						'ALBUM' => $row['ALBUM'],
@@ -434,17 +432,15 @@ class userpage {
 				AND v.viewer_id = u.user_id
 			ORDER BY datetime DESC';
 		if ($result = sql_rowset(sql_filter($sql, $profiledata['user_id']))) {
-			$template->assign_block_vars('main.viewers', array());
+			_style('main.viewers');
 			
 			$col = 0;
 			foreach ($result as $row) {
 				$profile = $comments->user_profile($row);
 				
-				if (!$col) {
-					$template->assign_block_vars('main.viewers.row', array());
-				}
+				if (!$col) _style('main.viewers.row');
 				
-				$template->assign_block_vars('main.viewers.row.col', array(
+				_style('main.viewers.row.col', array(
 					'PROFILE' => $profile['profile'],
 					'USERNAME' => $profile['username'],
 					'COLOR' => $profile['user_color'],
@@ -486,7 +482,7 @@ class userpage {
 		}
 		
 		if ($user->is('member')) {
-			$template->assign_block_vars('main.box', array(
+			_style('main.box', array(
 				'REF' => $comments_ref)
 			);
 		}

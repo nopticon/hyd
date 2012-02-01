@@ -28,9 +28,9 @@ $sql = 'SELECT *
 $partners = sql_rowset($sql);
 
 foreach ($partners as $i => $row) {
-	if (!$i) $template->assign_block_vars('partners', array());
+	if (!$i) _style('partners');
 	
-	$template->assign_block_vars('partners.row', array(
+	_style('partners.row', array(
 		'NAME' => $row['partner_name'],
 		'IMAGE' => $row['partner_image'],
 		'URL' => $config['assets_url'] . '/style/sites/' . $row['partner_url'])

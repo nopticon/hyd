@@ -56,11 +56,11 @@ if (strstr($uptime, 'day')) {
 preg_match("/averages?: ([0-9\.]+),[\s]+([0-9\.]+),[\s]+([0-9\.]+)/", $uptime, $avgs);
 $load = $avgs[1].", ".$avgs[2].", ".$avgs[3]."";
 
-$template_vars = array(
+$layout_vars = array(
 	'SERVER_UPTIME' => sprintf($lang['SERVER_UPTIME'], $days, $hours, $mins),
 	'SERVER_LOAD' => sprintf($lang['SERVER_LOAD'], $load)
 );
 
-page_layout('HOME', 'ssv', $template_vars, false);
+page_layout('HOME', 'ssv', $layout_vars, false);
 
 ?>

@@ -56,12 +56,12 @@ class __user_address extends mac {
 				$items = 0;
 				$steps++;
 				
-				$template->assign_block_vars('step', array(
+				_style('step', array(
 					'STEPS' => $steps)
 				);
 			}
 			
-			$template->assign_block_vars('step.item', array(
+			_style('step.item', array(
 				'USERNAME' => $row['username'],
 				'USER_EMAIL' => $row['user_email'])
 			);

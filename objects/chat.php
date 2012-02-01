@@ -48,10 +48,10 @@ class _chat {
 			return false;
 		}
 		
-		$template->assign_block_vars('chat', array());
+		_style('chat');
 		
 		foreach ($cat as $cat_data) {
-			$template->assign_block_vars('chat.cat', array(
+			_style('chat.cat', array(
 				'LABEL' => $cat_data['cat_name'])
 			);
 			
@@ -63,7 +63,7 @@ class _chat {
 				
 				$ch_auth = ($channel['ch_auth']) ? '* ' : '';
 				
-				$template->assign_block_vars('chat.cat.channel', array(
+				_style('chat.cat.channel', array(
 					'VALUE' => $channel['ch_int_name'],
 					'LABEL' => $ch_auth . $channel['ch_name'],
 					'SELECTED' => ($channel['ch_def']) ? ' selected' : '')
@@ -71,9 +71,7 @@ class _chat {
 				$rooms++;
 			}
 			
-			if (!$rooms) {
-				$template->assign_block_vars('chat.cat.noch', array());
-			}
+			if (!$rooms) _style('chat.cat.noch');
 		}
 		
 		return true;
@@ -94,7 +92,7 @@ class _chat {
 		
 		$chatters = 0;
 		foreach ($cat as $cat_data) {
-			$template->assign_block_vars('cat', array(
+			_style('cat', array(
 				'NAME' => $cat_data['cat_name'])
 			);
 			
@@ -106,7 +104,7 @@ class _chat {
 				
 				$chatters += $ch_data['ch_users'];
 				
-				$template->assign_block_vars('cat.item', array(
+				_style('cat.item', array(
 					'U_CHANNEL' => s_link('chat', $ch_data['ch_int_name']),
 					'CH_NAME' => $ch_data['ch_name'],
 					'CH_DESC' => $ch_data['ch_desc'],
@@ -118,9 +116,7 @@ class _chat {
 				$rooms++;
 			}
 			
-			if (!$rooms) {
-				$template->assign_block_vars('cat.no_rooms', array());
-			}
+			if (!$rooms) _style('cat.no_rooms');
 		}
 		
 		return $chatters;
@@ -438,7 +434,7 @@ class _chat {
 		
 		if ($user->data['user_id'] === $this->data['ch_founder']) {
 			// TEMP
-			// $template->assign_block_vars('ch_manage', array());
+			// _style('ch_manage');
 		}
 	}
 	

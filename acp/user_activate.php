@@ -99,9 +99,9 @@ class __user_activate extends mac {
 		$result = sql_rowset($sql);
 		
 		foreach ($result as $i => $row) {
-			if (!$i) $template->assign_block_vars('list', array());
+			if (!$i) _style('list');
 			
-			$template->assign_block_vars('list.row', array(
+			_style('list.row', array(
 				'LINK' => s_link($this->name, $row['user_id']),
 				'USERNAME' => $row['username'],
 				'EMAIL' => $row['user_email'],

@@ -38,9 +38,9 @@ class __forums_topics_last extends mac {
 		$result = sql_rowset($sql);
 		
 		foreach ($result as $i => $row) {
-			if (!$i) $template->assign_block_vars('topics', array());
+			if (!$i) _style('topics', array());
 			
-			$template->assign_block_vars('topics.row', array(
+			_style('topics.row', array(
 				'TOPIC_ID' => s_link('topic', $row['topic_id']),
 				'TOPIC_FORUM' => $row['forum_name'],
 				'TOPIC_EVENT' => $row['event_topic'],

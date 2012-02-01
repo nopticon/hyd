@@ -23,6 +23,26 @@ class board {
 	public $forum_data = array();
 	public $msg;
 	
+	public function __construct() {
+		return;
+	}
+	
+	public function run() {
+		$cat = $this->categories();
+		$forums = $this->forums();
+		
+		if (!$cat || !$forums) {
+			fatal_error();
+		}
+		
+		$this->msg = new _comments();
+		
+		$this->index();
+		$this->popular();
+		
+		return true;
+	}
+	
 	public function categories() {
 		global $cache;
 		
@@ -86,13 +106,13 @@ class board {
 					}
 					
 					if (!$no_catdata) {
-						$template->assign_block_vars('category', array(
+						_style('category', array(
 							'DESCRIPTION' => $c_data['cat_title'])
 						);
 						$no_catdata = true;
 					}
 		
-					$template->assign_block_vars('category.forums',	array(
+					_style('category.forums',	array(
 						'FORUM_NAME' => $f_data['forum_name'],
 						'FORUM_DESC' => $f_data['forum_desc'],
 						'POSTS' => $f_data['forum_posts'],
@@ -124,12 +144,12 @@ class board {
 			return false;
 		}
 		
-		$template->assign_block_vars('top_posters', array());
+		_style('top_posters');
 		
 		foreach ($result as $row) {
 			$profile = $this->msg->user_profile($row);
 			
-			$template->assign_block_vars('top_posters.item', array(
+			_style('top_posters.item', array(
 				'USERNAME' => $profile['username'],
 				'PROFILE' => $profile['profile'],
 				'COLOR' => $profile['user_color'],

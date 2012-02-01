@@ -35,9 +35,9 @@ class __user_team_create extends mac {
 			$result = sql_rowset($sql);
 			
 			foreach ($result as $i => $row) {
-				if (!$i) $template->assign_block_vars('team', array());
+				if (!$i) _style('team');
 				
-				$template->assign_block_vars('team.row', array(
+				_style('team.row', array(
 					'TEAM_ID' => $row['team_id'],
 					'TEAM_NAME' => $row['team_name'])
 				);

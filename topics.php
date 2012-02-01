@@ -325,7 +325,7 @@ $total_topics += $total_announcements;
 // Post URL generation for templating vars
 //
 if ($is_auth['auth_post'] || $is_auth['auth_mod']) {
-	$template->assign_block_vars('topic_create', array(
+	_style('topic_create', array(
 		'L_POST_NEW_TOPIC' => ($forum_row['forum_locked']) ? $user->lang['FORUM_LOCKED'] : $user->lang['POST_NEWTOPIC'])
 	);
 }
@@ -333,7 +333,7 @@ if ($is_auth['auth_post'] || $is_auth['auth_mod']) {
 //
 // Dump out the page header and load viewforum template
 //
-$template->assign_vars(array(
+v_style(array(
 	'FORUM_ID' => $forum_id,
 	'FORUM_NAME' => $forum_row['forum_name'],
 	'U_VIEW_FORUM' => s_link('forum', $forum_row['forum_alias']))
@@ -350,7 +350,7 @@ $i = 0;
 foreach ($topics as $alias => $list) {
 	foreach ($list as $j => $row) {
 		if (!$i) {
-			$template->assign_block_vars('topics', array());
+			_style('topics');
 			
 			$topics_count -= $total->important;
 		
@@ -358,7 +358,7 @@ foreach ($topics as $alias => $list) {
 		}
 		
 		if (!$j) {
-			$template->assign_block_vars('topics.alias', array(
+			_style('topics.alias', array(
 				'NAME' => $user->lang['TOPIC_' . strtoupper($alias)],
 				'SHOW' => ($total->important && $total->normal > 1))
 			);
@@ -378,7 +378,7 @@ foreach ($topics as $alias => $list) {
 			$row->poster = '<span>*' . (($row->post_username2 != '') ? $row->post_username2 : $user->lang['GUEST']) . '</span>';
 		}
 		
-		$template->assign_block_vars('topics.alias.row', array(
+		_style('topics.alias.row', array(
 			'FORUM_ID' => $forum_id,
 			'TOPIC_ID' => $row->topic_id,
 			'TOPIC_AUTHOR' => $row->author, 
@@ -400,7 +400,7 @@ if (!$total_topics) {
 	if ($start) {
 		redirect(s_link('forum', $forum_row['forum_alias']), true);
 	}
-	$template->assign_block_vars('no_topics', array());
+	_style('no_topics');
 }
 
 //
@@ -412,7 +412,7 @@ if (!empty($error_msg) || (!$is_auth['auth_mod'] && $forum_row['forum_locked']) 
 			$poll_options = implode("\n", $poll_options);
 		}
 		
-		$template->assign_block_vars('publish', array(
+		_style('publish', array(
 			'S_POST_ACTION' => s_link('forum', $forum_row['forum_alias']),
 			
 			'TOPIC_TITLE' => $post_title,
@@ -425,28 +425,28 @@ if (!empty($error_msg) || (!$is_auth['auth_mod'] && $forum_row['forum_locked']) 
 		);
 		
 		if ($is_auth['auth_pollcreate']) {
-			$template->assign_block_vars('publish.poll', array());
+			_style('publish.poll', array());
 			
 			if (empty($poll_options)) {
-				$template->assign_block_vars('publish.poll.hide', array());
+				_style('publish.poll.hide', array());
 			}
 		}
 	}
 	
 	if (!empty($error_msg)) {
-		$template->assign_block_vars('publish.alert', array(
+		_style('publish.alert', array(
 			'MESSAGE' => $error_msg)
 		);
 	}
 }
 
-$template_file = 'topics';
+$layout_file = 'topics';
 
 $use_m_template = 'custom/forum_' . $forum_id;
 if (@file_exists(ROOT . 'template/' . $use_m_template . '.htm')) {
-	$template_file = $use_m_template;
+	$layout_file = $use_m_template;
 }
 
-page_layout($forum_row['forum_name'], $template_file);
+page_layout($forum_row['forum_name'], $layout_file);
 
 ?>

@@ -66,7 +66,7 @@ class __news_modify extends mac {
 			}
 			
 			if ($this->submit) {
-				$template->assign_block_vars('edit', array(
+				_style('edit', array(
 					'ID' => $news_data['news_id'],
 					'SUBJECT' => $news_data['post_subject'],
 					'DESC' => $news_data['post_desc'],
@@ -76,7 +76,7 @@ class __news_modify extends mac {
 		}
 		
 		if (!$this->submit) {
-			$template->assign_block_vars('field', array());
+			_style('field');
 		}
 		
 		return;

@@ -26,6 +26,9 @@ class _events extends downloads {
 	public $images = array();
 	public $timetoday = 0;
 	
+	private $_template;
+	private $_title;
+	
 	public function __construct($get_timetoday = false) {
 		if (!$get_timetoday) {
 			return;
@@ -40,6 +43,14 @@ class _events extends downloads {
 		return;
 	}
 	
+	public function get_title($default = '') {
+		return (!empty($this->_title)) ? $this->_title : $default;
+	}
+	
+	public function get_template($default = '') {
+		return (!empty($this->_template)) ? $this->_template : $default;
+	}
+	
 	public function v($property) {
 		if (!isset($this->data[$property])) {
 			return false;
@@ -48,27 +59,31 @@ class _events extends downloads {
 		return $this->data[$property];
 	}
 	
-	public function _setup() {
-		$event_id = request_var('id', '');
+	public function run() {
+		$event_alias = request_var('alias', '');
 		
-		if (!empty($event_id)) {
-			$event_field = (!is_numb($event_id)) ? 'event_alias' : 'id';
-			
-			$sql = 'SELECT *
-				FROM _events
-				WHERE ?? = ?';
-			if ($this->data = sql_fieldrow(sql_filter($sql, $event_field, $event_id))) {
-				return true;
-			}
-			
+		if (empty($event_alias)) {
+			return $this->all();
+		}
+		
+		if (!preg_match('#[a-z0-9\_\-]+#i', $event_alias)) {
 			fatal_error();
 		}
 		
-		return false;
+		$event_field = (!is_numb($event_alias)) ? 'event_alias' : 'id';
+		
+		$sql = 'SELECT *
+			FROM _events
+			WHERE ?? = ?';
+		if (!$this->data = sql_fieldrow(sql_filter($sql, $event_field, $event_alias))) {
+			fatal_error();
+		}
+		
+		return $this->object();
 	}
 	
 	public function _nextevent() {
-		global $config, $user, $template;
+		global $config, $user;
 		
 		$sql = 'SELECT *
 			FROM _events
@@ -78,9 +93,9 @@ class _events extends downloads {
 		$result = sql_rowset(sql_filter($sql, $this->timetoday));
 		
 		foreach ($result as $i => $row) {
-			if (!$i) $template->assign_block_vars('next_event', array());
+			if (!$i) _style('next_event');
 			
-			$template->assign_block_vars('next_event.row', array(
+			_style('next_event.row', array(
 				'URL' => s_link('events', $row['event_alias']),
 				'TITLE' => $row['title'],
 				'DATE' => $user->format_date($row['date'], $user->lang['DATE_FORMAT']),
@@ -92,7 +107,7 @@ class _events extends downloads {
 	}	
 	
 	public function _lastevent($start = 0) {
-		global $config, $template;
+		global $config;
 		
 		$sql = 'SELECT *
 			FROM _events
@@ -107,7 +122,7 @@ class _events extends downloads {
 				ORDER BY RAND()';
 			$row2 = sql_fieldrow(sql_filter($sql, $row['id']));
 			
-			$template->assign_block_vars('last_event', array(
+			_style('last_event', array(
 				'URL' => s_link('events', $row['event_alias']),
 				'TITLE' => $row['title'],
 				'IMAGE' => $config['events_url'] . 'gallery/' . $row['id'] . '/thumbnails/' . $row2['image'] . '.jpg?u=' . $row['event_update'])
@@ -117,8 +132,8 @@ class _events extends downloads {
 		return true;
 	}
 	
-	public function view() {
-		global $auth, $user, $config, $template;
+	public function object() {
+		global $auth, $user, $config;
 		
 		$mode = request_var('mode', '');
 		
@@ -252,7 +267,7 @@ class _events extends downloads {
 							AND image = ?';
 					sql_query(sql_filter($sql, $this->v('id'), $imagedata['image']));
 					
-					$template->assign_block_vars('selected', array(
+					_style('selected', array(
 						'IMAGE' => $config['events_url'] . 'gallery/' . $this->v('id') . '/' . $imagedata['image'] . '.jpg',
 						'WIDTH' => $imagedata['width'], 
 						'HEIGHT' => $imagedata['height'],
@@ -260,7 +275,7 @@ class _events extends downloads {
 					);
 					
 					if ($user->_team_auth('founder')) {
-						$template->assign_block_vars('selected.update', array(
+						_style('selected.update', array(
 							'URL' => s_link('ajax', 'eif'),
 							'EID' => $this->v('id'),
 							'PID' => $imagedata['image'])
@@ -280,7 +295,7 @@ class _events extends downloads {
 					}
 					
 					if (!$is_fav || !$user->is('member')) {
-						$template->assign_block_vars('selected.fav', array(
+						_style('selected.fav', array(
 							'URL' => s_link('events', array($this->v('id'), $imagedata['image'], 'fav')))
 						);
 					}
@@ -487,10 +502,10 @@ class _events extends downloads {
 					
 					build_num_pagination(s_link('events', array($this->v('id'), 's%d')), $this->v('images'), $t_per_page, $t_offset, 'IMG_');
 					
-					$template->assign_block_vars('thumbnails', array());
+					_style('thumbnails');
 					
 					foreach ($result as $row) {
-						$template->assign_block_vars('thumbnails.item', array(
+						_style('thumbnails.item', array(
 							'URL' => s_link('events', array($this->v('event_alias'), $row['image'], 'view')),
 							'IMAGE' => $config['events_url'] . 'gallery/' . $this->v('id') . '/thumbnails/' . $row['image'] . '.jpg',
 							'RIMAGE' => $config['events_url'] . 'gallery/' . $this->v('id') . '/' . $row['image'] . '.jpg',
@@ -507,17 +522,17 @@ class _events extends downloads {
 							AND c.colab_uid = m.user_id
 						ORDER BY m.username';
 					if ($result = sql_rowset(sql_filter($sql, $this->v('id')))) {
-						$template->assign_block_vars('collab', array());
+						_style('collab');
 						
 						foreach ($result as $row) {
-							$template->assign_block_vars('collab.row', array(
+							_style('collab.row', array(
 								'PROFILE' => s_link('m', $row['username_base']),
 								'USERNAME' => $row['username'])
 							);
 						}
 					}
 				} else {
-					$template->assign_block_vars('event_flyer', array(
+					_style('event_flyer', array(
 						'IMAGE_SRC' => $config['events_url'] . 'future/' . $this->v('id') . '.jpg?u=' . $this->v('event_update'))
 					);
 				}
@@ -543,7 +558,7 @@ class _events extends downloads {
 					}
 				}
 				
-				$template->assign_vars(array(
+				v_style(array(
 					'EVENT_NAME' => $this->v('title'),
 					'EVENT_DATE' => $event_date_format,
 					'EVENT_URL' => $u_event_alias,
@@ -568,12 +583,12 @@ class _events extends downloads {
 						$user_voted = sql_field(sql_filter($sql, $vote_info[0]['vote_id'], $user->data['user_id']), 'vote_id', 0);
 						$poll_expired = ($vote_info[0]['vote_length']) ? (($vote_info[0]['vote_start'] + $vote_info[0]['vote_length'] < time()) ? true : false) : false;
 						
-						$template->assign_block_vars('poll', array(
+						_style('poll', array(
 							'POLL_TITLE' => $vote_info[0]['vote_text'])
 						);
 				
 						if ($user_voted || $poll_expired) {
-							$template->assign_block_vars('poll.results', array());
+							_style('poll.results');
 							
 							foreach ($vote_info as $row) {
 								if ($this->v('date') >= $midnight) {
@@ -582,21 +597,21 @@ class _events extends downloads {
 									$caption = ($row['vote_result'] == 1) ? $user->lang['RSVP_PAST_ONE'] : $user->lang['RSVP_PAST_MORE'];
 								}
 								
-								$template->assign_block_vars('poll.results.item', array(
+								_style('poll.results.item', array(
 									'CAPTION' => $caption,
 									'RESULT' => $row['vote_result'])
 								);
 								break;
 							}
 						} else {
-							$template->assign_block_vars('poll.options', array(
+							_style('poll.options', array(
 								'S_VOTE_ACTION' => s_link('events', array($this->v('event_alias'), 1, 'rsvp')))
 							);
 							
 							foreach ($vote_info as $row) {
 								$caption = ($this->v('date') >= $midnight) ? $user->lang['RSVP_FUTURE'] : $user->lang['RSVP_PAST'];
 								
-								$template->assign_block_vars('poll.options.item', array(
+								_style('poll.options.item', array(
 									'ID' => $row['vote_option_id'],
 									'CAPTION' => $caption)
 								);
@@ -629,7 +644,7 @@ class _events extends downloads {
 						$user_profile = array();
 						$unset_user_profile = array('user_id', 'user_posts', 'user_gender');
 						
-						$template->assign_block_vars('messages', array());
+						_style('messages');
 					}
 					
 					if ($user->is('member')) {
@@ -655,13 +670,13 @@ class _events extends downloads {
 						$data[strtoupper($key)] = $value;
 					}
 					
-					$template->assign_block_vars('messages.row', $data);
+					_style('messages.row', $data);
 				
 					if (isset($controls[$row['post_id']])) {
-						$template->assign_block_vars('messages.row.controls', array());
+						_style('messages.row.controls');
 						
 						foreach ($controls[$row['post_id']] as $item => $url) {
-							$template->assign_block_vars('messages.row.controls.'.$item, array(
+							_style('messages.row.controls.' . $item, array(
 								'URL' => $url)
 							);
 						}
@@ -676,7 +691,7 @@ class _events extends downloads {
 				
 				// Posting box
 				if ($user->is('member')) {
-					$template->assign_block_vars('publish', array(
+					_style('publish', array(
 						'REF' => $publish_ref)
 					);
 					
@@ -694,7 +709,7 @@ class _events extends downloads {
 							$post_reply_message = '...';
 						}
 						
-						$template->assign_block_vars('publish.reply', array(
+						_style('publish.reply', array(
 							'MESSAGE' => $post_reply_message)
 						);
 					}
@@ -702,10 +717,15 @@ class _events extends downloads {
 				
 				break;
 		}
+		
+		$this->_title = $this->v('title');
+		$this->_template = 'events.view';
+		
+		return true;
 	}
 	
-	public function home() {
-		global $config, $template, $user;
+	public function all() {
+		global $config, $user;
 		
 		$timezone = $config['board_timezone'] * 3600;
 
@@ -751,8 +771,7 @@ class _events extends downloads {
 			$gallery = array_slice($gallery, $gallery_offset, $per_page);
 			
 			$event_ids = array();
-			foreach ($gallery as $item)
-			{
+			foreach ($gallery as $item) {
 				$event_ids[] = $item['id'];
 			}
 			
@@ -767,13 +786,12 @@ class _events extends downloads {
 				$random_images[$row['event_id']] = $row['image'];
 			}
 			
-			$template->assign_block_vars('gallery', array(
+			_style('gallery', array(
 				'EVENTS' => $total_gallery)
 			);
 			
-			foreach ($gallery as $item)
-			{
-				$template->assign_block_vars('gallery.item', array(
+			foreach ($gallery as $item) {
+				_style('gallery.item', array(
 					'URL' => s_link('events', $item['event_alias']),
 					'TITLE' => $item['title'],
 					'IMAGE' => $config['events_url'] . 'gallery/' . $item['id'] . '/thumbnails/' . $random_images[$item['id']] . '.jpg',
@@ -790,15 +808,15 @@ class _events extends downloads {
 			return;
 		}
 		
-		$template->assign_block_vars('future', array());
+		_style('future');
 		
 		foreach ($this->data as $is_date => $data) {
-			$template->assign_block_vars('future.set', array(
+			_style('future.set', array(
 				'L_TITLE' => $user->lang['UE_' . strtoupper($is_date)])
 			);
 			
 			foreach ($data as $item) {
-				$template->assign_block_vars('future.set.item', array(
+				_style('future.set.item', array(
 					'ITEM_ID' => $item['id'],
 					'TITLE' => $item['title'],
 					'DATE' => $user->format_date($item['date'], $user->lang['DATE_FORMAT']),

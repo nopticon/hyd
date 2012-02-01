@@ -4,7 +4,7 @@
 
 <div class="is_left">
 	<div class="h"><h3>{POST_SUBJECT}</h3></div>
-	<div class="pad_top pad_left _"><a href="{U_NEWS}">{L_NEWS}</a> &mdash; <a href="{CAT_URL}">{CAT_NAME}</a></div>
+	<div class="pad_top pad_left _"><a href="{CAT_URL}">{CAT_NAME}</a></div>
 </div>
 
 <span class="clear"></span>
@@ -13,12 +13,13 @@
 <a name="mainpost"></a>
 <!-- BEGIN mainpost -->
 <div id="comment-{item.S_ROW_COUNT}">
-<h3><strong>f</strong><span>.</span> <em><a href="{mainpost.PROFILE}"><img src="{mainpost.USER_AVATAR}" alt="{mainpost.USERNAME}'s Avatar" /></a></em><cite><a href="{mainpost.PROFILE}">{mainpost.USERNAME}</a></cite> <span>dijo:</span></h3>
-<blockquote>
-<div class="nowraptext">{mainpost.MESSAGE}</div>
-<p class="dtposted">{mainpost.POST_TIME} &raquo; {POST_VIEWS} Visitas</p>
-</blockquote>
-<hr /></div>
+	<h3><strong>f</strong><span>.</span> <em><a href="{mainpost.PROFILE}"><img src="{mainpost.USER_AVATAR}" alt="{mainpost.USERNAME}'s Avatar" /></a></em><cite><a href="{mainpost.PROFILE}">{mainpost.USERNAME}</a></cite> <span>dijo:</span></h3>
+	<blockquote>
+		<div class="nowraptext">{mainpost.MESSAGE}</div>
+		<p class="dtposted">{mainpost.POST_TIME}</p>
+	</blockquote>
+	<hr />
+</div>
 <!-- END mainpost -->
 
 <!-- IF PAGES_NUMS != '' -->
@@ -27,19 +28,6 @@
 <span class="clear"></span>
 <!-- ENDIF -->
 </div>
-
-<!-- BEGIN hide -->
-<div align="center">
-	<script type="text/javascript"><!--
-	google_ad_client = "pub-5371491382621943";
-	google_ad_slot = "3815126981";
-	google_ad_width = 728;
-	google_ad_height = 90;
-	//-->
-	</script>
-	<script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
-</div>
-<!-- END hide -->
 
 <div class="comments">
 <!-- BEGIN posts -->
@@ -64,17 +52,15 @@
 <span class="clear"></span>
 <!-- ENDIF -->
 
-<!-- BEGIN posting_box -->
-<!-- BEGIN box -->
+<!-- BEGIN publish -->
 <div class="pad_top publish">
 	<div class="h"><h3>{L_SEND_POST} <a class="smile" href="{S_EMOTICONS}">@</a></h3></div>
 	<form action="{S_COMMENTS}" method="post" name="post">
-		<input type="hidden" name="ref" value="{box.REF}" />
+		<input type="hidden" name="ref" value="{publish.REF}" />
 		<textarea id="comment" name="message"></textarea>
 		<input type="submit" name="post" value="{L_SUBMIT}" />
 	</form>
 </div>
-<!-- END box -->
-<!-- END posting_box -->
+<!-- END publish -->
 
 <!-- INCLUDE page.footer.htm -->

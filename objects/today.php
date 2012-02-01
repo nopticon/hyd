@@ -77,12 +77,12 @@ class today {
 		
 		foreach ($elements as $row) {
 			if ($response = $this->{$row['type_alias']}()) {
-				$template->assign_block_vars($row['type_alias'], array(
+				_style($row['type_alias'], array(
 					'ID' => $row['type_id'])
 				);
 				
 				foreach ($response as $_row) {
-					$template->assign_block_vars($row['type_alias'] . '.row', $_row);
+					_style($row['type_alias'] . '.row', $_row);
 				}
 			}
 		}

@@ -106,7 +106,7 @@ switch ($mode) {
 					$cat_list .= '<option value="' . $cat_data['cat_id'] . '"' . (($cat_data['cat_id'] == $ch_cat) ? ' selected' : '') . '>' . $cat_data['cat_name'] . '</option>';
 				}
 				
-				$template->assign_block_vars('select_cat', array(
+				_style('select_cat', array(
 					'CHAT_SELECT_CAT' => $cat_list)
 				);
 			} // IF $cat
@@ -118,7 +118,7 @@ switch ($mode) {
 				$type_list .= '<option value="' . $i . '"' . (($i == $ch_type) ? ' selected' : '') . '>' . $user->lang[$langkey] . '</option>';
 			}
 			
-			$template->assign_block_vars('select_type', array(
+			_style('select_type', array(
 				'CHAT_SELECT_TYPE' => $type_list)
 			);
 		}
@@ -135,7 +135,7 @@ switch ($mode) {
 		);
 		
 		if (sizeof($error)) {
-			$template->assign_block_vars('error', array(
+			_style('error', array(
 				'MESSAGE' => parse_error($error))
 			);
 		}

@@ -30,7 +30,7 @@ class __forums_topic_move extends mac {
 	}
 	
 	public function _home() {
-		global $config, $user, $cache, $template;
+		global $config, $user, $cache;
 		
 		if (!$this->submit) {
 			$sql = 'SELECT forum_id, forum_name
@@ -39,9 +39,9 @@ class __forums_topic_move extends mac {
 			$result = sql_rowset($sql);
 			
 			foreach ($result as $i => $row) {
-				if (!$i) $template->assign_block_vars('forums', array());
+				if (!$i) _style('forums', array());
 				
-				$template->assign_block_vars('forums.row', array(
+				_style('forums.row', array(
 					'FORUM_ID' => $row['forum_id'],
 					'FORUM_NAME' => $row['forum_name'])
 				);

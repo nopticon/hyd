@@ -48,14 +48,14 @@ if (!empty($category)) {
 	$podcast = sql_rowset(sql_filter($sql, $category, 'publish', '_podPressMedia', $offset, 25));
 	
 	foreach ($podcast as $i => $row) {
-		if (!$i) $template->assign_block_vars('podcast', array());
+		if (!$i) _style('podcast');
 		
 		$dmedia = array_key(unserialize($row['meta_value']), 0);
 		
 		$title = htmlentities(utf8_encode($row['post_title']), ENT_COMPAT, 'utf-8');
 		$artist = htmlentities(utf8_encode($row['name']), ENT_COMPAT, 'utf-8');
 		
-		$template->assign_block_vars('podcast.row', array(
+		_style('podcast.row', array(
 			'MP3' => $dmedia['URI'],
 			'OGG' => '',
 			'TITLE' => $title,
@@ -74,9 +74,9 @@ if (!empty($category)) {
 $programs = array('supernova', 'invasionrock', 'antifm', 'metalebrios', 'themetalroom');
 
 foreach ($programs as $i => $row) {
-	if (!$i) $template->assign_block_vars('programs', array());
+	if (!$i) _style('programs');
 	
-	$template->assign_block_vars('programs.row', array(
+	_style('programs.row', array(
 		'IMAGE' => $row,
 		'URL' => s_link('broadcast', $row))
 	);
@@ -93,11 +93,11 @@ $sql = 'SELECT *
 $podcast = sql_rowset(sql_filter($sql, 'publish', $offset, 10));
 
 foreach ($podcast as $i => $row) {
-	if (!$i) $template->assign_block_vars('podcast', array());
+	if (!$i) _style('podcast', array());
 	
 	$title = htmlentities(utf8_encode($row['post_title']), ENT_COMPAT, 'utf-8');
 	
-	$template->assign_block_vars('podcast.row', array(
+	_style('podcast.row', array(
 		'POST_DATE' => $row['post_date'],
 		'POST_URL' => s_link('broadcast', $row['slug']),
 		'POST_CONTENT' => $row['post_content'],

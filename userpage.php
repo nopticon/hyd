@@ -84,7 +84,7 @@ if ($user->is('member') && $user->data['user_id'] != $profiledata['user_id'] && 
 			$banned_user_lang = 'BLOCKED_MEMBER_REMOVE';
 		}
 		
-		$template->assign_block_vars('block_member', array(
+		_style('block_member', array(
 			'URL' => s_link('m', array($profiledata['username_base'], 'ban')),
 			'LANG' => $user->lang[$banned_user_lang])
 		);
@@ -168,16 +168,16 @@ $panel_selection += array(
 );
 
 foreach ($panel_selection as $link => $data) {
-	$template->assign_block_vars('selected_panel', array(
+	_style('selected_panel', array(
 		'LANG' => $user->lang['USERPAGE_' . $data['L']])
 	);
 	
 	if ($mode == $link) {
-		$template->assign_block_vars('selected_panel.strong', array());
+		_style('selected_panel.strong');
 		continue;
 	}
 	
-	$template->assign_block_vars('selected_panel.a', array(
+	_style('selected_panel.a', array(
 		'URL' => ($data['U'] !== false) ? $data['U'] : s_link('m', array($profiledata['username_base'], (($link != 'main') ? $link : ''))))
 	);
 }
@@ -194,20 +194,20 @@ if ($user->data['user_id'] != $profiledata['user_id']) {
 	
 	$friend_add_lang = ($friend_add_lang) ? 'FRIENDS_ADD' : 'FRIENDS_DEL';
 	
-	$template->assign_block_vars('friend', array(
+	_style('friend', array(
 		'U_FRIEND' => s_link('m', array($profiledata['username_base'], 'friend')),
 		'L_FRIENDS_ADD' => $user->lang[$friend_add_lang])
 	);
 }
 
-$template->assign_block_vars('customcolor', array(
+_style('customcolor', array(
 	'COLOR' => $profiledata['user_color'])
 );
 
 //
 // Generate page
 //
-$template_vars = array(
+$layout_vars = array(
 	'USERNAME' => $profiledata['username'],
 	'USERNAME_COLOR' => $profiledata['user_color'],
 	'POSTER_RANK' => $profile_fields['user_rank'],
@@ -219,13 +219,13 @@ $template_vars = array(
 	'MSN' => $profiledata['user_msnm']
 );
 
-$template_file = 'userpage';
+$layout_file = 'userpage';
 
 $use_m_template = 'custom/profile_' . $profiledata['username_base'];
 if (@file_exists(ROOT . 'template/' . $use_m_template . '.htm')) {
-	$template_file = $use_m_template;
+	$layout_file = $use_m_template;
 }
 
-page_layout($profiledata['username'], $template_file, $template_vars);
+page_layout($profiledata['username'], $layout_file, $layout_vars);
 
 ?>

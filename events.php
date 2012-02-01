@@ -24,19 +24,8 @@ $user->init();
 $user->setup();
 
 $events = new _events();
+$events->run();
 
-if ($events->_setup()) {
-	$events->view();
-	
-	$pagehtml = 'events.view';
-	$page_title = $events->v('title');
-} else {
-	$events->home();
-	
-	$pagehtml = 'events';
-	$page_title = 'UE';
-}
-
-page_layout($page_title, $pagehtml);
+page_layout($events->get_title('UE'), $events->get_template('events'));
 
 ?>

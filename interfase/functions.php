@@ -202,7 +202,7 @@ function set_config($config_name, $config_value) {
 }
 
 function monetize() {
-	global $cache, $config, $user, $template;
+	global $cache, $config, $user;
 	
 	if (!$monetize = $cache->get('monetize')) {
 		$sql = 'SELECT *
@@ -221,14 +221,14 @@ function monetize() {
 	
 	$i = 0;
 	foreach ($monetize as $row) {
-		if (!$i) $template->assign_block_vars('monetize', array());
+		if (!$i) _style('monetize');
 		
 		if (!isset($set_blocks[$row['monetize_position']])) {
-			$template->assign_block_vars('monetize.' . $row['monetize_position'], array());
+			_style('monetize.' . $row['monetize_position'], array());
 			$set_blocks[$row['monetize_position']] = true;
 		}
 		
-		$template->assign_block_vars('monetize.' . $row['monetize_position'] . '.row', array(
+		_style('monetize.' . $row['monetize_position'] . '.row', array(
 			'URL' => $row['monetize_url'],
 			'IMAGE' => $config['assets_url'] . 'base/' . $row['monetize_image'],
 			'ALT' => $row['monetize_alt'])
@@ -1213,7 +1213,7 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 	// Signup data
 	//
 	if (sizeof($error)) {
-		$template->assign_block_vars('error', array(
+		_style('error', array(
 			'MESSAGE' => parse_error($error))
 		);
 	}
@@ -1277,7 +1277,7 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 	if ($login) {
 		$ref = request_var('ref', '');
 		
-		$template->assign_block_vars('error', array(
+		_style('error', array(
 			'LASTPAGE' => ($ref != '') ? $ref : s_link())
 		);
 	}
@@ -1916,11 +1916,12 @@ function html_entity_decode_utf8($string) {
 function _style_uv($a) {
 	if (!is_array($a) && !is_object($a)) $a = w();
 	
+	$b = w();
 	foreach ($a as $i => $v) {
-		$a[strtoupper($i)] = $v;
+		$b[strtoupper($i)] = $v;
 	}
 	
-	return $a;
+	return $b;
 }
 
 function _style($a, $b = array(), $i = false) {

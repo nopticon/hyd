@@ -25,17 +25,7 @@ $user->init();
 $user->setup();
 
 $board = new board();
-$cat = $board->categories();
-$forums = $board->forums();
-
-if (!$cat || !$forums) {
-	fatal_error();
-}
-
-$board->msg = new _comments();
-
-$board->index();
-$board->popular();
+$board->run();
 
 page_layout('FORUM_INDEX', 'board');
 

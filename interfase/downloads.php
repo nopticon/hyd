@@ -118,7 +118,7 @@ class downloads {
 		}
 		
 		if (!$is_fav) {
-			$template->assign_block_vars('dl_fav', array(
+			_style('dl_fav', array(
 				'URL' => s_link('a', array($this->data['subdomain'], 9, $this->dl_data['id'], 'fav')))
 			);
 		}
@@ -137,7 +137,7 @@ class downloads {
 			}
 		}
 		
-		$template->assign_block_vars('ud_poll', array());
+		_style('ud_poll');
 		
 		if ($this->auth['adm'] || $this->auth['mod'] || !$this->auth['user'] || $user_voted) {
 			$sql = 'SELECT option_id, vote_result
@@ -146,25 +146,25 @@ class downloads {
 				ORDER BY option_id';
 			$results = sql_rowset(sql_filter($sql, $this->dl_data['id']), 'option_id', 'vote_result');
 			
-			$template->assign_block_vars('ud_poll.results', array());
+			_style('ud_poll.results', array());
 			
 			for ($i = 0, $end = sizeof($this->voting['ud']); $i < $end; $i++) {
 				$vote_result = (isset($results[$this->voting['ub'][$i]])) ? (int) $results[$this->voting['ub'][$i]] : 0;
 				$vote_percent = ($this->dl_data['votes'] > 0) ? $vote_result / $this->dl_data['votes'] : 0;
 
-				$template->assign_block_vars('ud_poll.results.item', array(
+				_style('ud_poll.results.item', array(
 					'CAPTION' => $user->lang['UB_UDV' . $this->voting['ud'][$i]],
 					'RESULT' => $vote_result,
 					'PERCENT' => sprintf("%.1d", ($vote_percent * 100)))
 				);
 			}
 		} else {
-			$template->assign_block_vars('ud_poll.options', array(
+			_style('ud_poll.options', array(
 				'S_VOTE_ACTION' => s_link('a', array($this->data['subdomain'], 9, $this->dl_data['id'], 'vote')))
 			);
 			
 			for ($i = 0, $end = sizeof($this->voting['ud']); $i < $end; $i++) {
-				$template->assign_block_vars('ud_poll.options.item', array(
+				_style('ud_poll.options.item', array(
 					'ID' => $this->voting['ud'][$i],
 					'CAPTION' => $user->lang['UB_UDV' . $this->voting['ud'][$i]])
 				);
@@ -237,21 +237,20 @@ class downloads {
 		
 		if ($this->auth['post']) {
 			if ($this->auth['user']) {
-				$template->assign_block_vars('dl_post_box', array(
+				_style('dl_post_box', array(
 					'REF' => $comments_ref,
 					'NL' => (int) !$this->auth['user'])
 				);
 			} else {
-				$template->assign_block_vars('dl_no_guest_posting', array(
+				_style('dl_no_guest_posting', array(
 					'LEGEND' => sprintf($user->lang['UB_NO_GUEST_POSTING'], $this->data['name'], s_link('my', 'register')))
 				);
 			}
 		} else {
-			$template->assign_block_vars('dl_no_post_auth', array());
+			_style('dl_no_post_auth');
 			
-			if ($this->auth['post_until'])
-			{
-				$template->assign_block_vars('dl_no_post_auth.until', array(
+			if ($this->auth['post_until']) {
+				_style('dl_no_post_auth.until', array(
 					'UNTIL_DATETIME' => $user->format_date($this->auth['post_until']))
 				);
 			}

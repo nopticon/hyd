@@ -54,13 +54,13 @@ if (isset($_POST['delete']) && $mark) {
 		
 		// Output to template
 		//
-		$template_vars = array(
+		$layout_vars = array(
 			'MESSAGE_TEXT' => (sizeof($mark) == 1) ? $user->lang['CONFIRM_DELETE_PM'] : $user->lang['CONFIRM_DELETE_PMS'], 
 
 			'S_CONFIRM_ACTION' => s_link('my', 'dc'),
 			'S_HIDDEN_FIELDS' => s_hidden($s_hidden)
 		);
-		page_layout('DCONVS', 'confirm', $template_vars);
+		page_layout('DCONVS', 'confirm', $layout_vars);
 	}
 	
 	redirect(s_link('my', 'dc'));
@@ -148,7 +148,7 @@ if ($submit || $mode == 'start' || $mode == 'reply') {
 if (sizeof($error)) {
 	$error = preg_replace('#^([A-Z_]+)$#e', "(!empty(\$user->lang['\\1'])) ? \$user->lang['\\1'] : '\\1'", $error);
 	
-	$template->assign_block_vars('error', array(
+	_style('error', array(
 		'MESSAGE' => implode('<br />', $error))
 	);
 	
@@ -177,7 +177,7 @@ switch ($mode) {
 			}
 		}
 		
-		$template->assign_block_vars('dc_start', array(
+		_style('dc_start', array(
 			'MEMBER' => $member,
 			'SUBJECT' => $dc_subject,
 			'MESSAGE' => $dc_message)
@@ -224,7 +224,7 @@ switch ($mode) {
 			WHERE user_id = ?';
 		$with_username = sql_field(sql_filter($sql, $with_user), 'username', '');
 		
-		$template->assign_block_vars('conv', array(
+		_style('conv', array(
 			'URL' => s_link('my', 'dc'),
 			'SUBJECT' => $with_username,
 			'CAN_REPLY' => $result[0]['msg_can_reply'],)
@@ -233,7 +233,7 @@ switch ($mode) {
 		foreach ($result as $row) {
 			$user_profile = $comments->user_profile($row);
 			
-			$template->assign_block_vars('conv.row', array(
+			_style('conv.row', array(
 				'USERNAME' => $user_profile['username'],
 				'AVATAR' => $user_profile['user_avatar'],
 				'SIGNATURE' => ($row['user_sig'] != '') ? $comments->parse_message($row['user_sig']) : '',
@@ -273,7 +273,7 @@ switch ($mode) {
 			ORDER BY c2.privmsgs_date DESC 
 			LIMIT ??, ??';
 		if ($result = sql_rowset(sql_filter($sql, $user->data['user_id'], $user->data['user_id'], $user->data['user_id'], $offset, $config['posts_per_page']))) {
-			$template->assign_block_vars('messages', array());
+			_style('messages', array());
 			
 			foreach ($result as $row) {
 				$dc_with = ($user->data['user_id'] == $row['user_id']) ? '2' : '';
@@ -284,7 +284,7 @@ switch ($mode) {
 				
 				$dc_subject = 'Conversaci&oacute;n con ' . $row['username'.$dc_with];
 				
-				$template->assign_block_vars('messages.item', array(
+				_style('messages.item', array(
 					'S_MARK_ID' => $row['parent_id'],
 					'SUBJECT' => $dc_subject,
 					'U_READ' => s_link('my', array('dc', 'read', $row['last_msg_id'])) . '#' . $row['last_msg_id'],
@@ -301,10 +301,10 @@ switch ($mode) {
 		} else if ($total_conv) {
 			redirect(s_link('my', 'dc'));
 		} else {
-			$template->assign_block_vars('no_messages', array());
+			_style('no_messages', array());
 		}
 		
-		$template->assign_block_vars('dc_total', array(
+		_style('dc_total', array(
 			'TOTAL' => $total_conv)
 		);
 		break;
@@ -319,12 +319,12 @@ $sql = 'SELECT DISTINCT m.user_id, m.username, m.username_base, m.user_color
 		OR (f.buddy_id = ? AND f.user_id = m.user_id)
 	ORDER BY m.username';
 if ($result = sql_rowset(sql_filter($sql, $user->data['user_id'], $user->data['user_id']))) {
-	$template->assign_block_vars('sdc_friends', array(
+	_style('sdc_friends', array(
 		'DC_START' => s_link('my', array('dc', 'start')))
 	);
 	
 	foreach ($result as $row) {
-		$template->assign_block_vars('sdc_friends.item', array(
+		_style('sdc_friends.item', array(
 			'USERNAME' => $row['username'],
 			'URL' => s_link('my', array('dc', 'start', $row['username_base'])),
 			'USER_COLOR' => $row['user_color'])
@@ -337,12 +337,12 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id'], $user->data['u
 //
 $page_title = ($mode == 'read') ? $user->lang['DCONV_READ'] : $user->lang['DCONVS'];
 
-$template_vars = array(
+$layout_vars = array(
 	'L_CONV' => $page_title,
 	'S_ACTION' => s_link('my', 'dc'),
 	'S_HIDDEN_FIELDS' => s_hidden($s_hidden_fields)
 );
 
-page_layout($page_title, 'conversations', $template_vars);
+page_layout($page_title, 'conversations', $layout_vars);
 
 ?>

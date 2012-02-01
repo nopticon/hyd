@@ -35,9 +35,9 @@ class __news_category_move extends mac {
 			$result = sql_rowset($sql);
 			
 			foreach ($result as $i => $row) {
-				if (!$i) $template->assign_block_vars('categories', array());
+				if (!$i) _style('categories', array());
 				
-				$template->assign_block_vars('categories.row', array(
+				_style('categories.row', array(
 					'CAT_ID' => $row['cat_id'],
 					'CAT_NAME' => $row['cat_name'])
 				);

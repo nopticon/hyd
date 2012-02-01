@@ -45,7 +45,7 @@ class __news_images extends mac {
 				redirect(s_link());
 			}
 			
-			$template->assign_block_vars('error', array(
+			_style('error', array(
 				'MESSAGE' => parse_error($upload->error))
 			);
 		}
@@ -56,7 +56,7 @@ class __news_images extends mac {
 		$result = sql_rowset($sql);
 		
 		foreach ($result as $row) {
-			$template->assign_block_vars('news_list', array(
+			_style('news_list', array(
 				'NEWS_ID' => $row['news_id'],
 				'NEWS_TITLE' => $row['post_subject'])
 			);

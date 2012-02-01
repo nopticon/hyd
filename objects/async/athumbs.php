@@ -46,11 +46,9 @@ foreach ($result as $row) {
 
 $tcol = 0;
 foreach ($selected_artists as $ub => $data) {
-	if (!$tcol) {
-		$template->assign_block_vars('row', array());
-	}
+	if (!$tcol) _style('row');
 	
-	$template->assign_block_vars('row.col', array(
+	_style('row.col', array(
 		'NAME' => $data['name'],
 		'IMAGE' => $config['artists_url'] . $ub . '/thumbnails/' . $random_images[$ub] . '.jpg',
 		'URL' => s_link('a', $data['subdomain']),

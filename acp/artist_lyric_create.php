@@ -58,9 +58,9 @@ class __artist_lyric_create extends mac {
 		$result = sql_rowset($sql);
 		
 		foreach ($result as $i => $row) {
-			if (!$i) $template->assign_block_vars('artists');
+			if (!$i) _style('artists');
 			
-			$template->assign_block_vars('artists.row', array(
+			_style('artists.row', array(
 				'ARTIST_ID' => $row['ub'],
 				'ARTIST_NAME' => $row['name'])
 			);

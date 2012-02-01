@@ -21,10 +21,48 @@ if (!defined('IN_NUCLEO')) exit;
 require_once(ROOT . 'interfase/comments.php');
 
 class community {
-	public $comments;
+	private $comments;
 	
 	public function __construct() {
 		$this->comments = new _comments();
+		
+		return;
+	}
+	
+	public function run() {
+		global $user;
+		
+		$this->founders();
+		$this->team();
+		$this->recent_members();
+		$this->birthdays();
+		$this->vars();
+		
+		//
+		// Online
+		//
+		$sql = 'SELECT u.user_id, u.username, u.username_base, u.user_type, u.user_hideuser, u.user_color, s.session_ip
+			FROM _members u, _sessions s
+			WHERE s.session_time >= ?
+				AND u.user_id = s.session_user_id
+			ORDER BY u.username ASC, s.session_ip ASC';
+		$this->online(sql_filter($sql, ($user->time - (5 * 60))), 'online', 'MEMBERS_ONLINE');
+		
+		//
+		// Today Online
+		//
+		$minutes = date('is', time());
+		$timetoday = (time() - (60 * intval($minutes[0].$minutes[1])) - intval($minutes[2].$minutes[3])) - (3600 * $user->format_date(time(), 'H'));
+		
+		$sql = 'SELECT user_id, username, username_base, user_color, user_hideuser, user_type
+			FROM _members
+			WHERE user_type NOT IN (' . USER_IGNORE . ', ' . USER_INACTIVE . ')
+				AND user_lastvisit >= ?
+				AND user_lastvisit < ? 
+			ORDER BY username';
+		$this->online(sql_filter($sql, $timetoday, ($timetoday + 86399)), 'online', 'MEMBERS_TODAY', 'MEMBERS_VISIBLE');
+		
+		return true;
 	}
 	
 	public function founders() {
@@ -48,7 +86,7 @@ class community {
 		}
 		
 		foreach ($founders as $user_id => $data) {
-			$template->assign_block_vars('founders', array(
+			_style('founders', array(
 				'REALNAME' => $data['username'],
 				'USERNAME' => $data['username'],
 				'AVATAR' => $data['user_avatar'],
@@ -100,7 +138,7 @@ class community {
 				continue;
 			}
 			
-			$template->assign_block_vars('team', array(
+			_style('team', array(
 				'TEAM_NAME' => $t_data['team_name'])
 			);
 			
@@ -108,11 +146,11 @@ class community {
 			foreach ($team_members as $tm_data) {
 				if ($t_data['team_id'] != $tm_data['team_id']) continue;
 				
-				if (!$tcol) $template->assign_block_vars('team.row', array());
+				if (!$tcol) _style('team.row');
 				
 				$up = $this->comments->user_profile($members_data[$tm_data['member_id']]);
 				
-				$template->assign_block_vars('team.row.member', array(
+				_style('team.row.member', array(
 					'MOD' => ($tm_data['member_id'] == $t_data['team_mod']),
 					'USERNAME' => $up['username'],
 					'REALNAME' => $tm_data['real_name'],
@@ -154,8 +192,8 @@ class community {
 			$$k = $v;
 		}
 		
-		$template->assign_block_vars($block, array('L_TITLE' => $user->lang[$block_title]));
-		$template->assign_block_vars($block . '.members', array());
+		_style($block, array('L_TITLE' => $user->lang[$block_title]));
+		_style($block . '.members', array());
 		
 		$result = sql_rowset($sql);
 		
@@ -178,7 +216,7 @@ class community {
 					}
 					
 					if (((!$row['user_hideuser'] || $user->data['is_founder']) && !$is_bot) || ($is_bot && $user->data['is_founder'])) {
-						$template->assign_block_vars($block . '.members.item', array(
+						_style($block . '.members.item', array(
 							'USERNAME' => $username,
 							'PROFILE' => s_link('m', $row['username_base']),
 							'USER_COLOR' =>  $row['user_color'])
@@ -199,14 +237,14 @@ class community {
 		$users_total = (int) $users_visible + $users_hidden + $users_guests + $users_bots;
 		
 		if (!($users_visible + $users_hidden) || (!$users_visible && $users_hidden)) {
-			$template->assign_block_vars($block . '.members.none', array());
+			_style($block . '.members.none');
 		}
 		
 		/*if (!$users_visible) {
-			$template->assign_block_vars($block . '.members.none', array());
+			_style($block . '.members.none', array());
 		}*/
 		
-		$template->assign_block_vars($block . '.legend', array());
+		_style($block . '.legend');
 		
 		$online_ary = array(
 			'MEMBERS_TOTAL' => $users_total,
@@ -225,7 +263,7 @@ class community {
 				continue;
 			}
 			
-			$template->assign_block_vars($block . '.legend.item', array(
+			_style($block . '.legend.item', array(
 				'L_MEMBERS' => $user->lang[$lk . (($vk != 1) ? '2' : '')],
 				'ONLINE_VALUE' => $vk)
 			);
@@ -248,13 +286,11 @@ class community {
 		}
 		
 		foreach ($result as $i => $row) {
-			if (!$i) {
-				$template->assign_block_vars('birthday', array());
-			}
+			if (!$i) _style('birthday');
 			
 			$profile = $this->comments->user_profile($row);
 			
-			$template->assign_block_vars('birthday.row', array(
+			_style('birthday.row', array(
 				'USERNAME' => $profile['username'],
 				'PROFILE' => $profile['profile'],
 				'COLOR' => $profile['user_color'],
@@ -275,10 +311,10 @@ class community {
 			LIMIT 10';
 		$result = sql_rowset(sql_filter($sql, USER_INACTIVE, USER_IGNORE));
 		
-		$template->assign_block_vars('recent_members', array());
-		
-		foreach ($result as $row) {
-			$template->assign_block_vars('recent_members.item', array(
+		foreach ($result as $i => $row) {
+			if (!$i) _style('recent_members');
+			
+			_style('recent_members.item', array(
 				'USERNAME' => $row['username'],
 				'USER_COLOR' => $row['user_color'],
 				'PROFILE' => s_link('m', $row['username_base']))
