@@ -14,11 +14,7 @@
 body {
 	margin: 0;
 	padding: 0;
-<<<<<<< HEAD
-	background: url(style/maya.jpg) fixed top center #202837;
-=======
-	background: /*url(style/wood.jpg) */#202837 fixed top center;
->>>>>>> 1bced8562c01183b7b76ba7e581ea7e37949ea71
+	background: /*url(style/maya.jpg) */fixed top center #202837;
 }
 p, div, span, select {
 	cursor: default;
