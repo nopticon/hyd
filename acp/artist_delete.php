@@ -22,10 +22,10 @@ class __artist_delete extends mac {
 	public function __construct() {
 		parent::__construct();
 		
-		$this->auth('founder');
+		return $this->auth('founder');
 	}
 	
-	public function home() {
+	public function _home() {
 		global $config, $user, $cache, $template;
 		
 		if ($this->submit) {

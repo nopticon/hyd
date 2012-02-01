@@ -22,7 +22,7 @@ class __forums_topic_delete extends mac {
 	public function __construct() {
 		parent::__construct();
 		
-		$this->auth('founder');
+		$this->auth('mod');
 	}
 	
 	public function _home() {
@@ -126,14 +126,14 @@ class __forums_topic_delete extends mac {
 		//
 		foreach ($forums_id_sql as $forum_id)
 		{
-			sync($forum_id);
+			sync_topic_delete($forum_id);
 		}
 		
 		return _pre('El tema fue eliminado.', true);
 	}
 }
 
-function sync($id) {
+function sync_topic_delete($id) {
 	$last_topic = 0;
 	$total_posts = 0;
 	$total_topics = 0;

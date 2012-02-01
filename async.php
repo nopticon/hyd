@@ -23,10 +23,10 @@ if (strtolower($_SERVER['REQUEST_METHOD']) == 'post') {
 	
 	require_once(ROOT . 'interfase/common.php');
 	
-	$filename = request_var('filename', '');
+	$module = request_var('module', '');
 	
-	if (!empty($filename)) {
-		$module_path = ROOT . '_async_' . $filename . '.php';
+	if (!empty($module) && preg_match('#^([a-z\_]+)$#i', $module)) {
+		$module_path = ROOT . 'objects/async/' . $module . '.php';
 		
 		if (@file_exists($module_path)) {
 			$user->init(false);

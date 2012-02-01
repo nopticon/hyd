@@ -1453,6 +1453,14 @@ function kernel_function($mode, $name, $param = false, $return_on_error = false)
 	return true;
 }
 
+function lang($search, $default = '') {
+	global $user;
+	
+	$upper = strtoupper($search);
+	
+	return (isset($user->lang[$upper])) ? $user->lang[$upper] : $default;
+}
+
 function fatal_error_tables($msg) {
 	return preg_replace('#([a-z_]+)\._([a-z]+)#is', '~\\2~', $msg);
 }
@@ -1667,7 +1675,7 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 		
 		'U_COVER' => s_link(),
 		'U_FAQ' => s_link('faq'),
-		'U_WHATS_NEW' => s_link('new'),
+		'U_WHATS_NEW' => s_link('today'),
 		'U_ARTISTS'	=> s_link('a'),
 		'U_AWARDS' => s_link('awards'),
 		'U_RADIO' => s_link('radio'),
@@ -1689,7 +1697,8 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 		
 		'S_REDIRECT' => $user->d('session_page'),
 		'S_USERNAME' => $user->d('username'),
-		'S_CONTROLPANEL' => (!isset($template->vars['S_CONTROLPANEL'])) ? (($user->is('member') && $user->d('user_auth_control')) ? s_link('control') : '') : $template->vars['S_CONTROLPANEL'],
+		
+		'S_CONTROLPANEL' => (isset($template->vars['S_CONTROLPANEL'])) ? $template->vars['S_CONTROLPANEL'] : ($user->_team_auth('artist') ? s_link('control') : ''),
 		'S_UNREAD_ITEMS' => (($unread_items == 1) ? sprintf($user->lang['UNREAD_ITEM_COUNT'], $unread_items) : sprintf($user->lang['UNREAD_ITEMS_COUNT'], $unread_items)),
 		'S_AP_POINTS' => (($user->d('user_points') == 1) ? sprintf($user->lang['AP_POINT'], $user->d('user_points')) : sprintf($user->lang['AP_POINTS'], $user->d('user_points'))),
 		

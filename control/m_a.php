@@ -737,10 +737,6 @@ class a extends common {
 		);
 	}
 
-	public function _log_delete() {
-		die('default: log @ delete');
-	}
-
 	//
 	// Auth
 	//
@@ -1247,10 +1243,6 @@ class a extends common {
 		return;
 	}
 
-	public function _gallery_edit() {
-
-	}
-
 	public function _gallery_delete() {
 		global $user, $template;
 
@@ -1368,25 +1360,6 @@ class a extends common {
 	}
 
 	//
-	// Lyrics
-	//
-	public function lyrics() {
-		$this->call_method();
-	}
-
-	public function _lyrics_add() {
-
-	}
-
-	public function _lyrics_edit() {
-
-	}
-
-	public function _lyrics_delete() {
-
-	}
-
-	//
 	// Video
 	//
 	public function video() {
@@ -1472,10 +1445,6 @@ class a extends common {
 		);
 
 		return;
-	}
-
-	public function _video_delete() {
-		global $user, $template;
 	}
 
 	//
@@ -1565,17 +1534,6 @@ class a extends common {
 	}
 
 	//
-	// Voters
-	//
-	public function voters() {
-		$this->call_method();
-	}
-
-	public function _voters_home() {
-
-	}
-
-	//
 	// Downloads
 	//
 	public function downloads() {
@@ -1628,18 +1586,6 @@ class a extends common {
 		}
 
 		return;
-	}
-
-	public function _downloads_add() {
-
-	}
-
-	public function _downloads_edit() {
-
-	}
-
-	public function _downloads_delete() {
-
 	}
 
 	//
@@ -1790,44 +1736,6 @@ class a extends common {
 		);
 
 		page_layout('CONTROL_A_APOSTS', 'confirm', $template_vars);
-	}
-
-	//
-	// Art
-	//
-	public function art() {
-
-	}
-
-	public function _art_home() {
-
-	}
-
-	public function _art_add() {
-
-	}
-
-	public function _art_edit() {
-
-	}
-
-	public function _art_delete() {
-
-	}
-
-	//
-	// Art Posts
-	//
-	public function arposts() {
-
-	}
-
-	public function _arposts_edit() {
-
-	}
-
-	public function _arposts_delete() {
-
 	}
 }
 

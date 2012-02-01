@@ -35,7 +35,7 @@ if (!$user->data['user_auth_control']) {
 //
 // Start control
 //
-require_once(ROOT . 'interfase/control.php');
+require_once(ROOT . 'objects/control.php');
 $control = new control(request_var('module', ''));
 
 $user->setup('control');

@@ -27,7 +27,7 @@ class __broadcast_modify extends mac {
 		$this->auth('founder');
 	}
 	
-	public function home() {
+	public function _home() {
 		global $config, $user, $cache, $template;
 		
 		$ftp = new ftp();

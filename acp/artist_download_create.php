@@ -25,10 +25,10 @@ class __artist_download_create extends mac {
 	public function __construct() {
 		parent::__construct();
 		
-		$this->auth('founder');
+		$this->auth('artist');
 	}
 	
-	public function home() {
+	public function _home() {
 		global $config, $user, $cache, $template;
 		
 		$limit = set_time_limit(0);

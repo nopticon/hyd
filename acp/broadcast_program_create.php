@@ -25,7 +25,7 @@ class __broadcast_program_create extends mac {
 		$this->auth('founder');
 	}
 	
-	public function home() {
+	public function _home() {
 		global $config, $user, $cache, $template;
 		
 		if (!$this->submit) {

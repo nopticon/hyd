@@ -28,16 +28,6 @@ class __emoticon_update extends mac {
 	public function _home() {
 		global $config, $user, $cache, $template;
 		
-		if (!$this->submit) {
-			return;
-		}
-		
-		$folder = request_var('folder', '');
-		
-		if (empty($folder)) {
-			return;
-		}
-		
 		sql_truncate('_smilies');
 		
 		$emoticon_path = $config['assets_path'] . 'emoticon/';

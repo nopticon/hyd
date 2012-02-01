@@ -117,18 +117,18 @@ class __forums_topic_merge extends mac {
 			topic_arkane($to_topic, 0);
 		}
 		
-		sync('topic', $to_topic);
-		sync('forum', $to_forum_id);
+		sync_topic_merge('topic', $to_topic);
+		sync_topic_merge('forum', $to_forum_id);
 		
 		if ($from_forum_id != $to_forum_id) {
-			sync('forum', $from_forum_id);
+			sync_topic_merge('forum', $from_forum_id);
 		}
 
 		return;
 	}
 }
 
-function sync($type, $id = false) {
+function sync_topic_merge($type, $id = false) {
 	switch($type) {
 		case 'all forums':
 			$sql = 'SELECT forum_id

@@ -16,15 +16,12 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-define('IN_NUCLEO', true);
-require_once('./interfase/common.php');
+if (!defined('IN_NUCLEO')) exit;
 
 header('Content-type: text/html; charset=utf-8');
 
 require_once(ROOT . 'interfase/facebook.php');
 require_once(ROOT . 'interfase/upload.php');
-
-$user->init(false, true);
 
 $upload = new upload();
 

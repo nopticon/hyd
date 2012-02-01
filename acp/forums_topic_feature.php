@@ -31,6 +31,10 @@ class __forums_topic_feature extends mac {
 	public function _home() {
 		global $config, $user, $cache, $template;
 		
+		if (!$this->submit) {
+			return;
+		}
+		
 		$this->id = request_var('msg_id', 0);
 		
 		$sql = 'SELECT *
