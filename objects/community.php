@@ -30,13 +30,16 @@ class community {
 	}
 	
 	public function run() {
-		global $user;
+		global $config, $user;
 		
 		$this->founders();
 		$this->team();
 		$this->recent_members();
 		$this->birthdays();
-		$this->vars();
+		
+		v_style(array(
+			'MEMBERS_COUNT' => number_format($config['max_users']))
+		);
 		
 		//
 		// Online
@@ -162,16 +165,6 @@ class community {
 				$tcol = ($tcol == 2) ? 0 : $tcol + 1;
 			}
 		}
-		
-		return;
-	}
-	
-	public function vars() {
-		global $user, $config, $template;
-		
-		$template->assign_vars(array(
-			'MEMBERS_COUNT' => number_format($config['max_users']))
-		);
 		
 		return;
 	}

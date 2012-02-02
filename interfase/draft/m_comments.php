@@ -37,11 +37,12 @@ class comments extends common {
 	}
 	
 	public function home() {
-		global $user, $template;
+		global $user;
 		
-		$template->assign_block_vars('menu', array());
+		_style('menu');
+		
 		foreach ($this->methods as $module => $void) {
-			$template->assign_block_vars('menu.item', array(
+			_style('menu.item', array(
 				'URL' => s_link_control('comments', array('mode' => $module)),
 				'TITLE' => $user->lang['CONTROL_COMMENTS_' . strtoupper($module)])
 			);
@@ -58,7 +59,7 @@ class comments extends common {
 	}
 	
 	public function _help_home() {
-		global $user, $template;
+		global $user;
 		
 		$comments = new _comments();
 		
@@ -84,7 +85,7 @@ class comments extends common {
 		// Loop
 		//
 		foreach ($cat as $help_id => $cdata) {
-			$template->assign_block_vars('cat', array(
+			_style('cat', array(
 				'HELP_ES' => $cdata['help_es'],
 				'HELP_EN' => $cdata['help_en'],
 				
@@ -94,7 +95,7 @@ class comments extends common {
 			);
 			
 			if ($ha_edit) {
-				$template->assign_block_vars('cat.edit', array(
+				_style('cat.edit', array(
 					'URL' => s_link_control('comments', array('mode' => $this->mode, 'manage' => 'edit', 'sub' => 'cat', 'id' => $help_id)),
 					'UP' => s_link_control('comments', array('mode' => $this->mode, 'manage' => 'edit', 'sub' => 'cat', 'id' => $help_id, 'order' => '_15')),
 					'DOWN' => s_link_control('comments', array('mode' => $this->mode, 'manage' => 'edit', 'sub' => 'cat', 'id' => $help_id, 'order' => '15')))
@@ -102,7 +103,7 @@ class comments extends common {
 			}
 			
 			if ($ha_delete) {
-				$template->assign_block_vars('cat.delete', array(
+				_style('cat.delete', array(
 					'URL' => s_link_control('comments', array('mode' => $this->mode, 'manage' => 'delete', 'sub' => 'cat', 'id' => $help_id)))
 				);
 			}
@@ -112,19 +113,19 @@ class comments extends common {
 					continue;
 				}
 				
-				$template->assign_block_vars('cat.faq', array(
+				_style('cat.faq', array(
 					'QUESTION_ES' => $fdata['faq_question_es'],
 					'ANSWER_ES' => $comments->parse_message($fdata['faq_answer_es']))
 				);
 				
 				if ($ha_edit) {
-					$template->assign_block_vars('cat.faq.edit', array(
+					_style('cat.faq.edit', array(
 						'URL' => s_link_control('comments', array('mode' => $this->mode, 'manage' => 'edit', 'sub' => 'faq', 'id' => $fdata['faq_id'])))
 					);
 				}
 				
 				if ($ha_delete) {
-					$template->assign_block_vars('cat.faq.delete', array(
+					_style('cat.faq.delete', array(
 						'URL' => s_link_control('comments', array('mode' => $this->mode, 'manage' => 'delete', 'sub' => 'faq', 'id' => $fdata['faq_id'])))
 					);
 				}
@@ -132,7 +133,7 @@ class comments extends common {
 		}
 		
 		if ($ha_add) {
-			$template->assign_block_vars('add', array(
+			_style('add', array(
 				'URL' => s_link_control('comments', array('mode' => $this->mode, 'manage' => 'add')))
 			);
 		}
@@ -143,7 +144,7 @@ class comments extends common {
 	}
 	
 	public function _help_add() {
-		global $user, $cache, $template;
+		global $user, $cache;
 		
 		$error = array();
 		$sub = $this->control->get_var('sub', '');
@@ -168,10 +169,10 @@ class comments extends common {
 				$module_name = '';
 				break;
 			default:
-				$template->assign_block_vars('menu', array());
+				_style('menu');
 				
 				foreach ($menu as $url => $name) {
-					$template->assign_block_vars('menu.item', array(
+					_style('menu.item', array(
 						'URL' => s_link_control('comments', array('mode' => $this->mode, 'manage' => $this->manage, 'sub' => $url)),
 						'TITLE' => (isset($user->lang[$name])) ? $user->lang[$name] : $name)
 					);
@@ -246,7 +247,7 @@ class comments extends common {
 				
 				redirect(s_link_control('comments', array('mode' => $this->mode)));
 			} else {
-				$template->assign_block_vars('error', array(
+				_style('error', array(
 					'MESSAGE' => parse_error($error))
 				);
 			}
@@ -256,7 +257,7 @@ class comments extends common {
 		$this->control->set_nav(array('mode' => $this->mode, 'manage' => $this->manage), 'CONTROL_ADD');
 		$this->control->set_nav(array('mode' => $this->mode, 'manage' => $this->manage, 'sub' => $sub), (isset($user->lang[$menu[$sub]])) ? $user->lang[$menu[$sub]] : $menu[$sub]);
 		
-		$template_vars = array(
+		$layout_vars = array(
 			'SUB' => $sub,
 			'S_HIDDEN' => s_hidden(array('module' => $this->control->module, 'mode' => $this->mode, 'manage' => $this->manage, 'sub' => $sub))
 		);
@@ -274,7 +275,7 @@ class comments extends common {
 					$select_mod .= '<option' . (($selected) ? ' class="bold"' : '') . ' value="' . $row['module_id'] . '"' . (($selected) ? ' selected' : '') . '>' . $row['module_name'] . '</option>';
 				}
 				
-				$template_vars += array(
+				$layout_vars += array(
 					'MODULE' => $select_mod,
 					'HELP_ES' => $help_es,
 					'HELP_EN' => $help_en
@@ -292,7 +293,7 @@ class comments extends common {
 					$select_cat .= '<option' . (($selected) ? ' class="bold"' : '') . ' value="' . $row['help_id'] . '"' . (($selected) ? ' selected' : '') . '>' . $row['help_es'] . ' | ' . $row['help_en'] . '</option>';
 				}
 				
-				$template_vars += array(
+				$layout_vars += array(
 					'CATEGORY' => $select_cat,
 					'QUESTION_ES' => $question_es,
 					'QUESTION_EN' => $question_en,
@@ -301,13 +302,13 @@ class comments extends common {
 				);
 				break;
 			case 'module':
-				$template_vars += array(
+				$layout_vars += array(
 					'MODULE_NAME' => $module_name
 				);
 				break;
 		}
 		
-		$template->assign_vars($template_vars);
+		return v_style($layout_vars);
 	}
 	
 	public function _help_edit_move() {
@@ -329,7 +330,7 @@ class comments extends common {
 	}
 	
 	public function _help_edit() {
-		global $user, $cache, $template;
+		global $user, $cache;
 		
 		$error = array();
 		$sub = $this->control->get_var('sub', '');
@@ -460,7 +461,7 @@ class comments extends common {
 			} // switch
 			
 			if (sizeof($error)) {
-				$template->assign_block_vars('error', array(
+				_style('error', array(
 					'MESSAGE' => parse_error($error))
 				);
 			}
@@ -469,7 +470,7 @@ class comments extends common {
 		$this->nav();
 		$this->control->set_nav(array('mode' => $this->mode, 'manage' => $this->manage, 'sub' => $sub, 'id' => $id), 'CONTROL_EDIT');
 		
-		$template_vars = array(
+		$layout_vars = array(
 			'SUB' => $sub,
 			'S_HIDDEN' => s_hidden(array('module' => $this->control->module, 'mode' => $this->mode, 'manage' => $this->manage, 'sub' => $sub, 'id' => $id))
 		);
@@ -487,7 +488,7 @@ class comments extends common {
 					$select_mod .= '<option' . (($selected) ? ' class="bold"' : '') . ' value="' . $row['module_id'] . '"' . (($selected) ? ' selected' : '') . '>' . $row['module_name'] . '</option>';
 				}
 				
-				$template_vars += array(
+				$layout_vars += array(
 					'MODULE' => $select_mod,
 					'HELP_ES' => $help_es,
 					'HELP_EN' => $help_en
@@ -505,7 +506,7 @@ class comments extends common {
 					$select_cat .= '<option' . (($selected) ? ' class="bold"' : '') . ' value="' . $row['help_id'] . '"' . (($selected) ? ' selected' : '') . '>' . $row['help_es'] . ' | ' . $row['help_en'] . '</option>';
 				}
 				
-				$template_vars += array(
+				$layout_vars += array(
 					'CATEGORY' => $select_cat,
 					'QUESTION_ES' => $question_es,
 					'QUESTION_EN' => $question_en,
@@ -515,7 +516,7 @@ class comments extends common {
 				break;
 		}
 		
-		$template->assign_vars($template_vars);
+		_style($layout_vars);
 		
 		return;
 	}

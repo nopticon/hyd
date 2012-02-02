@@ -89,7 +89,7 @@ class downloads {
 			$stats_text .= (($stats_text != '') ? ', ' : '') . '<strong>' . $this->dl_data[$item] . '</strong> ' . $user->lang[$stats_lang] . (($this->dl_data[$item] > 1) ? 's' : '');
 		}
 		
-		$template->assign_vars(array(
+		v_style(array(
 			'S_DOWNLOAD_ACTION' => s_link('a', array($this->data['subdomain'], 9, $this->dl_data['id'], 'save')),
 			
 			'DL_ID' => $this->dl_data['id'],

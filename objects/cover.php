@@ -64,7 +64,7 @@ class cover {
 			);
 		}
 		
-		if ($user->_team_auth('mod')) {
+		if ($user->is('mod')) {
 			_style('news.create', array(
 				'U_NEWS_CREATE' => s_link('news', 'create'))
 			);

@@ -33,7 +33,7 @@ class mac {
 	public function auth($name) {
 		global $user;
 		
-		if (!$user->_team_auth($name)) {
+		if (!$user->is($name)) {
 			if (defined('_ACP')) {
 				$this->_access = false;
 				

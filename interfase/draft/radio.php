@@ -46,7 +46,7 @@ $days = array(1 => 'Monday', 2 => 'Tuesday', 3 => 'Wednesday', 4 => 'Thursday', 
 $hours = array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24);
 
 foreach ($radio as $d => $row_day) {
-	$template->assign_block_vars('day', array(
+	_style('day', array(
 		'V_NAME' => $user->lang['datetime'][$days[$d]])
 	);
 	
@@ -55,7 +55,7 @@ foreach ($radio as $d => $row_day) {
 	}
 	
 	foreach ($row_day as $d2 => $row_show) {
-		$template->assign_block_vars('day.row', array(
+		_style('day.row', array(
 			'V_NAME' => $row_show['show_name'])
 		);
 	}

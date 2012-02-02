@@ -26,7 +26,7 @@ class __artist_delete extends mac {
 	}
 	
 	public function _home() {
-		global $config, $user, $cache, $template;
+		global $config, $cache, $template;
 		
 		if ($this->submit) {
 			$name = request_var('name', '');

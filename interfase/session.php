@@ -640,8 +640,27 @@ class user extends session {
 		return (int) sql_field(sql_filter($sql, $this->lang_name), 'lang_id', 0);
 	}
 	
-	public function is($name) {
-		return (isset($this->data['is_' . $name]) && $this->data['is_' . $name]);
+	public function is($name, $user_id = false) {
+		if (isset($this->data['is_' . $name])) {
+			return $this->data['is_' . $name];
+		}
+		
+		if ($user_id === false) {
+			$user_id = $this->d('user_id');
+		}
+		
+		$response = false;
+		if ($this->is('member')) {
+			$all = $this->_team_auth_list($name);
+			
+			if (is_array($all) && count($all)) {
+				$response = in_array($user_id, $all);
+			} else {
+				$response = $all;
+			}
+		}
+		
+		return $response;
 	}
 	
 	public function init_ranks() {
@@ -670,7 +689,7 @@ class user extends session {
 	 * all
 	 *
 	 */
-
+	
 	public function _team_auth_list($mode = '') {
 		global $cache;
 		
@@ -746,25 +765,6 @@ class user extends session {
 		if ($mode != 'founder' && is_array($response)) {
 			if ($response_founder = $this->_team_auth_list('founder')) {
 				$response = array_merge($response, $response_founder);
-			}
-		}
-		
-		return $response;
-	}
-	
-	public function _team_auth($mode = '', $user_id = false) {
-		if ($user_id === false) {
-			$user_id = $this->d('user_id');
-		}
-		
-		$response = false;
-		if ($this->is('member')) {
-			$all = $this->_team_auth_list($mode);
-			
-			if (is_array($all) && count($all)) {
-				$response = in_array($user_id, $all);
-			} else {
-				$response = $all;
 			}
 		}
 		
@@ -1358,7 +1358,7 @@ class auth {
 						break;
 					case AUTH_MOD:
 						//$auth_user[$a_key] = ($user->data['is_member']) ? $this->check_user(AUTH_MOD, 'auth_mod', $u_access, $custom_mod) : false;
-						$auth_user[$a_key] = ($user->data['is_member']) ? $user->_team_auth($custom_mod) : false;
+						$auth_user[$a_key] = $user->is($custom_mod);
 						$auth_user[$a_key . '_type'] = $user->lang['AUTH_MODERATORS'];
 						break;
 					case AUTH_ADMIN:
@@ -1391,7 +1391,7 @@ class auth {
 							break;
 						case AUTH_MOD:
 							//$auth_user[$f_forum_id][$a_key] = ($user->data['is_member']) ? $this->check_user(AUTH_MOD, 'auth_mod', $u_access[$f_forum_id]) : false;
-							$auth_user[$f_forum_id][$a_key] = ($user->data['is_member']) ? $user->_team_auth($custom_mod) : false;
+							$auth_user[$f_forum_id][$a_key] = $user->is($custom_mod);
 							$auth_user[$f_forum_id][$a_key . '_type'] = $user->lang['AUTH_MODERATORS'];
 							break;
 						case AUTH_ADMIN:
@@ -1413,7 +1413,7 @@ class auth {
 			$custom_mod = forum_for_team($forum_id);
 			
 			//$auth_user['auth_mod'] = ($user->data['is_member']) ? $this->check_user(AUTH_MOD, 'auth_mod', $u_access) : false;
-			$auth_user['auth_mod'] = ($user->data['is_member']) ? $user->_team_auth($custom_mod) : false;
+			$auth_user['auth_mod'] = ($user->data['is_member']) ? $user->is($custom_mod) : false;
 		} else {
 			for ($k = 0, $end = sizeof($f_access); $k < $end; $k++) {
 				$f_forum_id = $f_access[$k]['forum_id'];
@@ -1439,7 +1439,7 @@ class auth {
 						$result = $u_access[$j][$key];
 					case AUTH_MOD:
 						//$result = $result || $u_access[$j]['auth_mod'];
-						$result = $result || $user->_team_auth($custom_mod);
+						$result = $result || $user->is($custom_mod);
 					case AUTH_ADMIN:
 						$result = $result || $this->founder;
 						break;

@@ -64,7 +64,7 @@ switch ($topic_data['forum_alias']) {
 //
 $user->init();
 
-$mod_auth = $user->_team_auth('mod');
+$mod_auth = $user->is('mod');
 
 //
 // Hide deleted posts
@@ -196,13 +196,13 @@ if ($submit_reply || $submit_vote) {
 			if (!sizeof($error)) {
 				$update_topic = array();
 				
-				if (strstr($post_message, '-Anuncio-') && $user->_team_auth('mod')) {
+				if (strstr($post_message, '-Anuncio-') && $user->is('mod')) {
 					$topic_announce = 1;
 					$post_message = str_replace('-Anuncio-', '', $post_message);
 					$update_topic['topic_announce'] = $topic_announce;
 				}
 				
-				if (strstr($post_message, '-Cerrado-') && $user->_team_auth('mod')) {
+				if (strstr($post_message, '-Cerrado-') && $user->is('mod')) {
 					$topic_locked = 1;
 					$post_message = str_replace('-Cerrado-', '', $post_message);
 					$update_topic['topic_locked'] = $topic_locked;
@@ -541,7 +541,7 @@ if ((!$topic_data['forum_locked'] && !$topic_data['topic_locked']) || $can_reply
 }
 
 // MOD: Featured topic
-if ($user->_team_auth('mod')) {
+if ($user->is('mod')) {
 	$v_lang = ($topic_data['topic_featured']) ? 'REM' : 'ADD';
 	
 	_style('feature', array(

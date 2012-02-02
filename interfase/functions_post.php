@@ -718,7 +718,7 @@ function username_search($search_match)
 		'body' => 'search_username.htm')
 	);
 
-	$template->assign_vars(array(
+	v_style(array(
 		'USERNAME' => (!empty($search_match)) ? phpbb_clean_username($search_match) : '', 
 
 		'L_CLOSE_WINDOW' => $lang['Close_window'], 

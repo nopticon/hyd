@@ -73,7 +73,7 @@ if ($chat->_setup()) {
 	$chat->sys_clean();
 	$chatters = $chat->get_ch_listing($cat);
 	
-	$template->assign_vars(array(
+	v_style(array(
 		'CHATTERS' => $chatters,
 		'CREATE_CHAT' => s_link('chat-create'))
 	);

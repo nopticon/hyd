@@ -426,7 +426,7 @@ class _chat {
 	public function window() {
 		global $user, $config, $template;
 		
-		$template->assign_vars(array(
+		v_style(array(
 			'CH_SID' => $this->data['session_id'],
 			'CH_INT_NAME' => $this->data['ch_int_name'],
 			'CH_NAME' => $this->data['ch_name'])

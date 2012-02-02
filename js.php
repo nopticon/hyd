@@ -83,7 +83,7 @@ header('Expires: ' . gmdate('D, d M Y H:i:s', time() + (60 * 60 * 24 * 30)) . ' 
 //sql_report(false);
 $template->replace_vars = false;
 
-$template->assign_vars(array(
+v_style(array(
 	'FF' => $is_firefox,
 	'IE' => $is_ie)
 );

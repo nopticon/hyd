@@ -42,7 +42,7 @@ class __unread_topics_mod extends mac {
 			$t = search_topic($row['item']);
 			if ($t !== false) {
 				if (in_array($t['forum_id'], array(16, 17))) {
-					$a = $user->_team_auth($auth[$t['forum_id']], $row['user_id']);
+					$a = $user->is($auth[$t['forum_id']], $row['user_id']);
 					if (!$a) {
 						$delete = true;
 					}

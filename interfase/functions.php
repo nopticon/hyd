@@ -294,7 +294,7 @@ function forum_for_team_not() {
 	$sql = '';
 	$list = array('all', 'mod', 'radio', 'colab');
 	foreach ($list as $k) {
-		if (!$user->_team_auth($k)) {
+		if (!$user->is($k)) {
 			$sql .= ', ' . (int) $config['forum_for_' . $k];
 		}
 	}
@@ -534,7 +534,7 @@ function build_pagination($url_format, $total_items, $per_page, $offset, $prefix
 		$next = '<a href="' . sprintf($url_format, ($on_page * $per_page)) . '">' . sprintf($user->lang[(($lang_prefix != '') ? $lang_prefix : '') . 'PAGES_NEXT'], $per_page) . '</a>';
 	}
 	
-	$template->assign_vars(array(
+	v_style(array(
 		$prefix . 'PAGES_PREV' => $prev,
 		$prefix . 'PAGES_NEXT' => $next,
 		$prefix . 'PAGES_ON' => sprintf($user->lang['PAGES_ON'], $on_page, max(ceil($total_items / $per_page), 1)))
@@ -610,7 +610,7 @@ function build_num_pagination ($url_format, $total_items, $per_page, $offset, $p
 		$page_string = '';
 	}
 	
-	$template->assign_vars(array(
+	v_style(array(
 		$prefix . 'PAGES_NUMS' => $page_string,
 		$prefix . 'PAGES_PREV' => $prev,
 		$prefix . 'PAGES_NEXT' => $next,
@@ -635,6 +635,10 @@ function obtain_bots(&$bots) {
 	}
 	
 	return;
+}
+
+function _button($name = 'submit') {
+	return (isset($_POST[$name])) ? true : false;
 }
 
 function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
@@ -1606,7 +1610,7 @@ function redirect($url, $moved = false) {
 function meta_refresh($time, $url) {
 	global $template;
 
-	$template->assign_vars(array(
+	v_style(array(
 		'META' => '<meta http-equiv="refresh" content="' . $time . ';url=' . $url . '">')
 	);
 }
@@ -1698,7 +1702,7 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 		'S_REDIRECT' => $user->d('session_page'),
 		'S_USERNAME' => $user->d('username'),
 		
-		'S_CONTROLPANEL' => (isset($template->vars['S_CONTROLPANEL'])) ? $template->vars['S_CONTROLPANEL'] : ($user->_team_auth('artist') ? s_link('control') : ''),
+		'S_CONTROLPANEL' => (isset($template->vars['S_CONTROLPANEL'])) ? $template->vars['S_CONTROLPANEL'] : ($user->is('artist') ? s_link('control') : ''),
 		'S_UNREAD_ITEMS' => (($unread_items == 1) ? sprintf($user->lang['UNREAD_ITEM_COUNT'], $unread_items) : sprintf($user->lang['UNREAD_ITEMS_COUNT'], $unread_items)),
 		'S_AP_POINTS' => (($user->d('user_points') == 1) ? sprintf($user->lang['AP_POINT'], $user->d('user_points')) : sprintf($user->lang['AP_POINTS'], $user->d('user_points'))),
 		
@@ -1715,7 +1719,7 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 	$mtime = explode(' ', microtime());
 	$common_vars['F_TIME'] = sprintf('%.2f', ($mtime[0] + $mtime[1] - $starttime));
 	
-	$template->assign_vars($common_vars);
+	v_style($common_vars);
 	
 	$template->set_filenames(array(
 		'body' => $htmlpage . '.htm')

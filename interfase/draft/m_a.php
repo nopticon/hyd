@@ -86,12 +86,13 @@ class a extends common {
 	}
 
 	public function home() {
-		global $config, $user, $template;
+		global $config, $user;
 
 		if ($this->setup()) {
-			$template->assign_block_vars('menu', array());
+			_style('menu');
+			
 			foreach ($this->methods as $module => $void) {
-				$template->assign_block_vars('menu.item', array(
+				_style('menu.item', array(
 					'URL' => s_link_control('a', array('a' => $this->data['subdomain'], 'mode' => $module)),
 					'NAME' => $user->lang['CONTROL_A_' . strtoupper($module)])
 				);
@@ -133,17 +134,17 @@ class a extends common {
 					}
 				}
 
-				$template->assign_block_vars('select_a', array());
+				_style('select_a');
 
 				$tcol = 0;
 				foreach ($selected_artists as $ub => $data) {
 					if (!$tcol) {
-						$template->assign_block_vars('select_a.row', array());
+						_style('select_a.row');
 					}
 					
 					$image = ($data['images']) ? $ub . '/thumbnails/' . $random_images[$ub] . '.jpg' : 'default/shadow.gif';
 
-					$template->assign_block_vars('select_a.row.col', array(
+					_style('select_a.row.col', array(
 						'NAME' => $data['name'],
 						'IMAGE' => $config['artists_url'] . $image,
 						'URL' => s_link_control('a', array('a' => $data['subdomain'])),
@@ -172,11 +173,9 @@ class a extends common {
 	}
 
 	public function _news_home() {
-		global $template;
-
 		$s_hidden = array('module' => $this->control->module, 'a' => $this->data['subdomain'], 'mode' => $this->mode, 'manage' => 'add');
 
-		$template->assign_vars(array(
+		v_style(array(
 			'S_HIDDEN' => s_hidden($s_hidden))
 		);
 
@@ -190,7 +189,7 @@ class a extends common {
 			redirect(s_link_control('a', array('a' => $this->data['subdomain'], 'mode' => 'news')));
 		}
 
-		global $user, $config, $template;
+		global $user, $config;
 
 		$post_title = $this->control->get_var('title', '');
 		$message = $this->control->get_var('message', '', true);
@@ -271,12 +270,12 @@ class a extends common {
 		}
 
 		if (sizeof($error)) {
-			$template->assign_block_vars('error', array(
+			_style('error', array(
 				'MESSAGE' => parse_error($error))
 			);
 		}
 
-		$template->assign_vars(array(
+		v_style(array(
 			'TOPIC_TITLE' => $post_title,
 			'MESSAGE' => $message)
 		);
@@ -285,7 +284,7 @@ class a extends common {
 	}
 
 	public function _news_edit() {
-		global $user, $config, $template;
+		global $user, $config;
 
 		$submit = isset($_POST['submit']) ? true : false;
 		$id = $this->control->get_var('id', 0);
@@ -360,7 +359,7 @@ class a extends common {
 			}
 
 			if (sizeof($error)) {
-				$template->assign_block_vars('error', array(
+				_style('error', array(
 					'MESSAGE' => parse_error($error))
 				);
 			}
@@ -370,7 +369,7 @@ class a extends common {
 
 		$s_hidden = array('module' => $this->control->module, 'a' => $this->data['subdomain'], 'mode' => $this->mode, 'manage' => $this->manage, 'id' => $nsdata['topic_id']);
 
-		$template->assign_vars(array(
+		v_style(array(
 			'TOPIC_TITLE' => $post_title,
 			'MESSAGE' => $message,
 			'S_HIDDEN' => s_hidden($s_hidden))
@@ -432,11 +431,9 @@ class a extends common {
 		//
 		// Show confirm dialog
 		//
-		global $template;
-
 		$s_hidden = array('module' => $this->control->module, 'a' => $this->data['subdomain'], 'mode' => $this->mode, 'manage' => $this->manage, 'id' => $nsdata['topic_id']);
 
-		$template->assign_vars(array(
+		v_style(array(
 			'MESSAGE_TEXT' => $user->lang['CONTROL_A_NEWS_DELETE'] . '<br /><br /><h1>' . $nsdata['topic_title'] . '</h1>',
 
 			'S_CONFIRM_ACTION' => s_link('control'),
@@ -467,7 +464,7 @@ class a extends common {
 	}
 
 	public function _aposts_edit() {
-		global $user, $config, $template;
+		global $user, $config;
 
 		$submit = isset($_POST['submit']) ? true : false;
 
@@ -508,7 +505,7 @@ class a extends common {
 			}
 
 			if (sizeof($error)) {
-				$template->assign_block_vars('error', array(
+				_style('error', array(
 					'MESSAGE' => parse_error($error))
 				);
 			}
@@ -518,7 +515,7 @@ class a extends common {
 
 		$s_hidden = array('module' => $this->control->module, 'a' => $this->data['subdomain'], 'mode' => $this->mode, 'manage' => $this->manage, 'id' => $pdata['post_id']);
 
-		$template->assign_vars(array(
+		v_style(array(
 			'P_MEMBER' => ($pdata['user_id'] != GUEST) ? $pdata['username'] : (($pdata['post_username'] != '') ? $pdata['post_username'] : $user->lang['GUEST']),
 			'MESSAGE' => $message,
 			'S_HIDDEN' => s_hidden($s_hidden))
@@ -578,22 +575,19 @@ class a extends common {
 		//
 		// Show confirm dialog
 		//
-		global $template;
-
 		$s_hidden = array('module' => $this->control->module, 'a' => $this->data['subdomain'], 'mode' => $this->mode, 'manage' => $this->manage, 'id' => $pdata['post_id']);
 
 		//
 		// Output to template
 		//
-		$template_vars = array(
+		$layout_vars = array(
 			'MESSAGE_TEXT' => $user->lang['CONTROL_A_APOSTS_DELETE'],
 
 			'S_CONFIRM_ACTION' => s_link('control'),
 			'S_HIDDEN_FIELDS' => s_hidden($s_hidden),
 			'DELETE_FOREVER' => $user->data['is_founder']
 		);
-
-		page_layout('CONTROL_A_APOSTS', 'confirm', $template_vars);
+		page_layout('CONTROL_A_APOSTS', 'confirm', $layout_vars);
 	}
 
 	//
@@ -609,7 +603,7 @@ class a extends common {
 	}
 
 	public function _log_home() {
-		global $user, $template;
+		global $user;
 
 		$member = $this->control->get_var('m', 0);
 		$no_results = true;
@@ -622,7 +616,7 @@ class a extends common {
 				$member = 0;
 			}
 
-			$template->assign_vars(array(
+			v_style(array(
 				'USERNAME' => $memberdata['username'],
 				'PROFILE' => s_link('m', $memberdata['username_base']),
 				'USER_COLOR' => $memberdata['user_color'])
@@ -702,16 +696,16 @@ class a extends common {
 				$no_results = false;
 				$tcol = 0;
 
-				$template->assign_block_vars('members', array());
+				_style('members');
 
 				foreach ($result as $row) {
 					if (!$tcol) {
-						$template->assign_block_vars('members.row', array());
+						_style('members.row');
 					}
 
 					$profile = $comments->user_profile($row);
 
-					$template->assign_block_vars('members.row.col', array(
+					_style('members.row.col', array(
 						'USER_ID' => $row['user_id'],
 						'USERNAME' => $row['username'],
 						'COLOR' => $row['user_color'],
@@ -727,12 +721,12 @@ class a extends common {
 		}
 
 		if ($no_results) {
-			$template->assign_block_vars('no_members', array(
+			_style('no_members', array(
 				'MESSAGE' => $user->lang['CONTROL_A_LOG_EMPTY'])
 			);
 		}
 
-		$template->assign_vars(array(
+		v_style(array(
 			'MEMBER' => ($member) ? $memberdata['username'] : '')
 		);
 	}
@@ -750,24 +744,24 @@ class a extends common {
 	}
 
 	public function __auth_table($row, $check_unique = false) {
-		global $user, $template;
+		global $user;
 
 		$comments = new _comments();
 
 		$tcol = $trow = $items = 0;
 		$total = count($row);
 
-		$template->assign_block_vars('members', array());
+		_style('members');
 
 		foreach ($row as $_row) {
 			if (!$tcol) {
-				$template->assign_block_vars('members.row', array());
+				_style('members.row');
 				$trow++;
 			}
 
 			$auth_profile = $comments->user_profile($row);
 
-			$template->assign_block_vars('members.row.col', array(
+			_style('members.row.col', array(
 				'USER_ID' => $auth_profile['user_id'],
 				'PROFILE' => $auth_profile['profile'],
 				'USERNAME' => $auth_profile['username'],
@@ -783,7 +777,7 @@ class a extends common {
 
 		if ($trow > 1) {
 			for ($i = 0, $end = ((4 * $trow) - $items); $i < $end; $i++) {
-				$template->assign_block_vars('members.row.blank', array());
+				_style('members.row.blank');
 			}
 		}
 
@@ -791,7 +785,7 @@ class a extends common {
 	}
 
 	public function _auth_home() {
-		global $user, $template;
+		global $user;
 
 		$results = false;
 
@@ -804,14 +798,14 @@ class a extends common {
 			$results = true;
 			$this->__auth_table($result);
 		} else {
-			$template->assign_block_vars('no_members', array(
+			_style('no_members', array(
 				'MESSAGE' => $user->lang['CONTROL_A_AUTH_NOMEMBERS'])
 			);
 		}
 
 		$s_hidden = array('module' => $this->control->module, 'a' => $this->data['subdomain'], 'mode' => $this->mode, 'manage' => 'delete');
 
-		$template->assign_vars(array(
+		v_style(array(
 			'S_HIDDEN' => s_hidden($s_hidden),
 			'RESULTS' => $results,
 			'ADD_MEMBER_URL' => s_link_control('a', array('a' => $this->data['subdomain'], 'mode' => $this->mode, 'manage' => 'add')))
@@ -819,7 +813,7 @@ class a extends common {
 	}
 
 	public function _auth_add() {
-		global $config, $user, $template;
+		global $config, $user;
 
 		$submit = isset($_POST['submit']) ? true : false;
 		$no_results = true;
@@ -911,7 +905,7 @@ class a extends common {
 
 				$s_member = '';
 
-				$template->assign_block_vars('no_members', array(
+				_style('no_members', array(
 					'MESSAGE' => $user->lang['CONTROL_A_AUTH_ADD_NOMATCH'])
 				);
 			}
@@ -950,12 +944,12 @@ class a extends common {
 						$this->__auth_table($row, true);
 						$no_results = false;
 					} else {
-						$template->assign_block_vars('no_members', array(
+						_style('no_members', array(
 							'MESSAGE' => $user->lang['CONTROL_A_AUTH_ADD_TOOMUCH'])
 						);
 					}
 				} else {
-					$template->assign_block_vars('no_members', array(
+					_style('no_members', array(
 						'MESSAGE' => $user->lang['CONTROL_A_AUTH_ADD_NOMATCH'])
 					);
 				}
@@ -971,7 +965,7 @@ class a extends common {
 		//
 		// Output to template
 		//
-		$template->assign_vars(array(
+		v_style(array(
 			'SHOW_INPUT' => !$submit || $no_results,
 			'S_HIDDEN' => s_hidden($s_hidden),
 			'ADD_MEMBER_URL' => s_link_control('a', array('a' => $this->data['subdomain'], 'mode' => $this->mode, 'manage' => 'add')))
@@ -989,7 +983,7 @@ class a extends common {
 		$confirm = isset($_POST['confirm']) ? true : false;
 
 		if ($submit || $confirm) {
-			global $config, $user, $template;
+			global $config, $user;
 
 			$s_members = $this->control->get_var('s_members', array(0));
 			$s_members_i = array();
@@ -1091,7 +1085,7 @@ class a extends common {
 				$s_members_hidden .= s_hidden(array('s_members[]' => $data['user_id']));
 			}
 
-			$template_vars = array(
+			$layout_vars = array(
 				'MESSAGE_TEXT' => sprintf($user->lang[((sizeof($s_members) == 1) ? 'CONTROL_A_AUTH_DELETE2' : 'CONTROL_A_AUTH_DELETE')], $this->data['name'], $s_members_list),
 				'S_CONFIRM_ACTION' => s_link('control'),
 				'S_HIDDEN_FIELDS' => $s_members_hidden
@@ -1100,7 +1094,7 @@ class a extends common {
 			//
 			// Output to template
 			//
-			page_layout('CONTROL_A_AUTH', 'confirm', $template_vars);
+			page_layout('CONTROL_A_AUTH', 'confirm', $layout_vars);
 		}
 
 		redirect($auth_url);
@@ -1119,7 +1113,7 @@ class a extends common {
 	}
 
 	public function _gallery_home() {
-		global $user, $template;
+		global $user;
 
 		$sql = 'SELECT g.*
 			FROM _artists a, _artists_images g
@@ -1127,16 +1121,16 @@ class a extends common {
 				AND a.ub = g.ub
 			ORDER BY image ASC';
 		if ($result = sql_rowset(sql_filter($sql, $this->data['ub']))) {
-			$template->assign_block_vars('gallery', array());
+			_style('gallery');
 
 			$tcol = 0;
 
 			foreach ($result as $row) {
 				if (!$tcol) {
-					$template->assign_block_vars('gallery.row', array());
+					_style('gallery.row');
 				}
 
-				$template->assign_block_vars('gallery.row.col', array(
+				_style('gallery.row.col', array(
 					'ITEM' => $row['image'],
 					'URL' => s_link('a', array($this->data['subdomain'], 4, $row['image'], 'view')),
 					'U_FOOTER' => s_link_control('a', array('a' => $this->data['subdomain'], 'mode' => $this->mode, 'manage' => 'footer', 'image' => $row['image'])),
@@ -1152,14 +1146,14 @@ class a extends common {
 				$tcol = ($tcol == 3) ? 0 : $tcol + 1;
 			}
 		} else {
-			$template->assign_block_vars('empty', array(
+			_style('empty', array(
 				'MESSAGE' => $user->lang['CONTROL_A_GALLERY_EMPTY'])
 			);
 		}
 
 		$s_hidden = array('module' => $this->control->module, 'a' => $this->data['subdomain'], 'mode' => $this->mode, 'manage' => 'delete');
 
-		$template->assign_vars(array(
+		v_style(array(
 			'S_HIDDEN' => s_hidden($s_hidden),
 			'ADD_IMAGE_URL' => s_link_control('a', array('a' => $this->data['subdomain'], 'mode' => $this->mode, 'manage' => 'add')))
 		);
@@ -1179,7 +1173,7 @@ class a extends common {
 	}
 
 	public function _gallery_add() {
-		global $user, $template;
+		global $user;
 
 		if (isset($_POST['submit']) && isset($_FILES['add_image'])) {
 			$upload = new upload();
@@ -1229,13 +1223,13 @@ class a extends common {
 
 				redirect(s_link_control('a', array('a' => $this->data['subdomain'], 'mode' => $this->mode)));
 			} else {
-				$template->assign_block_vars('error', array(
+				_style('error', array(
 					'MESSAGE' => parse_error($upload->error))
 				);
 			}
 		}
 
-		$template->assign_vars(array(
+		v_style(array(
 			'S_HIDDEN' => s_hidden(array('module' => $this->control->module, 'a' => $this->data['subdomain'], 'mode' => $this->mode, 'manage' => $this->manage)),
 			'MAX_FILESIZE' => $filesize)
 		);
@@ -1244,7 +1238,7 @@ class a extends common {
 	}
 
 	public function _gallery_delete() {
-		global $user, $template;
+		global $user;
 
 		$error = false;
 		if (isset($_POST['submit'])) {
@@ -1291,7 +1285,7 @@ class a extends common {
 	}
 
 	public function _gallery_footer() {
-		global $user, $template;
+		global $user;
 
 		$a = $this->control->get_var('image', '');
 		$t = $this->control->get_var('value', '');
@@ -1325,7 +1319,7 @@ class a extends common {
 	}
 
 	public function _biography_home() {
-		global $user, $template;
+		global $user;
 
 		$sql = 'SELECT bio
 			FROM _artists
@@ -1334,13 +1328,13 @@ class a extends common {
 
 		$s_hidden = array('module' => $this->control->module, 'a' => $this->data['subdomain'], 'mode' => $this->mode, 'manage' => 'edit');
 
-		$template->assign_vars(array(
+		v_style(array(
 			'MESSAGE' => $row['bio'],
 			'S_HIDDEN' => s_hidden($s_hidden))
 		);
 
 		if ($this->control->get_var('s', '') == 'u') {
-			$template->assign_block_vars('updated', array());
+			_style('updated');
 		}
 	}
 
@@ -1372,7 +1366,7 @@ class a extends common {
 	}
 
 	public function _video_home() {
-		global $user, $template;
+		global $user;
 
 		$sql = 'SELECT *
 			FROM _artists_video
@@ -1382,10 +1376,10 @@ class a extends common {
 
 		foreach ($result as $row) {
 			if (!$video) {
-				$template->assign_block_vars('video', array());
+				_style('video');
 			}
 
-			$template->assign_block_vars('video.row', array(
+			_style('video.row', array(
 				'CODE' => $row['video_code'],
 				'TIME' => $user->format_date($row['video_added']))
 			);
@@ -1393,7 +1387,7 @@ class a extends common {
 			$video++;
 		}
 
-		$template->assign_vars(array(
+		v_style(array(
 			'ADD_VIDEO_URL' => s_link_control('a', array('a' => $this->data['subdomain'], 'mode' => $this->mode, 'manage' => 'add')))
 		);
 
@@ -1401,7 +1395,7 @@ class a extends common {
 	}
 
 	public function _video_add() {
-		global $user, $template;
+		global $user;
 
 		if (isset($_POST['submit'])) {
 			$code = $this->control->get_var('code', '', true);
@@ -1440,7 +1434,7 @@ class a extends common {
 		}
 
 		$s_hidden = array('module' => $this->control->module, 'a' => $this->data['subdomain'], 'mode' => $this->mode, 'manage' => $this->manage);
-		$template->assign_vars(array(
+		v_style(array(
 			'S_HIDDEN' => s_hidden($s_hidden))
 		);
 
@@ -1460,7 +1454,7 @@ class a extends common {
 	}
 
 	public function _stats_home() {
-		global $user, $template;
+		global $user;
 
 		$sql = 'SELECT *, SUM(members + guests) AS total
 			FROM _artists_stats
@@ -1497,7 +1491,7 @@ class a extends common {
 
 		$total_graph = 0;
 		foreach ($years as $year) {
-			$template->assign_block_vars('year', array(
+			_style('year', array(
 				'YEAR' => $year)
 			);
 
@@ -1515,7 +1509,7 @@ class a extends common {
 				$monthdata['unix'] = gmmktime(0, 0, 0, $i, 1, $year) - $user->timezone - $user->dst;
 				$total_graph += $monthdata['total'];
 
-				$template->assign_block_vars('year.month', array(
+				_style('year.month', array(
 					'NAME' => $user->format_date($monthdata['unix'], 'F'),
 					'TOTAL' => $monthdata['total'],
 					'MEMBERS' => $monthdata['members'],
@@ -1525,7 +1519,7 @@ class a extends common {
 			}
 		}
 
-		$template->assign_vars(array(
+		v_style(array(
 			'BEFORE_VIEWS' => number_format($this->data['views']),
 			'SHOW_VIEWS_LEGEND' => ($this->data['views'] > $total_graph))
 		);
@@ -1546,7 +1540,7 @@ class a extends common {
 	}
 
 	public function _downloads_home() {
-		global $user, $template;
+		global $user;
 
 		$sql = 'SELECT *
 			FROM _dl
@@ -1558,15 +1552,15 @@ class a extends common {
 				2 => '/net/icons/store.gif'
 			);
 
-			$template->assign_block_vars('downloads', array());
+			_style('downloads');
 			$tcol = 0;
 
 			foreach ($result as $row) {
 				if (!$tcol) {
-					$template->assign_block_vars('downloads.row', array());
+					_style('downloads.row');
 				}
 
-				$template->assign_block_vars('downloads.row.col', array(
+				_style('downloads.row.col', array(
 					'ITEM' => $row['id'],
 					'URL' => s_link_control('a', array('a' => $this->data['subdomain'], 'mode' => $this->mode, 'manage' => 'edit', 'd' => $row['id'])),
 					'POSTS_URL' => s_link('a', array($this->data['subdomain'], 9, $row['id'])) . '#dpf',
@@ -1580,7 +1574,7 @@ class a extends common {
 				$tcol = ($tcol == 2) ? 0 : $tcol + 1;
 			}
 		} else {
-			$template->assign_block_vars('empty', array(
+			_style('empty', array(
 				'MESSAGE' => $user->lang['CONTROL_A_DOWNLOADS_EMPTY'])
 			);
 		}
@@ -1605,7 +1599,7 @@ class a extends common {
 	}
 
 	public function _dposts_edit() {
-		global $user, $config, $template;
+		global $user, $config;
 
 		$submit = isset($_POST['submit']) ? true : false;
 
@@ -1648,7 +1642,7 @@ class a extends common {
 			}
 
 			if (sizeof($error)) {
-				$template->assign_block_vars('error', array(
+				_style('error', array(
 					'MESSAGE' => parse_error($error))
 				);
 			}
@@ -1659,7 +1653,7 @@ class a extends common {
 
 		$s_hidden = array('module' => $this->control->module, 'a' => $this->data['subdomain'], 'mode' => $this->mode, 'manage' => $this->manage, 'id' => $pdata['post_id']);
 
-		$template->assign_vars(array(
+		v_style(array(
 			'P_MEMBER' => ($pdata['user_id'] != GUEST) ? $pdata['username'] : (($pdata['post_username'] != '') ? $pdata['post_username'] : $user->lang['GUEST']),
 			'MESSAGE' => $message,
 			'S_HIDDEN' => s_hidden($s_hidden))
@@ -1720,22 +1714,19 @@ class a extends common {
 		//
 		// Show confirm dialog
 		//
-		global $template;
-
 		$s_hidden = array('module' => $this->control->module, 'a' => $this->data['subdomain'], 'mode' => $this->mode, 'manage' => $this->manage, 'id' => $pdata['post_id']);
 
 		//
 		// Output to template
 		//
-		$template_vars = array(
+		$layout_vars = array(
 			'MESSAGE_TEXT' => $user->lang['CONTROL_A_APOSTS_DELETE'],
 
 			'S_CONFIRM_ACTION' => s_link('control'),
 			'S_HIDDEN_FIELDS' => s_hidden($s_hidden),
 			'DELETE_FOREVER' => $user->data['is_founder']
 		);
-
-		page_layout('CONTROL_A_APOSTS', 'confirm', $template_vars);
+		page_layout('CONTROL_A_APOSTS', 'confirm', $layout_vars);
 	}
 }
 

@@ -90,7 +90,7 @@ class __forums_post_modify extends mac {
 			redirect(s_link('post', $this->id));
 		}
 		
-		$template->assign_vars(array(
+		v_style(array(
 			'V_TOPIC' => ($user->data['is_founder']) ? $this->object->topic->topic_title : '',
 			'V_MESSAGE' => $this->object->post->post_text,
 			'S_ACTION' => s_link('mcp', array('edit', $this->id))

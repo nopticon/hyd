@@ -133,7 +133,7 @@ $(function() {
 	
 	if (xka) {
 		// Keep alive
-		$.PeriodicalUpdater('/ajax/ka/', {
+		$.PeriodicalUpdater('/async/ka/', {
 			method: 'post',
 			data: {ajax: '1'},
 			minTimeout: 10000,
@@ -149,7 +149,7 @@ $(function() {
 
 var _ = {
 	call: function(action, el, rate, decode) {
-		$.PeriodicalUpdater('/ajax/' + action + '/', {
+		$.PeriodicalUpdater('/async/' + action + '/', {
 			method: 'post',
 			data: {ajax: '1'},
 			minTimeout: ((rate - 1) * 1000),
@@ -184,7 +184,7 @@ var _ = {
 					}
 				}
 			}
-			new Ajax.Request('/ajax/' + action + '/', v);
+			new Ajax.Request('/async/' + action + '/', v);
 			
 			_.frame.call(action, el, rate, decode);
 		}

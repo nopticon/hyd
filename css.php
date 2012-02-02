@@ -78,7 +78,7 @@ if (strstr($user->browser, 'compatible') || $is_firefox) {
 header('Content-type: text/css; charset=utf-8');
 header('Expires: ' . gmdate('D, d M Y H:i:s', time() + (60 * 60 * 24 * 30)) . ' GMT');
 
-$template->assign_vars(array(
+v_style(array(
 	'FF' => $is_firefox,
 	'IE' => $is_ie)
 );

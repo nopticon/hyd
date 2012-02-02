@@ -26,7 +26,7 @@ class __ extends mac {
 	}
 	
 	public function _home() {
-		global $config, $user, $cache, $template;
+		global $config, $user, $cache;
 		
 		
 		

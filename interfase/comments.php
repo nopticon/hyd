@@ -545,7 +545,7 @@ class _comments {
 		}
 
 		$allowed_tags = array('br', 'strong', 'ul', 'ol', 'li', 'em', 'small');
-		$is_mod = $user->_team_auth('mod');
+		$is_mod = $user->is('mod');
 		
 		if ($is_mod) {
 			$allowed_tags = array_merge($allowed_tags, array('blockquote', 'object', 'param', 'a', 'h1', 'h2', 'h3', 'div', 'span', 'img', 'table', 'tr', 'td', 'th'));

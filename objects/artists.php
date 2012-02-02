@@ -26,7 +26,7 @@ class layout extends downloads {
 	// Home
 	//
 	public function _1() {
-		global $user, $config, $template;
+		global $user, $config;
 		
 		//
 		// Gallery
@@ -45,12 +45,12 @@ class layout extends downloads {
 			$image = 'default/' . $default_image;
 		}
 		
-		$template->assign_block_vars('ub_image', array(
+		_style('ub_image', array(
 			'IMAGE' => $image)
 		);
 		
 		if ($this->data['images'] > 1) {
-			$template->assign_block_vars('ub_image.view', array(
+			_style('ub_image.view', array(
 				'URL' => s_link('a', array($this->data['subdomain'], 4, $imagedata['image'], 'view')))
 			);
 		}
@@ -59,7 +59,7 @@ class layout extends downloads {
 		// News
 		//
 		if ($this->auth['user']) {
-			$template->assign_block_vars('publish', array(
+			_style('publish', array(
 				'TITLE' => ($this->auth['mod']) ? $user->lang['SEND_NEWS'] : $user->lang['SEND_POST'],
 				'URL' => s_link('a', array($this->data['subdomain'])))
 			);
@@ -85,7 +85,7 @@ class layout extends downloads {
 				LIMIT ??, ??)
 				ORDER BY post_time DESC";
 			if ($result = sql_rowset(sql_filter($sql, 'news', $config['ub_fans_f'], $this->data['ub'], 'post', $this->data['ub'], 0, 10))) {
-				$template->assign_block_vars('news', array());
+				_style('news');
 				
 				$user_profile = array();
 				
@@ -107,7 +107,7 @@ class layout extends downloads {
 						$row_data[strtoupper($key)] = $value;
 					}
 					
-					$template->assign_block_vars('news.row', $row_data);
+					_style('news.row', $row_data);
 				}
 			}
 			
@@ -127,12 +127,12 @@ class layout extends downloads {
 			if ($result = sql_rowset(sql_filter($sql, $this->data['ub']))) {
 				foreach ($result as $i => $row) {
 					if (!$i) {
-						$template->assign_block_vars('mods', array());
+						_style('mods');
 					}
 					
 					$user_profile = $this->msg->user_profile($row);
 					
-					$template->assign_block_vars('mods.item', array(
+					_style('mods.item', array(
 						'PROFILE' => $user_profile['profile'],
 						'USERNAME' => $user_profile['username'],
 						'COLOR' => $user_profile['user_color'])
@@ -142,7 +142,7 @@ class layout extends downloads {
 				$this->msg->reset();
 				
 				if ($this->auth['mod']) {
-					$template->assign_block_vars('mods.manage', array(
+					_style('mods.manage', array(
 						'URL' => s_link_control('a', array('a' => $this->data['subdomain'], 'mode' => 'auth')))
 					);
 				}
@@ -156,10 +156,10 @@ class layout extends downloads {
 	// Biography
 	//
 	public function _2() {
-		global $config, $template;
+		global $config;
 		
 		if ($this->data['featured_image']) {
-			$template->assign_block_vars('featured_image', array(
+			_style('featured_image', array(
 				'IMAGE' => $config['artists_url'] . $this->data['ub'] . '/gallery/' . $this->data['featured_image'] . '.jpg',
 				'URL' => s_link('a', array($this->data['subdomain'], 4, $this->data['featured_image'], 'view')))
 			);
@@ -168,7 +168,7 @@ class layout extends downloads {
 		//
 		// Parse Biography
 		//		
-		$template->assign_vars(array(
+		v_style(array(
 			'UB_BIO' => $this->msg->parse_message($this->data['bio']))
 		);
 		
@@ -183,7 +183,7 @@ class layout extends downloads {
 	// Gallery
 	//
 	public function _4() {
-		global $config, $template;
+		global $config;
 		
 		$mode = request_var('mode', '');
 		$download_id = intval(request_var('download_id', 0));
@@ -229,14 +229,14 @@ class layout extends downloads {
 						sql_query(sql_filter($sql, $this->data['ub'], $imagedata['image']));
 					}
 					
-					$template->assign_block_vars('selected', array(
+					_style('selected', array(
 						'IMAGE' => $config['artists_url'] . $this->data['ub'] . '/gallery/' . $imagedata['image'] . '.jpg',
 						'WIDTH' => $imagedata['width'], 
 						'HEIGHT' => $imagedata['height'])
 					);
 					
 					if ($imagedata['allow_dl']) {
-						$template->assign_block_vars('selected.download', array(
+						_style('selected.download', array(
 							'URL' => s_link('a', array($this->data['subdomain'], 4, $imagedata['image'], 'save')))
 						);
 					}
@@ -260,12 +260,12 @@ class layout extends downloads {
 				}
 				
 				$tcol = 0;
-				$template->assign_block_vars('thumbnails', array());
+				_style('thumbnails');
 				
 				foreach ($result as $row) {
-					if (!$tcol) $template->assign_block_vars('thumbnails.row', array());
+					if (!$tcol) _style('thumbnails.row');
 					
-					$template->assign_block_vars('thumbnails.row.col', array(
+					_style('thumbnails.row.col', array(
 						'URL' => s_link('a', array($this->data['subdomain'], 4, $row['image'], 'view')),
 						'IMAGE' => $config['artists_url'] . $this->data['ub'] . '/thumbnails/' . $row['image'] . '.jpg',
 						'RIMAGE' => get_a_imagepath($config['artists_path'], $config['artists_url'], $this->data['ub'], $row['image'] . '.jpg', array('x1', 'gallery')),
@@ -290,7 +290,7 @@ class layout extends downloads {
 	// Lyrics
 	//
 	public function _6() {
-		global $config, $template, $lang;
+		global $config, $lang;
 		
 		$mode = request_var('mode', '');
 		$download_id = intval(request_var('download_id', 0));
@@ -323,7 +323,7 @@ class layout extends downloads {
 						$lyric_data['views']++;
 					}
 					
-					$template->assign_block_vars('read', array(
+					_style('read', array(
 						'TITLE' => $lyric_data['title'],
 						'AUTHOR' => $lyric_data['author'],
 						'TEXT' => str_replace("\n", '<br />', $lyric_data['text']),
@@ -339,11 +339,9 @@ class layout extends downloads {
 				$result = sql_rowset(sql_filter($sql, $this->data['ub']));
 				
 				foreach ($result as $i => $row) {
-					if (!$i) {
-						$template->assign_block_vars('select', array());
-					}
+					if (!$i) _style('select');
 					
-					$template->assign_block_vars('select.item', array(
+					_style('select.item', array(
 						'URL' => s_link('a', array($this->data['subdomain'], 6, $row['id'], 'view')) . '#read',
 						'TITLE' => $row['title'],
 						'SELECTED' => ($download_id && $download_id == $row['id']) ? true : false)
@@ -394,7 +392,7 @@ class layout extends downloads {
 	// Messages
 	//
 	public function _12() {
-		global $user, $config, $template;
+		global $user, $config;
 		
 		$post_id = request_var('post_id', 0);
 		if (!$post_id) {
@@ -479,26 +477,26 @@ class layout extends downloads {
 			
 			$this->msg->view($start, 'rs', $total_posts, $config['s_posts'], 'reply_msg', 'RMSG_', '', false);
 			
-			$template->assign_vars(array(
+			v_style(array(
 				'PARENT_ID' => $post_id)
 			);
 		}
 		
-		if ($this->auth['post'] && ($this->data['a_active'] || $user->_team_auth('founder'))) {
+		if ($this->auth['post'] && ($this->data['a_active'] || $user->is('founder'))) {
 			if ($this->auth['user']) {
-				$template->assign_block_vars('reply_post_box', array(
+				_style('reply_post_box', array(
 					'REF' => $comments_ref)
 				);
 			} else {
-				$template->assign_block_vars('reply_no_guest_posting', array(
+				_style('reply_no_guest_posting', array(
 					'LEGEND' => sprintf($user->lang['UB_NO_GUEST_POSTING'], $this->data['name'], s_link('my', 'register')))
 				);
 			}
 		} else {
-			$template->assign_block_vars('reply_no_post_auth', array());
+			_style('reply_no_post_auth');
 			
 			if ($this->auth['post_until']) {
-				$template->assign_block_vars('reply_no_post_auth.until', array(
+				_style('reply_no_post_auth.until', array(
 					'UNTIL_DATETIME' => $user->format_date($this->auth['post_until']))
 				);
 			}
@@ -519,7 +517,7 @@ class layout extends downloads {
 			do_login();
 		}
 		
-		global $user, $config, $template;
+		global $user, $config;
 		
 		$error_msg = '';
 		$subject = '';
@@ -567,10 +565,10 @@ class layout extends downloads {
 		}
 		
 		if ($error_msg != '') {
-			$template->assign_block_vars('error', array());
+			_style('error');
 		}
 		
-		$template->assign_vars(array(
+		v_style(array(
 			'ERROR_MESSAGE' => $error_msg,
 			
 			'SUBJECT' => $subject,
@@ -719,7 +717,7 @@ class layout extends downloads {
 	}
 	
 	public function _18() {
-		global $user, $template;
+		global $user;
 		
 		$sql = 'SELECT *
 			FROM _artists_video
@@ -728,11 +726,9 @@ class layout extends downloads {
 		$result = sql_rowset(sql_filter($sql, $this->data['ub']));
 		
 		foreach ($result as $i => $row) {
-			if (!$i) {
-				$template->assign_block_vars('video', array());
-			}
+			if (!$i) _style('video');
 			
-			$template->assign_block_vars('video.row', array(
+			_style('video.row', array(
 				'NAME' => $row['video_name'],
 				'CODE' => $row['video_code'],
 				'TIME' => $user->format_date($row['video_added']))
@@ -921,7 +917,7 @@ class _artists extends layout {
 	}
 	
 	public function last_records() {
-		global $user, $config, $cache, $template;
+		global $user, $config, $cache;
 		
 		if (!$a_records = $cache->get('a_records')) {
 			$sql = 'SELECT ub, subdomain, name, genre
@@ -951,10 +947,10 @@ class _artists extends layout {
 			$cache->save('ai_records', $ai_records);
 		}
 		
-		$template->assign_block_vars('a_records', array());
+		_style('a_records');
 		
 		foreach ($a_records as $row) {
-			$template->assign_block_vars('a_records.item', array(
+			_style('a_records.item', array(
 				'URL' => s_link('a', $row['subdomain']),
 				'NAME' => $row['name'],
 				'GENRE' => $row['genre'])
@@ -963,7 +959,7 @@ class _artists extends layout {
 			if (isset($ai_records[$row['ub']])) {
 				$ai_select = array_rand($ai_records[$row['ub']]);
 				
-				$template->assign_block_vars('a_records.item.image', array(
+				_style('a_records.item.image', array(
 					'IMAGE' => $config['artists_url'] . $row['ub'] . '/thumbnails/' . $ai_records[$row['ub']][$ai_select] . '.jpg')
 				);
 			}
@@ -971,8 +967,6 @@ class _artists extends layout {
 	}
 	
 	public function latest_music() {
-		global $template;
-		
 		$sql = 'SELECT d.id, d.title, a.subdomain, a.name
 			FROM _dl d, _artists a
 			WHERE d.ud = 1
@@ -982,7 +976,7 @@ class _artists extends layout {
 		$result = sql_rowset($sql);
 		
 		foreach ($result as $row) {
-			$template->assign_block_vars('downloads', array(
+			_style('downloads', array(
 				'URL' => s_link('a', array($row['subdomain'], 9, $row['id'])),
 				'A' => $row['name'],
 				'T' => $row['title'])
@@ -993,9 +987,9 @@ class _artists extends layout {
 	}
 	
 	public function top_stats() {
-		global $user, $config, $template;
+		global $user, $config;
 		
-		$template->assign_block_vars('a_stats', array());
+		_style('a_stats');
 		
 		$all_data = $this->stats(array('datetime', 'views', 'votes', 'posts'));
 		
@@ -1016,7 +1010,7 @@ class _artists extends layout {
 			if (sizeof($a_random)) {
 				$selected_image = array_rand($a_random);
 				if (isset($a_random[$selected_image])) {
-					$template->assign_block_vars('a_stats.gallery', array(
+					_style('a_stats.gallery', array(
 						'IMAGE' => $config['artists_url'] . $all_data['datetime']['ub'] . '/thumbnails/' . $a_random[$selected_image] . '.jpg',
 						'URL' => s_link('a', $all_data['datetime']['subdomain']))
 					);
@@ -1026,7 +1020,7 @@ class _artists extends layout {
 		
 		foreach ($all_data as $id => $data) {
 			if ($data['name'] != '') {
-				$template->assign_block_vars('a_stats.item', array(
+				_style('a_stats.item', array(
 					'LANG' => $user->lang['UB_TOP_' . strtoupper($id)],
 					'URL' => s_link('a', $data['subdomain']),
 					'NAME' => $data['name'],
@@ -1040,7 +1034,7 @@ class _artists extends layout {
 	}
 	
 	public function thumbnails() {
-		global $cache, $config, $template;
+		global $cache, $config;
 		
 		if (!$a_recent = $cache->get('a_recent')) {
 			$sql = 'SELECT ub
@@ -1090,10 +1084,10 @@ class _artists extends layout {
 				}
 			}
 			
-			$template->assign_block_vars('thumbnails', array());
+			_style('thumbnails');
 			
 			foreach ($a_ary as $ub => $data) {
-				$template->assign_block_vars('thumbnails.item', array(
+				_style('thumbnails.item', array(
 					'NAME' => $data['name'],
 					'IMAGE' => $config['artists_url'] . $ub . '/thumbnails/' . $random_images[$ub] . '.jpg',
 					'URL' => s_link('a', $data['subdomain']),
@@ -1161,9 +1155,9 @@ class _artists extends layout {
 			return;
 		}
 		
-		global $config, $template;
+		global $config;
 		
-		$template->assign_block_vars('downloads', array());
+		_style('downloads');
 		
 		$ud_in_ary = array();
 		foreach ($this->ud_song as $ud => $dl_data) {
@@ -1175,7 +1169,7 @@ class _artists extends layout {
 			$ud_size = ($dl_size > $config['main_dl']) ? $config['main_dl'] : $dl_size;
 			$download_type = $this->dl_type($ud);
 			
-			$template->assign_block_vars('downloads.panel', array(
+			_style('downloads.panel', array(
 				'UD' => $download_type['lang'],
 				'TOTAL_COUNT' => $dl_size)
 			);
@@ -1190,7 +1184,7 @@ class _artists extends layout {
 				
 				$ud_in_ary[$ud][$ud_rand] = true;
 				
-				$template->assign_block_vars('downloads.panel.item', array(
+				_style('downloads.panel.item', array(
 					'UB' => $this->adata[$dl_data[$ud_rand]['ub']]['name'],
 					'TITLE' => $dl_data[$ud_rand]['title'],
 					'URL' => s_link('a', array($this->adata[$dl_data[$ud_rand]['ub']]['subdomain'], 9, $dl_data[$ud_rand]['id'])))
@@ -1202,7 +1196,7 @@ class _artists extends layout {
 	}
 	
 	public function _list() {
-		global $user, $config, $template;
+		global $user, $config;
 		
 		$sql = 'SELECT *
 			FROM _artists
@@ -1262,10 +1256,10 @@ class _artists extends layout {
 			}
 		}
 		
-		$template->assign_block_vars('search_match', array());
+		_style('search_match');
 		
 		if (!$s_alphabet) {
-			$template->assign_block_vars('search_match.ajx', array());
+			_style('search_match.ajx');
 			$this->ajx = false;
 		}
 		
@@ -1273,11 +1267,9 @@ class _artists extends layout {
 		foreach ($selected_artists as $ub => $data) {
 			$image = ($data['images']) ? $ub . '/thumbnails/' . $random_images[$ub] . '.jpg' : 'default/shadow.gif';
 			
-			if (!$tcol) {
-				$template->assign_block_vars('row', array());
-			}
+			if (!$tcol) _style('row');
 			
-			$template->assign_block_vars('row.col', array(
+			_style('row.col', array(
 				'NAME' => $data['name'],
 				'IMAGE' => $config['artists_url'] . $image,
 				'URL' => s_link('a', $data['subdomain']),
@@ -1291,13 +1283,13 @@ class _artists extends layout {
 		ksort($alphabet);
 		
 		foreach ($alphabet as $key => $null) {
-			$template->assign_block_vars('alphabet_item', array(
+			_style('alphabet_item', array(
 				'CHAR' => strtoupper($key),
 				'URL' => s_link('a', '_' . decoct(ord($key))))
 			);
 		}
 		
-		$template->assign_vars(array(
+		v_style(array(
 			'TOTAL_A' => $config['max_artists'],
 			'SELECTED_LETTER' => ($selected_char) ? strtoupper($selected_char) : '')
 		);
@@ -1366,18 +1358,18 @@ class _artists extends layout {
 				// Build nav
 				//
 				foreach ($s_layout['s'] as $data) {
-					$template->assign_block_vars('nav', array(
+					_style('nav', array(
 						'LANG' => $user->lang[$data['text']])
 					);
 					
 					if ($this->data['layout'] == $data['code']) {
-						$template->assign_block_vars('nav.strong', array());
+						_style('nav.strong');
 						continue;
 					}
 					
 					if ($data['code'] === 1) $data['code'] = ''; 
 					
-					$template->assign_block_vars('nav.a', array(
+					_style('nav.a', array(
 						'URL' => s_link('a', array($this->data['subdomain'], $data['code'])))
 					);
 				}
@@ -1505,9 +1497,9 @@ class _artists extends layout {
 					$gallery = $events['is_gallery'];
 					@krsort($gallery);
 					
-					$template->assign_block_vars('events_gallery', array());
+					_style('events_gallery');
 					foreach ($gallery as $row) {
-						$template->assign_block_vars('events_gallery.item', array(
+						_style('events_gallery.item', array(
 							'URL' => s_link('events', $row['event_alias']),
 							'TITLE' => $row['title'],
 							'DATETIME' => $user->format_date($row['date'], $user->lang['DATE_FORMAT']))
@@ -1518,15 +1510,15 @@ class _artists extends layout {
 				}
 				
 				if (sizeof($events)) {
-					$template->assign_block_vars('events_future', array());
+					_style('events_future');
 					
 					foreach ($events as $is_date => $data) {
-						$template->assign_block_vars('events_future.set', array(
+						_style('events_future.set', array(
 							'L_TITLE' => $user->lang['UE_' . strtoupper($is_date)])
 						);
 						
 						foreach ($data as $item) {
-							$template->assign_block_vars('events_future.set.row', array(
+							_style('events_future.set.row', array(
 								'ITEM_ID' => $item['id'],
 								'TITLE' => $item['title'],
 								'DATE' => $user->format_date($item['date']),
@@ -1551,7 +1543,7 @@ class _artists extends layout {
 					}
 				}
 				
-				$template->assign_block_vars('ub_poll', array());
+				_style('ub_poll');
 				
 				if ($this->auth['mod'] || !$this->auth['user'] || $user_voted) {
 					$sql = 'SELECT option_id, vote_result
@@ -1560,25 +1552,25 @@ class _artists extends layout {
 						ORDER BY option_id';
 					$results = sql_rowset(sql_filter($sql, $this->data['ub']), 'option_id', 'vote_result');
 					
-					$template->assign_block_vars('ub_poll.results', array());
+					_style('ub_poll.results');
 					
 					foreach ($this->voting['ub'] as $item) {
 						$vote_result = (isset($results[$item])) ? intval($results[$item]) : 0;
 						$vote_percent = ($this->data['votes'] > 0) ? $vote_result / $this->data['votes'] : 0;
 		
-						$template->assign_block_vars('ub_poll.results.item', array(
+						_style('ub_poll.results.item', array(
 							'CAPTION' => $user->lang['UB_VC' . $item],
 							'RESULT' => $vote_result,
 							'PERCENT' => sprintf("%.1d", ($vote_percent * 100)))
 						);
 					}
 				} else {
-					$template->assign_block_vars('ub_poll.options', array(
+					_style('ub_poll.options', array(
 						'S_VOTE_ACTION' => s_link('a', array($this->data['subdomain'], 17)))
 					);
 					
 					foreach ($this->voting['ub'] as $item) {
-						$template->assign_block_vars('ub_poll.options.item', array(
+						_style('ub_poll.options.item', array(
 							'ID' => $item,
 							'CAPTION' => $user->lang['UB_VC' . $item])
 						);
@@ -1593,19 +1585,19 @@ class _artists extends layout {
 					
 					foreach ($this->ud_song as $key => $data) {
 						$download_type = $this->dl_type($key);
-						$template->assign_block_vars('ud_block', array('LANG' => $download_type['lang']));
+						_style('ud_block', array('LANG' => $download_type['lang']));
 						
 						foreach ($data as $song) {
-							$template->assign_block_vars('ud_block.item', array(
+							_style('ud_block.item', array(
 								'TITLE' => $song['title'])
 							);
 							
 							if (isset($this->dl_data['id']) && ($song['id'] == $this->dl_data['id'])) {
-								$template->assign_block_vars('ud_block.item.strong', array());
+								_style('ud_block.item.strong');
 								continue;
 							}
 							
-							$template->assign_block_vars('ud_block.item.a', array(
+							_style('ud_block.item.a', array(
 								'URL' => s_link('a', array($this->data['subdomain'], 9, $song['id'])))
 							);
 						}
@@ -1616,7 +1608,7 @@ class _artists extends layout {
 				// Art
 				//
 				/*if ($this->data['arts']) {
-					$template->assign_block_vars('art_block', array());
+					_style('art_block');
 						
 					$sql = 'SELECT *
 						FROM _art
@@ -1625,14 +1617,14 @@ class _artists extends layout {
 					$result = sql_rowset(sql_filter($sql, $this->data['ub']));
 					
 					foreach ($result as $row) {
-						$template->assign_block_vars('art_block.item', array('TITLE' => $row['title']));
+						_style('art_block.item', array('TITLE' => $row['title']));
 						
 						if ($row['id'] == $this->ud['TITLE']) {
-							$template->assign_block_vars('art_block.item.strong', array());
+							_style('art_block.item.strong');
 							continue;
 						}
 						
-						$template->assign_block_vars('art_block.item.a', array('URL' => s_link('art', $row['id'])));
+						_style('art_block.item.a', array('URL' => s_link('art', $row['id'])));
 					}
 				}*/
 				
@@ -1699,20 +1691,20 @@ class _artists extends layout {
 					$this->msg->view($start, 'ps', $this->data['posts'], $config['s_posts'], '', 'MSG_', '', false);
 				}
 				
-				if ($this->data['a_active'] || $user->_team_auth('founder')) {
+				if ($this->data['a_active'] || $user->is('founder')) {
 					if ($this->auth['post']) {
 						if ($this->auth['user']) {
-							$template->assign_block_vars('post_box', array('REF' => $comments_ref));
+							_style('post_box', array('REF' => $comments_ref));
 						} else {
-							$template->assign_block_vars('no_guest_posting', array(
+							_style('no_guest_posting', array(
 								'LEGEND' => sprintf($user->lang['UB_NO_GUEST_POSTING'], $this->data['name'], s_link('my', 'register'))
 							));
 						}
 					} else {
-						$template->assign_block_vars('no_post_auth', array());
+						_style('no_post_auth');
 						
 						if ($this->auth['post_until']) {
-							$template->assign_block_vars('no_post_auth.until', array('UNTIL_DATETIME' => $user->format_date($this->auth['post_until'])));
+							_style('no_post_auth.until', array('UNTIL_DATETIME' => $user->format_date($this->auth['post_until'])));
 						}
 					}
 				}
@@ -1727,7 +1719,7 @@ class _artists extends layout {
 				// Make fans
 				//
 				if (!$this->auth['mod'] && !$this->auth['smod']) {
-					$template->assign_block_vars('make_fans', array(
+					_style('make_fans', array(
 						'FAV_URL' => s_link('a', array($this->data['subdomain'], 15)),
 						'FAV_LANG' => ($this->auth['fav']) ? '' : $user->lang['UB_FAV_ADD']) //$user->lang['UB_FAV_DEL']
 					);
@@ -1736,7 +1728,7 @@ class _artists extends layout {
 				//
 				// Set template
 				//
-				$template->assign_vars(array(
+				v_style(array(
 					'INACTIVE' => !$this->data['a_active'],
 					'UNAME' => $this->data['name'],
 					'GENRE' => $this->data['genre'],
@@ -1764,7 +1756,7 @@ class _artists extends layout {
 	}
 	
 	public function a_sidebar() {
-		global $config, $template;
+		global $config;
 		
 		$sql = 'SELECT *
 			FROM _artists
@@ -1778,7 +1770,7 @@ class _artists extends layout {
 				$row['rand_image'] = $row2['image'];
 			}
 			
-			$template->assign_block_vars('random_a', array(
+			_style('random_a', array(
 				'NAME' => $row['name'],
 				'IMAGE' => $config['artists_url'] . ((isset($row['rand_image'])) ? $row['ub'] . '/thumbnails/' . $row['rand_image'] . '.jpg' : 'default/shadow.gif'),
 				'URL' => s_link('a', $row['subdomain']),
@@ -1786,6 +1778,8 @@ class _artists extends layout {
 				'GENRE' => $row['genre'])
 			);
 		}
+		
+		return;
 	}
 
 }

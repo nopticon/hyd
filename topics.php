@@ -169,12 +169,12 @@ if ($submit_topic)
 			$topic_announce = 0;
 			$topic_locked = 0;
 			
-			if ((strstr($post_message, '-Anuncio-') && $user->_team_auth('all')) || in_array($forum_id, array(15, 16, 17))) {
+			if ((strstr($post_message, '-Anuncio-') && $user->is('all')) || in_array($forum_id, array(15, 16, 17))) {
 				$topic_announce = 1;
 				$post_message = str_replace('-Anuncio-', '', $post_message);
 			}
 			
-			if (strstr($post_message, '-Cerrado-') && $user->_team_auth('mod')) {
+			if (strstr($post_message, '-Cerrado-') && $user->is('mod')) {
 				$topic_locked = 1;
 				$post_message = str_replace('-Cerrado-', '', $post_message);
 			}

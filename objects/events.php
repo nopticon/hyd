@@ -274,9 +274,9 @@ class _events extends downloads {
 						'FOOTER' => $imagedata['image_footer'])
 					);
 					
-					if ($user->_team_auth('founder')) {
+					if ($user->is('founder')) {
 						_style('selected.update', array(
-							'URL' => s_link('ajax', 'eif'),
+							'URL' => s_link('async', 'eif'),
 							'EID' => $this->v('id'),
 							'PID' => $imagedata['image'])
 						);
@@ -317,7 +317,7 @@ class _events extends downloads {
 				
 				$comments = new _comments();
 				
-				$mod_auth = $user->_team_auth('mod');
+				$mod_auth = $user->is('mod');
 				
 				$error = array();
 				$forum_id = $event_topic['forum_id'];
@@ -392,13 +392,13 @@ class _events extends downloads {
 					
 					$update_topic = array();
 					
-					if (strstr($post_message, '-Anuncio-') && $user->_team_auth('mod')) {
+					if (strstr($post_message, '-Anuncio-') && $user->is('mod')) {
 						$topic_announce = 1;
 						$post_message = str_replace('-Anuncio-', '', $post_message);
 						$update_topic['topic_announce'] = $topic_announce;
 					}
 					
-					if (strstr($post_message, '-Cerrado-') && $user->_team_auth('mod')) {
+					if (strstr($post_message, '-Cerrado-') && $user->is('mod')) {
 						$topic_locked = 1;
 						$post_message = str_replace('-Cerrado-', '', $post_message);
 						$update_topic['topic_locked'] = $topic_locked;
