@@ -1737,7 +1737,7 @@ class _artists extends layout {
 					'FANS' => $fan_count,
 					'L_FANS' => ($fan_count == 1) ? $user->lang['FAN'] : $user->lang['FANS'], 
 					
-					'S_CONTROLPANEL' => (($user->is('member') && $user->data['user_auth_control']) ? s_link('control', '_' . $this->data['subdomain']) : ''),
+					'S_CONTROLPANEL' => $user->is('artist') ? s_link('control', '_' . $this->data['subdomain']) : '',
 					'LOCATION' => ($this->data['local']) ? (($this->data['location'] != '') ? $this->data['location'] . ', ' : '') . 'Guatemala' : $this->data['location'])
 				);
 				

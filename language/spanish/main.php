@@ -911,9 +911,15 @@ $lang += array(
 	'AP_POINTS' => '%d Arkanes',
 	
 	// ACP KEYS
+	'ACP_ARTIST_GALLERY_CREATE' => 'Agregar fotos',
+	'ACP_ARTIST_GALLERY_MODIFY' => 'Editar fotos',
+	'ACP_ARTISTS_GALLERY_REMOVE' => 'Eliminar fotos',
+	'ACP_' => '',
+	'ACP_' => '',
+	'ACP_' => '',
 	'ACP_ARTIST_DELETE' => 'Eliminar artista',
-	'ACP_ARTIST_DOWNLOAD_CREATE' => 'Crear descarga de artista',
-	'ACP_ARTIST_LYRIC_CREATE' => 'Crear l&iacute;rica de artista',
+	'ACP_ARTIST_DOWNLOAD_CREATE' => 'Agregar canci&oacute;n',
+	'ACP_ARTIST_LYRIC_CREATE' => 'Agregar l&iacute;rica',
 	'ACP_ARTIST' => 'Crear artista',
 	'ACP_BROADCAST_DJ_REPORT' => 'Reporte de transmisi&oacute;n',
 	'ACP_BROADCAST_MODIFY' => 'Modificar transmisi&oacute;n',

@@ -640,7 +640,7 @@ class user extends session {
 		return (int) sql_field(sql_filter($sql, $this->lang_name), 'lang_id', 0);
 	}
 	
-	public function is($name, $user_id = false) {
+	public function is($name, $user_id = false, $artist = false) {
 		if (isset($this->data['is_' . $name])) {
 			return $this->data['is_' . $name];
 		}
@@ -657,6 +657,16 @@ class user extends session {
 				$response = in_array($user_id, $all);
 			} else {
 				$response = $all;
+			}
+			
+			if ($name == 'artist' && $response && $artist !== false) {
+				$sql = 'SELECT ub
+					FROM _artists_auth
+					WHERE ub = ?
+						AND user_id = ?';
+				if (!sql_field(sql_filter($sql, $artist, $user_id), 'ub', 0)) {
+					$response = false;
+				}
 			}
 		}
 		

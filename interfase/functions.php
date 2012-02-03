@@ -1296,6 +1296,19 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 	page_layout('LOGIN2', 'login', $template_vars);
 }
 
+function get_artist($id) {
+	$artist_field = (is_numb($id)) ? 'ub' : 'subdomain';
+	
+	$sql = 'SELECT *
+		FROM _artists
+		WHERE ?? = ?';
+	if (!$data = sql_fieldrow(sql_filter($sql, $artist_field, $id))) {
+		return false;
+	}
+	
+	return $data;
+}
+
 function get_file($f) {
 	if (!f($f)) return false;
 	

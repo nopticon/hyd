@@ -23,67 +23,18 @@ require_once(ROOT . 'interfase/upload.php');
 require_once(ROOT . 'interfase/functions_admin.php');
 
 class a extends common {
-	public $data = array();
 	public $methods = array(
 		'news' => array('add', 'edit', 'delete'),
 		'aposts' => array('edit', 'delete'),
-		//'log' => array('view', 'delete'),
 		'auth' => array('add', 'delete'),
-		'gallery' => array('add', 'edit', 'delete', 'footer'),
+		'gallery' => array('add', 'edit', 'delete'),
 		'biography' => array('edit'),
 		//'lyrics' => array('add', 'edit', 'delete'),
 		'stats' => array(),
 		'video' => array('add', 'delete'),
-		//'voters' => array('view'),
 		//'downloads' => array('add', 'edit', 'delete'),
 		//'dposts' => array('edit', 'delete')
 	);
-	public $comments;
-
-	public function __construct() {
-		$this->comments = new _comments();
-
-		return;
-	}
-
-	public function setup() {
-		global $user;
-
-		$a = $this->control->get_var('a', '');
-		if (empty($a)) {
-			return false;
-		}
-
-		$sql = 'SELECT *
-			FROM _artists
-			WHERE subdomain = ?';
-		if (!$a_data = sql_fieldrow(sql_filter($sql, $a))) {
-			return false;
-		}
-
-		if ($user->data['user_type'] == USER_ARTIST) {
-			$sql = 'SELECT *
-				FROM _artists_auth
-				WHERE ub = ?
-					AND user_id = ?';
-			if (!sql_fieldrow(sql_filter($sql, $a_data['ub'], $user->data['user_id']))) {
-				fatal_error();
-			}
-		}
-
-		$this->data = $a_data;
-		return true;
-	}
-
-	public function nav() {
-		$this->control->set_nav(array('a' => $this->data['subdomain']), $this->data['name']);
-
-		if ($this->mode != 'home') {
-			global $user;
-
-			$this->control->set_nav(array('a' => $this->data['subdomain'], 'mode' => $this->mode), $user->lang['CONTROL_A_' . strtoupper($this->mode)]);
-		}
-	}
 
 	public function home() {
 		global $config, $user;
@@ -159,130 +110,7 @@ class a extends common {
 
 		return;
 	}
-
-	//
-	// News
-	//
-	public function news() {
-		if (!$this->setup()) {
-			fatal_error();
-		}
-
-		$this->nav();
-		$this->call_method();
-	}
-
-	public function _news_home() {
-		$s_hidden = array('module' => $this->control->module, 'a' => $this->data['subdomain'], 'mode' => $this->mode, 'manage' => 'add');
-
-		v_style(array(
-			'S_HIDDEN' => s_hidden($s_hidden))
-		);
-
-		return;
-	}
-
-	public function _news_add() {
-		$submit = isset($_POST['submit']) ? true : false;
-
-		if (!$submit) {
-			redirect(s_link_control('a', array('a' => $this->data['subdomain'], 'mode' => 'news')));
-		}
-
-		global $user, $config;
-
-		$post_title = $this->control->get_var('title', '');
-		$message = $this->control->get_var('message', '', true);
-		$current_time = time();
-		$error = array();
-
-		// Check subject
-		if (empty($post_title)) {
-			$error[] = 'EMPTY_SUBJECT';
-		}
-
-		// Check message
-		if (empty($message)) {
-			$error[] = 'EMPTY_MESSAGE';
-		} elseif (/*preg_match('#(\.){1,}#i', $message) || */(strlen($message) < 10)) {
-			$error[] = 'EMPTY_MESSAGE';
-		}
-
-		// Flood
-		if (!sizeof($error)) {
-			$sql = 'SELECT MAX(post_time) AS last_post_time
-				FROM _forum_posts
-				WHERE poster_id = ?';
-			if ($last_post_time = sql_field(sql_filter($sql, $user->data['user_id']), 'last_post_time', 0)) {
-				if (intval($last_post_time) > 0 && ($current_time - intval($last_post_time)) < intval($config['flood_interval'])) {
-					$error[] = 'FLOOD_ERROR';
-				}
-			}
-		}
-
-		if (!sizeof($error)) {
-			$message = $this->comments->prepare($message);
-
-			$insert_data['TOPIC'] = array(
-				'forum_id' => (int) $config['ub_fans_f'],
-				'topic_ub' => $this->data['ub'],
-				'topic_title' => $this->data['name'] . ': ' . $post_title,
-				'topic_poster' => (int) $user->data['user_id'],
-				'topic_time' => (int) $current_time,
-				'topic_locked' => 0,
-				'topic_important' => 0,
-				'topic_vote' => 0
-			);
-			$sql = 'INSERT INTO _forum_topics' . sql_build('INSERT', $insert_data['TOPIC']);
-			$topic_id = sql_query_nextid($sql);
-
-			$insert_data['POST'] = array(
-				'topic_id' => (int) $topic_id,
-				'forum_id' => (int) $config['ub_fans_f'],
-				'poster_id' => (int) $user->data['user_id'],
-				'post_time' => (int) $current_time,
-				'poster_ip' => $user->ip,
-				'post_text' => $message
-			);
-			$sql = 'INSERT INTO _forum_posts' . sql_build('INSERT', $insert_data['POST']);
-			$post_id = sql_query_nextid($sql);
-
-			$sql = 'UPDATE _forums SET forum_posts = forum_posts + 1, forum_topics = forum_topics + 1, forum_last_topic_id = ?
-				WHERE forum_id = ?';
-			sql_query(sql_filter($sql, $topic_id, $config['ub_fans']));
-
-			$sql = 'UPDATE _forum_topics SET topic_first_post_id = ?, topic_last_post_id = ?
-				WHERE topic_id = ?';
-			sql_query(sql_filter($sql, $post_id, $post_id, $topic_id));
-
-			$sql = 'UPDATE _members SET user_posts = user_posts + 1
-				WHERE user_id = ?';
-			sql_query(sql_filter($sql, $user->data['user_id']));
-
-			$sql = 'UPDATE _artists SET news = news + 1
-				WHERE ub = ?';
-			sql_query(sql_filter($sql, $this->data['ub']));
-
-			topic_feature($topic_id, 0);
-			$user->save_unread(UH_N, $topic_id);
-
-			redirect(s_link('a', $this->data['subdomain']));
-		}
-
-		if (sizeof($error)) {
-			_style('error', array(
-				'MESSAGE' => parse_error($error))
-			);
-		}
-
-		v_style(array(
-			'TOPIC_TITLE' => $post_title,
-			'MESSAGE' => $message)
-		);
-
-		return;
-	}
-
+	
 	public function _news_edit() {
 		global $user, $config;
 
@@ -446,162 +274,6 @@ class a extends common {
 		page_layout('CONTROL_A_NEWS', 'confirm');
 	}
 
-	//
-	// A Posts
-	//
-	public function aposts() {
-		if (!$this->setup()) {
-			fatal_error();
-		}
-
-		if ($this->manage == 'home') {
-			//die('home: artists > aposts @ ! link');
-			redirect(s_link('a', $this->data['subdomain']));
-		}
-
-		$this->nav();
-		$this->call_method();
-	}
-
-	public function _aposts_edit() {
-		global $user, $config;
-
-		$submit = isset($_POST['submit']) ? true : false;
-
-		$id = $this->control->get_var('id', 0);
-
-		if (!$id) {
-			fatal_error();
-		}
-
-		$sql = 'SELECT p.*, m.user_id, m.username, m.username_base, m.user_color
-			FROM _artists_posts p, _members m
-			WHERE p.post_id = ?
-				AND p.post_ub = ?
-				AND p.poster_id = m.user_id';
-		if (!$pdata = sql_fieldrow(sql_filter($sql, $id, $this->data['ub']))) {
-			fatal_error();
-		}
-
-		$message = $pdata['post_text'];
-
-		if ($submit) {
-			$message = $this->control->get_var('message', '', true);
-			$error = array();
-
-			// Check message
-			if (empty($message)) {
-				$error[] = 'EMPTY_MESSAGE';
-			}
-
-			if (!sizeof($error)) {
-				$message = $this->comments->prepare($message);
-
-				$sql = 'UPDATE _artists_posts SET post_text = ?
-					WHERE post_id = ?';
-				sql_query(sql_filter($sql, $message, $pdata['post_id']));
-
-				redirect(s_link('a', array($this->data['subdomain'], 12, $pdata['post_id'])));
-			}
-
-			if (sizeof($error)) {
-				_style('error', array(
-					'MESSAGE' => parse_error($error))
-				);
-			}
-		}
-
-		$this->control->set_nav(array('a' => $this->data['subdomain'], 'mode' => $this->mode, 'manage' => $this->manage, 'id' => $pdata['post_id']), 'A_NEWS_EDIT');
-
-		$s_hidden = array('module' => $this->control->module, 'a' => $this->data['subdomain'], 'mode' => $this->mode, 'manage' => $this->manage, 'id' => $pdata['post_id']);
-
-		v_style(array(
-			'P_MEMBER' => ($pdata['user_id'] != GUEST) ? $pdata['username'] : (($pdata['post_username'] != '') ? $pdata['post_username'] : $user->lang['GUEST']),
-			'MESSAGE' => $message,
-			'S_HIDDEN' => s_hidden($s_hidden))
-		);
-
-		return;
-	}
-
-	public function _aposts_delete() {
-		if (isset($_POST['cancel'])) {
-			redirect(s_link('a', $this->data['subdomain']));
-		}
-
-		global $config, $user;
-
-		$id = $this->control->get_var('id', 0);
-
-		if (!$id) {
-			fatal_error();
-		}
-
-		$delete_forever = (isset($_POST['delete_forever'])) ? true : false;
-
-		$sql = 'SELECT p.*, m.user_id, m.username, m.username_base, m.user_color
-			FROM _artists_posts p, _members m
-			WHERE p.post_id = ?
-				AND p.post_ub = ?
-				AND p.poster_id = m.user_id';
-		if (!$pdata = sql_fieldrow(sql_filter($sql, $id, $this->data['ub']))) {
-			fatal_error();
-		}
-
-		if (isset($_POST['confirm'])) {
-			$delete_forever = ($user->data['is_founder'] && $delete_forever) ? true : false;
-
-			if ($delete_forever) {
-				$sql = 'DELETE FROM _artists_posts
-					WHERE post_id = ?';
-				sql_query(sql_filter($sql, $id));
-			} else {
-				$sql = 'UPDATE _artists_posts SET post_active = 0
-					WHERE post_id = ?';
-				sql_query(sql_filter($sql, $id));
-
-				// TODO: LOG THIS ACTION: $this->control->log
-			}
-
-			$sql = 'UPDATE _artists SET posts = posts - 1
-				WHERE ub = ?';
-			sql_query(sql_filter($sql, $this->data['ub']));
-
-			$user->delete_all_unread(UH_C, $id);
-
-			redirect(s_link('a', $this->data['subdomain']));
-		}
-
-		//
-		// Show confirm dialog
-		//
-		$s_hidden = array('module' => $this->control->module, 'a' => $this->data['subdomain'], 'mode' => $this->mode, 'manage' => $this->manage, 'id' => $pdata['post_id']);
-
-		//
-		// Output to template
-		//
-		$layout_vars = array(
-			'MESSAGE_TEXT' => $user->lang['CONTROL_A_APOSTS_DELETE'],
-
-			'S_CONFIRM_ACTION' => s_link('control'),
-			'S_HIDDEN_FIELDS' => s_hidden($s_hidden),
-			'DELETE_FOREVER' => $user->data['is_founder']
-		);
-		page_layout('CONTROL_A_APOSTS', 'confirm', $layout_vars);
-	}
-
-	//
-	// Log
-	//
-	public function log() {
-		if (!$this->setup()) {
-			fatal_error();
-		}
-
-		$this->nav();
-		$this->call_method();
-	}
-
 	public function _log_home() {
 		global $user;
 
@@ -729,18 +401,6 @@ class a extends common {
 		v_style(array(
 			'MEMBER' => ($member) ? $memberdata['username'] : '')
 		);
-	}
-
-	//
-	// Auth
-	//
-	public function auth() {
-		if (!$this->setup()) {
-			fatal_error();
-		}
-
-		$this->nav();
-		$this->call_method();
 	}
 
 	public function __auth_table($row, $check_unique = false) {
@@ -1100,18 +760,6 @@ class a extends common {
 		redirect($auth_url);
 	}
 
-	//
-	// Gallery
-	//
-	public function gallery() {
-		if (!$this->setup()) {
-			fatal_error();
-		}
-
-		$this->nav();
-		$this->call_method();
-	}
-
 	public function _gallery_home() {
 		global $user;
 
@@ -1124,11 +772,8 @@ class a extends common {
 			_style('gallery');
 
 			$tcol = 0;
-
 			foreach ($result as $row) {
-				if (!$tcol) {
-					_style('gallery.row');
-				}
+				if (!$tcol) _style('gallery.row');
 
 				_style('gallery.row.col', array(
 					'ITEM' => $row['image'],
@@ -1157,19 +802,6 @@ class a extends common {
 			'S_HIDDEN' => s_hidden($s_hidden),
 			'ADD_IMAGE_URL' => s_link_control('a', array('a' => $this->data['subdomain'], 'mode' => $this->mode, 'manage' => 'add')))
 		);
-	}
-
-	public function __gallery_add_chmod($ary, $perm) {
-		foreach ($ary as $cdir) {
-			@chmod($cdir, $perm);
-		}
-	}
-
-	public function __gallery_add_delete($filename) {
-		if (!@is_writable($filename)) {
-			//@chmod($filename, 0777);
-		}
-		@unlink($filename);
 	}
 
 	public function _gallery_add() {

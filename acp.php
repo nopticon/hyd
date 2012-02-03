@@ -21,10 +21,11 @@ require_once('./interfase/common.php');
 
 class mac {
 	public $_access;
-	
 	public $submit;
 	public $url;
 	public $tv = array();
+	
+	protected $object;
 	
 	public function __construct() {
 		return;
@@ -48,6 +49,33 @@ class mac {
 	
 	public function can() {
 		return $this->_access;
+	}
+	
+	public function _artist() {
+		global $user;
+		
+		if ($user->is('artist')) {
+			$sql = 'SELECT a.ub
+				FROM _artists_auth t 
+				INNER JOIN _artists a ON a.ub = t.ub
+				WHERE t.user_id = ?';
+			if ($artist_ary = sql_rowset(sql_filter($sql, $user->d('user_id')), false, 'ub')) {
+				$sql_where = sql_filter('WHERE ub IN (??)', implode(',', array_map('intval', $mod_ary)));
+			}
+		}
+		
+		
+		
+		
+		$artist = request_var('a', '');
+		
+		if (empty($artist)) {
+			redirect(s_link('acp', array('artist_select', 'r' => 'artist_gallery')));
+		}
+		
+		if (!$this->object = get_artist($artist)) {
+			fatal_error();
+		}
 	}
 }
 

@@ -29,7 +29,7 @@ class __artist_download_create extends mac {
 	}
 	
 	public function _home() {
-		global $config, $cache, $template;
+		global $config, $user, $cache;
 		
 		$limit = set_time_limit(0);
 		$error = array();
