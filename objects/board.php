@@ -91,7 +91,7 @@ class board {
 						continue;
 					}
 
-					if ($user->data['user_id'] == 5777 && $f_data['forum_name'] == '[root]') {
+					if ($f_data['forum_name'] == '[root]') {
 						continue;
 					}
 					

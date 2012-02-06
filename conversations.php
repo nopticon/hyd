@@ -87,11 +87,11 @@ if ($submit || $mode == 'start' || $mode == 'reply') {
 				FROM _dc
 				WHERE msg_id = ?
 					AND (privmsgs_to_userid = ? OR privmsgs_from_userid = ?)';
-			if (!$to_userdata = sql_fieldrow(sql_filter($sql, $parent_id, $user->data['user_id'], $user->data['user_id']))) {
+			if (!$to_userdata = sql_fieldrow(sql_filter($sql, $parent_id, $user->d('user_id'), $user->d('user_id')))) {
 				fatal_error();
 			}
 			
-			$privmsgs_to_userid = ($user->data['user_id'] == $to_userdata['privmsgs_to_userid']) ? 'privmsgs_from_userid' : 'privmsgs_to_userid';
+			$privmsgs_to_userid = ($user->d('user_id') == $to_userdata['privmsgs_to_userid']) ? 'privmsgs_from_userid' : 'privmsgs_to_userid';
 			$to_userdata['user_id'] = $to_userdata[$privmsgs_to_userid];
 		} else {
 			$member = request_var('member', '');
@@ -106,7 +106,7 @@ if ($submit || $mode == 'start' || $mode == 'reply') {
 						$error[] = 'NO_SUCH_USER';
 					}
 
-					if (!sizeof($error) && $to_userdata['user_id'] == $user->data['user_id']) {
+					if (!sizeof($error) && $to_userdata['user_id'] == $user->d('user_id')) {
 						$error[] = 'NO_AUTO_DC';
 					}
 				} else {
@@ -124,7 +124,7 @@ if ($submit || $mode == 'start' || $mode == 'reply') {
 				FROM _members_ban
 				WHERE user_id = ?
 					AND banned_user = ?';
-			if ($ban_profile = sql_fieldrow(sql_filter($sql, $to_userdata['user_id'], $user->data['user_id']))) {
+			if ($ban_profile = sql_fieldrow(sql_filter($sql, $to_userdata['user_id'], $user->d('user_id')))) {
 				$error[] = 'BLOCKED_MEMBER';
 			}
 		}
@@ -135,7 +135,7 @@ if ($submit || $mode == 'start' || $mode == 'reply') {
 		}
 		
 		if (!sizeof($error)) {
-			$dc_id = $comments->store_dc($mode, $to_userdata, $user->data, $dc_subject, $dc_message, true, true);
+			$dc_id = $comments->store_dc($mode, $to_userdata, $user->d(), $dc_subject, $dc_message, true, true);
 			
 			redirect(s_link('my', array('dc', 'read', $dc_id)) . '#' . $dc_id);
 		}
@@ -198,7 +198,7 @@ switch ($mode) {
 			WHERE msg_id = ?
 				AND (privmsgs_to_userid = ? OR privmsgs_from_userid = ?)
 				AND msg_deleted <> ?';
-		if (!$msg_data = sql_fieldrow(sql_filter($sql, $msg_id, $user->data['user_id'], $user->data['user_id'], $user->data['user_id']))) {
+		if (!$msg_data = sql_fieldrow(sql_filter($sql, $msg_id, $user->d('user_id'), $user->d('user_id'), $user->d('user_id')))) {
 			fatal_error();
 		}
 		
@@ -215,7 +215,7 @@ switch ($mode) {
 		}
 		
 		$with_user = $msg_data['privmsgs_to_userid'];
-		if ($with_user == $user->data['user_id']) {
+		if ($with_user == $user->d('user_id')) {
 			$with_user = $msg_data['privmsgs_from_userid'];
 		}
 		
@@ -260,7 +260,7 @@ switch ($mode) {
 				AND c.privmsgs_from_userid = m.user_id
 				AND c.privmsgs_to_userid = m2.user_id
 				AND (IF(c.last_msg_id,c.last_msg_id,c.msg_id) = c2.msg_id)';
-		$total_conv = sql_field(sql_filter($sql, $user->data['user_id'], $user->data['user_id'], $user->data['user_id']), 'total', 0);
+		$total_conv = sql_field(sql_filter($sql, $user->d('user_id'), $user->d('user_id'), $user->d('user_id')), 'total', 0);
 		
 		$sql = 'SELECT c.msg_id, c.parent_id, c.last_msg_id, c.root_conv, c.privmsgs_date, c.privmsgs_subject, c2.privmsgs_date as last_privmsgs_date, m.user_id, m.username, m.username_base, m.user_color, m2.user_id as user_id2, m2.username as username2, m2.username_base as username_base2, m2.user_color as user_color2
 			FROM _dc c, _dc c2, _members m, _members m2
@@ -272,11 +272,11 @@ switch ($mode) {
 				AND (IF(c.last_msg_id,c.last_msg_id,c.msg_id) = c2.msg_id)
 			ORDER BY c2.privmsgs_date DESC 
 			LIMIT ??, ??';
-		if ($result = sql_rowset(sql_filter($sql, $user->data['user_id'], $user->data['user_id'], $user->data['user_id'], $offset, $config['posts_per_page']))) {
+		if ($result = sql_rowset(sql_filter($sql, $user->d('user_id'), $user->d('user_id'), $user->d('user_id'), $offset, $config['posts_per_page']))) {
 			_style('messages', array());
 			
 			foreach ($result as $row) {
-				$dc_with = ($user->data['user_id'] == $row['user_id']) ? '2' : '';
+				$dc_with = ($user->d('user_id') == $row['user_id']) ? '2' : '';
 				if (!$row['last_msg_id']) {
 					$row['last_msg_id'] = $row['msg_id'];
 					$row['last_privmsgs_date'] = $row['privmsgs_date'];
@@ -318,7 +318,7 @@ $sql = 'SELECT DISTINCT m.user_id, m.username, m.username_base, m.user_color
 	WHERE (f.user_id = ? AND f.buddy_id = m.user_id)
 		OR (f.buddy_id = ? AND f.user_id = m.user_id)
 	ORDER BY m.username';
-if ($result = sql_rowset(sql_filter($sql, $user->data['user_id'], $user->data['user_id']))) {
+if ($result = sql_rowset(sql_filter($sql, $user->d('user_id'), $user->d('user_id')))) {
 	_style('sdc_friends', array(
 		'DC_START' => s_link('my', array('dc', 'start')))
 	);

@@ -1530,7 +1530,7 @@ function fatal_error($mode = '404', $bp_message = '') {
 			
 			status("404 Not Found");
 			
-			@error_log('[php client ' . $user->ip . ((isset($user->data['username'])) ? ' - ' . $user->data['username'] : '') . '] File does not exist: ' . $current_page, 0);
+			@error_log('[php client ' . $user->ip . ($user->d('username') ? ' - ' . $user->d('username') : '') . '] File does not exist: ' . $current_page, 0);
 			break;
 	}
 	
@@ -1677,7 +1677,7 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 	$u_session = ($user->is('member')) ? 'out' : 'in';
 	
 	if (preg_match('#.*?my/confirm.*?#is', $user->d('session_page'))) {
-		$user->data['session_page'] = '';
+		$user->d('session_page', '');
 	}
 	
 	$common_vars = array(

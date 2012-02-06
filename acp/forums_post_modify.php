@@ -77,8 +77,8 @@ class __forums_post_modify extends mac {
 				sql_query(sql_filter($sql, $post_message, $this->id));
 				
 				$rev = array(
-					'rev_post' => (int) $this->id,
-					'rev_uid' => (int) $user->data['user_id'],
+					'rev_post' => $this->id,
+					'rev_uid' => $user->d('user_id'),
 					'rev_time' => time(),
 					'rev_ip' => $user->ip,
 					'rev_text' => $this->object->post->post_text
@@ -91,7 +91,7 @@ class __forums_post_modify extends mac {
 		}
 		
 		v_style(array(
-			'V_TOPIC' => ($user->data['is_founder']) ? $this->object->topic->topic_title : '',
+			'V_TOPIC' => ($user->is('founder')) ? $this->object->topic->topic_title : '',
 			'V_MESSAGE' => $this->object->post->post_text,
 			'S_ACTION' => s_link('mcp', array('edit', $this->id))
 		));

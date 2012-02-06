@@ -302,7 +302,7 @@ class database extends dcom {
 		
 		if ($private) {
 			$sql .= ' AND cache_uid = ?';
-			$filter_values[] = $user->data['user_id'];
+			$filter_values[] = $user->d('user_id');
 		}
 		
 		$query = sql_field(sql_filter($sql, $filter_values), 'cache_query', '');
@@ -317,7 +317,7 @@ class database extends dcom {
 			$insert = array(
 				'cache_sid' => $sid,
 				'cache_query' => $a_sql,
-				'cache_uid' => $user->data['user_id'],
+				'cache_uid' => $user->d('user_id'),
 				'cache_time' => time()
 			);
 			$sql = 'INSERT INTO _search_cache' . $this->build('INSERT', $insert);
@@ -454,7 +454,7 @@ class database extends dcom {
 		
 		$sql_insert = array(
 			'time' => time(),
-			'uid' => $user->data['user_id'],
+			'uid' => $user->d('user_id'),
 			'method' => $method,
 			'actions' => json_encode($query)
 		);

@@ -456,6 +456,10 @@ class session {
 	
 	public function d($d = false, $v = false) {
 		if ($d === false) {
+			if ($v !== false) {
+				$this->data = $v;
+			}
+			
 			$r = $this->data;
 			unset($r['user_password']);
 			return $r;
@@ -1194,9 +1198,10 @@ class auth {
 	public function query($module = false, $member_id = false) {
 		if ($member_id === false) {
 			global $user;
-			$member_id = $user->data['user_id'];
 			
-			if ($user->data['is_founder']) {
+			$member_id = $user->d('user_id');
+			
+			if ($user->is('founder')) {
 				return true;
 			}
 		}
@@ -1214,7 +1219,7 @@ class auth {
 			}
 		}
 		
-		if ((isset($this->data[$member_id]) && is_array($this->data[$member_id]) && sizeof($this->data[$member_id])) || $user->data['is_founder']) {
+		if ((isset($this->data[$member_id]) && is_array($this->data[$member_id]) && sizeof($this->data[$member_id])) || $user->is('founder')) {
 			if ($module !== false && empty($this->data[$member_id]['a_' . $module])) {
 				return false;
 			}
@@ -1229,9 +1234,9 @@ class auth {
 		global $user;
 		
 		if ($member_id === false) {
-			$member_id = $user->data['user_id'];
+			$member_id = $user->d('user_id');
 			
-			if ($user->data['is_founder']) {
+			if ($user->is('founder')) {
 				return true;
 			}
 		}
@@ -1312,7 +1317,7 @@ class auth {
 		// are denied access
 		//
 		$u_access = array();
-		if ($user->data['is_member']) {
+		if ($user->is('member')) {
 			$forum_match_sql = ($forum_id != AUTH_LIST_ALL) ? sql_filter('AND a.forum_id = ?', $forum_id) : '';
 	
 			$sql = 'SELECT a.forum_id, ' . $a_sql . ', a.auth_mod
@@ -1321,7 +1326,7 @@ class auth {
 					AND ug.user_pending = 0
 					AND a.group_id = ug.group_id
 					' . $forum_match_sql;
-			$result = sql_rowset(sql_filter($sql, $user->data['user_id']));
+			$result = sql_rowset(sql_filter($sql, $user->d('user_id')));
 			
 			foreach ($result as $row) {
 				if ($forum_id != AUTH_LIST_ALL) {
@@ -1344,7 +1349,7 @@ class auth {
 		// auth requirement of USER_MOD
 		//
 		
-		$this->founder = ($user->data['is_founder']) ? true : false;
+		$this->founder = $user->is('founder');
 		
 		$auth_user = array();
 		foreach ($auth_fields as $a_key) {
@@ -1359,15 +1364,15 @@ class auth {
 						$auth_user[$a_key . '_type'] = $user->lang['AUTH_ANONYMOUS_USERS'];
 						break;
 					case AUTH_REG:
-						$auth_user[$a_key] = ($user->data['is_member']) ? true : false;
+						$auth_user[$a_key] = $user->is('member');
 						$auth_user[$a_key . '_type'] = $user->lang['AUTH_REGISTERED_USERS'];
 						break;
 					case AUTH_ACL:
-						$auth_user[$a_key] = ($user->data['is_member']) ? $this->check_user(AUTH_ACL, $a_key, $u_access, $custom_mod) : false;
+						$auth_user[$a_key] = ($user->is('member')) ? $this->check_user(AUTH_ACL, $a_key, $u_access, $custom_mod) : false;
 						$auth_user[$a_key . '_type'] = $user->lang['AUTH_USERS_GRANTED_ACCESS'];
 						break;
 					case AUTH_MOD:
-						//$auth_user[$a_key] = ($user->data['is_member']) ? $this->check_user(AUTH_MOD, 'auth_mod', $u_access, $custom_mod) : false;
+						//$auth_user[$a_key] = ($user->is('member')) ? $this->check_user(AUTH_MOD, 'auth_mod', $u_access, $custom_mod) : false;
 						$auth_user[$a_key] = $user->is($custom_mod);
 						$auth_user[$a_key . '_type'] = $user->lang['AUTH_MODERATORS'];
 						break;
@@ -1392,15 +1397,15 @@ class auth {
 							$auth_user[$f_forum_id][$a_key . '_type'] = $user->lang['AUTH_ANONYMOUS_USERS'];
 							break;
 						case AUTH_REG:
-							$auth_user[$f_forum_id][$a_key] = ($user->data['is_member']) ? true : false;
+							$auth_user[$f_forum_id][$a_key] = $user->is('member');
 							$auth_user[$f_forum_id][$a_key . '_type'] = $user->lang['AUTH_REGISTERED_USERS'];
 							break;
 						case AUTH_ACL:
-							$auth_user[$f_forum_id][$a_key] = ($user->data['is_member']) ? $this->check_user(AUTH_ACL, $a_key, $u_access[$f_forum_id], $custom_mod) : false;
+							$auth_user[$f_forum_id][$a_key] = ($user->is('member')) ? $this->check_user(AUTH_ACL, $a_key, $u_access[$f_forum_id], $custom_mod) : false;
 							$auth_user[$f_forum_id][$a_key . '_type'] = $user->lang['AUTH_USERS_GRANTED_ACCESS'];
 							break;
 						case AUTH_MOD:
-							//$auth_user[$f_forum_id][$a_key] = ($user->data['is_member']) ? $this->check_user(AUTH_MOD, 'auth_mod', $u_access[$f_forum_id]) : false;
+							//$auth_user[$f_forum_id][$a_key] = ($user->is('member')) ? $this->check_user(AUTH_MOD, 'auth_mod', $u_access[$f_forum_id]) : false;
 							$auth_user[$f_forum_id][$a_key] = $user->is($custom_mod);
 							$auth_user[$f_forum_id][$a_key . '_type'] = $user->lang['AUTH_MODERATORS'];
 							break;
@@ -1422,14 +1427,14 @@ class auth {
 		if ($forum_id != AUTH_LIST_ALL) {
 			$custom_mod = forum_for_team($forum_id);
 			
-			//$auth_user['auth_mod'] = ($user->data['is_member']) ? $this->check_user(AUTH_MOD, 'auth_mod', $u_access) : false;
-			$auth_user['auth_mod'] = ($user->data['is_member']) ? $user->is($custom_mod) : false;
+			//$auth_user['auth_mod'] = ($user->is('member')) ? $this->check_user(AUTH_MOD, 'auth_mod', $u_access) : false;
+			$auth_user['auth_mod'] = ($user->is('member')) ? $user->is($custom_mod) : false;
 		} else {
 			for ($k = 0, $end = sizeof($f_access); $k < $end; $k++) {
 				$f_forum_id = $f_access[$k]['forum_id'];
 				$custom_mod = forum_for_team($forum_id);
 	
-				$auth_user[$f_forum_id]['auth_mod'] = ($user->data['is_member']) ? (isset($u_access[$f_forum_id]) ? $this->check_user(AUTH_MOD, 'auth_mod', $u_access[$f_forum_id], $custom_mod) : false) : false;
+				$auth_user[$f_forum_id]['auth_mod'] = ($user->is('member')) ? (isset($u_access[$f_forum_id]) ? $this->check_user(AUTH_MOD, 'auth_mod', $u_access[$f_forum_id], $custom_mod) : false) : false;
 			}
 		}
 	

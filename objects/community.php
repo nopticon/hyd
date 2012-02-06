@@ -188,6 +188,7 @@ class community {
 		_style($block, array('L_TITLE' => $user->lang[$block_title]));
 		_style($block . '.members', array());
 		
+		$is_founder = $user->is('founder');
 		$result = sql_rowset($sql);
 		
 		foreach ($result as $row) {
@@ -208,7 +209,7 @@ class community {
 						$users_hidden++;
 					}
 					
-					if (((!$row['user_hideuser'] || $user->data['is_founder']) && !$is_bot) || ($is_bot && $user->data['is_founder'])) {
+					if (((!$row['user_hideuser'] || $is_founder) && !$is_bot) || ($is_bot && $is_founder)) {
 						_style($block . '.members.item', array(
 							'USERNAME' => $username,
 							'PROFILE' => s_link('m', $row['username_base']),

@@ -204,7 +204,7 @@ class _comments {
 			$insert_data = array(
 				'post_reply' => (int) $post_reply,
 				'post_active' => 1,
-				'poster_id' => (int) $user->data['user_id'],
+				'poster_id' => (int) $user->d('user_id'),
 				'post_ip' => (string) $user->ip,
 				'post_time' => (int) $current_time,
 				'post_text' => (string) $message
@@ -273,7 +273,7 @@ class _comments {
 			}
 			
 			$notify = true;
-			if ($this->param[0] == 'm' && $user->data['user_id'] == $post_data['user_id']) {
+			if ($this->param[0] == 'm' && $user->d('user_id') == $post_data['user_id']) {
 				$notify = false;
 			}
 			
@@ -284,13 +284,13 @@ class _comments {
 					$emailer->from('info');
 					$emailer->use_template('user_message');
 					$emailer->email_address($post_data['user_email']);
-					$emailer->set_subject($user->data['username'] . ' te envio un mensaje en Rock Republik');
+					$emailer->set_subject($user->d('username') . ' te envio un mensaje en Rock Republik');
 					
 					$emailer->assign_vars(array(
 						'USERNAME_TO' => $post_data['username'],
-						'USERNAME_FROM' => $user->data['username'],
+						'USERNAME_FROM' => $user->d('username'),
 						'USER_MESSAGE' => entity_decode($message),
-						'U_PROFILE' => s_link('m', $user->data['username_base']))
+						'U_PROFILE' => s_link('m', $user->d('username_base')))
 					);
 					$emailer->send();
 					$emailer->reset();
@@ -311,12 +311,12 @@ class _comments {
 						WHERE u.item = p.post_id
 							AND p.userpage_id = ?
 							AND p.poster_id = ?';
-				if ($rows = sql_rowset(sql_filter($sql, $user->data['user_id'], $post_data['user_id']), false, 'post_id')) {
+				if ($rows = sql_rowset(sql_filter($sql, $user->d('user_id'), $post_data['user_id']), false, 'post_id')) {
 					$sql = 'DELETE FROM _members_unread
 						WHERE user_id = ?
 							AND element = ?
 							AND item IN (??)';
-					sql_query(sql_filter($sql, $user->data['user_id'], UH_UPM, implode(',', $rows)));
+					sql_query(sql_filter($sql, $user->d('user_id'), UH_UPM, implode(',', $rows)));
 				}
 			}
 		} else {
@@ -394,7 +394,7 @@ class _comments {
 				'S_DELETE' => false
 			);
 			
-			if (isset($this->data['USER_ID_FIELD']) && ($user->data['is_founder'] || ($user->data['user_id'] === $row[$this->data['USER_ID_FIELD']]))) {
+			if (isset($this->data['USER_ID_FIELD']) && ($user->is('founder') || ($user->d('user_id') === $row[$this->data['USER_ID_FIELD']]))) {
 				$data['S_DELETE'] = sprintf($this->data['S_DELETE_URL'], $row['post_id']);
 			}
 			
@@ -529,7 +529,7 @@ class _comments {
 		$replace = array("\n", '', "\n\n", '...', "\\1&#058;");
 		$message = preg_replace($match, $replace, trim($message));
 		
-		if ($user->data['is_founder'] && preg_match('#\[chown\:([0-9a-z\_\-]+)\]#is', $message, $a_chown)) {
+		if ($user->is('founder') && preg_match('#\[chown\:([0-9a-z\_\-]+)\]#is', $message, $a_chown)) {
 			$sql = 'SELECT *
 				FROM _members
 				WHERE username_base = ?';
@@ -538,21 +538,21 @@ class _comments {
 					WHERE user_id = ?';
 				sql_query(sql_filter($sql, time(), $row['user_id']));
 				
-				$user->data = $row;
+				$user->d(false, $row);
 			}
 			
 			$message = str_replace('[chown:' . $a_chown[1] . ']', '', $message);
 		}
 
-		$allowed_tags = array('br', 'strong', 'ul', 'ol', 'li', 'em', 'small');
+		$allowed_tags = w('br strong ul ol li em small');
 		$is_mod = $user->is('mod');
 		
 		if ($is_mod) {
-			$allowed_tags = array_merge($allowed_tags, array('blockquote', 'object', 'param', 'a', 'h1', 'h2', 'h3', 'div', 'span', 'img', 'table', 'tr', 'td', 'th'));
+			$allowed_tags = array_merge($allowed_tags, w('blockquote object param a h1 h2 h3 div span img table tr td th'));
 		}
 		
-		if (isset($user->data['is_founder']) && $user->data['is_founder']) {
-			$allowed_tags = array_merge($allowed_tags, array('script'));
+		if ($user->is('founder')) {
+			$allowed_tags = array_merge($allowed_tags, w('script'));
 		}
 		
 		$ptags = str_replace('*', '.*?', implode('|', $allowed_tags));
@@ -635,7 +635,7 @@ class _comments {
 		//
 		// Notify via email if user requires it
 		//
-		if ($mode == 'start' && $can_email && $user->data['user_email_dc']) {
+		if ($mode == 'start' && $can_email && $user->d('user_email_dc')) {
 			include_once('./interfase/emailer.php');
 			$emailer = new emailer();
 			
@@ -668,7 +668,7 @@ class _comments {
 		
 		global $user;
 		
-		$sql_member = sql_filter('((privmsgs_to_userid = ?) OR (privmsgs_from_userid = ?))', $user->data['user_id'], $user->data['user_id']);
+		$sql_member = sql_filter('((privmsgs_to_userid = ?) OR (privmsgs_from_userid = ?))', $user->d('user_id'), $user->d('user_id'));
 		
 		$sql = 'SELECT *
 			FROM _dc
@@ -681,7 +681,7 @@ class _comments {
 		$update_a = $delete_a = array();
 		
 		foreach ($result as $row) {
-			$var = ($row['msg_deleted'] && ($row['msg_deleted'] != $user->data['user_id'])) ? 'delete_a' : 'update_a';
+			$var = ($row['msg_deleted'] && ($row['msg_deleted'] != $user->d('user_id'))) ? 'delete_a' : 'update_a';
 			
 			if (!isset(${$var}[$row['parent_id']])) {
 				${$var}[$row['parent_id']] = true;
@@ -694,7 +694,7 @@ class _comments {
 				SET msg_deleted = ?
 				WHERE parent_id IN (??)
 					AND ' . $sql_member;
-			sql_query(sql_filter($sql, $user->data['user_id'], implode(',', array_map('intval', array_keys($update_a)))));
+			sql_query(sql_filter($sql, $user->d('user_id'), implode(',', array_map('intval', array_keys($update_a)))));
 			
 			$user->delete_unread(UH_NOTE, $update_a);
 		}
@@ -756,11 +756,11 @@ class _comments {
 		
 		$html = array();
 		$exclude = array();
-		if (!$user->data['is_founder']) {
+		if (!$user->is('founder')) {
 			$sql = 'SELECT *
 				FROM _html_exclude
 				WHERE html_member = ?';
-			if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
+			if ($result = sql_rowset(sql_filter($sql, $user->d('user_id')))) {
 				$delete_expired = array();
 				$current_time = time();
 				

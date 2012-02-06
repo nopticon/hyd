@@ -50,7 +50,7 @@ class __forums_topic_feature extends mac {
 		topic_feature($this->id, $this->object->new_value);
 		
 		$sql_insert = array(
-			'bio' => $user->data['user_id'],
+			'bio' => $user->d('user_id'),
 			'time' => time(),
 			'ip' => $user->ip,
 			'action' => 'feature',

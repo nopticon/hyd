@@ -69,7 +69,7 @@ class today {
 			WHERE object_bio = ?
 			GROUP BY o.object_type
 			ORDER BY t.type_order, o.object_relation';
-		if (!$elements = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
+		if (!$elements = sql_rowset(sql_filter($sql, $user->d('user_id')))) {
 			return false;
 		}
 		
@@ -113,7 +113,7 @@ class today {
 				AND c.last_msg_id = c2.msg_id
 				AND c2.privmsgs_from_userid = m.user_id 
 			ORDER BY c2.privmsgs_date DESC';
-		$result = sql_rowset(sql_filter($sql, $user->data['user_id'], __FUNCTION__));
+		$result = sql_rowset(sql_filter($sql, $user->d('user_id'), __FUNCTION__));
 		
 		$response = w();
 		foreach ($result as $i => $row) {
@@ -142,7 +142,7 @@ class today {
 				AND u.element = ?
 				AND u.item = m.user_id
 			ORDER BY u.datetime DESC';
-		$result = sql_rowset(sql_filter($sql, $user->data['user_id'], UH_FRIEND));
+		$result = sql_rowset(sql_filter($sql, $user->d('user_id'), UH_FRIEND));
 		
 		$response = w();
 		foreach ($result as $i => $row) {
@@ -169,7 +169,7 @@ class today {
 				AND u.item = p.post_id
 				AND p.poster_id = m.user_id
 			ORDER BY p.post_time DESC';
-		$result = sql_rowset(sql_filter($sql, $user->data['user_id'], UH_UPM));
+		$result = sql_rowset(sql_filter($sql, $user->d('user_id'), UH_UPM));
 		
 		$response = w();
 		foreach ($result as $i => $row) {
@@ -196,7 +196,7 @@ class today {
 				AND u.element = ?
 				AND u.item = t.topic_id
 			ORDER BY t.topic_time DESC';
-		$result = sql_rowset(sql_filter($sql, $user->data['user_id'], UH_N));
+		$result = sql_rowset(sql_filter($sql, $user->d('user_id'), UH_N));
 		
 		$response = w();
 		foreach ($result as $i => $row) {
@@ -222,7 +222,7 @@ class today {
 				AND u.element = ?
 				AND u.item = n.news_id
 			ORDER BY n.post_time DESC';
-		$result = sql_rowset(sql_filter($sql, $user->data['user_id'], UH_GN));
+		$result = sql_rowset(sql_filter($sql, $user->d('user_id'), UH_GN));
 		
 		$response = w();
 		foreach ($result as $i => $row) {
@@ -248,7 +248,7 @@ class today {
 				AND u.element = ? 
 				AND u.item = a.ub 
 			ORDER BY name';
-		$result = sql_rowset(sql_filter($sql, $user->data['user_id'], UH_A));
+		$result = sql_rowset(sql_filter($sql, $user->d('user_id'), UH_A));
 		
 		$response = w();
 		foreach ($result as $i => $row) {
@@ -275,7 +275,7 @@ class today {
 				AND p.poster_id = m.user_id 
 				AND p.post_active = 1 
 			ORDER BY p.post_id DESC';
-		$result = sql_rowset(sql_filter($sql, $user->data['user_id'], UH_C));
+		$result = sql_rowset(sql_filter($sql, $user->d('user_id'), UH_C));
 		
 		$response = w();
 		foreach ($result as $i => $row) {
@@ -308,7 +308,7 @@ class today {
 				AND f.ub = a.ub
 				AND f.user_id = m.user_id
 			ORDER BY f.joined DESC';
-		$result = sql_rowset(sql_filter($sql, $user->data['user_id'], UH_AF));
+		$result = sql_rowset(sql_filter($sql, $user->d('user_id'), UH_AF));
 		
 		$response = w();
 		foreach ($result as $i => $row) {
@@ -340,7 +340,7 @@ class today {
 				AND u.item = d.id 
 				AND d.ub = b.ub 
 			ORDER BY d.id DESC';
-		$result = sql_rowset(sql_filter($sql, $user->data['user_id'], UH_D));
+		$result = sql_rowset(sql_filter($sql, $user->d('user_id'), UH_D));
 		
 		$response = w();
 		foreach ($result as $i => $row) {
@@ -365,15 +365,15 @@ class today {
 		
 		$sql = "SELECT b.ub, b.subdomain, b.name, d.id AS dl_id, d.ud AS ud_type, d.title, m.*, u.user_id, u.username, u.username_base, u.user_color
 			FROM _members_unread ur, _artists b, _dl d, _dl_posts m, _members u 
-			WHERE ur.user_id = " . $user->data['user_id'] . " 
-				AND ur.element = " . UH_M . " 
+			WHERE ur.user_id = ? 
+				AND ur.element = ? 
 				AND ur.item = m.post_id 
 				AND m.download_id = d.id 
 				AND d.ub = b.ub 
 				AND m.poster_id = u.user_id 
 				AND m.post_active = 1 
 			ORDER BY m.post_id DESC";
-		$result = sql_rowset(sql_filter($sql, $user->data['user_id'], UH_M));
+		$result = sql_rowset(sql_filter($sql, $user->d('user_id'), UH_M));
 		
 		$response = w();
 		foreach ($result as $i => $row) {
@@ -413,7 +413,7 @@ class today {
 				AND t.forum_id = f.forum_id 
 				AND p.poster_id = m.user_id 
 			ORDER BY t.topic_announce DESC, p.post_time DESC';
-		$result = sql_rowset(sql_filter($sql, $user->data['user_id'], '22' . forum_for_team_not(), UH_T));
+		$result = sql_rowset(sql_filter($sql, $user->d('user_id'), '22' . forum_for_team_not(), UH_T));
 		
 		$response = w();
 		foreach ($result as $i => $row) {
@@ -453,7 +453,7 @@ class today {
 				AND u.item = m.user_id 
 				AND m.user_active = 1 
 			ORDER BY m.user_id DESC';
-		$result = sql_rowset(sql_filter($sql, $user->data['user_id'], UH_U));
+		$result = sql_rowset(sql_filter($sql, $user->d('user_id'), UH_U));
 		
 		$response = w();
 		foreach ($result as $i => $row) {

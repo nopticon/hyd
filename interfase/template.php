@@ -1280,7 +1280,7 @@ class Template {
 				'TEMPLATE_NAME' => $this->tpl,
 				
 				'IS_MEMBER' => $user->is('member'),
-				'MEMBER_COLOR' => $user->data['user_color'],
+				'MEMBER_COLOR' => $user->d('user_color'),
 				'FOOTER_YEAR' => date('Y')
 			);
 			

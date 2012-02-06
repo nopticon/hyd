@@ -41,8 +41,8 @@ class __broadcast_program_create extends mac {
 			//_die('El programa ya existe');
 		}
 		
-		$time_start = mktime($v->start - $user->data['user_timezone'], 0, 0, 0, 0, 0);
-		$time_end = mktime($v->end - $user->data['user_timezone'], 0, 0, 0, 0, 0);
+		$time_start = mktime($v->start - $user->d('user_timezone'), 0, 0, 0, 0, 0);
+		$time_end = mktime($v->end - $user->d('user_timezone'), 0, 0, 0, 0, 0);
 		
 		$v->start = date('H', $time_start);
 		$v->end = date('H', $time_end);

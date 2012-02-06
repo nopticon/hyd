@@ -191,11 +191,11 @@ class __event_images extends mac {
 					FROM _events_colab
 					WHERE colab_event = ?
 						AND colab_uid = ?';
-				if (!$row = sql_fieldrow(sql_filter($sql, $event_ud, $user->data['user_id'])))
+				if (!$row = sql_fieldrow(sql_filter($sql, $event_ud, $user->d('user_id'))))
 				{
 					$sql_insert = array(
 						'colab_event' => $event_id,
-						'colab_uid' => $user->data['user_id']
+						'colab_uid' => $user->d('user_id')
 					);
 					$sql = 'INSERT INTO _events_colab' . sql_build('INSERT', $sql_insert);
 					sql_query($sql);

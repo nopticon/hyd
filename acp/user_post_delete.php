@@ -42,7 +42,7 @@ class __user_post_delete extends mac {
 		
 		$this->object = (object) $this->object;
 		
-		if (!$user->data['is_founder'] && $user->data['user_id'] != $this->object->userpage_id) {
+		if (!$user->is('founder') && $user->d('user_id') != $this->object->userpage_id) {
 			fatal_error();
 		}
 		

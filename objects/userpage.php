@@ -113,10 +113,10 @@ class userpage {
 		}
 		
 		$user_fields['avatar'] = '';
-		$user_fields['gender'] = $user->data['user_gender'];
-		$user_fields['birthday_day'] = (int) substr($user->data['user_birthday'], 6, 2);
-		$user_fields['birthday_month'] = (int) substr($user->data['user_birthday'], 4, 2);
-		$user_fields['birthday_year'] = (int) substr($user->data['user_birthday'], 0, 4);
+		$user_fields['gender'] = $user->d('user_gender');
+		$user_fields['birthday_day'] = (int) substr($user->d('user_birthday'), 6, 2);
+		$user_fields['birthday_month'] = (int) substr($user->d('user_birthday'), 4, 2);
+		$user_fields['birthday_year'] = (int) substr($user->d('user_birthday'), 0, 4);
 		
 		extract($user_fields);
 		
@@ -258,11 +258,11 @@ class userpage {
 				
 				if (sizeof($member_data)) {
 					$sql = 'UPDATE _members SET ' . sql_build('UPDATE', $member_data) . sql_filter(' 
-						WHERE user_id = ?', $user->data['user_id']);
+						WHERE user_id = ?', $user->d('user_id'));
 					sql_query($sql);
 				}
 				
-				redirect(s_link('m', $user->data['username_base']));
+				redirect(s_link('m', $user->d('username_base')));
 			}
 		}
 		
@@ -347,7 +347,7 @@ class userpage {
 		
 		$mode = request_var('mode', 'main');
 		
-		if ($user->data['user_id'] != $this->data['user_id'] && !in_array($mode, w('friend ban'))) {
+		if ($user->d('user_id') != $this->data['user_id'] && !in_array($mode, w('friend ban'))) {
 			$is_blocked = false;
 			
 			if (!$user->is('all', $this->data['user_id'])) {
@@ -427,7 +427,7 @@ class userpage {
 			$friend_add_lang = true;
 			
 			if ($user->is('member')) {
-				$friend_add_lang = $this->is_friend($user->data['user_id'], $this->data['user_id']);
+				$friend_add_lang = $this->is_friend($user->d('user_id'), $this->data['user_id']);
 			}
 			
 			$friend_add_lang = ($friend_add_lang) ? 'FRIENDS_ADD' : 'FRIENDS_DEL';
@@ -473,7 +473,7 @@ class userpage {
 			do_login();
 		}
 		
-		if ($user->data['user_id'] == $this->data['user_id']) {
+		if ($user->d('user_id') == $this->data['user_id']) {
 			redirect(s_link('m', $this->data['username_base']));
 		}
 		
@@ -481,32 +481,32 @@ class userpage {
 			FROM _members_friends
 			WHERE user_id = ?
 				AND buddy_id = ?';
-		if ($row = sql_fieldrow(sql_filter($sql, $user->data['user_id'], $this->data['user_id']))) {
+		if ($row = sql_fieldrow(sql_filter($sql, $user->d('user_id'), $this->data['user_id']))) {
 			$sql = 'DELETE FROM _members_friends
 				WHERE user_id = ?
 					AND buddy_id = ?';
-			sql_query(sql_filter($sql, $user->data['user_id'], $this->data['user_id']));
+			sql_query(sql_filter($sql, $user->d('user_id'), $this->data['user_id']));
 			
 			if ($row['friend_time']) {
 				//$user->points_remove(1);
 			}
 			
-			$user->delete_unread($this->data['user_id'], $user->data['user_id']);
+			$user->delete_unread($this->data['user_id'], $user->d('user_id'));
 			
 			redirect(s_link('m', $this->data['username_base']));
 		}
 		
 		$sql_insert = array(
-			'user_id' => $user->data['user_id'],
+			'user_id' => $user->d('user_id'),
 			'buddy_id' => $this->data['user_id'],
 			'friend_time' => time()
 		);
 		$sql = 'INSERT INTO _members_friends' . sql_build('INSERT', $sql_insert);
 		sql_query($sql);
 		
-		$user->save_unread(UH_FRIEND, $user->data['user_id'], 0, $this->data['user_id']);
+		$user->save_unread(UH_FRIEND, $user->d('user_id'), 0, $this->data['user_id']);
 		
-		redirect(s_link('m', array($user->data['username_base'], 'friends')));
+		redirect(s_link('m', array($user->d('username_base'), 'friends')));
 	}
 	
 	public function friend_list() {
@@ -564,7 +564,7 @@ class userpage {
 			do_login();
 		}
 		
-		if ($user->data['user_id'] == $this->data['user_id']) {
+		if ($user->d('user_id') == $this->data['user_id']) {
 			redirect(s_link('m', $this->data['username_base']));
 		}
 		
@@ -576,7 +576,7 @@ class userpage {
 			FROM _members_ban
 			WHERE user_id = ?
 				AND banned_user = ?';
-		if ($row = sql_fieldrow(sql_filter($sql, $user->data['user_id'], $this->data['user_id']))) {
+		if ($row = sql_fieldrow(sql_filter($sql, $user->d('user_id'), $this->data['user_id']))) {
 			$sql = 'DELETE FROM _members_ban
 				WHERE ban_id = ?';
 			sql_query(sql_filter($sql, $row['ban_id']));
@@ -585,7 +585,7 @@ class userpage {
 		}
 		
 		$sql_insert = array(
-			'user_id' => $user->data['user_id'],
+			'user_id' => $user->d('user_id'),
 			'banned_user' => $this->data['user_id'],
 			'ban_time' => $user->time
 		);
@@ -595,17 +595,17 @@ class userpage {
 		$sql = 'DELETE FROM _members_friends
 			WHERE user_id = ?
 				AND buddy_id = ?';
-		sql_query(sql_filter($sql, $user->data['user_id'], $this->data['user_id']));
+		sql_query(sql_filter($sql, $user->d('user_id'), $this->data['user_id']));
 		
 		$sql = 'DELETE FROM _members_friends
 			WHERE user_id = ?
 				AND buddy_id = ?';
-		sql_query(sql_filter($sql, $this->data['user_id'], $user->data['user_id']));
+		sql_query(sql_filter($sql, $this->data['user_id'], $user->d('user_id')));
 		
 		$sql = 'DELETE FROM _members_viewers
 			WHERE user_id = ?
 				AND viewer_id = ?';
-		sql_query(sql_filter($sql, $this->data['user_id'], $user->data['user_id']));
+		sql_query(sql_filter($sql, $this->data['user_id'], $user->d('user_id')));
 		
 		redirect(s_link('m', $this->data['username_base']));
 	}

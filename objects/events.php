@@ -191,7 +191,7 @@ class _events extends downloads {
 					WHERE event_id = ?
 						AND image_id = ?
 						AND member_id = ?';
-				if ($row = sql_fieldrow(sql_filter($sql, $this->v('id'), $imagedata['image'], $user->data['user_id']))) {
+				if ($row = sql_fieldrow(sql_filter($sql, $this->v('id'), $imagedata['image'], $user->d('user_id')))) {
 					$sql = 'UPDATE _events_fav SET fav_date = ?
 						WHERE event_id = ?
 							AND image_id = ?';
@@ -200,7 +200,7 @@ class _events extends downloads {
 					$sql_insert = array(
 						'event_id' => (int) $this->v('id'),
 						'image_id' => (int) $imagedata['image'],
-						'member_id' => (int) $user->data['user_id'],
+						'member_id' => (int) $user->d('user_id'),
 						'fav_date' => time()
 					);
 					$sql = 'INSERT INTO _events_fav' . sql_build('INSERT', $sql_insert);
@@ -238,7 +238,7 @@ class _events extends downloads {
 					FROM _poll_voters
 					WHERE vote_id = ?
 						AND vote_user_id = ?';
-				if (!sql_fieldrow(sql_filter($sql, $vote_id, $user->data['user_id']))) {
+				if (!sql_fieldrow(sql_filter($sql, $vote_id, $user->d('user_id')))) {
 					$sql = 'UPDATE _poll_results SET vote_result = vote_result + 1 
 						WHERE vote_id = ?
 							AND vote_option_id = ?';
@@ -246,7 +246,7 @@ class _events extends downloads {
 					
 					$insert_vote = array(
 						'vote_id' => (int) $vote_id,
-						'vote_user_id' => (int) $user->data['user_id'],
+						'vote_user_id' => (int) $user->d('user_id'),
 						'vote_user_ip' => $user->ip,
 						'vote_cast' => (int) $choice
 					);
@@ -289,7 +289,7 @@ class _events extends downloads {
 							WHERE event_id = ?
 								AND image_id = ?
 								AND member_id = ?';
-						if (sql_field(sql_filter($sql, $this->v('id'), $imagedata['image'], $user->data['user_id']), 'member_id', 0)) {
+						if (sql_field(sql_filter($sql, $this->v('id'), $imagedata['image'], $user->d('user_id')), 'member_id', 0)) {
 							$is_fav = true;
 						}
 					}
@@ -300,7 +300,7 @@ class _events extends downloads {
 						);
 					}
 				} else {
-					if (!$t_offset && $user->data['is_founder']) {
+					if (!$t_offset && $user->is('founder')) {
 						$sql = 'UPDATE _events SET views = views + 1
 							WHERE id = ?';
 						sql_query(sql_filter($sql, $this->v('id')));
@@ -379,7 +379,7 @@ class _events extends downloads {
 						$sql = 'SELECT MAX(post_time) AS last_post_time
 							FROM _forum_posts
 							WHERE poster_id = ?';
-						if ($last_post_time = sql_field(sql_filter($sql, $user->data['user_id']))) {
+						if ($last_post_time = sql_field(sql_filter($sql, $user->d('user_id')))) {
 							if (intval($last_post_time) > 0 && ($current_time - intval($last_post_time)) < intval($config['flood_interval'])) {
 								$error[] = 'FLOOD_ERROR';
 							}
@@ -423,7 +423,7 @@ class _events extends downloads {
 					$insert_data = array(
 						'topic_id' => (int) $this->v('event_topic'),
 						'forum_id' => (int) $forum_id,
-						'poster_id' => (int) $user->data['user_id'],
+						'poster_id' => (int) $user->d('user_id'),
 						'post_time' => time(),
 						'poster_ip' => $user->ip,
 						'post_text' => $post_message,
@@ -465,7 +465,7 @@ class _events extends downloads {
 					
 					$sql = 'UPDATE _members SET user_posts = user_posts + 1
 						WHERE user_id = ?';
-					sql_query(sql_filter($sql, $user->data['user_id']));
+					sql_query(sql_filter($sql, $user->d('user_id')));
 					
 					redirect($u_event_alias);
 				}
@@ -580,7 +580,7 @@ class _events extends downloads {
 							FROM _poll_voters
 							WHERE vote_id = ?
 								AND vote_user_id = ?';
-						$user_voted = sql_field(sql_filter($sql, $vote_info[0]['vote_id'], $user->data['user_id']), 'vote_id', 0);
+						$user_voted = sql_field(sql_filter($sql, $vote_info[0]['vote_id'], $user->d('user_id')), 'vote_id', 0);
 						$poll_expired = ($vote_info[0]['vote_length']) ? (($vote_info[0]['vote_start'] + $vote_info[0]['vote_length'] < time()) ? true : false) : false;
 						
 						_style('poll', array(

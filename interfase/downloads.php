@@ -111,9 +111,9 @@ class downloads {
 		$is_fav = false;
 		$sql = 'SELECT dl_id
 			FROM _dl_fav
-			WHERE dl_id = ' . $this->dl_data['id'] . '
-				AND user_id = ' . $user->data['user_id'];
-		if (sql_field(sql_filter($sql, $this->dl_data['id'], $user->data['user_id']), 'dl_id', 0)) {
+			WHERE dl_id = ?
+				AND user_id = ?';
+		if (sql_field(sql_filter($sql, $this->dl_data['id'], $user->d('user_id')), 'dl_id', 0)) {
 			$is_fav = true;
 		}
 		
@@ -132,7 +132,7 @@ class downloads {
 				FROM _dl_voters
 				WHERE ud = ?
 					AND user_id = ?';
-			if (sql_field(sql_filter($sql, $this->dl_data['id'], $user->data['user_id']), 'user_id', 0)) {
+			if (sql_field(sql_filter($sql, $this->dl_data['id'], $user->d('user_id')), 'user_id', 0)) {
 				$user_voted = true;
 			}
 		}
@@ -218,7 +218,7 @@ class downloads {
 			if ($this->auth['adm'] || $this->auth['mod']) {
 				$this->msg->data['CONTROL']['auth'] = array();
 				
-				if ($this->auth['adm'] && $user->data['is_founder']) {
+				if ($this->auth['adm'] && $user->is('founder')) {
 					$this->msg->data['CONTROL']['auth']['EDIT'] = array(
 						'URL' => s_link_control('a', array('a' => $this->data['subdomain'], 'mode' => 'dposts', 'manage' => 'edit', 'id' => '%d')),
 						'ID' => 'post_id'
@@ -296,7 +296,7 @@ class downloads {
 			FROM _dl_voters
 			WHERE ud = ?
 				AND user_id = ?';
-		if (sql_field(sql_filter($sql, $this->dl_data['id'], $user->data['user_id']), 'user_id', 0)) {
+		if (sql_field(sql_filter($sql, $this->dl_data['id'], $user->d('user_id')), 'user_id', 0)) {
 			$user_voted = true;
 		}
 		
@@ -321,7 +321,7 @@ class downloads {
 		
 		$sql_insert = array(
 			'ud' => $this->dl_data['id'],
-			'user_id' => $user->data['user_id'],
+			'user_id' => $user->d('user_id'),
 			'user_option' => $option_id
 		);
 		$sql = 'INSERT INTO _dl_voters' . sql_build('INSERT', $sql_insert);
@@ -347,7 +347,7 @@ class downloads {
 			FROM _dl_fav
 			WHERE dl_id = ?
 				AND user_id = ?';
-		if (sql_field(sql_filter($sql, $this->dl_data['id'], $user->data['user_id']), 'dl_id', 0)) {
+		if (sql_field(sql_filter($sql, $this->dl_data['id'], $user->d('user_id')), 'dl_id', 0)) {
 			$is_fav = true;
 		}
 		
@@ -359,7 +359,7 @@ class downloads {
 		
 		$sql_insert = array(
 			'dl_id' => $this->dl_data['id'],
-			'user_id' => $user->data['user_id'],
+			'user_id' => $user->d('user_id'),
 			'favtime' => time()
 		);
 		$sql = 'INSERT INTO _dl_fav' . sql_build('INSERT', $sql_insert);
@@ -367,7 +367,7 @@ class downloads {
 		
 		$sql = 'UPDATE _members SET user_dl_favs = user_dl_favs + 1
 			WHERE user_id = ?';
-		sql_query(sql_filter($sql, $user->data['user_id']));
+		sql_query(sql_filter($sql, $user->d('user_id')));
 		
 		return redirect($url);
 	}

@@ -195,7 +195,7 @@ class _chat {
 						WHERE session_id = ?';
 					sql_query(sql_filter($sql, $csid));
 					
-					$this->_message($row['session_ch_id'], $user->data['user_id'], sprintf($user->lang['CHAT_MEMBER_LOGOUT'], $user->data['username']));
+					$this->_message($row['session_ch_id'], $user->d('user_id'), sprintf($user->lang['CHAT_MEMBER_LOGOUT'], $user->d('username')));
 				}
 				
 				redirect(s_link('chat'));
@@ -218,7 +218,7 @@ class _chat {
 						AND c.msg_time > ?
 						AND c.msg_member_id = m.user_id
 					ORDER BY c.msg_time ASC';
-				$messages = sql_rowset(sql_filter($sql, $this->data['ch_id'], $user->data['user_id'], $last_msg, $this->data['session_start']));
+				$messages = sql_rowset(sql_filter($sql, $this->data['ch_id'], $user->d('user_id'), $last_msg, $this->data['session_start']));
 				
 				$sql = 'SELECT m.user_id, m.username, m.username_base, m.user_color
 					FROM _chat_sessions s, _members m
@@ -247,8 +247,8 @@ class _chat {
 							$xmlre .= '<message id="' . $row['msg_id'] . '" sid="' . $this->data['session_id'] . '">';
 							
 							if (!$row['msg_ignore']) {
-								if (preg_match("#\b(" . $user->data['username'] . ")\b#i", $message)) {
-									$message = '<span class="rkc_self">' . str_replace('\"', '"', substr(@preg_replace('#(\>(((?>([^><]+|(?R)))*)\<))#se', "@preg_replace('#\b(" . str_replace('\\', '\\\\', $user->data['username']) . ")\b#i', '<span class=\"sgray bold\">\\\\1</span>', '\\0')", '>' . $message . '<'), 1, -1)) . '</span>';
+								if (preg_match("#\b(" . $user->d('username') . ")\b#i", $message)) {
+									$message = '<span class="rkc_self">' . str_replace('\"', '"', substr(@preg_replace('#(\>(((?>([^><]+|(?R)))*)\<))#se', "@preg_replace('#\b(" . str_replace('\\', '\\\\', $user->d('username')) . ")\b#i', '<span class=\"sgray bold\">\\\\1</span>', '\\0')", '>' . $message . '<'), 1, -1)) . '</span>';
 								}
 								
 								$message = '<strong style="color: #' . $row['user_color'] . '">&lt;' . $row['username'] . '&gt;</strong> ' . $message . '<br />';
@@ -284,7 +284,7 @@ class _chat {
 						AND c.msg_time > ?
 						AND c.msg_member_id = m.user_id
 					ORDER BY c.msg_time ASC';
-				$result = sql_rowset(sql_filter($sql, $this->data['ch_id'], $user->data['user_id'], $last_msg, $this->data['session_start']));
+				$result = sql_rowset(sql_filter($sql, $this->data['ch_id'], $user->d('user_id'), $last_msg, $this->data['session_start']));
 				
 				*/
 				break;
@@ -296,7 +296,7 @@ class _chat {
 	public function auth() {
 		global $user;
 		
-		if ($user->data['is_founder'] || ($this->data['ch_founder'] == $user->data['user_id'])) {
+		if ($user->is('founder') || ($this->data['ch_founder'] == $user->d('user_id'))) {
 			return true;
 		}
 		
@@ -308,7 +308,7 @@ class _chat {
 				FROM _members_friends
 				WHERE (user_id = ? AND buddy_id = ?)
 					OR (user_id = ? AND buddy_id = ?)';
-			if (sql_fieldrow(sql_filter($sql, $this->data['ch_founder'], $user->data['user_id'], $user->data['user_id'], $this->data['ch_founder']))) {
+			if (sql_fieldrow(sql_filter($sql, $this->data['ch_founder'], $user->d('user_id'), $user->d('user_id'), $this->data['ch_founder']))) {
 				return true;
 			}
 			return false;
@@ -324,7 +324,7 @@ class _chat {
 			FROM _chat_auth
 			WHERE ch_id = ?
 				AND ch_user_id = ?';
-		if ($ch_auth = sql_field(sql_filter($sql, $this->data['ch_id'], $user->data['user_id']), 'ch_auth', 0)) {
+		if ($ch_auth = sql_field(sql_filter($sql, $this->data['ch_id'], $user->d('user_id')), 'ch_auth', 0)) {
 			switch ($ch_auth) {
 				case 0:
 					return false;
@@ -366,12 +366,12 @@ class _chat {
 			FROM _chat_sessions
 			WHERE session_member = ?
 				AND session_ch_id = ?';
-		if ($row = sql_fieldrow(sql_filter($sql, $user->data['user_id'], $this->data['ch_id']))) {
+		if ($row = sql_fieldrow(sql_filter($sql, $user->d('user_id'), $this->data['ch_id']))) {
 			$last_msg = request_var('last_msg', 0);
 			
 			$sql = 'UPDATE _chat_sessions SET session_time = ?, session_last_msg = ?
 				WHERE session_id = ? AND session_member = ? AND session_ch_id = ?';
-			sql_query(sql_filter($sql, $ttime, $last_msg, $sid, $user->data['user_id'], $this->data['ch_id']));
+			sql_query(sql_filter($sql, $ttime, $last_msg, $sid, $user->d('user_id'), $this->data['ch_id']));
 			
 			$row['session_time'] = $ttime;
 			$row['session_last_msg'] = $last_msg;
@@ -386,7 +386,7 @@ class _chat {
 		
 		$insert_data = array(
 			'session_id' => md5(unique_id()),
-			'session_member' => (int) $user->data['user_id'],
+			'session_member' => (int) $user->d('user_id'),
 			'session_ch_id' => (int) $this->data['ch_id'],
 			'session_ip' => $user->ip,
 			'session_start' => (int) $ttime,
@@ -399,7 +399,7 @@ class _chat {
 			WHERE ch_id = ?';
 		sql_query(sql_filter($sql, $this->data['ch_id']));
 		
-		$this->_message($this->data['ch_id'], $user->data['user_id'], sprintf($user->lang['CHAT_MEMBER_ENTERED'], $user->data['username']));
+		$this->_message($this->data['ch_id'], $user->d('user_id'), sprintf($user->lang['CHAT_MEMBER_ENTERED'], $user->d('username')));
 		
 		$this->data += $insert_data;
 		$this->sys_clean();
@@ -413,7 +413,7 @@ class _chat {
 		$insert_data = array(
 			'msg_ch' => (int) $ch,
 			'msg_ignore' => (int) $ignore,
-			'msg_member_id' => (int) $user->data['user_id'],
+			'msg_member_id' => (int) $user->d('user_id'),
 			'msg_text' => (string) $this->comments->prepare($message),
 			'msg_time' => (int) time(),
 			'msg_ip' => $user->ip
@@ -432,7 +432,7 @@ class _chat {
 			'CH_NAME' => $this->data['ch_name'])
 		);
 		
-		if ($user->data['user_id'] === $this->data['ch_founder']) {
+		if ($user->d('user_id') === $this->data['ch_founder']) {
 			// TEMP
 			// _style('ch_manage');
 		}

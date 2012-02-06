@@ -156,7 +156,7 @@ if ($submit_topic)
 			$sql = 'SELECT MAX(post_time) AS last_post_time
 				FROM _forum_posts
 				WHERE poster_id = ?';
-			if ($last_post_time = sql_field(sql_filter($sql, $user->data['user_id']))) {
+			if ($last_post_time = sql_field(sql_filter($sql, $user->d('user_id')))) {
 				if (intval($last_post_time) > 0 && ($current_time - intval($last_post_time)) < intval($config['flood_interval'])) {
 					$error_msg .= (($error_msg != '') ? '<br />' : '') . $user->lang['FLOOD_ERROR'];
 				}
@@ -182,13 +182,13 @@ if ($submit_topic)
 			$post_message = $comments->prepare($post_message);
 			$topic_vote = (!empty($poll_title) && $sizeof_poll_options >= 2) ? 1 : 0;
 			
-			if (!$user->data['is_founder']) {
+			if (!$user->is('founder')) {
 				$post_title = strnoupper($post_title);
 			}
 			
 			$insert_data['TOPIC'] = array(
 				'topic_title' => $post_title,
-				'topic_poster' => (int) $user->data['user_id'],
+				'topic_poster' => (int) $user->d('user_id'),
 				'topic_time' => (int) $current_time,
 				'forum_id' => (int) $forum_id,
 				'topic_locked' => $topic_locked,
@@ -204,7 +204,7 @@ if ($submit_topic)
 			$insert_data['POST'] = array(
 				'topic_id' => (int) $topic_id,
 				'forum_id' => (int) $forum_id,
-				'poster_id' => (int) $user->data['user_id'],
+				'poster_id' => (int) $user->d('user_id'),
 				'post_time' => (int) $current_time,
 				'poster_ip' => $user->ip,
 				'post_text' => $post_message,
@@ -272,7 +272,7 @@ if ($submit_topic)
 			
 			$sql = 'UPDATE _members SET user_posts = user_posts + 1
 				WHERE user_id = ?';
-			sql_query(sql_filter($sql, $user->data['user_id']));
+			sql_query(sql_filter($sql, $user->d('user_id')));
 			
 			redirect(s_link('topic', $topic_id));
 		}
@@ -383,7 +383,7 @@ foreach ($topics as $alias => $list) {
 			'TOPIC_ID' => $row->topic_id,
 			'TOPIC_AUTHOR' => $row->author, 
 			'REPLIES' => $row->topic_replies,
-			'VIEWS' => ($user->data['is_founder']) ? $row->topic_views : '',
+			'VIEWS' => ($user->is('founder')) ? $row->topic_views : '',
 			
 			'TOPIC_TITLE' => $row->topic_title,
 			'TOPIC_CREATION_TIME' => $user->format_date($row->topic_time),

@@ -90,9 +90,9 @@ class xavatar
 		
 		$this->info['temp_avatar'] = $avatar_assets . md5(unique_id()) . '.' . $this->info['ext'];
 		$this->info['temp_avatar2'] = $avatar_assets . md5(unique_id()) . '.' . $this->info['ext'];
-		$this->info['just_file'] = $user->data['username_base'] . '.' . $this->info['ext'];
+		$this->info['just_file'] = $user->d('username_base') . '.' . $this->info['ext'];
 		$this->info['new_avatar'] = $avatar_assets . $this->info['just_file'];
-		$this->info['current_avatar'] = $avatar_assets . $user->data['user_avatar'];
+		$this->info['current_avatar'] = $avatar_assets . $user->d('user_avatar');
 		
 		if (!@move_uploaded_file($this->info['tmp_name'], $this->info['temp_avatar']))
 		{

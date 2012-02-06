@@ -456,7 +456,7 @@ class layout extends downloads {
 			if ($this->auth['mod']) {
 				$this->msg->data['CONTROL']['auth'] = array();
 				
-				if ($this->auth['adm'] && $user->data['is_founder']) {
+				if ($this->auth['adm'] && $user->is('founder')) {
 					$this->msg->data['CONTROL']['auth']['EDIT'] = array(
 						'URL' => s_link_control('a', array('a' => $this->data['subdomain'], 'mode' => 'aposts', 'manage' => 'edit', 'id' => '%d')),
 						'ID' => 'post_id'
@@ -535,14 +535,14 @@ class layout extends downloads {
 			if (empty($error_msg)) {
 				$sql = 'UPDATE _artists SET last_email = ?, last_email_user = ?
 					WHERE ub = ?';
-				sql_query(sql_filter($sql, $current_time, $user->data['user_id'], $this->data['ub']));
+				sql_query(sql_filter($sql, $current_time, $user->d('user_id'), $this->data['ub']));
 				
 				$emailer = new emailer($config['smtp_delivery']);
 
-				$emailer->from($user->data['user_email']);
+				$emailer->from($user->d('user_email'));
 
-				$email_headers = 'X-AntiAbuse: User_id - ' . $user->data['user_id'] . "\n";
-				$email_headers .= 'X-AntiAbuse: Username - ' . $user->data['username'] . "\n";
+				$email_headers = 'X-AntiAbuse: User_id - ' . $user->d('user_id') . "\n";
+				$email_headers .= 'X-AntiAbuse: Username - ' . $user->d('username') . "\n";
 				$email_headers .= 'X-AntiAbuse: User IP - ' . $user->ip . "\n";
 
 				$emailer->use_template('mmg_send_email', $config['default_lang']);
@@ -553,7 +553,7 @@ class layout extends downloads {
 				$emailer->assign_vars(array(
 					'SITENAME' => $config['sitename'], 
 					'BOARD_EMAIL' => $config['board_email'], 
-					'FROM_USERNAME' => $user->data['username'], 
+					'FROM_USERNAME' => $user->d('username'), 
 					'UB_NAME' => $this->data['name'], 
 					'MESSAGE' => $message
 				));
@@ -617,28 +617,28 @@ class layout extends downloads {
 		}
 		
 		if ($this->auth['fav']) {
-			$sql_member = array('user_a_favs' => $user->data['user_a_favs'] - 1);
+			$sql_member = array('user_a_favs' => $user->d('user_a_favs') - 1);
 			
-			if ($user->data['user_a_favs'] == 1 && $user->data['user_type'] == USER_FAN) {
+			if ($user->d('user_a_favs') == 1 && $user->d('user_type') == USER_FAN) {
 				$sql_member += array('user_type' => USER_NORMAL, 'user_color' => '4D5358');
 			}
 			
 			$sql = 'DELETE FROM _artists_fav
 				WHERE ub = ?
 					AND user_id = ?';
-			sql_query(sql_filter($sql, $this->data['ub'], $user->data['user_id']));
+			sql_query(sql_filter($sql, $this->data['ub'], $user->d('user_id')));
 			
-			$user->delete_all_unread(UH_AF, $user->data['user_id']);
+			$user->delete_all_unread(UH_AF, $user->d('user_id'));
 		} else {
-			$sql_member = array('user_a_favs' => $user->data['user_a_favs'] + 1);
+			$sql_member = array('user_a_favs' => $user->d('user_a_favs') + 1);
 			
-			if ($user->data['user_type'] == USER_NORMAL) {
+			if ($user->d('user_type') == USER_NORMAL) {
 				$sql_member += array('user_type' => USER_FAN, 'user_color' => '7A0B43');
 			}
 			
 			$sql_insert = array(
 				'ub' => (int) $this->data['ub'],
-				'user_id' => (int) $user->data['user_id'],
+				'user_id' => (int) $user->d('user_id'),
 				'joined' => time()
 			);
 			$sql = 'INSERT INTO _artists_fav' . sql_build('INSERT', $sql_insert);
@@ -649,7 +649,7 @@ class layout extends downloads {
 		
 		$sql = 'UPDATE _members SET ??
 			WHERE user_id = ?';
-		sql_query(sql_build($sql, sql_build('UPDATE', $sql_member), $user->data['user_id']));
+		sql_query(sql_build($sql, sql_build('UPDATE', $sql_member), $user->d('user_id')));
 		
 		redirect($url);
 		
@@ -681,7 +681,7 @@ class layout extends downloads {
 			FROM _artists_voters
 			WHERE ub = ?
 				AND user_id = ?';
-		if ($row = sql_fieldrow(sql_filter($sql, $this->data['ub'], $user->data['user_id']))) {
+		if ($row = sql_fieldrow(sql_filter($sql, $this->data['ub'], $user->d('user_id')))) {
 			redirect($url);
 		}
 		
@@ -703,7 +703,7 @@ class layout extends downloads {
 		
 		$sql_insert = array(
 			'ub' => $this->data['ub'],
-			'user_id' => $user->data['user_id'],
+			'user_id' => $user->d('user_id'),
 			'user_option' => $option_id
 		);
 		$sql = 'INSERT INTO _artists_voters' . sql_build('INSERT', $sql_insert);
@@ -830,7 +830,7 @@ class _artists extends layout {
 			return;
 		}
 		
-		if ($user->data['user_type'] == USER_ARTIST) {
+		if ($user->is('artist')) {
 			$sql = 'SELECT u.user_id
 				FROM _members u, _artists_auth a, _artists b
 				WHERE a.ub = ?
@@ -838,7 +838,7 @@ class _artists extends layout {
 					AND a.user_id = u.user_id
 					AND b.ub = a.ub
 					AND b.ub = a.ub';
-			if (sql_fieldrow(sql_filter($sql, $this->data['ub'], $user->data['user_id']))) {
+			if (sql_fieldrow(sql_filter($sql, $this->data['ub'], $user->d('user_id')))) {
 				$this->auth['smod'] = $this->auth['mod'] = true;
 				return;
 			}
@@ -850,7 +850,7 @@ class _artists extends layout {
 			RIGHT JOIN _members m ON aa.user_id = m.user_id
 			WHERE aa.ub = ?
 				AND aa.user_id = ?';
-		if ($row = sql_fieldrow(sql_filter($sql, $this->data['ub'] , $user->data['user_id']))) {
+		if ($row = sql_fieldrow(sql_filter($sql, $this->data['ub'] , $user->d('user_id')))) {
 			$current_time = time();
 			
 			if (!$row['ban_time'] || $row['ban_time'] > $current_time) {
@@ -867,11 +867,11 @@ class _artists extends layout {
 				$sql = 'DELETE FROM _artists_access
 					WHERE user_id = ?
 						AND ub = ?';
-				sql_query(sql_filter($sql, $user->data['user_id'], $this->data['ub']));
+				sql_query(sql_filter($sql, $user->d('user_id'), $this->data['ub']));
 			}
 		}
 		
-		if ($user->data['user_type'] != USER_NORMAL) {
+		if ($user->d('user_type') != USER_NORMAL) {
 			$sql = 'SELECT f.* 
 				FROM _artists b, _artists_fav f, _members m 
 				WHERE b.ub = ? 
@@ -879,7 +879,7 @@ class _artists extends layout {
 					AND f.user_id = ? 
 					AND f.user_id = m.user_id 
 					AND m.user_type <> ??';
-			if (sql_fieldrow(sql_filter($sql, $this->data['ub'], $user->data['user_id'], USER_IGNORE))) {
+			if (sql_fieldrow(sql_filter($sql, $this->data['ub'], $user->d('user_id'), USER_IGNORE))) {
 				$this->auth['fav'] = true;
 			}
 		}
@@ -1390,7 +1390,7 @@ class _artists extends layout {
 						
 						$sql_viewers2 = array(
 							'ub' => (int) $this->data['ub'],
-							'user_id' => (int) $user->data['user_id']
+							'user_id' => (int) $user->d('user_id')
 						);
 						
 						$sql = 'UPDATE _artists_viewers SET ??
@@ -1538,7 +1538,7 @@ class _artists extends layout {
 						FROM _artists_voters
 						WHERE ub = ?
 							AND user_id = ?';
-					if (sql_fieldrow(sql_filter($sql, $this->data['ub'], $user->data['user_id']))) {
+					if (sql_fieldrow(sql_filter($sql, $this->data['ub'], $user->d('user_id')))) {
 						$user_voted = true;
 					}
 				}
@@ -1675,7 +1675,7 @@ class _artists extends layout {
 					if ($this->auth['mod']) {
 						$this->msg->data['CONTROL']['auth'] = array();
 						
-						if ($this->auth['adm'] && $user->data['is_founder']) {
+						if ($this->auth['adm'] && $user->is('founder')) {
 							$this->msg->data['CONTROL']['auth']['EDIT'] = array(
 								'URL' => s_link_control('a', array('a' => $this->data['subdomain'], 'mode' => 'aposts', 'manage' => 'edit', 'id' => '%d')),
 								'ID' => 'post_id'

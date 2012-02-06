@@ -60,7 +60,7 @@ class __user_color_fix extends mac {
 		Muchas gracias por tu comprensi&oacute;n.";
 		$_conv = sprintf($_conv, $userdata['username']);
 		
-		$dc_id = $comments->store_dc('start', $userdata, $user->data, 'Rock Republik: Cambio de color de usuario', $_conv);
+		$dc_id = $comments->store_dc('start', $userdata, $user->d(), 'Rock Republik: Cambio de color de usuario', $_conv);
 		
 		return _pre('El color de ' . $userdata['username'] . ' ha sido cambiado y fue notificado.', true);
 	}

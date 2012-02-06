@@ -196,7 +196,7 @@ class cover {
 				FROM _poll_voters
 				WHERE vote_id = ?
 					AND vote_user_id = ?';
-			$user_voted = (sql_field(sql_filter($sql, $vote_info[0]['vote_id'], $user->data['user_id']), 'vote_user_id', false)) ? true : false;
+			$user_voted = (sql_field(sql_filter($sql, $vote_info[0]['vote_id'], $user->d('user_id')), 'vote_user_id', false)) ? true : false;
 		}
 		
 		$poll_expired = ($vote_info[0]['vote_length']) ? (($vote_info[0]['vote_start'] + $vote_info[0]['vote_length'] < $current_time) ? true : 0) : 0;
