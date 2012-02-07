@@ -18,8 +18,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-require_once(ROOT . 'interfase/comments.php');
-
 class __user_mass_conversation extends mac {
 	public function __construct() {
 		parent::__construct();
@@ -28,13 +26,11 @@ class __user_mass_conversation extends mac {
 	}
 	
 	public function _home() {
-		global $config, $user, $cache, $template;
+		global $config, $user, $cache, $template, $comments;
 		
 		if (!$this->submit) {
 			return false;
 		}
-		
-		$comments = new _comments();
 		
 		$post_mode = request_var('post_mode', 0);
 		$post_subject = request_var('post_subject', '');

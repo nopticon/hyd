@@ -659,9 +659,9 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 	}
 	
 	$code_invite = request_var('invite', '');
-	$admin = (isset($_POST['admin'])) ? true : false;
-	$login = (isset($_POST['login'])) ? true : false;
-	$submit = (isset($_POST['submit'])) ? true : false;
+	$admin = _button('admin');
+	$login = _button('login');
+	$submit = _button();
 	
 	if ($admin) {
 		$need_auth = true;

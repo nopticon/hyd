@@ -18,8 +18,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-require_once(ROOT . './interfase/comments.php');
-
 class __user_color_fix extends mac {
 	public function __construct() {
 		parent::__construct();
@@ -28,7 +26,7 @@ class __user_color_fix extends mac {
 	}
 	
 	public function _home() {
-		global $config, $user, $cache, $template;
+		global $config, $user, $cache, $template, $comments;
 		
 		if (!$this->submit) {
 			return false;
@@ -47,8 +45,6 @@ class __user_color_fix extends mac {
 		$sql = 'UPDATE _members SET user_color = ?
 			WHERE user_id = ?';
 		sql_query(sql_filter($sql, '4D5358', $userdata['user_id']));
-		
-		$comments = new _comments();
 		
 		$_conv = "Saludos %s,
 		

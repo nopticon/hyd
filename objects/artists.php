@@ -524,7 +524,7 @@ class layout extends downloads {
 		$message = '';
 		$current_time = time();
 		
-		if (isset($_POST['submit'])) {
+		if (_button()) {
 			$subject = request_var('subject', '');
 			$message = request_var('message', '', true);
 			

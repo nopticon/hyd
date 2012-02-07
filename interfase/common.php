@@ -79,6 +79,7 @@ require_once(ROOT . 'interfase/template.php');
 require_once(ROOT . 'interfase/session.php');
 require_once(ROOT . 'interfase/functions.php');
 require_once(ROOT . 'interfase/cache.php');
+require_once(ROOT . 'interfase/comments.php');
 
 set_error_handler('msg_handler');
 
@@ -87,6 +88,7 @@ $user = new user();
 $auth	= new auth();
 $cache = new cache();
 $template	= new template();
+$comments = new _comments();
 $config = $cache->config();
 
 ?>

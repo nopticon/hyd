@@ -18,7 +18,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-require_once(ROOT . 'interfase/comments.php');
 require_once(ROOT . 'interfase/downloads.php');
 
 class _events extends downloads { 
@@ -133,7 +132,7 @@ class _events extends downloads {
 	}
 	
 	public function object() {
-		global $auth, $user, $config;
+		global $auth, $user, $config, $comments;
 		
 		$mode = request_var('mode', '');
 		
@@ -315,13 +314,11 @@ class _events extends downloads {
 					fatal_error();
 				}
 				
-				$comments = new _comments();
-				
 				$mod_auth = $user->is('mod');
 				
 				$error = array();
 				$forum_id = $event_topic['forum_id'];
-				$submit_reply = (isset($_POST['post']));
+				$submit_reply = _button('post');
 				$reply = request_var('reply', 0);
 				
 				if ($reply) {

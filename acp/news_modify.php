@@ -18,8 +18,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-require_once(ROOT . 'interfase/comments.php');
-
 class __news_modify extends mac {
 	public function __construct() {
 		parent::__construct();
@@ -30,7 +28,7 @@ class __news_modify extends mac {
 	public function _home() {
 		global $config, $user, $cache, $template;
 		
-		$submit2 = isset($_POST['submit2']);
+		$submit2 = _button('submit2');
 		
 		if ($this->submit || $submit2) {
 			$news_id = request_var('news_id', 0);

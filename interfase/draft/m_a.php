@@ -112,9 +112,9 @@ class a extends common {
 	}
 	
 	public function _news_edit() {
-		global $user, $config;
+		global $user, $configm, $comments;
 
-		$submit = isset($_POST['submit']) ? true : false;
+		$submit = _button();
 		$id = $this->control->get_var('id', 0);
 		if (!$id) {
 			fatal_error();
@@ -158,7 +158,7 @@ class a extends common {
 			}
 
 			if (!sizeof($error)) {
-				$message = $this->comments->prepare($message);
+				$message = $comments->prepare($message);
 				if ($message != $nsdata2['post_text']) {
 					$update_data = array(
 						'TOPIC' => array(
@@ -975,7 +975,7 @@ class a extends common {
 
 		if (isset($_POST['submit'])) {
 			$message = $this->control->get_var('message', '', true);
-			$message = $this->comments->prepare($message);
+			$message = $comments->prepare($message);
 
 			$sql = 'UPDATE _artists SET bio = ?
 				WHERE ub = ?';
@@ -1264,7 +1264,7 @@ class a extends common {
 			}
 
 			if (!sizeof($error)) {
-				$message = $this->comments->prepare($message);
+				$message = $comments->prepare($message);
 
 				$sql = 'UPDATE _dl_posts SET post_text = ?
 					WHERE post_id = ?';

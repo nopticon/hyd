@@ -18,7 +18,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 define('IN_NUCLEO', true);
 require_once('./interfase/common.php');
-require_once(ROOT . 'interfase/comments.php');
 require_once(ROOT . 'objects/board.php');
 
 $user->init();

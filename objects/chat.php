@@ -18,17 +18,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-require_once(ROOT . 'interfase/comments.php');
-
 class _chat {
 	public $data = array();
 	public $rooms = array();
 	public $users = array();
-	public $comments;
 	
 	public function __construct() {
-		$this->comments = new _comments;
-		
 		return;
 	}
 	
@@ -242,7 +237,7 @@ class _chat {
 					
 					if ($so_messages) {
 						foreach ($messages as $row) {
-							$message = $this->comments->parse_message($row['msg_text'], 'bold red');
+							$message = $comments->parse_message($row['msg_text'], 'bold red');
 							
 							$xmlre .= '<message id="' . $row['msg_id'] . '" sid="' . $this->data['session_id'] . '">';
 							
@@ -408,13 +403,13 @@ class _chat {
 	}
 	
 	public function _message($ch, $ignore, $message) {
-		global $user;
+		global $user, $comments;
 		
 		$insert_data = array(
 			'msg_ch' => (int) $ch,
 			'msg_ignore' => (int) $ignore,
 			'msg_member_id' => (int) $user->d('user_id'),
-			'msg_text' => (string) $this->comments->prepare($message),
+			'msg_text' => (string) $comments->prepare($message),
 			'msg_time' => (int) time(),
 			'msg_ip' => $user->ip
 		);

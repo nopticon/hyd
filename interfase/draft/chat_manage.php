@@ -28,7 +28,7 @@ if (!$user->data['is_member']) {
 }
 
 $mode = request_var('mode', '');
-$submit = (isset($_POST['submit'])) ? true : false;
+$submit = _button();
 $error = array();
 
 switch ($mode) {

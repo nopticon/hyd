@@ -51,11 +51,8 @@ class userpage {
 	private $_title;
 	private $_template;
 	private $data;
-	private $comments;
 	
 	public function __construct() {
-		$this->comments = new _comments();
-		
 		return;
 	}
 	
@@ -134,8 +131,8 @@ class userpage {
 			
 			$password1 = request_var('password1', '');
 			$password2 = request_var('password2', '');
-			$hideuser = (isset($_POST['hideuser'])) ? true : false;
-			$email_dc = (isset($_POST['email_dc'])) ? true : false;
+			$hideuser = _button('hideuser');
+			$email_dc = _button('email_dc');
 			
 			if (!empty($password1)) {
 				if (empty($password2)) {
@@ -237,7 +234,7 @@ class userpage {
 			
 			if (!sizeof($error)) {
 				if (!empty($sig)) {
-					$sig = $this->comments->prepare($sig);
+					$sig = $comments->prepare($sig);
 				}
 				
 				unset($user_fields['birthday_day'], $user_fields['birthday_month'], $user_fields['birthday_year']);
@@ -368,7 +365,7 @@ class userpage {
 			}
 		}
 		
-		$profile_fields = $this->comments->user_profile($this->data);
+		$profile_fields = $comments->user_profile($this->data);
 		
 		switch ($mode) {
 			case 'friend':
@@ -524,7 +521,7 @@ class userpage {
 			
 			$tcol = 0;
 			foreach ($result as $row) {
-				$friend_profile = $this->comments->user_profile($row);
+				$friend_profile = $comments->user_profile($row);
 				
 				if (!$tcol) _style('friends.row');
 				
@@ -638,7 +635,7 @@ class userpage {
 	}
 	
 	public function user_main() {
-		global $user;
+		global $user, $comments;
 		
 		_style('main');
 		
@@ -846,7 +843,7 @@ class userpage {
 			
 			$col = 0;
 			foreach ($result as $row) {
-				$profile = $this->comments->user_profile($row);
+				$profile = $comments->user_profile($row);
 				
 				if (!$col) _style('main.viewers.row');
 				
@@ -867,10 +864,9 @@ class userpage {
 		// GET USERPAGE MESSAGES
 		//
 		$comments_ref = s_link('m', $this->data['username_base']);
-		if ($this->data['userpage_posts'])
-		{
-			$this->comments->reset();
-			$this->comments->ref = $comments_ref;
+		if ($this->data['userpage_posts']) {
+			$comments->reset();
+			$comments->ref = $comments_ref;
 			
 			$sql = 'SELECT p.*, u2.user_id, u2.username, u2.username_base, u2.user_color, u2.user_avatar
 				FROM _members_posts p, _members u, _members u2
@@ -881,14 +877,14 @@ class userpage {
 				ORDER BY p.post_time DESC 
 				LIMIT 50';
 			
-			$this->comments->data = array(
+			$comments->data = array(
 				'A_LINKS_CLASS' => 'bold red',
 				'USER_ID_FIELD' => 'userpage_id',
 				'S_DELETE_URL' => s_link('mcp', array('ucm', '%d')),
 				'SQL' => sql_filter($sql, $this->data['user_id'])
 			);
 			
-			$this->comments->view(0, '', $this->data['userpage_posts'], $this->data['userpage_posts'], 'main.posts');
+			$comments->view(0, '', $this->data['userpage_posts'], $this->data['userpage_posts'], 'main.posts');
 		}
 		
 		if ($user->is('member')) {

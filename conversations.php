@@ -18,12 +18,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 define('IN_NUCLEO', true);
 require_once('./interfase/common.php');
-require_once(ROOT . 'interfase/comments.php');
 
 //
 // Cancel 
 //
-if (isset($_POST['cancel'])) {
+if (_button('cancel')) {
 	redirect(s_link('my', 'dc'));
 }
 
@@ -34,15 +33,13 @@ if (!$user->is('member')) {
 	do_login();
 }
 
-$comments = new _comments();
-
 /*
  * Delete conversations
  */
 $mark	= request_var('mark', array(0));
 
-if (isset($_POST['delete']) && $mark) {
-	if (isset($_POST['confirm'])) {
+if (_button('delete') && $mark) {
+	if (_button('confirm')) {
 		$comments->dc_delete($mark);
 	} else {
 		$s_hidden = array('delete' => true);
@@ -69,10 +66,10 @@ if (isset($_POST['delete']) && $mark) {
 //
 // Submit
 //
-$submit = (isset($_POST['post'])) ? true : 0;
-$msg_id = intval(request_var('p', 0));
+$submit = _button('post');
+$msg_id = request_var('p', 0);
 $mode = request_var('mode', '');
-$error = array();
+$error = w();
 
 if ($submit || $mode == 'start' || $mode == 'reply') {
 	$member = '';

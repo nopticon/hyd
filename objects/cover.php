@@ -18,13 +18,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-require_once(ROOT . 'interfase/comments.php');
-
 class cover {
 	public $msg;
 	
 	public function news() {
-		global $config, $cache, $user;
+		global $config, $cache, $user, $comments;
 		
 		if (!$news = $cache->get('news')) {
 			$sql = 'SELECT n.news_id, n.news_alias, n.post_time, n.poster_id, n.post_subject, n.post_desc, c.*
@@ -41,8 +39,6 @@ class cover {
 		if (!sizeof($news)) {
 			return;
 		}
-		
-		$comments = new _comments();
 		
 		foreach ($news as $i => $row) {
 			if (!$i) _style('news');

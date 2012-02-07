@@ -49,7 +49,7 @@ class __user_post_bandelete extends mac {
 			WHERE user_id = ?';
 		sql_query(sql_filter($sql, $d['userpage_id']));
 		
-		if (isset($_POST['user'])) {
+		if (_button('user')) {
 			$sql = 'SELECT ban_id
 				FROM _banlist
 				WHERE ban_userid = ?';
@@ -62,7 +62,7 @@ class __user_post_bandelete extends mac {
 			}
 		}
 		
-		if (isset($_POST['ip'])) {
+		if (_button('ip')) {
 			$sql = 'SELECT ban_id
 				FROM _banlist
 				WHERE ban_ip = ?';

@@ -18,16 +18,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-require_once(ROOT . 'interfase/comments.php');
-
 class topic {
 	private $_title;
 	private $_template;
-	private $comments;
 	
 	public function __construct() {
-		$this->comments = new _comments();
-		
 		return;
 	}
 	
@@ -40,7 +35,7 @@ class topic {
 	}
 	
 	public function run() {
-		global $config, $user;
+		global $config, $auth, $user, $comments;
 		
 		$topic_id = request_var('t', 0);
 		$post_id = request_var('p', 0);
@@ -52,18 +47,17 @@ class topic {
 		//
 		// Get topic data
 		//
-		$sql_from = $sql_where = $sql_count = $sql_order = '';
-		
 		if ($post_id) {
 			$sql_from = ', _forum_posts p, _forum_posts p2, _members m ';
-			$sql_where = 'p.post_id = ' . (int) $post_id . ' AND p.poster_id = m.user_id AND t.topic_id = p.topic_id AND p2.topic_id = p.topic_id AND p2.post_id <= ' . (int) $post_id;;
+			$sql_where = sql_filter('p.post_id = ? AND p.poster_id = m.user_id AND t.topic_id = p.topic_id AND p2.topic_id = p.topic_id AND p2.post_id <= ?', $post_id, $post_id);
 			$sql_count = ', p.post_text, m.username AS reply_username, COUNT(p2.post_id) AS prev_posts, p.post_deleted';
 			$sql_order = ' GROUP BY p.post_id, t.topic_id, t.topic_title, t.topic_locked, t.topic_replies, t.topic_time, t.topic_important, t.topic_vote, t.topic_last_post_id, f.forum_name, f.forum_locked, f.forum_id, f.auth_view, f.auth_read, f.auth_post, f.auth_reply, f.auth_announce, f.auth_pollcreate, f.auth_vote ORDER BY p.post_id ASC';
 		} else {
-			$sql_where = 't.topic_id = ' . (int) $topic_id;
+			$sql_from = $sql_count = $sql_order = '';
+			$sql_where = sql_filter('t.topic_id = ?', $topic_id);
 		}
 		
-		$sql = 'SELECT t.topic_id, t.topic_title, t.topic_locked, t.topic_replies, t.topic_time, t.topic_important, t.topic_vote, t.topic_featured, t.topic_points, t.topic_last_post_id, f.forum_alias, f.forum_name, f.forum_locked, f.forum_id, f.auth_view, f.auth_read, f.auth_post, f.auth_reply, f.auth_announce, f.auth_pollcreate, f.auth_vote' . $sql_count . '
+		$sql = 'SELECT t.*, f.*' . $sql_count . '
 			FROM _forum_topics t, _forums f' . $sql_from . '
 			WHERE ' . $sql_where . ' AND f.forum_id = t.forum_id' . $sql_order;
 		if (!$topic_data = sql_fieldrow($sql)) {
@@ -80,18 +74,16 @@ class topic {
 				}
 				break;
 		}
-		
-		//
-		// Check mod auth
-		//
-		$mod_auth = $user->is('mod');
-		
+
 		//
 		// Hide deleted posts
-		//
 		if ($topic_data['post_deleted']) {
 			fatal_error();
 		}
+		
+		//
+		// Check mod auth
+		$mod_auth = $user->is('mod');
 		
 		//
 		// Init vars
@@ -102,8 +94,8 @@ class topic {
 		
 		$reply = request_var('reply', 0);
 		$start = request_var('offset', 0);
-		$submit_reply = isset($_POST['post']) ? true : false;
-		$submit_vote = isset($_POST['vote']) ? true : false;
+		$submit_reply = _button('post');
+		$submit_vote = _button('vote');
 		
 		$post_message = '';
 		$post_reply_message = '';
@@ -118,27 +110,19 @@ class topic {
 		}
 		
 		//
-		// Load user config
-		//
-		$user->setup();
-		
-		$comments = new _comments();
-		
-		//
 		// Start member auth
 		//
 		$is_auth = $auth->forum(AUTH_ALL, $forum_id, $topic_data);
 		
 		if ($submit_reply || $submit_vote) {
-			//$mod_auth = $auth->query('forum');
 			$auth_key = ($submit_reply) ? 'auth_reply' : 'auth_vote';
 			
-			if (((!$is_auth['auth_view'] || !$is_auth['auth_read']) && $forum_id != 22) || !$is_auth[$auth_key]) {
+			if (((!$is_auth['auth_view'] || !$is_auth['auth_read'])) || !$is_auth[$auth_key]) {
 				if (!$user->is('member')) {
 					do_login();
 				}
 				
-				$can_reply_closed = $auth->option(array('forum', 'topics', 'delete'));
+				$can_reply_closed = $auth->option(w('forum topics delete'));
 				
 				if (!$can_reply_closed && ($topic_data['forum_locked'] || $topic_data['topic_locked'])) {
 					$error[] = 'TOPIC_LOCKED';
@@ -323,7 +307,7 @@ class topic {
 				WHERE topic_id = ?
 					AND user_id = ?';
 			if (!sql_field(sql_filter($sql, $topic_id, $user->d('user_id')))) {
-				if (isset($_POST['watch']) ) {
+				if (_button('watch')) {
 					$sql_insert = array(
 						'user_id' => $user->d('user_id'),
 						'topic_id' => $topic_id,
@@ -343,7 +327,8 @@ class topic {
 		// Get all data for the topic
 		//
 		$get_post_id = ($reply) ? 'post_id' : 'topic_id';
-		$get_post_data['p.' . $get_post_id] = $$get_post_id;
+		$get_post_data['p.' . $get_post_id] = ${$get_post_id};
+		
 		if (!$user->is('founder')) {
 			$get_post_data['p.post_deleted'] = 0;
 		}
@@ -582,13 +567,13 @@ class topic {
 		//
 		// Send vars to template
 		//
-		$layout_vars = array(
+		v_style(array(
 			'FORUM_NAME' => $topic_data['forum_name'],
 			'TOPIC_TITLE' => $topic_data['topic_title'],
 			'TOPIC_REPLIES' => $topic_data['topic_replies'],
 			
 			'S_TOPIC_ACTION' => $topic_url . (($start) ? 's' . $start . '/' : ''),
-			'U_VIEW_FORUM' => s_link('forum', $topic_data['forum_alias'])
+			'U_VIEW_FORUM' => s_link('forum', $topic_data['forum_alias']))
 		);
 		
 		$layout_file = 'topic';
@@ -600,7 +585,10 @@ class topic {
 			$layout_file = 'custom/topic_' . $topic_id;
 		}
 		
-		page_layout($user->lang['FORUM'] .' | ' . $topic_data['topic_title'], $layout_file, $layout_vars);
+		$this->_title = $topic_data['topic_title'];
+		$this->_template = $layout_file;
+		
+		return;
 	}
 }
 

@@ -30,7 +30,6 @@ if (!$user->is('member')) {
 	do_login();
 }
 
-require_once(ROOT . 'interfase/comments.php');
 $comments = new _comments;
 
 $comments->ref = (isset($_POST['ref']) && !empty($_POST['ref'])) ? request_var('ref', '', true) : $user->d('session_page');

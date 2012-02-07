@@ -27,18 +27,18 @@ $server_protocol = ( $config['cookie_secure'] ) ? 'https://' : 'http://';
 
 $server_url = $server_protocol . $server_name . $script_name;
 
-if ( isset($HTTP_GET_VARS[POST_GROUPS_URL]) || isset($HTTP_POST_VARS[POST_GROUPS_URL]) )
+if ( isset($_GET[POST_GROUPS_URL]) || isset($_POST[POST_GROUPS_URL]) )
 {
-	$group_id = ( isset($HTTP_POST_VARS[POST_GROUPS_URL]) ) ? intval($HTTP_POST_VARS[POST_GROUPS_URL]) : intval($HTTP_GET_VARS[POST_GROUPS_URL]);
+	$group_id = ( isset($_POST[POST_GROUPS_URL]) ) ? intval($_POST[POST_GROUPS_URL]) : intval($_GET[POST_GROUPS_URL]);
 }
 else
 {
 	$group_id = '';
 }
 
-if ( isset($HTTP_POST_VARS['mode']) || isset($HTTP_GET_VARS['mode']) )
+if ( isset($_POST['mode']) || isset($_GET['mode']) )
 {
-	$mode = ( isset($HTTP_POST_VARS['mode']) ) ? $HTTP_POST_VARS['mode'] : $HTTP_GET_VARS['mode'];
+	$mode = ( isset($_POST['mode']) ) ? $_POST['mode'] : $_GET['mode'];
 	$mode = htmlspecialchars($mode);
 }
 else
@@ -46,17 +46,17 @@ else
 	$mode = '';
 }
 
-$confirm = ( isset($HTTP_POST_VARS['confirm']) ) ? true : 0;
-$cancel = ( isset($HTTP_POST_VARS['cancel']) ) ? true : 0;
+$confirm = ( isset($_POST['confirm']) ) ? true : 0;
+$cancel = ( isset($_POST['cancel']) ) ? true : 0;
 
-$start = ( isset($HTTP_GET_VARS['start']) ) ? intval($HTTP_GET_VARS['start']) : 0;
+$start = ( isset($_GET['start']) ) ? intval($_GET['start']) : 0;
 
 //
 // Default var values
 //
 $is_moderator = false;
 
-if ( isset($HTTP_POST_VARS['groupstatus']) && $group_id )
+if ( isset($_POST['groupstatus']) && $group_id )
 {
 	if ( !$userdata['session_logged_in'] )
 	{
@@ -78,7 +78,7 @@ if ( isset($HTTP_POST_VARS['groupstatus']) && $group_id )
 		trigger_error($message);
 	}
 
-	$result = $db->sql_query("UPDATE _groups SET group_type = " . intval($HTTP_POST_VARS['group_type']) . " WHERE group_id = $group_id");
+	$result = $db->sql_query("UPDATE _groups SET group_type = " . intval($_POST['group_type']) . " WHERE group_id = $group_id");
 
 	$template->assign_vars(array(
 		'META' => '<meta http-equiv="refresh" content="3;url=' . "groupcp.php?g=$group_id" . '">')
@@ -89,7 +89,7 @@ if ( isset($HTTP_POST_VARS['groupstatus']) && $group_id )
 	trigger_error($message);
 
 }
-else if ( isset($HTTP_POST_VARS['joingroup']) && $group_id )
+else if ( isset($_POST['joingroup']) && $group_id )
 {
 	//
 	// First, joining a group
@@ -180,7 +180,7 @@ else if ( isset($HTTP_POST_VARS['joingroup']) && $group_id )
 		
 		trigger_error($message);
 	}
-	else if ( isset($HTTP_POST_VARS['unsub']) || isset($HTTP_POST_VARS['unsubpending']) && $group_id )
+	else if ( isset($_POST['unsub']) || isset($_POST['unsubpending']) && $group_id )
 	{
 		//
 		// Second, unsubscribing from a group
@@ -219,7 +219,7 @@ else if ( isset($HTTP_POST_VARS['joingroup']) && $group_id )
 		}
 		else
 		{
-			$unsub_msg = ( isset($HTTP_POST_VARS['unsub']) ) ? $lang['Confirm_unsub'] : $lang['Confirm_unsub_pending'];
+			$unsub_msg = ( isset($_POST['unsub']) ) ? $lang['Confirm_unsub'] : $lang['Confirm_unsub_pending'];
 	
 			$s_hidden_fields = '<input type="hidden" name="' . POST_GROUPS_URL . '" value="' . $group_id . '" /><input type="hidden" name="unsub" value="1" />';
 			
@@ -241,7 +241,7 @@ else if ( $group_id )
 	// Did the group moderator get here through an email?
 	// If so, check to see if they are logged in.
 	//
-	if ( isset($HTTP_GET_VARS['validate']) )
+	if ( isset($_GET['validate']) )
 	{
 		if ( !$userdata['session_logged_in'] )
 		{
@@ -268,7 +268,7 @@ else if ( $group_id )
 		//
 		// Handle Additions, removals, approvals and denials
 		//
-		if ( !empty($HTTP_POST_VARS['add']) || !empty($HTTP_POST_VARS['remove']) || isset($HTTP_POST_VARS['approve']) || isset($HTTP_POST_VARS['deny']) )
+		if ( !empty($_POST['add']) || !empty($_POST['remove']) || isset($_POST['approve']) || isset($_POST['deny']) )
 		{
 			if ( !$userdata['session_logged_in'] )
 			{
@@ -286,9 +286,9 @@ else if ( $group_id )
 				trigger_error($message);
 			}
 
-			if ( isset($HTTP_POST_VARS['add']) )
+			if ( isset($_POST['add']) )
 			{
-				$username = ( isset($HTTP_POST_VARS['username']) ) ? phpbb_clean_username($HTTP_POST_VARS['username']) : '';
+				$username = ( isset($_POST['username']) ) ? phpbb_clean_username($_POST['username']) : '';
 				
 				$result = $db->sql_query("SELECT user_id, user_email, user_lang, user_level FROM _members WHERE username = '" . str_replace("\'", "''", $username) . "'");
 
@@ -367,10 +367,10 @@ else if ( $group_id )
 			}
 			else 
 			{
-				if ( ( ( isset($HTTP_POST_VARS['approve']) || isset($HTTP_POST_VARS['deny']) ) && isset($HTTP_POST_VARS['pending_members']) ) || ( isset($HTTP_POST_VARS['remove']) && isset($HTTP_POST_VARS['members']) ) )
+				if ( ( ( isset($_POST['approve']) || isset($_POST['deny']) ) && isset($_POST['pending_members']) ) || ( isset($_POST['remove']) && isset($_POST['members']) ) )
 				{
 
-					$members = ( isset($HTTP_POST_VARS['approve']) || isset($HTTP_POST_VARS['deny']) ) ? $HTTP_POST_VARS['pending_members'] : $HTTP_POST_VARS['members'];
+					$members = ( isset($_POST['approve']) || isset($_POST['deny']) ) ? $_POST['pending_members'] : $_POST['members'];
 
 					$sql_in = '';
 					for($i = 0; $i < count($members); $i++)
@@ -378,7 +378,7 @@ else if ( $group_id )
 						$sql_in .= ( ( $sql_in != '' ) ? ', ' : '' ) . intval($members[$i]);
 					}
 
-					if ( isset($HTTP_POST_VARS['approve']) )
+					if ( isset($_POST['approve']) )
 					{
 						if ( $group_info['auth_mod'] )
 						{
@@ -388,7 +388,7 @@ else if ( $group_id )
 						$sql = "UPDATE _members_group SET user_pending = 0 WHERE user_id IN ($sql_in) AND group_id = $group_id";
 						$sql_select = "SELECT user_email FROM _members WHERE user_id IN ($sql_in)"; 
 					}
-					else if ( isset($HTTP_POST_VARS['deny']) || isset($HTTP_POST_VARS['remove']) )
+					else if ( isset($_POST['deny']) || isset($_POST['remove']) )
 					{
 						if ( $group_info['auth_mod'] )
 						{
@@ -436,7 +436,7 @@ else if ( $group_id )
 					//
 					// Email users when they are approved
 					//
-					if ( isset($HTTP_POST_VARS['approve']) )
+					if ( isset($_POST['approve']) )
 					{
 						$result = $db->sql_query($sql_select);
 

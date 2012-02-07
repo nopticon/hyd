@@ -131,7 +131,7 @@ class acp {
 		
 		$module = new $_object();
 		
-		$module->submit = isset($_POST['submit']);
+		$module->submit = _button();
 		$module->url = s_link() . substr($_SERVER['REQUEST_URI'], 1);
 		$module->alias = $this->module;
 		

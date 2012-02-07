@@ -1113,7 +1113,7 @@ class user extends session {
 			$not_allowed_ref = false;
 		}
 		
-		$request = $this->clean_value($HTTP_SERVER_VARS['REQUEST_URI']);
+		$request = $this->clean_value($_SERVER['REQUEST_URI']);
 		$auto_block = ($auto_block) ? 1 : 0;
 		
 		$insert = true;

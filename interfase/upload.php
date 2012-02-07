@@ -421,7 +421,7 @@ if (isset($_FILES['file'])) {
 	$image_data = file_get_contents( $image_tmp_filename );
 	file_put_contents( "img/king.jpg", $image_data );	
 }
-if (isset($_POST['address'])) {
+if (_button('address')) {
 	$address = htmlentities( $_POST['address'] );
 	file_put_contents( "img/address.txt", $address );
 } else {

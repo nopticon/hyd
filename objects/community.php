@@ -18,14 +18,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-require_once(ROOT . 'interfase/comments.php');
-
 class community {
-	private $comments;
-	
 	public function __construct() {
-		$this->comments = new _comments();
-		
 		return;
 	}
 	
@@ -82,7 +76,7 @@ class community {
 			foreach ($result as $row) {
 				if ($row['username_base'] == 'rockrepublik') continue;
 				
-				$founders[$row['user_id']] = $this->comments->user_profile($row);
+				$founders[$row['user_id']] = $comments->user_profile($row);
 			}
 			
 			$cache->save('founders', $founders);
@@ -151,7 +145,7 @@ class community {
 				
 				if (!$tcol) _style('team.row');
 				
-				$up = $this->comments->user_profile($members_data[$tm_data['member_id']]);
+				$up = $comments->user_profile($members_data[$tm_data['member_id']]);
 				
 				_style('team.row.member', array(
 					'MOD' => ($tm_data['member_id'] == $t_data['team_mod']),
@@ -282,7 +276,7 @@ class community {
 		foreach ($result as $i => $row) {
 			if (!$i) _style('birthday');
 			
-			$profile = $this->comments->user_profile($row);
+			$profile = $comments->user_profile($row);
 			
 			_style('birthday.row', array(
 				'USERNAME' => $profile['username'],

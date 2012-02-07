@@ -35,8 +35,6 @@ class board {
 			fatal_error();
 		}
 		
-		$this->msg = new _comments();
-		
 		$this->index();
 		$this->popular();
 		
@@ -133,7 +131,7 @@ class board {
 	}
 	
 	public function top_posters() {
-		global $template;
+		global $comments;
 		
 		$sql = 'SELECT user_id, username, username_base, user_color, user_avatar, user_posts
 			FROM _members
@@ -144,10 +142,10 @@ class board {
 			return false;
 		}
 		
-		_style('top_posters');
-		
-		foreach ($result as $row) {
-			$profile = $this->msg->user_profile($row);
+		foreach ($result as $i => $row) {
+			if (!$i) _style('top_posters');
+			
+			$profile = $comments->user_profile($row);
 			
 			_style('top_posters.item', array(
 				'USERNAME' => $profile['username'],

@@ -18,8 +18,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-require_once(ROOT . 'interfase/comments.php');
-
 class __forums_post_modify extends mac {
 	public function __construct() {
 		parent::__construct();
@@ -28,7 +26,7 @@ class __forums_post_modify extends mac {
 	}
 	
 	public function _home() {
-		global $config, $user, $cache, $template;
+		global $config, $user, $cache, $template, $comments;
 		
 		$this->id = request_var('msg_id', 0);
 		
@@ -51,8 +49,6 @@ class __forums_post_modify extends mac {
 		$this->object->topic = (object) $this->object->topic;
 		
 		if ($this->submit) {
-			$comments = new _comments();
-			
 			$topic_title = request_var('topic_title', '');
 			$post_message = $comments->prepare(request_var('message', '', true));
 			
