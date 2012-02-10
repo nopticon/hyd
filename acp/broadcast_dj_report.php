@@ -26,7 +26,7 @@ class __broadcast_dj_report extends mac {
 	}
 	
 	public function _home() {
-		global $config, $user, $cache, $template;
+		global $config, $user, $cache;
 		
 		$sql = 'SELECT d.*, m.username, m.username_base
 			FROM _radio_dj_log d, _members m

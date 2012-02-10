@@ -29,7 +29,7 @@ class __user_post_delete extends mac {
 	}
 	
 	public function _home() {
-		global $config, $user, $cache, $template;
+		global $config, $user, $cache;
 		
 		$this->id = request_var('msg_id', 0);
 		

@@ -26,7 +26,7 @@ class __user_ip_report extends mac {
 	}
 	
 	public function _home() {
-		global $config, $user, $cache, $template;
+		global $config, $user, $cache;
 		
 		$username = request_var('username', '');
 		$ip = request_var('ip', '');

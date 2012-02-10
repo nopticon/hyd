@@ -31,8 +31,6 @@ class _awards {
 	}
 	
 	public function run() {
-		global $template;
-		
 		$sql = 'SELECT *
 			FROM _awards_type
 			ORDER BY type_order';

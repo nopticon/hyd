@@ -877,9 +877,8 @@ class _artists extends layout {
 				WHERE b.ub = ? 
 					AND b.ub = f.ub 
 					AND f.user_id = ? 
-					AND f.user_id = m.user_id 
-					AND m.user_type <> ??';
-			if (sql_fieldrow(sql_filter($sql, $this->data['ub'], $user->d('user_id'), USER_IGNORE))) {
+					AND f.user_id = m.user_id';
+			if (sql_fieldrow(sql_filter($sql, $this->data['ub'], $user->d('user_id')))) {
 				$this->auth['fav'] = true;
 			}
 		}

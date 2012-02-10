@@ -61,7 +61,7 @@ class today {
 	}
 	
 	public function run() {
-		global $user, $template;
+		global $user;
 		
 		$sql = 'SELECT *
 			FROM _today_objects o

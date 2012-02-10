@@ -29,7 +29,7 @@ class __event_images extends mac {
 	}
 	
 	public function _home() {
-		global $config, $user, $cache, $template;
+		global $config, $user, $cache;
 		
 		if ($this->submit) {
 			$upload = new upload();
@@ -231,11 +231,7 @@ class __event_images extends mac {
 			);
 		}
 		
-		$template_vars = array(
-			'S_UPLOAD_ACTION' => $u,
-			'MAX_FILESIZE' => $i_size
-		);
-		return page_layout('EVENTS', 'acp/event_images', $template_vars, false);
+		return;
 	}
 }
 

@@ -34,7 +34,7 @@ class _chat {
 			return;
 		}
 		
-		global $user, $config, $template;
+		global $user, $config;
 		
 		$sql = 'SELECT *
 			FROM _chat_ch
@@ -76,8 +76,6 @@ class _chat {
 		if (!sizeof($cat)) {
 			return;
 		}
-		
-		global $template;
 		
 		$sql = 'SELECT ch.*, m.username, m.username_base, m.user_color
 			FROM _chat_ch ch, _members m
@@ -419,7 +417,7 @@ class _chat {
 	}
 	
 	public function window() {
-		global $user, $config, $template;
+		global $user, $config;
 		
 		v_style(array(
 			'CH_SID' => $this->data['session_id'],

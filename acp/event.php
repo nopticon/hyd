@@ -28,7 +28,7 @@ class __event extends mac {
 	}
 	
 	public function _home() {
-		global $config, $user, $cache, $template;
+		global $config, $user, $cache;
 		
 		$error = array();
 		

@@ -26,7 +26,7 @@ class __unread_all_delete extends mac {
 	}
 	
 	public function _home() {
-		global $config, $user, $cache, $template;
+		global $config, $user, $cache;
 		
 		if (!$this->submit) {
 			return false;

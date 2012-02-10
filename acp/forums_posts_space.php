@@ -26,7 +26,7 @@ class __forums_posts_space extends mac {
 	}
 	
 	public function _home() {
-		global $config, $user, $cache, $template;
+		global $config, $user, $cache;
 		
 		$sql = 'SELECT *
 			FROM _forum_posts

@@ -229,7 +229,7 @@ class _comments {
 								FROM _artists_posts p, _members m
 								WHERE p.post_id = ?
 									AND p.poster_id = m.user_id
-									AND m.user_type NOT IN (??, ??)', $post_reply, USER_IGNORE, USER_INACTIVE);
+									AND m.user_type NOT IN (??)', $post_reply, USER_INACTIVE);
 							break;
 					}
 					break;
@@ -333,7 +333,7 @@ class _comments {
 	// View comments
 	//
 	public function view($start, $start_field, $total_items, $items_pp, $tpl_prefix = '', $pag_prefix = '', $pag_lang_prefix = '', $simple_pagination = false) {
-		global $config, $user, $template;
+		global $config, $user;
 		
 		if ($tpl_prefix == '') {
 			$tpl_prefix = 'posts';

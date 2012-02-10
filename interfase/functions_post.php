@@ -684,18 +684,12 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 //
 function username_search($search_match)
 {
-	global $config, $template, $lang, $images, $themeset;
-	global $starttime, $gen_simple_header;
-//-- mod : profile cp ------------------------------------------------------------------------------
-//-- add
-	global $admin_level, $level_prior;
-//-- fin mod : profile cp --------------------------------------------------------------------------
+	global $config, $template, $lang, $images, $themeset, $starttime, $gen_simple_header, $admin_level, $level_prior;
 	
 	$gen_simple_header = true;
 
 	$username_list = '';
-	if (!empty($search_match))
-	{
+	if (!empty($search_match)) {
 		$username_search = preg_replace('/\*/', '%', phpbb_clean_username($search_match));
 
 		$sql = 'SELECT username
@@ -712,8 +706,6 @@ function username_search($search_match)
 		}
 	}
 	
-	page_header($lang['Search']);
-
 	$template->set_filenames(array(
 		'body' => 'search_username.htm')
 	);

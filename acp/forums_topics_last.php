@@ -26,7 +26,7 @@ class __forums_topics_last extends mac {
 	}
 	
 	public function _home() {
-		global $config, $user, $cache, $template;
+		global $config, $user, $cache;
 		
 		$sql = 'SELECT e.event_topic, f.forum_name, t.topic_id, t.topic_title, t.topic_views, t.topic_replies
 			FROM _forum_topics t

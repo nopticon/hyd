@@ -26,7 +26,7 @@ class __unread_topics_delete extends mac {
 	}
 	
 	public function _home() {
-		global $config, $user, $cache, $template, $comments;
+		global $config, $user, $cache, $comments;
 		
 		$sql = 'SELECT *
 			FROM _members_unread

@@ -26,7 +26,7 @@ class __emoticon_update extends mac {
 	}
 	
 	public function _home() {
-		global $config, $user, $cache, $template;
+		global $config, $user, $cache;
 		
 		sql_truncate('_smilies');
 		

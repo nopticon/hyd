@@ -76,7 +76,7 @@ class downloads {
 	}
 	
 	public function dl_view() {
-		global $user, $config, $template;
+		global $user, $config;
 		
 		if (!$this->auth['adm'] && !$this->auth['mod']) {
 			$sql = 'UPDATE _dl SET views = views + 1

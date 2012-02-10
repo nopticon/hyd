@@ -28,7 +28,7 @@ class __event_update extends mac {
 	}
 	
 	public function _home() {
-		global $config, $user, $template;
+		global $config, $user;
 		
 		if ($this->submit) {
 			$upload = new upload();

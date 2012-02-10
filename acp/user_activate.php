@@ -28,7 +28,7 @@ class __user_activate extends mac {
 	}
 	
 	public function _home() {
-		global $config, $user, $cache, $template;
+		global $config, $user, $cache;
 		
 		$user_id = request_var('uid', 0);
 		

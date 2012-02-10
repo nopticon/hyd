@@ -857,11 +857,9 @@ $lang += array(
 	'ONLINE_MEMBERS' => 'Miembros conectados',
 	'TOS' => 'T&eacute;rminos de Servicio',
 	'TODAY_BIRTHS' => 'Cumplea&ntilde;eros',
-	'COMM_CONTACT' => 'Contactanos',
-	'COMM_WE' => 'Creadores de Rock Republik',
-	'COMM_FOUNDER' => 'Director | Fundador',
+	'COMM_CONTACT' => 'Cont&aacute;ctanos',
 	'COMM_ADMIN' => 'Administrador',
-	'COMM_TEAM' => 'Equipo de Trabajo',
+	'COMM_TEAM' => 'Equipo Rock Republik',
 	
 	// USERPAGE
 	'USERPAGE_MAIN' => 'Perfil',
@@ -881,20 +879,9 @@ $lang += array(
 	'UPLOAD_IMAGE_ERROR' => 'Error en el archivo de imagen',
 	
 	// WEBSITES
-	'WS_WEBSITES' => 'Sitios Web',
 	'IMAGES' => 'Im&aacute;genes',
 	'BOARD_LATEST' => 'Temas recientes',
 	'BOARD_EVENTS' => 'Eventos recientes',
-	
-	// RADIO
-	'RADIO' => 'Radio',
-	'RADIO_ACTIVE' => '',
-	'RADIO_INACTIVE' => 'La radio no est&aacute; disponible en este momento.',
-	'RADIO_LISTENER' => 'Hay %d usuario escuchando la radio.',
-	'RADIO_LISTENERS' => 'Hay %d usuarios escuchando la radio.',
-	'RADIO_SONGS' => 'Historial de canciones',
-	'RADIO_DJK' => 'Control de locutor',
-	'RADIO_DJKR' => ' segundos restantes',
 	
 	'RSS' => 'RSS',
 	'RSS_ARTISTS' => 'Rock Republik: Artistas',

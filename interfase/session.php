@@ -882,39 +882,39 @@ class user extends session {
 				$sql = 'SELECT user_id
 					FROM _members
 					WHERE (user_type IN (??, ??)' . ((sizeof($sql_in)) ? ' OR user_id IN (' . implode(',', $sql_in) . ')' : '') . ')
-						AND user_type NOT IN (??, ??)
+						AND user_type NOT IN (??)
 						AND user_id <> ?
 						AND user_lastvisit > ?
 					ORDER BY user_id';
-				$sql = sql_filter($sql, USER_FOUNDER, USER_ADMIN, USER_IGNORE, USER_INACTIVE, $this->data['user_id'], $from_lastvisit);
+				$sql = sql_filter($sql, USER_FOUNDER, USER_ADMIN, USER_INACTIVE, $this->data['user_id'], $from_lastvisit);
 				break;
 			case UH_B:
 				$sql = 'SELECT user_id
 					FROM _members
-					WHERE user_type NOT IN (??, ??)
+					WHERE user_type NOT IN (??)
 						AND user_id = ?
 					ORDER BY user_id';
-				$sql = sql_filter($sql, USER_IGNORE, USER_INACTIVE, $where_id);
+				$sql = sql_filter($sql, USER_INACTIVE, $where_id);
 				break;
 			case UH_U:
 				$sql = 'SELECT user_id
 					FROM _members
 					WHERE user_type IN (??)
-						AND user_type NOT IN (??, ??)
+						AND user_type NOT IN (??)
 						AND user_id <> ?
 						AND user_active = 1 
 					ORDER BY user_id';
-				$sql = sql_filter($sql, USER_FOUNDER, USER_IGNORE, USER_INACTIVE, $item);
+				$sql = sql_filter($sql, USER_FOUNDER, USER_INACTIVE, $item);
 				break;
 			default:
 				$sql = 'SELECT user_id
 					FROM _members
-					WHERE user_type NOT IN (??, ??)
+					WHERE user_type NOT IN (??)
 						AND user_id <> ?
 						AND user_lastvisit > 0 
 						AND user_lastvisit > ?
 					ORDER BY user_id';
-				$sql = sql_filter($sql, USER_IGNORE, USER_INACTIVE, $this->data['user_id'], $from_lastvisit);
+				$sql = sql_filter($sql, USER_INACTIVE, $this->data['user_id'], $from_lastvisit);
 				break;
 		}
 		

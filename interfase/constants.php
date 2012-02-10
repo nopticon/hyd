@@ -28,7 +28,6 @@ define('GUEST', 1);
 
 define('USER_NORMAL', 0);
 define('USER_INACTIVE', 1);
-define('USER_IGNORE', 2);
 define('USER_FOUNDER', 3);
 define('USER_ADMIN', 4);
 define('USER_MOD', 5);

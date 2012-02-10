@@ -26,7 +26,7 @@ class __user_bot_create extends mac {
 	}
 	
 	public function _home() {
-		global $config, $user, $cache, $template;
+		global $config, $user, $cache;
 		
 		if ($submit) {
 			return false;

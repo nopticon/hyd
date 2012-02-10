@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_NUCLEO')) exit;
 
-require_once(ROOT . 'interfase/community.php');
+require_once(ROOT . 'objects/community.php');
 
 $user->setup();
 
@@ -48,7 +48,7 @@ $sql = 'SELECT user_id, username, username_base, user_color, user_hideuser, user
 		AND user_lastvisit >= ?
 		AND user_lastvisit < ? 
 	ORDER BY username';
-$comm->online(sql_filter($sql, USER_IGNORE, $timetoday, ($timetoday + 86399)), 'online', 'MEMBERS_TODAY', 'MEMBERS_VISIBLE');
+$comm->online(sql_filter($sql, USER_INACTIVE, $timetoday, ($timetoday + 86399)), 'online', 'MEMBERS_TODAY', 'MEMBERS_VISIBLE');
 
 $template->set_filenames(array(
 	'body' => 'community.online.htm')

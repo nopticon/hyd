@@ -26,7 +26,7 @@ class __news_category_move extends mac {
 	}
 	
 	public function _home() {
-		global $config, $cache, $user, $template;
+		global $config, $cache, $user;
 		
 		if (!$this->submit) {
 			$sql = 'SELECT cat_id, cat_name

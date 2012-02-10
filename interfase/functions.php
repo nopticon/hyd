@@ -520,7 +520,7 @@ function is_number($number = '') {
 // Build items pagination
 //
 function build_pagination($url_format, $total_items, $per_page, $offset, $prefix = '', $lang_prefix = '') {
-	global $template, $user;
+	global $user;
 	
 	$total_pages = ceil($total_items / $per_page);
 	$on_page = floor($offset / $per_page) + 1;
@@ -548,7 +548,7 @@ function build_pagination($url_format, $total_items, $per_page, $offset, $prefix
 //
 //function generate_pagination($base_url, $num_items, $per_page, $start_item, $add_prevnext_text = true, $start_field = 'start', $folders_format = 0)
 function build_num_pagination ($url_format, $total_items, $per_page, $offset, $prefix = '', $lang_prefix = '') {
-	global $user, $template;
+	global $user;
 	
 	$begin_end = 3;
 	$from_middle = 1;
@@ -642,7 +642,7 @@ function _button($name = 'submit') {
 }
 
 function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
-	global $config, $user, $template;
+	global $config, $user;
 	
 	$error = array();
 	$action = request_var('mode', '');
@@ -713,7 +713,7 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 						FROM _members
 						WHERE username_base = ?';
 					if ($row = sql_fieldrow(sql_filter($sql, $username_base))) {
-						$exclude_type = array(USER_INACTIVE, USER_IGNORE); 
+						$exclude_type = array(USER_INACTIVE); 
 						
 						if ((user_password($password) == $row['user_password']) && (!in_array($row['user_type'], $exclude_type))) {
 							$user->session_create($row['user_id'], $adm);
@@ -1149,18 +1149,18 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 					$emailer->reset();
 					
 					//
-					$template_vars = array(
+					$layout_vars = array(
 						'PAGE_MODE' => 'updated'
 					);
-					page_layout('SENDPASSWORD', 'password', $template_vars);
+					page_layout('SENDPASSWORD', 'password', $layout_vars);
 				}
 			}
 			
-			$template_vars = array(
+			$layout_vars = array(
 				'PAGE_MODE' => 'verify',
 				'S_ACTION' => s_link('my', array('verify', $code))
 			);
-			page_layout('SENDPASSWORD', 'password', $template_vars);
+			page_layout('SENDPASSWORD', 'password', $layout_vars);
 			
 			if ($submit) {
 				$email = request_var('address', '');
@@ -1171,9 +1171,9 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 				$sql = 'SELECT *
 					FROM _members
 					WHERE user_email = ?
-						AND user_type NOT IN (??, ??, ??)
+						AND user_type NOT IN (??, ??)
 						AND user_active = 1';
-				if ($userdata = sql_fieldrow(sql_filter($sql, $email, USER_INACTIVE, USER_IGNORE, USER_FOUNDER))) {
+				if ($userdata = sql_fieldrow(sql_filter($sql, $email, USER_INACTIVE, USER_FOUNDER))) {
 					$sql = 'SELECT *
 						FROM _banlist
 						WHERE ban_userid = ?';
@@ -1251,7 +1251,7 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 		$v_fields['birthday'] = true;
 	}
 	
-	$template_vars = array(
+	$layout_vars = array(
 		'IS_NEED_AUTH' => $need_auth,
 		'IS_LOGIN' => $login,
 		'CUSTOM_MESSAGE' => $box_text,
@@ -1275,7 +1275,7 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 	);
 	
 	foreach ($v_fields as $k => $v) {
-		$template_vars['E_' . strtoupper($k)] = (isset($error[$k])) ? true : false;
+		$layout_vars['E_' . strtoupper($k)] = (isset($error[$k])) ? true : false;
 	}
 	
 	if ($login) {
@@ -1293,7 +1293,7 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 	
 	$box_text = (!empty($box_text)) ? ((isset($user->lang[$box_text])) ? $user->lang[$box_text] : $box_text) : '';
 	
-	page_layout('LOGIN2', 'login', $template_vars);
+	page_layout('LOGIN2', 'login', $layout_vars);
 }
 
 function get_artist($id) {
@@ -1621,8 +1621,6 @@ function redirect($url, $moved = false) {
 
 // Meta refresh assignment
 function meta_refresh($time, $url) {
-	global $template;
-
 	v_style(array(
 		'META' => '<meta http-equiv="refresh" content="' . $time . ';url=' . $url . '">')
 	);

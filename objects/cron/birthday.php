@@ -26,13 +26,13 @@ $emailer = new emailer();
 
 $sql = "SELECT *
 	FROM _members
-	WHERE user_type NOT IN (??, ??)
+	WHERE user_type NOT IN (??)
 		AND user_id NOT IN (SELECT ban_userid FROM _banlist)
 		AND user_birthday LIKE '%??'
 		AND user_birthday_last < ?
 	ORDER BY username
 	LIMIT ??";
-$result = sql_rowset(sql_filter($sql, USER_IGNORE, USER_INACTIVE, date('md'), date('Y'), $max_email));
+$result = sql_rowset(sql_filter($sql, USER_INACTIVE, date('md'), date('Y'), $max_email));
 
 $done = array();
 $usernames = array();

@@ -26,7 +26,7 @@ class __forum_order extends mac {
 	}
 	
 	public function _home() {
-		global $config, $user, $cache, $template;
+		global $config, $user, $cache;
 		
 		if (!$this->submit) {
 			$sql = 'SELECT forum_id, forum_name

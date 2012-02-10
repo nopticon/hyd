@@ -37,20 +37,18 @@
 		
 		<!-- BEGIN team -->
 		<div class="pad_top ln l6">
-			<div class="h"><h3>{team.TEAM_NAME}</h3></div>
+			<div class="h"><h3>{L_COMM_TEAM}</h3></div>
 			<ul>
 				<!-- BEGIN row -->
-				<!-- BEGIN member -->
 				<li class="a_mid">
 					<ul>
-						<li class="_"><a href="{member.PROFILE}">{member.USERNAME}</a></li>
+						<li class="_"><a href="{row.PROFILE}">{row.USERNAME}</a></li>
 						<!-- BEGIN hide -->
-						<li class="_"><!-- IF member.REALNAME != '' -->{member.REALNAME}<!-- ELSE -->--<!-- ENDIF --></li>
+						<li class="_"><!-- IF row.REALNAME != '' -->{row.REALNAME}<!-- ELSE -->--<!-- ENDIF --></li>
 						<!-- END hide -->
-						<li><a href="{member.PROFILE}"><img src="{member.AVATAR}" alt="{member.USERNAME}" /></a></li>
+						<li><a href="{row.PROFILE}"><img src="{row.AVATAR}" alt="{row.USERNAME}" /></a></li>
 					</ul>
 				</li>
-				<!-- END member -->
 				<!-- END row -->
 			</ul>
 		</div>

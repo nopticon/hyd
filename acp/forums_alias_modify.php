@@ -26,7 +26,7 @@ class __forums_alias_modify extends mac {
 	}
 	
 	public function _home() {
-		global $config, $user, $cache, $template;
+		global $config, $user, $cache;
 		
 		if ($this->submit) {
 			$forum_id = request_var('fid', 0);

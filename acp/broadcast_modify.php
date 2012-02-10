@@ -28,7 +28,7 @@ class __broadcast_modify extends mac {
 	}
 	
 	public function _home() {
-		global $config, $user, $cache, $template;
+		global $config, $user, $cache;
 		
 		$ftp = new ftp();
 		

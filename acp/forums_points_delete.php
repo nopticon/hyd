@@ -26,7 +26,7 @@ class __forims_points_delete extends mac {
 	}
 	
 	public function _home() {
-		global $config, $user, $cache, $template;
+		global $config, $user, $cache;
 		
 		$sql = 'SELECT *
 			FROM _forum_topics_nopoints

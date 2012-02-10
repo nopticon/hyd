@@ -26,7 +26,7 @@ class __artist extends mac {
 	}
 	
 	public function _home() {
-		global $config, $user, $cache, $template;
+		global $config, $user, $cache;
 		
 		if (!$this->submit) {
 			return false;
@@ -72,9 +72,9 @@ class __artist extends mac {
 				$sql = 'SELECT *
 					FROM _members
 					WHERE username_base = ?
-						AND user_type NOT IN (??, ??)
+						AND user_type NOT IN (??)
 						AND user_id <> ?';
-				if (!$userdata = sql_fieldrow(sql_filter($sql, $username_base, USER_IGNORE, USER_INACTIVE, 1))) {
+				if (!$userdata = sql_fieldrow(sql_filter($sql, $username_base, USER_INACTIVE, 1))) {
 					continue;
 				}
 				
@@ -94,8 +94,8 @@ class __artist extends mac {
 				
 				$sql = 'UPDATE _members SET ??
 					WHERE user_id = ?
-						AND user_type NOT IN (' . USER_INACTIVE . ', ' . USER_IGNORE . ', ' . USER_FOUNDER . ')';
-				sql_query(sql_filter($sql, sql_build('UPDATE', $update), $userdata['user_id']));
+						AND user_type NOT IN (??, ??)';
+				sql_query(sql_filter($sql, sql_build('UPDATE', $update), $userdata['user_id'], USER_INACTIVE, USER_FOUNDER));
 			}
 			
 			redirect(s_link('a', $subdomain));

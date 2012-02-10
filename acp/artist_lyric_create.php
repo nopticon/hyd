@@ -26,7 +26,7 @@ class __artist_lyric_create extends mac {
 	}
 	
 	public function _home() {
-		global $config, $user, $cache, $template;
+		global $config, $user, $cache;
 		
 		if ($this->submit) {
 			$request = _request(array('ub' => 0, 'title' => '', 'author' => '', 'text' => ''));

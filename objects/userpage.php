@@ -80,7 +80,7 @@ class userpage {
 		$sql = 'SELECT *
 			FROM _members
 			WHERE username_base = ? 
-				AND user_type NOT IN (??, ??)
+				AND user_type NOT IN (??)
 				AND user_id NOT IN (
 					SELECT user_id
 					FROM _members_ban
@@ -90,7 +90,7 @@ class userpage {
 					SELECT ban_userid
 					FROM _banlist
 				)';
-		if (!$this->data = sql_fieldrow(sql_filter($sql, phpbb_clean_username($userpage), USER_INACTIVE, USER_IGNORE, $user->d('user_id')))) {
+		if (!$this->data = sql_fieldrow(sql_filter($sql, phpbb_clean_username($userpage), USER_INACTIVE, $user->d('user_id')))) {
 			fatal_error();
 		}
 		
@@ -340,7 +340,7 @@ class userpage {
 	}
 	
 	private function userpage() {
-		global $user;
+		global $user, $comments;
 		
 		$mode = request_var('mode', 'main');
 		
@@ -507,7 +507,7 @@ class userpage {
 	}
 	
 	public function friend_list() {
-		global $user;
+		global $user, $comments;
 		
 		$sql = 'SELECT DISTINCT u.user_id AS user_id, u.username, u.username_base, u.user_color, u.user_avatar, u.user_rank, u.user_gender, u.user_posts
 			FROM _members_friends b, _members u

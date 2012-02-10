@@ -29,7 +29,7 @@ class __forums_topic_points extends mac {
 	}
 	
 	public function _home() {
-		global $config, $user, $cache, $template;
+		global $config, $user, $cache;
 		
 		$this->id = request_var('msg_id', 0);
 		

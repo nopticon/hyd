@@ -26,7 +26,7 @@ class __news_modify extends mac {
 	}
 	
 	public function _home() {
-		global $config, $user, $cache, $template;
+		global $config, $user, $cache;
 		
 		$submit2 = _button('submit2');
 		

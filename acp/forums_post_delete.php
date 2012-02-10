@@ -26,7 +26,7 @@ class __forums_post_delete extends mac {
 	}
 	
 	public function _home() {
-		global $config, $user, $cache, $template;
+		global $config, $user, $cache;
 		
 		$post_id = request_var('post_id', 0);
 		

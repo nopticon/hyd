@@ -26,7 +26,7 @@ class __forums_post_modify extends mac {
 	}
 	
 	public function _home() {
-		global $config, $user, $cache, $template, $comments;
+		global $config, $user, $cache, $comments;
 		
 		$this->id = request_var('msg_id', 0);
 		

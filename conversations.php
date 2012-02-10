@@ -99,7 +99,7 @@ if ($submit || $mode == 'start' || $mode == 'reply') {
 						FROM _members
 						WHERE username_base = ?
 							AND user_type <> ?';
-					if (!$to_userdata = sql_fieldrow(sql_filter($sql, $member, USER_IGNORE))) {
+					if (!$to_userdata = sql_fieldrow(sql_filter($sql, $member, USER_INACTIVE))) {
 						$error[] = 'NO_SUCH_USER';
 					}
 
@@ -170,7 +170,7 @@ switch ($mode) {
 					FROM _members
 					WHERE username_base = ?
 						AND user_type <> ?';
-				$row = sql_fieldrow(sql_filter($sql, $member, USER_IGNORE));
+				$row = sql_fieldrow(sql_filter($sql, $member, USER_INACTIVE));
 			}
 		}
 		

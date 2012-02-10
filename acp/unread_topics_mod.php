@@ -26,7 +26,7 @@ class __unread_topics_mod extends mac {
 	}
 	
 	public function _home() {
-		global $config, $user, $cache, $template;
+		global $config, $user, $cache;
 		
 		$auth = array(16 => 'radio', 17 => 'mod');
 		

@@ -26,7 +26,7 @@ class __user_address extends mac {
 	}
 	
 	public function _home() {
-		global $config, $user, $cache, $template;
+		global $config, $user, $cache;
 		
 		$limit = 225;
 		$steps = 0;
@@ -34,9 +34,9 @@ class __user_address extends mac {
 		$trash = array();
 		
 		//
-		$sql = 'SELECT *
+		$sql = "SELECT *
 			FROM _members
-			WHERE user_type NOT IN (' . USER_IGNORE . ", " . USER_INACTIVE . ")
+			WHERE user_type NOT IN (??)
 				AND user_email <> ''
 				AND user_id NOT IN (
 					SELECT ban_userid
@@ -44,7 +44,7 @@ class __user_address extends mac {
 					WHERE ban_userid <> 0
 				)
 			ORDER BY username";
-		$result = sql_rowset($sql);
+		$result = sql_rowset(sql_filter($sql, USER_INACTIVE));
 		
 		foreach ($result as $row) {
 			if (!preg_match('/^[a-z0-9&\'\.\-_\+]+@[a-z0-9\-]+\.([a-z0-9\-]+\.)*?[a-z]+$/is', $row['user_email'])) {

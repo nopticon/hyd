@@ -26,7 +26,7 @@ class __user_mass_conversation extends mac {
 	}
 	
 	public function _home() {
-		global $config, $user, $cache, $template, $comments;
+		global $config, $user, $cache, $comments;
 		
 		if (!$this->submit) {
 			return false;
