@@ -16,10 +16,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-if (!defined('IN_NUCLEO')) exit;
+if (!defined('IN_APP')) exit;
 
-require_once(ROOT . 'interfase/comments.php');
-require_once(ROOT . 'interfase/upload.php');
 require_once(ROOT . 'interfase/functions_admin.php');
 
 class a extends common {
@@ -808,8 +806,6 @@ class a extends common {
 		global $user;
 
 		if (isset($_POST['submit']) && isset($_FILES['add_image'])) {
-			$upload = new upload();
-
 			$filepath = '..' . SDATA . 'artists/' . $this->data['ub'] . '/';
 			$filepath_1 = $filepath . 'x1/';
 			$filepath_2 = $filepath . 'gallery/';
@@ -895,7 +891,7 @@ class a extends common {
 				foreach ($result as $row) {
 					foreach ($path as $path_row) {
 						$filepath = $path_row . $row['image'] . '.jpg';
-						@unlink($filepath);
+						_rm($filepath);
 					}
 					$affected[] = $row['image'];
 				}

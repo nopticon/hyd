@@ -16,9 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-if (!defined('IN_NUCLEO')) exit;
-
-require_once(ROOT . 'interfase/upload.php');
+if (!defined('IN_APP')) exit;
 
 class __news_images extends mac {
 	public function __construct() {
@@ -28,11 +26,9 @@ class __news_images extends mac {
 	}
 	
 	public function _home() {
-		global $config, $user, $cache;
+		global $config, $user, $cache, $upload;
 		
 		if ($this->submit) {
-			$upload = new upload();
-			
 			$news_id = request_var('news_id', 0);
 			$filepath_1 = $config['news_path'];
 			$f = $upload->process($filepath_1, $_FILES['add_image'], array('jpg', 'jpeg'));

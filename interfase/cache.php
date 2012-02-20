@@ -16,7 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-if (!defined('IN_NUCLEO')) exit;
+if (!defined('IN_APP')) exit;
 
 class cache {
 	public $cache = array();
@@ -91,7 +91,7 @@ class cache {
 		foreach (func_get_args() as $var) {
 			$cache_filename = './cache/' . /*md5*/($var) . '.php';
 			if (file_exists($cache_filename)) {
-				@unlink($cache_filename);
+				_rm($cache_filename);
 			}
 		}
 		

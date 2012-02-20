@@ -16,7 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-if (!defined('IN_NUCLEO')) exit;
+if (!defined('IN_APP')) exit;
 
 $starttime = explode(' ', microtime());
 $starttime = $starttime[1] + $starttime[0];
@@ -80,6 +80,7 @@ require_once(ROOT . 'interfase/session.php');
 require_once(ROOT . 'interfase/functions.php');
 require_once(ROOT . 'interfase/cache.php');
 require_once(ROOT . 'interfase/comments.php');
+require_once(ROOT . 'interfase/upload.php');
 
 set_error_handler('msg_handler');
 
@@ -89,6 +90,7 @@ $auth	= new auth();
 $cache = new cache();
 $template	= new template();
 $comments = new _comments();
+$upload = new upload();
 $config = $cache->config();
 
 ?>

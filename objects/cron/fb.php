@@ -16,16 +16,11 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-if (!defined('IN_NUCLEO')) exit;
+if (!defined('IN_APP')) exit;
 
 header('Content-type: text/html; charset=utf-8');
 
 require_once(ROOT . 'interfase/facebook.php');
-require_once(ROOT . 'interfase/upload.php');
-
-$upload = new upload();
-
-// ------------------------------------------------------------------
 
 //------------------------------------------------------------
 
@@ -44,8 +39,6 @@ $facebook = new Facebook(array(
 	'appId'  => $fbd->appid,
 	'secret' => $fbd->secret)
 );
-
-$upload = new upload();
 
 foreach (w('at') as $i => $k)
 {

@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 if (strtolower($_SERVER['REQUEST_METHOD']) == 'post') {
-	define('IN_NUCLEO', true);
+	define('IN_APP', true);
 	define('ROOT', './');
 	
 	require_once(ROOT . 'interfase/common.php');

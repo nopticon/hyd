@@ -1,7 +1,14 @@
 <!-- INCLUDE page.header.htm -->
 
 <form action="{MODULDE_URL}" method="post">
-	<input type="text" name="name" value="" />
+	<!-- BEGIN artists -->
+	<select name="name">
+		<!-- BEGIN row -->
+		<option value="{row.UB}">{row.NAME}</option>
+		<!-- END row -->
+	</select>
+	<!-- END artists -->
+	
 	<input type="submit" name="submit" value="Eliminar artista" />
 </form>
 

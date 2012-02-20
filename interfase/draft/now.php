@@ -36,7 +36,7 @@ $stats_get_line.= "User-Agent: StreamSolutions  (Mozilla Compatible)\r\n\r\n";
 // Open Connection
 $fp = fsockopen($scl['host'] , $scl['host_port'], $errno, $errstr, 30);
 if (!$fp) {
-	die($scl['down']);
+	_pre($scl['down'], true);
 }
 
 $data = '';
@@ -53,7 +53,7 @@ foreach ($lines as $line) {
 }
 
 if ($scl['data']['server_status'] == $scl['value']) {
-	die($scl['down']);
+	_pre($scl['down'], true);
 }
 
 // Parse song
@@ -67,7 +67,5 @@ if (!empty($scl['data']['stream_title']) && $scl['data']['stream_title'] != 'Roc
 foreach ($song as $row) {
 	echo '<div>' . $row . '</div>';
 }
-
-die();
 
 ?>

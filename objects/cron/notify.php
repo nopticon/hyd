@@ -16,7 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-if (!defined('IN_NUCLEO')) exit;
+if (!defined('IN_APP')) exit;
 
 $d = getdate();
 $start_1 = mktime(0, 0, 0, $d['mon'], ($d['mday'] - 7), $d['year']);
@@ -37,6 +37,6 @@ $sql = 'DELETE FROM _members_unread
 		AND datetime < ??';
 sql_query(sql_filter($sql, UH_N, $start_2));
 
-_die('Done.');
+_pre('Done.', true);
 
 ?>

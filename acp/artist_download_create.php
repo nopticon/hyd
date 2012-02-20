@@ -16,9 +16,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-if (!defined('IN_NUCLEO')) exit;
+if (!defined('IN_APP')) exit;
 
-require_once(ROOT . 'interfase/upload.php');
 require_once(ROOT . 'interfase/getid3/getid3.php');
 
 class __artist_download_create extends mac {
@@ -29,14 +28,12 @@ class __artist_download_create extends mac {
 	}
 	
 	public function _home() {
-		global $config, $user, $cache;
+		global $config, $user, $cache, $upload;
 		
 		$limit = set_time_limit(0);
 		$error = array();
 		
 		if ($this->submit) {
-			$upload = new upload();
-			
 			$artist_id = request_var('artist', 0);
 			
 			$sql = 'SELECT ub, subdomain

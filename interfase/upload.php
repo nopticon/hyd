@@ -162,7 +162,7 @@ class upload {
 			@chmod($row['filepath'], 0644);
 			
 			if (@filesize($r->filepath) > $filesize) {
-				@unlink($r->filepath);
+				_rm($r->filepath);
 				$this->error[] = sprintf($user->lang['UPLOAD_TOO_BIG'], $r->name, ($filesize / 1048576));
 				$r->error = 1;
 				continue;
@@ -286,7 +286,7 @@ class upload {
 		imagedestroy($image);
 		
 		if ($remove && file_exists($t->source)) {
-			unlink($t->source);
+			_rm($t->source);
 		}
 		
 		return true;

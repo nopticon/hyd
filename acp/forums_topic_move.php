@@ -16,12 +16,11 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-if (!defined('IN_NUCLEO')) exit;
+if (!defined('IN_APP')) exit;
 
 class __forums_topic_move extends mac {
 	private $from;
 	private $to;
-	private $object;
 	
 	public function __construct() {
 		parent::__construct();

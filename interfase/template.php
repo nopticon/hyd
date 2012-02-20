@@ -298,7 +298,7 @@ class Template {
 			if($xs_include || $quiet) {
 				return false;
 			} else {
-				die("Template->make_filename(): Error - invalid template $filename");
+				_pre("Template->make_filename(): Error - invalid template $filename", true);
 			}
 		}
 		// creating cache filename
@@ -334,11 +334,11 @@ class Template {
 			
 			if ($xs_include) {
 				if ($this->warn_includes) {
-					die('Template->make_filename(): Error - included template file not found: ' . $filename);
+					_pre('Template->make_filename(): Error - included template file not found: ' . $filename, true);
 				}
 				return false;
 			} else {
-				die('Template->make_filename(): Error - template file not found: ' . $this->files[$handle]);
+				_pre('Template->make_filename(): Error - template file not found: ' . $this->files[$handle], true);
 			}
 		}
 		// checking if we should recompile cache
@@ -398,7 +398,7 @@ class Template {
 		
 		// checking if handle exists
 		if (empty($this->files[$handle]) && empty($this->files_cache[$handle])) {
-			die("Template->loadfile(): No files found for handle $handle");
+			_pre("Template->loadfile(): No files found for handle $handle", true);
 		}
 		
 		$this->xs_startup();
@@ -412,7 +412,7 @@ class Template {
 		}
 		
 		if (!$this->loadfile($handle)) {
-			die("Template->pparse(): Couldn't load template file for handle $handle");
+			_pre("Template->pparse(): Couldn't load template file for handle $handle", true);
 		}
 		
 		// Actually compile the template now.
@@ -559,12 +559,12 @@ class Template {
 
 		// If we don't have a file assigned to this handle, die.
 		if (empty($this->files[$handle])) {
-			die("Template->loadfile(): No file specified for handle $handle");
+			_pre("Template->loadfile(): No file specified for handle $handle", true);
 		}
 
 		$str = implode('', @file($this->files[$handle]));
 		if (empty($str)) {
-			die("Template->loadfile(): File " . $this->files[$handle] . " for handle $handle is empty");
+			_pre("Template->loadfile(): File " . $this->files[$handle] . " for handle $handle is empty", true);
 		}
 
 		$this->uncompiled_code[$handle] = $str;

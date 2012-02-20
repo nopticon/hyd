@@ -16,7 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-if (!defined('IN_NUCLEO')) exit;
+if (!defined('IN_APP')) exit;
 
 class __user_mass_conversation extends mac {
 	public function __construct() {
@@ -51,10 +51,10 @@ class __user_mass_conversation extends mac {
 			
 			$sql = 'SELECT user_id
 				FROM _members
-				WHERE username_base IN (' . implode(',', $e_skip) . ')';
+				WHERE username_base IN (' . _implode(',', $e_skip) . ')';
 			$user_skip = sql_rowset($sql, false, 'user_id');
 			
-			$skip_list = ' AND u.user_id NOT IN (' . implode(', ', $user_skip) . ') ';
+			$skip_list = ' AND u.user_id NOT IN (' . _implode(', ', $user_skip) . ') ';
 		}
 		
 		switch ($post_mode) {

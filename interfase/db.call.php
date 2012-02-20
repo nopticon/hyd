@@ -16,7 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-if (!defined('IN_NUCLEO')) exit;
+if (!defined('IN_APP')) exit;
 
 function prefix($prefix, $arr) {
 	$prefix = ($prefix != '') ? $prefix . '_' : '';
@@ -36,6 +36,16 @@ function sql_filter() {
 	}
 	
 	$sql = array_shift($args);
+	
+	if (is_array($sql)) {
+		$sql_ary = w();
+		foreach ($sql as $row) {
+			$sql_ary[] = sql_filter($row, $args);
+		}
+		
+		return $sql_ary;
+	}
+	
 	$count_args = count($args);
 	
 	$sql = str_replace('%', '[!]', $sql);
@@ -261,37 +271,6 @@ function sql_history() {
 	global $db;
 	
 	return $db->history();
-}
-
-function _rowset_style($sql, $style, $prefix = '') {
-	$a = sql_rowset($sql);
-	_rowset_foreach($a, $style, $prefix);
-	
-	return $a;
-}
-
-function _rowset_foreach($rows, $style, $prefix = '') {
-	$i = 0;
-	foreach ($rows as $row) {
-		if (!$i) _style($style);
-		
-		_rowset_style_row($row, $style, $prefix);
-		$i++;
-	}
-	
-	return;
-}
-
-function _rowset_style_row($row, $style, $prefix = '') {
-	if (f($prefix)) $prefix .= '_';
-	
-	$f = w();
-	foreach ($row as $_f => $_v) {
-		$g = array_key(array_slice(explode('_', $_f), -1), 0);
-		$f[strtoupper($prefix . $g)] = $_v;
-	}
-	
-	return _style($style . '.row', $f);
 }
 
 ?>

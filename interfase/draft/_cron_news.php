@@ -16,7 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-define('IN_NUCLEO', true);
+define('IN_APP', true);
 require_once('./interfase/common.php');
 require_once(ROOT . 'interfase/mail.php');
 require_once(ROOT . 'interfase/pop3.php');
@@ -30,12 +30,12 @@ $pop3 = new POP3();
 $emailer = new emailer();
 
 if (!$pop3->connect($config['mailserver_url'], $config['mailserver_port'])) {
-	_die($pop3->ERROR);
+	_pre($pop3->ERROR, true);
 }
 
 $count = $pop3->login($config['mailserver_news_login'], $config['mailserver_news_pass']);
 if (!$count) {
-	_die('There does not seem to be any new mail.');
+	_pre('There does not seem to be any new mail.', true);
 }
 
 if (!$emails = $cache->get('team_email'))
@@ -122,29 +122,25 @@ for ($i = 1; $i <= $count; $i++)
 	$post_subject = $s_header['subject'];
 	
 	$post_aproved = false;
-	if (!empty($user_password))
-	{
-		if ($userdata['user_password'] === user_password($user_password))
-		{
+	if (!empty($user_password)) {
+		if (ValidatePassword($user_password, $userdata['user_password'])) {
 			$post_aproved = true;
 		}
 	}
 	
-	if ($post_aproved)
-	{
+	if ($post_aproved) {
 		$post_category = $post_parts[1];
-		if (isset($body['text-html']))
-		{
+		
+		if (isset($body['text-html'])) {
 			$post_category = htmlentities($post_category);
 		}
 		
 		$post_category_id = 0;
-		if (!empty($post_category))
-		{
+		if (!empty($post_category)) {
 			$post_category_id = (isset($news_cat[$post_category])) ? $news_cat[$post_category] : 0;
 		}
-		if (!$post_category_id)
-		{
+		
+		if (!$post_category_id) {
 			$post_category_id = 5;
 			$post_category = 'Otras noticias';
 		}

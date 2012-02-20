@@ -31,7 +31,7 @@ F			ARTISTS NEWS					-
 I			ARTISTS IMAGES				-
 */
 
-define('IN_NUCLEO', true);
+define('IN_APP', true);
 require_once('./interfase/common.php');
 require_once(ROOT . 'interfase/downloads.php');
 

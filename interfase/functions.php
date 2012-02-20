@@ -312,6 +312,33 @@ function forum_for_team_array() {
 	return $ary;
 }
 
+function _implode($glue, $pieces, $empty = false) {
+	if (!is_array($pieces) || !count($pieces)) {
+		return -1;
+	}
+	
+	foreach ($pieces as $i => $v) {
+		if (empty($v) && !$empty) unset($pieces[$i]);
+	}
+	
+	if (!count($pieces)) {
+		return -1;
+	}
+	
+	return implode($glue, $pieces);
+}
+
+function _implode_and($glue, $last_glue, $pieces, $empty = false) {
+	$response = _implode($glue, $pieces, $empty);
+	
+	$last = strrpos($response, $glue);
+	if ($last !== false) {
+		$response = substr_replace($response, $last_glue, $last, count($glue) + 1);
+	}
+	
+	return $response;
+}
+
 function points_start_date() {
 	return 1201370400;
 }
@@ -350,6 +377,37 @@ function unique_id() {
 
 function user_password($password) {
 	return sha1(md5($password));
+}
+
+//Takes a password and returns the salted hash
+//$password - the password to hash
+//returns - the hash of the password (128 hex characters)
+function HashPassword($password, $already = false) {
+	$salt = bin2hex(mcrypt_create_iv(32, MCRYPT_DEV_URANDOM)); //get 256 random bits in hex
+	
+	if (!$already) {
+		$password = user_password($password);
+	}
+	
+	$hash = hash('sha256', $salt . $password); //prepend the salt, then hash
+	//store the salt and hash in the same string, so only 1 DB column is needed
+	$final = $salt . $hash; 
+	return $final;
+}
+
+//Validates a password
+//returns true if hash is the correct hash for that password
+//$hash - the hash created by HashPassword (stored in your DB)
+//$password - the password to verify
+//returns - true if the password is valid, false otherwise.
+function ValidatePassword($password, $correctHash) {
+	$salt = substr($correctHash, 0, 64); //get the salt from the front of the hash
+	$validHash = substr($correctHash, 64, 64); //the SHA256
+
+	$testHash = hash('sha256', $salt . user_password($password)); //hash the password being tested
+	
+	//if the hashes are exactly the same, the password is valid
+	return $testHash === $validHash;
 }
 
 //
@@ -641,6 +699,64 @@ function _button($name = 'submit') {
 	return (isset($_POST[$name])) ? true : false;
 }
 
+function _md($parent, $childs = false) {
+	global $config;
+	
+	if (!@file_exists($parent)) {
+		$oldumask = umask(0);
+		
+		if (!@mkdir($parent, $config['mask'])) {
+			return false;
+		}
+		@chmod($parent, $config['mask']);
+		
+		umask($oldumask);
+	}
+	
+	if ($childs !== false) {
+		if (substr($parent, -1) !== '/') {
+			$parent .= '/';
+		}
+		
+		foreach ($childs as $child) {
+			$parent .= $child . '/';
+			_md($parent);
+		}
+	}
+	
+	return true;
+}
+
+function _rm($path) {
+	if (empty($path)) {
+		return false;
+	}
+	
+	if (!@file_exists($path)) {
+		return false;
+	}
+	
+	if (is_dir($path)) {
+		$fp = @opendir($path);
+		while ($file = @readdir($fp)) {
+			if ($file == '.' || $file == '..') continue;
+			
+			_rm($path . '/' . $file);
+		}
+		@closedir($fp);
+		
+		if (!@rmdir($path)) {
+			return false;
+		}
+	} else {
+		if (!@unlink($path)) {
+			return false;
+		}
+	}
+	
+	return true;
+}
+
 function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 	global $config, $user;
 	
@@ -715,7 +831,7 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 					if ($row = sql_fieldrow(sql_filter($sql, $username_base))) {
 						$exclude_type = array(USER_INACTIVE); 
 						
-						if ((user_password($password) == $row['user_password']) && (!in_array($row['user_type'], $exclude_type))) {
+						if (ValidatePassword($password, $row['user_password']) && (!in_array($row['user_type'], $exclude_type))) {
 							$user->session_create($row['user_id'], $adm);
 							
 							if (!$row['user_country'] || !$row['user_location'] || !$row['user_gender'] || !$row['user_birthday'] || !$row['user_avatar']) {
@@ -974,7 +1090,7 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 						'user_active' => 1,
 						'username' => $v_fields['username'],
 						'username_base' => $v_fields['username_base'],
-						'user_password' => user_password($v_fields['key']),
+						'user_password' => HashPassword($v_fields['key']),
 						'user_regip' => $user->ip,
 						'user_session_time' => 0,
 						'user_lastpage' => '',
@@ -1123,7 +1239,7 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 				$password = request_var('newkey', '');
 				
 				if (!empty($password)) {
-					$crypt_password = user_password($password);
+					$crypt_password = HashPassword($password);
 					
 					$sql = 'UPDATE _members SET user_password = ?
 						WHERE user_id = ?';
@@ -1360,6 +1476,8 @@ function _pre($a, $d = false) {
 	echo '</pre>';
 	
 	if ($d === true) {
+		sql_close();
+		
 		exit;
 	}
 }
@@ -1855,13 +1973,6 @@ function check_www($url) {
 	return false;
 }
 
-function _die($str) {
-	sql_close();
-	
-	echo $str;
-	exit;
-}
-
 function curl_get($url, $method = 'get') {
 	$socket = curl_init();
 	curl_setopt($socket, CURLOPT_URL, $url);
@@ -1926,6 +2037,37 @@ function html_entity_decode_utf8($string) {
 	}
 	
 	return strtr($string, $trans_tbl);
+}
+
+function _rowset_style($sql, $style, $prefix = '') {
+	$a = sql_rowset($sql);
+	_rowset_foreach($a, $style, $prefix);
+	
+	return $a;
+}
+
+function _rowset_foreach($rows, $style, $prefix = '') {
+	$i = 0;
+	foreach ($rows as $row) {
+		if (!$i) _style($style);
+		
+		_rowset_style_row($row, $style, $prefix);
+		$i++;
+	}
+	
+	return;
+}
+
+function _rowset_style_row($row, $style, $prefix = '') {
+	if (f($prefix)) $prefix .= '_';
+	
+	$f = w();
+	foreach ($row as $_f => $_v) {
+		$g = array_key(array_slice(explode('_', $_f), -1), 0);
+		$f[strtoupper($prefix . $g)] = $_v;
+	}
+	
+	return _style($style . '.row', $f);
 }
 
 function _style_uv($a) {

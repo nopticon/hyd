@@ -16,7 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-if (!defined('IN_NUCLEO')) exit;
+if (!defined('IN_APP')) exit;
 
 class __broadcast_program_create extends mac {
 	public function __construct() {
@@ -38,7 +38,7 @@ class __broadcast_program_create extends mac {
 			FROM _radio
 			WHERE show_base = ?';
 		if ($row = sql_fieldrow(sql_filter($sql, $v->base))) {
-			//_die('El programa ya existe');
+			//_pre('El programa ya existe', true);
 		}
 		
 		$time_start = mktime($v->start - $user->d('user_timezone'), 0, 0, 0, 0, 0);

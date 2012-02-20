@@ -16,7 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-if (!defined('IN_NUCLEO')) exit;
+if (!defined('IN_APP')) exit;
 
 class __forums_topic_delete extends mac {
 	public function __construct() {
@@ -41,28 +41,28 @@ class __forums_topic_delete extends mac {
 		$sql = 'SELECT forum_id, topic_id
 			FROM _forum_topics
 			WHERE topic_id IN (??)';
-		$result = sql_rowset(sql_filter($sql, implode(', ', $topics)));
+		$result = sql_rowset(sql_filter($sql, _implode(', ', $topics)));
 		
 		foreach ($result as $row) {
 			$forums_id_sql[] = (int) $row['forum_id'];
 			$topics_id[] = (int) $row['topic_id'];
 		}
 		
-		$topic_id_sql = implode(',', $topics_id);
+		$topic_id_sql = _implode(',', $topics_id);
 		
 		//
 		$sql = 'SELECT post_id
 			FROM _forum_posts
 			WHERE topic_id IN (??)';
 		$posts_id = sql_rowset(sql_filter($sql, $topic_id_sql), false, 'post_id');
-		$post_id_sql = implode(',', $posts_id);
+		$post_id_sql = _implode(',', $posts_id);
 		
 		//
 		$sql = 'SELECT vote_id
 			FROM _poll_options
 			WHERE topic_id IN (??)';
 		$votes_id = sql_rowset(sql_filter($sql, $topic_id_sql), false, 'vote_id');
-		$vote_id_sql = implode(',', $votes_id);
+		$vote_id_sql = _implode(',', $votes_id);
 		
 		//
 		$sql = 'SELECT poster_id, COUNT(post_id) AS posts
@@ -71,7 +71,7 @@ class __forums_topic_delete extends mac {
 			GROUP BY poster_id';
 		$result = sql_rowset(sql_filter($sql, $topic_id_sql));
 		
-		$members_sql = array();
+		$members_sql = w();
 		foreach ($result as $row) {
 			$sql = 'UPDATE _members SET user_posts = user_posts - ??
 				WHERE user_id = ?';

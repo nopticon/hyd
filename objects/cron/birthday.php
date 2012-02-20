@@ -16,7 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-if (!defined('IN_NUCLEO')) exit;
+if (!defined('IN_APP')) exit;
 
 $max_email = 10;
 @set_time_limit(120);
@@ -63,6 +63,6 @@ if (count($done))
 	sql_query(sql_filter($sql, date('Y'), implode(',', $done)));
 }
 
-_die('Done. @ ' . implode(', ', $usernames));
+_pre('Done. @ ' . implode(', ', $usernames), true);
 
 ?>

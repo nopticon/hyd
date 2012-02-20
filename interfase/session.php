@@ -537,7 +537,7 @@ class user extends session {
 		// We include common language file here to not load it every time a custom language file is included
 		$lang = &$this->lang;
 		if ((require_once($this->lang_path . 'main.php')) === false) {
-			die("Language file " . $this->lang_path . "main.php" . " couldn't be opened.");
+			_pre("Language file " . $this->lang_path . "main.php couldn't be opened.", true);
 		}
 
 		$this->add_lang($lang_set);

@@ -16,7 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-if (!defined('IN_NUCLEO')) exit;
+if (!defined('IN_APP')) exit;
 
 class xavatar
 {
@@ -186,11 +186,11 @@ class xavatar
 		@imagedestroy($thumb);
 		@imagedestroy($image);
 		
-		@unlink($this->info['temp_avatar']);
+		_rm($this->info['temp_avatar']);
 		
 		if (@file_exists($this->info['current_avatar']))
 		{
-			@unlink($this->info['current_avatar']);
+			_rm($this->info['current_avatar']);
 		}
 		
 		@rename($this->info['temp_avatar2'], $this->info['new_avatar']);

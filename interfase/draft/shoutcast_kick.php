@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!isset($config['kick_script']))
 {
-	define('IN_NUCLEO', true);
+	define('IN_APP', true);
 	require_once('./interfase/common.php');
 	
 	$user->init(true, true);
@@ -94,6 +94,6 @@ if ($fp)
 	}
 }
 
-_die('Disconnected.');
+_pre('Disconnected.');
 
 ?>

@@ -16,7 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-if (!defined('IN_NUCLEO')) exit;
+if (!defined('IN_APP')) exit;
 
 class __forums_topic_merge extends mac {
 	public function __construct() {
@@ -50,7 +50,7 @@ class __forums_topic_merge extends mac {
 			FROM _forum_topics
 			WHERE topic_id = ?';
 		if (!$row = sql_fieldrow(sql_filter($sql, $to_topic))) {
-			_die();
+			fatal_error();
 		}
 		
 		$from_forum_id = (int) $row['forum_id'];
@@ -95,7 +95,7 @@ class __forums_topic_merge extends mac {
 			WHERE topic_id = ?';
 		$user_ids = sql_rowset(sql_filter($sql, $to_topic), false, 'user_id');
 		
-		$sql_user = (sizeof($user_ids)) ? ' AND user_id NOT IN (' . implode(', ', $user_ids) . ')' : '';
+		$sql_user = (sizeof($user_ids)) ? ' AND user_id NOT IN (' . _implode(', ', $user_ids) . ')' : '';
 		
 		$sql = array(
 			sql_filter('UPDATE _forum_topics_fav SET topic_id = ? WHERE topic_id = ?', $to_topic, $from_topic) . $sql_user,

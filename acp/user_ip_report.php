@@ -16,7 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-if (!defined('IN_NUCLEO')) exit;
+if (!defined('IN_APP')) exit;
 
 class __user_ip_report extends mac {
 	public function __construct() {
@@ -59,7 +59,7 @@ class __user_ip_report extends mac {
 					'USERNAME' => $row['username'],
 					'TIME' => $user->format_date($row['log_time']),
 					'ENDTIME' => (($row['log_endtime']) ? $user->format_date($row['log_endtime']) : '&nbsp;'),
-					'DIFFTIME' => (($row['log_endtime']) ? implode(' ', timeDiff($row['log_endtime'], $row['log_time'], true, 1)) : '&nbsp;'),
+					'DIFFTIME' => (($row['log_endtime']) ? _implode(' ', timeDiff($row['log_endtime'], $row['log_time'], true, 1)) : '&nbsp;'),
 					'IP' => $row['log_ip'],
 					'AGENT' => $row['log_agent'])
 				);

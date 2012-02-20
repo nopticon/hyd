@@ -16,9 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-if (!defined('IN_NUCLEO')) exit;
-
-require_once(ROOT . 'interfase/upload.php');
+if (!defined('IN_APP')) exit;
 
 class __event_update extends mac {
 	public function __construct() {
@@ -28,11 +26,9 @@ class __event_update extends mac {
 	}
 	
 	public function _home() {
-		global $config, $user;
+		global $config, $user, $upload;
 		
 		if ($this->submit) {
-			$upload = new upload();
-			
 			$event_id = request_var('event_id', 0);
 			
 			$sql = 'SELECT *

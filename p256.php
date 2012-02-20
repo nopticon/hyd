@@ -16,36 +16,31 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-if (!defined('IN_APP')) exit;
+define('IN_APP', true);
+require_once('./interfase/common.php');
+require_once(ROOT . 'objects/board.php');
 
-class __broadcast_dj_report extends mac {
-	public function __construct() {
-		parent::__construct();
-		
-		$this->auth('founder');
+$user->init();
+$user->setup();
+
+$sql = 'SELECT user_id, username, user_password
+	FROM _members
+	WHERE user_id <> 1
+	ORDER BY user_id';
+$members = sql_rowset($sql);
+
+foreach ($members as $row) {
+	if (strlen($row['user_password']) == 128) {
+		continue;
 	}
 	
-	public function _home() {
-		global $config, $user, $cache;
-		
-		$sql = 'SELECT d.*, m.username, m.username_base
-			FROM _radio_dj_log d, _members m
-			WHERE d.log_uid = m.user_id
-			ORDER BY log_time DESC';
-		$result = sql_rowset($sql);
-		
-		foreach ($result as $i => $row) {
-			if (!$i) _style('report');
-			
-			_style('report.row', array(
-				'LINK' => s_link('m', $row['username_base']),
-				'NAME' => $row['username'],
-				'TIME' => $user->format_date($row['log_time']))
-			);
-		}
-		
-		return;
-	}
+	$_password = HashPassword($row['user_password'], true);
+	
+	$sql = 'UPDATE _members SET user_password = ?
+		WHERE user_id = ?';
+	sql_query(sql_filter($sql, $_password, $row['user_id']));
+	
+	echo $row['username'] . ' * ' . $_password . '<br />';
 }
 
 ?>

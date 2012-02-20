@@ -16,7 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-if (!defined('IN_NUCLEO')) exit;
+if (!defined('IN_APP')) exit;
 
 class __user_password extends mac {
 	public function __construct() {
@@ -36,7 +36,6 @@ class __user_password extends mac {
 		$password = request_var('password', '');
 		
 		$username = get_username_base($username);
-		$password = user_password($password);
 		
 		$sql = 'SELECT user_id, username
 			FROM _members
@@ -47,7 +46,7 @@ class __user_password extends mac {
 		
 		$sql = 'UPDATE _members SET user_password = ?
 			WHERE user_id = ?';
-		sql_query(sql_filter($sql, $password, $userdata['user_id']));
+		sql_query(sql_filter($sql, HashPassword($password), $userdata['user_id']));
 		
 		return _pre('La contrase&ntilde;a de ' . $userdata['username'] . ' fue actualizada.', true);
 	}
