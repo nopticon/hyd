@@ -152,8 +152,6 @@ else if ( isset($_POST['joingroup']) && $group_id )
 	
 	if (!$is_autogroup_enable)
 	{
-		require_once(ROOT . 'interfase/emailer.php');
-		
 		$emailer = new emailer();
 		$emailer->from($config['board_email']);
 		$emailer->replyto($config['board_email']);
@@ -332,10 +330,8 @@ else if ( $group_id )
 					$result = $db->sql_query("SELECT group_name FROM _groups WHERE group_id = '$group_id'");
 
 					$group_name_row = $db->sql_fetchrow($result);
-
 					$group_name = $group_name_row['group_name'];
 
-					require_once(ROOT . 'interfase/emailer.php');
 					$emailer = new emailer();
 
 					$emailer->from($config['board_email']);
@@ -454,7 +450,6 @@ else if ( $group_id )
 						$group_name_row = $db->sql_fetchrow($result);
 						$group_name = $group_name_row['group_name'];
 
-						require_once(ROOT . 'interfase/emailer.php');
 						$emailer = new emailer();
 
 						$emailer->from($config['board_email']);

@@ -18,13 +18,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_APP')) exit;
 
-if (class_exists('_comments'))
-{
-	return;
-}
-
-require_once(ROOT . 'interfase/emailer.php');
-
 class _comments {
 	public $ref;
 	public $mesage;
@@ -50,6 +43,31 @@ class _comments {
 	public function reset2() {
 		$this->message = '';
 		$this->options = array();
+	}
+	
+	public function receive() {
+		global $config, $user;
+		
+		if ($config['request_method'] != 'post') {
+			redirect(s_link());
+		}
+		
+		// Init member
+		$user->init();
+		
+		if (!$user->is('member')) {
+			do_login();
+		}
+		
+		$this->ref = request_var('ref', $user->d('session_page'), true);
+		
+		if (preg_match('#([0-9a-z\-]+)\.(.*?)\.([a-z]+){1,3}(/(.*?))?$#i', $this->ref, $part) && ($part[1] != 'www')) {
+			$this->ref = '//' . $part[2] . '.' . $part[3] . '/a/' . $part[1] . $part[4];
+		}
+		
+		$this->store();
+		
+		redirect($this->ref);
 	}
 	
 	//
@@ -636,7 +654,6 @@ class _comments {
 		// Notify via email if user requires it
 		//
 		if ($mode == 'start' && $can_email && $user->d('user_email_dc')) {
-			include_once('./interfase/emailer.php');
 			$emailer = new emailer();
 			
 			$emailer->from('info');

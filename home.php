@@ -1,7 +1,7 @@
 <?php
 /*
-<NPT, a web development framework.>
-Copyright (C) <2009>  <NPT>
+<Orion, a web development framework for RK.>
+Copyright (C) <2011>  <Orion>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -16,34 +16,31 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-if (!defined('IN_APP')) exit;
+define('IN_APP', true);
+require_once('./interfase/common.php');
+require_once(ROOT . 'objects/home.php');
+require_once(ROOT . 'objects/artists.php');
+require_once(ROOT . 'objects/events.php');
 
-require_once(ROOT . 'interfase/db.call.php');
+$user->init();
+$user->setup();
 
-class dcom {
-	protected $connect;
-	protected $result;
-	protected $history;
-	protected $row;
-	protected $rowset;
-	protected $queries;
-	protected $noerror;
-	
-	protected $_access = array();
-	
-	final protected function access($d) {
-		if ($d === false) {
-			$d = decode_ht('.htda');
-		}
-		
-		foreach (w('server login secret database') as $i => $k)
-		{
-			$this->_access[$k] = _decode($d[$i]);
-		}
-		unset($d);
-		
-		return;
-	}
-}
+srand((double)microtime()*1000000);
+
+$home = new _home();
+$artists = new _artists();
+$events = new _events(true);
+
+$home->news();
+$home->board_general();
+$home->board_events();
+$home->poll();
+
+$artists->get_data();
+$artists->thumbnails();
+
+$events->_nextevent();
+
+page_layout('HOME', 'home', false, false);
 
 ?>

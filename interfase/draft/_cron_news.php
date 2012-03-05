@@ -20,7 +20,6 @@ define('IN_APP', true);
 require_once('./interfase/common.php');
 require_once(ROOT . 'interfase/mail.php');
 require_once(ROOT . 'interfase/pop3.php');
-require_once(ROOT . 'interfase/emailer.php');
 
 $user->init(true, true);
 $user->setup();

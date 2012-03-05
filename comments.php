@@ -19,27 +19,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 define('IN_APP', true);
 require_once('./interfase/common.php');
 
-if ($config['request_method'] != 'post' || !isset($_POST)) {
-	redirect(s_link());
-}
-
-// Init member
-$user->init();
-
-if (!$user->is('member')) {
-	do_login();
-}
-
-$comments = new _comments;
-
-$comments->ref = (isset($_POST['ref']) && !empty($_POST['ref'])) ? request_var('ref', '', true) : $user->d('session_page');
-
-if (preg_match('#([0-9a-z\-]+)\.(.*?)\.([a-z]+){1,3}(/(.*?))?$#i', $comments->ref, $part) && ($part[1] != 'www')) {
-	$comments->ref = '//' . $part[2] . '.' . $part[3] . '/a/' . $part[1] . $part[4];
-}
-
-$comments->store();
-
-redirect($comments->ref);
+$comments->receive();
 
 ?>

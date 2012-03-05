@@ -19,8 +19,8 @@ RewriteCond %{HTTP_HOST} !^www\.(rock|rk)
 RewriteCond %{HTTP_HOST} ^(www\.)?([a-z0-9]+)\.(rock|metal|rk)
 RewriteRule ^([^.]+)?$ orion/artists.php?id=%2&layout=$1 [L]
 
-RewriteRule ^$ orion/cover.php [nc]
-RewriteRule ^(cover|awards|board|emoticons|community|comments|search|ssv|tos|allies|broadcast|today|acp)/?$ orion/$1.php [nc]
+RewriteRule ^$ orion/home.php [nc]
+RewriteRule ^(awards|board|emoticons|community|comments|search|ssv|tos|allies|broadcast|today|acp)/?$ orion/$1.php [nc]
 RewriteRule ^(sign)(in|out|up|r)/?$ orion/$1.php?mode=$2 [nc]
 RewriteRule ^(sign)(up|r)/([a-z0-9]+)/$ orion/$1.php?mode=$2&code=$3 [nc]
 RewriteRule ^(sign)(up)/v/([0-9a-z]+)/$ orion/$1.php?mode=$2&invite=$1 [nc]

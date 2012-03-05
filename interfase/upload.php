@@ -19,6 +19,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 class upload {
 	public $error = array();
 	
+	public function __construct() {
+		return;
+	}
+	
 	public function array_merge($files) {
 		$file_ary = array();
 		if (!is_array($files)) return $file_ary;

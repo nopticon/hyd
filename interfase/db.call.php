@@ -18,6 +18,32 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_APP')) exit;
 
+class dcom {
+	protected $connect;
+	protected $result;
+	protected $history;
+	protected $row;
+	protected $rowset;
+	protected $queries;
+	protected $noerror;
+	
+	protected $_access = array();
+	
+	final protected function access($d) {
+		if ($d === false) {
+			$d = decode_ht('.htda');
+		}
+		
+		foreach (w('server login secret database') as $i => $k)
+		{
+			$this->_access[$k] = _decode($d[$i]);
+		}
+		unset($d);
+		
+		return;
+	}
+}
+
 function prefix($prefix, $arr) {
 	$prefix = ($prefix != '') ? $prefix . '_' : '';
 	

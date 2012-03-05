@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_APP')) exit;
 
-require_once(ROOT . 'interfase/db.dcom.php');
+require_once(ROOT . 'interfase/db.call.php');
 
 class database extends dcom {
 	public function __construct($d = false)

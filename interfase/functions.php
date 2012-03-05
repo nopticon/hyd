@@ -17,9 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-require_once(ROOT . 'interfase/emailer.php');
-require_once(ROOT . 'interfase/functions_validate.php');
-
 function htmlencode($str) {
 	$result = trim(htmlentities(str_replace(array("\r\n", "\r", '\xFF'), array("\n", "\n", ' '), $str)));
 	$result = (STRIP) ? stripslashes($result) : $result;
@@ -967,7 +964,6 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 			}
 			
 			//
-			require_once(ROOT . 'interfase/emailer.php');
 			$emailer = new emailer();
 			
 			$emailer->from('info');
@@ -1806,7 +1802,7 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 		'U_SPASSWORD' => s_link('my', 'password'),
 		'U_DC' => s_link('my', 'dc'),
 		
-		'U_COVER' => s_link(),
+		'U_HOME' => s_link(),
 		'U_FAQ' => s_link('faq'),
 		'U_WHATS_NEW' => s_link('today'),
 		'U_ARTISTS'	=> s_link('a'),
@@ -2247,6 +2243,114 @@ function tz_select($default, $select_name = 'timezone') {
 	$tz_select .= '</select>';
 
 	return $tz_select;
+}
+
+//
+// Check to see if the username has been taken, or if it is disallowed.
+// Also checks if it includes the " character, which we don't allow in usernames.
+// Used for registering, changing names, and posting anonymously with a username
+//
+function validate_username($username) {
+	global $user;
+
+	// Remove doubled up spaces
+	$username = preg_replace('#\s+#', ' ', trim($username)); 
+	$username = phpbb_clean_username($username);
+
+	$sql = 'SELECT username
+		FROM _members
+		WHERE LOWER(username) = ?';
+	if ($userdata = sql_fieldrow(sql_filter($sql, strtolower($username)))) {
+		if (($user->is('member') && $username != $userdata['username']) || !$user->is('member')) {
+			return array('error' => true, 'error_msg' => $user->lang['USERNAME_TAKEN']);
+		}
+	}
+	
+	$sql = 'SELECT group_name
+		FROM _groups
+		WHERE LOWER(group_name) = ?';
+	if (sql_fieldrow(sql_filter($sql, strtolower($username)))) {
+		return array('error' => true, 'error_msg' => $user->lang['USERNAME_TAKEN']);
+	}
+	
+	$sql = 'SELECT disallow_username
+		FROM _disallow';
+	$result = sql_rowset($sql);
+	
+	foreach ($result as $row) {
+		if (preg_match("#\b(" . str_replace("\*", ".*?", preg_quote($row['disallow_username'], '#')) . ")\b#i", $username)) {
+			return array('error' => true, 'error_msg' => $user->lang['USERNAME_DISALLOWED']);
+		}
+	}
+	
+	// Don't allow " and ALT-255 in username.
+	if (strstr($username, '"') || strstr($username, '�') || strstr($username, '�') || strstr($username, '&quot;') || strstr($username, chr(160))) {
+		return array('error' => true, 'error_msg' => $user->lang['USERNAME_INVALID']);
+	}
+
+	return array('error' => false, 'error_msg' => '');
+}
+
+//
+// Check to see if email address is banned
+// or already present in the DB
+//
+function validate_email($email) {
+	global $user;
+
+	if ($email != '') {
+		if (preg_match('/^[a-z0-9&\'\.\-_\+]+@[a-z0-9\-]+\.([a-z0-9\-]+\.)*?[a-z]+$/is', $email)) {
+			$sql = 'SELECT ban_email
+				FROM _banlist';
+			$result = sql_rowset($sql);
+			
+			foreach ($result as $row) {
+				$match_email = str_replace('*', '.*?', $row['ban_email']);
+				if (preg_match('/^' . $match_email . '$/is', $email)) {
+					return array('error' => true, 'error_msg' => $user->lang['EMAIL_BANNED']);
+				}
+			}
+			
+			$sql = 'SELECT user_email
+				FROM _members
+				WHERE user_email = ?';
+			if (sql_fieldrow(sql_filter($sql, $email))) {
+				return array('error' => true, 'error_msg' => $user->lang['EMAIL_TAKEN']);
+			}
+			
+			return array('error' => false, 'error_msg' => '');
+		}
+	}
+
+	return array('error' => true, 'error_msg' => $user->lang['EMAIL_INVALID']);
+}
+
+//
+// Does supplementary validation of optional profile fields. This expects common stuff like trim() and strip_tags()
+// to have already been run. Params are passed by-ref, so we can set them to the empty string if they fail.
+//
+function validate_optional_fields(&$icq, &$aim, &$msnm, &$yim, &$website, &$location, &$occupation, &$interests, &$sig) {
+	$check_var_length = w('aim msnm yim location occupation interests sig');
+	
+	foreach ($check_var_length as $row) {
+		if (strlen($$row) < 2) {
+			$$row = '';
+		}
+	}
+
+	// website has to start with http://, followed by something with length at least 3 that
+	// contains at least one dot.
+	if ($website != '') {
+		if (!preg_match('#^http[s]?:\/\/#i', $website)) {
+			$website = 'http://' . $website;
+		}
+
+		if (!preg_match('#^http[s]?\\:\\/\\/[a-z0-9\-]+\.([a-z0-9\-]+\.)?[a-z]+#i', $website)) {
+			$website = '';
+		}
+	}
+
+	return;
 }
 
 if (!function_exists('bcdiv')) {

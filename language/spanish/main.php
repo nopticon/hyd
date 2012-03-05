@@ -114,7 +114,7 @@ $lang += array(
 	'CLICK_RETURN_GROUP' => 'Click %sAQUI%s para volver al grupo',
 	'CLICK_RETURN_GROUP' => 'Click %sAQUI%s para volver al grupo',
 	'CLICK_RETURN_BOARDGROUP' => 'Click %sAQUI%s para volver al foro',
-	'CLICK_RETURN_COVER' => 'Click %sAQUI%s para volver a la Portada',
+	'CLICK_RETURN_HOME' => 'Click %sAQUI%s para volver a la Portada',
 	'CLICK_RETURN_LASTPAGE' => 'Click AQUI para volver a P&aacute;gina Anterior',
 	'CLICK_RETURN_LASTPAGE2' => 'P&aacute;gina Anterior',
 	

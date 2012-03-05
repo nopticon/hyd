@@ -70,7 +70,7 @@ define('USE_CACHE', true);
 define('STRIP', (get_magic_quotes_gpc()) ? true : false);
 
 if (!defined('REQC')) {
-	define('REQC', (strtolower(ini_get('request_order')) == 'gp'));
+	define('REQC', strpos(ini_get('request_order'), 'C') === false);
 }
 
 require_once(ROOT . 'interfase/constants.php');
@@ -80,6 +80,7 @@ require_once(ROOT . 'interfase/session.php');
 require_once(ROOT . 'interfase/functions.php');
 require_once(ROOT . 'interfase/cache.php');
 require_once(ROOT . 'interfase/comments.php');
+require_once(ROOT . 'interfase/emailer.php');
 require_once(ROOT . 'interfase/upload.php');
 
 set_error_handler('msg_handler');
@@ -91,6 +92,7 @@ $cache = new cache();
 $template	= new template();
 $comments = new _comments();
 $upload = new upload();
+
 $config = $cache->config();
 
 ?>

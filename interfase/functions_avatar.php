@@ -18,59 +18,51 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_APP')) exit;
 
-class xavatar
-{
-	var $filename_new;
-	var $filename_old;
-	var $image;
-	var $info;
-	var $config = array();
+class xavatar {
+	public $filename_new;
+	public $filename_old;
+	public $image;
+	public $info;
+	public $config = array();
 	
-	function xavatar($field)
-	{
+	public function __construct($field) {
 		global $config;
 		
 		$this->config = array(
 			'filesize' => $config['avatar_filesize'] / 1024,
 			'filesize_real' => $config['avatar_filesize'],
-			'ext' => array('jpg', 'jpeg', 'gif'),
+			'ext' => w('jpg jpeg gif'),
 			'dim' => array(70, 70)
 		);
 		
 		return;
 	}
 	
-	function get_extension($filename)
-	{
+	public function get_extension($filename) {
 		return strtolower(str_replace('.', '', substr($filename, strrpos($filename, '.'))));
 	}
 	
-	function process()
-	{
+	public function process() {
 		global $user, $config, $error;
 		
 		$this->info = $_FILES['avatar'];
 		
-		if (empty($this->info['name']) || !$this->info['name'] || ($this->info['name'] == 'none'))
-		{
+		if (empty($this->info['name']) || !$this->info['name'] || ($this->info['name'] == 'none')) {
 			return;
 		}
 		
-		if ($this->info['error'])
-		{
+		if ($this->info['error']) {
 			$error[] = 'AVATAR_GENERAL_ERROR';
 			
 			return;
 		}
 		
-		if ($this->info['size'] > $this->config['filesize_real'])
-		{
+		if ($this->info['size'] > $this->config['filesize_real']) {
 			$error[] = sprintf($user->lang['AVATAR_FILESIZE'], $this->config['filesize']);
 			return;
 		}
 		
-		if (!@is_uploaded_file($this->info['tmp_name']))
-		{
+		if (!@is_uploaded_file($this->info['tmp_name'])) {
 			$error[] = 'AVATAR_GENERAL_ERROR';
 			return;
 		}
@@ -80,8 +72,7 @@ class xavatar
 		//
 		$this->info['ext'] = $this->get_extension($this->info['name']);
 		
-		if (!$this->info['ext'] || !in_array($this->info['ext'], $this->config['ext']))
-		{
+		if (!$this->info['ext'] || !in_array($this->info['ext'], $this->config['ext'])) {
 			$error[] = 'AVATAR_FILETYPE';
 			return;
 		}
@@ -94,16 +85,14 @@ class xavatar
 		$this->info['new_avatar'] = $avatar_assets . $this->info['just_file'];
 		$this->info['current_avatar'] = $avatar_assets . $user->d('user_avatar');
 		
-		if (!@move_uploaded_file($this->info['tmp_name'], $this->info['temp_avatar']))
-		{
+		if (!@move_uploaded_file($this->info['tmp_name'], $this->info['temp_avatar'])) {
 			$error[] = 'AVATAR_GENERAL_ERROR';
 			return;
 		}
 		
 		list($width, $height, $type, $void) = getimagesize($this->info['temp_avatar']);
 		
-		if ($width < 1 && $height < 1)
-		{
+		if ($width < 1 && $height < 1) {
 			$error[] = 'AVATAR_GENERAL_ERROR';
 			return;
 		}
@@ -116,8 +105,7 @@ class xavatar
 		);
 		$scale = $this->scale($data);
 		
-		switch ($type)
-		{
+		switch ($type) {
 			case IMG_GIF:
 				$image_func = 'imagecreatefromgif';
 				$this->type = 'gif';
@@ -132,24 +120,21 @@ class xavatar
 				break;
 		}
 		
-		if (!function_exists($image_func))
-		{
+		if (!function_exists($image_func)) {
 			$error[] = 'AVATAR_GENERAL_ERROR';
 			return false;
 		}
 		
 		$image = @$image_func($this->info['temp_avatar']);
 		
-		if (function_exists('imagealphablending'))
-		{
+		if (function_exists('imagealphablending')) {
 			@imagealphablending($image, true);
 		}
 		
 		$thumb = @imagecreatetruecolor($scale['width'], $scale['height']);
 		@imagecopyresampled($thumb, $image, 0, 0, 0, 0, $scale['width'], $scale['height'], $width, $height);
 		
-		switch ($type)
-		{
+		switch ($type) {
 			case IMG_GIF:
 				$image_func = 'imagegif';
 				break;
@@ -161,23 +146,18 @@ class xavatar
 				break;
 		}
 		
-		if (!function_exists($image_func))
-		{
+		if (!function_exists($image_func)) {
 			$error[] = 'AVATAR_GENERAL_ERROR';
 			return false;
 		}
 		
-		if ($type == IMG_JPG)
-		{
+		if ($type == IMG_JPG) {
 			$created = @$image_func($thumb, $this->info['temp_avatar2'], 60);
-		}
-		else
-		{
+		} else {
 			$created = @$image_func($thumb, $this->info['temp_avatar2']);
 		}
 		
-		if (!$created || !@file_exists($this->info['temp_avatar2']))
-		{
+		if (!$created || !@file_exists($this->info['temp_avatar2'])) {
 			$error[] = 'AVATAR_GENERAL_ERROR';
 			return false;
 		}
@@ -188,8 +168,7 @@ class xavatar
 		
 		_rm($this->info['temp_avatar']);
 		
-		if (@file_exists($this->info['current_avatar']))
-		{
+		if (@file_exists($this->info['current_avatar'])) {
 			_rm($this->info['current_avatar']);
 		}
 		
@@ -206,18 +185,15 @@ class xavatar
 				'width' => round($data['width'] * ($data['max_width'] / $data['width'])),
 				'height' => round($data['height'] * ($data['max_width'] / $data['width']))
 			);
-		} 
-		else 
-		{
-			return array(
-				'width' => round($data['width'] * ($data['max_width'] / $data['height'])),
-				'height' => round($data['height'] * ($data['max_width'] / $data['height']))
-			);
 		}
+		
+		return array(
+			'width' => round($data['width'] * ($data['max_width'] / $data['height'])),
+			'height' => round($data['height'] * ($data['max_width'] / $data['height']))
+		);
 	}
 	
-	function file()
-	{
+	function file() {
 		return $this->info['just_file'];
 	}
 }

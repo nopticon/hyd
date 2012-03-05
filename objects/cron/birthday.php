@@ -21,7 +21,6 @@ if (!defined('IN_APP')) exit;
 $max_email = 10;
 @set_time_limit(120);
 
-require_once(ROOT . 'interfase/emailer.php');
 $emailer = new emailer();
 
 $sql = "SELECT *
