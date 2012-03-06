@@ -1,20 +1,19 @@
 <!-- INCLUDE page.header.htm -->
 
-<div class="h"><h3><a href="{U_EVENTS}">{L_UE}</a></h3></div>
-
-<form action="{MODULE_URL}" name="post" method="post" enctype="multipart/form-data">
-	<input type="hidden" name="MAX_FILE_SIZE" value="{UPLOAD_MAXSIZE}" />
-	<input type="file" name="add_zip[]" size="40" />
-	
-	<div class="pad_top">Evento<br />
-		<select name="event_id">
+<div class="pad_top publish">
+	<div class="h"><h3>{L_UE}</h3></div>
+	<form action="{MODULE_URL}" method="post" enctype="multipart/form-data">
+		<input type="hidden" name="MAX_FILE_SIZE" value="{UPLOAD_MAXSIZE}" />
+		<input type="file" name="add_zip[]" size="40" />
+		
+		<div class="pad_top"><label for="event_id">Evento</label>
+		<select id="event_id" name="event_id">
 			<!-- BEGIN event_list -->
 			<option value="{event_list.EVENT_ID}">{event_list.EVENT_TITLE} - {event_list.EVENT_DATE}</option>
 			<!-- END event_list -->
-		</select>
-	</div>
-	
-	<div class="pad_top a_mid">{S_HIDDEN}<input type="submit" class="submit" name="submit" value="{L_SUBMIT}" /></div>
-</form>
+		</select></div>
+		<input type="submit" name="submit" value="{L_SUBMIT}" />
+	</form>
+</div>
 
 <!-- INCLUDE page.footer.htm -->

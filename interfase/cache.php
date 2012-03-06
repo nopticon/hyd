@@ -43,7 +43,7 @@ class cache {
 			return false;
 		}
 		
-		$filename = './cache/' . /*md5*/($var) . '.php';
+		$filename = './cache/' . $var . '.php';
 		
 		if (@file_exists($filename)) {
 			if (!@require_once($filename)) {
@@ -66,7 +66,7 @@ class cache {
 			return;
 		}
 		
-		$filename = './cache/' . /*md5*/($var) . '.php';
+		$filename = './cache/' . $var . '.php';
 		
 		$fp = @fopen($filename, 'w');
 		if ($fp) {
@@ -89,7 +89,7 @@ class cache {
 		}
 		
 		foreach (func_get_args() as $var) {
-			$cache_filename = './cache/' . /*md5*/($var) . '.php';
+			$cache_filename = './cache/' . $var . '.php';
 			if (file_exists($cache_filename)) {
 				_rm($cache_filename);
 			}
