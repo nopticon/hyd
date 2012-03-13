@@ -185,6 +185,12 @@ class acp {
 			if ($object->can()) {
 				if (!$i) _style('acp_list');
 				
+				switch ($acp_alias) {
+					case 'artist_select':
+						continue 2;
+					break;
+				}
+				
 				_style('acp_list.row', array(
 					'URL' => s_link('acp', $acp_alias),
 					'NAME' => lang('ACP_' . $acp_alias, $acp_alias),

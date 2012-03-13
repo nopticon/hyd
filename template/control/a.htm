@@ -121,45 +121,6 @@
 	</form>
 </div>
 
-<!-- ELSEIF MODE == 'gallery' -->
-<div class="h"><h3>{L_CONTROL_A_GALLERY}</h3></div>
-
-<!-- IF MANAGE == 'home' -->
-<div class="pad_top ctl"><a href="{ADD_IMAGE_URL}">{L_CONTROL_A_GALLERY_ADD}</a></div>
-<!-- ENDIF -->
-
-<form action="{S_CONTROL}" method="post"<!-- IF MANAGE == 'add' --> enctype="multipart/form-data"<!-- ENDIF --> name="post">
-
-<!-- IF MANAGE == 'add' -->
-<div>{L_CONTROL_A_GALLERY_ADD_LEGEND}</div>
-<div class="pad_top"><input type="hidden" name="MAX_FILE_SIZE" value="{MAX_FILESIZE}" /><input type="file" name="add_image[]" size="25" /></div>
-<div class="pad_top a_center">{S_HIDDEN}<input class="submit" type="submit" name="submit" value="{L_SUBMIT}" /></div>
-<!-- ENDIF -->
-
-<!-- BEGIN gallery -->
-<div class="pad_top ls">
-	<ul>
-		<!-- BEGIN row -->
-		<!-- BEGIN col -->
-		<li><input type="checkbox" class="none" name="ls_images[]" value="{col.ITEM}" /><br /><a href="{col.RIMAGE}" title="{col.TFOOTER}"><img src="{col.IMAGE}" alt="" /></a><br /><span id="_footer_{col.ITEM}">{col.TFOOTER}</span></li>
-		<!-- END col -->
-		<!-- END row -->
-	</ul>
-</div>
-
-<div class="a_mid">{S_HIDDEN}<input type="submit" class="submit" name="submit" value="<!-- IF MANAGE == 'add' -->{L_SUBMIT}<!-- ELSE -->{L_DELETE_MARKED}<!-- ENDIF -->" /></div>
-<script type="text/javascript">
-//<![CDATA[
-<!-- BEGIN row -->
-<!-- BEGIN col -->
-new Ajax.InPlaceEditor('_footer_{col.ITEM}', '{col.U_FOOTER}', {highlightcolor:'#000000',highlightendcolor:'#000000',emptyText:'Editar pie de foto',cancelLink:false,submitOnBlur:true});
-<!-- END col -->
-<!-- END row -->
-//]]>
-</script>
-<!-- END gallery -->
-</form>
-
 <!-- ELSEIF MODE == 'downloads' -->
 <div class="h"><h3>{L_CONTROL_A_DOWNLOADS}<!-- IF MANAGE == 'home' --> &raquo; <a href="{ADD_DOWNLOAD_URL}">{L_CONTROL_A_DOWNLOADS_ADD}</a><!-- ENDIF --></h3></div>
 
