@@ -1267,21 +1267,20 @@ class Template {
 			}
 			
 			$extra_template = array(
-				'PHP' => 'php',
 				'LANG' => $config['default_lang'],
 				
 				'S_SERVER' => '//' . $config['server_name'],
 				'S_ASSETS' => $config['assets_url'],
 				'S_COMMENTS' => s_link('comments'),
 				'S_EMOTICONS' => s_link('emoticons'),
-				'S_CONTROL' => s_link('control'),
 				
 				'TEMPLATE' => $tpl,
 				'TEMPLATE_NAME' => $this->tpl,
 				
+				'_SELF' => _page(),
 				'IS_MEMBER' => $user->is('member'),
 				'MEMBER_COLOR' => $user->d('user_color'),
-				'FOOTER_YEAR' => date('Y')
+				'YEAR' => date('Y')
 			);
 			
 			$this->vars = array_merge($this->vars, $extra_template);

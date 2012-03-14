@@ -29,8 +29,8 @@ class session {
 		global $config;
 		
 		$this->time = time();
-		$this->browser = (!empty($_SERVER['HTTP_USER_AGENT'])) ? $_SERVER['HTTP_USER_AGENT'] : '';
-		$this->page = requested_page();
+		$this->browser = v_server('HTTP_USER_AGENT');
+		$this->page = _page();
 		$this->ip = htmlspecialchars(get_real_ip());
 		
 		if (empty($this->ip) && !$bypass_empty_ip) {
@@ -512,8 +512,8 @@ class user extends session {
 			$this->timezone = $config['board_timezone'] * 3600;
 			$this->dst = $config['board_dst'] * 3600;
 
-			if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
-				$accept_lang_ary = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
+			if ($accept_lang = v_server('HTTP_ACCEPT_LANGUAGE')) {
+				$accept_lang_ary = explode(',', $accept_lang);
 				foreach ($accept_lang_ary as $accept_lang) {
 					// Set correct format ... guess full xx_YY form
 					$accept_lang = substr($accept_lang, 0, 2) . '_' . strtoupper(substr($accept_lang, 3, 2));
@@ -1073,7 +1073,7 @@ class user extends session {
 	public function check_ref($block_ud = false, $auto_block = false) {
 		global $config;
 		
-		$url = (getenv('HTTP_REFERER')) ? trim(getenv('HTTP_REFERER')) : trim($_SERVER['HTTP_REFERER']);
+		$url = (getenv('HTTP_REFERER')) ? trim(getenv('HTTP_REFERER')) : v_server('HTTP_REFERER');
 		$url = $this->clean_value($url);
 		if ($url == '') {
 			return;
@@ -1113,7 +1113,7 @@ class user extends session {
 			$not_allowed_ref = false;
 		}
 		
-		$request = $this->clean_value($_SERVER['REQUEST_URI']);
+		$request = $this->clean_value(v_server('REQUEST_URI'));
 		$auto_block = ($auto_block) ? 1 : 0;
 		
 		$insert = true;

@@ -10,6 +10,7 @@
 <!-- INCLUDE js/j.wheel.js -->
 <!-- INCLUDE js/j.fancy.js -->
 <!-- INCLUDE js/j.slider.js -->
+<!-- INCLUDE js/j.filestyle.js -->
 <!-- INCLUDE js/png.js -->
 
 function popup(url, name, width, height) {
@@ -74,6 +75,13 @@ $(function() {
 			offsetTop:500,
 			offsetLeft: 0
 		}
+	});
+	
+	$("input[type=file]").filestyle({
+		image: "//assets.orion.com/style/file.png",
+		imagewidth : 90,
+		imageheight : 20,
+		width : 250
 	});
 	
 	$(".vcheck").vchecks();

@@ -652,7 +652,7 @@ $lang += array(
 	'NEWS_NON_LOCAL' => 'Internacional',
 	
 	// UNREAD MESSAGE CENTER
-	'THENEW' => 'Lo Nuevo',
+	'THENEW' => 'Actualidad',
 	'NEW_MARK' => 'Marcar como leidos autom&aacute;ticamente',
 	'NEW_MARK_NEVER' => 'Nunca',
 	'NEW_MARK_ALWAYS' => 'Siempre',

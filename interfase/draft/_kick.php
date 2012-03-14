@@ -31,7 +31,7 @@ class __kick extends common
 			$nucleo->redirect($nucleo->link('radio'));
 		}
 		
-		if (!$user->data['is_member'] || $$nucleo->config['request_method'] != 'post')
+		if (!$user->data['is_member'] || request_method() != 'post')
 		{
 			if ($v['a'])
 			{

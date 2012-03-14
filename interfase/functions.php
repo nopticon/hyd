@@ -116,11 +116,11 @@ function request_var($var_name, $default, $multibyte = false) {
 }
 
 function get_real_ip() {
-	$_SERVER['HTTP_X_FORWARDED_FOR'] = (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : ''; 
-	$_SERVER['REMOTE_ADDR'] = (isset($_SERVER['REMOTE_ADDR'])) ? $_SERVER['REMOTE_ADDR'] : '';
-	$_ENV['REMOTE_ADDR'] = (isset($_ENV['REMOTE_ADDR'])) ? $_ENV['REMOTE_ADDR'] : '';
+	$_SERVER['HTTP_X_FORWARDED_FOR'] = v_server('HTTP_X_FORWARDED_FOR'); 
+	$_SERVER['REMOTE_ADDR'] = v_server('REMOTE_ADDR');
+	$_ENV['REMOTE_ADDR'] = v_server('REMOTE_ADDR');
 	
-	if ($_SERVER['HTTP_X_FORWARDED_FOR'] != '') {
+	if (v_server('HTTP_X_FORWARDED_FOR') != '') {
 		$client_ip = (!empty($_SERVER['REMOTE_ADDR'])) ? $_SERVER['REMOTE_ADDR'] : ((!empty($_ENV['REMOTE_ADDR'])) ? $_ENV['REMOTE_ADDR'] : '');
 		
 		// Los proxys van añadiendo al final de esta cabecera
@@ -340,14 +340,25 @@ function points_start_date() {
 	return 1201370400;
 }
 
-//
-// Requested Page
-//
-function requested_page() {
-	$protocol = ((int) $_SERVER['SERVER_PORT'] === 443) ? 'https://' : 'http://';
-	$current_page = $protocol . $_SERVER['HTTP_HOST'] . ((!empty($_SERVER['REQUEST_URI'])) ? $_SERVER['REQUEST_URI'] : '');
-	
-	return $current_page;
+function v_server($a) {
+	return (isset($_SERVER[$a])) ? $_SERVER[$a] : '';
+}
+
+function get_protocol($ssl = false) {
+	return ('http' . (($ssl !== false || v_server('SERVER_PORT') == 443) ? 's' : '') . '://');
+}
+
+function get_host() {
+	return v_server('HTTP_HOST');
+}
+
+function request_method() {
+	return strtolower(v_server('REQUEST_METHOD'));
+}
+
+// Current page
+function _page() {
+	return get_protocol() . get_host() . v_server('REQUEST_URI');
 }
 
 function array_key($a, $k) {
@@ -476,7 +487,7 @@ function s_link($module = '', $data = false) {
 	
 	$url = 'http://';
 	$is_a = is_array($data);
-	if ($_SERVER['REMOTE_ADDR'] != '127.0.0.1' && $module == 'a' && $data !== false && ((!$is_a && !preg_match('/^_([0-9]+)$/i', $data)) || ($is_a && count($data) == 2))) {
+	if (v_server('REMOTE_ADDR') != '127.0.0.1' && $module == 'a' && $data !== false && ((!$is_a && !preg_match('/^_([0-9]+)$/i', $data)) || ($is_a && count($data) == 2))) {
 		$subdomain = ($is_a) ? $data[0] : $data;
 		$url .= str_replace('www', $subdomain, $config['server_name']) . '/';
 		
@@ -1599,7 +1610,7 @@ function fatal_error_tables($msg) {
 function fatal_error($mode = '404', $bp_message = '') {
 	global $user, $config;
 	
-	$current_page = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+	$current_page = _page();
 	$error = 'La p&aacute;gina <strong>' . $current_page . '</strong> ';
 	
 	$username = (@method_exists($user, 'd')) ? $user->d('username') : '';

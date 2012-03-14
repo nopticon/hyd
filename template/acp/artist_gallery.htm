@@ -2,28 +2,30 @@
 
 <div class="h"><h3>{L_CONTROL_A_GALLERY}</h3></div>
 
-<!-- IF MANAGE == 'home' -->
-<div class="pad_top ctl"><a href="{ADD_IMAGE_URL}">{L_CONTROL_A_GALLERY_ADD}</a></div>
-<!-- ENDIF -->
-
 <form action="{S_CONTROL}" method="post" enctype="multipart/form-data" name="post">
+	{S_HIDDEN}
+	<div class="">
+		<div class="">{L_CONTROL_A_GALLERY_ADD_LEGEND}</div>
+		<div class="pad_top"><input type="hidden" name="MAX_FILE_SIZE" value="{MAX_FILESIZE}" /><input type="file" name="add_image[]" size="25" /></div>
+		<div class="pad_top"><input class="submit" type="submit" name="submit" value="{L_SUBMIT}" /></div>
+		
+		<!-- BEGIN gallery -->
+		<div class="pad_top ln l4 a_mid">
+			<ul>
+				<!-- BEGIN row -->
+				<li><input type="checkbox" name="ls_images[]" value="{row.ITEM}" /><br /><a class="fancy" href="{row.RIMAGE}"><img src="{row.IMAGE}" alt="" /></a></li>
+				<!-- END row -->
+			</ul>
+		</div>
+		
+		<span class="clear"></span>
+		
+		<div class="x2"><input type="submit" class="remove" name="submit" value="{L_DELETE_MARKED}" /></div>
+		<!-- END gallery -->
+	</div>
+</form>
 
-<!-- IF MANAGE == 'add' -->
-<div>{L_CONTROL_A_GALLERY_ADD_LEGEND}</div>
-<div class="pad_top"><input type="hidden" name="MAX_FILE_SIZE" value="{MAX_FILESIZE}" /><input type="file" name="add_image[]" size="25" /></div>
-<div class="pad_top a_center">{S_HIDDEN}<input class="submit" type="submit" name="submit" value="{L_SUBMIT}" /></div>
-<!-- ENDIF -->
-
-<!-- BEGIN gallery -->
-<div class="pad_top ls">
-	<ul>
-		<!-- BEGIN row -->
-		<li><input type="checkbox" class="none" name="ls_images[]" value="{col.ITEM}" /><br /><a href="{col.RIMAGE}" title="{col.TFOOTER}"><img src="{col.IMAGE}" alt="" /></a><br /><span id="_footer_{col.ITEM}">{col.TFOOTER}</span></li>
-		<!-- END row -->
-	</ul>
-</div>
-
-<div class="a_mid">{S_HIDDEN}<input type="submit" class="submit" name="submit" value="<!-- IF MANAGE == 'add' -->{L_SUBMIT}<!-- ELSE -->{L_DELETE_MARKED}<!-- ENDIF -->" /></div>
+<!-- BEGIN hide -->
 <script type="text/javascript">
 //<![CDATA[
 <!-- BEGIN row -->
@@ -33,7 +35,6 @@ new Ajax.InPlaceEditor('_footer_{col.ITEM}', '{col.U_FOOTER}', {highlightcolor:'
 <!-- END row -->
 //]]>
 </script>
-<!-- END gallery -->
-</form>
+<!-- END hide -->
 
 <!-- INCLUDE page.footer.htm -->

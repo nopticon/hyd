@@ -6,35 +6,6 @@
 <!-- ENDIF -->
 
 <!-- IF MODE == 'home' -->
-<!-- BEGIN menu -->
-<div class="pad_top a_mid ls">
-	<ul>
-		<!-- BEGIN item -->
-		<li><a href="{item.URL}">{item.NAME}</a></li>
-		<!-- END item -->
-	</ul>
-</div>
-<!-- END menu -->
-
-<!-- BEGIN select_a -->
-<div class="pad_top ls">
-	<ul>
-		<!-- BEGIN row -->
-		<!-- BEGIN col -->
-		<li>
-			<ul>
-				<li><a class="relevant_artist" href="{col.URL}">{col.NAME}</a></li>
-				<li>{col.GENRE}</li>
-				<li>{col.LOCATION}</li>
-				<li><a href="{col.URL}"><img src="{col.IMAGE}" alt="{col.NAME}" /></a></li>
-			</ul>
-		</li>
-		<!-- END col -->
-		<!-- END row -->
-	</ul>
-</div>
-<!-- END select_a -->
-
 <!-- ELSEIF MODE == 'news' -->
 <div class="h"><h3>{L_CONTROL_A_NEWS}</h3></div>
 
@@ -60,37 +31,6 @@
 </form>
 </div>
 <!-- ELSEIF MODE == 'auth' -->
-<form action="{S_CONTROL}" method="post">{S_HIDDEN}
-<div class="h"><h3>{L_CONTROL_A_AUTH}</h3></div>
-
-<div class="ctl"><a href="{ADD_MEMBER_URL}">{L_CONTROL_A_AUTH_ADD}</a></div>
-
-<!-- IF MANAGE == 'add' -->
-<!-- IF SHOW_INPUT -->
-<label for="member">{L_MEMBER}</label>: <input  type="text" id="member" name="s_member" size="35" maxlength="20" /><br />
-<div class="pad_top">{L_CONTROL_A_AUTH_ADD_LEGEND}</div>
-<!-- ELSE -->
-<div class="pad_top">{L_CONTROL_A_AUTH_ADD_LEGEND2}</div>
-<!-- ENDIF -->
-<!-- ENDIF -->
-
-<!-- BEGIN members -->
-<div class="pad_top ls">
-	<ul>
-		<!-- BEGIN row -->
-		<!-- BEGIN col -->
-		<li><input type="checkbox" class="none" name="s_members[]" value="{col.USER_ID}"<!-- IF !(col.DELETE) --> disabled="true"<!-- ENDIF --><!-- IF col.CHECK --> checked="true"<!-- ENDIF --> /><a href="{col.PROFILE}"><img src="{col.AVATAR}" alt="{col.USERNAME}" /></a><br /><a href="{col.PROFILE}">{col.USERNAME}</a></li>
-		<!-- END col -->
-		<!-- END row -->
-	</ul>
-</div>
-<!-- END members -->
-
-<!-- IF (MANAGE == 'home' && RESULTS) || (MANAGE == 'add') -->
-<div class="a_mid"><input type="submit" class="submit" name="submit" value="<!-- IF MANAGE == 'add' -->{L_SUBMIT}<!-- ELSE -->{L_DELETE_MARKED}<!-- ENDIF -->" /></div>
-<!-- ENDIF -->
-</form>
-
 <!-- ELSEIF MODE == 'log' -->
 <div class="h"><h3>{L_CONTROL_A_LOG}<!-- IF MEMBER --> &raquo; <a href="{PROFILE}">{USERNAME}</a><!-- ENDIF --></h3></div>
 
@@ -156,38 +96,6 @@
 <!-- END downloads -->
 
 </form>
-
-<!-- ELSEIF MODE == 'stats' -->
-<div class="h"><h3>{L_CONTROL_A_STATS}</h3></div>
-
-<div class=""><strong>{L_VISITS_COUNT}:</strong> {BEFORE_VIEWS} {L_MEMBERS_TOTAL}</div>
-<!-- IF SHOW_VIEWS_LEGEND --><br />{L_CONTROL_A_STATS_LEGEND}<!-- ENDIF -->
-
-<!-- BEGIN year -->
-<!-- IF year.S_NUM_ROWS > 1 -->
-<!-- IF year.S_ROW_COUNT == 0 --><div class="h"><h3><!-- ENDIF -->
-<!-- IF year.S_ROW_COUNT --> . <!-- ENDIF --><a href="#{year.YEAR}">{year.YEAR}</a>
-<!-- IF year.S_ROW_COUNT == year.S_NUM_ROWS - 1 --></h3></div><!-- ENDIF -->
-<!-- ENDIF -->
-<!-- END year -->
-
-<div id="poll">
-<!-- BEGIN year -->
-<a name="{year.YEAR}"></a>
-<div class="pad_top"><div class="dark_box">
-<h2>{year.YEAR}</h2>
-<ul class="ul_none">
-	<!-- BEGIN month -->
-	<!-- IF month.TOTAL -->
-	<li>
-	<div class="caption">{month.NAME} -- <span><strong>{month.TOTAL}</strong> {L_MEMBERS_TOTAL}</span> <span class="soft">|</span> <strong>{month.MEMBERS}</strong> <!-- IF month.MEMBERS == 1 -->{L_MEMBERS_VISIBLE}<!-- ELSE -->{L_MEMBERS_VISIBLE2}<!-- ENDIF --> <span class="soft">|</span> <strong>{month.GUESTS}</strong> <!-- IF month.GUESTS == 1 -->{L_MEMBERS_GUESTS}<!-- ELSE -->{L_MEMBERS_GUESTS2}<!-- ENDIF --></span></div>
-	<div class="bar"><div style="width: {month.PERCENT}%;" title="{month.TOTAL} {L_MEMBERS_TOTAL}">&nbsp;</div></div>
-	</li>
-	<!-- ENDIF -->
-	<!-- END month -->
-</div></div>
-<!-- END year -->
-</span>
 
 <!-- ELSEIF MODE == 'video' -->
 <div class="h"><h3>{L_CONTROL_A_VIDEO}</h3></div>

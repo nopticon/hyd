@@ -37,8 +37,8 @@ if (!empty($module) && preg_match('#^([a-z\_]+)$#i', $module)) {
 $file_content = @file('./template/exceptions/missing.htm');
 
 $matches = array(
-	'<!--#echo var="HTTP_HOST" -->' => $_SERVER['HTTP_HOST'],
-	'<!--#echo var="REQUEST_URI" -->' => $_SERVER['REQUEST_URI']
+	'<!--#echo var="HTTP_HOST" -->' => v_server('HTTP_HOST'),
+	'<!--#echo var="REQUEST_URI" -->' => v_server('REQUEST_URI')
 );
 
 $orig = $repl = array();

@@ -64,18 +64,17 @@ class mac {
 			}
 		}
 		
-		
-		
-		
 		$artist = request_var('a', '');
 		
 		if (empty($artist)) {
-			redirect(s_link('acp', array('artist_select', 'r' => 'artist_gallery')));
+			redirect(s_link('acp', array('artist_select', 'r' => request_var('module', ''))));
 		}
 		
 		if (!$this->object = get_artist($artist)) {
 			fatal_error();
 		}
+		
+		return;
 	}
 }
 
@@ -132,7 +131,7 @@ class acp {
 		$module = new $_object();
 		
 		$module->submit = _button();
-		$module->url = s_link() . substr($_SERVER['REQUEST_URI'], 1);
+		$module->url = s_link() . substr(v_server('REQUEST_URI'), 1);
 		$module->alias = $this->module;
 		
 		$module->_home();

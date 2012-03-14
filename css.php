@@ -49,8 +49,8 @@ if (!@file_exists($filepath)) {
 $last_modified = filemtime($filepath);
 $f_last_modified = gmdate('D, d M Y H:i:s', $last_modified) . ' GMT';
 
-$http_if_none_match = isset($_SERVER['HTTP_IF_NONE_MATCH']) ? $_SERVER['HTTP_IF_NONE_MATCH'] : '';
-$http_if_modified_since = isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) ? $_SERVER['HTTP_IF_MODIFIED_SINCE'] : '';
+$http_if_none_match = v_server('HTTP_IF_NONE_MATCH');
+$http_if_modified_since = v_server('HTTP_IF_MODIFIED_SINCE');
 
 $etag_server = etag($filepath);
 $etag_client = str_replace('-gzip', '', $http_if_none_match);

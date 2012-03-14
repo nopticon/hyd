@@ -382,7 +382,7 @@ if(isset($_GET["source"])) {
 }
 
 // $strRoot will be the URL to this page
-$strPath = str_replace( "\\", "/", $_SERVER['REQUEST_URI'] );
+$strPath = str_replace( "\\", "/", v_server('REQUEST_URI'));
 $aPath = explode( "?", $strPath);
 $strRoot = "http://" . $_SERVER['SERVER_NAME'] . ":" . $_SERVER['SERVER_PORT'] . $aPath[0];
 if ($strRoot[strlen($strRoot)-1] != "/")

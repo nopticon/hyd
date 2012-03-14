@@ -31,7 +31,7 @@ if ($chat->_setup()) {
 	
 	$s_process = in_array($mode, array('logout', 'send', 'get'));
 	
-	if ($config['request_method'] == 'post' && !$s_process) {
+	if (request_method() == 'post' && !$s_process) {
 		redirect(s_link('chat', $chat->data['ch_int_name']));
 	}
 	

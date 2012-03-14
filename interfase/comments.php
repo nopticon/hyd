@@ -48,7 +48,7 @@ class _comments {
 	public function receive() {
 		global $config, $user;
 		
-		if ($config['request_method'] != 'post') {
+		if (request_method() != 'post') {
 			redirect(s_link());
 		}
 		

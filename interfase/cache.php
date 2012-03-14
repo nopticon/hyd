@@ -33,8 +33,6 @@ class cache {
 			FROM _application';
 		$config = sql_rowset($sql, 'config_name', 'config_value');
 		
-		$config['request_method'] = strtolower($_SERVER['REQUEST_METHOD']);
-		
 		return $config;
 	}
 	

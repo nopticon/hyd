@@ -49,11 +49,11 @@ form, img {
 img {
 	max-width: 100%;
 }
-input, textarea, select {
-	background: #40474A;
+input, button, textarea, select {
+	background: #41413E;
 	border: 0;
 	padding: 2px;
-	box-shadow: 1px 1px 1px #111;
+	/*box-shadow: 1px 1px 1px #111;*/
 }
 hr {
 	display: block;
@@ -274,9 +274,7 @@ hr {
 	display: inline;
 	margin: 0 10px 0 10px;
 	border-bottom: 1px solid #F5B800;
-	
 	padding-bottom: 3px;
-	
 	font-family: 'Ubuntu', Arial, Helvetica, sans-serif !important;
 	font-size: 10pt;
 	color: #F5B800;
@@ -573,6 +571,22 @@ hr {
 .tt {
 	background: #fff;
 }
+.submit {
+	display: block;
+	margin: 10px 0 0 0;
+	padding: 4px 8px 4px 8px;
+	border-radius: 4px;
+	background: #5DA209;
+	color: #fff;
+}
+.remove {
+	display: block;
+	margin: 10px 0 0 0;
+	padding: 4px 8px 4px 8px;
+	border-radius: 4px;
+	background: #C23000;
+	color: #fff;
+}
 
 .nowrapcell {
 	white-space: nowrap;
@@ -829,4 +843,5 @@ html, body {
 <!-- INCLUDE css/player.css -->
 <!-- INCLUDE css/fancy.css -->
 <!-- INCLUDE css/slider.css -->
+<!-- INCLUDE css/icons.css -->
 <!-- INCLUDE css/awards.css -->

@@ -74,7 +74,7 @@ $lang += array(
 	'CONTROL_A_BIOGRAPHY_UPDATED' => 'La biograf&iacute;a fue actualizada',
 	
 	'CONTROL_A_GALLERY_ADD' => 'Agregar imagen',
-	'CONTROL_A_GALLERY_ADD_LEGEND' => 'Desde esta p&aacute;gina podr&aacute;s publicar nuevas fotograf&iacute;as para la galer&iacute;a.<br />Los archivos deben ser formato <strong>JPG</strong>, tama&ntilde;o de archivo <strong>500 kb</strong> m&aacute;ximo.',
+	'CONTROL_A_GALLERY_ADD_LEGEND' => 'Publica nuevas im&aacute;genes para tu galer&iacute;a.',
 	'CONTROL_A_GALLERY_ALLOW_DL' => 'Permitir que los miembros descarguen esta imagen',
 	'CONTROL_A_GALLERY_ADD_NOIMAGE' => 'Debes selecccionar una imagen.',
 	'CONTROL_A_GALLERY_EMPTY' => 'No hay im&aacute;genes disponibles. Click en <strong>Agregar imagen</strong>',

@@ -18,11 +18,35 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_APP')) exit;
 
-class __artist_gallery extends mac {
+class __artist_auth extends mac {
 	public function __construct() {
 		parent::__construct();
 		
 		$this->auth('artist');
+	}
+	
+	private function _show($rowset, $unique = false) {
+		global $user, $comments;
+
+		$total = count($rowset);
+
+		foreach ($rowset as $i => $row) {
+			if (!$i) _style('members');
+
+			$prof = $comments->user_profile($row);
+
+			_style('members.row', array(
+				'USER_ID' => $prof['user_id'],
+				'PROFILE' => $prof['profile'],
+				'USERNAME' => $prof['username'],
+				'COLOR' => $prof['user_color'],
+				'AVATAR' => $prof['user_avatar'],
+				'DELETE' => $unique || ($total > 1 && $prof['user_id'] != $user->d('user_id')) || ($user->is('founder') && $prof['user_id'] != $user->d('user_id')),
+				'CHECK' => ($total == 1 && $unique))
+			);
+		}
+
+		return;
 	}
 	
 	public function _home() {
@@ -38,28 +62,13 @@ class __artist_gallery extends mac {
 			return $this->remove();
 		}
 		
-		$sql = 'SELECT g.*
-			FROM _artists a, _artists_images g
+		$sql = 'SELECT u.user_id, u.user_type, u.username, u.username_base, u.user_color, u.user_avatar
+			FROM _artists_auth a, _members u
 			WHERE a.ub = ?
-				AND a.ub = g.ub
-			ORDER BY image ASC';
-		$result = sql_rowset(sql_filter($sql, $this->object['ub']));
-		
-		foreach ($result as $i => $row) {
-			if (!$i) _style('gallery');
-			
-			_style('gallery.row', array(
-				'ITEM' => $row['image'],
-				'URL' => s_link('a', array($this->object['subdomain'], 4, $row['image'], 'view')),
-				'U_FOOTER' => s_link_control('a', array('a' => $this->object['subdomain'], 'mode' => $this->mode, 'manage' => 'footer', 'image' => $row['image'])),
-				'IMAGE' => SDATA . 'artists/' . $this->object['ub'] . '/thumbnails/' . $row['image'] . '.jpg',
-				'RIMAGE' => get_a_imagepath(SDATA . 'artists/' . $this->object['ub'], $row['image'] . '.jpg', array('x1', 'gallery')),
-				'WIDTH' => $row['width'],
-				'HEIGHT' => $row['height'],
-				'TFOOTER' => $row['image_footer'],
-				'VIEWS' => $row['views'],
-				'DOWNLOADS' => $row['downloads'])
-			);
+				AND a.user_id = u.user_id
+			ORDER BY u.username';
+		if ($result = sql_rowset(sql_filter($sql, $this->object['ub']))) {
+			$this->_show($result);
 		}
 
 		return;
