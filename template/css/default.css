@@ -14,7 +14,7 @@
 body {
 	margin: 0;
 	padding: 0;
-	background: url(style/wood2.jpg) fixed top center #202837;
+	background: url(style/maya2.jpg) fixed top center #202837;
 }
 p, div, span, select {
 	cursor: default;
@@ -96,7 +96,7 @@ hr {
 	display: block;
 	width: 300px;
 	height: 47px;
-	/*background: url(style/header.gif) no-repeat;*/
+	background: url(style/header.gif) no-repeat;
 	text-indent: 100%;
 	white-space: nowrap;
 	overflow: hidden;
@@ -301,10 +301,10 @@ hr {
 .w {
 	width: 50%;
 	margin: 20px auto;
-	padding: 4px;
-	border
+	padding: 10px;
 	border-radius: 5px;
-	background: #161C26;
+	background: rgba(200,200,0,0.2);
+	text-align: center;
 }
 .w h3, .w p {
 	margin: 0;
