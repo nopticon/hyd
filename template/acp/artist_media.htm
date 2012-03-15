@@ -3,13 +3,12 @@
 <div class="h"><h3>{L_CONTROL_A_DOWNLOADS}</h3></div>
 
 <form action="{_SELF}" method="post" enctype="multipart/form-data" name="post">
-	{S_HIDDEN}
 	<div class="">
-		<div class="">{L_CONTROL_A_MEDIA_ADD_LEGEND}</div>
+		<div class="">Los archivos deben ser formato MP3:</div>
 		<div class="pad_top"><input type="hidden" name="MAX_FILE_SIZE" value="{MAX_FILESIZE}" /><input type="file" name="add_image[]" size="25" /></div>
 		<div class="pad_top"><input class="submit" type="submit" name="submit" value="{L_SUBMIT}" /></div>
 		
-		<!-- BEGIN gallery -->
+		<!-- BEGIN media -->
 		<div class="pad_top ln l4 a_mid">
 			<ul>
 				<!-- BEGIN row -->
@@ -33,7 +32,7 @@
 		<span class="clear"></span>
 		
 		<div class="x2"><input type="submit" class="remove" name="submit" value="{L_DELETE_MARKED}" /></div>
-		<!-- END gallery -->
+		<!-- END media -->
 	</div>
 </form>
 

@@ -14,7 +14,7 @@
 body {
 	margin: 0;
 	padding: 0;
-	background: url(style/wood2.jpg) fixed top center #202837;
+	background: url(style/pat.jpg) fixed top center #202837;
 }
 p, div, span, select {
 	cursor: default;
@@ -99,7 +99,7 @@ hr {
 	display: block;
 	width: 300px;
 	height: 47px;
-	/*background: url(style/header.gif) no-repeat;*/
+	background: url(style/header.gif) no-repeat;
 	text-indent: 100%;
 	white-space: nowrap;
 	overflow: hidden;
@@ -124,9 +124,10 @@ hr {
 }
 #menu ul li {
 	float: left;
-	margin-right: 15px;
+	margin-right: 8px;
 }
 #menu ul li a {
+	margin: 5px;
 	display: inline;
 }
 #menu ul li a:hover {
@@ -195,6 +196,11 @@ hr {
 	padding: 3px;
 	overflow: auto;
 }
+.soc {
+	margin: 18px 0 0 0;
+	float: right;
+	position: relative;
+}
 
 #footer {
 	padding: 22px 0 25px 0;
@@ -261,13 +267,20 @@ hr {
 }
 
 .share {
+	float: left;
 }
 .share a {
 	display: block;
-	float: left;
 	width: 32px;
 	height: 32px;
 	background: url(style/share.png);
+}
+.share span {
+	display: block;
+	width: 32px;
+	margin-top: 5px;
+	font-size: 8px;
+	text-align: center;
 }
 
 .h {
@@ -621,7 +634,7 @@ hr {
 	margin: 1em 0 0 0;
 	padding: 1.5em 0 0 0;
 	font-size: 1em;
-	border-top: 1px solid #161C26;
+	border-top: 1px solid #111;
 	text-align: center;
 }
 .comments h3 strong {
@@ -681,7 +694,7 @@ hr {
 	width: 77%;
 	margin: 1em 0 0 0;
 	padding: 1.5em 0;
-	border-top: 1px solid #161C26;
+	border-top: 1px solid #222;
 }
 .comments h3 em img {
 	padding: 1px;

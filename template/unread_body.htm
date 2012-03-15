@@ -1,30 +1,5 @@
 <!-- INCLUDE page.header.htm -->
 
-<!-- BEGIN hide -->
-<div class="ie-widthfix float-holder">
-	<div class="col75 float_left">
-		<div class="h"><h3>{L_UNREAD_ITEMS}</h3></div>
-		<!-- BEGIN items -->
-		<div class="cols5_left rows5_top_1 high"><strong>{items.TOTAL_ITEMS}</strong> <!-- IF items.TOTAL_ITEMS == 1 -->{L_NEW_ITEM}<!-- ELSE -->{L_NEW_ITEMS}<!-- ENDIF --></div>
-		<!-- END items -->
-	</div>
-	<div class="col24 float_right a_right">
-		<form action="{S_UNREAD_ACTION}" method="post" name="post">
-		{S_HIDDEN}<input type="hidden" name="options" value="1" />
-		<div>{L_NEW_MARK}</div>
-		<select name="mark_read_option" onchange="this.form.submit();">
-		<!-- BEGIN mark_item -->
-		<option value="{mark_item.ITEM}"{mark_item.SELECTED}>{mark_item.NAME}</option>
-		<!-- END mark_item -->
-		</select>
-		<noscript>
-		&nbsp;<input type="submit" value="{L_GO}" />&nbsp;
-		</noscript>
-		</form>
-	</div>
-</div>
-<!-- END hide -->
-
 <div class="rows5_top_2 rows5_bot_2">
 <div class="is_left col_3 float_left">
 	<!-- BEGIN items -->

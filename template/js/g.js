@@ -63,7 +63,7 @@ $(function() {
 	
 	$('.share').each(function() {
 		if (docurl && doctitle) {
-			$(this).html('<a rel="prettySociable" href="' + docurl + '"></a>');
+			$(this).html('<a rel="prettySociable" href="' + docurl + '"></a><span>Arrastra<br />y comparte</span>');
 		}
 	});
 	

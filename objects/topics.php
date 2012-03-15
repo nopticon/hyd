@@ -35,7 +35,7 @@ class topics {
 	}
 	
 	public function run() {
-		global $config, $auth, $user, $comments;
+		global $config, $auth, $user, $comments, $cache;
 		
 		$forum_id = request_var('f', '');
 		$start = request_var('offset', 0);
@@ -302,7 +302,7 @@ class topics {
 				AND t.topic_announce = 1
 			ORDER BY t.topic_last_post_id DESC';
 		$topics->important = sql_rowset(sql_filter($sql, $forum_id));
-		$total->important = count($topics->important);
+		$total->important = (is_array($topics->important)) ? count($topics->important) : 0;
 		
 		//
 		// Grab all the topics data for this forum
@@ -318,7 +318,7 @@ class topics {
 			ORDER BY t.topic_important DESC, /*t.topic_last_post_id*/p2.post_time DESC
 			LIMIT ??, ??';
 		$topics->normal = sql_rowset(sql_filter($sql, $forum_id, $start, $config['topics_per_page']));
-		$total->normal = count($topics->normal);
+		$total->normal = (is_array($topics->normal)) ? count($topics->normal) : 0;
 		
 		//
 		// Total topics ...
@@ -350,7 +350,6 @@ class topics {
 		// Let's build the topics
 		//
 		$i = 0;
-		
 		foreach ($topics as $alias => $list) {
 			foreach ($list as $j => $row) {
 				if (!$i) {

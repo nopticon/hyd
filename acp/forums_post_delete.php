@@ -28,7 +28,7 @@ class __forums_post_delete extends mac {
 	public function _home() {
 		global $config, $user, $cache;
 		
-		$post_id = request_var('post_id', 0);
+		$post_id = request_var('msg_id', 0);
 		
 		if (!$post_id) {
 			fatal_error();
@@ -122,8 +122,7 @@ class __forums_post_delete extends mac {
 			$topic_update_sql .= 'topic_replies = topic_replies - 1';
 		}
 	
-		$sql = 'UPDATE _forums
-			SET ' . $forum_update_sql . '
+		$sql = 'UPDATE _forums SET ' . $forum_update_sql . '
 			WHERE forum_id = ?';
 		sql_query(sql_filter($sql, $forum_id));
 		
@@ -138,7 +137,7 @@ class __forums_post_delete extends mac {
 			WHERE user_id = ?';
 		sql_query(sql_filter($sql, $post_info['poster_id']));
 		
-		redirect('topic', $topic_id);
+		redirect(s_link('topic', $topic_id));
 	}
 }
 

@@ -16,21 +16,22 @@
 							<li><a href="{U_SESSION}">{L_LOGOUT2}</a></li>
 						</ul>
 					</li>
-					<li><a href="{U_PROFILE}" title="{S_USERNAME}">{S_USERNAME}</a>
-					<li><a href="{U_WHATS_NEW}" title="{S_UNREAD_ITEMS}">{L_THENEW}</a></li>
+					<li class="mb"><a href="{U_PROFILE}" title="{S_USERNAME}"><i class="icon-user"></i> {S_USERNAME}</a>
+					<li class="mb"><a href="{U_WHATS_NEW}" title="{S_UNREAD_ITEMS}"><i class="icon-star"></i> {L_THENEW}</a></li>
 					<!-- ENDIF -->
-					<li><a href="{U_ARTISTS}" title="{L_UB}">{L_UB}</a></li>
-					<li><a href="{U_EVENTS}" title="{L_UE}">{L_UE}</a></li>
-					<li><a href="{U_FORUM}" title="{L_FORUM}">{L_FORUM}</a></li>
-					<li><a href="{U_BROADCAST}" title="{L_BROADCAST}">{L_BROADCAST}</a></li>
-					<li><a href="{U_COMMUNITY}" title="{L_COMMUNITY}">{L_COMMUNITY}</a></li>
+					<li class="mb"><a href="{U_ARTISTS}" title="{L_UB}"><i class="icon-fire"></i> {L_UB}</a></li>
+					<li class="mb mb-events"><a href="{U_EVENTS}" title="{L_UE}"><i class="icon-camera"></i> {L_UE}</a></li>
+					<li class="mb mb-forum"><a href="{U_FORUM}" title="{L_FORUM}"><i class="icon-th-list"></i> {L_FORUM}</a></li>
+					<li class="mb mb-broadcast"><a href="{U_BROADCAST}" title="{L_BROADCAST}"><i class="icon-volume-up"></i> {L_BROADCAST}</a></li>
+					<li class="mb mb-community"><a href="{U_COMMUNITY}" title="{L_COMMUNITY}"><i class="icon-th"></i> {L_COMMUNITY}</a></li>
 					<!-- BEGIN hide -->
 					<li><a href="{U_ALLIES}" title="{L_ALLIES}">{L_ALLIES}</a></li>
 					<li><a href="{U_AWARDS}" title="{L_AWARDS}">{L_AWARDS}</a></li>
 					<!-- END hide -->
 					<!-- IF S_CONTROLPANEL != '' -->
-					<li><a href="{S_CONTROLPANEL}">{L_CONTROL_PANEL}</a></li>
+					<li class="mb mb-acp"><a href="{S_CONTROLPANEL}"><i class="icon-share"></i> {L_CONTROL_PANEL}</a></li>
 					<!-- ENDIF -->
+					<!-- BEGIN hide -->
 					<li><a id="facebook" href="//www.facebook.com/rockrepublik" target="_facebook">Facebook</a>
 						<!-- BEGIN hide -->
 						<ul id="expand_facebook">
@@ -43,12 +44,13 @@
 						<!-- END hide -->
 					</li>
 					<li><a id="twitter" href="//www.twitter.com/rockrepublik" target="_twitter">Twitter</a></li>
+					<!-- END hide -->
 				</ul>
 			</div>
 		</div>
 		
 		<!-- IF IS_MEMBER -->
-		<div id="search" class="ie-widthfix float-holder">
+		<div id="search">
 		<form id="searchForm" method="post">
 			<fieldset>
 				<input id="s" type="text" title="Buscar en Rock Republik">
@@ -57,14 +59,18 @@
 		</form>
 		
 		<div id="search_result"></div>	
-		</div>
 		<!-- ELSE -->
 		<div id="sign">
 			<ul>
 				<li><a id="signup" href="{U_SESSION}">{L_USER_IDENTITY}</a></li>
 			</ul>
-		</div>
 		<!-- ENDIF -->
+		
+		<div class="soc">
+			<a id="facebook" href="//www.facebook.com/rockrepublik" target="_facebook">Facebook</a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+			<a id="twitter" href="//www.twitter.com/rockrepublik" target="_twitter">Twitter</a>
+		</div>
+		</div>
 		
 		<span class="clear"></span>
 	</div>

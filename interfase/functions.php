@@ -845,7 +845,7 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 							if (!$row['user_country'] || !$row['user_location'] || !$row['user_gender'] || !$row['user_birthday'] || !$row['user_avatar']) {
 								$ref = s_link('my', 'profile');
 							} else {
-								$ref = (empty($ref) || (preg_match('#' . preg_quote($config['server_name']) . '/$#', $ref))) ? s_link('new') : $ref;
+								$ref = (empty($ref) || (preg_match('#' . preg_quote($config['server_name']) . '/$#', $ref))) ? s_link('today') : $ref;
 							}
 							
 							redirect($ref);

@@ -29,10 +29,11 @@ class _comments {
 	
 	public function __construct() {
 		$this->ref = '';
-		$this->auth = array();
-		$this->data = array();
-		$this->param = array();
-		$this->users = array();
+		$this->auth = w();
+		$this->data = w();
+		$this->param = w();
+		$this->users = w();
+		
 		return;
 	}
 	
@@ -42,7 +43,7 @@ class _comments {
 	
 	public function reset2() {
 		$this->message = '';
-		$this->options = array();
+		$this->options = w();
 	}
 	
 	public function receive() {
@@ -891,14 +892,16 @@ class _comments {
 				$sql = 'SELECT *
 					FROM _smilies
 					ORDER BY LENGTH(code) DESC';
-				$smilies = sql_rowset($sql);
-				$cache->save('smilies', $smilies);
+				if ($smilies = sql_rowset($sql)) {
+					$cache->save('smilies', $smilies);
+				}
 			}
 			
-			for ($i = 0, $end = sizeof($smilies); $i < $end; $i++) {
-				//$this->options['smilies']['orig'][] = "/(?<=.\W|\W.|^\W)" . preg_quote($smilies[$i]['code'], "/") . "(?=.\W|\W.|\W$)/";
-				$this->options['smilies']['orig'][] = '#(^|[\n ]|\.|\()' . preg_quote($smilies[$i]['code'], '#') . '#';
-				$this->options['smilies']['repl'][] = ' <img src="' . $config['assets_url'] . '/emoticon/' . $smilies[$i]['smile_url'] . '" alt="' . $smilies[$i]['emoticon'] . '" />';
+			if (is_array($smilies)) {
+				foreach ($smilies as $row) {
+					$this->options['smilies']['orig'][] = '#(^|[\n ]|\.|\()' . preg_quote($row['code'], '#') . '#';
+					$this->options['smilies']['repl'][] = ' <img src="' . $config['assets_url'] . '/emoticon/' . $row['smile_url'] . '" alt="' . $row['emoticon'] . '" />';
+				}
 			}
 		}
 		

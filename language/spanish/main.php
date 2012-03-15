@@ -119,7 +119,7 @@ $lang += array(
 	'CLICK_RETURN_LASTPAGE2' => 'P&aacute;gina Anterior',
 	
 	'ACP' => 'Panel de Administraci&oacute;n',
-	'CONTROL_PANEL' => 'Administrador',
+	'CONTROL_PANEL' => 'Admin',
 	
 	'MEMBERS_ALL' => 'miembros registrados',
 	'MEMBERS_LASTEST' => 'Recientes',

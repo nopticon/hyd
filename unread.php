@@ -60,7 +60,7 @@ if (isset($_POST['items']) && (isset($_POST['delete']) || isset($_POST['delete_a
 		}
 	}
 	
-	redirect(s_link('new'));
+	redirect(s_link('today'));
 } else if (isset($_POST['options'])) {
 	$mark_option = (isset($_POST['mark_read_option'])) ? $_POST['mark_read_option'] : $user->data['user_mark_items'];
 	$mark_option = intval($mark_option);
@@ -71,7 +71,7 @@ if (isset($_POST['items']) && (isset($_POST['delete']) || isset($_POST['delete_a
 		sql_query(sql_filter($sql, $mark_option, $user->data['user_id']));
 	}
 	
-	redirect(s_link('new'));
+	redirect(s_link('today'));
 } else if ($unread_element && $unread_item) {
 	$url = '';
 	$delete_item = TRUE;
@@ -150,7 +150,7 @@ if (isset($_POST['items']) && (isset($_POST['delete']) || isset($_POST['delete_a
 		redirect($url);
 	}
 	
-	redirect(s_link('new'));
+	redirect(s_link('today'));
 	
 }
 
@@ -204,11 +204,12 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
 			}
 			
 			$user_profile = user_profile($row);
+			$dc_subject = 'Conversaci&oacute;n con ' . $row['username'];
 			
 			_style('items.notes.item', array(
 				'S_MARK_ID' => $row['parent_id'],
 				'U_READ' => s_link('my', array('dc', 'read', $row['last_msg_id'])) . '#' . $row['last_msg_id'],
-				'SUBJECT' => $row['privmsgs_subject'],
+				'SUBJECT' => $dc_subject,
 				'DATETIME' => $user->format_date($row['privmsgs_date']),
 				'USER_ID' => $row['user_id'],
 				'USERNAME' => $row['username'],
@@ -239,7 +240,7 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
 			
 			_style('items.friends.item', array(
 				'S_MARK_ID' => $row['user_id'],
-				'U_PROFILE' => s_link('new', array(UH_FRIEND, $row['user_id'])),
+				'U_PROFILE' => s_link('today', array(UH_FRIEND, $row['user_id'])),
 				'POST_TIME' => $user->format_date($row['datetime']),
 				'USERNAME' => $row['username'],
 				'USER_COLOR' => $row['user_color'])
@@ -269,7 +270,7 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
 			
 			_style('items.userpagem.item', array(
 				'S_MARK_ID' => $row['post_id'],
-				'U_PROFILE' => s_link('new', array(UH_UPM, $row['post_id'])),
+				'U_PROFILE' => s_link('today', array(UH_UPM, $row['post_id'])),
 				'POST_TIME' => $user->format_date($row['datetime']),
 				'USERNAME' => $row['username'],
 				'USER_COLOR' => $row['user_color'])
@@ -301,7 +302,7 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
 			
 			_style('items.a_news.item', array(
 				'S_MARK_ID' => $row['topic_id'],
-				'POST_URL' => s_link('new', array(UH_N, $row['topic_id'])),
+				'POST_URL' => s_link('today', array(UH_N, $row['topic_id'])),
 				'POST_TITLE' => $row['topic_title'],
 				'POST_TIME' => $user->format_date($row['topic_time']))
 			);
@@ -329,7 +330,7 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
 			
 			_style('items.news.item', array(
 				'S_MARK_ID' => $row['news_id'],
-				'POST_URL' => s_link('new', array(UH_GN, $row['news_id'])),
+				'POST_URL' => s_link('today', array(UH_GN, $row['news_id'])),
 				'POST_TITLE' => $row['post_subject'],
 				'POST_TIME' => $user->format_date($row['post_time']))
 			);
@@ -358,7 +359,7 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
 			
 			_style('items.artists.item', array(
 				'S_MARK_ID' => $row['ub'],
-				'UB_URL' => s_link('new', array(UH_A, $row['ub'])),
+				'UB_URL' => s_link('today', array(UH_A, $row['ub'])),
 				'NAME' => $row['name'],
 				'POST_TIME' => $user->format_date($row['datetime']))
 			);
@@ -391,7 +392,7 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
 			_style('items.downloads.item', array(
 				'S_MARK_ID' => $row['id'],
 				'UB_URL' => s_link('a', $row['subdomain']),
-				'UD_URL' => s_link('new', array(UH_D, $row['id'])),
+				'UD_URL' => s_link('today', array(UH_D, $row['id'])),
 				'UD_TYPE' => $download_type['av'],
 				'DATETIME' => $user->format_date($row['date']),
 				'UB' => $row['name'],
@@ -472,7 +473,7 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
 			
 			_style('items.a_messages.item', array(
 				'S_MARK_ID' => $row['post_id'],
-				'ITEM_URL' => s_link('new', array(UH_C, $row['post_id'])),
+				'ITEM_URL' => s_link('today', array(UH_C, $row['post_id'])),
 				'UB_URL' => s_link('a', $row['subdomain']),
 				'UB' => $row['name'],
 				'DATETIME' => $user->format_date($row['post_time']),
@@ -513,7 +514,7 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
 			
 			_style('items.d_messages.item', array(
 				'S_MARK_ID' => $row['post_id'],
-				'ITEM_URL' => s_link('new', array(UH_M, $row['post_id'])),
+				'ITEM_URL' => s_link('today', array(UH_M, $row['post_id'])),
 				'UB_URL' => s_link('a', $row['subdomain']),
 				'UD_URL' => s_link('a', array($row['subdomain'], 9, $row['dl_id'])),
 				'UD_TYPE' => $download_type['av'],
@@ -561,7 +562,7 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
 			
 			_style('items.a_fav.item', array(
 				'S_MARK_ID' => $row['fan_id'],
-				'ITEM_URL' => s_link('new', array(UH_AF, $row['fan_id'])),
+				'ITEM_URL' => s_link('today', array(UH_AF, $row['fan_id'])),
 				'UB_URL' => s_link('a', $row['subdomain']),
 				'UB' => $row['name'],
 				'POST_TIME' => $user->format_date($row['joined']),
@@ -640,7 +641,7 @@ v_style(array(
 
 //
 // Load sidebar
-sidebar('artists', 'events');
+//sidebar('artists', 'events');
 
 page_layout('UNREAD_ITEMS', 'unread_body');
 
