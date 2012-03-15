@@ -155,7 +155,7 @@ class _chat {
 	}
 	
 	public function process_data($csid, $mode) {
-		global $user, $config;
+		global $user, $config, $comments;
 		
 		if (empty($csid)) {
 			return false;

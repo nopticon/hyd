@@ -76,7 +76,7 @@ class downloads {
 	}
 	
 	public function dl_view() {
-		global $user, $config;
+		global $user, $config, $comments;
 		
 		if (!$this->auth['adm'] && !$this->auth['mod']) {
 			$sql = 'UPDATE _dl SET views = views + 1
@@ -178,8 +178,8 @@ class downloads {
 		
 		if ($this->dl_data['posts']) {
 			$start = intval(request_var('dps', 0));
-			$this->msg->ref = $comments_ref;
-			$this->msg->auth = $this->auth;
+			$comments->ref = $comments_ref;
+			$comments->auth = $this->auth;
 			
 			$sql = 'SELECT p.*, u.user_id, u.username, u.username_base, u.user_color, u.user_avatar
 				FROM _dl d, _dl_posts p, _artists a, _members u
@@ -192,13 +192,13 @@ class downloads {
 				ORDER BY p.post_time DESC 
 				LIMIT ??, ??';
 			
-			$this->msg->data = array(
+			$comments->data = array(
 				'A_LINKS_CLASS' => 'bold orange',
 				'SQL' => sql_filter($sql, $this->dl_data['id'], $this->data['ub'], $start, $config['s_posts'])
 			);
 			
 			if ($this->auth['user']) {
-				$this->msg->data['CONTROL']['reply'] = array(
+				$comments->data['CONTROL']['reply'] = array(
 					'REPLY' => array(
 						'URL' => s_link('a', array($this->data['subdomain'], 12, '%d', 'reply')),
 						'ID' => 'post_id'
@@ -207,7 +207,7 @@ class downloads {
 			}
 			
 			if ($this->auth['user'] && !$this->auth['adm'] && !$this->auth['mod']) {
-				$this->msg->data['CONTROL']['report'] = array(
+				$comments->data['CONTROL']['report'] = array(
 					'REPORT' => array(
 						'URL' => s_link('a', array($this->data['subdomain'], 12, '%d', 'report')),
 						'ID' => 'post_id'
@@ -216,23 +216,23 @@ class downloads {
 			}
 			
 			if ($this->auth['adm'] || $this->auth['mod']) {
-				$this->msg->data['CONTROL']['auth'] = array();
+				$comments->data['CONTROL']['auth'] = array();
 				
 				if ($this->auth['adm'] && $user->is('founder')) {
-					$this->msg->data['CONTROL']['auth']['EDIT'] = array(
+					$comments->data['CONTROL']['auth']['EDIT'] = array(
 						'URL' => s_link_control('a', array('a' => $this->data['subdomain'], 'mode' => 'dposts', 'manage' => 'edit', 'id' => '%d')),
 						'ID' => 'post_id'
 					);
 				}
 				
-				$this->msg->data['CONTROL']['auth']['DELETE'] = array(
+				$comments->data['CONTROL']['auth']['DELETE'] = array(
 					'URL' => s_link_control('a', array('a' => $this->data['subdomain'], 'mode' => 'dposts', 'manage' => 'delete', 'id' => '%d')),
 					'ID' => 'post_id'
 				);
 			}
 			
 			//
-			$this->msg->view($start, 'dps', $this->dl_data['posts'], $config['s_posts'], 'ud_posts', 'DMSG_', 'TOPIC_', false);
+			$comments->view($start, 'dps', $this->dl_data['posts'], $config['s_posts'], 'ud_posts', 'DMSG_', 'TOPIC_', false);
 		}
 		
 		if ($this->auth['post']) {

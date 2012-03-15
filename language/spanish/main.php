@@ -119,7 +119,7 @@ $lang += array(
 	'CLICK_RETURN_LASTPAGE2' => 'P&aacute;gina Anterior',
 	
 	'ACP' => 'Panel de Administraci&oacute;n',
-	'CONTROL_PANEL' => 'Panel de Control',
+	'CONTROL_PANEL' => 'Administrador',
 	
 	'MEMBERS_ALL' => 'miembros registrados',
 	'MEMBERS_LASTEST' => 'Recientes',
@@ -290,7 +290,7 @@ $lang += array(
 	'UNMARK_ALL' => 'Desmarcar todos',
 	
 	'PREFERENCES' => 'Preferencias',
-	'UNREAD_ITEMS' => '&iquest;Qu&eacute; hay de nuevo?',
+	'UNREAD_ITEMS' => 'Actualidad',
 	'UNREAD_ITEMS_COUNT' => '%d mensajes nuevos',
 	'UNREAD_ITEM_COUNT' => '%d mensaje nuevo',
 	'ITEMS_REQUIRED' => 'Los campos marcados con <strong>*</strong> son obligatorios',

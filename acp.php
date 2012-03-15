@@ -60,19 +60,24 @@ class mac {
 				INNER JOIN _artists a ON a.ub = t.ub
 				WHERE t.user_id = ?';
 			if ($artist_ary = sql_rowset(sql_filter($sql, $user->d('user_id')), false, 'ub')) {
-				$sql_where = sql_filter('WHERE ub IN (??)', implode(',', array_map('intval', $mod_ary)));
+				$sql_where = sql_filter('WHERE ub IN (??)', implode(',', $artist_ary));
 			}
 		}
 		
 		$artist = request_var('a', '');
+		$module = request_var('module', '');
 		
 		if (empty($artist)) {
-			redirect(s_link('acp', array('artist_select', 'r' => request_var('module', ''))));
+			redirect(s_link('acp', array('artist_select', 'r' => $module)));
 		}
 		
-		if (!$this->object = get_artist($artist)) {
+		if (!$this->object = get_artist($artist, true)) {
 			fatal_error();
 		}
+		
+		v_style(array(
+			'ARTIST_NAME' => $this->object['name'])
+		);
 		
 		return;
 	}

@@ -31,6 +31,39 @@ class __artist_media extends mac {
 		$this->_artist();
 		
 		if (_button()) {
+			return $this->upload();
+		}
+		
+		if (_button('remove')) {
+			return $this->remove();
+		}
+		
+		$sql = 'SELECT *
+			FROM _dl
+			WHERE ub = ?
+			ORDER BY title';
+		if ($result = sql_rowset(sql_filter($sql, $this->data['ub']))) {
+			$downloads_type = array(
+				1 => '/net/icons/browse.gif',
+				2 => '/net/icons/store.gif'
+			);
+
+			foreach ($result as $row) {
+				if (!$tcol) _style('media');
+
+				_style('media.row', array(
+					'ITEM' => $row['id'],
+					'URL' => s_link_control('a', array('a' => $this->data['subdomain'], 'mode' => $this->mode, 'manage' => 'edit', 'd' => $row['id'])),
+					'POSTS_URL' => s_link('a', array($this->data['subdomain'], 9, $row['id'])) . '#dpf',
+					'IMAGE_TYPE' => $downloads_type[$row['ud']],
+					'DOWNLOAD_TITLE' => $row['title'],
+					'VIEWS' => $row['views'],
+					'DOWNLOADS' => $row['downloads'],
+					'POSTS' => $row['posts'])
+				);
+
+				$tcol = ($tcol == 2) ? 0 : $tcol + 1;
+			}
 		}
 		
 		return;

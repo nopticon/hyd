@@ -2,7 +2,7 @@
 
 <div class="h"><h3>{L_CONTROL_A_GALLERY}</h3></div>
 
-<form action="{S_CONTROL}" method="post" enctype="multipart/form-data" name="post">
+<form action="{_SELF}" method="post" enctype="multipart/form-data" name="post">
 	{S_HIDDEN}
 	<div class="">
 		<div class="">{L_CONTROL_A_GALLERY_ADD_LEGEND}</div>
@@ -24,17 +24,5 @@
 		<!-- END gallery -->
 	</div>
 </form>
-
-<!-- BEGIN hide -->
-<script type="text/javascript">
-//<![CDATA[
-<!-- BEGIN row -->
-<!-- BEGIN col -->
-new Ajax.InPlaceEditor('_footer_{col.ITEM}', '{col.U_FOOTER}', {highlightcolor:'#000000',highlightendcolor:'#000000',emptyText:'Editar pie de foto',cancelLink:false,submitOnBlur:true});
-<!-- END col -->
-<!-- END row -->
-//]]>
-</script>
-<!-- END hide -->
 
 <!-- INCLUDE page.footer.htm -->

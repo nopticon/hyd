@@ -25,7 +25,7 @@ class layout extends downloads {
 	// Home
 	//
 	public function _1() {
-		global $user, $config;
+		global $user, $config, $comments;
 		
 		//
 		// Gallery
@@ -92,13 +92,13 @@ class layout extends downloads {
 					$uid = $row['user_id'];
 					
 					if (!isset($user_profile[$uid]) || ($uid == GUEST)) {
-						$user_profile[$uid] = $this->msg->user_profile($row);
+						$user_profile[$uid] = $comments->user_profile($row);
 					}
 					
 					$row_data = array(
 						'POST_ID' => $row['post_id'],
 						'DATETIME' => $user->format_date($row['post_time']),
-						'MESSAGE' => $this->msg->parse_message($row['post_text']),
+						'MESSAGE' => $comments->parse_message($row['post_text']),
 						'S_DELETE' => false
 					);
 					
@@ -129,7 +129,7 @@ class layout extends downloads {
 						_style('mods');
 					}
 					
-					$user_profile = $this->msg->user_profile($row);
+					$user_profile = $comments->user_profile($row);
 					
 					_style('mods.item', array(
 						'PROFILE' => $user_profile['profile'],
@@ -138,7 +138,7 @@ class layout extends downloads {
 					);
 				}
 				
-				$this->msg->reset();
+				$comments->reset();
 				
 				if ($this->auth['mod']) {
 					_style('mods.manage', array(
@@ -155,7 +155,7 @@ class layout extends downloads {
 	// Biography
 	//
 	public function _2() {
-		global $config;
+		global $config, $comments;
 		
 		if ($this->data['featured_image']) {
 			_style('featured_image', array(
@@ -168,7 +168,7 @@ class layout extends downloads {
 		// Parse Biography
 		//		
 		v_style(array(
-			'UB_BIO' => $this->msg->parse_message($this->data['bio']))
+			'UB_BIO' => $comments->parse_message($this->data['bio']))
 		);
 		
 		return;
@@ -391,7 +391,7 @@ class layout extends downloads {
 	// Messages
 	//
 	public function _12() {
-		global $user, $config;
+		global $user, $config, $comments;
 		
 		$post_id = request_var('post_id', 0);
 		if (!$post_id) {
@@ -416,8 +416,8 @@ class layout extends downloads {
 			$comments_ref = s_link('a', array($this->data['subdomain'], 12, $pdata['post_id'], 'reply'));
 			
 			$start = intval(request_var('rs', 0));
-			$this->msg->ref = $comments_ref;
-			$this->msg->auth = $this->auth;
+			$comments->ref = $comments_ref;
+			$comments->auth = $this->auth;
 			
 			$sql = 'SELECT p.*, m.user_id, m.username, m.username_base, m.user_color, m.user_avatar
 				FROM _artists_posts p, _members m, _artists a
@@ -429,13 +429,13 @@ class layout extends downloads {
 				ORDER BY p.post_reply ASC, p.post_time DESC
 				LIMIT ??, ??'; 
 			
-			$this->msg->data = array(
+			$comments->data = array(
 				'A_LINKS_CLASS' => 'bold red',
 				'SQL' => sql_filter($sql, $this->data['ub'], $post_id, $post_id, $start, $config['s_posts'])
 			);
 			
 			if ($this->auth['user']) {
-				$this->msg->data['CONTROL']['reply'] = array(
+				$comments->data['CONTROL']['reply'] = array(
 					'REPLY' => array(
 						'URL' => s_link('a', array($this->data['subdomain'], 12, '%d')) . '#reply',
 						'ID' => 'post_id'
@@ -444,7 +444,7 @@ class layout extends downloads {
 			}
 			
 			if ($this->auth['user'] && !$this->auth['mod']) {
-				$this->msg->data['CONTROL']['report'] = array(
+				$comments->data['CONTROL']['report'] = array(
 					'REPORT' => array(
 						'URL' => s_link('a', array($this->data['subdomain'], 12, '%d', 'report')),
 						'ID' => 'post_id'
@@ -453,28 +453,28 @@ class layout extends downloads {
 			}
 			
 			if ($this->auth['mod']) {
-				$this->msg->data['CONTROL']['auth'] = array();
+				$comments->data['CONTROL']['auth'] = array();
 				
 				if ($this->auth['adm'] && $user->is('founder')) {
-					$this->msg->data['CONTROL']['auth']['EDIT'] = array(
+					$comments->data['CONTROL']['auth']['EDIT'] = array(
 						'URL' => s_link_control('a', array('a' => $this->data['subdomain'], 'mode' => 'aposts', 'manage' => 'edit', 'id' => '%d')),
 						'ID' => 'post_id'
 					);
 				}
 				
-				$this->msg->data['CONTROL']['auth']['DELETE'] = array(
+				$comments->data['CONTROL']['auth']['DELETE'] = array(
 					'URL' => s_link_control('a', array('a' => $this->data['subdomain'], 'mode' => 'aposts', 'manage' => 'delete', 'id' => '%d')),
 					'ID' => 'post_id'
 				);
 			}
 			
-			$sql = preg_replace('/LIMIT ([0-9]+), ([0-9]+)/', '', $this->msg->data['SQL']);
+			$sql = preg_replace('/LIMIT ([0-9]+), ([0-9]+)/', '', $comments->data['SQL']);
 			
 			$reply_result = sql_rowset($sql);
 			$total_posts = count($reply_result);
 			unset($reply_result);
 			
-			$this->msg->view($start, 'rs', $total_posts, $config['s_posts'], 'reply_msg', 'RMSG_', '', false);
+			$comments->view($start, 'rs', $total_posts, $config['s_posts'], 'reply_msg', 'RMSG_', '', false);
 			
 			v_style(array(
 				'PARENT_ID' => $post_id)
@@ -1635,8 +1635,8 @@ class _artists extends layout {
 				
 				if ($this->data['posts']) {
 					$start = intval(request_var('ps', 0));
-					$this->msg->ref = $comments_ref;
-					$this->msg->auth = $this->auth;
+					$comments->ref = $comments_ref;
+					$comments->auth = $this->auth;
 					
 					$sql = 'SELECT p.*, m.user_id, m.username, m.username_base, m.user_color
 						FROM _artists_posts p, _members m, _artists a
@@ -1647,13 +1647,13 @@ class _artists extends layout {
 						ORDER BY p.post_time DESC 
 						LIMIT ??, ??';
 					
-					$this->msg->data = array(
+					$comments->data = array(
 						'A_LINKS_CLASS' => 'bold red',
 						'SQL' => sql_filter($sql, $this->data['ub'], $start, $config['s_posts'])
 					);
 					
 					if ($this->auth['user']) {
-						$this->msg->data['CONTROL']['reply'] = array(
+						$comments->data['CONTROL']['reply'] = array(
 							'REPLY' => array(
 								'URL' => s_link('a', array($this->data['subdomain'], 12, '%d')) . '#reply',
 								'ID' => 'post_id'
@@ -1662,7 +1662,7 @@ class _artists extends layout {
 					}
 					
 					if ($this->auth['user'] && !$this->auth['mod']) {
-						$this->msg->data['CONTROL']['report'] = array(
+						$comments->data['CONTROL']['report'] = array(
 							'REPORT' => array(
 								'URL' => s_link('a', array($this->data['subdomain'], 12, '%d', 'report')),
 								'ID' => 'post_id'
@@ -1671,22 +1671,22 @@ class _artists extends layout {
 					}
 					
 					if ($this->auth['mod']) {
-						$this->msg->data['CONTROL']['auth'] = array();
+						$comments->data['CONTROL']['auth'] = array();
 						
 						if ($this->auth['adm'] && $user->is('founder')) {
-							$this->msg->data['CONTROL']['auth']['EDIT'] = array(
+							$comments->data['CONTROL']['auth']['EDIT'] = array(
 								'URL' => s_link_control('a', array('a' => $this->data['subdomain'], 'mode' => 'aposts', 'manage' => 'edit', 'id' => '%d')),
 								'ID' => 'post_id'
 							);
 						}
 						
-						$this->msg->data['CONTROL']['auth']['DELETE'] = array(
+						$comments->data['CONTROL']['auth']['DELETE'] = array(
 							'URL' => s_link_control('a', array('a' => $this->data['subdomain'], 'mode' => 'aposts', 'manage' => 'delete', 'id' => '%d')),
 							'ID' => 'post_id'
 						);
 					}
 					
-					$this->msg->view($start, 'ps', $this->data['posts'], $config['s_posts'], '', 'MSG_', '', false);
+					$comments->view($start, 'ps', $this->data['posts'], $config['s_posts'], '', 'MSG_', '', false);
 				}
 				
 				if ($this->data['a_active'] || $user->is('founder')) {

@@ -1419,8 +1419,8 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 	page_layout('LOGIN2', 'login', $layout_vars);
 }
 
-function get_artist($id) {
-	$artist_field = (is_numb($id)) ? 'ub' : 'subdomain';
+function get_artist($id, $force = false) {
+	$artist_field = (is_numb($id) && !$force) ? 'ub' : 'subdomain';
 	
 	$sql = 'SELECT *
 		FROM _artists
@@ -1838,7 +1838,7 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 		'S_REDIRECT' => $user->d('session_page'),
 		'S_USERNAME' => $user->d('username'),
 		
-		'S_CONTROLPANEL' => (isset($template->vars['S_CONTROLPANEL'])) ? $template->vars['S_CONTROLPANEL'] : ($user->is('artist') ? s_link('control') : ''),
+		'S_CONTROLPANEL' => (isset($template->vars['S_CONTROLPANEL'])) ? $template->vars['S_CONTROLPANEL'] : ($user->is('artist') ? s_link('acp') : ''),
 		'S_UNREAD_ITEMS' => (($unread_items == 1) ? sprintf($user->lang['UNREAD_ITEM_COUNT'], $unread_items) : sprintf($user->lang['UNREAD_ITEMS_COUNT'], $unread_items)),
 		'S_AP_POINTS' => (($user->d('user_points') == 1) ? sprintf($user->lang['AP_POINT'], $user->d('user_points')) : sprintf($user->lang['AP_POINTS'], $user->d('user_points'))),
 		

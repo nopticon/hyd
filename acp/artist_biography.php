@@ -52,14 +52,6 @@ class __artist_biography extends mac {
 		
 		return;
 	}
-	
-	private function upload() {
-		return;
-	}
-	
-	private function remove() {
-		return;
-	}
 }
 
 ?>

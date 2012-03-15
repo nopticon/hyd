@@ -1,0 +1,40 @@
+<!-- INCLUDE page.header.htm -->
+
+<div class="h"><h3>{L_CONTROL_A_DOWNLOADS}</h3></div>
+
+<form action="{_SELF}" method="post" enctype="multipart/form-data" name="post">
+	{S_HIDDEN}
+	<div class="">
+		<div class="">{L_CONTROL_A_MEDIA_ADD_LEGEND}</div>
+		<div class="pad_top"><input type="hidden" name="MAX_FILE_SIZE" value="{MAX_FILESIZE}" /><input type="file" name="add_image[]" size="25" /></div>
+		<div class="pad_top"><input class="submit" type="submit" name="submit" value="{L_SUBMIT}" /></div>
+		
+		<!-- BEGIN gallery -->
+		<div class="pad_top ln l4 a_mid">
+			<ul>
+				<!-- BEGIN row -->
+				<li>
+					<ul>
+						<li><a href="{col.URL}"><img src="{col.IMAGE_TYPE}" /></a></li>
+						<li><a href="{col.URL}">{col.DOWNLOAD_TITLE}</a></li>
+						<li>{col.VIEWS}v <span class="soft">|</span> {col.DOWNLOADS}d <span class="soft">|</span> <!-- IF col.POSTS --><a class="red" href="{col.POSTS_URL}" target="_blank"><!-- ENDIF -->{col.POSTS}m<!-- IF col.POSTS --></a><!-- ENDIF --></li>
+						<li><input type="checkbox" class="none" name="s_downloads[]" value="{col.ITEM}" /></li>
+						<li></li>
+					</ul>
+					
+					<!-- BEGIN hide -->
+					<input type="checkbox" name="ls_images[]" value="{row.ITEM}" /><br /><a class="fancy" href="{row.RIMAGE}"><img src="{row.IMAGE}" alt="" /></a>
+					<!-- END hide -->
+					</li>
+				<!-- END row -->
+			</ul>
+		</div>
+		
+		<span class="clear"></span>
+		
+		<div class="x2"><input type="submit" class="remove" name="submit" value="{L_DELETE_MARKED}" /></div>
+		<!-- END gallery -->
+	</div>
+</form>
+
+<!-- INCLUDE page.footer.htm -->
