@@ -28,7 +28,7 @@ class _home {
 				INNER JOIN _news_cat c ON n.cat_id = c.cat_id
 				WHERE n.news_active = 1
 				ORDER BY n.post_time DESC
-				LIMIT 6';
+				LIMIT 4';
 			if ($news = sql_rowset($sql)) {
 				$cache->save('news', $news);
 			}
