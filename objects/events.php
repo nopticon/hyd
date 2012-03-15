@@ -648,8 +648,8 @@ class _events extends downloads {
 						$controls[$row['post_id']]['reply'] = s_link('events', array($this->v('event_alias'), $row['post_id'], 'reply'));
 						
 						if ($mod_auth) {
-							$controls[$row['post_id']]['edit'] = s_link('mcp', array('edit', $row['post_id']));
-							$controls[$row['post_id']]['delete'] = s_link('mcp', array('post', $row['post_id']));
+							$controls[$row['post_id']]['edit'] = s_link('acp', array('', 'edit', $row['post_id']));
+							$controls[$row['post_id']]['delete'] = s_link('acp', array('', 'post', $row['post_id']));
 						}
 					}
 					

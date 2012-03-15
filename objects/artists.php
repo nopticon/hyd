@@ -142,7 +142,7 @@ class layout extends downloads {
 				
 				if ($this->auth['mod']) {
 					_style('mods.manage', array(
-						'URL' => s_link_control('a', array('a' => $this->data['subdomain'], 'mode' => 'auth')))
+						'URL' => s_link('acp', array('artist_auth', 'a' => $this->data['subdomain'])))
 					);
 				}
 			}
@@ -457,13 +457,13 @@ class layout extends downloads {
 				
 				if ($this->auth['adm'] && $user->is('founder')) {
 					$comments->data['CONTROL']['auth']['EDIT'] = array(
-						'URL' => s_link_control('a', array('a' => $this->data['subdomain'], 'mode' => 'aposts', 'manage' => 'edit', 'id' => '%d')),
+						'URL' => s_link('acp', array('artist_messages', 'a' => $this->data['subdomain'], 'id' => '%d')),
 						'ID' => 'post_id'
 					);
 				}
 				
 				$comments->data['CONTROL']['auth']['DELETE'] = array(
-					'URL' => s_link_control('a', array('a' => $this->data['subdomain'], 'mode' => 'aposts', 'manage' => 'delete', 'id' => '%d')),
+					'URL' => s_link('acp', array('artist_messages', 'a' => $this->data['subdomain'], 'id' => '%d', 'action' => 'delete')),
 					'ID' => 'post_id'
 				);
 			}
@@ -1734,8 +1734,6 @@ class _artists extends layout {
 					'VOTES' => number_format($this->data['votes']),
 					'FANS' => $fan_count,
 					'L_FANS' => ($fan_count == 1) ? $user->lang['FAN'] : $user->lang['FANS'], 
-					
-					'S_CONTROLPANEL' => $user->is('artist') ? s_link('control', '_' . $this->data['subdomain']) : '',
 					'LOCATION' => ($this->data['local']) ? (($this->data['location'] != '') ? $this->data['location'] . ', ' : '') . 'Guatemala' : $this->data['location'])
 				);
 				

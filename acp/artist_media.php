@@ -53,7 +53,7 @@ class __artist_media extends mac {
 
 				_style('media.row', array(
 					'ITEM' => $row['id'],
-					'URL' => s_link_control('a', array('a' => $this->data['subdomain'], 'mode' => $this->mode, 'manage' => 'edit', 'd' => $row['id'])),
+					'URL' => s_link('acp', array('artist_media', 'a' => $this->data['subdomain'], 'id' => $row['id'])),
 					'POSTS_URL' => s_link('a', array($this->data['subdomain'], 9, $row['id'])) . '#dpf',
 					'IMAGE_TYPE' => $downloads_type[$row['ud']],
 					'DOWNLOAD_TITLE' => $row['title'],

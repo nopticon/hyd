@@ -1,20 +1,15 @@
 <!-- INCLUDE page.header.htm -->
 
-<form action="{_SELF}" method="post">
-Banda: 
-	<!-- BEGIN artists -->
-	<select name="ub">
-		<!-- BEGIN row -->
-		<option value="{row.ARTIST_ID}">{row.ARTIST_NAME}</option>
-		<!-- END row -->
-	</select>
-	<!-- END artists -->
-	<br />
-	T&iacute;tulo: <input type="text" name="title" value="" /><br />
-	Autor: <input type="text" name="author" value="" /><br />
-	Letra: <textarea name="text" cols="50" rows="20"></textarea><br />
-	
-	<input type="submit" name="submit" value="Agregar Letra" />
-</form>
+<div class="h"><h3>Crear letra de canci&oacute;n</h3></div>
+
+<div class="publish">
+	<form action="{_SELF}" method="post">
+		<div><label>T&iacute;tulo:</label> <input type="text" class="f" name="title" value="" /></div>
+		<div><label>Autor:</label> <input type="text" class="f" name="author" value="" /></div>
+		<div class="pad_top"><textarea name="text" cols="50" rows="20"></textarea></div>
+		
+		<input type="submit" name="submit" value="Agregar Letra" />
+	</form>
+</div>
 
 <!-- INCLUDE page.footer.htm -->

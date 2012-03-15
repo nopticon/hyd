@@ -959,7 +959,13 @@ $lang += array(
 	'ACP_USER_POST_DELETE' => 'Eliminar mensaje de usuario',
 	'ACP_USER_SIG_DELETE' => 'Eliminar firma de usuario',
 	'ACP_USER_TEAM_CREATE' => 'Crear miembro de equipo',
-	'ACP_USER_VIEW' => 'Visualizar usuario'
+	'ACP_USER_VIEW' => 'Visualizar usuario',
+	'ACP_ARTIST_VIDEO' => 'Subir videos',
+	'ACP_ARTIST_GALLERY' => 'Galer&iacute;a de fotos',
+	'ACP_ARTIST_STATS' => 'Estad&iacute;sticas de artista',
+	'ACP_ARTIST_AUTH' => 'Miembros autorizados',
+	'ACP_ARTIST_MEDIA' => 'Canciones',
+	'ACP_ARTIST_BIOGRAPHY' => 'Editar biograf&iacute;a',
 );
 
 ?>

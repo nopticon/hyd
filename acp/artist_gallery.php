@@ -51,7 +51,7 @@ class __artist_gallery extends mac {
 			_style('gallery.row', array(
 				'ITEM' => $row['image'],
 				'URL' => s_link('a', array($this->object['subdomain'], 4, $row['image'], 'view')),
-				'U_FOOTER' => s_link_control('a', array('a' => $this->object['subdomain'], 'mode' => $this->mode, 'manage' => 'footer', 'image' => $row['image'])),
+				'U_FOOTER' => s_link('acp', array('artist_gallery', 'a' => $this->object['subdomain'], 'footer' => $row['image'])),
 				'IMAGE' => SDATA . 'artists/' . $this->object['ub'] . '/thumbnails/' . $row['image'] . '.jpg',
 				'RIMAGE' => get_a_imagepath(SDATA . 'artists/' . $this->object['ub'], $row['image'] . '.jpg', array('x1', 'gallery')),
 				'WIDTH' => $row['width'],
@@ -110,7 +110,7 @@ class __artist_gallery extends mac {
 					sql_query(sql_filter($sql, $a, $this->data['ub']));
 				}
 
-				redirect(s_link_control('a', array('a' => $this->data['subdomain'], 'mode' => $this->mode)));
+				redirect(s_link('acp', array('artist_gallery', 'a' => $this->data['subdomain'])));
 			} else {
 				_style('error', array(
 					'MESSAGE' => parse_error($upload->error))
@@ -118,18 +118,13 @@ class __artist_gallery extends mac {
 			}
 		}
 
-		v_style(array(
-			'S_HIDDEN' => s_hidden(array('module' => $this->control->module, 'a' => $this->data['subdomain'], 'mode' => $this->mode, 'manage' => $this->manage)),
-			'MAX_FILESIZE' => $filesize)
-		);
-		
 		return;
 	}
 	
 	private function remove() {
 		$error = false;
 		if (isset($_POST['submit'])) {
-			$s_images = $this->control->get_var('ls_images', array(0));
+			$s_images = request_var('ls_images', array(0));
 			if (sizeof($s_images)) {
 				$affected = array();
 
@@ -168,14 +163,14 @@ class __artist_gallery extends mac {
 			}
 		}
 
-		redirect(s_link_control('a', array('a' => $this->data['subdomain'], 'mode' => $this->mode)));
+		redirect(s_link('acp', array('artist_gallery', 'a' => $this->data['subdomain'])));
 		
 		return;
 	}
 	
 	private function footer() {
-		$a = $this->control->get_var('image', '');
-		$t = $this->control->get_var('value', '');
+		$a = request_var('image', '');
+		$t = request_var('value', '');
 
 		$sql = 'SELECT *
 			FROM _artists_images

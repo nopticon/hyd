@@ -156,7 +156,7 @@ class __artist_auth extends mac {
 						//
 						// Back to auth home
 						//
-						redirect(s_link_control('a', array('a' => $this->data['subdomain'], 'mode' => $this->mode)));
+						redirect(s_link('acp', array('artist_auth', 'a' => $this->data['subdomain'])));
 					}
 				}
 
@@ -213,38 +213,30 @@ class __artist_auth extends mac {
 			} // IF !EMPTY
 		}
 
-		$s_hidden = array('module' => $this->control->module, 'a' => $this->data['subdomain'], 'mode' => $this->mode, 'manage' => $this->manage);
-
-		if ($submit && !$no_results) {
-			$s_hidden['s_member'] = str_replace('%', '*', $s_member);
-		}
-
 		//
 		// Output to template
 		//
 		v_style(array(
-			'SHOW_INPUT' => !$submit || $no_results,
-			'S_HIDDEN' => s_hidden($s_hidden),
-			'ADD_MEMBER_URL' => s_link_control('a', array('a' => $this->data['subdomain'], 'mode' => $this->mode, 'manage' => 'add')))
+			'SHOW_INPUT' => !$submit || $no_results)
 		);
 		
 		return;
 	}
 	
 	private function remove() {
-		$auth_url = s_link_control('a', array('a' => $this->data['subdomain'], 'mode' => $this->mode));
+		$auth_url = s_link('acp', array('artist_auth', 'a' => $this->data['subdomain']));
 
-		if (isset($_POST['cancel'])) {
+		if (_button('cancel')) {
 			redirect($auth_url);
 		}
 
-		$submit = isset($_POST['submit']) ? true : false;
-		$confirm = isset($_POST['confirm']) ? true : false;
+		$submit = _button();
+		$confirm = _button('confirm');
 
 		if ($submit || $confirm) {
 			global $config, $user;
 
-			$s_members = $this->control->get_var('s_members', array(0));
+			$s_members = request_var('s_members', array(0));
 			$s_members_i = array();
 
 			if (sizeof($s_members)) {
@@ -346,7 +338,7 @@ class __artist_auth extends mac {
 
 			$layout_vars = array(
 				'MESSAGE_TEXT' => sprintf($user->lang[((sizeof($s_members) == 1) ? 'CONTROL_A_AUTH_DELETE2' : 'CONTROL_A_AUTH_DELETE')], $this->data['name'], $s_members_list),
-				'S_CONFIRM_ACTION' => s_link('control'),
+				'S_CONFIRM_ACTION' => s_link('acp', array('artist_auth', 'a' => $this->data['subdomain'])),
 				'S_HIDDEN_FIELDS' => $s_members_hidden
 			);
 

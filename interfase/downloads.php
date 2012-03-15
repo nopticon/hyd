@@ -220,13 +220,13 @@ class downloads {
 				
 				if ($this->auth['adm'] && $user->is('founder')) {
 					$comments->data['CONTROL']['auth']['EDIT'] = array(
-						'URL' => s_link_control('a', array('a' => $this->data['subdomain'], 'mode' => 'dposts', 'manage' => 'edit', 'id' => '%d')),
+						'URL' => s_link('acp', array('artist_message', 'a' => $this->data['subdomain'], 'id' => '%d', 'action' => 'modify')),
 						'ID' => 'post_id'
 					);
 				}
 				
 				$comments->data['CONTROL']['auth']['DELETE'] = array(
-					'URL' => s_link_control('a', array('a' => $this->data['subdomain'], 'mode' => 'dposts', 'manage' => 'delete', 'id' => '%d')),
+					'URL' => s_link('acp', array('artist_message', 'a' => $this->data['subdomain'], 'id' => '%d', 'action' => 'remove')),
 					'ID' => 'post_id'
 				);
 			}
