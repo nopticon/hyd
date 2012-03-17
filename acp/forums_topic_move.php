@@ -110,8 +110,7 @@ function sync_topic_move($id)
 	$sql = 'SELECT MAX(topic_id) as last_topic, COUNT(topic_id) AS total
 		FROM _forum_topics
 		WHERE forum_id = ?';
-	if ($row = sql_fieldrow(sql_filter($sql, $id)))
-	{
+	if ($row = sql_fieldrow(sql_filter($sql, $id))) {
 		$last_topic = $row['last_topic'];
 		$total_topics = $row['total'];
 	}

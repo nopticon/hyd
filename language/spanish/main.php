@@ -110,7 +110,6 @@ $lang += array(
 	'CLICK_RETURN_TOPIC' => 'Click %sAQUI%s para volver al tema',
 	'CLICK_RETURN_FORUM' => 'Click %sAQUI%s para volver al foro',
 	'CLICK_VIEW_MESSAGE' => 'Click %sAQUI%s para ver el mensaje',
-	'CLICK_RETURN_MCP' => 'Click %sAQUI%s para volver al Panel de Control del Moderador',
 	'CLICK_RETURN_GROUP' => 'Click %sAQUI%s para volver al grupo',
 	'CLICK_RETURN_GROUP' => 'Click %sAQUI%s para volver al grupo',
 	'CLICK_RETURN_BOARDGROUP' => 'Click %sAQUI%s para volver al foro',
@@ -444,11 +443,6 @@ $lang += array(
 	//
 	// MODERATOR CONTROL PANEL
 	//
-	'MCP' => 'Panel de Control del Moderador',
-	'MOD_CP_EXPLAIN' => 'Usando el siguiente formulario puedes realizar operaciones de moderaci&oacute;n en este foro. Puede cerrar, desbloquear, mover o borrar cualquier n&uacute;mero de temas.',
-	
-	'MCP_TOPIC' => 'Panel de Control del Tema',
-	
 	'SELECT' => 'Seleccionar',
 	'DELETE' => 'Borrar',
 	'MOVE' => 'Mover',

@@ -97,7 +97,7 @@ class __forums_post_delete extends mac {
 				
 				$sql = 'SELECT MAX(post_id) AS last_post_id
 					FROM _forum_posts
-					WHERE topic_id = ';
+					WHERE topic_id = ?';
 				if ($last_post_id = sql_field(sql_filter($sql, $topic_id), 'last_post_id', 0)) {
 					$topic_update_sql .= ', topic_last_post_id = ' . $last_post_id;
 				}

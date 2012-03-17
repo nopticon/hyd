@@ -38,10 +38,6 @@ class xavatar {
 		return;
 	}
 	
-	public function get_extension($filename) {
-		return strtolower(str_replace('.', '', substr($filename, strrpos($filename, '.'))));
-	}
-	
 	public function process() {
 		global $user, $config, $error;
 		
@@ -70,7 +66,7 @@ class xavatar {
 		//
 		// Get filename extension
 		//
-		$this->info['ext'] = $this->get_extension($this->info['name']);
+		$this->info['ext'] = extension($this->info['name']);
 		
 		if (!$this->info['ext'] || !in_array($this->info['ext'], $this->config['ext'])) {
 			$error[] = 'AVATAR_FILETYPE';

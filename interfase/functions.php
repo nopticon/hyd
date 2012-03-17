@@ -309,6 +309,10 @@ function forum_for_team_array() {
 	return $ary;
 }
 
+function extension($filename) {
+	return strtolower(str_replace('.', '', substr($filename, strrpos($filename, '.'))));
+}
+
 function _implode($glue, $pieces, $empty = false) {
 	if (!is_array($pieces) || !count($pieces)) {
 		return -1;

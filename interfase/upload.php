@@ -46,10 +46,6 @@ class upload {
 		return array_values($file_ary);
 	}
 	
-	public function get_extension($file) {
-		return strtolower(str_replace('.', '', substr($file, strrpos($file, '.'))));
-	}
-	
 	public function rename($a, $b) {
 		global $config;
 		
@@ -62,7 +58,7 @@ class upload {
 	
 	public function _row($filepath, $filename) {
 		$row = (object) array(
-			'extension' => $this->get_extension($filename),
+			'extension' => extension($filename),
 			'name' => strtolower($filename),
 			'random' => time() . '_' . substr(md5(unique_id()), 0, 6)
 		);
@@ -118,6 +114,19 @@ class upload {
 	
 	public function process($filepath, $files, $extension, $filesize = false, $safe = true) {
 		global $user, $config;
+		
+		if (!is_array($files)) {
+			if (!isset($_FILES[$files])) {
+				return false;
+			}
+			$files = $_FILES[$files];
+		}
+		
+		if (isset($files['name']) && !is_array($files['name'])) {
+			foreach ($files as $i => $row) {
+				$files[$i] = array($row);
+			}
+		}
 		
 		$umask = umask(0);
 		$files = $this->array_merge($files);

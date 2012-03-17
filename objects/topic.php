@@ -550,7 +550,7 @@ class topic {
 			$v_lang = ($topic_data['topic_featured']) ? 'REM' : 'ADD';
 			
 			_style('feature', array(
-				'U_FEAT' => s_link('mcp', array('feature', $topic_data['topic_id'])),
+				'U_FEAT' => s_link('acp', array('forums_topic_feature', 'msg_id', $topic_data['topic_id'])),
 				'V_LANG' => $user->lang['TOPIC_FEATURED_' . $v_lang])
 			);
 			
@@ -558,7 +558,7 @@ class topic {
 			/*
 			$v_lang = ($topic_data['topic_points']) ? 'REM' : 'ADD';
 			_style('mcppoints', array(
-				'U_FEAT' => s_link('mcp', array('points', $topic_data['topic_id'])),
+				'U_FEAT' => s_link('acp', array('forums_topic_points', 'msg_id', $topic_data['topic_id'])),
 				'V_LANG' => $user->lang['TOPIC_POINTS_' . $v_lang])
 			);
 			*/

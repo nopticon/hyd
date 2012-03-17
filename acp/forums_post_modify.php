@@ -88,9 +88,8 @@ class __forums_post_modify extends mac {
 		
 		v_style(array(
 			'V_TOPIC' => ($user->is('founder')) ? $this->object->topic->topic_title : '',
-			'V_MESSAGE' => $this->object->post->post_text,
-			'S_ACTION' => s_link('mcp', array('edit', $this->id))
-		));
+			'V_MESSAGE' => $this->object->post->post_text)
+		);
 		//return page_layout('Editar', 'modcp.edit', $tv);
 	}
 }

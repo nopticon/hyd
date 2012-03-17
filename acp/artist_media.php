@@ -43,13 +43,8 @@ class __artist_media extends mac {
 			WHERE ub = ?
 			ORDER BY title';
 		if ($result = sql_rowset(sql_filter($sql, $this->data['ub']))) {
-			$downloads_type = array(
-				1 => '/net/icons/browse.gif',
-				2 => '/net/icons/store.gif'
-			);
-
-			foreach ($result as $row) {
-				if (!$tcol) _style('media');
+			foreach ($result as $i => $row) {
+				if (!$i) _style('media');
 
 				_style('media.row', array(
 					'ITEM' => $row['id'],
@@ -61,8 +56,6 @@ class __artist_media extends mac {
 					'DOWNLOADS' => $row['downloads'],
 					'POSTS' => $row['posts'])
 				);
-
-				$tcol = ($tcol == 2) ? 0 : $tcol + 1;
 			}
 		}
 		
@@ -70,6 +63,65 @@ class __artist_media extends mac {
 	}
 	
 	private function upload() {
+		global $config, $user, $cache, $upload;
+		
+		$limit = set_time_limit(0);
+		
+		$filepath = $config['artists_path'] . $this->object['ub'] . '/';
+		$filepath_1 = $filepath . 'media/';
+		
+		$f = $upload->process($filepath_1, 'create', 'mp3');
+		
+		if (!sizeof($upload->error) && $f !== false) {
+			$a = sql_total('_dl');
+			
+			foreach ($f as $i => $row) {
+				if (!$i) {
+					require_once(ROOT . 'interfase/getid3/getid3.php');
+					$getID3 = new getID3;
+				}
+				
+				$filename = $upload->rename($row, $a);
+				$tags = $getID3->analyze($filename);
+				$a++;
+				
+				$mt = new stdClass();
+				foreach (w('title genre album year') as $w) {
+					$mt->$w = (isset($tags['tags']['id3v1'][$w][0])) ? htmlencode($tags['tags']['id3v1'][$w][0]) : '';
+				}
+				
+				$sql_insert = array(
+					'ud' => 1,
+					'ub' => $this->object['ub'],
+					'title' => $mt->title,
+					'views' => 0,
+					'downloads' => 0,
+					'votes' => 0,
+					'posts' => 0,
+					'date' => time(),
+					'filesize' => @filesize($filename),
+					'duration' => $tags['playtime_string'],
+					'genre' => $mt->genre,
+					'album' => $mt->album,
+					'year' => $mt->year
+				);
+				$sql = 'INSERT INTO _dl' . sql_build('INSERT', $sql_insert);
+				sql_query($sql);
+			}
+			
+			$sql = 'UPDATE _artists SET um = um + ??
+				WHERE ub = ?';
+			sql_query(sql_filter($sql, count($f), $a_id));
+			
+			$cache->delete('downloads_list');
+			
+			redirect(s_link('a', $this->object['subdomain']));
+		}
+		
+		_style('error', array(
+			'MESSAGE' => parse_error($upload->error))
+		);
+	
 		return;
 	}
 	

@@ -209,6 +209,10 @@ function sql_truncate($table) {
 	return sql_query(sql_filter($sql, $table));
 }
 
+function sql_total($table) {
+	return sql_field("SHOW TABLE STATUS LIKE '" . $table . "'", 'Auto_increment', 0);
+}
+
 function sql_close() {
 	global $db;
 	

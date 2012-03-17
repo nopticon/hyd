@@ -38,9 +38,7 @@ class __event extends mac {
 			$f = $upload->process($filepath_1, $_FILES['event_image'], w('jpg jpeg'));
 			
 			if (!sizeof($upload->error) && $f !== false) {
-				$sql = 'SELECT MAX(id) AS total
-					FROM _events';
-				$img = sql_field($sql, 'total', 0);
+				$img = sql_total('_events');
 				
 				// Create vars
 				$event_name = request_var('event_name', '');
@@ -55,8 +53,6 @@ class __event extends mac {
 				$v_date = gmmktime($event_hours, $event_minutes, 0, $event_month, $event_day, $event_year) - $user->timezone - $user->dst;
 				
 				foreach ($f as $row) {
-					$img++;
-					
 					$xa = $upload->resize($row, $filepath_1, $filepath_1, $img, array(600, 400), false, false, true);
 					if ($xa === false) {
 						continue;
