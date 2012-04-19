@@ -1,3 +1,4 @@
+
 @font-face {
   font-family: 'Ubuntu';
   font-style: normal;
@@ -14,7 +15,7 @@
 body {
 	margin: 0;
 	padding: 0;
-	background: /*url(style/pat.jpg) */fixed top center #202837;
+	background: url(style/pat.jpg) fixed top center #202837;
 }
 p, div, span, select {
 	cursor: default;
@@ -99,7 +100,7 @@ hr {
 	display: block;
 	width: 300px;
 	height: 47px;
-	/*background: url(style/header.gif) no-repeat;*/
+	background: url(style/header.gif) no-repeat;
 	text-indent: 100%;
 	white-space: nowrap;
 	overflow: hidden;
@@ -854,10 +855,3 @@ html, body {
 .cb-enable.selected span { background-position: left -150px; color: #fff; }
 .switch label { cursor: pointer; }
 .switch input { display: none; }
-
-<!-- INCLUDE css/check.css -->
-<!-- INCLUDE css/player.css -->
-<!-- INCLUDE css/fancy.css -->
-<!-- INCLUDE css/slider.css -->
-<!-- INCLUDE css/icons.css -->
-<!-- INCLUDE css/awards.css -->
