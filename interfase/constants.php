@@ -129,6 +129,33 @@ define('AUTH_VOTE', 10);
 define('MALE', 1);
 define('FEMALE', 2);
 
+// User Unread
+define('UH_A', 1);
+define('UH_C', 2);
+define('UH_D', 3);
+define('UH_E', 4);
+define('UH_F', 5);
+define('UH_M', 6);
+define('UH_N', 7);
+define('UH_T', 8);
+define('UH_U', 10);
+define('UH_W', 11);
+define('UH_I', 12);
+define('UH_NP', 13);
+define('UH_B', 14);
+define('UH_AF', 15);
+define('UH_NOTE', 16);
+define('UH_UPM', 17);
+define('UH_EP', 18);
+
+define('UH_CF', 20);
+define('UH_WW', 21);
+define('UH_BIO', 22);
+define('UH_LY', 23);
+
+define('UH_FRIEND', 24);
+define('UH_GN', 25);
+
 //
 // MM
 //
