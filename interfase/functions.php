@@ -1842,7 +1842,7 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 		'S_REDIRECT' => $user->d('session_page'),
 		'S_USERNAME' => $user->d('username'),
 		
-		'S_CONTROLPANEL' => (isset($template->vars['S_CONTROLPANEL'])) ? $template->vars['S_CONTROLPANEL'] : ($user->is('artist') ? s_link('acp') : ''),
+		'S_CONTROLPANEL' => (isset($template->vars['S_CONTROLPANEL'])) ? $template->vars['S_CONTROLPANEL'] : ($user->is('artist') || $user->is('mod') ? s_link('acp') : ''),
 		'S_UNREAD_ITEMS' => (($unread_items == 1) ? sprintf($user->lang['UNREAD_ITEM_COUNT'], $unread_items) : sprintf($user->lang['UNREAD_ITEMS_COUNT'], $unread_items)),
 		'S_AP_POINTS' => (($user->d('user_points') == 1) ? sprintf($user->lang['AP_POINT'], $user->d('user_points')) : sprintf($user->lang['AP_POINTS'], $user->d('user_points'))),
 		
