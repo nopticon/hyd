@@ -46,7 +46,7 @@ class topics {
 		}
 		
 		$is_int_forumid = false;
-		if (preg_match('#^([0-9]+)$#is', $forum_id)) {
+		if (preg_match('#^(\d+)$#is', $forum_id)) {
 			$is_int_forumid = true;
 			$forum_id = intval($forum_id);
 			
@@ -323,7 +323,8 @@ class topics {
 		//
 		// Total topics ...
 		//
-		$total_topics += $total_announcements;
+		//$total_topics += $total_announcements;
+		//$total_topics = $total->important + $total->normal;
 		
 		//
 		// Post URL generation for templating vars
@@ -399,7 +400,7 @@ class topics {
 			}
 		}
 		
-		if (!$total_topics) {
+		if (!$topics_count) {
 			if ($start) {
 				redirect(s_link('forum', $forum_row['forum_alias']), true);
 			}
