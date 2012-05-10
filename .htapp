@@ -20,7 +20,7 @@ RewriteCond %{HTTP_HOST} ^(www\.)?([a-z0-9]+)\.(rock|metal|rk)
 RewriteRule ^([^.]+)?$ orion/artists.php?id=%2&layout=$1 [L]
 
 RewriteRule ^$ orion/home.php [nc]
-RewriteRule ^(awards|board|emoticons|community|comments|search|ssv|tos|allies|broadcast|acp)/?$ orion/$1.php [nc]
+RewriteRule ^(education|awards|board|emoticons|community|comments|search|ssv|tos|allies|broadcast|acp)/?$ orion/$1.php [nc]
 RewriteRule ^today/?$ orion/unread.php [nc]
 RewriteRule ^(sign)(in|out|up|r)/?$ orion/$1.php?mode=$2 [nc]
 RewriteRule ^(sign)(up|r)/([a-z0-9]+)/$ orion/$1.php?mode=$2&code=$3 [nc]

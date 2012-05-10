@@ -10,8 +10,6 @@
 		
 		<ul>
 			<li>{L_AVATAR}</li>
-			<li>{L_RANK}</li>
-			<li>{L_USERCOLOR}</li>
 			<li>{L_MEMBER_INFO}</li>
 			<li>{L_CONTACT_INFO}</li>
 			<li>{L_SIGNATURE}</li>
@@ -37,62 +35,48 @@
 		</div>
 		<span class="clear"></span>
 		
-		<div class="set_rank pad_top">
-			<div class="h"><h3>{L_RANK}</h3></div>
-			<div class="pad_top"><label for="sig">{L_RANK_EXPLAIN}</label></div>
-			<div class="pad_top"><input type="text" id="rank" name="rank" size="45" value="" /></div>
-		</div>
-		
-		<!-- BEGIN hide -->
-		<div class="set_color pad_top">
-			<div class="h"><h3>{L_USERCOLOR}</h3></div>
-			<div class="pad_top"><label for="sig">{L_USERCOLOR_EXPLAIN}</label></div>
-			<div class="pad_top"><input type="hidden" class="color" id="color" name="color" value="#{COLOR}" /></div>
-		</div>
-		<!-- END hide -->
-		
 		<div class="set_info pad_top">
 			<div class="h"><h3>{L_MEMBER_INFO}</h3></div>
+			<div class="pad_top">
+				<div class="is_left_i"><label for="rank">{L_RANK_EXPLAIN}:</label></div>
+				<div class="is_right_i i"><input type="text" id="rank" name="rank" size="20" maxlength="255" value="{RANK}" /></div>
+			</div>
+			<span class="clear"></span>
+			
 			<div class="pad_top">
 				<div class="is_left_i"><label for="favbands">{L_FAV_BANDS}:</label></div>
 				<div class="is_right_i i"><input type="text" id="favbands" name="fav_artists" size="20" maxlength="255" value="{FAV_ARTISTS}" /></div>
 			</div>
-			
 			<span class="clear"></span>
 			
 			<div class="pad_top">
 				<div class="is_left_i"><label for="favgenre">{L_FAV_GENRES}:</label></div>
 				<div class="is_right_i i"><input type="text" id="favgenre" name="fav_genres" size="20" maxlength="255" value="{FAV_GENRES}" /></div>
 			</div>
-			
 			<span class="clear"></span>
 			
 			<div class="pad_top">
 				<div class="is_left_i"><label for="location">{L_LOCATION}:</label></div>
 				<div class="is_right_i i"><input type="text" id="location" name="location" class="col90" size="20" maxlength="255" value="{LOCATION}" /></div>
 			</div>
-			
 			<span class="clear"></span>
 			
 			<div class="pad_top">
 				<div class="is_left_i"><label for="occ">{L_OCCUPATION}:</label></div>
 				<div class="is_right_i i"><input type="text" id="occ" name="occ" class="col90" size="20" maxlength="255" value="{OCC}" /></div>
 			</div>
-			
 			<span class="clear"></span>
 			
 			<div class="pad_top">
 				<div class="is_left_i"><label for="interests">{L_INTERESTS}:</label></div>
 				<div class="is_right_i i"><input type="text" id="interests" name="interests" class="col90" size="20" maxlength="255" value="{INTERESTS}" /></div>
 			</div>
-			
 			<span class="clear"></span>
 			
 			<div class="pad_top">
 				<div class="is_left_i"><label for="os">{L_MEMBER_OS}:</label></div>
 				<div class="is_right_i i"><input type="text" id="os" name="os" class="col90" size="20" maxlength="255" value="{OS}" /></div>
 			</div>
-			
 			<span class="clear"></span>
 			
 			<!-- BEGIN hidden -->
@@ -100,14 +84,12 @@
 				<div class="is_left_i"><label for="email">{L_EMAIL}:</label></div>
 				<div class="is_right_i i"><input type="text" id="email" name="email" size="20" maxlength="100" value="{EMAIL}" /></div>
 			</div>
-			
 			<span class="clear"></span>
 			
 			<div class="pad_top">
 				<div class="is_left_i"><label for="password1">{L_PASSWORD}:</label></div>
 				<div class="is_right_i i"><input type="password" id="password1" name="password1" size="20" maxlength="32" value="{PASSWORD1}" /></div>
 			</div>
-			
 			<span class="clear"></span>
 			
 			<div class="pad_top">
@@ -162,21 +144,18 @@
 		
 		<div class="set_signature pad_top">
 			<div class="h"><h3>{L_SIGNATURE}</h3></div>
-			<div class="pad_top"><label for="sig">{L_SIGNATURE_EXPLAIN}</label></div>
-			<div class="pad_top"><textarea id="sig" name="sig" rows="3" cols="60">{SIG}</textarea></div>
+			
+			<div class="pad_top">
+				<div class="is_left_i"><label for="sig">{L_SIGNATURE_EXPLAIN}:</label></div>
+				<div class="is_right_i i"><textarea id="sig" name="sig" rows="3" cols="60">{SIG}</textarea></div>
+			</div>
 		</div>
+		<span class="clear"></span>
 		
 		<div class="set_options pad_top">
 			<div class="h"><h3>{L_MEMBER_OPTIONS}</h3></div>
 			
 			<div class="pad_top">
-				<div class="pad_top">
-					<div class="is_left_i"><label for="dateformat">{L_MEMBER_DATE_FORMAT}:</label></div>
-					<div class="is_right_i i"><select id="dateformat" name="dateformat">{DATEFORMAT}</select></div>
-				</div>
-				
-				<span class="clear"></span>
-				
 				<div class="pad_top">
 					<div class="is_left_i"><label for="timezone">{L_TIMEZONE}:</label></div>
 					<div class="is_right_i i"><select id="timezone" name="timezone">{TIMEZONE}</select></div>

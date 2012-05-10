@@ -330,7 +330,7 @@ $lang += array(
 	'MEMBER_DATE_FORMAT' => 'Formato de Fecha',
 	'MEMBER_DATE_FORMAT_EXPLAIN' => 'La sintaxis usada es id&eacute;ntica a la funci&oacute;n <strong>date()</strong> de PHP',
 	'SIGNATURE' => 'Firma',
-	'SIGNATURE_EXPLAIN' => 'La firma es el texto que puedes agregar al pie de todos los mensajes que publiques en el sitio.',
+	'SIGNATURE_EXPLAIN' => 'Texto al pie de tus mensajes:',
 	'PUBLIC_EMAIL' => 'Mostar p&uacute;blicamente mi email',
 	
 	'CONFIRM_EMAIL' => 'Re-escribe tu email',
@@ -344,7 +344,7 @@ $lang += array(
 	'PASSWORD_IF_CHANGED_EXPLAIN' => 'Necesitas confirmar tu contrase&ntilde;a si deseas cambiarla',
 	
 	'AVATAR' => 'Avatar',
-	'AVATAR_EXPLAIN' => 'Muestra una peque&ntilde;a imagen en tus mensajes del foro, perfil, etc. El tama&ntilde;o de imagen debe ser menor a <strong>100 kb</strong> &uacute;nicamente en formato <strong>GIF o JPG</strong>',
+	'AVATAR_EXPLAIN' => 'Muestra imagen cuando publiques mensajes. Debe ser formato <em>gif, jpg o png</em>.',
 	'UPLOAD_AVATAR' => 'Enviar nuevo Avatar',
 	'DELETE_AVATAR' => 'Borrar Imagen',
 	'CURRENT_AVATAR' => 'Avatar actual',
@@ -384,7 +384,7 @@ $lang += array(
 	'EMPTY_BIRTH_MONTH' => 'Debes completar la fecha de tu cumplea&ntilde;os',
 	'AGREETOS_ERROR' => 'Debes aceptar nuestros t&eacute;rminos de servicio para completar tu suscripci&oacute;n',
 	'RANK_TOO_LONG' => 'El rango que has ingresado es muy largo.',
-	'RANK_EXPLAIN' => 'El texto que aparecer&aacute; debajo de tu usuario en los mensajes que publiques.',
+	'RANK_EXPLAIN' => 'Descripci&oacute;n de usuario',
 	
 	'WELCOME_SUBJECT' => 'Bienvenido a Rock Republik',
 	'NEW_ACCOUNT_SUBJECT' => 'Nueva cuenta de usuario',

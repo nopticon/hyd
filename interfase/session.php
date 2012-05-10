@@ -465,6 +465,10 @@ class session {
 			return $r;
 		}
 		
+		if (!preg_match('/^user_/', $d) && !isset($this->data[$d])) {
+			$d = 'user_' . $d;
+		}
+		
 		if ($v !== false) {
 			$this->data[$d] = $v;
 		}

@@ -98,76 +98,73 @@ class userpage {
 	}
 	
 	private function profile() {
-		global $user;
+		global $user, $config, $comments, $cache, $upload;
 		
 		require_once(ROOT . 'interfase/functions_avatar.php');
 		
-		$fields = 'public_email timezone dateformat location sig msnm yim aim icq lastfm website occ interests os fav_genres fav_artists rank color';
+		$error = w();
+		$fields = w('public_email timezone dateformat location sig msnm yim aim icq lastfm website occ interests os fav_genres fav_artists rank color');
+		$length_ary = w('location sig msnm yim aim icq website occ interests os fav_genres fav_artists');
 		
-		$user_fields = w();
-		foreach (w($fields) as $row) {
-			$user_fields[$row] = $user->d('user_' . $row);
+		$_fields = new stdClass;
+		foreach ($fields as $field) {
+			$_fields->$field = $user->d('user_' . $field);
 		}
 		
-		$user_fields['avatar'] = '';
-		$user_fields['gender'] = $user->d('user_gender');
-		$user_fields['birthday_day'] = (int) substr($user->d('user_birthday'), 6, 2);
-		$user_fields['birthday_month'] = (int) substr($user->d('user_birthday'), 4, 2);
-		$user_fields['birthday_year'] = (int) substr($user->d('user_birthday'), 0, 4);
+		$_fields->avatar = $user->d('user_avatar');
+		$_fields->gender = $user->d('user_gender');
+		$_fields->hideuser = $user->d('user_hideuser');
+		$_fields->email_dc = $user->d('user_email_dc');
 		
-		extract($user_fields);
-		
-		$hideuser = $user->d('user_hideuser');
-		$email_dc = $user->d('user_email_dc');
-		
-		$error = array();
-		$dateset = array('d M Y H:i', 'M d, Y H:i');
+		$_fields->birthday_day = (int) substr($user->d('user_birthday'), 6, 2);
+		$_fields->birthday_month = (int) substr($user->d('user_birthday'), 4, 2);
+		$_fields->birthday_year = (int) substr($user->d('user_birthday'), 0, 4);
 		
 		if (_button()) {
-			
-			foreach ($user_fields as $name => $value) {
-				$$name = request_var($name, $value);
+			foreach ($_fields as $field => $value) {
+				$_fields->$field = request_var($field, $value);
 			}
 			
-			$password1 = request_var('password1', '');
-			$password2 = request_var('password2', '');
-			$hideuser = _button('hideuser');
-			$email_dc = _button('email_dc');
+			$_fields->password1 = request_var('password1', '');
+			$_fields->password2 = request_var('password2', '');
+			$_fields->hideuser = _button('hideuser');
+			$_fields->email_dc = _button('email_dc');
 			
-			if (!empty($password1)) {
-				if (empty($password2)) {
+			if (!empty($_fields->password1)) {
+				if (empty($_fields->password2)) {
 					$error[] = 'EMPTY_PASSWORD2';
 				}
 				
 				if (!sizeof($error)) {
-					if ($password1 != $password2) {
+					if ($_fields->password1 != $_fields->password2) {
 						$error[] = 'PASSWORD_MISMATCH';
-					} else if (strlen($password1) > 30) {
+					} else if (strlen($_fields->password1) > 30) {
 						$error[] = 'PASSWORD_LONG';
 					}
 				}
 			}
 			
-			$check_length_ary = w('location sig msnm yim aim icq website occ interests os fav_genres fav_artists');
-			foreach ($check_length_ary as $name) {
-				if (strlen($$name) < 3) {
-					$$name = '';
+			unset($_fields->password1, $_fields->password2);
+			
+			foreach ($length_ary as $field) {
+				if (strlen($_fields->$field) < 2) {
+					$_fields->$field = '';
 				}
 			}
 			
-			if (!empty($website)) {
-				if (!preg_match('#^http[s]?:\/\/#i', $website)) {
-					$website = 'http://' . $website;
+			if (!empty($_fields->website)) {
+				if (!preg_match('#^http[s]?:\/\/#i', $_fields->website)) {
+					$_fields->website = 'http://' . $_fields->website;
 				}
 				
-				if (!preg_match('#^http[s]?\\:\\/\\/[a-z0-9\-]+\.([a-z0-9\-]+\.)?[a-z]+#i', $website)) {
-					$website = '';
+				if (!preg_match('#^http[s]?\\:\\/\\/[a-z0-9\-]+\.([a-z0-9\-]+\.)?[a-z]+#i', $_fields->website)) {
+					$_fields->website = '';
 				}
 			}
 			
-			if (!empty($rank)) {
-				$rank_word = explode(' ', $rank);
-				if (sizeof($rank_word) > 3) {
+			if (!empty($_fields->rank)) {
+				$rank_word = explode(' ', $_fields->rank);
+				if (sizeof($rank_word) > 10) {
 					$error[] = 'RANK_TOO_LONG';
 				}
 				
@@ -189,13 +186,13 @@ class userpage {
 			}
 			
 			// Rank
-			if (!empty($rank) && !sizeof($error)) {
+			if (!empty($_fields->rank) && !sizeof($error)) {
 				$sql = 'SELECT rank_id
 					FROM _ranks
 					WHERE rank_title = ?';
-				if (!$rank_id = sql_field(sql_filter($sql, $rank), 'rank_id', 0)) {
+				if (!$rank_id = sql_field(sql_filter($sql, $_fields->rank), 'rank_id', 0)) {
 					$insert = array(
-						'rank_title' => $rank,
+						'rank_title' => $_fields->rank,
 						'rank_min' => -1,
 						'rank_max' => -1,
 						'rank_special' => 1
@@ -204,59 +201,61 @@ class userpage {
 					$rank_id = sql_query_nextid($sql);
 				}
 				
-				$old_rank = $userdata['user_rank'];
-				if ($old_rank) {
+				if ($user->d('user_rank')) {
 					$sql = 'SELECT user_id
 						FROM _members
 						WHERE user_rank = ?';
-					$by = sql_rowset(sql_filter($sql, $old_rank), false, 'user_id');
+					$size_rank = sql_rowset(sql_filter($sql, $user->d('user_rank')), false, 'user_id');
 					
-					if (sizeof($by) == 1) {
+					if (sizeof($size_rank) == 1) {
 						$sql = 'DELETE FROM _ranks
 							WHERE rank_id = ?';
-						sql_query(sql_filter($sql, $old_rank));
+						sql_query(sql_filter($sql, $user->d('user_rank')));
 					}
 				}
 				
-				$rank = $rank_id;
+				$_fields->rank = $rank_id;
 				$cache->delete('ranks');
 			}
 			
-			if (!$birthday_month || !$birthday_day || !$birthday_year) {
+			if (!$_fields->birthday_month || !$_fields->birthday_day || !$_fields->birthday_year) {
 				$error[] = 'EMPTY_BIRTH_MONTH';
 			}
 			
 			if (!sizeof($error)) {
+				_pre($xavatar, true);
+				
 				if ($xavatar->process()) {
-					$avatar = $xavatar->file();
+					$_fields->avatar = $xavatar->file();
 				}
 			}
 			
 			if (!sizeof($error)) {
-				if (!empty($sig)) {
-					$sig = $comments->prepare($sig);
+				if (!empty($_fields->sig)) {
+					$_fields->sig = $comments->prepare($_fields->sig);
 				}
 				
-				unset($user_fields['birthday_day'], $user_fields['birthday_month'], $user_fields['birthday_year']);
+				$_fields->birthday = (string) (leading_zero($_fields->birthday_year) . leading_zero($_fields->birthday_month) . leading_zero($_fields->birthday_day));
+				unset($_fields->birthday_day, $_fields->birthday_month, $_fields->birthday_year);
 				
-				$dateformat = $dateset[$dateformat];
-				$user_fields['hideuser'] = $user->d('user_hideuser');
-				$user_fields['email_dc'] = $user->d('user_email_dc');
+				$_fields->dateformat = 'd M Y H:i';
+				$_fields->hideuser = $user->d('user_hideuser');
+				$_fields->email_dc = $user->d('user_email_dc');
 				
 				$member_data = w();
-				foreach ($user_fields as $name => $value) {
-					if ($value != $$name) {
-						$member_data['user_' . $name] = $$name;
+				foreach ($_fields as $field => $value) {
+					if ($value != $user->d($field)) {
+						$member_data['user_' . $field] = $_fields->$field;
 					}
 				}
-				
-				$member_data['user_gender'] = $gender;
-				$member_data['user_birthday'] = (string) (leading_zero($birthday_year) . leading_zero($birthday_month) . leading_zero($birthday_day));
 				
 				if (sizeof($member_data)) {
 					$sql = 'UPDATE _members SET ' . sql_build('UPDATE', $member_data) . sql_filter(' 
 						WHERE user_id = ?', $user->d('user_id'));
-					sql_query($sql);
+					
+					$sql = 'UPDATE _members SET ?? 
+						WHERE user_id = ?';
+					sql_query(sql_filter($sql, sql_build('UPDATE', $member_data), $user->d('user_id')));
 				}
 				
 				redirect(s_link('m', $user->d('username_base')));
@@ -279,27 +278,27 @@ class userpage {
 		
 		$s_genders_select = '';
 		foreach (array(1 => 'MALE', 2 => 'FEMALE') as $id => $value) {
-			$s_genders_select .= '<option value="' . $id . '"' . (($gender == $id) ? ' selected="true"' : '') . '>' . $user->lang[$value] . '</option>';
+			$s_genders_select .= '<option value="' . $id . '"' . (($_fields->gender == $id) ? ' selected="true"' : '') . '>' . $user->lang[$value] . '</option>';
 		}
 		
 		_style('gender', array(
 			'GENDER_SELECT' => $s_genders_select)
 		);
 		
-		$s_day_select = '<option value="">&nbsp;</option>';
+		$s_day_select = '';
 		for ($i = 1; $i < 32; $i++) {
-			$s_day_select .= '<option value="' . $i . '"' . (($birthday_day == $i) ? ' selected="true"' : '') . '>' . $i . '</option>';
+			$s_day_select .= '<option value="' . $i . '"' . (($_fields->birthday_day == $i) ? ' selected="true"' : '') . '>' . $i . '</option>';
 		}
 		
-		$s_month_select = '<option value="">&nbsp;</option>';
+		$s_month_select = '';
 		$months = array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
 		foreach ($months as $id => $value) {
-			$s_month_select .= '<option value="' . ($id + 1) . '"' . (($birthday_month == ($id + 1)) ? ' selected="true"' : '') . '>' . $user->lang['datetime'][$value] . '</option>';
+			$s_month_select .= '<option value="' . ($id + 1) . '"' . (($_fields->birthday_month == ($id + 1)) ? ' selected="true"' : '') . '>' . $user->lang['datetime'][$value] . '</option>';
 		}
 		
-		$s_year_select = '<option value="">&nbsp;</option>';
+		$s_year_select = '';
 		for ($i = 2005; $i > 1899; $i--) {
-			$s_year_select .= '<option value="' . $i . '"' . (($birthday_year == $i) ? ' selected="true"' : '') . '>' . $i . '</option>';
+			$s_year_select .= '<option value="' . $i . '"' . (($_fields->birthday_year == $i) ? ' selected="true"' : '') . '>' . $i . '</option>';
 		}
 		
 		_style('birthday', array(
@@ -310,26 +309,33 @@ class userpage {
 		
 		$dateformat_select = '';
 		foreach ($dateset as $id => $value) {
-			$dateformat_select .= '<option value="' . $id . '"' . (($value == $dateformat) ? ' selected="selected"' : '') . '>' . $user->format_date(time(), $value) . '</option>';
+			$dateformat_select .= '<option value="' . $id . '"' . (($value == $_fields->dateformat) ? ' selected="selected"' : '') . '>' . $user->format_date(time(), $value) . '</option>';
 		}
 		
 		$timezone_select = '';
 		foreach ($user->lang['zones'] as $id => $value) {
-			$timezone_select .= '<option value="' . $id . '"' . (($id == $timezone) ? ' selected="selected"' : '') . '>' . $value . '</option>';
+			$timezone_select .= '<option value="' . $id . '"' . (($id == $_fields->timezone) ? ' selected="selected"' : '') . '>' . $value . '</option>';
 		}
 		
-		unset($user_fields['timezone'], $user_fields['dateformat']);
+		unset($_fields->timezone, $_fields->dateformat);
+		
+		if ($user->d('rank')) {
+			$sql = 'SELECT rank_title
+				FROM _ranks
+				WHERE rank_id = ?';
+			$_fields->rank = sql_field(sql_filter($sql, $user->d('rank')), 'rank_title', '--');
+		}
 		
 		$output_vars = array(
 			'AVATAR_MAXSIZE' => $config['avatar_filesize'],
 			'DATEFORMAT' => $dateformat_select,
 			'TIMEZONE' => $timezone_select,
-			'HIDEUSER_SELECTED' => ($hideuser) ? ' checked="checked"' : '',
-			'EMAIL_DC_SELECTED' => ($email_dc) ? ' checked="checked"' : ''
+			'HIDEUSER_SELECTED' => ($_fields->hideuser) ? ' checked="checked"' : '',
+			'EMAIL_DC_SELECTED' => ($_fields->email_dc) ? ' checked="checked"' : ''
 		);
 		
-		foreach ($user_fields as $name => $value) {
-			$output_vars[strtoupper($name)] = $$name;
+		foreach ($_fields as $field => $value) {
+			$output_vars[strtoupper($field)] = $value;
 		}
 		v_style($output_vars);
 		
