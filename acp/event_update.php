@@ -41,7 +41,7 @@ class __event_update extends mac {
 			$filepath_1 = $config['events_path'] . 'future/';
 			$filepath_2 = $config['events_path'] . 'future/thumbnails/';
 			
-			$f = $upload->process($filepath_1, $_FILES['event_image'], w('jpg jpeg'));
+			$f = $upload->process($filepath_1, 'event_image', 'jpg jpeg');
 			
 			if (!sizeof($upload->error) && $f !== false) {
 				foreach ($f as $row) {

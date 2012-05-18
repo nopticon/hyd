@@ -69,7 +69,7 @@ function _empty($ary) {
 //
 // Get value of request var
 //
-function request_var($var_name, $default, $multibyte = false) {
+function request_var($var_name, $default = false, $multibyte = false) {
 	if (REQC) {
 		global $config;
 		
@@ -78,7 +78,16 @@ function request_var($var_name, $default, $multibyte = false) {
 		}
 	}
 	
-	// TODO: Parse $_FILES format, (files:name)
+	// Parse $_FILES format, (files:name)
+	if (preg_match('#files:([a-z0-9_]+)#i', $var_name, $var_part)) {
+		if (!isset($_FILES[$var_part[1]])) {
+			return false;
+		}
+		
+		$_REQUEST[$var_part[1]] = $_FILES[$var_part[1]];
+		$var_name = $var_part[1];
+		$default = array('' => '');
+	}
 	
 	if (!isset($_REQUEST[$var_name]) || (is_array($_REQUEST[$var_name]) && !is_array($default)) || (is_array($default) && !is_array($_REQUEST[$var_name]))) {
 		return (is_array($default)) ? array() : $default;

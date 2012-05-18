@@ -66,13 +66,13 @@ class __artist_gallery extends mac {
 	}
 	
 	private function upload() {
-		if (isset($_POST['submit']) && isset($_FILES['add_image'])) {
+		if (isset($_POST['submit'])) {
 			$filepath = '..' . SDATA . 'artists/' . $this->data['ub'] . '/';
 			$filepath_1 = $filepath . 'x1/';
 			$filepath_2 = $filepath . 'gallery/';
 			$filepath_3 = $filepath . 'thumbnails/';
 
-			$f = $upload->process($filepath_1, $_FILES['add_image'], array('jpg'));
+			$f = $upload->process($filepath_1, 'add_image', 'jpg');
 
 			if (!sizeof($upload->error) && $f !== false) {
 				$sql = 'SELECT MAX(image) AS total

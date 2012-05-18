@@ -38,7 +38,7 @@ class __event_images extends mac {
 			$filepath_3 = $filepath_1 . $event_id . '/';
 			$filepath_4 = $filepath_3 . 'thumbnails/';
 			
-			$f = $upload->process($filepath_1, $_FILES['add_zip'], array('zip'));
+			$f = $upload->process($filepath_1, 'add_zip', 'zip');
 			if (!sizeof($upload->error) && $f !== false) {
 				@set_time_limit(0);
 				

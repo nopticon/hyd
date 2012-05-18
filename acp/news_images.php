@@ -31,7 +31,7 @@ class __news_images extends mac {
 		if ($this->submit) {
 			$news_id = request_var('news_id', 0);
 			$filepath_1 = $config['news_path'];
-			$f = $upload->process($filepath_1, $_FILES['add_image'], array('jpg', 'jpeg'));
+			$f = $upload->process($filepath_1, 'add_image', 'jpg jpeg');
 			
 			if (!sizeof($upload->error) && $f !== false) {
 				foreach ($f as $row) {

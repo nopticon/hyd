@@ -35,7 +35,7 @@ class __event extends mac {
 			$filepath_1 = $filepath . 'future/';
 			$filepath_2 = $filepath_1 . 'thumbnails/';
 			
-			$f = $upload->process($filepath_1, $_FILES['event_image'], w('jpg jpeg'));
+			$f = $upload->process($filepath_1, 'event_image', 'jpg jpeg');
 			
 			if (!sizeof($upload->error) && $f !== false) {
 				$img = sql_total('_events');

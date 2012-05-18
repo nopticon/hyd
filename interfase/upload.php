@@ -24,7 +24,7 @@ class upload {
 	}
 	
 	public function array_merge($files) {
-		$file_ary = array();
+		$file_ary = w();
 		if (!is_array($files)) return $file_ary;
 		
 		$a_keys = array_keys($files);
@@ -72,7 +72,7 @@ class upload {
 	public function remote($filepath, $locations, $extension, $filesize = false, $safe = true) {
 		global $user, $config;
 		
-		$files = array();
+		$files = w();
 		$umask = umask(0);
 		
 		if (!sizeof($locations)) {
@@ -112,14 +112,37 @@ class upload {
 		return (count($files)) ? $files : false;
 	}
 	
-	public function process($filepath, $files, $extension, $filesize = false, $safe = true) {
+	public function avatar_process(&$_fields, &$error) {
+		global $config;
+		
+		$path = $config['assets_path'] . 'avatars/';
+		
+		$send = $this->process(, 'avatar');
+		
+		if (count($this->error)) {
+			$error = array_merge($error, $this->error);
+			return;
+		}
+		
+		if ($send !== false) {
+			foreach ($send as $row) {
+				$xa = $upload->resize($row, $filepath_1, $filepath_1, $event_id, array(600, 400), false, false, true);
+				if ($xa === false) {
+					continue;
+				}
+			}
+		}
+		
+		return;
+	}
+	
+	public function process($filepath, $files, $extension = 'gif png jpg jpeg', $filesize = false, $safe = true) {
 		global $user, $config;
 		
 		if (!is_array($files)) {
-			if (!isset($_FILES[$files])) {
-				return false;
-			}
-			$files = $_FILES[$files];
+			$files = request_var('files:' . $files);
+			
+			if ($files === false) return $files;
 		}
 		
 		if (isset($files['name']) && !is_array($files['name'])) {
@@ -135,8 +158,10 @@ class upload {
 			$extension = w($extension);
 		}
 		
+		//$files = w();
+		
 		if (!sizeof($files)) {
-			$this->error[] = 'FILES_NO_FILES';
+			$this->error[] = $user->lang['FILES_NO_FILES'];
 			return false;
 		}
 		
@@ -172,7 +197,7 @@ class upload {
 				continue;
 			}
 			
-			@chmod($row['filepath'], 0644);
+			@chmod($row['filepath'], $config['mask']);
 			
 			if (@filesize($r->filepath) > $filesize) {
 				_rm($r->filepath);

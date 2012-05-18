@@ -100,8 +100,6 @@ class userpage {
 	private function profile() {
 		global $user, $config, $comments, $cache, $upload;
 		
-		require_once(ROOT . 'interfase/functions_avatar.php');
-		
 		$error = w();
 		$fields = w('public_email timezone dateformat location sig msnm yim aim icq lastfm website occ interests os fav_genres fav_artists rank color');
 		$length_ary = w('location sig msnm yim aim icq website occ interests os fav_genres fav_artists');
@@ -223,11 +221,7 @@ class userpage {
 			}
 			
 			if (!sizeof($error)) {
-				_pre($xavatar, true);
-				
-				if ($xavatar->process()) {
-					$_fields->avatar = $xavatar->file();
-				}
+				$upload->avatar_process($_fields, $error);
 			}
 			
 			if (!sizeof($error)) {
@@ -327,7 +321,7 @@ class userpage {
 		}
 		
 		$output_vars = array(
-			'AVATAR_MAXSIZE' => $config['avatar_filesize'],
+			'AVATAR_MAXSIZE' => upload_maxsize(),
 			'DATEFORMAT' => $dateformat_select,
 			'TIMEZONE' => $timezone_select,
 			'HIDEUSER_SELECTED' => ($_fields->hideuser) ? ' checked="checked"' : '',
