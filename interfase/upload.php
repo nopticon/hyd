@@ -117,7 +117,7 @@ class upload {
 		
 		$path = $config['assets_path'] . 'avatars/';
 		
-		$send = $this->process(, 'avatar');
+		$send = $this->process($path, 'avatar');
 		
 		if (count($this->error)) {
 			$error = array_merge($error, $this->error);
@@ -126,7 +126,7 @@ class upload {
 		
 		if ($send !== false) {
 			foreach ($send as $row) {
-				$xa = $upload->resize($row, $filepath_1, $filepath_1, $event_id, array(600, 400), false, false, true);
+				$xa = $upload->resize($row, $path, $path, $event_id, array(600, 400), false, false, true);
 				if ($xa === false) {
 					continue;
 				}
