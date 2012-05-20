@@ -45,7 +45,9 @@ class _home {
 				//echo $config['news_path'] . $row['news_id'] . '.jpg<br />';
 			}
 			
-			$news_image = (@file_exists('../data/news/' . $row['news_id'] . '.jpg')) ? $row['news_id'] : 'd';
+			//$news_image = (@file_exists('../data/news/' . $row['news_id'] . '.jpg')) ? $row['news_id'] : 'd';
+			
+			$news_image = (@file_exists($config['news_path'] . $row['news_id'] . '.jpg')) ? $row['news_id'] : 'd';
 			
 			_style('news.row', array(
 				'TIMESTAMP' => $user->format_date($row['post_time'], 'j \d\e F Y'),
@@ -60,7 +62,7 @@ class _home {
 		
 		if ($user->is('mod')) {
 			_style('news.create', array(
-				'U_NEWS_CREATE' => s_link('news', 'create'))
+				'U_NEWS_CREATE' => s_link('acp', 'news_create'))
 			);
 		}
 		
