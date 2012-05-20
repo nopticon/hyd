@@ -35,6 +35,8 @@ class __event_update extends mac {
 				FROM _events
 				WHERE id = ?';
 			if (!$event_data = sql_fieldrow(sql_filter($sql, $event_id))) {
+				echo 'no';
+				exit;
 				fatal_error();
 			}
 			
