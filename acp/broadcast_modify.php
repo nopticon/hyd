@@ -58,7 +58,7 @@ class __broadcast_modify extends mac {
 				@flock($fp, LOCK_UN);
 				fclose($fp);
 				
-				@chmod($cds_file, 0777);
+				_chmod($cds_file, $config['mask']);
 				
 				if ($ftp->ftp_put('/Schedule/schedule_playlist.txt', $cds_file)) {
 					echo '<h1>El archivo fue procesado correctamente.</h1>';

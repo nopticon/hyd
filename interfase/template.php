@@ -1196,6 +1196,8 @@ class Template {
 	 * Write cache to disk
 	 */
 	public function write_cache($filename, $code) {
+		global $config;
+		
 		// check if cache is writable
 		if (!$this->cache_writable) {
 			return false;
@@ -1218,7 +1220,7 @@ class Template {
 					$this->cache_writable = 0;
 					return false;
 				} else {
-					@chmod($path, 0777);
+					_chmod($path, $config['mask']);
 				}
 			}
 			
@@ -1234,7 +1236,7 @@ class Template {
 							$this->cache_writable = 0;
 							return false;
 						} else {
-							@chmod($path, 0777);
+							_chmod($path, $config['mask']);
 						}
 					}
 				}
@@ -1250,7 +1252,7 @@ class Template {
 		fputs($file, "<?php\n\n// Generated on " . date('r') . " (time=" . time() . ")\n\n?>");
 		fputs($file, $code);
 		fclose($file);
-		@chmod($filename, 0777);
+		_chmod($filename, $config['mask']);
 		return true;
 	}
 

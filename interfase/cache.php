@@ -60,6 +60,8 @@ class cache {
 	}
 	
 	public function save($var, &$data) {
+		global $config;
+		
 		if (!$this->use) {
 			return;
 		}
@@ -75,7 +77,7 @@ class cache {
 			@flock($fp, LOCK_UN);
 			fclose($fp);
 			
-			@chmod($filename, 0777);
+			_chmod($filename, $config['mask']);
 		}
 		
 		return;

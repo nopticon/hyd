@@ -220,8 +220,9 @@ class userpage {
 				$error[] = 'EMPTY_BIRTH_MONTH';
 			}
 			
+			// Update user avatar
 			if (!sizeof($error)) {
-				$upload->avatar_process($_fields, $error);
+				$upload->avatar_process($user->d('username_base'), $_fields, $error);
 			}
 			
 			if (!sizeof($error)) {

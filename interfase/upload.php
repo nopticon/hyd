@@ -51,7 +51,7 @@ class upload {
 		
 		$filename = str_replace($a->random, $b, $a->filepath);
 		@rename($a->filepath, $filename);
-		@chmod($filename, $config['mask']);
+		_chmod($filename, $config['mask']);
 		
 		return $filename;
 	}
@@ -60,7 +60,7 @@ class upload {
 		$row = (object) array(
 			'extension' => extension($filename),
 			'name' => strtolower($filename),
-			'random' => time() . '_' . substr(md5(unique_id()), 0, 6)
+			'random' => time() . '_' . substr(md5(unique_id()), 0, 10)
 		);
 		
 		$row->filename = $row->random . '.' . $row->extension;
@@ -101,9 +101,7 @@ class upload {
 				continue;
 			}
 			
-			$umask = umask(0);
-			@chmod($row->filepath, $config['mask']);
-			@umask($umask);
+			_chmod($row->filepath, $config['mask']);
 			
 			$files[] = $row;
 		}
@@ -112,8 +110,8 @@ class upload {
 		return (count($files)) ? $files : false;
 	}
 	
-	public function avatar_process(&$_fields, &$error) {
-		global $config;
+	public function avatar_process($alias, &$_fields, &$error) {
+		global $config, $user;
 		
 		$path = $config['assets_path'] . 'avatars/';
 		
@@ -126,10 +124,16 @@ class upload {
 		
 		if ($send !== false) {
 			foreach ($send as $row) {
-				$xa = $upload->resize($row, $path, $path, $event_id, array(600, 400), false, false, true);
-				if ($xa === false) {
+				$resize = $this->resize($row, $path, $path, _encode($alias) . time(), array(70, 70), false, false, true);
+				if ($resize === false) {
 					continue;
 				}
+				
+				if ($user->d('avatar')) {
+					_rm($path . $user->d('avatar'));
+				}
+				
+				$_fields->avatar = $row->filename;
 			}
 		}
 		
@@ -142,7 +146,7 @@ class upload {
 		if (!is_array($files)) {
 			$files = request_var('files:' . $files);
 			
-			if ($files === false) return $files;
+			if ($files === false) return false;
 		}
 		
 		if (isset($files['name']) && !is_array($files['name'])) {
@@ -158,8 +162,6 @@ class upload {
 			$extension = w($extension);
 		}
 		
-		//$files = w();
-		
 		if (!sizeof($files)) {
 			$this->error[] = $user->lang['FILES_NO_FILES'];
 			return false;
@@ -170,6 +172,10 @@ class upload {
 		}
 		
 		foreach ($files as $i => $row) {
+			if ($row['error']) {
+				continue;
+			}
+			
 			$r = $this->_row($filepath, $row['name']);
 			
 			$r->size = $row['size'];
@@ -191,16 +197,23 @@ class upload {
 				continue;
 			}
 			
+			if (!@is_writable($filepath)) {
+				$this->error[] = 'Reading error.';
+				$r->error = 1;
+				continue;
+			}
+			
 			if (!@move_uploaded_file($r->tmp, $r->filepath)) {
 				$this->error[] = sprintf($user->lang['UPLOAD_FAILED'], $r->name);
 				$r->error = 1;
 				continue;
 			}
 			
-			@chmod($row['filepath'], $config['mask']);
+			_chmod($row['filepath'], $config['mask']);
 			
 			if (@filesize($r->filepath) > $filesize) {
 				_rm($r->filepath);
+				
 				$this->error[] = sprintf($user->lang['UPLOAD_TOO_BIG'], $r->name, ($filesize / 1048576));
 				$r->error = 1;
 				continue;
@@ -319,7 +332,7 @@ class upload {
 			return false;
 		}
 		
-		chmod($t->destination, $config['mask']);
+		_chmod($t->destination, $config['mask']);
 		imagedestroy($thumb);
 		imagedestroy($image);
 		

@@ -750,6 +750,18 @@ function _md($parent, $childs = false) {
 	return true;
 }
 
+function _chmod($filepath, $mask) {
+	if (is_string($mask)) {
+		$mask = octdec($mask);
+	}
+	
+	$umask = umask(0);
+	$a = @chmod($filepath, $mask);
+	@umask($umask);
+	
+	return $a;
+}
+
 function _rm($path) {
 	if (empty($path)) {
 		return false;

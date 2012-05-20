@@ -66,9 +66,8 @@ function unzip ($src_file, $dest_dir = false, $create_zip_name_dir = true, $over
 					file_put_contents($file_name, $fstream);
 					
 				// Set the rights
-				if (file_exists($file_name))
-				{
-					chmod($file_name, 0777);
+				if (file_exists($file_name)) {
+					@chmod($file_name, 0777);
 				}
 			}
 			
@@ -95,8 +94,8 @@ function create_dirs($path)
 			$directory_path .= $directory . '/';
 			if (!is_dir($directory_path))
 			{
-				mkdir($directory_path);
-				chmod($directory_path, 0777);
+				@mkdir($directory_path);
+				@chmod($directory_path, 0777);
 			}
 		}
 	}
