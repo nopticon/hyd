@@ -58,7 +58,7 @@ class __broadcast_program_create extends mac {
 		$sql = 'INSERT INTO _radio' . sql_build('INSERT', $v);
 		$show_id = sql_query_nextid($sql);
 		
-		$e_dj = explode("\n", $dj_list);
+		$e_dj = explode(nr(), $dj_list);
 		foreach ($e_dj as $rowu) {
 			$rowu = get_username_base($rowu);
 			

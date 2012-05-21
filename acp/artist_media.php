@@ -31,11 +31,11 @@ class __artist_media extends mac {
 		$this->_artist();
 		
 		if (_button()) {
-			return $this->upload();
+			$this->upload();
 		}
 		
 		if (_button('remove')) {
-			return $this->remove();
+			$this->remove();
 		}
 		
 		$sql = 'SELECT *
@@ -48,7 +48,7 @@ class __artist_media extends mac {
 				
 				_style('media.row', array(
 					'ITEM' => $row['id'],
-					'URL' => s_link('acp', array('artist_media', 'a' => $this->object['subdomain'], 'id' => $row['id'])),
+					'URL' => s_link('a', array($this->object['subdomain'], 9, $row['id'])),
 					'POSTS_URL' => s_link('a', array($this->object['subdomain'], 9, $row['id'])) . '#dpf',
 					'IMAGE_TYPE' => $downloads_type[$row['ud']],
 					'DOWNLOAD_TITLE' => $row['title'],
@@ -69,9 +69,11 @@ class __artist_media extends mac {
 		$filepath = $config['artists_path'] . $this->object['ub'] . '/';
 		$filepath_1 = $filepath . 'media/';
 		
-		$f = $upload->process($filepath_1, 'create', 'mp3');
+		$f = (artist_check($this->object['ub'] . ' media') !== false) ? $upload->process($filepath_1, 'create', 'mp3') : false;
 		
-		if (!sizeof($upload->error) && $f !== false) {
+		if ($f === false) {
+			return;
+		} else if (!sizeof($upload->error)) {
 			$a = sql_total('_dl');
 			
 			foreach ($f as $i => $row) {
@@ -92,6 +94,7 @@ class __artist_media extends mac {
 				$sql_insert = array(
 					'ud' => 1,
 					'ub' => $this->object['ub'],
+					'alias' => friendly($mt->title),
 					'title' => $mt->title,
 					'views' => 0,
 					'downloads' => 0,
@@ -105,7 +108,7 @@ class __artist_media extends mac {
 					'year' => $mt->year
 				);
 				$sql = 'INSERT INTO _dl' . sql_build('INSERT', $sql_insert);
-				sql_query($sql);
+				$media_id = sql_query_nextid($sql);
 			}
 			
 			$sql = 'UPDATE _artists SET um = um + ??
@@ -114,17 +117,45 @@ class __artist_media extends mac {
 			
 			$cache->delete('downloads_list');
 			
-			redirect(s_link('a', $this->object['subdomain']));
+			redirect(s_link('acp', array('artist_media', 'a' => $this->object['subdomain'], 'id' => $media_id)));
+		} else {
+			_style('error', array(
+				'MESSAGE' => parse_error($upload->error))
+			);
 		}
 		
-		_style('error', array(
-			'MESSAGE' => parse_error($upload->error))
-		);
-	
 		return;
 	}
 	
 	private function remove() {
+		global $config, $cache;
+		
+		$remove = request_var('s_downloads', array(0));
+		
+		if (!count($remove)) {
+			return;
+		}
+		
+		$sql = 'SELECT *
+			FROM _dl
+			WHERE id IN (??)
+				AND ub = ?';
+		if ($result = sql_rowset(sql_filter($sql, _implode(',', $remove), $this->object['ub']))) {
+			foreach ($result as $row) {
+				$path = artist_root($this->object['ub'] . ' media ' . $row['id'] . '.mp3');
+				
+				_rm($path);
+				
+				$sql = 'DELETE FROM _dl
+					WHERE id = ?';
+				sql_query(sql_filter($sql, $row['id']));
+				
+				$cache->delete('downloads_list');
+			}
+			
+			redirect(s_link('acp', array('artist_media', 'a' => $this->object['subdomain'])));
+		}
+		
 		return;
 	}
 }

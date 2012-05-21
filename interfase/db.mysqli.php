@@ -106,7 +106,7 @@ class database extends dcom {
 			$total = -1;
 		}
 		
-		$query .= "\n LIMIT " . (($offset) ? $offset . ', ' . $total : $total);
+		$query .= nr() . " LIMIT " . (($offset) ? $offset . ', ' . $total : $total);
 		return $this->query($query);
 	}
 	
@@ -372,7 +372,7 @@ class database extends dcom {
 			return;
 		}
 		
-		$action = str_replace(array("\n", "\t", "\r"), array('', '', ' '), $action);
+		$action = str_replace(array(nr(), "\t", nr(true)), array('', '', ' '), $action);
 		$table = preg_replace('#^(INSERT\ INTO|UPDATE|DELETE\ FROM) (\_[a-z\_]+) (.*?)$#is', '\2', $action);
 		
 		if (!in_array($table, $whitelist)) {

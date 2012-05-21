@@ -111,7 +111,7 @@ function sql_filter() {
 	
 	// Conditional deletion of lines if input is zero
 	if (strpos($args[0], '-- ') !== false) {
-		$e_sql = explode("\n", $args[0]);
+		$e_sql = explode(nr(), $args[0]);
 		
 		$matches = 0;
 		foreach ($e_sql as $i => $row) {

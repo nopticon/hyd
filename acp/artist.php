@@ -54,18 +54,18 @@ class __artist extends mac {
 		set_config('max_artists', $config['max_artists'] + 1);
 		
 		// Create directories
-		artist_check(array($artist_id));
+		artist_check($artist_id);
 		
-		artist_check(array($artist_id, 'gallery'));
-		artist_check(array($artist_id, 'media'));
-		artist_check(array($artist_id, 'thumbnails'));
-		artist_check(array($artist_id, 'x1'));
+		artist_check($artist_id . ' gallery');
+		artist_check($artist_id . ' media');
+		artist_check($artist_id . ' thumbnails');
+		artist_check($artist_id . ' x1');
 		
 		// Mods
 		if (!empty($request->mods)) {
-			$usernames = array();
+			$usernames = w();
 			
-			$a_mods = explode("\n", $request->mods);
+			$a_mods = explode(nr(), $request->mods);
 			foreach ($a_mods as $each) {
 				$username_base = get_username_base($each);
 				

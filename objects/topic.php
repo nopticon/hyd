@@ -223,7 +223,7 @@ class topic {
 						}
 		
 						if ($reply && $post_reply_message != '') {
-							$post_message = '<blockquote><strong>' . $topic_data['reply_username'] . "</strong>\n\n" . $post_reply_message . '</blockquote><br /> ' . $post_message;
+							$post_message = '<blockquote><strong>' . $topic_data['reply_username'] . "</strong>" . nr(false, 2) . $post_reply_message . '</blockquote><br /> ' . $post_message;
 						} else {
 							$reply = 0;
 						}

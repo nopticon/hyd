@@ -31,7 +31,7 @@ function decode_message(&$message, $bbcode_uid = '')
 {
 	global $config;
 
-	$message = str_replace('<br />', "\n", $message);
+	$message = str_replace('<br />', nr(), $message);
 
 	$match = array(
 		'#<!\-\- e \-\-><a href="mailto:(.*?)">.*?</a><!\-\- e \-\->#',
@@ -62,7 +62,7 @@ function prepare_message($message)
 	// e.g. remove excessive newlines(?), smilies(?)
 	// Transform \r\n and \r into \n
 	$match = array('#\r\n?#', '#sid=[a-z0-9]*?&amp;?#', "#([\n][\s]+){3,}#", '#(script|about|applet|activex|chrome):#i');
-	$replace = array("\n", '', "\n\n", "\\1&#058;");
+	$replace = array(nr(), '', nr(false, 2), "\\1&#058;");
 	$message = preg_replace($match, $replace, trim($message));
 	
 	$allowed_tags = split(',', $config['allow_html_tags']);

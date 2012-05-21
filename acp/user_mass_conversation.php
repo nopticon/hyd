@@ -42,7 +42,7 @@ class __user_mass_conversation extends mac {
 		
 		$skip_list = '';
 		if (!empty($post_skip)) {
-			$e_skip = explode("\n", $post_skip);
+			$e_skip = explode(nr(), $post_skip);
 			
 			foreach ($e_skip as $i => $row) {
 				$row = get_username_base($row);

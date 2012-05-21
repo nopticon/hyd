@@ -96,7 +96,7 @@ $lang += array(
 	'CONTROL_COMMENTS_HELP_MODULE' => 'M&oacute;dulo',
 	'CONTROL_COMMENTS_HELP_EMPTY' => 'Debes completar toda la informaci&oacute;n.',
 	'CONTROL_COMMENTS_HELP_NOCAT' => 'La categor&iacute;a seleccionada no existe.',
-	'CONTROL_NEWS_ADD_IMAGE' => 'Desde esta p&aacute;gina podr&aacute;s publicar nuevas fotograf&iacute;as para la secci&oacute;n de noticias.<br /><br />Los archivos deben ser formato <strong>JPG</strong>, tama&ntilde;o de archivo <strong>500 kb</strong> m&aacute;ximo.<br />La imagen se ajustar&aacute; a las dimensiones requeridas de 100 x 75 p&iacute;xeles',
+	'CONTROL_NEWS_ADD_IMAGE' => 'Publica imagenes  para la secci&oacute;n de noticias. El formato debe ser <em>jpg</em>.',
 	
 	// VIDEOS
 	'CONTROL_A_VIDEO_ADD' => 'Agregar video',

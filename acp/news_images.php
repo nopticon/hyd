@@ -30,7 +30,16 @@ class __news_images extends mac {
 		
 		if ($this->submit) {
 			$news_id = request_var('news_id', 0);
+			
+			$sql = 'SELECT news_id
+				FROM _news
+				WHERE news_id = ?';
+			if (!sql_field(sql_filter($sql, $news_id), 'news_id', 0)) {
+				fatal_error();
+			}
+			
 			$filepath_1 = $config['news_path'];
+			
 			$f = $upload->process($filepath_1, 'add_image', 'jpg jpeg');
 			
 			if (!sizeof($upload->error) && $f !== false) {

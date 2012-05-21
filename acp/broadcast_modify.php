@@ -49,7 +49,7 @@ class __broadcast_modify extends mac {
 			
 			$build = '';
 			foreach ($hours as $hour => $play) {
-				$build .= ((!empty($build)) ? "\r\n" : '') . trim($hour) . ':' . trim($play);
+				$build .= ((!empty($build)) ? nr(1) : '') . trim($hour) . ':' . trim($play);
 			}
 			
 			if ($fp = @fopen($cds_file, 'w')) {
@@ -88,7 +88,7 @@ class __broadcast_modify extends mac {
 			$e_item = array_map('trim', explode(':', $item));
 			if (!empty($e_item[0]))
 			{
-				echo sumhour($e_item[0]) . ' <input type="text" name="hours[' . $e_item[0] . ']" value="' . $e_item[1] . '" size="100"' . ((oclock($e_item[0])) ? ' style="background-color: #CCCCCC;"' : '') . ' /><br />' . "\n";
+				echo sumhour($e_item[0]) . ' <input type="text" name="hours[' . $e_item[0] . ']" value="' . $e_item[1] . '" size="100"' . ((oclock($e_item[0])) ? ' style="background-color: #CCCCCC;"' : '') . ' /><br />' . nr();
 			}
 		}
 		

@@ -1,21 +1,27 @@
 <!-- INCLUDE page.header.htm -->
 
 <!-- BEGIN error -->
-<a name="e"></a><div class="rows5_top_2"><div class="error_block"><h2>{L_ERROR}</h2><p>{error.MESSAGE}</p></div></div>
+<div class="rows5_top_2"><div class="error_block"><h2>{L_ERROR}</h2><p>{error.MESSAGE}</p></div></div>
 <!-- END error -->
 
-<form action="{S_UPLOAD_ACTION}" method="post" enctype="multipart/form-data" name="post">
-<div>{L_CONTROL_NEWS_ADD_IMAGE}</div>
-<div class="rows5_top_1"><input type="hidden" name="MAX_FILE_SIZE" value="{MAX_FILESIZE}" /><input type="file" name="add_image[]" size="25" /></div>
-
-<div class="rows5_top_2">Evento<br />
-<select name="news_id">
-<!-- BEGIN news_list -->
-<option value="{news_list.NEWS_ID}">{news_list.NEWS_TITLE}</option>
-<!-- END news_list -->
-</select></div>
-
-<div class="rows5_top_1 a_center">{S_HIDDEN}<input type="submit" class="submit" name="submit" value="{L_SUBMIT}" /></div>
+<form action="{S_UPLOAD_ACTION}" method="post" enctype="multipart/form-data">
+	<input type="hidden" name="MAX_FILE_SIZE" value="{S_UPLOAD}" />
+	
+	<div>{L_CONTROL_NEWS_ADD_IMAGE}</div>
+	<div class="pad_top"><input type="file" name="add_image" size="25" /></div>
+	
+	<div class="pad_top">Noticia<br />
+		<select name="news_id">
+			<!-- BEGIN news_list -->
+			<option value="{news_list.NEWS_ID}">{news_list.NEWS_TITLE}</option>
+			<!-- END news_list -->
+		</select>
+	</div>
+	
+	<div class="pad_top a_center">
+		{S_HIDDEN}
+		<input type="submit" class="submit" name="submit" value="{L_SUBMIT}" />
+	</div>
 </form>
 
 <!-- INCLUDE page.footer.htm -->

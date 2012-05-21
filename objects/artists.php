@@ -325,7 +325,7 @@ class layout extends downloads {
 					_style('read', array(
 						'TITLE' => $lyric_data['title'],
 						'AUTHOR' => $lyric_data['author'],
-						'TEXT' => str_replace("\n", '<br />', $lyric_data['text']),
+						'TEXT' => str_replace(nr(), '<br />', $lyric_data['text']),
 						'VIEWS' => $lyric_data['views'])
 					);
 				}
@@ -540,9 +540,9 @@ class layout extends downloads {
 
 				$emailer->from($user->d('user_email'));
 
-				$email_headers = 'X-AntiAbuse: User_id - ' . $user->d('user_id') . "\n";
-				$email_headers .= 'X-AntiAbuse: Username - ' . $user->d('username') . "\n";
-				$email_headers .= 'X-AntiAbuse: User IP - ' . $user->ip . "\n";
+				$email_headers = 'X-AntiAbuse: User_id - ' . $user->d('user_id') . nr();
+				$email_headers .= 'X-AntiAbuse: Username - ' . $user->d('username') . nr();
+				$email_headers .= 'X-AntiAbuse: User IP - ' . $user->ip . nr();
 
 				$emailer->use_template('mmg_send_email', $config['default_lang']);
 				$emailer->email_address($this->data['email']);

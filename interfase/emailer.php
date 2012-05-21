@@ -93,7 +93,7 @@ class emailer {
 
 	// set up extra mail headers
 	public function extra_headers($headers) {
-		$this->extra_headers .= trim($headers) . "\n";
+		$this->extra_headers .= trim($headers) . nr();
 	}
 
 	public function use_template($template_file, $template_lang = '') {

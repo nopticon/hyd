@@ -545,7 +545,7 @@ class _comments {
 		// e.g. remove excessive newlines(?), smilies(?)
 		// Transform \r\n and \r into \n
 		$match = array('#\r\n?#', '#sid=[a-z0-9]*?&amp;?#', "#([\n][\s]+){3,}#", "#(\.){3,}#", '#(script|about|applet|activex|chrome):#i');
-		$replace = array("\n", '', "\n\n", '...', "\\1&#058;");
+		$replace = array(nr(), '', nr(false, 2), '...', "\\1&#058;");
 		$message = preg_replace($match, $replace, trim($message));
 		
 		if ($user->is('founder') && preg_match('#\[chown\:([0-9a-z\_\-]+)\]#is', $message, $a_chown)) {
@@ -749,7 +749,7 @@ class _comments {
 		$this->members_icon();
 		$this->replace_blockquote();
 		
-		return str_replace("\n", '<br />', substr($this->message, 1, -1));
+		return str_replace(nr(), '<br />', substr($this->message, 1, -1));
 	}
 	
 	public function replace_blockquote() {

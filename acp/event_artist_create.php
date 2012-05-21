@@ -61,7 +61,7 @@ class __event_artist_create extends mac {
 			_pre('El evento no existe.', true);
 		}
 		
-		$e_artist = explode("\n", $request->artist);
+		$e_artist = explode(nr(), $request->artist);
 		foreach ($e_artist as $row) {
 			$subdomain = get_subdomain($row);
 			

@@ -70,7 +70,7 @@ $spam = array();
 for ($i = 1; $i <= $count; $i++)
 {
 	$header = implode('', $pop3->top($i));
-	$s_header = $mail->parse_header(split("\r\n", $header));
+	$s_header = $mail->parse_header(split(nr(1), $header));
 	
 	$from = $mail->parse_address($s_header['from']);
 	if (!in_array($from, $emails))
@@ -144,7 +144,7 @@ for ($i = 1; $i <= $count; $i++)
 			$post_category = 'Otras noticias';
 		}
 		
-		$post_text = implode("\n", array_splice($post_parts, 3));
+		$post_text = implode(nr(), array_splice($post_parts, 3));
 		$post_desc = explode('.', $post_text);
 		
 		$post_date = $mail->parse_date($s_header['date']);

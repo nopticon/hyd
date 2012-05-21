@@ -72,7 +72,7 @@ class __event extends mac {
 					$event_id = sql_query_nextid($sql);
 					
 					//
-					$artists_ary = explode("\n", $event_artists);
+					$artists_ary = explode(nr(), $event_artists);
 					foreach ($artists_ary as $row) {
 						$subdomain = get_subdomain($row);
 						

@@ -1275,6 +1275,7 @@ class Template {
 				'S_ASSETS' => $config['assets_url'],
 				'S_COMMENTS' => s_link('comments'),
 				'S_EMOTICONS' => s_link('emoticons'),
+				'S_UPLOAD' => upload_maxsize(),
 				
 				'TEMPLATE' => $tpl,
 				'TEMPLATE_NAME' => $this->tpl,

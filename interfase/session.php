@@ -1098,7 +1098,7 @@ class user extends session {
 		}
 		
 		if ($this->config['exclude_refs'] != '') {
-			$this->config['exclude_refs'] = explode("\n", $this->config['exclude_refs']);
+			$this->config['exclude_refs'] = explode(nr(), $this->config['exclude_refs']);
 			
 			foreach ($this->config['exclude_refs'] as $e_domain) {
 				if (strstr($e_domain, 'www.')) {

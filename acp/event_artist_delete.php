@@ -62,7 +62,7 @@ class __event_artist_delete extends mac {
 			_pre('El evento no existe.', true);
 		}
 		
-		$e_artist = explode("\n", $artist);
+		$e_artist = explode(nr(), $artist);
 		foreach ($e_artist as $row) {
 			$subdomain = get_subdomain($row);
 			

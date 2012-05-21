@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 function htmlencode($str) {
-	$result = trim(htmlentities(str_replace(array("\r\n", "\r", '\xFF'), array("\n", "\n", ' '), $str)));
+	$result = trim(htmlentities(str_replace(array(nr(1), nr(true), '\xFF'), array(nr(), nr(), ' '), $str)));
 	$result = (STRIP) ? stripslashes($result) : $result;
 	
 	if ($multibyte) {
@@ -728,10 +728,10 @@ function _md($parent, $childs = false) {
 	if (!@file_exists($parent)) {
 		$oldumask = umask(0);
 		
-		if (!@mkdir($parent, $config['mask'])) {
+		if (!@mkdir($parent, octdec($config['mask']), true)) {
 			return false;
 		}
-		@chmod($parent, $config['mask']);
+		_chmod($parent, $config['mask']);
 		
 		umask($oldumask);
 	}
@@ -1470,7 +1470,7 @@ function get_file($f) {
 }
 
 function exception($filename, $dynamics = false) {
-	$a = implode("\n", get_file(ROOT . 'template/exceptions/' . $filename . '.htm'));
+	$a = implode(nr(), get_file(ROOT . 'template/exceptions/' . $filename . '.htm'));
 	
 	if ($dynamics !== false) {
 		foreach ($dynamics as $k => $v) {
@@ -1641,7 +1641,7 @@ function fatal_error($mode = '404', $bp_message = '') {
 	$error = 'La p&aacute;gina <strong>' . $current_page . '</strong> ';
 	
 	$username = (@method_exists($user, 'd')) ? $user->d('username') : '';
-	$bp_message .= "\n\n" . $current_page . "\n\n" . $username;
+	$bp_message .= nr(false, 2) . $current_page . nr(false, 2) . $username;
 	
 	switch ($mode) {
 		case 'mysql':
@@ -1661,7 +1661,7 @@ function fatal_error($mode = '404', $bp_message = '') {
 				//$emailer->send();
 				$emailer->reset();
 			} else {
-				$email_message = $bp_message . "\n\n" . date('r');
+				$email_message = $bp_message . nr(false, 2) . date('r');
 				$email_headers = "From: info@rockrepublik.net\nReturn-Path: " . $config['board_email'] . "\nMessage-ID: <" . md5(uniqid(time())) . "@" . $config['server_name'] . ">\nMIME-Version: 1.0\nContent-type: text/plain; charset=iso-8859-1\nContent-transfer-encoding: 8bit\nDate: " . date('r', time()) . "\nX-Priority: 3\nX-MSMail-Priority: Normal\n"; 
 				//$result = @mail('info@rockrepublik.net', 'MySQL error', preg_replace("#(?<!\r)\n#s", "\n", $email_message), $email_headers, "-f{$config['board_email']}");
 			}
@@ -2181,6 +2181,22 @@ function artist_build($ary) {
 	return implode('/', $ary);
 }
 
+function artist_root($alias, $check = false) {
+	global $config;
+	
+	if (!is_array($alias)) {
+		$alias = w($alias);
+	}
+	
+	$response = $config['artists_path'] . artist_build($alias);
+	
+	if ($check) {
+		artist_check($response);
+	}
+	
+	return $response;
+}
+
 function artist_path($alias, $id, $build = true, $check = false) {
 	global $config;
 	
@@ -2202,14 +2218,16 @@ function artist_check($ary) {
 	
 	$fullpath = $config['artists_path'];
 	
+	if (!is_array($ary)) $ary = w($ary);
+	
 	foreach ($ary as $row) {
 		$fullpath .= $row . '/';
 		
 		if (!@file_exists($fullpath)) {
-			if (!@mkdir($fullpath, $config['mask'])) {
+			if (!_md($fullpath)) {
 				return false;
 			}
-			@chmod($fullpath, $config['mask']);
+			_chmod($fullpath, $config['mask']);
 		}
 	}
 	
@@ -2229,6 +2247,10 @@ function friendly($s) {
 	$s = preg_replace(array("`[^a-z0-9]`i", "`[-]+`") , '-', $s);
 	
 	return strtolower(trim($s, '-'));
+}
+
+function nr($r = false, $rep = 1) {
+	return str_repeat((($r !== false) ? "\r" : '') . (($r !== true) ? "\n" : ''), $rep);
 }
 
 // Returns the utf string corresponding to the unicode value (from php.net, courtesy - romans@void.lv)

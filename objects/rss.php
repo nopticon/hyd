@@ -93,7 +93,7 @@ class _rss {
 		<guid>' . $item['link'] . '</guid>
 		<description><![CDATA[' . html_entity_decode_utf8($item['description']) . ']]></description>
 		<pubDate>' . date('D, d M Y H:i:s \G\M\T', $item['pubdate']) . '</pubDate>
-	</item>' . "\n";
+	</item>' . nr();
 		}
 		
 		header('Content-type: text/xml');

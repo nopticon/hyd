@@ -138,7 +138,7 @@ class topics {
 				
 				if (!empty($poll_options)) {
 					$real_poll_options = array();
-					$poll_options = explode("\n", $poll_options);
+					$poll_options = explode(nr(), $poll_options);
 					
 					foreach ($poll_options as $option) {
 						if ($option != '') {
@@ -413,7 +413,7 @@ class topics {
 		if (!empty($error_msg) || (!$is_auth['auth_mod'] && $forum_row['forum_locked']) || (!$is_auth['auth_post'] && $forum_row['auth_post'] == AUTH_REG) || $is_auth['auth_post']) {
 			if ($is_auth['auth_post']) {
 				if (!empty($poll_options)) {
-					$poll_options = implode("\n", $poll_options);
+					$poll_options = implode(nr(), $poll_options);
 				}
 				
 				_style('publish', array(

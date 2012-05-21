@@ -173,6 +173,10 @@ class upload {
 		
 		foreach ($files as $i => $row) {
 			if ($row['error']) {
+				if ($row['error'] == 4) {
+					unset($files[$i]);
+				}
+				
 				continue;
 			}
 			
