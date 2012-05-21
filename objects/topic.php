@@ -198,7 +198,7 @@ class topic {
 					}
 					
 					if (!sizeof($error)) {
-						$update_topic = array();
+						$update_topic = w();
 						
 						if (strstr($post_message, '-Anuncio-') && $user->is('mod')) {
 							$topic_announce = 1;
@@ -258,7 +258,7 @@ class topic {
 								WHERE element = ?
 									AND item = ?
 									AND user_id NOT IN (??)';
-							sql_query(sql_filter($sql, 8, $topic_id, implode(', ', $a_list)));
+							sql_query(sql_filter($sql_delete_unread, 8, $topic_id, implode(', ', $a_list)));
 						}
 						
 						$update_topic['topic_last_post_id'] = $post_id;
