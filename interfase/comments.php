@@ -815,9 +815,16 @@ class _comments {
 	}
 	
 	public function parse_youtube() {
+		$format = '%s<div id="yt_%s">Youtube video: http://www.youtube.com/watch?v=%s</div> <script type="text/javascript"> swfobject.embedSWF("http://www.youtube.com/v/%s", "yt_$2", "425", "350", "8.0.0", "expressInstall.swf"); </script>';
+		
+		if (preg_match_all('/https?:\/\/(?:www\.)?youtu(?:\.be|be\.com)\/watch(?:\?(.*?)&|\?)v=([a-zA-Z0-9_\-]+)(\S*)/i', $this->message, $match)) {
+			foreach ($match[0] as $i => $row) {
+				$this->message = str_replace($row, sprintf($format, '', $match[2][$i], $match[2][$i], $match[2][$i], $match[2][$i]), $this->message);
+			}
+		}
+		
 		if (preg_match_all('#(^|[\n ]|\()\[yt\:([0-9a-zA_Z\-\=\_\&]+)\]#i', $this->message, $match)) {
 			$this->message = preg_replace('#(^|[\n ]|\()\[yt\:([0-9a-zA_Z\-\=\_\&]+)\]#i', '$1<div id="yt_$2">Youtube video: http://www.youtube.com/watch?v=$2</div> <script type="text/javascript"> swfobject.embedSWF("http://www.youtube.com/v/$2", "yt_$2", "425", "350", "8.0.0", "expressInstall.swf"); </script>', $this->message);
-			
 		}
 		
 		return;

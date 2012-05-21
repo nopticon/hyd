@@ -14,10 +14,10 @@
 				<!-- BEGIN row -->
 				<li>
 					<ul>
-						<li><a href="{col.URL}"><img src="{col.IMAGE_TYPE}" /></a></li>
-						<li><a href="{col.URL}">{col.DOWNLOAD_TITLE}</a></li>
-						<li>{col.VIEWS}v <span class="soft">|</span> {col.DOWNLOADS}d <span class="soft">|</span> <!-- IF col.POSTS --><a class="red" href="{col.POSTS_URL}" target="_blank"><!-- ENDIF -->{col.POSTS}m<!-- IF col.POSTS --></a><!-- ENDIF --></li>
-						<li><input type="checkbox" class="none" name="s_downloads[]" value="{col.ITEM}" /></li>
+						<li><a href="{row.URL}"><img src="{row.IMAGE_TYPE}" /></a></li>
+						<li><a href="{row.URL}">{row.DOWNLOAD_TITLE}</a></li>
+						<li>{row.VIEWS}v <span class="soft">|</span> {row.DOWNLOADS}d</li>
+						<li><input type="checkbox" class="none" name="s_downloads[]" value="{row.ITEM}" /></li>
 						<li></li>
 					</ul>
 					

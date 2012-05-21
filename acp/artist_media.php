@@ -42,20 +42,19 @@ class __artist_media extends mac {
 			FROM _dl
 			WHERE ub = ?
 			ORDER BY title';
-		if ($result = sql_rowset(sql_filter($sql, $this->data['ub']))) {
+		if ($result = sql_rowset(sql_filter($sql, $this->object['ub']))) {
 			foreach ($result as $i => $row) {
 				if (!$i) _style('media');
-
+				
 				_style('media.row', array(
 					'ITEM' => $row['id'],
-					'URL' => s_link('acp', array('artist_media', 'a' => $this->data['subdomain'], 'id' => $row['id'])),
-					'POSTS_URL' => s_link('a', array($this->data['subdomain'], 9, $row['id'])) . '#dpf',
+					'URL' => s_link('acp', array('artist_media', 'a' => $this->object['subdomain'], 'id' => $row['id'])),
+					'POSTS_URL' => s_link('a', array($this->object['subdomain'], 9, $row['id'])) . '#dpf',
 					'IMAGE_TYPE' => $downloads_type[$row['ud']],
 					'DOWNLOAD_TITLE' => $row['title'],
 					'VIEWS' => $row['views'],
-					'DOWNLOADS' => $row['downloads'],
-					'POSTS' => $row['posts'])
-				);
+					'DOWNLOADS' => $row['downloads']
+				));
 			}
 		}
 		

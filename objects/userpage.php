@@ -881,7 +881,7 @@ class userpage {
 			$comments->data = array(
 				'A_LINKS_CLASS' => 'bold red',
 				'USER_ID_FIELD' => 'userpage_id',
-				'S_DELETE_URL' => s_link('mcp', array('ucm', '%d')),
+				'S_DELETE_URL' => s_link('acp', array('user_post_delete', 'msg_id:%d')),
 				'SQL' => sql_filter($sql, $this->data['user_id'])
 			);
 			
