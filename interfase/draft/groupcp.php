@@ -286,7 +286,7 @@ else if ( $group_id )
 
 			if ( isset($_POST['add']) )
 			{
-				$username = ( isset($_POST['username']) ) ? phpbb_clean_username($_POST['username']) : '';
+				$username = ( isset($_POST['username']) ) ? get_username_base($_POST['username']) : '';
 				
 				$result = $db->sql_query("SELECT user_id, user_email, user_lang, user_level FROM _members WHERE username = '" . str_replace("\'", "''", $username) . "'");
 

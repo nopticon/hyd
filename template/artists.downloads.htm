@@ -61,7 +61,7 @@
 		<!-- BEGIN results -->
 		<div class="pollresult100">
 		<!-- BEGIN item -->
-		<div class="sep sep3-top bold red">{item.CAPTION} <span class="orange">[{item.RESULT}]</span> <span>{item.PERCENT}%</span></div>
+		<div class="sep sep3-top bold red">{item.CAPTION} <span>[{item.RESULT}]</span> <span>{item.PERCENT}%</span></div>
 		<div class="box sub-color bar"><div class="small dark2-color" style="width: {item.PERCENT}%;" title="{L_UB_ORDER_VOTES}: {item.RESULT}">&nbsp;</div></div>
 		<!-- END item -->
 		</div>
@@ -132,7 +132,7 @@
 <!-- BEGIN username --><a style="color:#{item.USER_COLOR}; font-weight: bold" href="{item.PROFILE}"><!-- END username --><!-- BEGIN guestuser --><span style="color:#{item.USER_COLOR}; font-weight: bold"><!-- END guestuser -->{item.USERNAME}<!-- BEGIN guestuser --></span><!-- END guestuser --><!-- BEGIN username --></a><!-- END username --><br />{item.DATETIME}
 <!-- BEGIN controls --><div class="sep-top sgray" align="right"><!-- BEGIN reply --><a href="{reply.REPLY}">{L_CMT_REPLY}</a><!-- END reply --><!-- BEGIN report --> <span class="soft">|</span> <a href="{report.REPORT}">{L_CMT_REPORT}</a><!-- END report --><!-- BEGIN auth --><!-- IF isset(auth.EDIT) --> <span class="soft">|</span> <a href="{auth.EDIT}">{L_CMT_EDIT}</a><!-- ENDIF --> <!-- IF isset(auth.DELETE) --> <span class="soft">|</span> <a href="{auth.DELETE}">{L_CMT_DELETE}</a><!-- ENDIF --><!-- END auth --></div><!-- END controls -->
 </div>
-<div class="pad6 sorange color red-text">{item.MESSAGE}</div>
+<div class="pad_top">{item.MESSAGE}</div>
 <!-- IF item.S_ROW_COUNT --></div><!-- ENDIF -->
 <!-- END item -->
 </div>
@@ -140,9 +140,9 @@
 
 <!-- IF DMSG_PAGES_PREV != '' || DMSG_PAGES_NEXT != '' -->
 <div class="sep2-top pad6 box3 dark-color ie-widthfix float-holder">
-	<div class="pages orange"><!-- IF DMSG_PAGES_PREV -->{DMSG_PAGES_PREV}<!-- ELSE -->&nbsp;<!-- ENDIF --></div>
+	<div class="pages"><!-- IF DMSG_PAGES_PREV -->{DMSG_PAGES_PREV}<!-- ELSE -->&nbsp;<!-- ENDIF --></div>
 	<div class="pages a_mid">{DMSG_PAGES_ON}</div>
-	<div class="pages orange" align="right"><!-- IF DMSG_PAGES_NEXT -->{DMSG_PAGES_NEXT}<!-- ELSE -->&nbsp;<!-- ENDIF --></div>
+	<div class="pages" align="right"><!-- IF DMSG_PAGES_NEXT -->{DMSG_PAGES_NEXT}<!-- ELSE -->&nbsp;<!-- ENDIF --></div>
 </div>
 <!-- ENDIF -->
 

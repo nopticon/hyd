@@ -193,7 +193,6 @@ class downloads {
 				LIMIT ??, ??';
 			
 			$comments->data = array(
-				'A_LINKS_CLASS' => 'bold orange',
 				'SQL' => sql_filter($sql, $this->dl_data['id'], $this->data['ub'], $start, $config['s_posts'])
 			);
 			

@@ -688,7 +688,7 @@ function username_search($search_match)
 
 	$username_list = '';
 	if (!empty($search_match)) {
-		$username_search = preg_replace('/\*/', '%', phpbb_clean_username($search_match));
+		$username_search = preg_replace('/\*/', '%', get_username_base($search_match));
 
 		$sql = 'SELECT username
 			FROM _members
@@ -709,7 +709,7 @@ function username_search($search_match)
 	);
 
 	v_style(array(
-		'USERNAME' => (!empty($search_match)) ? phpbb_clean_username($search_match) : '', 
+		'USERNAME' => (!empty($search_match)) ? get_username_base($search_match) : '', 
 
 		'L_CLOSE_WINDOW' => $lang['Close_window'], 
 		'L_SEARCH_USERNAME' => $lang['Find_username'], 

@@ -53,7 +53,7 @@ if (sizeof($a_ary))
 	$i = 0;
 	foreach ($a_ary as $ub => $data) {
 		$url = s_link('a', $data['subdomain']);
-		$return_string .= '<td class="' . (($i % 2) ? 'dark-color' : '') . ' pad6"><a class="orange bold" href="' . $url . '">' . $data['name'] . '</a><br/ ><small>' . (($data['local']) ? 'Guatemala' : $data['location']) . '</small><br /><div class="sep2-top"><a href="' . $url . '"><img class="box" src="/data/artists/' . $ub . '/thumbnails/' . $random_images[$ub] . '.jpg" title="' . $data['genre'] . '" /></a></div></td>';
+		$return_string .= '<td class="' . (($i % 2) ? 'dark-color' : '') . ' pad6"><a href="' . $url . '">' . $data['name'] . '</a><br/ ><small>' . (($data['local']) ? 'Guatemala' : $data['location']) . '</small><br /><div class="sep2-top"><a href="' . $url . '"><img class="box" src="/data/artists/' . $ub . '/thumbnails/' . $random_images[$ub] . '.jpg" title="' . $data['genre'] . '" /></a></div></td>';
 		$i++;
 	}
 	

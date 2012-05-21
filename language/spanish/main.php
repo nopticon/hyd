@@ -157,11 +157,11 @@ $lang += array(
 	'LOGIN_PAGETITLE' => 'Area para Miembros',
 	'LOGIN_PAGE' => 'Para accesar en esta secci&oacute;n, debes ser miembro registrado',
 	'LOGINBOX_PAGE' => 'Ingresa tu nombre de usuario y contrase&ntilde;a para iniciar sesi&oacute;n',
-	'LOGIN_PAGE_REGISTER' => 'Si no eres miembro, puedes <a class="bold orange" href="/my/register/">Crear tu Cuenta Aqu&iacute;</a>',
+	'LOGIN_PAGE_REGISTER' => 'Si no eres miembro, puedes <a href="/my/register/">Crear tu Cuenta Aqu&iacute;</a>',
 	'LOGIN_ADM' => 'Para accesar en esta secci&oacute;n, debes ingresar nuevamente tu informaci&oacute;n de usuario',
 	'LOGIN_ERROR' => 'La informaci&oacute;n de usuario es incorrecta, por favor intenta nuevamente',
-	'LOGIN_TO_POST' => 'Para publicar mensajes debes ser miembro registrado.<br /><br />Por favor <a class="italic" href="#top">inicia sesi&oacute;n</a> &oacute; <a class="bold" href="/my/register/">Crea tu cuenta de usuario aqui.</a>',
-	'LOGIN_TO_CHAT' => 'Para tener acceso al chat, debes ser miembro registrado.<br /><br />Por favor <a class="italic" href="#top">inicia sesi&oacute;n</a> &oacute; <a class="bold" href="/my/register/">Crea tu cuenta de usuario aqui.</a>',
+	'LOGIN_TO_POST' => 'Para publicar mensajes debes ser miembro registrado.<br /><br />Por favor <a href="#top">inicia sesi&oacute;n</a> &oacute; <a href="/my/register/">Crea tu cuenta de usuario aqui.</a>',
+	'LOGIN_TO_CHAT' => 'Para tener acceso al chat, debes ser miembro registrado.<br /><br />Por favor <a href="#top">inicia sesi&oacute;n</a> &oacute; <a href="/my/register/">Crea tu cuenta de usuario aqui.</a>',
 	'LOGIN_BE_FAN' => 'Para agregar a tus favoritos la banda <strong>%s</strong>, debes ser miembro registrado',
 	'LOGOUT_THANKS' => 'Tu sesi&oacute;n se ha cerrado correctamente, esperamos que vuelvas pronto',
 	
@@ -179,8 +179,8 @@ $lang += array(
 	
 	'VIEWFORUM' => 'Ver Foro',
 	'FORUM_NOT_EXIST' => 'El foro seleccionado no existe',
-	'TOPIC_ANNOUNCEMENT' => '<strong class="fnt12">[^!]</strong>',
-	'TOPIC_POLL' => '<strong class="fnt12">[e]</strong>',
+	'TOPIC_ANNOUNCEMENT' => '<strong>[^!]</strong>',
+	'TOPIC_POLL' => '<strong>[e]</strong>',
 	'NO_TOPICS' => 'No hay temas en este foro.',
 	
 	'VIEWTOPIC' => 'Ver Tema',
@@ -265,7 +265,7 @@ $lang += array(
 	'DELETE_MARKED' => 'Borrar Marcados',
 	'DELETE_MESSAGE' => 'Borrar Mensaje',
 	'DELETE_DC' => 'Borrar esta conversaci&oacute;n',
-	'EMPTY_DC' => 'No tienes conversaciones nuevas<br /><br /><a class="red" href="/my/dc/start/">Click <strong>Aqu&iacute;</strong> para Iniciar una Conversaci&oacute;n!</a>',
+	'EMPTY_DC' => 'No tienes conversaciones nuevas<br /><br /><a href="/my/dc/start/">Click <strong>Aqu&iacute;</strong> para Iniciar una Conversaci&oacute;n!</a>',
 	'EMPTY_DC_SUBJECT' => 'Debes escribir el asunto para la conversaci&oacute;n.',
 	'CONFIRM_DELETE_PM' => '&iquest;Est&aacute;s seguro que deseas borrar esta conversaci&oacute;n?',
 	'CONFIRM_DELETE_PMS' => '&iquest;Est&aacute;s seguro que deseas borrar estas conversaciones?',
@@ -323,7 +323,7 @@ $lang += array(
 	'ALWAYS_NOTIFY' => 'Siempre notificarme cuando hay mensajes en el foro',
 	'ALWAYS_NOTIFY_EXPLAIN' => 'Env&iacute;a un email cuando alguien responde a un tema que has publicado.',
 	
-	'AGREE_TOS' => 'Acepto cumplir las <a class="red" href="http://www.rockrepublik.net/tos/" target="_blank">condiciones y t&eacute;rminos de servicio</a>',
+	'AGREE_TOS' => 'Acepto cumplir las <a href="http://www.rockrepublik.net/tos/" target="_blank">condiciones y t&eacute;rminos de servicio</a>',
 	'FILL_DATA' => 'Completa la informaci&oacute;n',
 	'SITE_LANG' => 'Idioma del sitio',
 	'TIMEZONE' => 'Zona horaria',
@@ -636,7 +636,7 @@ $lang += array(
 	'NOTICE_EVENTS' => '&iquest;Te gustar&iacute;a anunciar un evento o actividad en esta secci&oacute;n?<br /><br />Env&iacute;anos el afiche a info&#64;rockrepublik.net y lo publicaremos. Agradeceremos que incluyas <a href="http://www.rockrepublik.net/home/downloads/logo.zip">nuestro logo</a> en la publicidad del evento.',
 	
 	// ALLIES
-	'ALLIES_DESCRIPTION' => '&iquest;Te gustar&iacute;a formar parte de los Aliados de Rock Republik?<br /><br />Env&iacute;anos la informaci&oacute;n de tu sitio web a: <a class="high" href="mailto:info&#64;rockrepublik.net">info&#64;rockrepublik.net</a>',
+	'ALLIES_DESCRIPTION' => '&iquest;Te gustar&iacute;a formar parte de los Aliados de Rock Republik?<br /><br />Env&iacute;anos la informaci&oacute;n de tu sitio web a: <a href="mailto:info&#64;rockrepublik.net">info&#64;rockrepublik.net</a>',
 	
 	// NEWS
 	'NEWS' => 'Art&iacute;culos',
@@ -692,7 +692,7 @@ $lang += array(
 	'UB_BANNED_UNTIL' => 'Ha sido bloqueado tu acceso a esta banda hasta: <span>%s</span>',
 	'UB_BAN_POST' => 'Se ha restringido tu env&iacute;o de mensajes!',
 	'UB_BAN_POST_UNTIL' => 'Se permite de nuevo',
-	'UB_NO_GUEST_POSTING' => '<strong>%s</strong> s&oacute;lo permite comentarios de miembros registrados.<br /><br />Por favor <a href="#top"><i>inicia sesi&oacute;n</i></a> &oacute; <a class="bold" href="%s">suscribete</a>.<br />',
+	'UB_NO_GUEST_POSTING' => '<strong>%s</strong> s&oacute;lo permite comentarios de miembros registrados.<br /><br />Por favor <a href="#top"><i>inicia sesi&oacute;n</i></a> &oacute; <a href="%s">suscribete</a>.<br />',
 	'UB_MANAGE_MODS' => 'Administrar Miembros',
 	'A_NEWS_CREATE' => 'Publicar art&iacute;culo',
 	
@@ -758,8 +758,8 @@ $lang += array(
 	//
 	'CHAT' => 'Chat',
 	'CHAT_DESC' => 'Este es el nuevo <b>Chat</b> de Rock Republik, con diferentes <b>canales de charla</b> en <b>tiempo real</b>.',
-	'CHAT_DESC_GUEST' => 'Para tener acceso al chat, debes ser miembro registrado, si no lo eres, puedes <a class="bold red" href="/my/register/">Crear tu cuenta Aqui</a>.',
-	'CHAT_NO_ACCESS' => '<div align="left"><strong class="fnt12">No tienes permiso para entrar a este canal.</strong><br /><br />Posibles razones:<br /><br />Tu nombre de usuario fue bloqueado en este canal.<br />Si es un canal privado, &uacute;nicamente pueden entrar miembros autorizados por el grupo de fundadores.<br />Si es un canal para amigos, &uacute;nicamente pueden entrar miembros que est&eacute;n en la lista de amigos del fundador.<br /><br /><br />Para m&aacute;s informaci&oacute;n, comunicate con el fundador del canal &oacute; alguien del Equipo Rock Republik, en la secci&oacute;n <a href="/community/" class="orange">Comunidad</a>.</div>',
+	'CHAT_DESC_GUEST' => 'Para tener acceso al chat, debes ser miembro registrado, si no lo eres, puedes <a href="/my/register/">Crear tu cuenta Aqui</a>.',
+	'CHAT_NO_ACCESS' => '<strong>No tienes permiso para entrar a este canal.</strong><br /><br />Posibles razones:<br /><br />Tu nombre de usuario fue bloqueado en este canal.<br />Si es un canal privado, &uacute;nicamente pueden entrar miembros autorizados por el grupo de fundadores.<br />Si es un canal para amigos, &uacute;nicamente pueden entrar miembros que est&eacute;n en la lista de amigos del fundador.<br /><br /><br />Para m&aacute;s informaci&oacute;n, comunicate con el fundador del canal &oacute; alguien del Equipo Rock Republik, en la secci&oacute;n <a href="/community/">Comunidad</a>.',
 	'CHAT_CH' => 'Canales',
 	'CHAT_JOIN' => 'Entrar!',
 	'CHAT_JOINING' => 'Entrando...',

@@ -178,7 +178,7 @@ class __artist_auth extends mac {
 			}
 
 			if (!empty($s_member)) {
-				$s_member = phpbb_clean_username(str_replace('*', '%', $s_member));
+				$s_member = get_username_base(str_replace('*', '%', $s_member));
 
 				$sql = 'SELECT user_id
 					FROM _artists_auth
@@ -192,7 +192,7 @@ class __artist_auth extends mac {
 
 				$sql = "SELECT user_id, user_type, username, username_base, user_color, user_avatar
 					FROM _members
-					WHERE username LIKE ?
+					WHERE username_base LIKE ?
 						AND user_id NOT IN (??)
 						AND user_type NOT IN (??)
 					ORDER BY username";

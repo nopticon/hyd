@@ -433,30 +433,12 @@ function ValidatePassword($password, $correctHash) {
 	return $testHash === $validHash;
 }
 
-//
-// Format the username
-//
-function phpbb_clean_username($username) {
-	/*
-	$username = substr(htmlspecialchars(str_replace("\'", "'", trim($username))), 0, 20);
-	$username = rtrim($username, "\\");
-	$username = str_replace("'", "\'", $username);
-	*/
-	$username = substr(trim($username), 0, 20);
-	/*
-	$username = rtrim($username, "\\");
-	$username = str_replace("'", "\'", $username);
-	*/
-
-	return $username;
-}
-
 function get_username_base($username, $check_match = false) {
 	if ($check_match && !preg_match('#^([A-Za-z0-9\-\_\ ]+)$#is', $username)) {
 		return false;
 	}
 	
-	return str_replace(' ', '', strtolower($username));
+	return str_replace(' ', '', strtolower(trim($username)));
 }
 
 function get_subdomain($str) {
@@ -474,12 +456,12 @@ function get_subdomain($str) {
 //
 function get_userdata($user, $force_str = false) {
 	if (!is_numeric($user) || $force_str) {
-		$user = phpbb_clean_username($user);
+		$user = get_username_base($user);
 	} else {
 		$user = intval($user);
 	}
 	
-	$field = (is_integer($user)) ? 'user_id' : 'username'; 
+	$field = (is_integer($user)) ? 'user_id' : 'username_base'; 
 	
 	$sql = 'SELECT *
 		FROM _members
@@ -2315,11 +2297,11 @@ function validate_username($username) {
 
 	// Remove doubled up spaces
 	$username = preg_replace('#\s+#', ' ', trim($username)); 
-	$username = phpbb_clean_username($username);
+	$username = get_username_base($username);
 
 	$sql = 'SELECT username
 		FROM _members
-		WHERE LOWER(username) = ?';
+		WHERE LOWER(username_base) = ?';
 	if ($userdata = sql_fieldrow(sql_filter($sql, strtolower($username)))) {
 		if (($user->is('member') && $username != $userdata['username']) || !$user->is('member')) {
 			return array('error' => true, 'error_msg' => $user->lang['USERNAME_TAKEN']);
