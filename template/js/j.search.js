@@ -4,7 +4,7 @@ $(document).ready(function(){
 		searchSite: true,
 		type: 'web',
 		append: false,
-		perPage: 8,
+		perPage: 3,
 		page: 0
 	}
 	
@@ -70,17 +70,18 @@ $(document).ready(function(){
 				
 				// Checking if there are more pages with results, 
 				// and deciding whether to show the More button:
-				if( +cursor.estimatedResultCount > (settings.page+1)*settings.perPage){
-					$('<div>',{id:'more'}).appendTo(resultsDiv).click(function(){
-						googleSearch({append:true,page:settings.page+1});
+				if( cursor.estimatedResultCount > (settings.page+1)*settings.perPage){
+					$('<input>',{id:'more',type:'button',value:'Mas resultados'}).appendTo(resultsDiv).click(function(){
+						googleSearch({append:false,page:settings.page + 1});
 						$(this).fadeOut();
+						$('#clear').fadeOut();
 					});
 				}
 			}
 			else {
 				// No results were found for this search.
 				resultsDiv.empty();
-				$('<p>',{className:'notFound',html:'No Results Were Found!'}).hide().appendTo(resultsDiv).fadeIn();
+				$('<p>',{className:'notFound',html:'Sin resultados.'}).hide().appendTo(resultsDiv).fadeIn();
 			}
 		});
 	}
