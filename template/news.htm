@@ -1,19 +1,19 @@
 <!-- INCLUDE page.header.htm -->
 
-<div class="h"><h3>{L_NEWS}<!-- BEGIN cat --> &mdash; {cat.CAT_NAME}<!-- END cat --></h1></div>
+<div class="h"><h3>{L_NEWS}</h1></div>
 
 <div class="is_left">
 <!-- BEGIN cat -->
 <div class="pad_top ls">
 	<ul>
-		<!-- BEGIN item -->
+		<!-- BEGIN row -->
 		<li>
 			<ul>
-				<li><a href="{item.URL}">{item.SUBJECT}</a></li>
-				<li class="_">{item.DESC}</li>
+				<li><a href="{row.URL}">{row.SUBJECT}</a></li>
+				<li class="_">{row.DESC}</li>
 			</ul>
 		</li>
-		<!-- END item -->
+		<!-- END row -->
 	</ul>
 </div>
 <!-- END cat -->

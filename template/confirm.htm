@@ -1,6 +1,6 @@
 <!-- INCLUDE page.header.htm -->
 
-<div class="ls_none">
+<div class="ls_none ctl">
 	<form action="{S_CONFIRM_ACTION}" method="post">
 		{S_HIDDEN_FIELDS}
 		
@@ -12,7 +12,11 @@
 			<!-- ENDIF -->
 		</ul>
 		
-		<div><input type="submit" name="confirm" value="{L_YES}" /> <input type="submit" name="cancel" value="{L_NO}" /></div>
+		<span class="clear"></span>
+		
+		<div class="pad_top">
+			<input type="submit" name="confirm" value="{L_YES}" /> <input type="submit" name="cancel" value="{L_NO}" />
+		</div>
 	</form>
 </div>
 

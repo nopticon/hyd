@@ -1,35 +1,34 @@
 <!-- INCLUDE page.header.htm -->
 
-<div class="h"><h3>{L_HELP}<!-- BEGIN module --> &mdash; {module.HELP}<!-- END module --></h3></div>
+<div class="h"><h3>{L_HELP}<!-- BEGIN module --> &mdash; {module.TITLE}<!-- END module --></h3></div>
 
-<!-- BEGIN cat -->
+<!-- BEGIN categories -->
 <div class="is_left_i ls">
 	<ul>
-		<!-- BEGIN item -->
-		<li><a href="{item.URL}">{item.TITLE}</a></li>
-		<!-- END item -->
+		<!-- BEGIN row -->
+		<li><a href="{row.URL}">{row.TITLE}</a></li>
+		<!-- END row -->
 	</ul>
 </div>
-<!-- END cat -->
-</div>
+<!-- END categories -->
 
 <!-- BEGIN module -->
 <div class="is_right_i ls">
-	<!-- BEGIN main -->
-	<div class="pad_top">
-		<ul>
-			<!-- BEGIN item -->
-			<li><a href="{item.URL}">{item.FAQ}</a></li>
-			<!-- END item -->
-		</ul>
-	</div>
-	<!-- END main -->
-	
-	<!-- BEGIN faq -->
-	<div class="pad_top h"><h3>{faq.QUESTION_ES}</h3></div>
-	<div>{faq.ANSWER_ES}</div>
-	<!-- END faq -->
+	<ul id="faq">
+		<!-- BEGIN row -->
+		<li>
+			<h3 class="question"><a href="#">{row.QUESTION}</a></h3>
+			<p class="answer">{row.ANSWER}</p>
+		</li>
+		<!-- END row -->
+	</ul>
 </div>
+
+<script type="text/javascript" charset="utf-8">
+$(function(){
+	$('#faq').faq();
+});
+</script>
 <!-- END module -->
 
 <!-- INCLUDE page.footer.htm -->

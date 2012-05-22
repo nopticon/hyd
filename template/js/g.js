@@ -11,6 +11,7 @@
 <!-- INCLUDE js/j.fancy.js -->
 <!-- INCLUDE js/j.slider.js -->
 <!-- INCLUDE js/j.filestyle.js -->
+<!-- INCLUDE js/j.faq.js -->
 <!-- INCLUDE js/png.js -->
 
 function popup(url, name, width, height) {

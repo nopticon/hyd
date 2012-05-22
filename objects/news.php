@@ -118,25 +118,24 @@ class _news {
 	public function all() {
 		global $user, $cache;
 		
-		if (!empty($cat)) {
-			$sql = 'SELECT n.*, m.username, m.username_base, m.user_color
-				FROM _news n, _members m
-				WHERE n.cat_id = ?
-					AND n.poster_id = m.user_id
-				ORDER BY n.post_time DESC, n.news_id DESC';
-			$result = sql_rowset(sql_filter($sql, $cat_data['cat_id']));
+		$sql = 'SELECT n.*, m.username, m.username_base, m.user_color
+			FROM _news n, _members m
+			WHERE n.poster_id = m.user_id
+			ORDER BY n.post_time DESC, n.news_id DESC';
+		$result = sql_rowset($sql);
+		
+		foreach ($result as $i => $row) {
+			if (!$i) _style('cat');
 			
-			foreach ($result as $row) {
-				_style('cat.item', array(
-					'URL' => s_link('news', $row['news_id']),
-					'SUBJECT' => $row['post_subject'],
-					'DESC' => $row['post_desc'],
-					'TIME' => $user->format_date($row['post_time'], 'd M'),
-					'USERNAME' => $row['username'],
-					'PROFILE' => s_link('m', $row['username_base']),
-					'COLOR' => $row['user_color'])
-				);
-			}
+			_style('cat.row', array(
+				'URL' => s_link('news', $row['news_alias']),
+				'SUBJECT' => $row['post_subject'],
+				'DESC' => $row['post_desc'],
+				'TIME' => $user->format_date($row['post_time'], 'd M'),
+				'USERNAME' => $row['username'],
+				'PROFILE' => s_link('m', $row['username_base']),
+				'COLOR' => $row['user_color'])
+			);
 		}
 		
 		return;

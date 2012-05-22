@@ -110,8 +110,8 @@ class userpage {
 		
 		global $config, $user, $cache, $comments;
 		
-		// /my/dc/(page)/(selected)/(message)/
-		// /my/dc/(username)/
+		// TODO: New conversation system
+		// /my/dc/(page)/(selected)/(username)/
 		
 		$this->conversations_delete();
 		
@@ -394,7 +394,8 @@ class userpage {
 	}
 	
 	private function conversations_delete() {
-		global $comments;
+		global $comments, $user;
+		
 		$mark	= request_var('mark', array(0));
 		
 		if (_button('delete') && $mark) {

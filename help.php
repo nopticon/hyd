@@ -18,128 +18,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 define('IN_APP', true);
 require_once('./interfase/common.php');
+require_once(ROOT . 'objects/help.php');
 
 $user->init();
 $user->setup();
 
-$help_modules = array();
-$help_cat = array();
-$help_faq = array();
+$help = new _help();
+$help->run();
 
-if (!$help_modules = $cache->get('help_modules')) {
-	$sql = 'SELECT module_id, module_name
-		FROM _help_modules
-		ORDER BY module_name';
-	if ($help_modules = sql_rowset($sql, 'module_name', 'module_id')) {
-		$cache->save('help_modules', $help_modules);
-	}
-}
-
-if (!$help_cat = $cache->get('help_cat')) {
-	$sql = 'SELECT *
-		FROM _help_cat
-		ORDER BY help_order';
-	if ($help_cat = sql_rowset($sql, 'help_id')) {
-		$cache->save('help_cat', $help_cat);
-	}
-}
-
-if (!$help_faq = $cache->get('help_faq')) {
-	$sql = 'SELECT *
-		FROM _help_faq
-		ORDER BY faq_question_es';
-	if ($help_faq = sql_rowset($sql, 'faq_id')) {
-		$cache->save('help_faq', $help_faq);
-	} 
-}
-
-if (!sizeof($help_modules) || !sizeof($help_cat) || !sizeof($help_faq)) {
-	fatal_error();
-}
-
-$module = request_var('module', '');
-$help = request_var('help', 0);
-
-if ($module != '') {
-	$module_id = (int) $help_modules[$module];
-	
-	if (!$module_id) {
-		fatal_error();
-	}
-}
-
-if ($help) {
-	if (!isset($help_faq[$help])) {
-		fatal_error();
-	}
-	
-	$module_id = $help_faq[$help]['help_id'];
-}
-
-//
-// Categories
-//
-$hm_flip = array_flip($help_modules);
-_style('cat');
-
-foreach ($help_cat as $cat_id => $data) {
-	_style('cat.item', array(
-		'URL' => s_link('help', array($hm_flip[$data['help_module']])),
-		'TITLE' => $data['help_es'])
-	);
-}
-
-//
-// Selected category
-//
-if ($module_id || $help) {
-	if (!$help) {
-		$this_cat = array();
-		foreach ($help_faq as $data) {
-			if ($data['help_id'] == $module_id) {
-				$this_cat[] = $data;
-			}
-		}
-	}
-	
-	$help_name = '';
-	foreach ($help_cat as $data) {
-		if ($data['help_module'] == $module_id) {
-			$help_name = $data['help_es'];
-			break;
-		}
-	}
-	
-	_style('module', array(
-		'HELP' => $help_name)
-	);
-	
-	if (!$help) {
-		if (sizeof($this_cat)) {
-			_style('module.main');
-			
-			foreach ($this_cat as $data) {
-				_style('module.main.item', array(
-					'URL' => s_link('help', $data['faq_id']),
-					'FAQ' => $data['faq_question_es'])
-				);
-			}
-		} else {
-			_style('module.empty');
-		}
-	} else {
-		$dhelp = $help_faq[$help];
-		
-		_style('module.faq', array(
-			'CAT' => s_link('help', $hm_flip[$dhelp['help_id']]),
-			'QUESTION_ES' => $dhelp['faq_question_es'],
-			'QUESTION_EN' => $dhelp['faq_question_e'],
-			'ANSWER_ES' => $comments->parse_message($dhelp['faq_answer_es']),
-			'ANSWER_EN' => $comments->parse_message($dhelp['faq_answer_en']))
-		);
-	}
-}
-
-page_layout('HELP', 'help');
+page_layout($help->get_title('HELP'), $help->get_template('help'));
 
 ?>
