@@ -26,7 +26,7 @@ RewriteRule ^(sign)(in|out|up|r)/$ orion/$1.php?mode=$2 [nc]
 RewriteRule ^(sign)(up|r)/([a-z0-9]+)/$ orion/$1.php?mode=$2&code=$3 [nc]
 RewriteRule ^(sign)(up)/v/([0-9a-z]+)/$ orion/$1.php?mode=$2&invite=$1 [nc]
 
-RewriteRule ^(broadcast)/(\w+)/$ orion/$1?category=$2 [nc]
+RewriteRule ^(broadcast)/(\w+)/$ orion/$1.php?category=$2 [nc]
 RewriteRule ^(events)/g(\d+)/$ orion/$1.php?gallery_offset=$2 [nc]
 RewriteRule ^(events)/([0-9a-z\-]+)/(\d+)/reply/$ orion/$1.php?alias=$2&p=$3&reply=1 [nc]
 RewriteRule ^(events)/([0-9a-z\-]+)/(\d+)/(view|save|fav|rsvp)/$ orion/$1.php?alias=$2&download_id=$3&mode=$4 [nc]
