@@ -39,7 +39,7 @@ class __forims_points_delete extends mac {
 				WHERE topic_id = ?';
 			sql_query(sql_filter($sql, $row['exclude_topic']));
 			
-			if (!$i) _style('topics', array());
+			if (!$i) _style('topics');
 			
 			_style('topics.rows', array(
 				'NAME' => $row['exclude_topic'])

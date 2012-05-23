@@ -31,7 +31,7 @@ class __user_address extends mac {
 		$limit = 225;
 		$steps = 0;
 		$items = 0;
-		$trash = array();
+		$trash = w();
 		
 		//
 		$sql = "SELECT *

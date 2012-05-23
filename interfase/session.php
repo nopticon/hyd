@@ -41,7 +41,7 @@ class session {
 			//redirect(s_link());
 		}
 		
-		$this->cookie_data = array();
+		$this->cookie_data = w();
 		if (isset($_COOKIE[$config['cookie_name'] . '_sid']) || isset($_COOKIE[$config['cookie_name'] . '_u'])) {
 			$this->cookie_data['u'] = request_var($config['cookie_name'] . '_u', 0);
 			$this->session_id = request_var($config['cookie_name'] . '_sid', '');
@@ -107,7 +107,7 @@ class session {
 	public function session_create($user_id = false, $set_admin = false, $update_page = true, $is_inactive = false) {
 		global $config;
 
-		$this->data = array();
+		$this->data = w();
 		
 		if (strpos($this->page, 'signin')) {
 			$this->page = '';
@@ -125,7 +125,7 @@ class session {
 		* do, this is a bot, act accordingly
 		*/		
 		$bot = false;
-		$active_bots = array();
+		$active_bots = w();
 		obtain_bots($active_bots);
 		
 		foreach ($active_bots as $row) {
@@ -311,7 +311,7 @@ class session {
 			sql_query(sql_filter($sql, $this->time, $this->session_id, $this->data['user_id']));
 
 			// Reset the data array
-			$this->data = array();			
+			$this->data = w();
 			
 			$sql = 'SELECT *
 				FROM _members
@@ -846,7 +846,7 @@ class user extends session {
 			$from_lastvisit = gmmktime(0, 0, 0, $m, $d, $y);
 		}
 		
-		$sql_in = array();
+		$sql_in = w();
 		switch ($element) {
 			case UH_AF:
 				$sql = 'SELECT m.user_id
@@ -859,7 +859,7 @@ class user extends session {
 				break;
 			case UH_C:
 			case UH_M:
-				$sql_in = array();
+				$sql_in = w();
 				
 				$sql = 'SELECT m.user_id 
 					FROM _artists_auth a, _members m
@@ -1311,7 +1311,7 @@ class auth {
 				FROM _forums a
 				' . $forum_match_sql;
 			if (!$f_access = $sql_fetchrow($sql)) {
-				return array();
+				return w();
 			}
 		}
 	
@@ -1320,7 +1320,7 @@ class auth {
 		// has the type set to ALL, if yes they are good to go, if not then they
 		// are denied access
 		//
-		$u_access = array();
+		$u_access = w();
 		if ($user->is('member')) {
 			$forum_match_sql = ($forum_id != AUTH_LIST_ALL) ? sql_filter('AND a.forum_id = ?', $forum_id) : '';
 	
@@ -1355,7 +1355,7 @@ class auth {
 		
 		$this->founder = $user->is('founder');
 		
-		$auth_user = array();
+		$auth_user = w();
 		foreach ($auth_fields as $a_key) {
 			if ($forum_id != AUTH_LIST_ALL) {
 				$value = $f_access[$a_key];

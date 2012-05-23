@@ -37,7 +37,7 @@ class emailer {
 
 	// Resets all the data (address, template file, etc etc to default
 	public function reset() {
-		$this->addresses = array();
+		$this->addresses = w();
 		$this->vars = $this->msg = $this->extra_headers = '';
 	}
 
@@ -161,7 +161,7 @@ class emailer {
 		// We now try and pull a subject from the email body ... if it exists,
 		// do this here because the subject may contain a variable
 		$drop_header = '';
-		$match = array();
+		$match = w();
 		if (preg_match('#^(Subject:(.*?))$#m', $this->msg, $match)) {
 			$this->subject = (trim($match[2]) != '') ? trim($match[2]) : (($this->subject != '') ? $this->subject : 'No Subject');
 			$drop_header .= '[\r\n]*?' . preg_quote($match[1], '#');

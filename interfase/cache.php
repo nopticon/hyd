@@ -41,7 +41,7 @@ class cache {
 			return false;
 		}
 		
-		$filename = './cache/' . $var . '.php';
+		$filename = ROOT . 'cache/' . $var . '.php';
 		
 		if (@file_exists($filename)) {
 			if (!@require_once($filename)) {
@@ -66,7 +66,7 @@ class cache {
 			return;
 		}
 		
-		$filename = './cache/' . $var . '.php';
+		$filename = ROOT . 'cache/' . $var . '.php';
 		
 		$fp = @fopen($filename, 'w');
 		if ($fp) {
@@ -89,7 +89,7 @@ class cache {
 		}
 		
 		foreach (func_get_args() as $var) {
-			$cache_filename = './cache/' . $var . '.php';
+			$cache_filename = ROOT . 'cache/' . $var . '.php';
 			if (file_exists($cache_filename)) {
 				_rm($cache_filename);
 			}
@@ -102,7 +102,7 @@ class cache {
 	// Borrowed from phpBB 2.2 : acm_file.php
 	//
 	public function format($data) {
-		$lines = array();
+		$lines = w();
 		foreach ($data as $k => $v) {
 			if (is_array($v)) {
 				$lines[] = "'$k'=>" . $this->format($v);

@@ -86,8 +86,7 @@ class layout extends downloads {
 			if ($result = sql_rowset(sql_filter($sql, 'news', $config['ub_fans_f'], $this->data['ub'], 'post', $this->data['ub'], 0, 10))) {
 				_style('news');
 				
-				$user_profile = array();
-				
+				$user_profile = w();
 				foreach ($result as $row) {
 					$uid = $row['user_id'];
 					
@@ -453,7 +452,7 @@ class layout extends downloads {
 			}
 			
 			if ($this->auth['mod']) {
-				$comments->data['CONTROL']['auth'] = array();
+				$comments->data['CONTROL']['auth'] = w();
 				
 				if ($this->auth['adm'] && $user->is('founder')) {
 					$comments->data['CONTROL']['auth']['EDIT'] = array(
@@ -468,7 +467,7 @@ class layout extends downloads {
 				);
 			}
 			
-			$sql = preg_replace('/LIMIT ([0-9]+), ([0-9]+)/', '', $comments->data['SQL']);
+			$sql = preg_replace('/LIMIT (\d+), (\d+)/', '', $comments->data['SQL']);
 			
 			$reply_result = sql_rowset($sql);
 			$total_posts = count($reply_result);
@@ -751,6 +750,9 @@ class _artists extends layout {
 	public $msg = array();
 	public $ajx = true;
 	
+	private $_template;
+	private $_title;
+	
 	public function __construct() {
 		$this->layout = array(
 			'_01' => array('code' => 1, 'text' => 'UB_L01', 'tpl' => 'main'),
@@ -770,6 +772,32 @@ class _artists extends layout {
 			'ub' => array(1, 2, 3, 5),
 			'ud' => array(1, 2, 3, 4, 5)
 		);
+	}
+	
+	public function get_title($default = '') {
+		return (!empty($this->_title)) ? $this->_title : $default;
+	}
+	
+	public function get_template($default = '') {
+		return (!empty($this->_template)) ? $this->_template : $default;
+	}
+	
+	public function ajax() {
+		return $this->ajx;
+	}
+	
+	public function run() {
+		if ($this->_setup()) {
+			$this->_panel();
+				
+			$this->_title = $this->data['name'];
+			$this->_template = 'artists.view';
+		} else {
+			$this->_list();
+			$this->latest();
+		}
+		
+		return;
 	}
 	
 	public function v($property, $value = -5000) {
@@ -896,7 +924,7 @@ class _artists extends layout {
 	
 	public function stats($id) {
 		if (is_array($id)) {
-			$all_stats = array();
+			$all_stats = w();
 			foreach ($id as $item) {
 				$all_stats[$item] = $this->stats($item);
 			}
@@ -928,7 +956,7 @@ class _artists extends layout {
 		}
 		
 		if (!$ai_records = $cache->get('ai_records')) {
-			$ai_records = array();
+			$ai_records = w();
 			
 			foreach ($a_records as $row) {
 				$sql = 'SELECT ub, images
@@ -994,7 +1022,7 @@ class _artists extends layout {
 		if ($all_data['datetime']) {
 			global $cache;
 			
-			$a_random = array();
+			$a_random = w();
 			if (!$a_random = $cache->get('a_last_images')) {
 				$sql = 'SELECT *
 					FROM _artists_images
@@ -1041,7 +1069,7 @@ class _artists extends layout {
 				LIMIT 10';
 			$result = sql_rowset($sql);
 			
-			$a_recent = array();
+			$a_recent = w();
 			foreach ($result as $row) {
 				$a_recent[$row['ub']] = 1;
 			}
@@ -1049,7 +1077,7 @@ class _artists extends layout {
 			$cache->save('a_recent', $a_recent);
 		}
 		
-		$a_ary = array();
+		$a_ary = w();
 		for ($i = 0; $i < 3; $i++) {
 			$_a = array_rand($a_recent);
 			if (!$this->adata[$_a]['images'] || isset($a_ary[$_a])) {
@@ -1075,7 +1103,7 @@ class _artists extends layout {
 				ORDER BY RAND()';
 			$result = sql_rowset(sql_filter($sql, implode(',', array_keys($a_ary))));
 			
-			$random_images = array();
+			$random_images = w();
 			foreach ($result as $row) {
 				if (!isset($random_images[$row['ub']])) {
 					$random_images[$row['ub']] = $row['image'];
@@ -1157,7 +1185,7 @@ class _artists extends layout {
 		
 		_style('downloads');
 		
-		$ud_in_ary = array();
+		$ud_in_ary = w();
 		foreach ($this->ud_song as $ud => $dl_data) {
 			$dl_size = sizeof($dl_data);
 			if (!$dl_size) {
@@ -1201,7 +1229,7 @@ class _artists extends layout {
 			ORDER BY local DESC, name ASC';
 		$result = sql_rowset($sql);
 		
-		$alphabet = array();
+		$alphabet = w();
 		foreach ($result as $row) {
 			$this->adata[$row['local']][$row['ub']] = $row;
 			
@@ -1247,7 +1275,7 @@ class _artists extends layout {
 			ORDER BY RAND()';
 		$result = sql_rowset(sql_filter($sql, implode(',', array_keys($selected_artists))));
 		
-		$random_images = array();
+		$random_images = w();
 		foreach ($result as $row) {
 			if (!isset($random_images[$row['ub']])) {
 				$random_images[$row['ub']] = $row['image'];
@@ -1315,7 +1343,7 @@ class _artists extends layout {
 				//
 				// Nav
 				//
-				$s_layout = array();
+				$s_layout = w();
 				$s_layout['a']['_01'] = true;
 				$s_layout['a']['_02'] = ($this->data['bio'] != '') ? true : false;
 				// $s_layout['a']['_03'] = true;
@@ -1474,7 +1502,7 @@ class _artists extends layout {
 					ORDER BY e.date';
 				$result = sql_rowset(sql_filter($sql, $this->data['ub']));
 				
-				$events = array();
+				$events = w();
 				foreach ($result as $row) {
 					if ($row['date'] >= $midnight) {
 						if ($row['date'] >= $midnight && $row['date'] < $midnight + 86400) {
@@ -1671,7 +1699,7 @@ class _artists extends layout {
 					}
 					
 					if ($this->auth['mod']) {
-						$comments->data['CONTROL']['auth'] = array();
+						$comments->data['CONTROL']['auth'] = w();
 						
 						if ($this->auth['adm'] && $user->is('founder')) {
 							$comments->data['CONTROL']['auth']['EDIT'] = array(

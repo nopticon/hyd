@@ -22,7 +22,7 @@ function htmlencode($str) {
 	$result = (STRIP) ? stripslashes($result) : $result;
 	
 	if ($multibyte) {
-		$result = preg_replace('#&amp;(\#[0-9]+;)#', '&\1', $result);
+		$result = preg_replace('#&amp;(\#\d+;)#', '&\1', $result);
 	}
 	
 	return $result;
@@ -90,7 +90,7 @@ function request_var($var_name, $default = false, $multibyte = false) {
 	}
 	
 	if (!isset($_REQUEST[$var_name]) || (is_array($_REQUEST[$var_name]) && !is_array($default)) || (is_array($default) && !is_array($_REQUEST[$var_name]))) {
-		return (is_array($default)) ? array() : $default;
+		return (is_array($default)) ? w() : $default;
 	}
 
 	$var = $_REQUEST[$var_name];
@@ -105,7 +105,7 @@ function request_var($var_name, $default = false, $multibyte = false) {
 
 	if (is_array($var)) {
 		$_var = $var;
-		$var = array();
+		$var = w();
 
 		foreach ($_var as $k => $v) {
 			if (is_array($v)) {
@@ -145,7 +145,7 @@ function get_real_ip() {
 		reset($entries);
 		while (list(, $entry) = each($entries)) {
 			$entry = trim($entry);
-			if (preg_match("/^([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)/", $entry, $ip_list)) {
+			if (preg_match("/^(\d+\.\d+\.\d+\.\d+)/", $entry, $ip_list)) {
 				// http://www.faqs.org/rfcs/rfc1918.html
 				$private_ip = array('/^0\./', '/^127\.0\.0\.1/', '/^192\.168\..*/', '/^172\.((1[6-9])|(2[0-9])|(3[0-1]))\..*/', '/^10\..*/');
 				$found_ip = preg_replace($private_ip, $client_ip, $ip_list[1]);
@@ -225,14 +225,14 @@ function monetize() {
 		return;
 	}
 	
-	$set_blocks = array();
-	
+	$set_blocks = w();
 	$i = 0;
+	
 	foreach ($monetize as $row) {
 		if (!$i) _style('monetize');
 		
 		if (!isset($set_blocks[$row['monetize_position']])) {
-			_style('monetize.' . $row['monetize_position'], array());
+			_style('monetize.' . $row['monetize_position']);
 			$set_blocks[$row['monetize_position']] = true;
 		}
 		
@@ -277,7 +277,7 @@ function forum_for_team($forum_id) {
 function forum_for_team_list($forum_id) {
 	global $config, $user;
 	
-	$a_list = array();
+	$a_list = w();
 	switch ($forum_id) {
 		case $config['forum_for_mod']:
 			$a_list = $user->_team_auth_list('mod');
@@ -300,7 +300,7 @@ function forum_for_team_not() {
 	global $config, $user;
 	
 	$sql = '';
-	$list = array('all', 'mod', 'radio', 'colab');
+	$list = w('all mod radio colab');
 	foreach ($list as $k) {
 		if (!$user->is($k)) {
 			$sql .= ', ' . (int) $config['forum_for_' . $k];
@@ -312,8 +312,8 @@ function forum_for_team_not() {
 function forum_for_team_array() {
 	global $config;
 	
-	$ary = array();
-	$list = array('all', 'mod', 'radio', 'colab');
+	$ary = w();
+	$list = w('all mod radio colab');
 	foreach ($list as $k) {
 		$ary[] = $config['forum_for_' . $k];
 	}
@@ -484,7 +484,7 @@ function s_link($module = '', $data = false) {
 	
 	$url = 'http://';
 	$is_a = is_array($data);
-	if (v_server('REMOTE_ADDR') != '127.0.0.1' && $module == 'a' && $data !== false && ((!$is_a && !preg_match('/^_([0-9]+)$/i', $data)) || ($is_a && count($data) == 2))) {
+	if (v_server('REMOTE_ADDR') != '127.0.0.1' && $module == 'a' && $data !== false && ((!$is_a && !preg_match('/^_(\d+)$/i', $data)) || ($is_a && count($data) == 2))) {
 		$subdomain = ($is_a) ? $data[0] : $data;
 		$url .= str_replace('www', $subdomain, $config['server_name']) . '/';
 		
@@ -572,7 +572,7 @@ function is_numb($v) {
 }
 
 function is_number($number = '') {
-	if (preg_match('/^([0-9]+)$/', $number)) {
+	if (preg_match('/^(\d+)$/', $number)) {
 		return true;
 	}
 	
@@ -777,7 +777,7 @@ function _rm($path) {
 function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 	global $config, $user;
 	
-	$error = array();
+	$error = w();
 	$action = request_var('mode', '');
 	
 	if (empty($user->data)) {
@@ -1418,7 +1418,7 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 		);
 	}
 	
-	$s_hidden = array();
+	$s_hidden = w();
 	if ($need_auth) {
 		$s_hidden = array('admin' => 1);
 	}
@@ -2042,11 +2042,11 @@ function html_entity_decode_utf8($string) {
 	
 	// replace numeric entities
 	$string = preg_replace('~&#x([0-9a-f]+);~ei', 'code2utf(hexdec("\\1"))', $string);
-	$string = preg_replace('~&#([0-9]+);~e', 'code2utf(\\1)', $string);
+	$string = preg_replace('~&#(\d+);~e', 'code2utf(\\1)', $string);
 	
 	// replace literal entities
 	if (!isset($trans_tbl)) {
-		$trans_tbl = array();
+		$trans_tbl = w();
 		foreach (get_html_translation_table(HTML_ENTITIES) as $val => $key) {
 			$trans_tbl[$key] = utf8_encode($val);
 		}
@@ -2089,7 +2089,7 @@ function _rowset_style_row($row, $style, $prefix = '') {
 function _style_uv($a) {
 	if (!is_array($a) && !is_object($a)) $a = w();
 	
-	$b = w();
+	$b = array();
 	foreach ($a as $i => $v) {
 		$b[strtoupper($i)] = $v;
 	}
@@ -2141,12 +2141,12 @@ function _style_functions($arg) {
 	}
 	
 	$e = explode(':', $arg[2]);
-	$f_arg = w();
+	$f_arg = array();
 	
 	foreach ($e as $row) {
 		if (preg_match('/\((.*?)\)/', $row, $reg)) {
 			$_row = array_map('trim', explode(',', str_replace("'", '', $reg[1])));
-			$row = w();
+			$row = array();
 			
 			foreach ($_row as $each) {
 				$j = explode(' => ', $each);

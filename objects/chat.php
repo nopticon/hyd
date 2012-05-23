@@ -118,7 +118,7 @@ class _chat {
 	public function get_cats() {
 		global $cache;
 		
-		$cat = array();
+		$cat = w();
 		if (!$cat = $cache->get('chat_cat')) {
 			$sql = 'SELECT *
 				FROM _chat_cat
@@ -447,9 +447,7 @@ class _chat {
 		if ($result = sql_rowset(sql_filter($sql, ($ttime - 300)))) {
 			global $user;
 			
-			$update_ch = array();
-			$delete_sessions = array();
-			$show_members = array();
+			$update_ch = $delete_sessions = $show_members = w();
 			
 			foreach ($result as $row) {
 				$chid = $row['session_ch_id'];

@@ -84,7 +84,7 @@ function timeDiff($timestamp, $now = 0, $detailed = false, $n = 0) {
 	$lengths = array(1, 60, 3600, 86400, 604800, 2630880, 31570560);
 	
 	// Go from decades backwards to seconds
-	$result = array();
+	$result = w();
 	
 	$i = sizeof($lengths);
 	$time = '';

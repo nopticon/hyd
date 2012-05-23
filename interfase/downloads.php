@@ -23,11 +23,18 @@ if (class_exists('downloads')) {
 }
 
 class downloads {
-	public $ud = array();
-	public $ud_song = array();
-	public $dl_data = array();
-	public $filename = '';
-	public $filepath = '';
+	public $ud;
+	public $ud_song;
+	public $dl_data;
+	public $filename;
+	public $filepath;
+	
+	public function __construct() {
+		$this->ud = $this->ud_song = $this->dl_data = w();
+		$this->filename = $this->filepath = '';
+		
+		return;
+	}
 	
 	public function dl_sql($ub = '', $order = '') {
 		$sql_ub = ($ub != '') ? sql_filter(' WHERE ub = ?', $ub) . ' ' : '';
@@ -146,7 +153,7 @@ class downloads {
 				ORDER BY option_id';
 			$results = sql_rowset(sql_filter($sql, $this->dl_data['id']), 'option_id', 'vote_result');
 			
-			_style('ud_poll.results', array());
+			_style('ud_poll.results');
 			
 			for ($i = 0, $end = sizeof($this->voting['ud']); $i < $end; $i++) {
 				$vote_result = (isset($results[$this->voting['ub'][$i]])) ? (int) $results[$this->voting['ub'][$i]] : 0;
@@ -215,7 +222,7 @@ class downloads {
 			}
 			
 			if ($this->auth['adm'] || $this->auth['mod']) {
-				$comments->data['CONTROL']['auth'] = array();
+				$comments->data['CONTROL']['auth'] = w();
 				
 				if ($this->auth['adm'] && $user->is('founder')) {
 					$comments->data['CONTROL']['auth']['EDIT'] = array(

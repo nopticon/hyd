@@ -28,7 +28,7 @@ class __event extends mac {
 	public function _home() {
 		global $config, $user, $cache, $upload;
 		
-		$error = array();
+		$error = w();
 		
 		if ($this->submit) {
 			$filepath = $config['events_path'];

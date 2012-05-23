@@ -74,10 +74,10 @@ if (!defined('REQC')) {
 }
 
 require_once(ROOT . 'interfase/constants.php');
+require_once(ROOT . 'interfase/functions.php');
 require_once(ROOT . 'interfase/db.mysqli.php');
 require_once(ROOT . 'interfase/template.php');
 require_once(ROOT . 'interfase/session.php');
-require_once(ROOT . 'interfase/functions.php');
 require_once(ROOT . 'interfase/cache.php');
 require_once(ROOT . 'interfase/comments.php');
 require_once(ROOT . 'interfase/emailer.php');

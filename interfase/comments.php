@@ -21,18 +21,15 @@ if (!defined('IN_APP')) exit;
 class _comments {
 	public $ref;
 	public $mesage;
-	public $param = array();
-	public $data = array();
-	public $auth = array();
-	public $users = array();
+	public $param;
+	public $data;
+	public $auth;
+	public $users;
 	public $options = array();
 	
 	public function __construct() {
 		$this->ref = '';
-		$this->auth = w();
-		$this->data = w();
-		$this->param = w();
-		$this->users = w();
+		$this->auth = $this->data = $this->param = $this->users = w();
 		
 		return;
 	}
@@ -174,7 +171,7 @@ class _comments {
 		}
 		
 		$post_reply = 0;
-		$error = array();
+		$error = w();
 		$update_sql = '';
 		$current_time = time();
 		
@@ -380,14 +377,14 @@ class _comments {
 		}
 		
 		if (!isset($this->data['CONTROL'])) {
-			$this->data['CONTROL'] = array();
+			$this->data['CONTROL'] = w();
 		}
 		
 		$sizeof_controls = sizeof($this->data['CONTROL']);
-		_style($tpl_prefix, array());
+		_style($tpl_prefix);
 		
-		$controls_data = array();
-		$user_profile = array();
+		$controls_data = w();
+		$user_profile = w();
 		
 		foreach ($result as $row) {
 			$uid = $row['user_id'];
@@ -422,10 +419,10 @@ class _comments {
 			}
 			
 			_style($tpl_prefix . '.item', $data);
-			_style($tpl_prefix . '.item.' . (($uid != GUEST) ? 'username' : 'guestuser'), array());
+			_style($tpl_prefix . '.item.' . (($uid != GUEST) ? 'username' : 'guestuser'));
 			
 			if ($sizeof_controls) {
-				_style($tpl_prefix . '.item.controls', array());
+				_style($tpl_prefix . '.item.controls');
 				
 				foreach ($this->data['CONTROL'] as $block => $block_data) {
 					foreach ($block_data as $item => $item_data) {
@@ -450,7 +447,7 @@ class _comments {
 		static $all_ranks;
 		
 		if (!isset($this->users[$row['user_id']]) || $row['user_id'] == GUEST) {
-			$data = array();
+			$data = w();
 			foreach ($row as $key => $value) {
 				if (strpos($key, 'user') === false && $key != 'post_id') {
 					continue;
@@ -696,7 +693,7 @@ class _comments {
 			return false;
 		}
 		
-		$update_a = $delete_a = array();
+		$update_a = $delete_a = w();
 		
 		foreach ($result as $row) {
 			$var = ($row['msg_deleted'] && ($row['msg_deleted'] != $user->d('user_id'))) ? 'delete_a' : 'update_a';
@@ -772,14 +769,14 @@ class _comments {
 		
 		*/
 		
-		$html = array();
-		$exclude = array();
+		$html = w();
+		$exclude = w();
 		if (!$user->is('founder')) {
 			$sql = 'SELECT *
 				FROM _html_exclude
 				WHERE html_member = ?';
 			if ($result = sql_rowset(sql_filter($sql, $user->d('user_id')))) {
-				$delete_expired = array();
+				$delete_expired = w();
 				$current_time = time();
 				
 				foreach ($result as $row) {
@@ -841,7 +838,7 @@ class _comments {
 	
 	public function parse_images() {
 		if (preg_match_all('#(^|[\n ]|\()(http|https|ftp)://([a-z0-9\-\.,\?!%\*_:;~\\&$@/=\+]+)(gif|jpg|jpeg|png)#ie', $this->message, $match)) {
-			$orig = $repl = array();
+			$orig = $repl = w();
 			foreach ($match[0] as $item) {
 				$item = trim($item);
 				$orig[] = '#(^|[\n ]|\()(' . preg_quote($item) . ')#i';
@@ -946,7 +943,7 @@ class _comments {
 				}
 			}
 			
-			$orig = $repl = array();
+			$orig = $repl = w();
 			foreach ($this->options['a']['data'] as $sub => $real) {
 				$orig[] = '#(^|\s)(?<=.\W|\W.|^\W)\b(' . preg_quote($real, "#") . ')\b(?=.\W|\W.|\W$)#is';
 				$repl[] = '\\1<a href="' . s_link('a', $sub) . '">' . $real . '</a>';
@@ -979,9 +976,8 @@ class _comments {
 			}
 		}
 		
-		if (preg_match_all('#\:d([0-9]+)(\*)?\:#', $this->message, $match)) {
-			$orig = array();
-			$repl = array();
+		if (preg_match_all('#\:d(\d+)(\*)?\:#', $this->message, $match)) {
+			$orig = $repl = w();
 			foreach ($match[1] as $i => $download) {
 				if (isset($this->options['downloads']['list'][$download])) {
 					$show_a = (isset($match[2][$i]) && $match[2][$i] != '') ? true : false;
@@ -1000,8 +996,7 @@ class _comments {
 	
 	public function members_profile() {
 		if (preg_match_all('#\:m([0-9a-zA-Z\_\- ]+)\:#ii', $this->message, $match)) {
-			$orig = array();
-			$repl = array();
+			$orig = $repl = w();
 			foreach ($match[1] as $orig_member) {
 				$member = get_username_base($orig_member);
 				if (!isset($this->options['members'][$member])) {
@@ -1021,9 +1016,8 @@ class _comments {
 		global $config;
 		
 		if (preg_match_all('#\:i([0-9a-zA-Z\_\- ]+)\:#si', $this->message, $match)) {
-			$orig = array();
-			$repl = array();
-			$formats = array('.jpg', '.gif', '.png');
+			$orig = $repl = w();
+			$formats = w('.jpg .gif .png');
 			
 			foreach ($match[1] as $orig_member) {
 				$member = get_username_base($orig_member);

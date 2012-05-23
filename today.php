@@ -45,7 +45,7 @@ $unread_element = request_var('elem', 0);
 $unread_item = request_var('item', 0);
 
 if (isset($_POST['items']) && (isset($_POST['delete']) || isset($_POST['delete_all']))) {
-	$items = (is_array($_POST['items']) && !empty($_POST['items'])) ? $_POST['items'] : array();
+	$items = (is_array($_POST['items']) && !empty($_POST['items'])) ? $_POST['items'] : w();
 	
 	if (isset($_POST['delete_all'])) {
 		foreach ($items as $element => $data) {
@@ -165,7 +165,7 @@ $sql = 'SELECT element
 	ORDER BY element, item';
 if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
 	
-	$items = array();
+	$items = w();
 	foreach ($result as $row) {
 		if (!isset($items[$row['element']])) {
 			$items[$row['element']] = 0;

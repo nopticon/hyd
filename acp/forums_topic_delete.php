@@ -35,8 +35,7 @@ class __forums_topic_delete extends mac {
 		$topics = request_var('topic_id', '');
 		$topics = array_map('intval', explode(',', $topics));
 		
-		$forums_id_sql = array();
-		$topics_id = array();
+		$forums_id_sql = $topics_id = w();
 		
 		$sql = 'SELECT forum_id, topic_id
 			FROM _forum_topics

@@ -46,7 +46,6 @@ $matches = array(
 );
 
 $orig = $repl = array();
-
 foreach ($matches as $row_k => $row_v) {
 	$orig[] = $row_k;
 	$repl[] = $row_v;

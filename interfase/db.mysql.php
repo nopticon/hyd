@@ -343,7 +343,7 @@ class database extends dcom {
 		}
 		
 		$has_limit = false;
-		if (preg_match('#LIMIT ([0-9]+)(\, ([0-9]+))?#is', $query, $limits)) {
+		if (preg_match('#LIMIT (\d+)(\, (\d+))?#is', $query, $limits)) {
 			$has_limit = $limits[1];
 		}
 		

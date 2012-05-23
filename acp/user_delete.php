@@ -42,8 +42,6 @@ class __user_delete extends mac {
 			fatal_error();
 		}
 		
-		$sql = array();
-		
 		$ary_sql = array(
 			'DELETE FROM _members WHERE user_id = ?',
 			'DELETE FROM _banlist WHERE ban_userid = ?',
@@ -66,6 +64,7 @@ class __user_delete extends mac {
 			'UPDATE _forum_topics SET topic_poster = 1 WHERE topic_poster = ?'
 		);
 		
+		$sql = w();
 		foreach ($ary_sql as $row) {
 			$sql[] = sql_filter($row, $userdata['user_id']);
 		}

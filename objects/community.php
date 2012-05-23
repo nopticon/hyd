@@ -72,7 +72,7 @@ class community {
 				ORDER BY user_id';
 			$result = sql_rowset(sql_filter($sql, USER_FOUNDER));
 			
-			$founders = array();
+			$founders = w();
 			foreach ($result as $row) {
 				if ($row['username_base'] == 'rockrepublik') continue;
 				
@@ -154,7 +154,7 @@ class community {
 		_style($block, array(
 			'L_TITLE' => $user->lang[$block_title])
 		);
-		_style($block . '.members', array());
+		_style($block . '.members');
 		
 		$is_founder = $user->is('founder');
 		$result = sql_rowset($sql);

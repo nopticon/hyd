@@ -204,7 +204,7 @@ class userpage {
 			}
 		}
 		
-		$s_hidden_fields = array();
+		$s_hidden_fields = w();
 		
 		switch ($mode) {
 			case 'start':
@@ -320,7 +320,7 @@ class userpage {
 					ORDER BY c2.privmsgs_date DESC 
 					LIMIT ??, ??';
 				if ($result = sql_rowset(sql_filter($sql, $user->d('user_id'), $user->d('user_id'), $user->d('user_id'), $offset, $config['posts_per_page']))) {
-					_style('messages', array());
+					_style('messages');
 					
 					foreach ($result as $row) {
 						$dc_with = ($user->d('user_id') == $row['user_id']) ? '2' : '';
@@ -348,7 +348,7 @@ class userpage {
 				} else if ($total_conv) {
 					redirect(s_link('my', 'dc'));
 				} else {
-					_style('no_messages', array());
+					_style('no_messages');
 				}
 				
 				_style('dc_total', array(
@@ -984,7 +984,7 @@ class userpage {
 				ORDER BY RAND()';
 			$result = sql_rowset(sql_filter($sql, implode(',', array_keys($selected_artists))));
 			
-			$random_images = array();
+			$random_images = w();
 			foreach ($result as $row) {
 				if (!isset($random_images[$row['ub']])) {
 					$random_images[$row['ub']] = $row['image'];
@@ -1010,7 +1010,7 @@ class userpage {
 				ORDER BY RAND()';
 			$result_images = sql_rowset(sql_filter($sql, implode(',', array_keys($result2))));
 			
-			$random_images2 = array();
+			$random_images2 = w();
 			foreach ($result_images as $row) {
 				if (!isset($random_images2[$row['ub']])) {
 					$random_images2[$row['ub']] = $row['image'];
@@ -1018,7 +1018,7 @@ class userpage {
 			}
 			
 			$total_a = 0;
-			$selected_artists2 = array();
+			$selected_artists2 = w();
 			
 			foreach ($result2 as $row) {
 				if ($total_a < 6) {

@@ -349,7 +349,7 @@ class comments extends common {
 				
 				$order = $this->control->get_var('order', '');
 				if (!empty($order)) {
-					if (preg_match('/_([0-9]+)/', $order)) {
+					if (preg_match('/_(\d+)/', $order)) {
 						$sig = '-';
 						$order = str_replace('_', '', $order);
 					} else {

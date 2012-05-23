@@ -68,14 +68,14 @@ class __event_images extends mac {
 				}
 				
 				$footer_data = '';
-				$filerow_list = array();
+				$filerow_list = w();
 				$count_images = $img = $event_pre = 0;
 				
-				$check_is = array();
+				$check_is = w();
 				if (@file_exists($filepath_2 . $event_id)) {
 					$fp = @opendir($filepath_2 . $event_id);
 					while ($filerow = @readdir($fp)) { 
-						if (preg_match('#([0-9]+)\.(jpg)#is', $filerow)) {
+						if (preg_match('#(\d+)\.(jpg)#is', $filerow)) {
 							$dis = getimagesize($filepath_2 . $event_id . $filerow);
 							$disd = intval(_decode('4e6a4177'));
 							if (($dis[0] > $dis[1] && $dis[0] < $disd) || ($dis[1] > $dis[0] && $dis[1] < $disd)) {
@@ -113,7 +113,7 @@ class __event_images extends mac {
 				array_multisort($filerow_list, SORT_ASC, SORT_NUMERIC);
 				
 				foreach ($filerow_list as $filerow) {
-					if (preg_match('#([0-9]+)\.(jpg)#is', $filerow))
+					if (preg_match('#(\d+)\.(jpg)#is', $filerow))
 					{
 						$row = $upload->_row($filepath_3, $filerow);
 						if (!@copy($filepath_3 . $filerow, $row['filepath'])) {

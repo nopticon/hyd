@@ -74,7 +74,7 @@ class topics {
 		//
 		// Start auth check
 		//
-		$is_auth = array();
+		$is_auth = w();
 		$is_auth = $auth->forum(AUTH_ALL, $forum_id, $forum_row);
 		
 		if (!$is_auth['auth_view'] || !$is_auth['auth_read']) {
@@ -137,7 +137,7 @@ class topics {
 				}
 				
 				if (!empty($poll_options)) {
-					$real_poll_options = array();
+					$real_poll_options = w();
 					$poll_options = explode(nr(), $poll_options);
 					
 					foreach ($poll_options as $option) {
@@ -429,10 +429,10 @@ class topics {
 				);
 				
 				if ($is_auth['auth_pollcreate']) {
-					_style('publish.poll', array());
+					_style('publish.poll');
 					
 					if (empty($poll_options)) {
-						_style('publish.poll.hide', array());
+						_style('publish.poll.hide');
 					}
 				}
 			}

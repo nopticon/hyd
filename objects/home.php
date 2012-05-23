@@ -41,6 +41,7 @@ class _home {
 		foreach ($news as $i => $row) {
 			if (!$i) _style('news');
 			
+			
 			if ($user->is('founder')) {
 				//echo $config['news_path'] . $row['news_id'] . '.jpg<br />';
 			}
@@ -185,7 +186,7 @@ class _home {
 		}
 		
 		if ($user->is('member')) {
-			$is_auth = array();
+			$is_auth = w();
 			$is_auth = $auth->forum(AUTH_VOTE, $forum_id, $topic_data);
 			
 			$sql = 'SELECT vote_user_id

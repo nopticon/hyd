@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_APP')) exit;
 
-$html_entities_match = array('#&(?!(\#[0-9]+;))#', '#<#', '#>#');
+$html_entities_match = array('#&(?!(\#\d+;))#', '#<#', '#>#');
 $html_entities_replace = array('&amp;', '&lt;', '&gt;');
 
 $unhtml_specialchars_match = array('#&gt;#', '#&lt;#', '#&quot;#', '#&amp;#');
@@ -123,7 +123,7 @@ function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on,
 
 		if(!empty($poll_options))
 		{
-			$temp_option_text = array();
+			$temp_option_text = w();
 			while(list($option_id, $option_text) = @each($poll_options))
 			{
 				$option_text = trim($option_text);
@@ -288,7 +288,7 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 		sql_query($sql);
 		
 		$delete_option_sql = '';
-		$old_poll_result = array();
+		$old_poll_result = w();
 		if ($mode == 'editpost' && $post_data['has_poll']) {
 			$sql = 'SELECT vote_option_id, vote_result
 				FROM _poll_results
@@ -571,8 +571,8 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 			}
 			
 			$update_watched_sql = '';
-			$bcc_list_ary = array();
-			$usr_list_ary = array();
+			$bcc_list_ary = w();
+			$usr_list_ary = w();
 			
 			$sql = 'SELECT DISTINCT u.user_id, u.user_email, u.user_lang 
 				FROM _forum_topics_fav tw

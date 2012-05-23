@@ -44,7 +44,7 @@ class __artist_delete extends mac {
 			fatal_error();
 		}
 		
-		$mods = array();
+		$mods = w();
 		
 		$sql = 'SELECT m.user_id, m.user_email
 			FROM _artists_auth a, _members m

@@ -38,7 +38,7 @@ class __forums_topic_move extends mac {
 			$result = sql_rowset($sql);
 			
 			foreach ($result as $i => $row) {
-				if (!$i) _style('forums', array());
+				if (!$i) _style('forums');
 				
 				_style('forums.row', array(
 					'FORUM_ID' => $row['forum_id'],

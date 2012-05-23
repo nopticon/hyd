@@ -131,8 +131,8 @@ class database extends dcom {
 			return false;
 		}
 		
-		$fields = w();
-		$values = w();
+		$fields = array();
+		$values = array();
 		
 		switch ($query) {
 			case 'INSERT':
@@ -152,7 +152,7 @@ class database extends dcom {
 				break;
 			case 'UPDATE':
 			case 'SELECT':
-				$values = w();
+				$values = array();
 				
 				foreach ($assoc as $key => $var) {
 					if (is_null($var)) {
@@ -335,7 +335,7 @@ class database extends dcom {
 		}
 		
 		$has_limit = false;
-		if (preg_match('#LIMIT ([0-9]+)(\, ([0-9]+))?#is', $query, $limits)) {
+		if (preg_match('#LIMIT (\d+)(\, (\d+))?#is', $query, $limits)) {
 			$has_limit = $limits[1];
 		}
 		

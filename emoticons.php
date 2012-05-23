@@ -23,7 +23,6 @@ require_once('./interfase/common.php');
 $user->init();
 $user->setup();
 
-$smilies = array();
 if (!$smilies = $cache->get('smilies')) {
 	$sql = 'SELECT *
 		FROM _smilies

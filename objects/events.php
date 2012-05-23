@@ -316,7 +316,7 @@ class _events extends downloads {
 				
 				$mod_auth = $user->is('mod');
 				
-				$error = array();
+				$error = w();
 				$forum_id = $event_topic['forum_id'];
 				$submit_reply = _button('post');
 				$reply = request_var('reply', 0);
@@ -387,7 +387,7 @@ class _events extends downloads {
 						redirect($u_event_alias);
 					}
 					
-					$update_topic = array();
+					$update_topic = w();
 					
 					if (strstr($post_message, '-Anuncio-') && $user->is('mod')) {
 						$topic_announce = 1;
@@ -637,8 +637,8 @@ class _events extends downloads {
 				$i = 0;
 				foreach ($messages as $row) {
 					if (!$i) {
-						$controls = array();
-						$user_profile = array();
+						$controls = w();
+						$user_profile = w();
 						$unset_user_profile = array('user_id', 'user_posts', 'user_gender');
 						
 						_style('messages');
@@ -767,7 +767,7 @@ class _events extends downloads {
 			
 			$gallery = array_slice($gallery, $gallery_offset, $per_page);
 			
-			$event_ids = array();
+			$event_ids = w();
 			foreach ($gallery as $item) {
 				$event_ids[] = $item['id'];
 			}
@@ -778,7 +778,7 @@ class _events extends downloads {
 				ORDER BY RAND()';
 			$result = sql_rowset(sql_filter($sql, implode(',', $event_ids)));
 			
-			$random_images = array();
+			$random_images = w();
 			foreach ($result as $row) {
 				$random_images[$row['event_id']] = $row['image'];
 			}

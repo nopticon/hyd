@@ -267,7 +267,7 @@ function sql_build($cmd, $a, $b = false) {
 	global $db;
 	
 	if (is_object($a)) {
-		$_a = array();
+		$_a = w();
 		foreach ($a as $a_k => $a_v) {
 			$_a[$a_k] = $a_v;
 		}

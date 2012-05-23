@@ -126,7 +126,7 @@ class __artist_gallery extends mac {
 		if (isset($_POST['submit'])) {
 			$s_images = request_var('ls_images', array(0));
 			if (sizeof($s_images)) {
-				$affected = array();
+				$affected = w();
 
 				$common_path = './..' . SDATA . 'artists/' . $this->data['ub'] . '/';
 				$path = array(

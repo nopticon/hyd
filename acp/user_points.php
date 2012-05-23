@@ -35,7 +35,7 @@ class __user_points extends mac {
 		$result = sql_rowset($sql);
 		
 		foreach ($result as $i => $row) {
-			if (!$i) _style('members', array());
+			if (!$i) _style('members');
 			
 			_style('members.row', array(
 				'BASE' => s_link('m', $row['username_base']),

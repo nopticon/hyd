@@ -45,9 +45,9 @@ class __artist_stats extends mac {
 			ORDER BY date DESC';
 		$stats = sql_rowset(sql_filter($sql, $this->data['ub']), 'date');
 
-		$years_sum = array();
-		$years_temp = array();
-		$years = array();
+		$years_sum = w();
+		$years_temp = w();
+		$years = w();
 
 		foreach ($stats as $date => $void) {
 			$year = substr($date, 0, 4);
@@ -83,7 +83,7 @@ class __artist_stats extends mac {
 
 			for ($i = 1; $i < 13; $i++) {
 				$month = (($i < 10) ? '0' : '') . $i;
-				$monthdata = (isset($stats[$year . $month])) ? $stats[$year . $month] : array();
+				$monthdata = (isset($stats[$year . $month])) ? $stats[$year . $month] : w();
 				$monthdata['total'] = isset($monthdata['total']) ? $monthdata['total'] : 0;
 				$monthdata['percent'] = ($years_sum[$year] > 0) ? $monthdata['total'] / $years_sum[$year] : 0;
 				$monthdata['members'] = isset($monthdata['members']) ? $monthdata['members'] : 0;

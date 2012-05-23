@@ -93,7 +93,7 @@ $sql = 'SELECT *
 $podcast = sql_rowset(sql_filter($sql, 'publish', $offset, 10));
 
 foreach ($podcast as $i => $row) {
-	if (!$i) _style('podcast', array());
+	if (!$i) _style('podcast');
 	
 	$title = htmlentities(utf8_encode($row['post_title']), ENT_COMPAT, 'utf-8');
 	

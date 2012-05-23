@@ -38,7 +38,7 @@ class __forums_topics_last extends mac {
 		$result = sql_rowset($sql);
 		
 		foreach ($result as $i => $row) {
-			if (!$i) _style('topics', array());
+			if (!$i) _style('topics');
 			
 			_style('topics.row', array(
 				'TOPIC_ID' => s_link('topic', $row['topic_id']),

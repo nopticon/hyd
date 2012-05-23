@@ -85,8 +85,8 @@ class __artist_auth extends mac {
 					WHERE user_id IN (??)
 					AND user_type NOT IN (??)';
 				if ($s_members = sql_rowset(sql_filter($sql, implode(',', $s_members), USER_IGNORE . ((!$user->data['is_founder']) ? ', ' . USER_FOUNDER : '')), false, 'user_id')) {
-					$s_members_a = array();
-					$s_members_i = array();
+					$s_members_a = w();
+					$s_members_i = w();
 
 					$sql = 'SELECT user_id
 						FROM _artists_auth
@@ -109,7 +109,7 @@ class __artist_auth extends mac {
 							WHERE user_id IN (??)';
 						$result = sql_rowset(sql_filter($sql, implode(',', $s_members_i)));
 
-						$sd_members = array();
+						$sd_members = w();
 						foreach ($result as $row) {
 							$sd_members[$row['user_id']] = $row;
 						}
@@ -237,7 +237,7 @@ class __artist_auth extends mac {
 			global $config, $user;
 
 			$s_members = request_var('s_members', array(0));
-			$s_members_i = array();
+			$s_members_i = w();
 
 			if (sizeof($s_members)) {
 				$sql = 'SELECT user_id
@@ -245,7 +245,7 @@ class __artist_auth extends mac {
 					WHERE ub = ?';
 				$result = sql_rowset(sql_filter($sql, $this->data['ub']));
 
-				$s_auth = array();
+				$s_auth = w();
 				foreach ($result as $row) {
 					$s_auth[$row['user_id']] = true;
 				}
@@ -279,7 +279,7 @@ class __artist_auth extends mac {
 			//
 			if ($confirm) {
 				foreach ($s_members as $item) {
-					$update = array();
+					$update = w();
 
 					if (!in_array($item['user_id'], array(2, 3))) {
 						$sql = 'SELECT COUNT(ub) AS total

@@ -24,20 +24,8 @@ $user->init();
 $user->setup();
 
 $artists = new _artists();
+$artists->run();
 
-if ($artists->_setup()) {
-	$artists->_panel();
-		
-	$page_title = $artists->data['name'];
-	$page_template = 'artists.view';
-} else {
-	$artists->_list();
-	$artists->latest();
-	
-	$page_title = 'UB';
-	$page_template = 'artists';
-}
-
-page_layout($page_title, $page_template, false, $artists->ajx);
+page_layout($artists->get_title('UB'), $artists->get_template('artists'), false, $artists->ajax());
 
 ?>

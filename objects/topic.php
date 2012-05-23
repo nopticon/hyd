@@ -102,8 +102,7 @@ class topic {
 		$post_np = '';
 		$current_time = time();
 		
-		$error = array();
-		$is_auth = array();
+		$error = $is_auth = w();
 		
 		if (!$post_id && $reply) {
 			$reply = 0;
@@ -429,9 +428,8 @@ class topic {
 		// Advanced auth
 		//
 		
-		$controls = array();
-		$user_profile = array();
-		$unset_user_profile = array('user_id', 'user_posts', 'user_gender');
+		$controls = $user_profile = w();
+		$unset_user_profile = w('user_id user_posts user_gender');
 		
 		_style('posts');
 		
@@ -463,7 +461,7 @@ class topic {
 			}
 			
 			_style('posts.item', $data);
-			_style('posts.item.' . (($row['user_id'] != GUEST) ? 'username' : 'guestuser'), array());
+			_style('posts.item.' . (($row['user_id'] != GUEST) ? 'username' : 'guestuser'));
 		
 			if (isset($controls[$row['post_id']])) {
 				_style('posts.item.controls');
@@ -481,7 +479,7 @@ class topic {
 		if ($mod_auth) {
 			$mod = array((($topic_data['topic_important']) ? 'important' : 'normal'), 'delete', 'move', ((!$topic_data['topic_locked']) ? 'lock' : 'unlock'), 'split', 'merge');
 			
-			$mod_topic = array();
+			$mod_topic = w();
 			foreach ($mod as $item) {
 				if ($auth->option(array('forum', 'topics', $item))) {
 					$mod_topic[strtoupper($item)] = s_link_control('topic', array('topic' => $topic_id, 'mode' => $item));
