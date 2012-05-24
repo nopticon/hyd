@@ -85,8 +85,7 @@ class __artist_auth extends mac {
 					WHERE user_id IN (??)
 					AND user_type NOT IN (??)';
 				if ($s_members = sql_rowset(sql_filter($sql, implode(',', $s_members), USER_IGNORE . ((!$user->data['is_founder']) ? ', ' . USER_FOUNDER : '')), false, 'user_id')) {
-					$s_members_a = w();
-					$s_members_i = w();
+					$s_members_a = $s_members_i = w();
 
 					$sql = 'SELECT user_id
 						FROM _artists_auth
