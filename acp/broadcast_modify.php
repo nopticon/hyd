@@ -32,11 +32,11 @@ class __broadcast_modify extends mac {
 		
 		$ftp = new ftp();
 		
-		if (!$ftp->ftp_connect('209.51.162.170')) {
+		if (!$ftp->ftp_connect($config['broadcast_host'])) {
 			_pre('Can not connect', true);
 		}
 		
-		if (!$ftp->ftp_login('WURJ357411801', 'h29kE5fQ')) {
+		if (!$ftp->ftp_login($config['broadcast_username'], $config['broadcast_password'])) {
 			$ftp->ftp_quit();
 			_pre('Can not login', true);
 		}
@@ -44,7 +44,7 @@ class __broadcast_modify extends mac {
 		$cds_file = ROOT . 'interfase/cds/schedule_playlist.txt';
 		
 		// Submit
-		if ($submit) {
+		if ($this->submit) {
 			$hours = request_var('hours', array('' => ''));
 			
 			$build = '';

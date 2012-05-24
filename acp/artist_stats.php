@@ -30,14 +30,6 @@ class __artist_stats extends mac {
 		
 		$this->_artist();
 		
-		if (_button()) {
-			return $this->upload();
-		}
-		
-		if (_button('remove')) {
-			return $this->remove();
-		}
-		
 		$sql = 'SELECT *, SUM(members + guests) AS total
 			FROM _artists_stats
 			WHERE ub = ?
@@ -106,14 +98,6 @@ class __artist_stats extends mac {
 			'SHOW_VIEWS_LEGEND' => ($this->data['views'] > $total_graph))
 		);
 		
-		return;
-	}
-	
-	private function upload() {
-		return;
-	}
-	
-	private function remove() {
 		return;
 	}
 }

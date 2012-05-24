@@ -243,7 +243,7 @@ class comments extends common {
 			if (!sizeof($error)) {
 				sql_query($sql);
 				
-				$cache->delete('help_cat', 'help_faq', 'help_modules');
+				$cache->delete('help_cat help_faq help_modules');
 				
 				redirect(s_link_control('comments', array('mode' => $this->mode)));
 			} else {

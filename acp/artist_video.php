@@ -93,10 +93,6 @@ class __artist_video extends mac {
 		return redirect(_page());
 	}
 	
-	private function upload() {
-		return;
-	}
-	
 	private function remove() {
 		_pre('TODO', true);
 		return;

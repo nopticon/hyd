@@ -344,7 +344,7 @@ class upload {
 			_rm($t->source);
 		}
 		
-		return true;
+		return $row;
 	}
 	
 	public function scale($mode, $a) {

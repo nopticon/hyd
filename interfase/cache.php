@@ -83,12 +83,12 @@ class cache {
 		return;
 	}
 	
-	public function delete() {
+	public function delete($list) {
 		if (!$this->use) {
 			return;
 		}
 		
-		foreach (func_get_args() as $var) {
+		foreach (w($list) as $var) {
 			$cache_filename = ROOT . 'cache/' . $var . '.php';
 			if (file_exists($cache_filename)) {
 				_rm($cache_filename);

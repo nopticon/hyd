@@ -1531,12 +1531,10 @@ function w($a = '', $d = false) {
 }
 
 function sendmail($to, $from, $subject, $template = '', $vars = array()) {
-	static $included;
+	static $emailer;
 	
-	if (!$included) {
+	if (!$emailer) {
 		$emailer = new emailer();
-		
-		$included = true;
 	}
 	
 	$emailer->from = trim($from);

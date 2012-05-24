@@ -44,14 +44,13 @@ class __artist_delete extends mac {
 			fatal_error();
 		}
 		
-		$mods = w();
-		
 		$sql = 'SELECT m.user_id, m.user_email
 			FROM _artists_auth a, _members m
 			WHERE a.ub = ?
 				AND a.user_id = m.user_id';
 		$result = sql_rowset(sql_filter($sql, $a_data['ub']));
 		
+		$mods = w();
 		foreach ($result as $row) {
 			$mods[] = $row['user_id'];
 		}
@@ -120,9 +119,9 @@ class __artist_delete extends mac {
 		sql_query($d_sql);
 		
 		// Cache
-		$cache->delete('ub_list', 'a_last_images');
+		$cache->delete('ub_list a_last_images');
 		
-		_pre('La banda fue eliminada.', true);
+		redirect(s_link('a'));
 	}
 }
 

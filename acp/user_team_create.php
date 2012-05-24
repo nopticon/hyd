@@ -95,7 +95,7 @@ class __user_team_create extends mac {
 			sql_query($sql);
 		}
 		
-		$cache->delete('team', 'team_all', 'team_members', 'team_mod', 'team_radio', 'team_colab');
+		$cache->delete('team team_all team_members team_mod team_radio team_colab');
 		
 		return _pre('El usuario <strong>' . $userdata['username'] . '</strong> fue agregado al grupo <strong>' . $teamd['team_name'] . '</strong>.', true);
 	}

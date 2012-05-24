@@ -162,7 +162,7 @@ for ($i = 1; $i <= $count; $i++)
 		$sql = 'INSERT INTO _news' . sql_build('INSERT', $insert);
 		$post_id = sql_query_nextid($sql);
 		
-		$cache->delete('news', 'news_cat');
+		$cache->delete('news news_cat');
 		$user->save_unread(UH_GN, $post_id);
 		
 		$email_subject = 'Noticia publicada';

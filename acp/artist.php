@@ -50,7 +50,7 @@ class __artist extends mac {
 		$artist_id = sql_query_nextid($sql);
 		
 		// Cache
-		$cache->delete('ub_list', 'a_records', 'ai_records', 'a_recent');
+		$cache->delete('ub_list a_records ai_records a_recent');
 		set_config('max_artists', $config['max_artists'] + 1);
 		
 		// Create directories
