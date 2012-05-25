@@ -482,7 +482,7 @@ class topic {
 			$mod_topic = w();
 			foreach ($mod as $item) {
 				if ($auth->option(array('forum', 'topics', $item))) {
-					$mod_topic[strtoupper($item)] = s_link_control('topic', array('topic' => $topic_id, 'mode' => $item));
+					$mod_topic[strtoupper($item)] = s_link('acp', array('topic', topic' => $topic_id, 'mode' => $item));
 				}
 			}
 			

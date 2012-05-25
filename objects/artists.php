@@ -1703,13 +1703,13 @@ class _artists extends layout {
 						
 						if ($this->auth['adm'] && $user->is('founder')) {
 							$comments->data['CONTROL']['auth']['EDIT'] = array(
-								'URL' => s_link_control('a', array('a' => $this->data['subdomain'], 'mode' => 'aposts', 'manage' => 'edit', 'id' => '%d')),
+								'URL' => s_link('a', array('a' => $this->data['subdomain'], 'mode' => 'aposts', 'manage' => 'edit', 'id' => '%d')),
 								'ID' => 'post_id'
 							);
 						}
 						
 						$comments->data['CONTROL']['auth']['DELETE'] = array(
-							'URL' => s_link_control('a', array('a' => $this->data['subdomain'], 'mode' => 'aposts', 'manage' => 'delete', 'id' => '%d')),
+							'URL' => s_link('a', array('a' => $this->data['subdomain'], 'mode' => 'aposts', 'manage' => 'delete', 'id' => '%d')),
 							'ID' => 'post_id'
 						);
 					}

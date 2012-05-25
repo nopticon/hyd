@@ -1253,41 +1253,29 @@ class Template {
 		fputs($file, $code);
 		fclose($file);
 		_chmod($filename, $config['mask']);
+
 		return true;
 	}
 
 	public function xs_startup() {
-		global $config, $user;
-		
-		if (empty($this->xs_started)) {
-			$this->xs_started = 1;
-			
-			// Adding current template
-			$tpl = $this->root . '/';
-			if(substr($tpl, 0, 2) === './') {
-				$tpl = substr($tpl, 2, strlen($tpl));
-			}
-			
-			$extra_template = array(
-				'LANG' => $config['default_lang'],
-				
-				'S_SERVER' => '//' . $config['server_name'],
-				'S_ASSETS' => $config['assets_url'],
-				'S_COMMENTS' => s_link('comments'),
-				'S_EMOTICONS' => s_link('emoticons'),
-				'S_UPLOAD' => upload_maxsize(),
-				
-				'TEMPLATE' => $tpl,
-				'TEMPLATE_NAME' => $this->tpl,
-				
-				'_SELF' => _page(),
-				'IS_MEMBER' => $user->is('member'),
-				'MEMBER_COLOR' => $user->d('user_color'),
-				'YEAR' => date('Y')
-			);
-			
-			$this->vars = array_merge($this->vars, $extra_template);
+		if (!empty($this->xs_started)) {
+			return;
 		}
+
+		$this->xs_started = 1;
+		
+		// Adding current template
+		$tpl = $this->root . '/';
+		if(substr($tpl, 0, 2) === './') {
+			$tpl = substr($tpl, 2, strlen($tpl));
+		}
+		
+		$extra_template = array(
+			'TEMPLATE' => $tpl,
+			'TEMPLATE_NAME' => $this->tpl
+		);
+		
+		$this->vars = array_merge($this->vars, $extra_template);
 	}
 
 	/**

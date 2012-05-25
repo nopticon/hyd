@@ -651,7 +651,6 @@ class userpage {
 		}
 		
 		$output_vars = array(
-			'AVATAR_MAXSIZE' => upload_maxsize(),
 			'DATEFORMAT' => $dateformat_select,
 			'TIMEZONE' => $timezone_select,
 			'HIDEUSER_SELECTED' => ($_fields->hideuser) ? ' checked="checked"' : '',

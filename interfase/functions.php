@@ -529,23 +529,6 @@ function s_link($module = '', $data = false) {
 	return $url;
 }
 
-function s_link_control($module, $data = false) {
-	global $config;
-	
-	$url = 'http://' . $config['server_name'] . '/control/' . $module . '/';
-	if ($data !== false) {
-		$i = 0;
-		foreach ($data as $key => $value) {
-			$url .= (($i) ? '.' : '') . $key . '-' . $value;
-			$i++;
-		}
-		
-		$url .= '/';
-	}
-	
-	return $url;
-}
-
 function s_hidden($input) {
 	$s_hidden_fields = '';
 	
@@ -559,9 +542,7 @@ function s_hidden($input) {
 }
 
 function strnoupper($in) {
-	$in = strtolower($in);
-	return ucfirst($in);
-	//return preg_replace('/(^(\w*?)|(\w{4,}?))/e', "ucfirst('$1')", $in);
+	return ucfirst(strtolower($in));
 }
 
 //
@@ -569,14 +550,6 @@ function strnoupper($in) {
 //
 function is_numb($v) {
 	return @preg_match('/^\d+$/', $v);
-}
-
-function is_number($number = '') {
-	if (preg_match('/^(\d+)$/', $number)) {
-		return true;
-	}
-	
-	return false;
 }
 
 //
@@ -610,7 +583,7 @@ function build_pagination($url_format, $total_items, $per_page, $offset, $prefix
 // Build items pagination with numbers
 //
 //function generate_pagination($base_url, $num_items, $per_page, $start_item, $add_prevnext_text = true, $start_field = 'start', $folders_format = 0)
-function build_num_pagination ($url_format, $total_items, $per_page, $offset, $prefix = '', $lang_prefix = '') {
+function build_num_pagination($url_format, $total_items, $per_page, $offset, $prefix = '', $lang_prefix = '') {
 	global $user;
 	
 	$begin_end = 3;
@@ -1557,61 +1530,12 @@ function sendmail($to, $from, $subject, $template = '', $vars = array()) {
 	return $response;
 }
 
-function kernel_function($mode, $name, $param = false, $return_on_error = false) {
-	switch ($mode) {
-		case 'a':
-			$fe = 'file';
-			break;
-		case 'f':
-			$fe = 'function';
-			break;
-		case 'm':
-			$fe = 'method';
-			break;
-		case 'c':
-			$fe = 'class';
-			break;
-	}
-	
-	$fe .= '_exists';
-	
-	if ($mode == 'm') {
-		$cfe = $fe($name, $param);
-		$name = get_class($name);
-	} else {
-		$cfe = $fe($name);
-	}
-	
-	if (!$cfe) {
-		if ($return_on_error) {
-			return false;
-		}
-		
-		if ($mode == 'a') {
-			$name = base64_encode(base64_encode($name));
-		}
-		
-		if ($param !== false) {
-			$name .= ', ' . (is_array($param) ? implode(', ', $param) : $param);
-		}
-		
-		echo('<u>ERROR</u><br /><br />@ ~' . $fe . '( ' . $name . ' )<br /><br /><strong>info&#64;rockrepublik.net</strong>');
-		exit;
-	}
-	
-	return true;
-}
-
 function lang($search, $default = '') {
 	global $user;
 	
 	$upper = strtoupper($search);
 	
 	return (isset($user->lang[$upper])) ? $user->lang[$upper] : $default;
-}
-
-function fatal_error_tables($msg) {
-	return preg_replace('#([a-z_]+)\._([a-z]+)#is', '~\\2~', $msg);
 }
 
 function fatal_error($mode = '404', $bp_message = '') {
@@ -1751,13 +1675,6 @@ function redirect($url, $moved = false) {
 	exit;
 }
 
-// Meta refresh assignment
-function meta_refresh($time, $url) {
-	v_style(array(
-		'META' => '<meta http-equiv="refresh" content="' . $time . ';url=' . $url . '">')
-	);
-}
-
 function topic_feature($topic_id, $value) {
 	$sql = 'UPDATE _forum_topics
 		SET topic_featured = ?
@@ -1838,12 +1755,23 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 		'U_HELP' => s_link('help'),
 		'U_RSS_NEWS' => s_link('rss', 'news'),
 		'U_RSS_ARTISTS' => s_link('rss', 'artists'),
-	
+		'S_COMMENTS' => s_link('comments'),
+		'S_EMOTICONS' => s_link('emoticons'),
+		
+		'_SELF' => _page(),
+		'S_UPLOAD' => upload_maxsize(),
+		'YEAR' => date('Y'),
+		
+		'LANG' => $config['default_lang'],
 		'S_KEYWORDS' => $config['meta_keys'],
 		'S_DESCRIPTION' => $config['meta_desc'],
+		'S_SERVER' => '//' . $config['server_name'],
+		'S_ASSETS' => $config['assets_url'],
 		
 		'S_REDIRECT' => $user->d('session_page'),
 		'S_USERNAME' => $user->d('username'),
+		'IS_MEMBER' => $user->is('member'),
+		'MEMBER_COLOR' => $user->d('user_color'),
 		
 		'S_CONTROLPANEL' => (isset($template->vars['S_CONTROLPANEL'])) ? $template->vars['S_CONTROLPANEL'] : ($user->is('artist') || $user->is('mod') ? s_link('acp') : ''),
 		'S_UNREAD_ITEMS' => (($unread_items == 1) ? sprintf($user->lang['UNREAD_ITEM_COUNT'], $unread_items) : sprintf($user->lang['UNREAD_ITEMS_COUNT'], $unread_items)),
@@ -1881,11 +1809,9 @@ function sidebar() {
 	
 	foreach ($sfiles as $each_file) {
 		$include_file = ROOT . 'interfase/sidebar/' . $each_file . '.php';
-		if (!file_exists($include_file)) {
-			continue;
+		if (file_exists($include_file)) {
+			@require_once($include_file);
 		}
-		
-		@require_once($include_file);
 	}
 	
 	return;
@@ -1960,9 +1886,7 @@ function get_yt_code($a) {
 function get_a_imagepath($abs_path, $domain_path, $directory, $filename, $folders) {
 	foreach ($folders as $row) {
 		$a = $abs_path . $directory . '/' . $row . '/' . $filename;
-		//if (@file_exists($a)) {
-			return $domain_path . $directory . '/' . $row . '/' . $filename;
-		//}
+		return $domain_path . $directory . '/' . $row . '/' . $filename;
 	}
 	return false;
 }
@@ -2087,7 +2011,7 @@ function _rowset_style_row($row, $style, $prefix = '') {
 function _style_uv($a) {
 	if (!is_array($a) && !is_object($a)) $a = w();
 	
-	$b = array();
+	$b = w();
 	foreach ($a as $i => $v) {
 		$b[strtoupper($i)] = $v;
 	}
