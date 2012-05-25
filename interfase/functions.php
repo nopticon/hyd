@@ -2285,6 +2285,21 @@ function tz_select($default, $select_name = 'timezone') {
 	return $tz_select;
 }
 
+function sumhour($a) {
+	$h = substr($a, 0, 2);
+	$m = substr($a, 2, 2);
+	$mk = mktime($h - 6, $m);
+	
+	return date('Hi', $mk);
+}
+
+function oclock($a) {
+	$h = substr($a, 0, 2);
+	$m = substr($a, 2, 2);
+	
+	return ($m === '00');
+}
+
 //
 // Check to see if the username has been taken, or if it is disallowed.
 // Also checks if it includes the " character, which we don't allow in usernames.

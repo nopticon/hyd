@@ -98,19 +98,4 @@ class __broadcast_modify extends mac {
 	}
 }
 
-function sumhour($a) {
-	$h = substr($a, 0, 2);
-	$m = substr($a, 2, 2);
-	$mk = mktime($h - 6, $m);
-	
-	return date('Hi', $mk);
-}
-
-function oclock($a) {
-	$h = substr($a, 0, 2);
-	$m = substr($a, 2, 2);
-	
-	return ($m === '00');
-}
-
 ?>
