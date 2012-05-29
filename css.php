@@ -90,7 +90,7 @@ $template->assign_var_from_handle('EXT', 'body');
 
 sql_close();
 
-echo preg_replace('/\s\s+/', ' ', str_replace(array(nr(1), nr(), "\t"), '', $template->vars['EXT']));
+echo preg_replace('/\s\s+/', ' ', str_replace(array(nr(1), nr(), "\t"), '', preg_replace('!/\*.*?\*/!s', '', $template->vars['EXT'])));
 exit;
 
 ?>
