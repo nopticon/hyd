@@ -663,7 +663,7 @@ class user extends session {
 		
 		$response = false;
 		if ($this->is('member')) {
-			$all = $this->_team_auth_list($name, $dd);
+			$all = $this->_team_auth_list($name);
 			$response = (is_array($all) && count($all)) ? in_array($user_id, $all) : $all;
 			
 			if ($name == 'artist' && $response && $artist !== false) {
