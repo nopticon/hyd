@@ -457,6 +457,10 @@ class session {
 	public function d($d = false, $v = false) {
 		if ($d === false) {
 			if ($v !== false) {
+				$v['is_member'] = ($v['user_id'] != 1) ? true : false;
+				$v['is_bot'] = false;
+				$v['is_founder'] = ($v['user_id'] != 1 && $v['user_type'] == USER_FOUNDER && !$v['is_bot']) ? true : false;
+
 				$this->data = $v;
 			}
 			
@@ -652,20 +656,15 @@ class user extends session {
 		if (isset($this->data['is_' . $name])) {
 			return $this->data['is_' . $name];
 		}
-		
+
 		if ($user_id === false) {
 			$user_id = $this->d('user_id');
 		}
 		
 		$response = false;
 		if ($this->is('member')) {
-			$all = $this->_team_auth_list($name);
-			
-			if (is_array($all) && count($all)) {
-				$response = in_array($user_id, $all);
-			} else {
-				$response = $all;
-			}
+			$all = $this->_team_auth_list($name, $dd);
+			$response = (is_array($all) && count($all)) ? in_array($user_id, $all) : $all;
 			
 			if ($name == 'artist' && $response && $artist !== false) {
 				$sql = 'SELECT ub
@@ -710,7 +709,7 @@ class user extends session {
 	
 	public function _team_auth_list($mode = '') {
 		global $cache;
-		
+
 		switch ($mode) {
 			case 'founder':
 				if (!$response = $cache->get('team_founder')) {

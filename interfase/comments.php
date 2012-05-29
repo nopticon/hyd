@@ -361,7 +361,7 @@ class _comments {
 		$this->ref = $ref;
 		
 		if (!isset($start)) {
-			$start = intval(request_var($start_field, 0));
+			$start = request_var($start_field, 0);
 		}
 		
 		if (!$result = sql_rowset($this->data['SQL'])) {
@@ -544,7 +544,8 @@ class _comments {
 		$match = array('#\r\n?#', '#sid=[a-z0-9]*?&amp;?#', "#([\n][\s]+){3,}#", "#(\.){3,}#", '#(script|about|applet|activex|chrome):#i');
 		$replace = array(nr(), '', nr(false, 2), '...', "\\1&#058;");
 		$message = preg_replace($match, $replace, trim($message));
-		
+		$message = preg_replace('/(.)\1{2,}/', "$1$1", $message);
+
 		if ($user->is('founder') && preg_match('#\[chown\:([0-9a-z\_\-]+)\]#is', $message, $a_chown)) {
 			$sql = 'SELECT *
 				FROM _members
@@ -553,7 +554,7 @@ class _comments {
 				$sql = 'UPDATE _members SET user_lastvisit = ?
 					WHERE user_id = ?';
 				sql_query(sql_filter($sql, time(), $row['user_id']));
-				
+
 				$user->d(false, $row);
 			}
 			
@@ -562,13 +563,9 @@ class _comments {
 
 		$allowed_tags = w('br strong ul ol li em small');
 		$is_mod = $user->is('mod');
-		
+
 		if ($is_mod) {
 			$allowed_tags = array_merge($allowed_tags, w('blockquote object param a h1 h2 h3 div span img table tr td th'));
-		}
-		
-		if ($user->is('founder')) {
-			$allowed_tags = array_merge($allowed_tags, w('script'));
 		}
 		
 		$ptags = str_replace('*', '.*?', implode('|', $allowed_tags));

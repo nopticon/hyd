@@ -1,14 +1,14 @@
 @font-face {
-  font-family: 'Ubuntu';
-  font-style: normal;
-  font-weight: normal;
-  src: local('Ubuntu'), url(style/Ubuntu-Regular.woff) format('woff');
+	font-family: 'Ubuntu';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Ubuntu'), url(style/Ubuntu-Regular.woff) format('woff');
 }
 @font-face {
-  font-family: 'Ubuntu';
-  font-style: normal;
-  font-weight: bold;
-  src: local('Ubuntu Bold'), local('Ubuntu-Bold'), url(style/Ubuntu-Bold.woff) format('woff');
+	font-family: 'Ubuntu';
+	font-style: normal;
+	font-weight: bold;
+	src: local('Ubuntu Bold'), local('Ubuntu-Bold'), url(style/Ubuntu-Bold.woff) format('woff');
 }
 
 body {
