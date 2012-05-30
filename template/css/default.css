@@ -10,6 +10,18 @@
 	font-weight: bold;
 	src: local('Ubuntu Bold'), local('Ubuntu-Bold'), url(style/Ubuntu-Bold.woff) format('woff');
 }
+@font-face {
+	font-family: 'Open Sans';
+	font-style: normal;
+	font-weight: 300;
+	src: local('Open Sans Light'), local('OpenSans-Light'), url('http://themes.googleusercontent.com/static/fonts/opensans/v6/DXI1ORHCpsQm3Vp6mXoaTXhCUOGz7vYGh680lGh-uXM.woff') format('woff');
+}
+@font-face {
+	font-family: 'Open Sans Condensed';
+	font-style: normal;
+	font-weight: 300;
+	src: local('Open Sans Cond Light'), local('OpenSans-CondensedLight'), url('http://themes.googleusercontent.com/static/fonts/opensanscondensed/v6/gk5FxslNkTTHtojXrkp-xF1YPouZEKgzpqZW9wN-3Ek.woff') format('woff');
+}
 
 body {
 	margin: 0;
@@ -19,7 +31,7 @@ body {
 p, div, span, select {
 	cursor: default;
 }
-p, div, span, input, textarea, select, a, optgroup, h1, h2 {
+p, div, span, input, textarea, select, a, optgroup {
 	margin: 0;
 	font-family: 'Ubuntu', Verdana, Arial, Helvetica, sans-serif;
 	text-decoration: none;
@@ -27,6 +39,11 @@ p, div, span, input, textarea, select, a, optgroup, h1, h2 {
 p, div, span, input, textarea, select, a, optgroup {
 	font-size: 9pt;
 	color: #d0ced1;
+}
+h1, h2, h3 {
+	margin: 0;
+	font-family: 'Open Sans', Verdana, Arial, Helvetica, sans-serif;
+	text-decoration: none;
 }
 select, optgroup {
 	color: #40474A;
@@ -53,7 +70,6 @@ input, button, textarea, select {
 	background: #41413E;
 	border: 0;
 	padding: 2px;
-	/*box-shadow: 1px 1px 1px #111;*/
 }
 optgroup {
 	background: #eee;
@@ -67,11 +83,6 @@ hr {
 	line-height: 0.1em;
 }
 
-.page {
-	width: 960px;
-	margin: 0 auto;
-}
-
 #content {
 	padding: 10px;
 	clear: both;
@@ -80,6 +91,10 @@ hr {
 	border-radius: 10px;
 }
 
+.page {
+	width: 960px;
+	margin: 0 auto;
+}
 .header {
 	display: block;
 	width: 100%;
