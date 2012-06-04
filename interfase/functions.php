@@ -380,6 +380,20 @@ function array_key($a, $k) {
 	return (isset($a[$k])) ? $a[$k] : false;
 }
 
+function array_dir($path) {
+	$list = w();
+	
+	$fp = @opendir($path);
+	while ($row = @readdir($fp)) {
+		if (is_level($row)) continue;
+		
+		$list[] = $row;
+	}
+	@closedir($fp);
+	
+	return $list;
+}
+
 //
 // Parse error lang
 //
@@ -550,6 +564,10 @@ function strnoupper($in) {
 //
 function is_numb($v) {
 	return @preg_match('/^\d+$/', $v);
+}
+
+function is_level($path) {
+	return ($path == '.' || $path == '..');
 }
 
 //

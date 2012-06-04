@@ -33,8 +33,8 @@ class __event_images extends mac {
 		if ($this->submit) {
 			$event_id = request_var('event_id', 0);
 			
-			$filepath_1 = '..' . SDATA . 'tmp/';
-			$filepath_2 = '..' . SDATA . 'events/gallery/';
+			$filepath_1 = $config['events_path'] . 'tmp/';
+			$filepath_2 = $config['events_path'] . 'gallery/';
 			$filepath_3 = $filepath_1 . $event_id . '/';
 			$filepath_4 = $filepath_3 . 'thumbnails/';
 			
@@ -52,8 +52,7 @@ class __event_images extends mac {
 					
 					$fp = @opendir($filepath_3 . $zip_folder);
 					while ($file = @readdir($fp)) {
-						if ($file != '.' && $file != '..')
-						{
+						if (!is_level($file)) {
 							$ftp->ftp_rename($ftp->dfolder() . 'data/tmp/' . $event_id . '/' . $zip_folder . '/' . $file, $ftp->dfolder() . 'data/tmp/' . $event_id . '/' . $file);
 							//@rename($filepath_3 . $zip_folder . '/' . $file, $filepath_3 . $file);
 						}
@@ -100,16 +99,7 @@ class __event_images extends mac {
 					$img = $event_pre;
 				}
 				
-				$fp = @opendir($filepath_3);
-				while ($filerow = @readdir($fp)) {
-					$filerow_list[] = $filerow;
-				}
-				@closedir($fp);
-				
-				if (count($filerow_list) > 100) {
-					
-				}
-				
+				$filerow_list = array_dir($filepath_3);
 				array_multisort($filerow_list, SORT_ASC, SORT_NUMERIC);
 				
 				foreach ($filerow_list as $filerow) {
