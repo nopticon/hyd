@@ -1456,14 +1456,16 @@ class _artists extends layout {
 							}
 						}
 					}
+
+					$_ps = request_var('ps', 0);
 					
-					if ((($this->auth['user'] && $update_views) || (!$this->auth['user'] && $this->data['layout'] == 1)) && !isset($_REQUEST['ps'])) {
+					if ((($this->auth['user'] && $update_views) || (!$this->auth['user'] && $this->data['layout'] == 1)) && !$_ps) {
 						$sql = 'UPDATE _artists SET views = views + 1
 							WHERE ub = ?';
 						sql_query(sql_filter($sql, $this->data['ub']));
 						$this->data['views']++;
 						
-						if ((!$this->auth['user'] && $this->data['layout'] == 1) && !isset($_REQUEST['ps'])) {
+						if ((!$this->auth['user'] && $this->data['layout'] == 1) && !$_ps) {
 							$sql_stats = array(
 								'ub' => (int) $this->data['ub'],
 								'date' => (int) $current_month

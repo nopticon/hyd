@@ -43,7 +43,7 @@ if (count($deleted))
 
 //
 // Optimize
-set_config('board_disable', 1);
+set_config('site_disable', 1);
 
 $sql = 'SHOW TABLES';
 $result = sql_rowset($sql, false, false, false, MYSQL_NUM);
@@ -55,7 +55,7 @@ foreach ($result as $row) {
 $sql = 'OPTIMIZE TABLE ' . implode(', ', $tables);
 sql_query($sql);
 
-set_config('board_disable', 0);
+set_config('site_disable', 0);
 
 _pre('Done.', true);
 

@@ -202,7 +202,6 @@ class Template {
 			$str = substr($dir, $pos + strlen($tpl), strlen($dir));
 		}
 		// searching for one more 'templates/'
-		// that can happen if full path is like /home/some_dude/templates/phpbb/templates/subSilver/
 		$dir = $this->template_name($str);
 		if (!$dir) {
 			$dir = $str;
@@ -1434,7 +1433,7 @@ class Template {
 
 	/*
 	* Split/merge config data.
-	* Using this function instead of (un)serialize because it generates smaller string so it can be stored in phpbb_config
+	* Using this function instead of (un)serialize because it generates smaller string
 	*/
 	public function _serialize($array) {
 		if (!is_array($array)) {

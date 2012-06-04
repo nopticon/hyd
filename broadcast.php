@@ -71,7 +71,7 @@ if (!empty($category)) {
 	page_layout($str, 'broadcast_play');
 }
 
-$programs = array('supernova', 'invasionrock', 'antifm', 'metalebrios', 'themetalroom');
+$programs = w('supernova invasionrock antifm metalebrios themetalroom');
 
 foreach ($programs as $i => $row) {
 	if (!$i) _style('programs');

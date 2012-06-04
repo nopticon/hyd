@@ -67,7 +67,7 @@ class _news {
 		
 		switch ($module) {
 			case 'create':
-				$submit = (isset($_REQUEST['submit'])) ? true : false;
+				$submit = _button();
 				
 				if ($submit) {
 					$cat_id = request_var('cat_id', 0);

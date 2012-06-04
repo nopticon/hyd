@@ -913,7 +913,7 @@ class _comments {
 		return;
 	}
 	
-	public function a_links ($style = 'ub-url') {
+	public function a_links($style = 'ub-url') {
 		if (!isset($this->options['a'])) {
 			global $cache;
 			

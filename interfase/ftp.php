@@ -25,14 +25,11 @@ class ftp {
 	public function __construct() {
 		global $config;
 		
-		define('FTP_ASCII', 0);
-		define('FTP_BINARY', 1);
-		
 		// Decode file
 		if (@file_exists(ROOT . '.htfda') && $a = @file(ROOT . '.htfda')) {
 			// server.user.pwd.folder
 			$d = explode(',', _decode($a[0]));
-			foreach (array('server', 'user', 'passwd', 'folder') as $i => $row) {
+			foreach (w('server user passwd folder') as $i => $row) {
 				$this->def[$row] = _decode($d[$i]);
 			}
 		}

@@ -503,6 +503,10 @@ class user extends session {
 	public $keyoptions = array('viewimg' => 0, 'viewsigs' => 3, 'viewavatars' => 4);
 	public $keyvalues = array();
 
+	public function __construct() {
+		return;
+	}
+
 	public function setup($lang_set = false, $style = false) {
 		global $template, $config, $auth, $cache;
 
@@ -556,8 +560,7 @@ class user extends session {
 		// Is board disabled and user not an admin or moderator?
 		// TODO
 		// New ACL enabling board access while offline?
-		if ($config['board_disable'] && $this->data['user_id'] != 2) {
-			
+		if ($config['site_disable'] && $this->is('founder')) {
 			status("503 Service Temporarily Unavailable");
 			header("Retry-After: 3600");
 
@@ -813,6 +816,67 @@ class user extends session {
 	I			ARTISTS IMAGES				-
 	
 	*/
+
+	public function today_type($type) {
+		global $cache;
+
+		if (!is_numeric($type)) {
+			if (!$types = $cache->get('today_type')) {
+				$sql = 'SELECT type_alias, type_id
+					FROM _today_type
+					ORDER BY type_order';
+				$types = $cache->save('today_type', sql_rowset($sql));
+			}
+
+			$type = isset($types[$type]) ? $types[$type] : false:
+		}
+
+		return $type;
+	}
+
+	public function today_get() {
+		
+	}
+
+	public function today_create($type, $list, $filter = false, $to = false) {
+		static $from_lastvisit;
+
+		if ($to !== false) {
+			if ($to != $this->d('user_id')) {
+				$type = $this->today_type($type);
+
+				$sql = 'SELECT object_id
+					FROM _today_objects
+					WHERE object_bio = ?
+						AND object_type = ?
+						AND object_relation = ?';
+				if (!sql_field(sql_filter($sql, 0, 0, 0), 'object_id', 0)) {
+					$sql_insert = array(
+						'object_bio' => $this->d('user_id'),
+						'object_type' => 0,
+						'object_relation' => 0,
+						'object_time' => time()
+					);
+					$sql = 'INSERT INTO _today';
+				}
+			}
+			return;
+		}
+
+		if (!$from_lastvisit) {
+			list($d, $m, $y) = explode(' ', gmdate('j n Y', time() - 15552000)); // (30 * 6) * 86400
+			$from_lastvisit = gmmktime(0, 0, 0, $m, $d, $y);
+		}
+	}
+
+	public function today_update($type, $list) {
+
+	}
+
+	public function today_delete() {
+
+	}
+
 	public function save_unread($element, $item, $where_id = 0, $reply_to = 0, $reply_to_return = true, $update_rows = false) {
 		static $from_lastvisit;
 		
@@ -825,13 +889,13 @@ class user extends session {
 				return;
 			}
 			
-			$sql_items = 'SELECT user_id
+			$sql = 'SELECT user_id
 				FROM _members_unread
 				WHERE element = ?
 					AND item = ?
 					AND user_id = ?
 				ORDER BY user_id';
-			if (!$row = sql_field(sql_filter($sql, $element, $item, $reply_to))) {
+			if (!sql_field(sql_filter($sql, $element, $item, $reply_to))) {
 				$this->insert_unread($reply_to, $element, $item);
 			}
 			

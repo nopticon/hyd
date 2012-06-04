@@ -34,8 +34,7 @@ class dcom {
 			$d = decode_ht('.htda');
 		}
 		
-		foreach (w('server login secret database') as $i => $k)
-		{
+		foreach (w('server login secret database') as $i => $k) {
 			$this->_access[$k] = _decode($d[$i]);
 		}
 		unset($d);
@@ -73,7 +72,6 @@ function sql_filter() {
 	}
 	
 	$count_args = count($args);
-	
 	$sql = str_replace('%', '[!]', $sql);
 	
 	if (!$count_args || $count_args < 1) {
@@ -84,15 +82,9 @@ function sql_filter() {
 		$args = $args[0];
 	}
 	
-	$_args = array();
 	foreach ($args as $i => $arg) {
-		if (strpos($arg, '/***/') !== false) {
-			$_args[$i] = $arg;
-		} else {
-			$_args[$i] = sql_escape($arg);
-		}
+		$args[$i] = (strpos($arg, '/***/') !== false) ? $arg : sql_escape($arg);
 	}
-	$args = $_args;
 	
 	foreach ($args as $i => $row) {
 		if (strpos($row, 'addquotes') !== false) {

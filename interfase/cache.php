@@ -80,7 +80,7 @@ class cache {
 			_chmod($filename, $config['mask']);
 		}
 		
-		return;
+		return $data;
 	}
 	
 	public function delete($list) {
@@ -98,9 +98,6 @@ class cache {
 		return;
 	}
 	
-	//
-	// Borrowed from phpBB 2.2 : acm_file.php
-	//
 	public function format($data) {
 		$lines = w();
 		foreach ($data as $k => $v) {

@@ -54,10 +54,6 @@ if (!$today->run()) {
 	_style('objects_empty');
 }
 
-v_style(array(
-	'S_UNREAD_ACTION' => s_link('today'))
-);
-
 page_layout('UNREAD_ITEMS', 'unread');
 
 ?>

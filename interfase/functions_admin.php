@@ -34,12 +34,12 @@ function make_forum_select($box_name, $ignore_forum = false, $select_forum = '')
 	$forum_list = '';
 	foreach ($result as $row) {
 		if ($is_auth_ary[$row['forum_id']]['auth_read'] && $ignore_forum != $row['forum_id']) {
-			$selected = ( $select_forum == $row['forum_id'] ) ? ' selected="selected"' : '';
+			$selected = ($select_forum == $row['forum_id']) ? ' selected="selected"' : '';
 			$forum_list .= '<option value="' . $row['forum_id'] . '"' . $selected .'>' . $row['forum_name'] . '</option>';
 		}
 	}
 	
-	$forum_list = ($forum_list == '') ? '<option value="-1">-- ! No Forums ! --</option>' : '<select name="' . $box_name . '">' . $forum_list . '</select>';
+	$forum_list = ($forum_list == '') ? '<option value="-1">--</option>' : '<select name="' . $box_name . '">' . $forum_list . '</select>';
 
 	return $forum_list;
 }
@@ -169,7 +169,7 @@ function sync_merge($type, $id = false) {
 						WHERE topic_id = ?';
 					$sql = sql_filter($sql, ($row['total_posts'] - 1), $row['first_post'], $row['last_post'], $id);
 				} else {
-					$sql = 'DELETE FROM _forum_topics WHERE topic_id = ';
+					$sql = 'DELETE FROM _forum_topics WHERE topic_id = ?';
 					$sql = sql_filter($sql, $id);
 				}
 				sql_query($sql);

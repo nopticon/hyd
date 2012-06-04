@@ -69,7 +69,7 @@ class _win {
 	}
 	
 	private function run_object() {
-		if (isset($_REQUEST['submit'])) {
+		if (_button()) {
 			return $this->store();
 		}
 			

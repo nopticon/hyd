@@ -18,14 +18,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_APP')) exit;
 
-// Debug Level
-define('DEBUG', 1);
-define('PPATH', '../..');
-define('SDATA', '/data/');
-
 // User Levels
 define('GUEST', 1);
-
 define('USER_NORMAL', 0);
 define('USER_INACTIVE', 1);
 define('USER_FOUNDER', 3);
@@ -44,17 +38,14 @@ define('USER_AVATAR_UPLOAD', 1);
 define('USER_AVATAR_REMOTE', 2);
 define('USER_AVATAR_GALLERY', 3);
 
-
 // Group settings
 define('GROUP_OPEN', 0);
 define('GROUP_CLOSED', 1);
 define('GROUP_HIDDEN', 2);
 
-
 // Forum state
 define('FORUM_UNLOCKED', 0);
 define('FORUM_LOCKED', 1);
-
 
 // Topic status
 define('TOPIC_UNLOCKED', 0);
@@ -63,25 +54,21 @@ define('TOPIC_MOVED', 2);
 define('TOPIC_WATCH_NOTIFIED', 1);
 define('TOPIC_WATCH_UN_NOTIFIED', 0);
 
-
 // Topic types
 define('POST_NORMAL', 0);
 define('POST_STICKY', 1);
 define('POST_ANNOUNCE', 2);
 define('POST_GLOBAL_ANNOUNCE', 3);
 
-
 // SQL codes
 define('BEGIN_TRANSACTION', 1);
 define('END_TRANSACTION', 2);
-
 
 // Error codes
 define('GENERAL_MESSAGE', 200);
 define('GENERAL_ERROR', 202);
 define('CRITICAL_MESSAGE', 203);
 define('CRITICAL_ERROR', 204);
-
 
 // Private messaging
 define('PRIVMSGS_READ_MAIL', 0);
@@ -90,7 +77,6 @@ define('PRIVMSGS_SENT_MAIL', 2);
 define('PRIVMSGS_SAVED_IN_MAIL', 3);
 define('PRIVMSGS_SAVED_OUT_MAIL', 4);
 define('PRIVMSGS_UNREAD_MAIL', 5);
-
 
 // URL PARAMETERS
 define('POST_TOPIC_URL', 't');
@@ -103,6 +89,8 @@ define('POST_GROUPS_URL', 'g');
 define('SESSION_METHOD_COOKIE', 100);
 define('SESSION_METHOD_GET', 101);
 
+define('FTP_ASCII', 0);
+define('FTP_BINARY', 1);
 
 // Auth settings
 define('AUTH_LIST_ALL', 0);
@@ -123,7 +111,6 @@ define('AUTH_ANNOUNCE', 7);
 define('AUTH_STICKY', 8);
 define('AUTH_POLLCREATE', 9);
 define('AUTH_VOTE', 10);
-
 
 // ProfileCP
 define('MALE', 1);
@@ -156,9 +143,6 @@ define('UH_LY', 23);
 define('UH_FRIEND', 24);
 define('UH_GN', 25);
 
-//
-// MM
-//
 define('E_UD_AUDIO', 1);
 define('E_UD_VIDEO', 2);
 
