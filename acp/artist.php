@@ -46,8 +46,7 @@ class __artist extends mac {
 			'email' => $request->email,
 			'www' => str_replace('http://', '', $request->www)
 		);
-		$sql = 'INSERT INTO _artists' . sql_build('INSERT', $sql_insert);
-		$artist_id = sql_query_nextid($sql);
+		$artist_id = sql_insert('artists', $sql_insert);
 		
 		// Cache
 		$cache->delete('ub_list a_records ai_records a_recent');
@@ -82,8 +81,7 @@ class __artist extends mac {
 					'ub' => $artist_id,
 					'user_id' => $userdata['user_id']
 				);
-				$sql = 'INSERT INTO _artists_auth' . sql_build('INSERT', $sql_insert);
-				sql_query($sql);
+				sql_insert('artists_auth', $sql_insert);
 				
 				//
 				$update = array('user_type' => USER_ARTIST, 'user_auth_control' => 1);

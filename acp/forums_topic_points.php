@@ -52,8 +52,7 @@ class __forums_topic_points extends mac {
 			'old' => $this->object->topic_points,
 			'new' => $this->object->new_value
 		);
-		$sql = 'INSERT INTO _log_mod' . sql_build('INSERT', $sql_insert);
-		sql_query($sql);
+		sql_insert('log_mod', $sql_insert);
 		
 		return redirect(s_link('topic', $topic_id));
 	}

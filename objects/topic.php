@@ -164,8 +164,7 @@ class topic {
 									'vote_user_ip' => $user->ip,
 									'vote_cast' => (int) $vote_option
 								);
-								$sql = 'INSERT INTO _poll_voters' . sql_build('INSERT', $insert_vote);
-								sql_query($sql);
+								sql_insert('poll_voters', $insert_vote);
 							}
 						}
 					}
@@ -240,8 +239,7 @@ class topic {
 							$insert_data['post_reply'] = $post_id;
 						}
 						
-						$sql = 'INSERT INTO _forum_posts' . sql_build('INSERT', $insert_data);
-						$post_id = sql_query_nextid($sql);
+						$post_id = sql_insert('forum_posts', $insert_data);
 						
 						$user->delete_unread(UH_T, $topic_id);
 						$user->save_unread(UH_T, $topic_id);
@@ -312,8 +310,7 @@ class topic {
 						'topic_id' => $topic_id,
 						'notify_status' => 0
 					);
-					$sql = 'INSERT INTO _forum_topics_fav' . sql_build('INSERT', $sql_insert);
-					sql_query($sql);
+					sql_insert('forum_topics_fav', $sql_insert);
 					
 					redirect($topic_url . (($start) ? 's' . $start . '/' : ''));
 				}
@@ -435,7 +432,7 @@ class topic {
 		
 		foreach ($messages as $row) {
 			if ($user->is('member')) {
-				$poster = ($row['user_id'] != GUEST) ? $row['username'] : (($row['post_username'] != '') ? $row['post_username'] : $user->lang['GUEST']);
+				$poster = ($row['user_id'] != GUEST) ? $row['username'] : (($row['post_username'] != '') ? $row['post_username'] : lang('guest'));
 				
 				$controls[$row['post_id']]['reply'] = s_link('post', array($row['post_id'], 'reply'));
 				
@@ -492,7 +489,7 @@ class topic {
 				foreach ($mod_topic as $k => $v) {
 					_style('auth.item', array(
 						'URL' => $v,
-						'LANG' => $user->lang[$k . '_TOPIC'])
+						'LANG' => lang($k . '_topic'))
 					);
 				}
 			}
@@ -549,17 +546,8 @@ class topic {
 			
 			_style('feature', array(
 				'U_FEAT' => s_link('acp', array('forums_topic_feature', 'msg_id', $topic_data['topic_id'])),
-				'V_LANG' => $user->lang['TOPIC_FEATURED_' . $v_lang])
+				'V_LANG' => lang('topic_featured_' . $v_lang))
 			);
-			
-			//
-			/*
-			$v_lang = ($topic_data['topic_points']) ? 'REM' : 'ADD';
-			_style('mcppoints', array(
-				'U_FEAT' => s_link('acp', array('forums_topic_points', 'msg_id', $topic_data['topic_id'])),
-				'V_LANG' => $user->lang['TOPIC_POINTS_' . $v_lang])
-			);
-			*/
 		}
 		
 		//

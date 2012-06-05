@@ -105,8 +105,7 @@ class __artist_gallery extends mac {
 					'width' => $xa->width,
 					'height' => $xa->height
 				);
-				$sql = 'INSERT INTO _artists_images' . sql_build('INSERT', $insert);
-				sql_query($sql);
+				sql_insert('artists_images', $insert);
 				
 				$a++;
 			}

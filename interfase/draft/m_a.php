@@ -172,7 +172,7 @@ class a extends common {
 		$s_hidden = array('module' => $this->control->module, 'a' => $this->data['subdomain'], 'mode' => $this->mode, 'manage' => $this->manage, 'id' => $nsdata['topic_id']);
 
 		v_style(array(
-			'MESSAGE_TEXT' => $user->lang['CONTROL_A_NEWS_DELETE'] . '<br /><br /><h1>' . $nsdata['topic_title'] . '</h1>',
+			'MESSAGE_TEXT' => lang('control_a_news_delete') . '<br /><br /><h1>' . $nsdata['topic_title'] . '</h1>',
 
 			'S_CONFIRM_ACTION' => s_link('control'),
 			'S_HIDDEN_FIELDS' => s_hidden($s_hidden))

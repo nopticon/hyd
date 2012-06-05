@@ -91,8 +91,7 @@ class __user_team_create extends mac {
 				'real_name' => $realname,
 				'member_mod' => $ismod
 			);
-			$sql = 'INSERT INTO _team_members' . sql_build('INSERT', $insert);
-			sql_query($sql);
+			sql_insert('team_members', $insert);
 		}
 		
 		$cache->delete('team team_all team_members team_mod team_radio team_colab');

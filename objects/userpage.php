@@ -22,26 +22,19 @@ function a_thumbnails($selected_artists, $random_images, $lang_key, $block, $ite
 	global $config, $user;
 	
 	_style('main.' . $block, array(
-		'L_TITLE' => $user->lang[$lang_key])
+		'L_TITLE' => lang($lang_key))
 	);
 	
-	$col = 0;
 	foreach ($selected_artists as $ub => $data) {
-		if (!$col) {
-			_style('main.' . $block . '.row');
-		}
+		$image = $ub . '/thumbnails/' . $random_images[$ub] . '.jpg';
 		
-		$image = ($data['images']) ? $ub . '/thumbnails/' . $random_images[$ub] . '.jpg' : 'default/shadow.gif';
-		
-		_style('main.' . $block . '.row.col', array(
+		_style('main.' . $block . '.row', array(
 			'NAME' => $data['name'],
 			'IMAGE' => $config['artists_url'] . $image,
 			'URL' => s_link('a', $data['subdomain']),
 			'LOCATION' => ($data['local']) ? 'Guatemala' : $data['location'],
 			'GENRE' => $data['genre'])
 		);
-		
-		$col = ($col == ($item_per_col - 1)) ? 0 : $col + 1;
 	}
 	
 	return true;
@@ -193,10 +186,8 @@ class userpage {
 		// Start error handling
 		//
 		if (sizeof($error)) {
-			$error = preg_replace('#^([A-Z_]+)$#e', "(!empty(\$user->lang['\\1'])) ? \$user->lang['\\1'] : '\\1'", $error);
-			
 			_style('error', array(
-				'MESSAGE' => implode('<br />', $error))
+				'MESSAGE' => parse_error($error))
 			);
 			
 			if ($mode == 'reply') {
@@ -382,7 +373,7 @@ class userpage {
 		//
 		// Output template
 		//
-		$page_title = ($mode == 'read') ? $user->lang['DCONV_READ'] : $user->lang['DCONVS'];
+		$page_title = ($mode == 'read') ? lang('dconv_read') : lang('dconvs');
 		
 		$layout_vars = array(
 			'L_CONV' => $page_title,
@@ -412,7 +403,7 @@ class userpage {
 				// Output to template
 				//
 				$layout_vars = array(
-					'MESSAGE_TEXT' => (sizeof($mark) == 1) ? $user->lang['CONFIRM_DELETE_PM'] : $user->lang['CONFIRM_DELETE_PMS'], 
+					'MESSAGE_TEXT' => (sizeof($mark) == 1) ? lang('confirm_delete_pm') : lang('confirm_delete_pms'),
 		
 					'S_CONFIRM_ACTION' => s_link('my', 'dc'),
 					'S_HIDDEN_FIELDS' => s_hidden($s_hidden)
@@ -524,8 +515,7 @@ class userpage {
 						'rank_max' => -1,
 						'rank_special' => 1
 					);
-					$sql = 'INSERT INTO _ranks' . sql_build('INSERT', $insert);
-					$rank_id = sql_query_nextid($sql);
+					$rank_id = sql_insert('ranks', $insert);
 				}
 				
 				if ($user->d('user_rank')) {
@@ -587,10 +577,8 @@ class userpage {
 		}
 		
 		if (sizeof($error)) {
-			$error = preg_replace('#^([0-9A-Z_]+)$#e', "(isset(\$user->lang['\\1'])) ? \$user->lang['\\1'] : '\\1'", $error);
-			
 			_style('error', array(
-				'MESSAGE' => (sizeof($error)) ? implode('<br />', $error) : '')
+				'MESSAGE' => parse_error($error))
 			);
 		}
 		
@@ -602,7 +590,7 @@ class userpage {
 		
 		$s_genders_select = '';
 		foreach (array(1 => 'MALE', 2 => 'FEMALE') as $id => $value) {
-			$s_genders_select .= '<option value="' . $id . '"' . (($_fields->gender == $id) ? ' selected="true"' : '') . '>' . $user->lang[$value] . '</option>';
+			$s_genders_select .= '<option value="' . $id . '"' . (($_fields->gender == $id) ? ' selected="true"' : '') . '>' . lang($value) . '</option>';
 		}
 		
 		_style('gender', array(
@@ -689,7 +677,7 @@ class userpage {
 				
 				_style('block_member', array(
 					'URL' => s_link('m', array($this->data['username_base'], 'ban')),
-					'LANG' => $user->lang['BLOCKED_MEMBER_' . $banned_lang])
+					'LANG' => lang('blocked_member_' . $banned_lang))
 				);
 			}
 		}
@@ -733,7 +721,7 @@ class userpage {
 		
 		foreach ($panel_selection as $link => $data) {
 			_style('selected_panel', array(
-				'LANG' => $user->lang['USERPAGE_' . $data['L']])
+				'LANG' => lang('userpage_' . $data['L']))
 			);
 			
 			if ($mode == $link) {
@@ -756,11 +744,11 @@ class userpage {
 				$friend_add_lang = $this->is_friend($user->d('user_id'), $this->data['user_id']);
 			}
 			
-			$friend_add_lang = ($friend_add_lang) ? 'FRIENDS_ADD' : 'FRIENDS_DEL';
+			$friend_add_lang = ($friend_add_lang) ? 'friends_add' : 'friends_del';
 			
 			_style('friend', array(
 				'U_FRIEND' => s_link('m', array($this->data['username_base'], 'friend')),
-				'L_FRIENDS_ADD' => $user->lang[$friend_add_lang])
+				'L_FRIENDS_ADD' => lang($friend_add_lang))
 			);
 		}
 		
@@ -827,8 +815,7 @@ class userpage {
 			'buddy_id' => $this->data['user_id'],
 			'friend_time' => time()
 		);
-		$sql = 'INSERT INTO _members_friends' . sql_build('INSERT', $sql_insert);
-		sql_query($sql);
+		sql_insert('members_friends', $sql_insert);
 		
 		$user->save_unread(UH_FRIEND, $user->d('user_id'), 0, $this->data['user_id']);
 		
@@ -848,21 +835,16 @@ class userpage {
 		if ($result = sql_rowset(sql_filter($sql, $this->data['user_id'], $this->data['user_id']))) {
 			_style('friends');
 			
-			$tcol = 0;
 			foreach ($result as $row) {
 				$friend_profile = $comments->user_profile($row);
 				
-				if (!$tcol) _style('friends.row');
-				
-				_style('friends.row.col', array(
+				_style('friends.row', array(
 					'PROFILE' => $friend_profile['profile'],
 					'USERNAME' => $friend_profile['username'],
 					'COLOR' => $friend_profile['user_color'],
 					'AVATAR' => $friend_profile['user_avatar'],
 					'RANK' => $friend_profile['user_rank'])
 				);
-				
-				$tcol = ($tcol == 3) ? 0 : $tcol + 1;
 			}
 		}
 		
@@ -915,8 +897,7 @@ class userpage {
 			'banned_user' => $this->data['user_id'],
 			'ban_time' => $user->time
 		);
-		$sql = 'INSERT INTO _members_ban' . sql_build('INSERT', $sql_insert);
-		sql_query($sql);
+		sql_insert('members_ban', $sql_insert);
 		
 		$sql = 'DELETE FROM _members_friends
 			WHERE user_id = ?
@@ -955,7 +936,7 @@ class userpage {
 			}
 			
 			_style('main.stats.item', array(
-				'KEY' => $user->lang[$key],
+				'KEY' => lang($key),
 				'VALUE' => $value)
 			);
 		}
@@ -1052,7 +1033,7 @@ class userpage {
 				'TITLE' => $row['topic_title'],
 				'TOPIC_COLOR' => $row['topic_color'],
 				'TIME' => $user->format_date($row['post_time'], 'H:i'),
-				'DATE' => $user->format_date($row['post_time'], $user->lang['DATE_FORMAT']))
+				'DATE' => $user->format_date($row['post_time'], lang('date_format')))
 			);
 		}
 		
@@ -1080,7 +1061,7 @@ class userpage {
 			if (intval(substr($this->data['user_birthday'], 4, 4)) > date('md', time())) {
 				$age--;
 			}
-			$age .= ' ' . $user->lang['YEARS'];
+			$age .= ' ' . lang('years');
 		}
 		
 		switch ($this->data['user_gender']) {
@@ -1095,10 +1076,10 @@ class userpage {
 				break;
 		}
 		
-		$gender = $user->lang[$gender];
+		$gender = lang($gender);
 		
 		$user_fields = array(
-			//'JOINED' => ($this->data['user_regdate'] && (!$this->data['user_hideuser'] || $epbi2)) ? $user->format_date($this->data['user_regdate']) . sprintf($user->lang['JOINED_SINCE'], $memberdays) : '',
+			//'JOINED' => ($this->data['user_regdate'] && (!$this->data['user_hideuser'] || $epbi2)) ? $user->format_date($this->data['user_regdate']) . sprintf(lang('joined_since'), $memberdays) : '',
 			'LAST_LOGON' => ($this->data['user_lastvisit'] && (!$this->data['user_hideuser'] || $epbi2)) ? $user->format_date($this->data['user_lastvisit']) : '',
 			'GENDER' => $gender,
 			'AGE' => $age,
@@ -1113,9 +1094,7 @@ class userpage {
 		
 		$m = 0;
 		foreach ($user_fields as $key => $value) {
-			if ($value == '') {
-				continue;
-			}
+			if ($value == '') continue;
 			
 			if (!$m) {
 				_style('main.general');
@@ -1123,13 +1102,13 @@ class userpage {
 			}
 			
 			_style('main.general.item', array(
-				'KEY' => $user->lang[$key],
+				'KEY' => lang($key),
 				'VALUE' => $value)
 			);
 		}
 		
 		//
-		// GET LAST.FM FEED
+		// Get Last.fm Feed
 		//
 		// http://ws.audioscrobbler.com/1.0/user//recenttracks.xml
 		if (!empty($this->data['user_lastfm'])) {
@@ -1159,38 +1138,7 @@ class userpage {
 		}
 		
 		//
-		// GET LAST USERPAGE VIEWERS
-		//
-		/*
-		$sql = 'SELECT v.datetime, u.user_id, u.username, u.username_base, u.user_color, u.user_avatar
-			FROM _members_viewers v, _members u
-			WHERE v.user_id = ?
-				AND v.viewer_id = u.user_id
-			ORDER BY datetime DESC';
-		if ($result = sql_rowset(sql_filter($sql, $this->data['user_id']))) {
-			_style('main.viewers');
-			
-			$col = 0;
-			foreach ($result as $row) {
-				$profile = $comments->user_profile($row);
-				
-				if (!$col) _style('main.viewers.row');
-				
-				_style('main.viewers.row.col', array(
-					'PROFILE' => $profile['profile'],
-					'USERNAME' => $profile['username'],
-					'COLOR' => $profile['user_color'],
-					'AVATAR' => $profile['user_avatar'],
-					'DATETIME' => $user->format_date($row['datetime']))
-				);
-				
-				$col = ($col == 2) ? 0 : $col + 1;
-			}
-		}
-		*/
-		
-		//
-		// GET USERPAGE MESSAGES
+		// Get public messages
 		//
 		$comments_ref = s_link('m', $this->data['username_base']);
 		if ($this->data['userpage_posts']) {
@@ -1207,7 +1155,6 @@ class userpage {
 				LIMIT 50';
 			
 			$comments->data = array(
-				'A_LINKS_CLASS' => 'bold red',
 				'USER_ID_FIELD' => 'userpage_id',
 				'S_DELETE_URL' => s_link('acp', array('user_post_delete', 'msg_id:%d')),
 				'SQL' => sql_filter($sql, $this->data['user_id'])

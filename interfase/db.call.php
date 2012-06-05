@@ -123,6 +123,11 @@ function sql_filter() {
 	return str_replace('[!]', '%', hook('sprintf', $args));
 }
 
+function sql_insert($table, $insert) {
+	$sql = 'INSERT INTO _' . $table . sql_build('INSERT', $insert);
+	return sql_query_nextid($sql);
+}
+
 function sql_query($sql) {
 	global $db;
 	

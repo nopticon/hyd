@@ -60,7 +60,7 @@ if ($chat->_setup()) {
 	
 	$keepalive = false;
 	$htmlpage = 'chat_channel';
-	$page_title = $user->lang['CHAT'] . ' | ' . $chat->data['ch_name'];
+	$page_title = lang('chat') . ' | ' . $chat->data['ch_name'];
 } else {
 	$cat = $chat->get_cats();
 	

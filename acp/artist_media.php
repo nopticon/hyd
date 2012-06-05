@@ -107,8 +107,7 @@ class __artist_media extends mac {
 					'album' => $mt->album,
 					'year' => $mt->year
 				);
-				$sql = 'INSERT INTO _dl' . sql_build('INSERT', $sql_insert);
-				$media_id = sql_query_nextid($sql);
+				$media_id = sql_insert('dl', $sql_insert);
 			}
 			
 			$sql = 'UPDATE _artists SET um = um + ??

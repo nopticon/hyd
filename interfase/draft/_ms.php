@@ -215,7 +215,7 @@ class __ms extends common
 			$user->data['session_time'] = $user->time;
 			
 			$style_vars = array(
-				'CUSTOM_MESSAGE' => $user->lang['LOGGED_OUT'],
+				'CUSTOM_MESSAGE' => lang('logged_out'),
 				'REDIRECT_TO' => $nucleo->link()
 			);
 			$nucleo->layout('login', 'LOGIN', $style_vars);

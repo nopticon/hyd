@@ -269,8 +269,7 @@ class _comments {
 					break;
 			}
 			
-			$sql = 'INSERT INTO ' . $this->data['POST_TABLE'] . sql_build('INSERT', $insert_data);
-			$post_id = sql_query_nextid($sql);
+			$post_id = sql_insert($this->data['POST_TABLE'], $insert_data);
 			
 			if ($update_sql != '') {
 				$sql = 'UPDATE ' . $this->data['DATA_TABLE'] . ' SET ' . $update_sql;
@@ -338,7 +337,7 @@ class _comments {
 		} else {
 			$user->setup();
 			
-			$return_message = parse_error($error) . '<br /><br /><br /><a href="' . $ref . '">' . $user->lang['CLICK_RETURN_LASTPAGE'] . '</a>';
+			$return_message = parse_error($error) . '<br /><br /><br /><a href="' . $ref . '">' . lang('click_return_lastpage') . '</a>';
 			trigger_error($return_message);
 		}
 		
@@ -455,7 +454,7 @@ class _comments {
 				
 				switch ($key) {
 					case 'username':
-						$data['username'] = ($row['user_id'] != GUEST) ? $value : '*' . (($row['post_username'] != '') ? $row['post_username'] : $user->lang['GUEST']);
+						$data['username'] = ($row['user_id'] != GUEST) ? $value : '*' . (($row['post_username'] != '') ? $row['post_username'] : lang('guest'));
 						break;
 					case 'username_base':
 						$data['profile'] = ($row['user_id'] != GUEST) ? s_link('m', $value) : '';
@@ -502,7 +501,7 @@ class _comments {
 								}
 							}
 						} else {
-							$value = $user->lang['GUEST'];
+							$value = lang('guest');
 						}
 						
 						$data[$key] = $value;
@@ -624,8 +623,7 @@ class _comments {
 			'msg_can_reply' => (int) $can_reply
 		);
 		
-		$sql = 'INSERT INTO _dc' . sql_build('INSERT', $insert);
-		$dc_id = sql_query_nextid($sql);
+		$dc_id = sql_insert('dc', $insert);
 		
 		if ($mode == 'reply') {
 			$sql = 'UPDATE _dc SET root_conv = root_conv + 1, last_msg_id = ?

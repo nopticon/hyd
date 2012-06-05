@@ -41,9 +41,8 @@ class __artist_lyric_create extends mac {
 			if (!$ad = sql_fieldrow(sql_filter($sql, $request->ub))) {
 				fatal_error();
 			}
-			
-			$sql = 'INSERT INTO _artists_lyrics' . sql_build('INSERT', $request);
-			sql_query($sql);
+
+			sql_insert('artists_lyrics', $request);
 			
 			$sql = 'UPDATE _artists SET lirics = lirics + 1
 				WHERE ub = ?';

@@ -235,9 +235,7 @@ class session {
 			$this->session_id = $this->data['session_id'] = md5(unique_id());
 
 			$sql_ary['session_id'] = (string) $this->session_id;
-			
-			$sql = 'INSERT INTO _sessions' . sql_build('INSERT', $sql_ary);
-			sql_query($sql);
+			sql_insert('sessions', $sql_ary);
 		}
 		
 		if (!$bot) {
@@ -265,8 +263,7 @@ class session {
 			'log_time' => (int) $this->time,
 			'log_endtime' => 0
 		);
-		$sql = 'INSERT INTO _members_iplog' . sql_build('INSERT', $insert);
-		sql_query($sql);
+		sql_insert('members_iplog', $insert);
 		
 		$sql = 'SELECT log_time
 			FROM _members_iplog
@@ -828,7 +825,7 @@ class user extends session {
 				$types = $cache->save('today_type', sql_rowset($sql));
 			}
 
-			$type = isset($types[$type]) ? $types[$type] : false:
+			$type = isset($types[$type]) ? $types[$type] : $type;
 		}
 
 		return $type;
@@ -850,14 +847,14 @@ class user extends session {
 					WHERE object_bio = ?
 						AND object_type = ?
 						AND object_relation = ?';
-				if (!sql_field(sql_filter($sql, 0, 0, 0), 'object_id', 0)) {
+				if (!sql_field(sql_filter($sql, $to, $type, $list), 'object_id', 0)) {
 					$sql_insert = array(
-						'object_bio' => $this->d('user_id'),
-						'object_type' => 0,
-						'object_relation' => 0,
+						'object_bio' => $to,
+						'object_type' => $type,
+						'object_relation' => $list,
 						'object_time' => time()
 					);
-					$sql = 'INSERT INTO _today';
+					sql_insert('today', $sql_insert);
 				}
 			}
 			return;
@@ -1237,8 +1234,7 @@ class user extends session {
 				'last_datetime' => $datetime,
 				'last_ip' => $user_ip
 			);
-			$sql = 'INSERT INTO _ref' . sql_build('INSERT', $sql_insert);
-			sql_query($sql);
+			sql_insert('ref', $sql_insert);
 		}
 		
 		if ($not_allowed_ref) {
@@ -1428,24 +1424,24 @@ class auth {
 				switch ($value) {
 					case AUTH_ALL:
 						$auth_user[$a_key] = true;
-						$auth_user[$a_key . '_type'] = $user->lang['AUTH_ANONYMOUS_USERS'];
+						$auth_user[$a_key . '_type'] = lang('auth_anonymous_users');
 						break;
 					case AUTH_REG:
 						$auth_user[$a_key] = $user->is('member');
-						$auth_user[$a_key . '_type'] = $user->lang['AUTH_REGISTERED_USERS'];
+						$auth_user[$a_key . '_type'] = lang('auth_registered_users');
 						break;
 					case AUTH_ACL:
 						$auth_user[$a_key] = ($user->is('member')) ? $this->check_user(AUTH_ACL, $a_key, $u_access, $custom_mod) : false;
-						$auth_user[$a_key . '_type'] = $user->lang['AUTH_USERS_GRANTED_ACCESS'];
+						$auth_user[$a_key . '_type'] = lang('auth_users_granted_access');
 						break;
 					case AUTH_MOD:
 						//$auth_user[$a_key] = ($user->is('member')) ? $this->check_user(AUTH_MOD, 'auth_mod', $u_access, $custom_mod) : false;
 						$auth_user[$a_key] = $user->is($custom_mod);
-						$auth_user[$a_key . '_type'] = $user->lang['AUTH_MODERATORS'];
+						$auth_user[$a_key . '_type'] = lang('auth_moderators');
 						break;
 					case AUTH_ADMIN:
 						$auth_user[$a_key] = $this->founder;
-						$auth_user[$a_key . '_type'] = $user->lang['AUTH_ADMINISTRATORS'];
+						$auth_user[$a_key . '_type'] = lang('auth_administrators');
 						break;
 					default:
 						$auth_user[$a_key] = false;
@@ -1461,24 +1457,24 @@ class auth {
 					switch ($value) {
 						case AUTH_ALL:
 							$auth_user[$f_forum_id][$a_key] = true;
-							$auth_user[$f_forum_id][$a_key . '_type'] = $user->lang['AUTH_ANONYMOUS_USERS'];
+							$auth_user[$f_forum_id][$a_key . '_type'] = lang('auth_anonymous_users');
 							break;
 						case AUTH_REG:
 							$auth_user[$f_forum_id][$a_key] = $user->is('member');
-							$auth_user[$f_forum_id][$a_key . '_type'] = $user->lang['AUTH_REGISTERED_USERS'];
+							$auth_user[$f_forum_id][$a_key . '_type'] = lang('auth_registered_users');
 							break;
 						case AUTH_ACL:
 							$auth_user[$f_forum_id][$a_key] = ($user->is('member')) ? $this->check_user(AUTH_ACL, $a_key, $u_access[$f_forum_id], $custom_mod) : false;
-							$auth_user[$f_forum_id][$a_key . '_type'] = $user->lang['AUTH_USERS_GRANTED_ACCESS'];
+							$auth_user[$f_forum_id][$a_key . '_type'] = lang('auth_users_granted_access');
 							break;
 						case AUTH_MOD:
 							//$auth_user[$f_forum_id][$a_key] = ($user->is('member')) ? $this->check_user(AUTH_MOD, 'auth_mod', $u_access[$f_forum_id]) : false;
 							$auth_user[$f_forum_id][$a_key] = $user->is($custom_mod);
-							$auth_user[$f_forum_id][$a_key . '_type'] = $user->lang['AUTH_MODERATORS'];
+							$auth_user[$f_forum_id][$a_key . '_type'] = lang('auth_moderators');
 							break;
 						case AUTH_ADMIN:
 							$auth_user[$f_forum_id][$a_key] = $this->founder;
-							$auth_user[$f_forum_id][$a_key . '_type'] = $user->lang['AUTH_ADMINISTRATORS'];
+							$auth_user[$f_forum_id][$a_key . '_type'] = lang('auth_administrators');
 							break;
 						default:
 							$auth_user[$f_forum_id][$a_key] = false;

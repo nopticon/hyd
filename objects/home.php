@@ -85,11 +85,11 @@ class _home {
 			LIMIT ??';
 		if ($result = sql_rowset(sql_filter($sql, $config['main_topics']))) {
 			_style('board_general', array(
-				'L_TOP_POSTS' => sprintf($user->lang['TOP_FORUM'], count($result)))
+				'L_TOP_POSTS' => sprintf(lang('top_forum'), count($result)))
 			);
 			
 			foreach ($result as $row) {
-				$username = ($row['user_id'] != GUEST) ? $row['username'] : (($row['post_username'] != '') ? $row['post_username'] : $user->lang['GUEST']);
+				$username = ($row['user_id'] != GUEST) ? $row['username'] : (($row['post_username'] != '') ? $row['post_username'] : lang('guest'));
 				
 				_style('board_general.item', array(
 					'U_TOPIC' => ($row['topic_replies']) ? s_link('post', $row['post_id']) . '#' . $row['post_id'] : s_link('topic', $row['topic_id']),
@@ -120,17 +120,17 @@ class _home {
 			LIMIT ??';
 		if ($result = sql_rowset(sql_filter($sql, $config['main_topics']))) {
 			_style('board_events', array(
-				'L_TOP_POSTS' => sprintf($user->lang['TOP_FORUM'], count($result)))
+				'L_TOP_POSTS' => sprintf(lang('top_forum'), count($result)))
 			);
 			
 			foreach ($result as $row) {
-				$username = ($row['user_id'] != GUEST) ? $row['username'] : (($row['post_username'] != '') ? $row['post_username'] : $user->lang['GUEST']);
+				$username = ($row['user_id'] != GUEST) ? $row['username'] : (($row['post_username'] != '') ? $row['post_username'] : lang('guest'));
 				
 				_style('board_events.item', array(
 					'U_TOPIC' => s_link('events', $row['event_alias']),
 					'TOPIC_TITLE' => $row['topic_title'],
 					'TOPIC_COLOR' => $row['topic_color'],
-					'EVENT_DATE' => $user->format_date($row['date'], $user->lang['DATE_FORMAT']),
+					'EVENT_DATE' => $user->format_date($row['date'], lang('date_format')),
 					'POST_TIME' => $user->format_date($row['post_time'], 'H:i'),
 					'USER_ID' => $row['user_id'],
 					'USERNAME' => $username,

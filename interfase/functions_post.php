@@ -203,8 +203,8 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 			if (!empty($ub)) {
 				$sql_insert['ub'] = $ub;
 			}
-			
-			$sql = 'INSERT INTO _forum_topics' . sql_build('INSERT', $sql_insert);
+
+			sql_insert('forum_topics', $sql_insert);
 		} else {
 			$sql_update = array(
 				'topic_title' => $post_subject,
@@ -217,11 +217,9 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 			
 			$sql = 'UPDATE _forum_topics SET ??
 				WHERE topic_id = ?';
-			$sql = sql_filter($sql, sql_build('UPDATE', $sql_update), $topic_id);
+			sql_query(sql_filter($sql, sql_build('UPDATE', $sql_update), $topic_id));
 		}
 		
-		sql_query($sql);
-
 		if ($mode == 'newtopic') {
 			$topic_id = sql_nextid();
 		}
@@ -241,7 +239,7 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 			'post_text' => $post_message,
 			'post_np' => $post_np
 		);
-		$sql = 'INSERT INTO _forum_posts' . sql_build('INSERT', $sql_insert);
+		sql_insert('forum_posts', $sql_insert);
 	} else {
 		$sql_update = array(
 			'post_username' => $post_username,
@@ -252,10 +250,8 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 		
 		$sql = 'UPDATE _forum_posts SET ??
 			WHERE post_id = ?';
-		$sql = sql_filter($sql, sql_build('UPDATE', $sql_update), $post_id); 
+		sql_query(sql_filter($sql, sql_build('UPDATE', $sql_update), $post_id));
 	}
-	
-	sql_query($sql);
 	
 	if ($mode != 'editpost') {
 		$post_id = sql_nextid();
@@ -274,7 +270,7 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 			
 			$sql = 'UPDATE _poll_options SET ??
 				WHERE topic_id = ?';
-			$sql = sql_filter($sql, sql_build('UPDATE', $sql_update), $topic_id);
+			sql_query(sql_filter($sql, sql_build('UPDATE', $sql_update), $topic_id));
 		} else {
 			$sql_insert = array(
 				'topic_id' => $topic_id,
@@ -282,10 +278,8 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 				'vote_start' => $current_time,
 				'vote_length' => ($poll_length * 86400)
 			);
-			$sql = 'INSERT INTO _poll_options' . sql_build('INSERT', $sql_insert);
+			sql_insert('poll_options', $sql_insert);
 		}
-		
-		sql_query($sql);
 		
 		$delete_option_sql = '';
 		$old_poll_result = w();
@@ -308,10 +302,8 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 		}
 
 		$poll_option_id = 1;
-		while (list($option_id, $option_text) = each($poll_options))
-		{
-			if (!empty($option_text))
-			{
+		while (list($option_id, $option_text) = each($poll_options)) {
+			if (!empty($option_text)) {
 				$option_text = str_replace("\'", "''", htmlspecialchars($option_text));
 				$poll_result = ($mode == "editpost" && isset($old_poll_result[$option_id])) ? $old_poll_result[$option_id] : 0;
 				
@@ -322,7 +314,7 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 						'vote_option_text' => $option_text,
 						'vote_result' => $poll_result
 					);
-					$sql = 'INSERT INTO _poll_results' . sql_build('INSERT', $sql_insert);
+					sql_insert('poll_results', $sql_insert);
 				} else {
 					$sql_update = array(
 						'vote_option_text' => $option_text,
@@ -331,10 +323,9 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 					$sql = 'UPDATE _poll_results SET ??
 						WHERE vote_option_id = ?
 							AND vote_id = ?';
-					$sql = sql_filter($sql, sql_build('UPDATE', $sql_update), $option_id, $poll_id);
+					sql_query(sql_filter($sql, sql_build('UPDATE', $sql_update), $option_id, $poll_id));
 				}
 				
-				sql_query($sql);
 				$poll_option_id++;
 			}
 		}
@@ -422,17 +413,16 @@ function update_post_stats(&$mode, &$post_data, &$forum_id, &$topic_id, &$post_i
 		sql_query($sql);
 	}
 	
-	$current_time=time();
+	$current_time = time();
 	$minutes = date('is', $current_time);
-	$hour_now = $current_time - (60*($minutes[0].$minutes[1])) - ($minutes[2].$minutes[3]);
+	$hour_now = $current_time - (60 * ($minutes[0] . $minutes[1])) - ($minutes[2] . $minutes[3]);
 
 	$sql = "UPDATE _site_stats
 		SET " . (($mode == 'newtopic' || $post_data['first_post']) ? 'new_topics = new_topics' : 'new_posts = new_posts') . $sign . '
 		WHERE date = ' . intval($hour_now);
 	sql_query($sql);
 	
-	if (!sql_affectedrows())
-	{
+	if (!sql_affectedrows()) {
 		$sql = 'INSERT INTO _site_stats (date, '.(($mode == 'newtopic' || $post_data['first_post']) ? 'new_topics': 'new_posts').') 
 			VALUES (' . $hour_now . ', 1)';
 		sql_query($sql);
@@ -452,15 +442,13 @@ function update_post_stats(&$mode, &$post_data, &$forum_id, &$topic_id, &$post_i
 		$user_remove = ($group_data['group_count'] > $group_data['user_posts'] || $group_data['group_count_max'] < $group_data['user_posts']) ? true : false;
 		
 		//user join a autogroup
-		if ($user_add && !$user_already_added)
-		{
+		if ($user_add && !$user_already_added) {
 			$sql_insert = array(
 				'group_id' => $group_data['g_id'],
 				'user_id' => $user_id,
 				'user_pending' => 0
 			);
-			$sql = 'INSERT INTO _members_group' . sql_build('INSERT', $sql_insert);
-			sql_query($sql);
+			sql_insert('members_group', $sql_insert);
 		}
 		else
 		if ( $user_already_added && $user_remove)

@@ -98,8 +98,7 @@ class __user_mass_conversation extends mac {
 				'privmsgs_mass' => 1,
 				'privmsgs_text' => $row_message
 			);
-			$sql = 'INSERT INTO _dc' . sql_build('INSERT', $insert);
-			$dc_id = sql_query_nextid($sql);
+			$dc_id = sql_insert('dc', $insert);
 			
 			$sql = 'UPDATE _dc SET parent_id = ?, last_msg_id = ?, msg_deleted = ?
 				WHERE msg_id = ?';

@@ -88,7 +88,7 @@ class __event_images extends mac {
 					@closedir($fp);
 					
 					if (count($check_is)) {
-						echo $user->lang['DIS_INVALID'];
+						echo lang('dis_invalid');
 						
 						foreach ($check_is as $row) {
 							echo $row . '<br />';
@@ -124,8 +124,7 @@ class __event_images extends mac {
 							'height' => (int) $xa['height'],
 							'allow_dl' => 1
 						);
-						$sql = 'INSERT INTO _events_images' . sql_build('INSERT', $insert);
-						sql_query($sql);
+						sql_insert('events_images', $insert);
 						
 						$count_images++;
 					} elseif (preg_match('#(info)\.(txt)#is', $filerow)) {
@@ -162,8 +161,7 @@ class __event_images extends mac {
 						'colab_event' => $event_id,
 						'colab_uid' => $user->d('user_id')
 					);
-					$sql = 'INSERT INTO _events_colab' . sql_build('INSERT', $sql_insert);
-					sql_query($sql);
+					sql_insert('events_colab', $sql_insert);
 				}
 				
 				$sql = 'UPDATE _events SET images = images + ??
@@ -175,11 +173,11 @@ class __event_images extends mac {
 				$ftp->ftp_quit();
 				
 				redirect(s_link('events', $event_id));
-			} else {
-				_style('error', array(
-					'MESSAGE' => parse_error($upload->error))
-				);
 			}
+
+			_style('error', array(
+				'MESSAGE' => parse_error($upload->error))
+			);
 		}
 		
 		$sql = 'SELECT *

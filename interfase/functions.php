@@ -202,8 +202,7 @@ function set_config($config_name, $config_value) {
 			'config_name' => $config_name,
 			'config_value' => $config_value
 		);
-		$sql = 'INSERT INTO _application' . sql_build('INSERT', $sql_insert);
-		sql_query($sql);
+		sql_insert('application', $sql_insert);
 	}
 
 	$config[$config_name] = $config_value;
@@ -578,20 +577,23 @@ function build_pagination($url_format, $total_items, $per_page, $offset, $prefix
 	
 	$total_pages = ceil($total_items / $per_page);
 	$on_page = floor($offset / $per_page) + 1;
+
+	$pages_prev = lang((($lang_prefix != '') ? $lang_prefix : '') . 'pages_prev');
+	$pages_next = lang((($lang_prefix != '') ? $lang_prefix : '') . 'pages_next');
 	
 	$prev = $next = '';
 	if ($on_page > 1) {
-		$prev = ' <a href="' . sprintf($url_format, (($on_page - 2) * $per_page)) . '">' . sprintf($user->lang[(($lang_prefix != '') ? $lang_prefix : '') . 'PAGES_PREV'], $per_page) . '</a>';
+		$prev = ' <a href="' . sprintf($url_format, (($on_page - 2) * $per_page)) . '">' . sprintf($pages_prev, $per_page) . '</a>';
 	}
 	
 	if ($on_page < $total_pages) {
-		$next = '<a href="' . sprintf($url_format, ($on_page * $per_page)) . '">' . sprintf($user->lang[(($lang_prefix != '') ? $lang_prefix : '') . 'PAGES_NEXT'], $per_page) . '</a>';
+		$next = '<a href="' . sprintf($url_format, ($on_page * $per_page)) . '">' . sprintf($pages_next, $per_page) . '</a>';
 	}
 	
 	v_style(array(
 		$prefix . 'PAGES_PREV' => $prev,
 		$prefix . 'PAGES_NEXT' => $next,
-		$prefix . 'PAGES_ON' => sprintf($user->lang['PAGES_ON'], $on_page, max(ceil($total_items / $per_page), 1)))
+		$prefix . 'PAGES_ON' => sprintf(lang('pages_on'), $on_page, max(ceil($total_items / $per_page), 1)))
 	);
 	
 	return;
@@ -614,6 +616,8 @@ function build_num_pagination($url_format, $total_items, $per_page, $offset, $pr
 	}
 	
 	$on_page = floor($offset / $per_page) + 1;
+	$pages_prev = lang((($lang_prefix != '') ? $lang_prefix : '') . 'pages_prev');
+	$pages_next = lang((($lang_prefix != '') ? $lang_prefix : '') . 'pages_next');
 	
 	$page_string = '<ul>';
 	if ($total_pages > ((2 * ($begin_end + $from_middle)) + 2)) {
@@ -648,16 +652,16 @@ function build_num_pagination($url_format, $total_items, $per_page, $offset, $pr
 			$page_string .= ($i == $on_page) ? '<li><strong>' . $i . '</strong></li>' : '<li><a href="' . sprintf($url_format, (($i - 1) * $per_page)) . '">' . $i . '</a></li>';
 		}
 	}
-	
+
 	$page_string .= '</ul>';
 	
 	$prev = $next = '';
 	if ($on_page > 1) {
-		$prev = '<a href="' . sprintf($url_format, (($on_page - 2) * $per_page)) . '">' . sprintf($user->lang[(($lang_prefix != '') ? $lang_prefix : '') . 'PAGES_PREV'], $per_page) . '</a>';
+		$prev = '<a href="' . sprintf($url_format, (($on_page - 2) * $per_page)) . '">' . sprintf($pages_prev, $per_page) . '</a>';
 	}
 	
 	if ($on_page < $total_pages) {
-		$next = '<a href="' . sprintf($url_format, ($on_page * $per_page)) . '">' . sprintf($user->lang[(($lang_prefix != '') ? $lang_prefix : '') . 'PAGES_NEXT'], $per_page) . '</a>';
+		$next = '<a href="' . sprintf($url_format, ($on_page * $per_page)) . '">' . sprintf($pages_next, $per_page) . '</a>';
 	}
 	
 	if ($page_string == ' <strong>1</strong>') {
@@ -668,7 +672,7 @@ function build_num_pagination($url_format, $total_items, $per_page, $offset, $pr
 		$prefix . 'PAGES_NUMS' => $page_string,
 		$prefix . 'PAGES_PREV' => $prev,
 		$prefix . 'PAGES_NEXT' => $next,
-		$prefix . 'PAGES_ON' => sprintf($user->lang['PAGES_ON'], $on_page, max($total_pages, 1)))
+		$prefix . 'PAGES_ON' => sprintf(lang('pages_on'), $on_page, max($total_pages, 1)))
 	);
 	
 	return $page_string;
@@ -926,8 +930,8 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 				
 				$custom_vars = array(
 					'S_REDIRECT' => '',
-					'MESSAGE_TITLE' => $user->lang['INFORMATION'],
-					'MESSAGE_TEXT' => $user->lang['MEMBERSHIP_ADDED_CONFIRM']
+					'MESSAGE_TITLE' => lang('information'),
+					'MESSAGE_TEXT' => lang('membership_added_confirm')
 				);
 				page_layout('INFORMATION', 'message', $custom_vars);
 			}
@@ -945,16 +949,14 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 						'buddy_id' => $ref_assoc['ref_orig'],
 						'friend_time' => time()
 					);
-					$sql = 'INSERT INTO _members_friends' . sql_build('INSERT', $sql_insert);
-					sql_query($sql);
+					sql_insert('members_friends', $sql_insert);
 					
 					$sql_insert = array(
 						'user_id' => $ref_assoc['ref_orig'],
 						'buddy_id' => $user_id,
 						'friend_time' => time()
 					);
-					$sql = 'INSERT INTO _members_friends' . sql_build('INSERT', $sql_insert);
-					sql_query($sql);
+					sql_insert('members_friends', $sql_insert);
 				
 					$user->save_unread(UH_FRIEND, $user_id, 0, $ref_assoc['ref_orig']);
 				}
@@ -997,8 +999,8 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 			
 			$custom_vars = array(
 				'S_REDIRECT' => '',
-				'MESSAGE_TITLE' => $user->lang['INFORMATION'],
-				'MESSAGE_TEXT' => $user->lang['MEMBERSHIP_ADDED_CONFIRM']
+				'MESSAGE_TITLE' => lang('information'),
+				'MESSAGE_TEXT' => lang('membership_added_confirm')
 			);
 			page_layout('INFORMATION', 'message', $custom_vars);
 			 * */
@@ -1129,8 +1131,7 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 						'user_refop' => 0,
 						'user_refby' => $v_fields['ref']
 					);
-					$sql = 'INSERT INTO _members' . sql_build('INSERT', $member_data);
-					$user_id = sql_query_nextid($sql);
+					$user_id = sql_insert('members', $member_data);
 					
 					set_config('max_users', $config['max_users'] + 1);
 					
@@ -1142,8 +1143,7 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 						'crypt_code' => $verification_code,
 						'crypt_time' => $user->time
 					);
-					$sql = 'INSERT INTO _crypt_confirm' . sql_build('INSERT', $insert);
-					sql_query($sql);
+					sql_insert('crypt_confirm', $insert);
 					
 					// Emailer
 					$emailer = new emailer();
@@ -1160,16 +1160,14 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 									'ref_uid' => $user_id,
 									'ref_orig' => $ref_friend
 								);
-								$sql = 'INSERT INTO _members_ref_assoc' . sql_build('INSERT', $sql_insert);
-								sql_query($sql);
+								sql_insert('members_ref_assoc', $sql_insert);
 								
 								$sql_insert = array(
 									'user_id' => $user_id,
 									'buddy_id' => $ref_friend,
 									'friend_time' => time()
 								);
-								$sql = 'INSERT INTO _members_friends' . sql_build('INSERT', $sql_insert);
-								sql_query($sql);
+								sql_insert('members_friends', $sql_insert);
 							} else {
 								$invite_user = explode('@', $v_fields['ref']);
 								$invite_code = substr(md5(unique_id()), 0, 6);
@@ -1179,8 +1177,7 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 									'invite_email' => $v_fields['ref'],
 									'invite_uid' => $user_id
 								);
-								$sql = 'INSERT INTO _members_ref_invite' . sql_build('INSERT', $sql_insert);
-								sql_query($sql);
+								sql_insert('members_ref_invite', $sql_insert);
 								
 								$emailer->from('info');
 								$emailer->use_template('user_invite');
@@ -1210,8 +1207,8 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 					$emailer->reset();
 					
 					$custom_vars = array(
-						'MESSAGE_TITLE' => $user->lang['INFORMATION'],
-						'MESSAGE_TEXT' => $user->lang['MEMBERSHIP_ADDED']
+						'MESSAGE_TITLE' => lang('information'),
+						'MESSAGE_TEXT' => lang('membership_added')
 					);
 					page_layout('INFORMATION', 'message', $custom_vars);
 					/*
@@ -1314,8 +1311,7 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 							'crypt_code' => $verification_code,
 							'crypt_time' => $user->time
 						);
-						$sql = 'INSERT INTO _crypt_confirm' . sql_build('INSERT', $insert);
-						sql_query($sql);
+						sql_insert('crypt_confirm', $insert);
 						
 						// Send email
 						$emailer->from('info');
@@ -1348,7 +1344,7 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 	$s_genres_select = '';
 	$genres = array(1 => 'MALE', 2 => 'FEMALE');
 	foreach ($genres as $id => $value) {
-		$s_genres_select .= '<option value="' . $id . '"' . (($v_fields['gender'] == $id) ? ' selected="true"' : '') . '>' . $user->lang[$value] . '</option>';
+		$s_genres_select .= '<option value="' . $id . '"' . (($v_fields['gender'] == $id) ? ' selected="true"' : '') . '>' . lang($value) . '</option>';
 	}
 	
 	$s_bday_select = '';
@@ -1414,7 +1410,7 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 		$s_hidden = array('admin' => 1);
 	}
 	
-	$box_text = (!empty($box_text)) ? ((isset($user->lang[$box_text])) ? $user->lang[$box_text] : $box_text) : '';
+	$box_text = (!empty($box_text)) ? lang($box_text, $box_text) : '';
 	
 	page_layout('LOGIN2', 'login', $layout_vars);
 }
@@ -1658,8 +1654,8 @@ function msg_handler($errno, $msg_text, $errfile, $errline) {
 			}
 			
 			$custom_vars = array(
-				'MESSAGE_TITLE' => $user->lang['INFORMATION'],
-				'MESSAGE_TEXT' => (isset($user->lang[$msg_text])) ? $user->lang[$msg_text] : $msg_text
+				'MESSAGE_TITLE' => lang('information'),
+				'MESSAGE_TEXT' => lang($msg_text, $msg_text)
 			);
 			
 			page_layout('INFORMATION', 'message', $custom_vars);
@@ -1746,7 +1742,7 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 	}
 	
 	$common_vars = array(
-		'PAGE_TITLE' => (isset($user->lang[$page_title])) ? $user->lang[$page_title] : $page_title,
+		'PAGE_TITLE' => lang($page_title, $page_title),
 		
 		'U_REGISTER' => s_link('signup'),
 		'U_SESSION' => s_link('sign' . $u_session),
@@ -1792,8 +1788,8 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 		'MEMBER_COLOR' => $user->d('user_color'),
 		
 		'S_CONTROLPANEL' => (isset($template->vars['S_CONTROLPANEL'])) ? $template->vars['S_CONTROLPANEL'] : ($user->is('artist') || $user->is('mod') ? s_link('acp') : ''),
-		'S_UNREAD_ITEMS' => (($unread_items == 1) ? sprintf($user->lang['UNREAD_ITEM_COUNT'], $unread_items) : sprintf($user->lang['UNREAD_ITEMS_COUNT'], $unread_items)),
-		'S_AP_POINTS' => (($user->d('user_points') == 1) ? sprintf($user->lang['AP_POINT'], $user->d('user_points')) : sprintf($user->lang['AP_POINTS'], $user->d('user_points'))),
+		'S_UNREAD_ITEMS' => (($unread_items == 1) ? sprintf(lang('unread_item_count'), $unread_items) : sprintf(lang('unread_items_count'), $unread_items)),
+		'S_AP_POINTS' => (($user->d('user_points') == 1) ? sprintf(lang('ap_point'), $user->d('user_points')) : sprintf(lang('ap_points'), $user->d('user_points'))),
 		
 		'GIT_PUSH' => $config['git_push_time'],
 		
@@ -2259,7 +2255,7 @@ function validate_username($username) {
 		WHERE LOWER(username_base) = ?';
 	if ($userdata = sql_fieldrow(sql_filter($sql, strtolower($username)))) {
 		if (($user->is('member') && $username != $userdata['username']) || !$user->is('member')) {
-			return array('error' => true, 'error_msg' => $user->lang['USERNAME_TAKEN']);
+			return array('error' => true, 'error_msg' => lang('username_taken'));
 		}
 	}
 	
@@ -2267,7 +2263,7 @@ function validate_username($username) {
 		FROM _groups
 		WHERE LOWER(group_name) = ?';
 	if (sql_fieldrow(sql_filter($sql, strtolower($username)))) {
-		return array('error' => true, 'error_msg' => $user->lang['USERNAME_TAKEN']);
+		return array('error' => true, 'error_msg' => lang('username_taken'));
 	}
 	
 	$sql = 'SELECT disallow_username
@@ -2276,13 +2272,13 @@ function validate_username($username) {
 	
 	foreach ($result as $row) {
 		if (preg_match("#\b(" . str_replace("\*", ".*?", preg_quote($row['disallow_username'], '#')) . ")\b#i", $username)) {
-			return array('error' => true, 'error_msg' => $user->lang['USERNAME_DISALLOWED']);
+			return array('error' => true, 'error_msg' => lang('username_disallowed'));
 		}
 	}
 	
 	// Don't allow " and ALT-255 in username.
 	if (strstr($username, '"') || strstr($username, '�') || strstr($username, '�') || strstr($username, '&quot;') || strstr($username, chr(160))) {
-		return array('error' => true, 'error_msg' => $user->lang['USERNAME_INVALID']);
+		return array('error' => true, 'error_msg' => lang('username_invalid'));
 	}
 
 	return array('error' => false, 'error_msg' => '');
@@ -2304,7 +2300,7 @@ function validate_email($email) {
 			foreach ($result as $row) {
 				$match_email = str_replace('*', '.*?', $row['ban_email']);
 				if (preg_match('/^' . $match_email . '$/is', $email)) {
-					return array('error' => true, 'error_msg' => $user->lang['EMAIL_BANNED']);
+					return array('error' => true, 'error_msg' => lang('email_banned'));
 				}
 			}
 			
@@ -2312,14 +2308,14 @@ function validate_email($email) {
 				FROM _members
 				WHERE user_email = ?';
 			if (sql_fieldrow(sql_filter($sql, $email))) {
-				return array('error' => true, 'error_msg' => $user->lang['EMAIL_TAKEN']);
+				return array('error' => true, 'error_msg' => lang('emailL_taken'));
 			}
 			
 			return array('error' => false, 'error_msg' => '');
 		}
 	}
 
-	return array('error' => true, 'error_msg' => $user->lang['EMAIL_INVALID']);
+	return array('error' => true, 'error_msg' => lang('email_invalid'));
 }
 
 //

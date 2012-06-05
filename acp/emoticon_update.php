@@ -40,8 +40,7 @@ class __emoticon_update extends mac {
 					'code' => ':' . $part[1] . ':',
 					'smile_url' => $part[0]
 				);
-				$sql = 'INSERT INTO _smilies' . sql_build('INSERT', $insert);
-				sql_query($sql);
+				sql_insert('smilies', $insert);
 				
 				$process++;
 			}

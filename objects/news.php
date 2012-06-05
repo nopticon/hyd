@@ -94,8 +94,7 @@ class _news {
 						'post_ip' => $user->ip,
 						'image' => ''
 					);
-					$sql = 'INSERT INTO _news' . sql_build('INSERT', $sql_insert);
-					$news_id = sql_query_nextid($sql);
+					$news_id = sql_insert('news', $sql_insert);
 				}
 				
 				$sql = 'SELECT cat_id, cat_name

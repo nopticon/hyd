@@ -99,7 +99,7 @@ class topics {
 			$auth_key = ($topic_important) ? 'auth_announce' : 'auth_post';
 			
 			if ($forum_row['forum_locked'] && !$is_auth['auth_mod']) {
-				$error_msg .= (($error_msg != '') ? '<br />' : '') . $user->lang['FORUM_LOCKED'];
+				$error_msg .= (($error_msg != '') ? '<br />' : '') . lang('forum_locked');
 			}
 			
 			if (!$is_auth[$auth_key]) {
@@ -128,12 +128,12 @@ class topics {
 				
 				// Check subject
 				if (empty($post_title)) {
-					$error_msg .= (($error_msg != '') ? '<br />' : '') . $user->lang['EMPTY_SUBJECT'];
+					$error_msg .= (($error_msg != '') ? '<br />' : '') . lang('empty_subject');
 				}
 				
 				// Check message
 				if (empty($post_message)) {
-					$error_msg .= (($error_msg != '') ? '<br />' : '') . $user->lang['EMPTY_MESSAGE'];
+					$error_msg .= (($error_msg != '') ? '<br />' : '') . lang('empty_message');
 				}
 				
 				if (!empty($poll_options)) {
@@ -149,11 +149,11 @@ class topics {
 					$sizeof_poll_options = sizeof($real_poll_options);
 					
 					if ($sizeof_poll_options < 2) {
-						$error_msg .= (($error_msg != '') ? '<br />' : '') . $user->lang['FEW_POLL_OPTIONS'];
+						$error_msg .= (($error_msg != '') ? '<br />' : '') . lang('few_poll_options');
 					} else if ($sizeof_poll_options > $config['max_poll_options']) {
-						$error_msg .= (($error_msg != '') ? '<br />' : '') . $user->lang['MANY_POLL_OPTIONS'];
+						$error_msg .= (($error_msg != '') ? '<br />' : '') . lang('many_poll_options');
 					} else if ($poll_title == '') {
-						$error_msg .= (($error_msg != '') ? '<br />' : '') . $user->lang['EMPTY_POLL_TITLE'];
+						$error_msg .= (($error_msg != '') ? '<br />' : '') . lang('empty_poll_title');
 					}
 				}
 				
@@ -163,7 +163,7 @@ class topics {
 						WHERE poster_id = ?';
 					if ($last_post_time = sql_field(sql_filter($sql, $user->d('user_id')))) {
 						if (intval($last_post_time) > 0 && ($current_time - intval($last_post_time)) < intval($config['flood_interval'])) {
-							$error_msg .= (($error_msg != '') ? '<br />' : '') . $user->lang['FLOOD_ERROR'];
+							$error_msg .= (($error_msg != '') ? '<br />' : '') . lang('flood_error');
 						}
 					}
 				}
@@ -201,8 +201,7 @@ class topics {
 						'topic_featured' => 1,
 						'topic_points' => 1
 					);
-					$sql = 'INSERT INTO _forum_topics' . sql_build('INSERT', $insert_data['TOPIC']);
-					$topic_id = sql_query_nextid($sql);
+					$topic_id = sql_insert('forum_topics', $insert_data['TOPIC']);
 					
 					$insert_data['POST'] = array(
 						'topic_id' => (int) $topic_id,
@@ -213,8 +212,7 @@ class topics {
 						'post_text' => $post_message,
 						'post_np' => $post_np
 					);
-					$sql = 'INSERT INTO _forum_posts' . sql_build('INSERT', $insert_data['POST']);
-					$post_id = sql_query_nextid($sql);
+					$post_id = sql_insert('forum_posts', $insert_data['POST']);
 					
 					if ($topic_vote) {
 						$insert_data['POLL'] = array(
@@ -223,19 +221,17 @@ class topics {
 							'vote_start' => (int) $current_time,
 							'vote_length' => (int) ($poll_length * 86400)
 						);
-						$sql = 'INSERT INTO _poll_options' . sql_build('INSERT', $insert_data['POLL']);
-						$poll_id = sql_query_nextid($sql);
+						$poll_id = sql_insert('poll_options', $insert_data['POLL']);
 						
 						$poll_option_id = 1;
 						foreach ($real_poll_options as $option) {
-							$insert_data['POLLRESULTS'][$poll_option_id] = array(
+							$insert_data['POLLRESULTS'] = array(
 								'vote_id' => (int) $poll_id,
 								'vote_option_id' => (int) $poll_option_id,
 								'vote_option_text' => $option,
 								'vote_result' => 0
 							);
-							$sql = 'INSERT INTO _poll_results' . sql_build('INSERT', $insert_data['POLLRESULTS'][$poll_option_id]);
-							sql_query($sql);
+							sql_insert('poll_results', $insert_data['POLLRESULTS']);
 							
 							$poll_option_id++;
 						}
@@ -331,7 +327,7 @@ class topics {
 		//
 		if ($is_auth['auth_post'] || $is_auth['auth_mod']) {
 			_style('topic_create', array(
-				'L_POST_NEW_TOPIC' => ($forum_row['forum_locked']) ? $user->lang['FORUM_LOCKED'] : $user->lang['POST_NEWTOPIC'])
+				'L_POST_NEW_TOPIC' => ($forum_row['forum_locked']) ? lang('forum_locked') : lang('post_newtopic'))
 			);
 		}
 		
@@ -363,7 +359,7 @@ class topics {
 				
 				if (!$j) {
 					_style('topics.alias', array(
-						'NAME' => $user->lang['TOPIC_' . strtoupper($alias)],
+						'NAME' => lang('topic_' . $alias),
 						'SHOW' => ($total->important && $total->normal > 1))
 					);
 				}
@@ -373,13 +369,13 @@ class topics {
 				if ($row->user_id != GUEST) {
 					$row->author = '<a  href="' . s_link('m', $row->username_base2) . '">' . $row->username2 . '</a>';
 				} else {
-					$row->author = '<span>*' . (($row->post_username2 != '') ? $row->post_username2 : $user->lang['GUEST']) . '</span>';
+					$row->author = '<span>*' . (($row->post_username2 != '') ? $row->post_username2 : lang('guest')) . '</span>';
 				}
 				
 				if ($row->user_id2 != GUEST) {
 					$row->poster = '<a href="' . s_link('m', $row->username_base2) . '">' . $row->username2 . '</a>';
 				} else {
-					$row->poster = '<span>*' . (($row->post_username2 != '') ? $row->post_username2 : $user->lang['GUEST']) . '</span>';
+					$row->poster = '<span>*' . (($row->post_username2 != '') ? $row->post_username2 : lang('guest')) . '</span>';
 				}
 				
 				_style('topics.alias.row', array(

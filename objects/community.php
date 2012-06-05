@@ -152,7 +152,7 @@ class community {
 		}
 		
 		_style($block, array(
-			'L_TITLE' => $user->lang[$block_title])
+			'L_TITLE' => lang($block_title))
 		);
 		_style($block . '.members');
 		
@@ -222,7 +222,7 @@ class community {
 			}
 			
 			_style($block . '.legend.item', array(
-				'L_MEMBERS' => $user->lang[$lk . (($vk != 1) ? '2' : '')],
+				'L_MEMBERS' => lang($lk . (($vk != 1) ? '2' : '')),
 				'ONLINE_VALUE' => $vk)
 			);
 		}

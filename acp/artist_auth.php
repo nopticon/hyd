@@ -118,8 +118,7 @@ class __artist_auth extends mac {
 								'ub' => $this->data['ub'],
 								'user_id' => $m
 							);
-							$sql = 'INSERT INTO _artists_auth' . sql_build('INSERT', $sql_insert);
-							sql_query($sql);
+							sql_insert('artists_auth', $sql_insert);
 						}
 
 						foreach ($sd_members as $user_id => $item) {
@@ -162,7 +161,7 @@ class __artist_auth extends mac {
 				$s_member = '';
 
 				_style('no_members', array(
-					'MESSAGE' => $user->lang['CONTROL_A_AUTH_ADD_NOMATCH'])
+					'MESSAGE' => lang('control_a_auth_add_nomatch'))
 				);
 			}
 
@@ -201,12 +200,12 @@ class __artist_auth extends mac {
 						$no_results = false;
 					} else {
 						_style('no_members', array(
-							'MESSAGE' => $user->lang['CONTROL_A_AUTH_ADD_TOOMUCH'])
+							'MESSAGE' => lang('control_a_auth_add_toomuch'))
 						);
 					}
 				} else {
 					_style('no_members', array(
-						'MESSAGE' => $user->lang['CONTROL_A_AUTH_ADD_NOMATCH'])
+						'MESSAGE' => lang('control_a_auth_add_nomatch'))
 					);
 				}
 			} // IF !EMPTY
@@ -290,10 +289,6 @@ class __artist_auth extends mac {
 						$user_type = USER_ARTIST;
 						if (!$keep_control) {
 							$user_type = USER_NORMAL;
-							if ($item['user_color'] == '492064') {
-								$update['user_color'] = '4D5358';
-							}
-
 							if ($item['user_rank'] == $config['default_a_rank']) {
 								$update['user_rank'] = 0;
 							}
@@ -335,15 +330,14 @@ class __artist_auth extends mac {
 				$s_members_hidden .= s_hidden(array('s_members[]' => $data['user_id']));
 			}
 
+			$message = count($s_members) == 1 ? '2' : '';
+
 			$layout_vars = array(
-				'MESSAGE_TEXT' => sprintf($user->lang[((sizeof($s_members) == 1) ? 'CONTROL_A_AUTH_DELETE2' : 'CONTROL_A_AUTH_DELETE')], $this->data['name'], $s_members_list),
+				'MESSAGE_TEXT' => sprintf(lang('control_a_auth_delete' . $message), $this->data['name'], $s_members_list),
 				'S_CONFIRM_ACTION' => s_link('acp', array('artist_auth', 'a' => $this->data['subdomain'])),
 				'S_HIDDEN_FIELDS' => $s_members_hidden
 			);
 
-			//
-			// Output to template
-			//
 			page_layout('CONTROL_A_AUTH', 'confirm', $layout_vars);
 		}
 

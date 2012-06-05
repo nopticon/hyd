@@ -173,7 +173,7 @@ class emailer {
 			$this->encoding = (trim($match[2]) != '') ? trim($match[2]) : trim($lang['ENCODING']);
 			$drop_header .= '[\r\n]*?' . preg_quote($match[1], '#');
 		} else {
-			$this->encoding = trim($user->lang['ENCODING']);
+			$this->encoding = lang('encoding');
 		}
 
 		if ($drop_header != '') {

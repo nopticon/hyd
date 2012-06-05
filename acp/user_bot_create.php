@@ -63,8 +63,7 @@ class __user_bot_create extends mac {
 				'user_timezone' => -6.00,
 				'user_lang' => 'spanish'
 			);
-			$sql = 'INSERT INTO _members' . sql_build('INSERT', $insert_member);
-			$bot_id = sql_query_nextid();
+			$bot_id = sql_insert('members', $insert_member);
 			
 			$insert_bot = array(
 				'bot_active' => 1,
@@ -73,8 +72,7 @@ class __user_bot_create extends mac {
 				'bot_agent' => $bot_agent,
 				'bot_ip' => $bot_ip,
 			);
-			$sql = 'INSERT INTO _bots' . sql_build('INSERT', $insert_bot);
-			sql_query($sql);
+			sql_insert('bots', $insert_bot);
 		}
 		
 		$sql = "DELETE FROM _sessions

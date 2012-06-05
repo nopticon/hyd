@@ -68,8 +68,7 @@ class __event extends mac {
 						'date' => (int) $v_date,
 						'event_update' => time()
 					);
-					$sql = 'INSERT INTO _events' . sql_build('INSERT', $insert);
-					$event_id = sql_query_nextid($sql);
+					$event_id = sql_insert('events', $insert);
 					
 					//
 					$artists_ary = explode(nr(), $event_artists);
@@ -89,8 +88,7 @@ class __event extends mac {
 									'a_artist' => $a_row['ub'],
 									'a_event' => $event_id
 								);
-								$sql = 'INSERT INTO _artists_events' . sql_build('INSERT', $sql_insert);
-								sql_query($sql);
+								sql_insert('artists_events', $sql_insert);
 							}
 						}
 					}
@@ -120,8 +118,7 @@ class __event extends mac {
 							'topic_featured' => 1,
 							'topic_points' => 1
 						);
-						$sql = 'INSERT INTO _forum_topics' . sql_build('INSERT', $insert);
-						$topic_id = sql_query_nextid($sql);
+						$topic_id = sql_insert('forum_topics', $insert);
 						
 						$event_current_topic = 0;
 					} else {
@@ -145,8 +142,7 @@ class __event extends mac {
 						'post_text' => $post_message,
 						'post_np' => ''
 					);
-					$sql = 'INSERT INTO _forum_posts' . sql_build('INSERT', $insert);
-					$post_id = sql_query_nextid($sql);
+					$post_id = sql_insert('forum_posts', $insert);
 					
 					$sql = 'UPDATE _events SET event_topic = ?
 						WHERE id = ?';
@@ -158,8 +154,7 @@ class __event extends mac {
 						'vote_start' => time(),
 						'vote_length' => (int) ($poll_length * 86400)
 					);
-					$sql = 'INSERT INTO _poll_options' . sql_build('INSERT', $insert);
-					$poll_id = sql_query_nextid($sql);
+					$poll_id = sql_insert('poll_options', $insert);
 					
 					$poll_options = array(1 => 'Si asistir&eacute;');
 					
@@ -170,8 +165,7 @@ class __event extends mac {
 							'vote_option_text' => $option_text,
 							'vote_result' => 0
 						);
-						$sql = 'INSERT INTO _poll_results' . sql_build('INSERT', $sql_insert);
-						sql_query($sql);
+						sql_insert('poll_results', $sql_insert);
 						
 						$poll_option_id++;
 					}

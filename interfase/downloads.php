@@ -36,35 +36,23 @@ class downloads {
 		return;
 	}
 	
-	public function dl_sql($ub = '', $order = '') {
-		$sql_ub = ($ub != '') ? sql_filter(' WHERE ub = ?', $ub) . ' ' : '';
-		$sql_order = ($order != '') ? ' ORDER BY ' . $order : '';
-		
-		$sql = 'SELECT *
-			FROM _dl' . 
-			$sql_ub . $sql_order;
-		$this->ud_song = sql_rowset($sql, 'ud', false, true);
-		
-		return;
-	}
-	
 	public function dl_type($ud) {
 		global $user;
 		
 		$type = 0;
 		switch ($ud) {
 			case E_UD_AUDIO:
-				$type = array('lang' => $user->lang['AUDIO'], 'extension' => 'mp3', 'av' => 'Audio');
+				$type = array('lang' => lang('audio'), 'extension' => 'mp3', 'av' => 'Audio');
 				break;
 			case E_UD_VIDEO:
-				$type = array('lang' => $user->lang['VIDEO'], 'extension' => 'wmv', 'av' => 'Video');
+				$type = array('lang' => lang('video'), 'extension' => 'wmv', 'av' => 'Video');
 				break;
 		}
 		return $type;
 	}
 	
 	public function dl_setup() {
-		$download_id = intval(request_var('download_id', 0));
+		$download_id = request_var('download_id', 0);
 		if (!$download_id) {
 			fatal_error();
 		}
@@ -93,7 +81,7 @@ class downloads {
 		
 		$stats_text = '';
 		foreach (array('views' => 'VIEW', 'downloads' => 'DL') as $item => $stats_lang) {
-			$stats_text .= (($stats_text != '') ? ', ' : '') . '<strong>' . $this->dl_data[$item] . '</strong> ' . $user->lang[$stats_lang] . (($this->dl_data[$item] > 1) ? 's' : '');
+			$stats_text .= (($stats_text != '') ? ', ' : '') . '<strong>' . $this->dl_data[$item] . '</strong> ' . lang($stats_lang) . (($this->dl_data[$item] > 1) ? 's' : '');
 		}
 		
 		v_style(array(
@@ -160,7 +148,7 @@ class downloads {
 				$vote_percent = ($this->dl_data['votes'] > 0) ? $vote_result / $this->dl_data['votes'] : 0;
 
 				_style('ud_poll.results.item', array(
-					'CAPTION' => $user->lang['UB_UDV' . $this->voting['ud'][$i]],
+					'CAPTION' => lang('ub_udv' . $this->voting['ud'][$i]),
 					'RESULT' => $vote_result,
 					'PERCENT' => sprintf("%.1d", ($vote_percent * 100)))
 				);
@@ -173,7 +161,7 @@ class downloads {
 			for ($i = 0, $end = sizeof($this->voting['ud']); $i < $end; $i++) {
 				_style('ud_poll.options.item', array(
 					'ID' => $this->voting['ud'][$i],
-					'CAPTION' => $user->lang['UB_UDV' . $this->voting['ud'][$i]])
+					'CAPTION' => lang('ub_udv' . $this->voting['ud'][$i]))
 				);
 			}
 		}
@@ -184,7 +172,7 @@ class downloads {
 		$comments_ref = s_link('a', array($this->data['subdomain'], 9, $this->dl_data['id']));
 		
 		if ($this->dl_data['posts']) {
-			$start = intval(request_var('dps', 0));
+			$start = request_var('dps', 0);
 			$comments->ref = $comments_ref;
 			$comments->auth = $this->auth;
 			
@@ -249,7 +237,7 @@ class downloads {
 				);
 			} else {
 				_style('dl_no_guest_posting', array(
-					'LEGEND' => sprintf($user->lang['UB_NO_GUEST_POSTING'], $this->data['name'], s_link('my', 'register')))
+					'LEGEND' => sprintf(lang('ub_no_guest_posting'), $this->data['name'], s_link('my', 'register')))
 				);
 			}
 		} else {
@@ -289,7 +277,7 @@ class downloads {
 		
 		global $user;
 		
-		$option_id = intval(request_var('vote_id', 0));
+		$option_id = request_var('vote_id', 0);
 		$url = s_link('a', array($this->data['subdomain'], 9, $this->dl_data['id']));
 		
 		if ($this->auth['adm'] || $this->auth['mod'] || !in_array($option_id, $this->voting['ud'])) {
@@ -321,8 +309,7 @@ class downloads {
 				'option_id' => $option_id,
 				'vote_result' => 1
 			);
-			$sql = 'INSERT INTO _dl_vote' . sql_build('INSERT', $sql_insert);
-			sql_query($sql);
+			sql_insert('dl_vote', $sql_insert);
 		}
 		
 		$sql_insert = array(
@@ -330,8 +317,7 @@ class downloads {
 			'user_id' => $user->d('user_id'),
 			'user_option' => $option_id
 		);
-		$sql = 'INSERT INTO _dl_voters' . sql_build('INSERT', $sql_insert);
-		sql_query($sql);
+		sql_insert('dl_voters', $sql_insert);
 		
 		$sql = 'UPDATE _dl SET votes = votes + 1
 			WHERE id = ?';
@@ -368,8 +354,7 @@ class downloads {
 			'user_id' => $user->d('user_id'),
 			'favtime' => time()
 		);
-		$sql = 'INSERT INTO _dl_fav' . sql_build('INSERT', $sql_insert);
-		sql_query($sql);
+		sql_insert('dl_fav', $sql_insert);
 		
 		$sql = 'UPDATE _members SET user_dl_favs = user_dl_favs + 1
 			WHERE user_id = ?';

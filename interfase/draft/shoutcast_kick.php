@@ -87,8 +87,7 @@ if ($fp)
 					'log_uid' => $user->data['user_id'],
 					'log_time' => time()
 				);
-				$sql = 'INSERT INTO _radio_dj_log' . sql_build('INSERT', $insert);
-				sql_query($sql);
+				sql_insert('radio_dj_log', $insert);
 			}
 		}
 	}

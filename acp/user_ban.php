@@ -53,8 +53,7 @@ class __user_ban extends mac {
 			$insert = array(
 				'ban_userid' => (int) $userdata['user_id']
 			);
-			$sql = 'INSERT INTO _banlist' . sql_build('INSERT', $insert);
-			sql_query($sql);
+			sql_insert('banlist', $insert);
 			
 			$sql = 'DELETE FROM _sessions
 				WHERE session_user_id = ?';

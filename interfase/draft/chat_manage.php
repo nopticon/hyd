@@ -77,7 +77,7 @@ switch ($mode) {
 					'ch_int_name' => $ch_int_name,
 					'ch_name' => $ch_name,
 					'ch_desc' => $ch_desc,
-					'ch_founder' => (int) $user->data['user_id'],
+					'ch_founder' => (int) $user->d('user_id'),
 					'ch_type' => (int) $ch_type,
 					'ch_auth' => (int) $ch_auth,
 					'ch_users' => 0,
@@ -85,8 +85,7 @@ switch ($mode) {
 					'ch_ip' => $user->ip,
 					'ch_locked' => 0
 				);
-				$sql = 'INSERT INTO _chat_ch' . sql_build('INSERT', $insert_data);
-				sql_query($sql);
+				sql_insert('chat_ch', $insert_data);
 				
 				redirect(s_link('chat', $ch_int_name));
 			} else {
@@ -111,11 +110,10 @@ switch ($mode) {
 				);
 			} // IF $cat
 			
-			$type_ary = array('CHAT_CH_OFFICIAL', 'CHAT_CH_ALL');
+			$type_ary = w('CHAT_CH_OFFICIAL CHAT_CH_ALL');
 			$type_list = '';
-			foreach ($type_ary as $i => $langkey)
-			{
-				$type_list .= '<option value="' . $i . '"' . (($i == $ch_type) ? ' selected' : '') . '>' . $user->lang[$langkey] . '</option>';
+			foreach ($type_ary as $i => $langkey) {
+				$type_list .= '<option value="' . $i . '"' . (($i == $ch_type) ? ' selected' : '') . '>' . lang($langkey) . '</option>';
 			}
 			
 			_style('select_type', array(
@@ -124,9 +122,9 @@ switch ($mode) {
 		}
 		
 		$select_auth = '';
-		$auth_ary = array('CHAT_CH_ALL', /*'CHAT_CH_PRIVATE', */'FRIENDS');
+		$auth_ary = w('CHAT_CH_ALL FRIENDS');
 		foreach ($auth_ary as $i => $langkey) {
-			$select_auth .= '<option value="' . $i . '"' . (($i == $ch_auth) ? ' selected' : '') . '>' . $user->lang[$langkey] . '</option>';
+			$select_auth .= '<option value="' . $i . '"' . (($i == $ch_auth) ? ' selected' : '') . '>' . lang($langkey) . '</option>';
 		}
 		
 		$template_vars += array(

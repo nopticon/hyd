@@ -83,9 +83,9 @@ class __artist_video extends mac {
 				'video_code' => $code,
 				'video_added' => time()
 			);
-			$sql = 'INSERT INTO _artists_video' . sql_build('INSERT', $insert);
-			sql_query($sql);
-				$sql = 'UPDATE _artists SET a_video = a_video + 1
+			sql_insert('artists_video', $insert);
+
+			$sql = 'UPDATE _artists SET a_video = a_video + 1
 				WHERE ub = ?';
 			sql_query(sql_filter($sql, $this->object['ub']));
 		}

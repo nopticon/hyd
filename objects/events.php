@@ -97,7 +97,7 @@ class _events extends downloads {
 			_style('next_event.row', array(
 				'URL' => s_link('events', $row['event_alias']),
 				'TITLE' => $row['title'],
-				'DATE' => $user->format_date($row['date'], $user->lang['DATE_FORMAT']),
+				'DATE' => $user->format_date($row['date'], lang('date_format')),
 				'IMAGE' => $config['events_url'] . 'future/thumbnails/' . $row['id'] . '.jpg?u=' . $row['event_update'])
 			); 
 		}
@@ -202,9 +202,9 @@ class _events extends downloads {
 						'member_id' => (int) $user->d('user_id'),
 						'fav_date' => time()
 					);
-					$sql = 'INSERT INTO _events_fav' . sql_build('INSERT', $sql_insert);
-					sql_query($sql);
+					sql_insert('events_fav', $sql_insert);
 				}
+
 				redirect(s_link('events', array($this->v('event_alias'), $imagedata['image'], 'view')));
 				break;
 			case 'rsvp':
@@ -249,15 +249,14 @@ class _events extends downloads {
 						'vote_user_ip' => $user->ip,
 						'vote_cast' => (int) $choice
 					);
-					$sql = 'INSERT INTO _poll_voters' . sql_build('INSERT', $insert_vote);
-					sql_query($sql);
+					sql_insert('poll_voters', $insert_vote);
 				}
 				
 				redirect(s_link('events', $this->v('event_alias')));
 				break;
 			case 'view':
 			default:
-				$t_offset = intval(request_var('offset', 0));
+				$t_offset = request_var('offset', 0);
 				
 				if ($mode == 'view') {
 					$sql = 'UPDATE _events_images
@@ -430,8 +429,7 @@ class _events extends downloads {
 						$insert_data['post_reply'] = $post_reply;
 					}
 					
-					$sql = 'INSERT INTO _forum_posts' . sql_build('INSERT', $insert_data);
-					$post_id = sql_query_nextid($sql);
+					$post_id = sql_insert('forum_posts', $insert_data);
 				
 					$user->delete_unread(UH_T, $this->v('event_topic'));
 					$user->save_unread(UH_T, $this->v('event_topic'));
@@ -541,17 +539,17 @@ class _events extends downloads {
 				
 				if ($this->v('date') >= $midnight) {
 					if ($this->v('date') >= $midnight && $this->v('date') < $midnight + 86400) {
-						$event_date_format = $user->lang['EVENT_TODAY'];
+						$event_date_format = lang('event_today');
 					} else if ($this->v('date') >= $midnight + 86400 && $this->v('date') < $midnight + (86400 * 2)) {
-						$event_date_format = $user->lang['EVENT_TOMORROW'];
+						$event_date_format = lang('event_tomorrow');
 					} else {
-						$event_date_format = sprintf($user->lang['EVENT_AFTER'], $event_date);
+						$event_date_format = sprintf(lang('event_after'), $event_date);
 					}
 				} else {
 					if ($this->v('date') >= ($midnight - 86400)) {
-						$event_date_format = $user->lang['EVENT_YESTERDAY'];
+						$event_date_format = lang('event_yesterday');
 					} else {
-						$event_date_format = sprintf($user->lang['EVENT_BEFORE'], $event_date);
+						$event_date_format = sprintf(lang('event_before'), $event_date);
 					}
 				}
 				
@@ -589,9 +587,9 @@ class _events extends downloads {
 							
 							foreach ($vote_info as $row) {
 								if ($this->v('date') >= $midnight) {
-									$caption = ($row['vote_result'] == 1) ? $user->lang['RSVP_FUTURE_ONE'] : $user->lang['RSVP_FUTURE_MORE'];
+									$caption = ($row['vote_result'] == 1) ? lang('rsvp_future_one') : lang('rsvp_future_more');
 								} else {
-									$caption = ($row['vote_result'] == 1) ? $user->lang['RSVP_PAST_ONE'] : $user->lang['RSVP_PAST_MORE'];
+									$caption = ($row['vote_result'] == 1) ? lang('rsvp_past_one') : lang('rsvp_past_more');
 								}
 								
 								_style('poll.results.item', array(
@@ -606,7 +604,7 @@ class _events extends downloads {
 							);
 							
 							foreach ($vote_info as $row) {
-								$caption = ($this->v('date') >= $midnight) ? $user->lang['RSVP_FUTURE'] : $user->lang['RSVP_PAST'];
+								$caption = ($this->v('date') >= $midnight) ? lang('rssvp_future') : lang('rsvp_past');
 								
 								_style('poll.options.item', array(
 									'ID' => $row['vote_option_id'],
@@ -792,7 +790,7 @@ class _events extends downloads {
 					'URL' => s_link('events', $item['event_alias']),
 					'TITLE' => $item['title'],
 					'IMAGE' => $config['events_url'] . 'gallery/' . $item['id'] . '/thumbnails/' . $random_images[$item['id']] . '.jpg',
-					'DATETIME' => $user->format_date($item['date'], $user->lang['DATE_FORMAT']))
+					'DATETIME' => $user->format_date($item['date'], lang('date_format')))
 				);
 			}
 			
@@ -809,14 +807,14 @@ class _events extends downloads {
 		
 		foreach ($this->data as $is_date => $data) {
 			_style('future.set', array(
-				'L_TITLE' => $user->lang['UE_' . strtoupper($is_date)])
+				'L_TITLE' => lang('ue_' . $is_date))
 			);
 			
 			foreach ($data as $item) {
 				_style('future.set.item', array(
 					'ITEM_ID' => $item['id'],
 					'TITLE' => $item['title'],
-					'DATE' => $user->format_date($item['date'], $user->lang['DATE_FORMAT']),
+					'DATE' => $user->format_date($item['date'], lang('date_format')),
 					'THUMBNAIL' => $config['events_url'] . 'future/thumbnails/' . $item['id'] . '.jpg',
 					'SRC' => $config['events_url'] . 'future/' . $item['id'] . '.jpg?u=' . $item['event_update'],
 					'U_TOPIC' => s_link('events', $item['event_alias']))

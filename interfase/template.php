@@ -1282,11 +1282,11 @@ class Template {
 	 */
 	public function lang($var) {
 		global $user;
+
 		if (substr($var, 0, 2) === 'L_') {
-			$var = substr($var, 2);
-			if (isset($user->lang[$var])) {
-				return $user->lang[$var];
-			}
+			$lang = substr($var, 2);
+
+			return lang($lang, $lang);
 		}
 		return '';
 	}
@@ -1300,11 +1300,12 @@ class Template {
 		$this->assign_var_from_handle('_tmp', $handle);
 		// assign the value of the generated variable to the given varname.
 		$this->append_block_vars($blockname, array($varname => $this->vars['_tmp']));
+
 		return true;
 	}
 
 	public function append_block_vars($blockname, $vararray) {
-		if(strstr($blockname, '.')) {
+		if (strstr($blockname, '.')) {
 			// Nested block.
 			$blocks = explode('.', $blockname);
 			$blockcount = sizeof($blocks) - 1;

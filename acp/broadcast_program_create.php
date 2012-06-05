@@ -54,9 +54,8 @@ class __broadcast_program_create extends mac {
 			$v->{'show_' . $vv} = $d;
 			unset($v->$vv);
 		}
-		
-		$sql = 'INSERT INTO _radio' . sql_build('INSERT', $v);
-		$show_id = sql_query_nextid($sql);
+
+		$show_id = sql_insert('radio', $v);
 		
 		$e_dj = explode(nr(), $dj_list);
 		foreach ($e_dj as $rowu) {
@@ -70,8 +69,7 @@ class __broadcast_program_create extends mac {
 					'dj_show' => $show_id,
 					'dj_uid' => $row['user_id']
 				);
-				$sql = 'INSERT INTO _radio_dj' . sql_build('INSERT', $sql_insert);
-				sql_query($sql);
+				sql_insert('radio_dj', $sql_insert);
 				
 				$sql = 'SELECT *
 					FROM _team_members
@@ -84,8 +82,7 @@ class __broadcast_program_create extends mac {
 						'real_name' => '',
 						'member_mod' => 0
 					);
-					$sql = 'INSERT INTO _team_members' . sql_build('INSERT', $sql_insert);
-					sql_query($sql);
+					sql_insert('team_members', $sql_insert);
 				}
 			}
 		}

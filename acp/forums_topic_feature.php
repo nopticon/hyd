@@ -56,8 +56,7 @@ class __forums_topic_feature extends mac {
 			'old' => $this->object->topic_featured,
 			'new' => $this->object->new_value
 		);
-		$sql = 'INSERT INTO _log_mod' . sql_build('INSERT', $sql_insert);
-		sql_query($sql);
+		sql_insert('log_mod', $sql_insert);
 		
 		return redirect(s_link('topic', $this->id));
 	}

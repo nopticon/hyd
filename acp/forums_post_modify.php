@@ -79,8 +79,7 @@ class __forums_post_modify extends mac {
 					'rev_ip' => $user->ip,
 					'rev_text' => $this->object->post->post_text
 				);
-				$sql = 'INSERT INTO _forum_posts_rev' . sql_build('INSERT', $rev);
-				sql_query($sql);
+				sql_insert('forum_posts_rev', $rev);
 			}
 			
 			redirect(s_link('post', $this->id));

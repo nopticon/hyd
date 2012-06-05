@@ -89,9 +89,6 @@ define('POST_GROUPS_URL', 'g');
 define('SESSION_METHOD_COOKIE', 100);
 define('SESSION_METHOD_GET', 101);
 
-define('FTP_ASCII', 0);
-define('FTP_BINARY', 1);
-
 // Auth settings
 define('AUTH_LIST_ALL', 0);
 define('AUTH_ALL', 0);

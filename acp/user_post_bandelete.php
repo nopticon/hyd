@@ -54,11 +54,7 @@ class __user_post_bandelete extends mac {
 				FROM _banlist
 				WHERE ban_userid = ?';
 			if (!$row = sql_fieldrow(sql_filter($sql, $d['poster_id']))) {
-				$sql_insert = array(
-					'ban_userid' => $d['poster_id']
-				);
-				$sql = 'INSERT INTO _banlist' . sql_build('INSERT', $sql_insert);
-				sql_query($sql);
+				sql_insert('banlist', array('ban_userid' => $d['poster_id']));
 			}
 		}
 		
@@ -70,8 +66,7 @@ class __user_post_bandelete extends mac {
 				$sql_insert = array(
 					'ban_ip' => $d['post_ip']
 				);
-				$sql = 'INSERT INTO _banlist' . sql_build('INSERT', $sql_insert);
-				sql_query($sql);
+				sql_insert('banlist', $sql_insert);
 			}
 		}
 		

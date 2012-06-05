@@ -31,7 +31,7 @@ $sql = 'SELECT t.topic_id, t.topic_title, t.forum_id, t.topic_replies, f.forum_n
 	ORDER BY p.post_id DESC
 	LIMIT ??';
 if ($result = sql_rowset(sql_filter($sql, $config['ub_fans_f'], $config['main_topics']))) {
-	$top_posts = sprintf($user->lang['TOP_FORUM'], count($result));
+	$top_posts = sprintf(lang('top_forum'), count($result));
 	
 ?>
 <div class="head"><img src="/net/icons/forum.gif" width="18" height="18" alt="<?php echo $top_posts; ?>" title="<?php echo $top_posts; ?>" /><?php echo $top_posts; ?></div>
@@ -41,12 +41,12 @@ if ($result = sql_rowset(sql_filter($sql, $config['ub_fans_f'], $config['main_to
 	$i = 0;
 	
 	foreach ($result as $row) {
-		$username = ($row['user_id'] != GUEST) ? $row['username'] : (($row['post_username'] != '') ? $row['post_username'] : $user->lang['GUEST']);
+		$username = ($row['user_id'] != GUEST) ? $row['username'] : (($row['post_username'] != '') ? $row['post_username'] : lang('guest'));
 		$u_topic = ($row['topic_replies']) ? s_link('post', $row['post_id']) . '#' . $row['post_id'] : s_link('topic', $row['topic_id']);
 		
 ?>
 	<tr<?php echo (($i % 2) ? ' class="dark-color"' : ''); ?>>
-		<td valign="top"><a href="<?php echo $u_topic; ?>" class="red bold"><?php echo $row['topic_title']; ?></a> <span class="soft">|</span> <?php echo $row['topic_replies']; ?>m<br /><?php echo $user->lang['IN']; ?> <a class="bold" href="<?php echo s_link('forum', $row['forum_id']); ?>"><?php echo $row['forum_name']; ?></a></td>
+		<td valign="top"><a href="<?php echo $u_topic; ?>" class="red bold"><?php echo $row['topic_title']; ?></a> <span class="soft">|</span> <?php echo $row['topic_replies']; ?>m<br /><?php echo lang('in'); ?> <a class="bold" href="<?php echo s_link('forum', $row['forum_id']); ?>"><?php echo $row['forum_name']; ?></a></td>
 		<td width="15%" align="right" nowrap><?php if ($row['user_id'] != 1) { echo '<a style="color:#' . $row['user_color'] . '; font-weight: bold" href="' . s_link('m', $row['username_base']) . '">' . $username . '</a>'; } else { echo '<span style="color:#' . $row['user_color'] . '; font-weight: bold">*' . $username . '</span>'; } ?><br /><?php echo $user->format_date($row['post_time']); ?></td>
 	</tr>
 <?php

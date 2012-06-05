@@ -108,8 +108,7 @@ foreach ($wall_feed as $row) {
 	/*$sql_insert = array(
 		'' => '',
 	);
-	$sql = 'INSERT INTO _news' . sql_build('INSERT', $sql_insert);
-	sql_query($sql);
+	sql_insert('news', $sql_insert);
 	 * 
 	 * rk user (1433)
 	*/

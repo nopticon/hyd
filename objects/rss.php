@@ -100,9 +100,9 @@ class _rss {
 		echo '<?xml version="1.0" encoding="utf-8"?>
 <rss version="2.0">
 <channel>
-	<title>' . html_entity_decode_utf8($user->lang['RSS_' . $umode]) . '</title>
+	<title>' . html_entity_decode_utf8(lang('rss_' . $umode)) . '</title>
 	<link>http://www.rockrepublik.net/</link>
-	<description><![CDATA[' . html_entity_decode_utf8($user->lang['RSS_DESC_' . $umode]) . ']]></description>
+	<description><![CDATA[' . html_entity_decode_utf8(lang('rss_desc_' . $umode)) . ']]></description>
 	<lastBuildDate>' . date('D, d M Y H:i:s \G\M\T', $this->xml[0]['pubdate']) . '</lastBuildDate>
 	<webMaster>info@rockrepublik.net</webMaster>
 ' . $items . '</channel>

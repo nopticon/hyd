@@ -28,7 +28,7 @@ function user_profile($row) {
 			$user_profile[$row['user_id']]['profile'] = s_link('m', $row['username_base']);
 			$user_profile[$row['user_id']]['color'] = $row['user_color'];
 		} else {
-			$user_profile[$row['user_id']]['username'] = ($row['post_username'] != '') ? $row['post_username'] : $user->lang['GUEST'];
+			$user_profile[$row['user_id']]['username'] = ($row['post_username'] != '') ? $row['post_username'] : lang('guest');
 			$user_profile[$row['user_id']]['profile'] = '';
 			$user_profile[$row['user_id']]['color'] = $row['user_color'];
 		}

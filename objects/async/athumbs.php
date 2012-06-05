@@ -44,19 +44,14 @@ foreach ($result as $row) {
 	}
 }
 
-$tcol = 0;
 foreach ($selected_artists as $ub => $data) {
-	if (!$tcol) _style('row');
-	
-	_style('row.col', array(
+	_style('row', array(
 		'NAME' => $data['name'],
 		'IMAGE' => $config['artists_url'] . $ub . '/thumbnails/' . $random_images[$ub] . '.jpg',
 		'URL' => s_link('a', $data['subdomain']),
 		'LOCATION' => ($data['local']) ? 'Guatemala' : $data['location'],
 		'GENRE' => $data['genre'])
 	);
-	
-	$tcol = ($tcol == 3) ? 0 : $tcol + 1;
 }
 
 $template->set_filenames(array(

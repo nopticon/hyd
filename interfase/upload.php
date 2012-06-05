@@ -84,7 +84,7 @@ class upload {
 			$row = $this->_row($filepath, $location);
 			
 			if (!in_array($row->extension, $extension)) {
-				$this->error[] = sprintf($user->lang['UPLOAD_INVALID_EXT'], $row->name);
+				$this->error[] = sprintf(lang('upload_invalid_ext'), $row->name);
 				$row->error = 1;
 				continue;
 			}
@@ -96,7 +96,7 @@ class upload {
 			}
 			
 			if (!@copy($location, $row->filepath)) {
-				$this->error[] = sprintf($user->lang['UPLOAD_FAILED'], $row->name);
+				$this->error[] = sprintf(lang('upload_failed'), $row->name);
 				$row->error = 1;
 				continue;
 			}
@@ -163,7 +163,7 @@ class upload {
 		}
 		
 		if (!sizeof($files)) {
-			$this->error[] = $user->lang['FILES_NO_FILES'];
+			$this->error[] = lang('files_no_files');
 			return false;
 		}
 		
@@ -190,13 +190,13 @@ class upload {
 			}
 			
 			if (!in_array($r->extension, $extension)) {
-				$this->error[] = sprintf($user->lang['UPLOAD_INVALID_EXT'], $r->name);
+				$this->error[] = sprintf(lang('upload_invalid_ext'), $r->name);
 				$r->error = 1;
 				continue;
 			}
 			
 			if ($r->size > $filesize) {
-				$this->error[] = sprintf($user->lang['UPLOAD_TOO_BIG'], $r->name, ($filesize / 1048576));
+				$this->error[] = sprintf(lang('upload_too_big'), $r->name, ($filesize / 1048576));
 				$r->error = 1;
 				continue;
 			}
@@ -208,7 +208,7 @@ class upload {
 			}
 			
 			if (!@move_uploaded_file($r->tmp, $r->filepath)) {
-				$this->error[] = sprintf($user->lang['UPLOAD_FAILED'], $r->name);
+				$this->error[] = sprintf(lang('upload_failed'), $r->name);
 				$r->error = 1;
 				continue;
 			}
@@ -218,7 +218,7 @@ class upload {
 			if (@filesize($r->filepath) > $filesize) {
 				_rm($r->filepath);
 				
-				$this->error[] = sprintf($user->lang['UPLOAD_TOO_BIG'], $r->name, ($filesize / 1048576));
+				$this->error[] = sprintf(lang('upload_too_big'), $r->name, ($filesize / 1048576));
 				$r->error = 1;
 				continue;
 			}

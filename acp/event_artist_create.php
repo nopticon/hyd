@@ -73,8 +73,7 @@ class __event_artist_create extends mac {
 					'a_artist' => $a_ub,
 					'a_event' => $event['id']
 				);
-				$sql = 'INSERT INTO _artists_events' . sql_build('INSERT', $sql_insert);
-				sql_query($sql);
+				sql_insert('artists_events', $sql_insert);
 			}
 		}
 		

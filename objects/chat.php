@@ -188,7 +188,7 @@ class _chat {
 						WHERE session_id = ?';
 					sql_query(sql_filter($sql, $csid));
 					
-					$this->_message($row['session_ch_id'], $user->d('user_id'), sprintf($user->lang['CHAT_MEMBER_LOGOUT'], $user->d('username')));
+					$this->_message($row['session_ch_id'], $user->d('user_id'), sprintf(lang('chat_member_logout'), $user->d('username')));
 				}
 				
 				redirect(s_link('chat'));
@@ -386,13 +386,13 @@ class _chat {
 			'session_time' => (int) $ttime,
 			'session_last_msg' => 0
 		);
-		sql_query('INSERT INTO _chat_sessions' . sql_build('INSERT', $insert_data));
+		sql_insert('chat_sessions', $insert_data);
 		
 		$sql = 'UPDATE _chat_ch SET ch_users = ch_users + 1
 			WHERE ch_id = ?';
 		sql_query(sql_filter($sql, $this->data['ch_id']));
 		
-		$this->_message($this->data['ch_id'], $user->d('user_id'), sprintf($user->lang['CHAT_MEMBER_ENTERED'], $user->d('username')));
+		$this->_message($this->data['ch_id'], $user->d('user_id'), sprintf(lang('chat_member_entered'), $user->d('username')));
 		
 		$this->data += $insert_data;
 		$this->sys_clean();
@@ -411,7 +411,7 @@ class _chat {
 			'msg_time' => (int) time(),
 			'msg_ip' => $user->ip
 		);
-		sql_query('INSERT INTO _chat_msg' . sql_build('INSERT', $insert_data));
+		sql_insert('chat_msg', $insert_data);
 		
 		return $insert_data;
 	}
@@ -467,7 +467,7 @@ class _chat {
 				sql_query(sql_filter($sql, $number, $ch_id));
 				
 				foreach ($show_members[$ch_id] as $user_id => $username) {
-					$this->_message($ch_id, $user_id, sprintf($user->lang['CHAT_MEMBER_TIMEOUT'], $username));
+					$this->_message($ch_id, $user_id, sprintf(lang('chat_member_timeout'), $username));
 				}
 			}
 			
