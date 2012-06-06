@@ -604,7 +604,7 @@ class _events extends downloads {
 							);
 							
 							foreach ($vote_info as $row) {
-								$caption = ($this->v('date') >= $midnight) ? lang('rssvp_future') : lang('rsvp_past');
+								$caption = ($this->v('date') >= $midnight) ? lang('rsvp_future') : lang('rsvp_past');
 								
 								_style('poll.options.item', array(
 									'ID' => $row['vote_option_id'],
