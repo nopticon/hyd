@@ -19,6 +19,42 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 if (!defined('IN_APP')) exit;
 
 class _home {
+	public function conversations() {
+		$sql = 'SELECT c.*, c2.privmsgs_date, m.user_id, m.username, m.username_base, m.user_color
+			FROM _members_unread u, _dc c, _dc c2, _members m
+			WHERE u.user_id = ?
+				AND u.element = ?
+				AND u.item = c.msg_id 
+				AND c.last_msg_id = c2.msg_id
+				AND c2.privmsgs_from_userid = m.user_id 
+			ORDER BY c2.privmsgs_date DESC';
+		$result = sql_rowset(sql_filter($sql, $user->data['user_id'], UH_NOTE));
+		
+		foreach ($result as $i => $row) {
+			if (!$i) {
+				_style('items.notes', array(
+					'ELEMENT' => UH_NOTE)
+				);
+			}
+			
+			$user_profile = user_profile($row);
+			$dc_subject = 'Conversaci&oacute;n con ' . $row['username'];
+			
+			_style('items.notes.item', array(
+				'S_MARK_ID' => $row['parent_id'],
+				'U_READ' => s_link('my', array('dc', 'read', $row['last_msg_id'])) . '#' . $row['last_msg_id'],
+				'SUBJECT' => $dc_subject,
+				'DATETIME' => $user->format_date($row['privmsgs_date']),
+				'USER_ID' => $row['user_id'],
+				'USERNAME' => $row['username'],
+				'USER_COLOR' => $row['user_color'],
+				'U_USERNAME' => $user_profile['profile'])
+			);
+		}
+
+		return;
+	}
+
 	public function news() {
 		global $config, $cache, $user, $comments;
 		
