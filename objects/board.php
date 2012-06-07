@@ -96,8 +96,8 @@ class board {
 					if ($f_data['post_id']) {
 						$f_data['topic_title'] = (strlen($f_data['topic_title']) > 30) ? substr($f_data['topic_title'], 0, 30) . '...' : $f_data['topic_title'];
 						
-						$last_topic = '<a class="bold" href="' . s_link('topic', $f_data['topic_id']) . '">' . $f_data['topic_title'] . '</a>';
-						$last_poster = ($f_data['user_id'] == GUEST) ? '<span style="color:#' . $f_data['user_color'] . '; font-weight: bold">*' . (($f_data['post_username'] != '') ? $f_data['post_username'] : lang('guest')) . '</span>' : '<a style="color:#' . $f_data['user_color'] . '; font-weight: bold" href="' . s_link('m', $f_data['username_base']) . '">' . $f_data['username'] . '</a>';
+						$last_topic = '<a href="' . s_link('topic', $f_data['topic_id']) . '">' . $f_data['topic_title'] . '</a>';
+						$last_poster = ($f_data['user_id'] == GUEST) ? '<span>*' . (($f_data['post_username'] != '') ? $f_data['post_username'] : lang('guest')) . '</span>' : '<a href="' . s_link('m', $f_data['username_base']) . '">' . $f_data['username'] . '</a>';
 						$last_post_time = '<a href="' . s_link('post', $f_data['post_id']) . '#' . $f_data['post_id'] . '">' . $user->format_date($f_data['post_time']) . '</a>';
 					} else {
 						$last_poster = $last_post_time = $last_topic = '';

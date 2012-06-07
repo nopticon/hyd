@@ -129,7 +129,7 @@
 <!-- BEGIN item -->
 <!-- IF item.S_ROW_COUNT --><div class="boxt"><!-- ENDIF -->
 <div class="pad6 box2b">
-<!-- BEGIN username --><a style="color:#{item.USER_COLOR}; font-weight: bold" href="{item.PROFILE}"><!-- END username --><!-- BEGIN guestuser --><span style="color:#{item.USER_COLOR}; font-weight: bold"><!-- END guestuser -->{item.USERNAME}<!-- BEGIN guestuser --></span><!-- END guestuser --><!-- BEGIN username --></a><!-- END username --><br />{item.DATETIME}
+<!-- BEGIN username --><a href="{item.PROFILE}"><!-- END username --><!-- BEGIN guestuser --><span><!-- END guestuser -->{item.USERNAME}<!-- BEGIN guestuser --></span><!-- END guestuser --><!-- BEGIN username --></a><!-- END username --><br />{item.DATETIME}
 <!-- BEGIN controls --><div class="sep-top sgray" align="right"><!-- BEGIN reply --><a href="{reply.REPLY}">{L_CMT_REPLY}</a><!-- END reply --><!-- BEGIN report --> <span class="soft">|</span> <a href="{report.REPORT}">{L_CMT_REPORT}</a><!-- END report --><!-- BEGIN auth --><!-- IF isset(auth.EDIT) --> <span class="soft">|</span> <a href="{auth.EDIT}">{L_CMT_EDIT}</a><!-- ENDIF --> <!-- IF isset(auth.DELETE) --> <span class="soft">|</span> <a href="{auth.DELETE}">{L_CMT_DELETE}</a><!-- ENDIF --><!-- END auth --></div><!-- END controls -->
 </div>
 <div class="pad_top">{item.MESSAGE}</div>

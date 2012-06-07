@@ -94,7 +94,7 @@ $lang += array(
 	'FCC_MS_BCK' => '<br /><br />Click %sAQUI%s para regresar a la pantalla anterior.',
 	'FCC_NO_MEMBERS' => 'No hay miembros en este club de fans.',
 	// FC MESSAGES
-	'FCC_NO_MEMBER' => '<span style="color:#FFBF00"><b>No eres miembro de este club de fans.</b></span><br /><br />Haz click en <b>Agregar Suscripci&oacute;n</b> para opinar sobre los mensajes.',
+	'FCC_NO_MEMBER' => '<span><b>No eres miembro de este club de fans.</b></span><br /><br />Haz click en <b>Agregar Suscripci&oacute;n</b> para opinar sobre los mensajes.',
 	'FCC_NO_POSTS' => 'No hay mensajes enviados a este club de fans.',
 	'FCC_NEWTOPIC' => 'Publicar Mensaje',
 	'FCC_NEWREPLY' => 'Publicar Opini&oacute;n',

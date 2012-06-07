@@ -326,7 +326,7 @@ class __artist_auth extends mac {
 			$s_members_list = '';
 			$s_members_hidden = s_hidden(array('module' => $this->control->module, 'a' => $this->data['subdomain'], 'mode' => $this->mode, 'manage' => $this->manage));
 			foreach ($s_members as $data) {
-				$s_members_list .= (($s_members_list != '') ? ', ' : '') . '<strong style="color:#' . $data['user_color'] . '; font-weight: bold">' . $data['username'] . '</strong>';
+				$s_members_list .= (($s_members_list != '') ? ', ' : '') . $data['username'];
 				$s_members_hidden .= s_hidden(array('s_members[]' => $data['user_id']));
 			}
 

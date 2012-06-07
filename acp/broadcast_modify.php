@@ -88,7 +88,7 @@ class __broadcast_modify extends mac {
 			$e_item = array_map('trim', explode(':', $item));
 			if (!empty($e_item[0]))
 			{
-				echo sumhour($e_item[0]) . ' <input type="text" name="hours[' . $e_item[0] . ']" value="' . $e_item[1] . '" size="100"' . ((oclock($e_item[0])) ? ' style="background-color: #CCCCCC;"' : '') . ' /><br />' . nr();
+				echo sumhour($e_item[0]) . ' <input type="text" name="hours[' . $e_item[0] . ']" value="' . $e_item[1] . '" size="100"' . ((oclock($e_item[0])) ? 'class="highlight"' : '') . ' /><br />' . nr();
 			}
 		}
 		

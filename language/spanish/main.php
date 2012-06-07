@@ -824,8 +824,8 @@ $lang += array(
 	'UE_DELETE' => 'Eliminar Archivo',
 	'UE_CANT_DOWNL0AD' => 'No se puede descargar el archivo seleccionado.',
 	'UE_CANT_VIEW' => 'No se puede visualizar el archivo seleccionado.',
-	'UE_CANT_DELETE' => 'No se puede eliminar el archivo seleccionado. ( <span style="color:#999900"><b>%s</b></span> )',
-	'UE_DELETED' => 'El archivo ( <span style="color:#999900"><b>%s</b></span> ) fue eliminado permanentemente de Rock Republik.',
+	'UE_CANT_DELETE' => 'No se puede eliminar el archivo seleccionado. (<b>%s</b>)',
+	'UE_DELETED' => 'El archivo <b>%s</b> fue eliminado correctamente.',
 	
 	// SOCIAL NETWORKS
 	'SOCIAL_NETWORKS' => 'Redes sociales',

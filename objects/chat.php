@@ -244,7 +244,7 @@ class _chat {
 									$message = '<span class="rkc_self">' . str_replace('\"', '"', substr(@preg_replace('#(\>(((?>([^><]+|(?R)))*)\<))#se', "@preg_replace('#\b(" . str_replace('\\', '\\\\', $user->d('username')) . ")\b#i', '<span class=\"sgray bold\">\\\\1</span>', '\\0')", '>' . $message . '<'), 1, -1)) . '</span>';
 								}
 								
-								$message = '<strong style="color: #' . $row['user_color'] . '">&lt;' . $row['username'] . '&gt;</strong> ' . $message . '<br />';
+								$message = '<strong>&lt;' . $row['username'] . '&gt;</strong> ' . $message . '<br />';
 							}
 							
 							$xmlre .= '<smsg>' . rawurlencode($message) . '</smsg>';
