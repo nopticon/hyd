@@ -1748,7 +1748,7 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 		'U_SESSION' => s_link('sign' . $u_session),
 		'U_PROFILE' => s_link('m', $user->d('username_base')),
 		'U_EDITPROFILE' => s_link('my', 'profile'),
-		'U_SPASSWORD' => s_link('my', 'password'),
+		'U_PASSWORD' => s_link('signr'),
 		'U_DC' => s_link('my', 'dc'),
 		
 		'U_HOME' => s_link(),

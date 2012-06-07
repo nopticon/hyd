@@ -38,7 +38,7 @@ RewriteRule ^play/(\d+)\-(\d+)\.mp3$ http://artists.rockrepublik.net/$1/media/$2
 RewriteRule ^post/(\d+)/reply/$ orion/topic.php?p=$1&reply=1 [nc]
 RewriteRule ^post/(\d+)/$ orion/topic.php?p=$1 [nc]
 RewriteRule ^(topic)/(\d+)/(s(\d+)/?)?$ orion/$1.php?t=$2&offset=$4 [nc]
-RewriteRule ^(rss)/(artists|events|forum|news)/?$ orion/$1.php?mode=$2 [nc]
+RewriteRule ^(rss)/(artists|events|forum|news)/$ orion/$1.php?mode=$2 [nc]
 
 RewriteRule ^a/?(_(\d+)/?)?$ orion/artists.php?alphabet=$2 [nc]
 RewriteRule ^a/([0-9a-z]+)/(4|6)/(\d+)/(view|save)/$ orion/artists.php?id=$1&layout=$2&download_id=$3&mode=$4 [nc]
@@ -48,7 +48,7 @@ RewriteRule ^a/([0-9a-z]+)/16/(t|p)(\d+)/$ orion/artists.php?id=$1&layout=16&$2=
 RewriteRule ^a/([0-9a-z]+)/(((\d+)/)?((gs|ps)(\d+)/)?)?$ orion/artists.php?id=$1&layout=$4&$6=$7 [nc]
 RewriteRule ^a/([0-9a-z]+)(/?(\d+)/?)?$ orion/artists.php?id=$1&layout=$3 [nc]
 
-RewriteRule ^m/([0-9a-z\_\-]+)/?((main|friend|friends|messages|ban)/?)?$ orion/userpage.php?member=$1&mode=$3 [nc]
+RewriteRule ^m/([0-9a-z\_\-]+)/?((main|friend|friends|messages|ban)/)?$ orion/userpage.php?member=$1&mode=$3 [nc]
 RewriteRule ^my/(profile)/$ orion/userpage.php [nc]
 RewriteRule ^my/(dc)/(start)/?(([0-9a-zA-Z\_\-]+)/)?$ orion/userpage.php?page=$1&action=$2&member=$4 [nc]
 RewriteRule ^my/(dc)/([a-z]+)/(\d+)/$ orion/userpage.php?page=$1&mode=$2&p=$3 [nc]
