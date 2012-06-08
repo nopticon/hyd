@@ -48,36 +48,48 @@
 	<div class="h x3"><h3>{L_PASSWORD_RESET}</h3></div>
 	
 	<form action="{U_PASSWORD}" method="post">
+		<input type="hidden" id="code" name="code" value="{S_CODE}" />
+		<div class="pad_top a_mid x2">
+			<!-- IF PAGE_MODE == '' -->
+			{L_SENDPASSWORD_EXPLAIN}
+			<!-- ELSEIF PAGE_MODE == 'nomatch' -->
+			{L_SENDPASSWORD5_EXPLAIN}
+			<!-- ELSEIF PAGE_MODE == 'nokey' -->
+			{L_SENDPASSWORD6_EXPLAIN}
+			<!-- ELSEIF PAGE_MODE == 'submit' -->
+			{L_SENDPASSWORD2_EXPLAIN}
+			<!-- ELSEIF PAGE_MODE == 'updated' -->
+			<input type="hidden" id="r" name="r" value="1" />
+			{L_SENDPASSWORD4_EXPLAIN}
+			<!-- ELSEIF PAGE_MODE == 'verify' -->
+			{L_SENDPASSWORD3_EXPLAIN}
+			<!-- ENDIF -->
+		</div>
+	
+		<span class="clear"></span>
 		
-	<div class="pad_top a_mid x3">
-		<!-- IF PAGE_MODE == '' -->
-		{L_SENDPASSWORD_EXPLAIN}
-		<!-- ELSEIF PAGE_MODE == 'submit' -->
-		{L_SENDPASSWORD2_EXPLAIN}
-		<!-- ELSEIF PAGE_MODE == 'updated' -->
-		{L_SENDPASSWORD4_EXPLAIN}
-		<!-- ELSEIF PAGE_MODE == 'verify' -->
-		{L_SENDPASSWORD3_EXPLAIN}
+		<!-- IF PAGE_MODE == 'verify' || PAGE_MODE == 'nomatch' || PAGE_MODE == 'nokey' -->
+		<div class="pad_top">
+			<div class="is_mid a_right"><label for="newkey" class="in_right">{L_NEW_PASSWORD}</label></div>
+			<div class="is_mid"><input type="password" id="newkey" name="newkey" size="20" maxlength="100" value="" /></div>
+		</div>
+
+		<span class="clear"></span>
+
+		<div class="pad_top">
+			<div class="is_mid a_right"><label for="newkey2" class="in_right">{L_CONFIRM_PASSWORD}</label></div>
+			<div class="is_mid"><input type="password" id="newkey2" name="newkey2" size="20" maxlength="100" value="" /></div>
+		</div>
+		<!-- ELSEIF PAGE_MODE == '' -->
+		<div class="pad_top">
+			<div class="is_mid a_right"><label for="address" class="in_right">{L_EMAIL}</label></div>
+			<div class="is_mid"><input type="text" id="address" name="address" size="20" maxlength="100" value="" /></div>
+		</div>
 		<!-- ENDIF -->
-	</div>
-	
-	<span class="clear"></span>
-	
-	<!-- IF PAGE_MODE == 'verify' -->
-	<div class="pad_top">
-		<div class="is_mid a_right"><label for="newkey" class="in_right">{L_NEW_PASSWORD}</label></div>
-		<div class="is_mid"><input type="password" id="newkey" name="newkey" size="40" maxlength="255" value="" /></div>
-	</div>
-	<!-- ELSE -->
-	<div class="pad_top">
-		<div class="is_mid a_right"><label for="address" class="in_right">{L_EMAIL}</label></div>
-		<div class="is_mid"><input type="text" id="address" name="address" size="20" maxlength="100" value="" /></div>
-	</div>
-	<!-- ENDIF -->
-	
-	<span class="clear"></span>
-	
-	<div class="pad_top a_mid ctl"><input type="submit" name="submit" value="{L_CONTINUE}" /></div>
+		
+		<span class="clear"></span>
+		
+		<div class="pad_top a_mid ctl"><input type="submit" name="submit" value="{L_CONTINUE}" /></div>
 	</form>
 </div>
 

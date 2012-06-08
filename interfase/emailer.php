@@ -191,6 +191,9 @@ class emailer {
 		// Send message ... removed $this->encode() from subject for time being
 		$empty_to_header = ($to == '') ? true : false;
 		$to = ($to == '') ? (($config['sendmail_fix']) ? ' ' : 'Undisclosed-recipients:;') : $to;
+
+		$this->subject = entity_decode($this->subject);
+		$this->msg = entity_decode($this->msg);
 		
 		$result = @mail($to, $this->subject, preg_replace("#(?<!\r)\n#s", "\n", $this->msg), $this->extra_headers, "-f{$config['board_email']}");
 		

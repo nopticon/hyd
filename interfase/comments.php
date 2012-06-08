@@ -697,7 +697,7 @@ class _comments {
 				${$var}[$row['parent_id']] = true;
 			}
 		}
-		
+
 		//
 		if (sizeof($update_a)) {
 			$sql = 'UPDATE _dc
@@ -706,7 +706,7 @@ class _comments {
 					AND ' . $sql_member;
 			sql_query(sql_filter($sql, $user->d('user_id'), implode(',', array_map('intval', array_keys($update_a)))));
 			
-			$user->delete_unread(UH_NOTE, $update_a);
+			$user->delete_unread(UH_NOTE, array_keys($update_a));
 		}
 		
 		if (sizeof($delete_a)) {
@@ -715,7 +715,7 @@ class _comments {
 					AND ' . $sql_member;
 			sql_query(sql_filter($sql, implode(',', array_map('intval', array_keys($delete_a)))));
 			
-			$user->delete_all_unread(UH_NOTE, $delete_a);
+			$user->delete_unread(UH_NOTE, array_keys($delete_a));
 		}
 		
 		return true;

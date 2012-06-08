@@ -1056,11 +1056,11 @@ class user extends session {
 		if (!$element || !$item) {
 			return false;
 		}
-		
-		$items = (is_array($item)) ? implode(',', array_map('intval', $item)) : (int) $item;
-		
+
+		$items = (is_array($item)) ? implode(',', array_map('intval', $item)) : $item;
+
 		if (!empty($items)) {
-			$sql = 'DELETE LOW_PRIORITY FROM _members_unread
+			$sql = 'DELETE FROM _members_unread
 				WHERE user_id = ?
 					AND element = ?
 					AND item IN (??)';
@@ -1079,7 +1079,7 @@ class user extends session {
 		
 		$items = (is_array($item)) ? implode(',', array_map('intval', $item)) : (int) $item;
 		
-		$sql = 'DELETE LOW_PRIORITY FROM _members_unread
+		$sql = 'DELETE FROM _members_unread
 			WHERE element = ?
 				AND item IN (??)';
 		sql_query(sql_filter($sql, $element, $items));

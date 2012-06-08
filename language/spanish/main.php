@@ -152,6 +152,8 @@ $lang += array(
 	'SENDPASSWORD2_EXPLAIN' => 'Por razones de seguridad no podemos mostrarte si el correo fue enviado. Si has ingresado una direcci&oacute;n v&aacute;lida, en un momento recibir&aacute;s en tu buz&oacute;n de email un c&oacute;digo para actualizar tu contrase&ntilde;a de usuario.',
 	'SENDPASSWORD3_EXPLAIN' => 'Por favor ingresa una nueva contrase&ntilde;a para tu usuario de Rock Republik.',
 	'SENDPASSWORD4_EXPLAIN' => 'Gracias por actualizar tu contrase&ntilde;a.<br /><br />Hemos enviado a tu correo electr&oacute;nico m&aacute;s informaci&oacute;n sobre este cambio de contrase&ntilde;a.',
+	'SENDPASSWORD5_EXPLAIN' => 'Las contrase&ntilde;as ingresadas no coinciden, intenta nuevamente.',
+	'SENDPASSWORD6_EXPLAIN' => 'Debes ingresar una nueva contrase&ntilde;a para tu cuenta.',
 	'PASSWORD_RESET' => 'Olvid&eacute; mis datos de usuario',
 	
 	'LOGIN_PAGETITLE' => 'Area para Miembros',

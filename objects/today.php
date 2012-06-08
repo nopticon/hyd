@@ -18,25 +18,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_APP')) exit;
 
-function user_profile($row) {
-	global $user;
-	static $user_profile = array();
-	
-	if (!isset($user_profile[$row['user_id']]) || $row['user_id'] == GUEST) {
-		if ($row['user_id'] != GUEST) {
-			$user_profile[$row['user_id']]['username'] = $row['username'];
-			$user_profile[$row['user_id']]['profile'] = s_link('m', $row['username_base']);
-			$user_profile[$row['user_id']]['color'] = $row['user_color'];
-		} else {
-			$user_profile[$row['user_id']]['username'] = ($row['post_username'] != '') ? $row['post_username'] : lang('guest');
-			$user_profile[$row['user_id']]['profile'] = '';
-			$user_profile[$row['user_id']]['color'] = $row['user_color'];
-		}
-	}
-	
-	return $user_profile[$row['user_id']];
-}
-
 class today {
 	private $type = array();
 	private $elements;
@@ -102,7 +83,7 @@ class today {
 	}
 	
 	private function conversations() {
-		global $user;
+		global $user, $comments;
 		
 		$sql = 'SELECT c.*, c2.privmsgs_date, m.user_id, m.username, m.username_base, m.user_color
 			FROM _dc c, _dc c2, _members m
@@ -117,7 +98,7 @@ class today {
 		
 		$response = w();
 		foreach ($result as $i => $row) {
-			$user_profile = user_profile($row);
+			$user_profile = $comments->user_profile($row);
 			
 			$response[] = array(
 				'S_MARK_ID' => $row['parent_id'],
@@ -134,7 +115,7 @@ class today {
 	}
 	
 	private function friends() {
-		global $user;
+		global $user, $comments;
 		
 		$sql = 'SELECT u.item, u.datetime, m.user_id, m.username, m.username_base, m.user_color, m.user_rank
 			FROM _members_unread u, _members m
@@ -146,7 +127,7 @@ class today {
 		
 		$response = w();
 		foreach ($result as $i => $row) {
-			$user_profile = user_profile($row);
+			$user_profile = $comments->user_profile($row);
 			
 			$response[] = array(
 				'S_MARK_ID' => $row['user_id'],
@@ -160,7 +141,7 @@ class today {
 	}
 	
 	private function members_posts() {
-		global $user;
+		global $user, $comments;
 		
 		$sql = 'SELECT p.*, u.*, m.user_id, m.username, m.username_base, m.user_color
 			FROM _members_unread u, _members_posts p, _members m
@@ -173,7 +154,7 @@ class today {
 		
 		$response = w();
 		foreach ($result as $i => $row) {
-			$user_profile = user_profile($row);
+			$user_profile = $comments->user_profile($row);
 			
 			$response[] = array(
 				'S_MARK_ID' => $row['post_id'],
@@ -188,7 +169,7 @@ class today {
 	}
 	
 	private function artists_news() {
-		global $user;
+		global $user, $comments;
 		
 		$sql = 'SELECT t.*
 			FROM _members_unread u, _forum_topics t
@@ -200,7 +181,7 @@ class today {
 		
 		$response = w();
 		foreach ($result as $i => $row) {
-			$user_profile = user_profile($row);
+			$user_profile = $comments->user_profile($row);
 			
 			$response[] = array(
 				'S_MARK_ID' => $row['topic_id'],
@@ -214,7 +195,7 @@ class today {
 	}
 	
 	private function site_news() {
-		global $user;
+		global $user, $comments;
 		
 		$sql = 'SELECT n.*
 			FROM _members_unread u, _news n
@@ -226,7 +207,7 @@ class today {
 		
 		$response = w();
 		foreach ($result as $i => $row) {
-			$user_profile = user_profile($row);
+			$user_profile = $comments->user_profile($row);
 			
 			$response[] = array(
 				'S_MARK_ID' => $row['news_id'],
@@ -264,7 +245,7 @@ class today {
 	}
 	
 	private function artists_comments() {
-		global $user;
+		global $user, $comments;
 		
 		$sql = 'SELECT b.subdomain, b.name, p.*, m.user_id, m.username, m.username_base, m.user_color 
 			FROM _members_unread u, _artists b, _artists_posts p, _members m 
@@ -279,7 +260,7 @@ class today {
 		
 		$response = w();
 		foreach ($result as $i => $row) {
-			$user_profile = user_profile($row);
+			$user_profile = $comments->user_profile($row);
 			
 			$response[] = array(
 				'S_MARK_ID' => $row['post_id'],
@@ -298,7 +279,7 @@ class today {
 	}
 	
 	private function artists_fav() {
-		global $user;
+		global $user, $comments;
 		
 		$sql = 'SELECT f.fan_id, f.joined, a.name, a.subdomain, m.user_id, m.username, m.username_base, m.user_color
 			FROM _members_unread u, _artists a, _artists_fav f, _members m
@@ -312,7 +293,7 @@ class today {
 		
 		$response = w();
 		foreach ($result as $i => $row) {
-			$user_profile = user_profile($row);
+			$user_profile = $comments->user_profile($row);
 			
 			$response[] = array(
 				'S_MARK_ID' => $row['fan_id'],
@@ -361,7 +342,7 @@ class today {
 	}
 	
 	private function downloads_comments() {
-		global $user;
+		global $user, $comments;
 		
 		$sql = "SELECT b.ub, b.subdomain, b.name, d.id AS dl_id, d.ud AS ud_type, d.title, m.*, u.user_id, u.username, u.username_base, u.user_color
 			FROM _members_unread ur, _artists b, _dl d, _dl_posts m, _members u 
@@ -378,7 +359,7 @@ class today {
 		$response = w();
 		foreach ($result as $i => $row) {
 			$download_type = $this->downloads->dl_type($row['ud_type']);
-			$user_profile = user_profile($row);
+			$user_profile = $comments->user_profile($row);
 			
 			$response[] = array(
 				'S_MARK_ID' => $row['post_id'],
@@ -400,7 +381,7 @@ class today {
 	}
 	
 	private function board() {
-		global $user;
+		global $user, $comments;
 		
 		$sql = 'SELECT t.*, f.forum_alias, f.forum_id, f.forum_name, p.post_id, p.post_username, p.post_time, m.user_id, m.username, m.username_base, m.user_color 
 			FROM _members_unread u, _forums f, _forum_topics t, _forum_posts p, _members m 
@@ -417,7 +398,7 @@ class today {
 		
 		$response = w();
 		foreach ($result as $i => $row) {
-			$user_profile = user_profile($row);
+			$user_profile = $comments->user_profile($row);
 			
 			$response[] = array(
 				'S_MARK_ID' => $row['topic_id'],
@@ -444,7 +425,7 @@ class today {
 	}
 	
 	private function members() {
-		global $user;
+		global $user, $comments;
 		
 		$sql = 'SELECT m.user_id, m.username, m.username_base, m.user_color, m.user_regdate 
 			FROM _members_unread u, _members m 
@@ -457,7 +438,7 @@ class today {
 		
 		$response = w();
 		foreach ($result as $i => $row) {
-			$user_profile = user_profile($row);
+			$user_profile = $comments->user_profile($row);
 			
 			$response[] = array(
 				'S_MARK_ID' => $row['user_id'],

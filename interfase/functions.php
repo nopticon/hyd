@@ -1227,62 +1227,78 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 			}
 			
 			$code = request_var('code', '');
-			if (!preg_match('#([a-z0-9]+)#is', $code)) {
-				fatal_error();
+
+			if (request_var('r', 0)) {
+				redirect(s_link());
 			}
-			
-			$sql = 'SELECT c.*, m.user_id, m.username, m.username_base, m.user_email
-				FROM _crypt_confirm c, _members m
-				WHERE c.crypt_code = ?
-					AND c.crypt_userid = m.user_id';
-			if (!$crypt_data = sql_fieldrow(sql_filter($sql, $code))) {
-				fatal_error();
-			}
-			
-			if ($submit) {
-				$password = request_var('newkey', '');
-				
-				if (!empty($password)) {
-					$crypt_password = HashPassword($password);
-					
-					$sql = 'UPDATE _members SET user_password = ?
-						WHERE user_id = ?';
-					sql_query(sql_filter($sql, $crypt_password, $crypt_data['user_id']));
-					
-					$sql = 'DELETE FROM _crypt_confirm
-						WHERE crypt_userid = ?';
-					sql_query(sql_filter($sql, $crypt_data['user_id']));
-					
-					// Send email
-					$emailer = new emailer();
-					
-					$emailer->from('info');
-					$emailer->use_template('user_confirm_passwd', $config['default_lang']);
-					$emailer->email_address($crypt_data['user_email']);
-					
-					$emailer->assign_vars(array(
-						'USERNAME' => $crypt_data['username'],
-						'PASSWORD' => $password,
-						'U_PROFILE' => s_link('m', $crypt_data['username_base']))
-					);
-					$emailer->send();
-					$emailer->reset();
-					
-					//
-					$layout_vars = array(
-						'PAGE_MODE' => 'updated'
-					);
-					page_layout('SENDPASSWORD', 'password', $layout_vars);
+
+			if (!empty($code)) {
+				if (!preg_match('#([a-z0-9]+)#is', $code)) {
+					fatal_error();
 				}
-			}
-			
-			$layout_vars = array(
-				'PAGE_MODE' => 'verify',
-				'S_ACTION' => s_link('my', array('verify', $code))
-			);
-			page_layout('SENDPASSWORD', 'password', $layout_vars);
-			
-			if ($submit) {
+				
+				$sql = 'SELECT c.*, m.user_id, m.username, m.username_base, m.user_email
+					FROM _crypt_confirm c, _members m
+					WHERE c.crypt_code = ?
+						AND c.crypt_userid = m.user_id';
+				if (!$crypt_data = sql_fieldrow(sql_filter($sql, $code))) {
+					fatal_error();
+				}
+
+				if (_button()) {
+					$password = request_var('newkey', '');
+					$password2 = request_var('newkey2', '');
+					
+					if (!empty($password)) {
+						if ($password === $password2) {
+							$crypt_password = HashPassword($password);
+							
+							$sql = 'UPDATE _members SET user_password = ?
+								WHERE user_id = ?';
+							sql_query(sql_filter($sql, $crypt_password, $crypt_data['user_id']));
+							
+							$sql = 'DELETE FROM _crypt_confirm
+								WHERE crypt_userid = ?';
+							sql_query(sql_filter($sql, $crypt_data['user_id']));
+							
+							// Send email
+							$emailer = new emailer();
+							
+							$emailer->from('info');
+							$emailer->use_template('user_confirm_passwd', $config['default_lang']);
+							$emailer->email_address($crypt_data['user_email']);
+							
+							$emailer->assign_vars(array(
+								'USERNAME' => $crypt_data['username'],
+								'PASSWORD' => $password,
+								'U_PROFILE' => s_link('m', $crypt_data['username_base']))
+							);
+							$emailer->send();
+							$emailer->reset();
+							
+							//
+							v_style(array(
+								'PAGE_MODE' => 'updated'
+							));
+						} else {
+							v_style(array(
+								'PAGE_MODE' => 'nomatch',
+								'S_CODE' => $code)
+							);
+						}
+					} else {
+						v_style(array(
+							'PAGE_MODE' => 'nokey',
+							'S_CODE' => $code)
+						);
+					}
+				} else {
+					v_style(array(
+						'PAGE_MODE' => 'verify',
+						'S_CODE' => $code)
+					);
+				}
+			} else if (_button()) {
 				$email = request_var('address', '');
 				if (empty($email) || !email_format($email)) {
 					fatal_error();
@@ -1291,41 +1307,44 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 				$sql = 'SELECT *
 					FROM _members
 					WHERE user_email = ?
+						AND user_active = 1
 						AND user_type NOT IN (??, ??)
-						AND user_active = 1';
-				if ($userdata = sql_fieldrow(sql_filter($sql, $email, USER_INACTIVE, USER_FOUNDER))) {
-					$sql = 'SELECT *
-						FROM _banlist
-						WHERE ban_userid = ?';
-					if (!sql_fieldrow($sql, $userdata['user_id'])) {
-						$emailer = new emailer();
-						
-						$verification_code = md5(unique_id());
-						
-						$sql = 'DELETE FROM _crypt_confirm
-							WHERE crypt_userid = ?';
-						sql_query(sql_filter($sql, $userdata['user_id']));
-						
-						$insert = array(
-							'crypt_userid' => $userdata['user_id'],
-							'crypt_code' => $verification_code,
-							'crypt_time' => $user->time
-						);
-						sql_insert('crypt_confirm', $insert);
-						
-						// Send email
-						$emailer->from('info');
-						$emailer->use_template('user_activate_passwd', $config['default_lang']);
-						$emailer->email_address($userdata['user_email']);
-						
-						$emailer->assign_vars(array(
-							'USERNAME' => $userdata['username'],
-							'U_ACTIVATE' => s_link('my', array('verify', $verification_code)))
-						);
-						$emailer->send();
-						$emailer->reset();
-					}
+						AND user_id NOT IN (
+							SELECT ban_userid
+							FROM _banlist
+						)';
+				if (!$userdata = sql_fieldrow(sql_filter($sql, $email, USER_INACTIVE, USER_FOUNDER))) {
+					fatal_error();
 				}
+
+				$emailer = new emailer();
+				
+				$verification_code = md5(unique_id());
+				
+				$sql = 'DELETE FROM _crypt_confirm
+					WHERE crypt_userid = ?';
+				sql_query(sql_filter($sql, $userdata['user_id']));
+				
+				$insert = array(
+					'crypt_userid' => $userdata['user_id'],
+					'crypt_code' => $verification_code,
+					'crypt_time' => $user->time
+				);
+				sql_insert('crypt_confirm', $insert);
+				
+				// Send email
+				$emailer->from('info');
+				$emailer->use_template('user_activate_passwd', $config['default_lang']);
+				$emailer->email_address($userdata['user_email']);
+				
+				$emailer->assign_vars(array(
+					'USERNAME' => $userdata['username'],
+					'U_ACTIVATE' => s_link('signr', $verification_code))
+				);
+				$emailer->send();
+				$emailer->reset();
+
+				_style('reset_complete');
 			}
 			break;
 		default:
@@ -1810,7 +1829,7 @@ function sidebar() {
 	}
 	
 	foreach ($sfiles as $each_file) {
-		$include_file = ROOT . 'interfase/sidebar/' . $each_file . '.php';
+		$include_file = ROOT . 'objects/sidebar/' . $each_file . '.php';
 		if (file_exists($include_file)) {
 			@require_once($include_file);
 		}

@@ -20,6 +20,8 @@ if (!defined('IN_APP')) exit;
 
 class _home {
 	public function conversations() {
+		global $comments;
+
 		$sql = 'SELECT c.*, c2.privmsgs_date, m.user_id, m.username, m.username_base, m.user_color
 			FROM _members_unread u, _dc c, _dc c2, _members m
 			WHERE u.user_id = ?
@@ -37,7 +39,7 @@ class _home {
 				);
 			}
 			
-			$user_profile = user_profile($row);
+			$user_profile = $comments->user_profile($row);
 			$dc_subject = 'Conversaci&oacute;n con ' . $row['username'];
 			
 			_style('items.notes.item', array(

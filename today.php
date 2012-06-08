@@ -76,72 +76,6 @@ if (isset($_POST['items']) && (isset($_POST['delete']) || isset($_POST['delete_a
 	$url = '';
 	$delete_item = TRUE;
 	
-	switch ($unread_element) {
-		case UH_U:
-			$url = '';
-			break;
-		case UH_A:
-			$sql = 'SELECT subdomain
-				FROM _artists
-				WHERE ub = ?';
-			if ($result = sql_field(sql_filter($sql, $unread_item), 'subdomain', '')) {
-				$url = s_link('a', $result);
-			}
-			break;
-		case UH_E:
-			$url = s_link('events', $unread_item);
-			break;
-		case UH_N:
-			$sql = 'SELECT a.subdomain
-				FROM _artists a, _forum_topics t
-				WHERE t.topic_id = ?
-					AND t.topic_ub = a.ub';
-			if ($result = sql_field(sql_filter($sql, $unread_item), 'subdomain', '')) {
-				$url = s_link('a', $result);
-			}
-			break;
-		case UH_GN:
-			$url = s_link('news', $unread_item);
-			break;
-		case UH_D:
-			$sql = 'SELECT a.subdomain
-				FROM _artists a, _dl d
-				WHERE d.id = ?
-					AND d.ub = a.ub';
-			if ($result = sql_field(sql_filter($sql, $unread_item), 'subdomain', '')) {
-				$url = s_link('a', array($result, 9, $unread_item));
-				$delete_item = FALSE;
-			}
-			break;
-		case UH_C:
-			$sql = 'SELECT a.subdomain
-				FROM _artists a, _artists_posts p
-				WHERE post_id = ?
-					AND p.post_ub = a.ub';
-			if ($result = sql_field(sql_filter($sql, $unread_item), 'subdomain', '')) {
-				$url = s_link('a', array($result, 12, $unread_item));
-				$delete_item = FALSE;
-			}
-			break;
-		case UH_FRIEND:
-			$sql = 'SELECT username_base
-				FROM _members
-				WHERE user_id = ?';
-			if ($result = sql_field(sql_filter($sql, $unread_item), 'username_base', '')) {
-				$url = s_link('m', $result);
-			}
-			break;
-		case UH_UPM:
-			$sql = 'SELECT username_base
-				FROM _members m, _members_posts p
-				WHERE m.user_id = p.userpage_id
-					AND p.post_id = ?';
-			if ($result = sql_field(sql_filter($sql, $unread_item), 'username_base', '')) {
-				$url = s_link('m', array($result, 'messages'));
-			}
-			break;
-	}
-	
 	if ($url != '') {
 		if ($user->data['user_mark_items'] && $delete_item) {
 			$user->delete_unread($unread_element, $unread_item);
@@ -203,7 +137,7 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
 				);
 			}
 			
-			$user_profile = user_profile($row);
+			$user_profile = $comments->user_profile($row);
 			$dc_subject = 'Conversaci&oacute;n con ' . $row['username'];
 			
 			_style('items.notes.item', array(
@@ -236,11 +170,11 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
 				);
 			}
 			
-			$user_profile = user_profile($row);
+			$user_profile = $comments->user_profile($row);
 			
 			_style('items.friends.item', array(
 				'S_MARK_ID' => $row['user_id'],
-				'U_PROFILE' => s_link('today', array(UH_FRIEND, $row['user_id'])),
+				'U_PROFILE' => s_link('m', $row['username_base']),
 				'POST_TIME' => $user->format_date($row['datetime']),
 				'USERNAME' => $row['username'],
 				'USER_COLOR' => $row['user_color'])
@@ -266,11 +200,11 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
 				);
 			}
 			
-			$user_profile = user_profile($row);
+			$user_profile = $comments->user_profile($row);
 			
 			_style('items.userpagem.item', array(
 				'S_MARK_ID' => $row['post_id'],
-				'U_PROFILE' => s_link('today', array(UH_UPM, $row['post_id'])),
+				'U_PROFILE' => s_link('m', $user->d('username_base')),
 				'POST_TIME' => $user->format_date($row['datetime']),
 				'USERNAME' => $row['username'],
 				'USER_COLOR' => $row['user_color'])
@@ -297,12 +231,12 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
 					'ELEMENT' => UH_N)
 				);
 			}
-			
-			$user_profile = user_profile($row);
+
+			//$url = s_link('a', $result);
 			
 			_style('items.a_news.item', array(
 				'S_MARK_ID' => $row['topic_id'],
-				'POST_URL' => s_link('today', array(UH_N, $row['topic_id'])),
+				'POST_URL' => s_link('topic', $row['topic_id']),
 				'POST_TITLE' => $row['topic_title'],
 				'POST_TIME' => $user->format_date($row['topic_time']))
 			);
@@ -326,11 +260,10 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
 				);
 			}
 			
-			$user_profile = user_profile($row);
-			
 			_style('items.news.item', array(
 				'S_MARK_ID' => $row['news_id'],
-				'POST_URL' => s_link('today', array(UH_GN, $row['news_id'])),
+				
+				'POST_URL' => s_link('news', $row['news_alias']),
 				'POST_TITLE' => $row['post_subject'],
 				'POST_TIME' => $user->format_date($row['post_time']))
 			);
@@ -359,7 +292,7 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
 			
 			_style('items.artists.item', array(
 				'S_MARK_ID' => $row['ub'],
-				'UB_URL' => s_link('today', array(UH_A, $row['ub'])),
+				'UB_URL' => s_link('a', $row['subdomain']),
 				'NAME' => $row['name'],
 				'POST_TIME' => $user->format_date($row['datetime']))
 			);
@@ -387,13 +320,11 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
 				);
 			}
 			
-			$download_type = $downloads->dl_type($row['ud_type']);
-			
 			_style('items.downloads.item', array(
 				'S_MARK_ID' => $row['id'],
 				'UB_URL' => s_link('a', $row['subdomain']),
-				'UD_URL' => s_link('today', array(UH_D, $row['id'])),
-				'UD_TYPE' => $download_type['av'],
+				'UD_URL' => s_link('a', array($row['subdomain'], 9, $row['id'])),
+				'UD_TYPE' => array_key($downloads->dl_type($row['ud_type']), 'av'),
 				'DATETIME' => $user->format_date($row['date']),
 				'UB' => $row['name'],
 				'UD' => $row['title'])
@@ -426,7 +357,7 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
 				);
 			}
 			
-			$user_profile = user_profile($row);
+			$user_profile = $comments->user_profile($row);
 			
 			_style('items.forums.item', array(
 				'S_MARK_ID' => $row['topic_id'],
@@ -469,11 +400,11 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
 				);
 			}
 			
-			$user_profile = user_profile($row);
-			
+			$user_profile = $comments->user_profile($row);
+
 			_style('items.a_messages.item', array(
 				'S_MARK_ID' => $row['post_id'],
-				'ITEM_URL' => s_link('today', array(UH_C, $row['post_id'])),
+				'ITEM_URL' => s_link('a', array($row['subdomain'], 12, $row['post_id'])),
 				'UB_URL' => s_link('a', $row['subdomain']),
 				'UB' => $row['name'],
 				'DATETIME' => $user->format_date($row['post_time']),
@@ -510,11 +441,11 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
 			}
 			
 			$download_type = $downloads->dl_type($row['ud_type']);
-			$user_profile = user_profile($row);
+			$user_profile = $comments->user_profile($row);
 			
 			_style('items.d_messages.item', array(
 				'S_MARK_ID' => $row['post_id'],
-				'ITEM_URL' => s_link('today', array(UH_M, $row['post_id'])),
+				'ITEM_URL' => s_link('a', array($row['subdomain'], 9, $row['dl_id'])),
 				'UB_URL' => s_link('a', $row['subdomain']),
 				'UD_URL' => s_link('a', array($row['subdomain'], 9, $row['dl_id'])),
 				'UD_TYPE' => $download_type['av'],
@@ -558,11 +489,11 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
 				);
 			}
 			
-			$user_profile = user_profile($row);
+			$user_profile = $comments->user_profile($row);
 			
 			_style('items.a_fav.item', array(
 				'S_MARK_ID' => $row['fan_id'],
-				'ITEM_URL' => s_link('today', array(UH_AF, $row['fan_id'])),
+				'ITEM_URL' => s_link('m', $row['username_base']),
 				'UB_URL' => s_link('a', $row['subdomain']),
 				'UB' => $row['name'],
 				'POST_TIME' => $user->format_date($row['joined']),
@@ -595,7 +526,7 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
 				);
 			}
 			
-			$user_profile = user_profile($row);
+			$user_profile = $comments->user_profile($row);
 			
 			_style('items.users.item', array(
 				'S_MARK_ID' => $row['user_id'],
@@ -644,27 +575,5 @@ v_style(array(
 //sidebar('artists', 'events');
 
 page_layout('UNREAD_ITEMS', 'unread_body');
-
-//
-// FUNCTIONS
-//
-function user_profile($row) {
-	global $user;
-	static $user_profile = array();
-	
-	if (!isset($user_profile[$row['user_id']]) || $row['user_id'] == GUEST) {
-		if ($row['user_id'] != GUEST) {
-			$user_profile[$row['user_id']]['username'] = $row['username'];
-			$user_profile[$row['user_id']]['profile'] = s_link('m', $row['username_base']);
-			$user_profile[$row['user_id']]['color'] = $row['user_color'];
-		} else {
-			$user_profile[$row['user_id']]['username'] = ($row['post_username'] != '') ? $row['post_username'] : lang('guest');
-			$user_profile[$row['user_id']]['profile'] = '';
-			$user_profile[$row['user_id']]['color'] = $row['user_color'];
-		}
-	}
-	
-	return $user_profile[$row['user_id']];
-}
 	
 ?>
