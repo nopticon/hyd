@@ -58,7 +58,9 @@ $load = $avgs[1].", ".$avgs[2].", ".$avgs[3]."";
 
 $layout_vars = array(
 	'SERVER_UPTIME' => sprintf($lang['SERVER_UPTIME'], $days, $hours, $mins),
-	'SERVER_LOAD' => sprintf($lang['SERVER_LOAD'], $load)
+	'SERVER_LOAD' => sprintf($lang['SERVER_LOAD'], $load),
+
+	'CLIENT_IP' => $user->ip
 );
 
 page_layout('HOME', 'ssv', $layout_vars, false);
