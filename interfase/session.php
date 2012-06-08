@@ -60,7 +60,7 @@ class session {
 				$s_ip = implode('.', array_slice(explode('.', $this->data['session_ip']), 0, 4));
 				$u_ip = implode('.', array_slice(explode('.', $this->ip), 0, 4));
 				
-				if ($u_ip == $s_ip && $this->data['session_browser'] == $this->browser) {
+				if (/*$u_ip == $s_ip && */$this->data['session_browser'] == $this->browser) {
 					
 					// Only update session DB a minute or so after last update or if page changes
 					if ($this->time - $this->data['session_time'] > 60 || $this->data['session_page'] != $this->page) {
