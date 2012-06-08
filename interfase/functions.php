@@ -1659,7 +1659,6 @@ function msg_handler($errno, $msg_text, $errfile, $errline) {
 			);
 			
 			page_layout('INFORMATION', 'message', $custom_vars);
-			
 			break;
 		default:
 			// echo "<b>Another Error</b>: in file <b>" . basename($$errfile) . "</b> on line <b>$errline</b>: <b>$msg_text</b><br>";
@@ -1719,11 +1718,11 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 	
 	monetize();
 	
-	// Get unread items count
+	// Get today items count
 	$sql = 'SELECT COUNT(element) AS total
 		FROM _members_unread
 		WHERE user_id = ?';
-	$unread_items = sql_field(sql_filter($sql, $user->d('user_id')), 'total', 0);
+	$today_count = sql_field(sql_filter($sql, $user->d('user_id')), 'total', 0);
 	
 	//
 	// Send headers
@@ -1743,7 +1742,8 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 	
 	$common_vars = array(
 		'PAGE_TITLE' => lang($page_title, $page_title),
-		
+		'_SELF' => _page(),
+
 		'U_REGISTER' => s_link('signup'),
 		'U_SESSION' => s_link('sign' . $u_session),
 		'U_PROFILE' => s_link('m', $user->d('username_base')),
@@ -1758,43 +1758,31 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 		'U_AWARDS' => s_link('awards'),
 		'U_RADIO' => s_link('radio'),
 		'U_BROADCAST' => s_link('broadcast'),
-		'U_CHAT' => s_link('chat'),
 		'U_NEWS' => s_link('news'),
 		'U_EVENTS' => s_link('events'),
 		'U_FORUM' => s_link('board'),
-		'U_ART' => s_link('art'),
 		'U_COMMUNITY'	=> s_link('community'),
 		'U_ALLIES'	=> s_link('allies'),		
 		'U_TOS' => s_link('tos'),
 		'U_HELP' => s_link('help'),
 		'U_RSS_NEWS' => s_link('rss', 'news'),
 		'U_RSS_ARTISTS' => s_link('rss', 'artists'),
-		'S_COMMENTS' => s_link('comments'),
-		'S_EMOTICONS' => s_link('emoticons'),
+		'U_COMMENTS' => s_link('comments'),
+		'U_EMOTICONS' => s_link('emoticons'),
+		'U_ACP' => (isset($template->vars['U_ACP'])) ? $template->vars['U_ACP'] : ($user->is('artist') || $user->is('mod') ? s_link('acp') : ''),
 		
-		'_SELF' => _page(),
+		'S_YEAR' => date('Y'),
 		'S_UPLOAD' => upload_maxsize(),
-		'YEAR' => date('Y'),
-		
-		'LANG' => $config['default_lang'],
+		'S_GIT' => $config['git_push_time'],
 		'S_KEYWORDS' => $config['meta_keys'],
 		'S_DESCRIPTION' => $config['meta_desc'],
 		'S_SERVER' => '//' . $config['server_name'],
 		'S_ASSETS' => $config['assets_url'],
-		
+		'S_SQL' => ($user->d('is_founder')) ? sql_queries() . 'q | ' : '',
 		'S_REDIRECT' => $user->d('session_page'),
 		'S_USERNAME' => $user->d('username'),
-		'IS_MEMBER' => $user->is('member'),
-		'MEMBER_COLOR' => $user->d('user_color'),
-		
-		'S_CONTROLPANEL' => (isset($template->vars['S_CONTROLPANEL'])) ? $template->vars['S_CONTROLPANEL'] : ($user->is('artist') || $user->is('mod') ? s_link('acp') : ''),
-		'S_UNREAD_ITEMS' => (($unread_items == 1) ? sprintf(lang('unread_item_count'), $unread_items) : sprintf(lang('unread_items_count'), $unread_items)),
-		'S_AP_POINTS' => (($user->d('user_points') == 1) ? sprintf(lang('ap_point'), $user->d('user_points')) : sprintf(lang('ap_points'), $user->d('user_points'))),
-		
-		'GIT_PUSH' => $config['git_push_time'],
-		
-		'F_SQL' => ($user->d('is_founder')) ? sql_queries() . 'q | ' : '',
-		'JS_KEEPALIVE' => $js_keepalive
+		'S_MEMBER' => $user->is('member'),
+		'S_TODAY_COUNT' => (($today_count == 1) ? sprintf(lang('unread_item_count'), $today_count) : sprintf(lang('unread_items_count'), $today_count))
 	);
 	
 	if ($custom_vars !== false) {
@@ -1802,7 +1790,7 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 	}
 	
 	$mtime = explode(' ', microtime());
-	$common_vars['F_TIME'] = sprintf('%.2f', ($mtime[0] + $mtime[1] - $starttime));
+	$common_vars['S_TIME'] = sprintf('%.2f', ($mtime[0] + $mtime[1] - $starttime));
 	
 	v_style($common_vars);
 	

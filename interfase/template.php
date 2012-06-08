@@ -73,7 +73,7 @@ class Template {
 
 	// Default template directory.
 	// If file for default template isn't found file from this template is used.
-	public $tpldef = 'mmg';
+	public $tpldef = '';
 
 	// this will hash handle names to the compiled code for that handle.
 	public $compiled_code = array();

@@ -212,7 +212,7 @@ $lang += array(
 	'NEWEST_FIRST' => 'Mas reciente primero',
 	'TOPIC_ORDER' => 'Mostrar mensajes',
 	
-	'NO_POST_MODE' => 'Modo de mensaje inv&aacute;lido',
+	'NO_POST_MODE' => 'Modo de mensaje incorrecto',
 	'POST_TYPE' => 'Tipo de mensaje',
 	'POST_TYPE_ANNOUNCE' => 'Anuncio',
 	'POST_TYPE_ANNOUNCES' => 'Anuncios',
@@ -352,7 +352,7 @@ $lang += array(
 	'USERCOLOR' => 'Color de usuario',
 	'USERCOLOR_EXPLAIN' => 'Es el color de usuario que aparecer&aacute; en tu perfil y en los mensajes que publiques en el foro, p&aacute;ginas de usuarios y en todos los lugares donde se pueda comentar.',
 	'USERCOLOR_TOO_LOW' => 'No se puede seleccionar un color muy claro, para que sea legible en el fondo gris del sitio.',
-	'USERPAGE_ERROR' => 'El color es inv&aacute;lido.',
+	'USERPAGE_ERROR' => 'El color es incorrecto.',
 	
 	'HIDE_MEMBER' => 'Ocultar conexi&oacute;n de usuario',
 	'PROFILE_UPDATED' => 'El perfil fue actualizado',
@@ -365,7 +365,7 @@ $lang += array(
 	'PASSWORD_LONG' => 'Tu contrase&ntilde;a es demasiado larga',
 	'CURRENT_PASSWORD_MISMATCH' => 'La contrase&ntilde;a ingresada no coincide con la almacenada en la base de datos',
 	'EMPTY_USERNAME' => 'El nombre de usuario es requerido',
-	'USERNAME_INVALID' => 'El nombre de usuario es inv&aacute;lido, puede ser entre 2 y 20 caracteres y, &uacute;nicamente se permiten letras, n&uacute;meros, guiones y espacio',
+	'USERNAME_INVALID' => 'El nombre de usuario es incorrecto, puede ser entre 2 y 20 caracteres y, &uacute;nicamente se permiten letras, n&uacute;meros, guiones y espacio',
 	'USERNAME_LONG' => 'El nombre de usuario no puede ser mayor de 20 caracteres',
 	'USERNAME_TAKEN' => 'El nombre de usuario ya est&aacute; en uso',
 	'USERNAME_DISALLOWED' => 'No puedes usar ese nombre de usuario',
@@ -374,7 +374,7 @@ $lang += array(
 	'EMAIL_MISMATCH' => 'Las direcciones de correo electr&oacute;nico no coinciden',
 	'EMAIL_TAKEN' => 'La direcci&oacute;n de correo electr&oacute;nico ya est&aacute; en uso por otro miembro',
 	'EMAIL_BANNED' => 'La direcci&oacute;n de correo electr&oacute;nico est&aacute; bloqueada',
-	'EMAIL_INVALID' => 'La direcci&oacute;n de correo electr&oacute;nico es inv&aacute;lida',
+	'EMAIL_INVALID' => 'La direcci&oacute;n de correo electr&oacute;nico es incorrecta',
 	'SIGNATURE_TOO_LONG' => 'La firma es muy larga',
 	'FIELDS_EMPTY' => 'Debes llenar todos los datos requeridos',
 	'AVATAR_FILETYPE' => 'El tipo de imagen &uacute;nicamente puede ser JPG &oacute; GIF',
@@ -868,7 +868,7 @@ $lang += array(
 	
 	// UPLOAD
 	'UPLOAD_FAILED' => 'Error al enviar el archivo',
-	'UPLOAD_INVALID_EXT' => 'La extensi&oacute;n del archivo es inv&aacute;lida',
+	'UPLOAD_INVALID_EXT' => 'La extensi&oacute;n del archivo es incorrecta',
 	'UPLOAD_TOO_BIG' => 'El tama&ntilde;o de archivo que est&aacute;s enviando es mayor al m&aacute;ximo permitido',
 	'UPLOAD_IMAGE_ERROR' => 'Error en el archivo de imagen',
 	
@@ -934,6 +934,7 @@ $lang += array(
 	'ACP_NEWS_CATEGORY_MOVE' => 'Mover noticia de categor&iacute;a',
 	'ACP_NEWS_IMAGES' => 'Actualizar imagen de noticia',
 	'ACP_NEWS_MODIFY' => 'Modificar noticia',
+	'ACP_NEWS_IMAGE_ADD' => 'Publica imagenes  para la secci&oacute;n de noticias. El formato debe ser <em>jpg</em>.',
 	'ACP_UNREAD_ALL_DELETE' => 'Eliminar elementos de actualidad',
 	'ACP_UNREAD_TOPICS_DELETE' => 'Eliminar temas de actualidad',
 	'ACP_UNREAD_TOPICS_MOD' => 'Eliminar temas no moderadores de actualidad',
@@ -954,12 +955,16 @@ $lang += array(
 	'ACP_USER_SIG_DELETE' => 'Eliminar firma de usuario',
 	'ACP_USER_TEAM_CREATE' => 'Crear miembro de equipo',
 	'ACP_USER_VIEW' => 'Visualizar usuario',
-	'ACP_ARTIST_VIDEO' => 'Subir videos',
+	'ACP_ARTIST_VIDEO' => 'Videos',
 	'ACP_ARTIST_GALLERY' => 'Galer&iacute;a de fotos',
 	'ACP_ARTIST_STATS' => 'Estad&iacute;sticas de artista',
 	'ACP_ARTIST_AUTH' => 'Miembros autorizados',
 	'ACP_ARTIST_MEDIA' => 'Canciones',
 	'ACP_ARTIST_BIOGRAPHY' => 'Editar biograf&iacute;a',
+
+	'ACP_ARTIST_BIO_UPDATED' => 'La biograf&iacute;a fue actualizada',
+	'ACP_ARTIST_VIDEO_ADD_L' => 'Publica tus videos por medio del servicio de Youtube.<br /><br />Ingresa la URL de Youtube o el c&oacute;digo donde se encuentra el video.<br />Ejemplo: http://www.youtube.com/watch?v=<strong>VXytaD5AKyM</strong>',
+	'ACP_ARTIST_GALLERY_ADD' => 'Publica nuevas im&aacute;genes para tu galer&iacute;a.',
 );
 
 ?>

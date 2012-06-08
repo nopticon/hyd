@@ -79,7 +79,7 @@
 		<!-- BEGIN post_comment_box -->
 		<div class="post_comment">
 		<div class="g1"><h1 style="color: #{USERNAME_COLOR};">Env&iacute;a tu mensaje</h1></div>
-		<form action="{S_COMMENTS}" method="post" name="m-messages">
+		<form action="{U_COMMENTS}" method="post" name="m-messages">
 		<input type="hidden" name="ref" value="{post_comment_box.REF}" />
 		<div><a onclick="return popup('{S_EMOTICONS}', '_emoticons', 300, 450);" href="{S_EMOTICONS}" target="_blank">{L_EMOTICONS}</a></div>
 		<div class="rows5_top_1"><textarea id="a-comments" name="message" cols="78" rows="6"></textarea></div>
@@ -135,7 +135,7 @@
 <!-- BEGIN box -->
 <div class="rows5_top_2 post_comment">
 <div class="g1"><h1 style="color: #{USERNAME_COLOR};">{L_SEND_POST}</h1></div>
-<form action="{S_COMMENTS}" method="post">
+<form action="{U_COMMENTS}" method="post">
 <input type="hidden" name="ref" value="{box.REF}" />
 <div><label for="comment">{L_POST}</label> - <a class="relevant" onclick="return popup('{S_EMOTICONS}', '_emoticons', 300, 450);" href="{S_EMOTICONS}" target="_blank">{L_EMOTICONS}</a></div>
 <div class="rows5_top_1"><textarea id="comment" name="message" cols="150" rows="10"></textarea></div>

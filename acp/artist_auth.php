@@ -338,7 +338,7 @@ class __artist_auth extends mac {
 				'S_HIDDEN_FIELDS' => $s_members_hidden
 			);
 
-			page_layout('CONTROL_A_AUTH', 'confirm', $layout_vars);
+			page_layout('ACP_ARTIST_AUTH', 'confirm', $layout_vars);
 		}
 
 		redirect($auth_url);

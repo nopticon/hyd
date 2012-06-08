@@ -6,7 +6,7 @@
 			<h2>{L_APPLICATION_DESC}</h2>
 		</div>
 		
-		<!-- IF IS_MEMBER -->
+		<!-- IF S_MEMBER -->
 		<div id="search">
 			<form id="searchForm" method="post">
 				<fieldset>
@@ -27,7 +27,7 @@
 		
 		<div id="menu">
 			<ul>
-				<!-- IF IS_MEMBER -->
+				<!-- IF S_MEMBER -->
 				<li>&nbsp; <a class="expand" id="account" href="{U_PROFILE}">&#9660;</a>
 					<ul id="expand_account">
 						
@@ -37,7 +37,7 @@
 					</ul>
 				</li>
 				<li class="mb"><a href="{U_PROFILE}" title="{S_USERNAME}"><i class="icon-user"></i> {S_USERNAME}</a>
-				<li class="mb"><a href="{U_WHATS_NEW}" title="{S_UNREAD_ITEMS}"><i class="icon-star"></i> {L_THENEW}</a></li>
+				<li class="mb"><a href="{U_WHATS_NEW}" title="{S_TODAY_COUNT}"><i class="icon-star"></i> {L_THENEW}</a></li>
 				<!-- ENDIF -->
 				<li class="mb"><a href="{U_ARTISTS}" title="{L_UB}"><i class="icon-fire"></i> {L_UB}</a></li>
 				<li class="mb mb-events"><a href="{U_EVENTS}" title="{L_UE}"><i class="icon-camera"></i> {L_UE}</a></li>
@@ -48,8 +48,8 @@
 				<li><a href="{U_ALLIES}" title="{L_ALLIES}">{L_ALLIES}</a></li>
 				<li><a href="{U_AWARDS}" title="{L_AWARDS}">{L_AWARDS}</a></li>
 				<!-- END hide -->
-				<!-- IF S_CONTROLPANEL != '' -->
-				<li class="mb mb-acp"><a href="{S_CONTROLPANEL}"><i class="icon-share"></i> {L_CONTROL_PANEL}</a></li>
+				<!-- IF U_ACP != '' -->
+				<li class="mb mb-acp"><a href="{U_ACP}"><i class="icon-share"></i> {L_CONTROL_PANEL}</a></li>
 				<!-- ENDIF -->
 				<!-- BEGIN hide -->
 				<li><a id="facebook" href="//www.facebook.com/rockrepublik" target="_facebook">Facebook</a>
