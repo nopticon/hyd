@@ -91,7 +91,7 @@ class _comments {
 					
 					$this->data = array(
 						'DATA_TABLE' => '_dl',
-						'POST_TABLE' => '_dl_posts',
+						'POST_TABLE' => 'dl_posts',
 						'HISTORY' => UH_M
 					);
 				} else {
@@ -102,7 +102,7 @@ class _comments {
 					
 					$this->data = array(
 						'DATA_TABLE' => '_artists',
-						'POST_TABLE' => '_artists_posts',
+						'POST_TABLE' => 'artists_posts',
 						'HISTORY' => UH_C
 					);
 				}
@@ -117,7 +117,7 @@ class _comments {
 				
 				$this->data = array(
 					'DATA_TABLE' => '_events',
-					'POST_TABLE' => '_events_posts',
+					'POST_TABLE' => 'events_posts',
 					'HISTORY' => UH_EP
 				);
 				break;
@@ -129,7 +129,7 @@ class _comments {
 					
 				$this->data = array(
 					'DATA_TABLE' => '_news',
-					'POST_TABLE' => '_news_posts',
+					'POST_TABLE' => 'news_posts',
 					'HISTORY' => UH_NP
 				);
 				break;
@@ -141,7 +141,7 @@ class _comments {
 				
 				$this->data = array(
 					'DATA_TABLE' => '_art',
-					'POST_TABLE' => '_art_posts',
+					'POST_TABLE' => 'art_posts',
 					'HISTORY' => UH_W
 				);
 				break;
@@ -153,7 +153,7 @@ class _comments {
 				
 				$this->data = array(
 					'DATA_TABLE' => '_members',
-					'POST_TABLE' => '_members_posts',
+					'POST_TABLE' => 'members_posts',
 					'HISTORY' => UH_UPM
 				);
 				break;
