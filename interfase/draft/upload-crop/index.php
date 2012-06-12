@@ -2,11 +2,6 @@
 
 error_reporting (E_ALL);
 
-#########################################################################################################
-# CONSTANTS																								#
-# You can alter the options below																		#
-#########################################################################################################
-
 require_once('../../upload.php');
 $upload = new upload();
 
@@ -20,11 +15,10 @@ $thumb_image_name = $thumb_image_prefix . '1';     // New name of the thumbnail 
 $thumb_photo_exists = '';
 $large_photo_exists = '';
 
-$max_file = "20"; 							// Maximum file size in MB
 $max_width = "500";							// Max width allowed for the large image
 $thumb_width = "300";						// Width of thumbnail image
 $thumb_height = "150";						// Height of thumbnail image
-// Only one of these image types should be allowed for upload
+
 $image_ext = '';
 $error = '';
 
@@ -102,48 +96,39 @@ if (strlen($large_photo_exists) > 0) {
 <html>
 <head>
 	<title>u-crop</title>
-	<script type="text/javascript" src="js/jquery-pack.js"></script>
-	<script type="text/javascript" src="js/jquery.imgareaselect.min.js"></script>
+	<link rel="stylesheet" href="//assets.orion.com/default.css?g=" />
+<link rel="stylesheet" href="//assets.orion.com/mobile.css?g=" />
+<link rel="shortcut icon" href="//orion.com/favicon.ico" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script src="//assets.orion.com/g.js?g=" type="text/javascript"></script>
+
 	<script type="text/javascript">
 	function preview(img, selection) { 
-		var scaleX = <?php echo $thumb_width;?> / selection.width; 
-		var scaleY = <?php echo $thumb_height;?> / selection.height; 
+		var scaleX = <?php echo $thumb_width; ?> / selection.width; 
+		var scaleY = <?php echo $thumb_height; ?> / selection.height; 
 		
 		$('#thumbnail + div > img').css({ 
-			width: Math.round(scaleX * <?php echo $current_large_image_width;?>) + 'px', 
-			height: Math.round(scaleY * <?php echo $current_large_image_height;?>) + 'px',
+			width: Math.round(scaleX * <?php echo $current_large_image_width; ?>) + 'px', 
+			height: Math.round(scaleY * <?php echo $current_large_image_height; ?>) + 'px',
 			marginLeft: '-' + Math.round(scaleX * selection.x1) + 'px', 
 			marginTop: '-' + Math.round(scaleY * selection.y1) + 'px' 
 		});
+
 		$('#x1').val(selection.x1);
 		$('#y1').val(selection.y1);
 		$('#x2').val(selection.x2);
 		$('#y2').val(selection.y2);
 		$('#w').val(selection.width);
 		$('#h').val(selection.height);
-	} 
+	}
 
 	$(function () { 
-		$('#save_thumb').click(function() {
-			var x1 = $('#x1').val();
-			var y1 = $('#y1').val();
-			var x2 = $('#x2').val();
-			var y2 = $('#y2').val();
-			var w = $('#w').val();
-			var h = $('#h').val();
-			if(x1=="" || y1=="" || x2=="" || y2=="" || w=="" || h==""){
-				alert("You must make a selection first");
-				return false;
-			}else{
-				return true;
-			}
-		});
+		$('#save_thumb').click(save_thumb);
 	}); 
 
 	$(window).load(function () { 
 		$('#thumbnail').imgAreaSelect({ aspectRatio: '1:<?php echo $thumb_height/$thumb_width;?>', onSelectChange: preview, show: true, handles: true, hide: false }); 
 	});
-
 	</script>
 </head>
 <body>

@@ -62,9 +62,54 @@ $(function() {
 <!-- END hide -->
 
 <!-- BEGIN event_flyer -->
+<span class="clear"></span>
+
 <div id="placeholder">
-	<div class="a_mid"><img src="{event_flyer.IMAGE_SRC}" alt="" /></div>
+	<div class="a_mid"><img id="thumbnail" src="{event_flyer.IMAGE_SRC}" style="margin-right: 10px;" alt="" /></div>
 </div>
+
+<!-- BEGIN thumbnail -->
+<div class="pad_top thumbnail_view a_mid"><img src="{event_flyer.IMAGE_SRC}" alt="" /></div>
+
+<form action="{thumbnail.ACTION}" method="post">
+	<input type="hidden" name="x1" value="" id="x1" />
+	<input type="hidden" name="y1" value="" id="y1" />
+	<input type="hidden" name="x2" value="" id="x2" />
+	<input type="hidden" name="y2" value="" id="y2" />
+	<input type="hidden" name="w" value="" id="w" />
+	<input type="hidden" name="h" value="" id="h" />
+
+	<div class="pad_top"><input type="submit" class="ctl" name="create_thumbnail" value="Guardar imagen" id="save_thumb" /></div>
+</form>
+
+<script type="text/javascript">
+	function preview(img, selection) { 
+		var scaleX = {thumbnail.THUMB_WIDTH} / selection.width; 
+		var scaleY = {thumbnail.THUMB_HEIGHT} / selection.height; 
+		
+		$('.thumbnail_view img').css({ 
+			width: Math.round(scaleX * {thumbnail.LARGE_WIDTH}) + 'px', 
+			height: Math.round(scaleY * {thumbnail.LARGE_HEIGHT}) + 'px',
+			marginLeft: '-' + Math.round(scaleX * selection.x1) + 'px', 
+			marginTop: '-' + Math.round(scaleY * selection.y1) + 'px' 
+		});
+
+		$('#x1').val(selection.x1);
+		$('#y1').val(selection.y1);
+		$('#x2').val(selection.x2);
+		$('#y2').val(selection.y2);
+		$('#w').val(selection.width);
+		$('#h').val(selection.height);
+	}
+	$(function () { 
+		$('#save_thumb').click(save_thumb);
+	}); 
+
+	$(window).load(function () { 
+		$('#thumbnail').imgAreaSelect({ aspectRatio: '1:{thumbnail.SCALE}', onSelectChange: preview, show: true, handles: true, hide: false }); 
+	});
+</script>
+<!-- END thumbnail -->
 <!-- END event_flyer -->
 
 <!-- BEGIN selected -->

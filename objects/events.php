@@ -132,7 +132,7 @@ class _events extends downloads {
 	}
 	
 	public function object() {
-		global $auth, $user, $config, $comments;
+		global $auth, $user, $config, $comments, $upload;
 		
 		$mode = request_var('mode', '');
 		
@@ -256,6 +256,30 @@ class _events extends downloads {
 				break;
 			case 'view':
 			default:
+				/**
+				* Generate thumbnail for events list.
+				*/
+				if ($user->is('colab') && !$this->v('images') && _button('create_thumbnail')) {
+					$location_large = $config['events_path'] . 'future/' . $this->v('id') . '.jpg';
+					$location_mini = $config['events_path'] . 'mini/' . $this->v('id') . '.jpg';
+
+					$x1 = request_var('x1', 0);
+					$y1 = request_var('y1', 0);
+					$x2 = request_var('x2', 0);
+					$y2 = request_var('y2', 0);
+					$w = request_var('w', 0);
+					$h = request_var('h', 0);
+
+					//Scale the image to the thumb_width set above
+					$scale = $config['events_thumb_width'] / $w;
+					$cropped = $upload->resizeThumbnailImage($location_mini, $location_large, $w, $h, $x1, $y1, $scale);
+
+					redirect(s_link('events'));
+				}
+
+				/**
+				* Normal operations
+				*/
 				$t_offset = request_var('offset', 0);
 				
 				if ($mode == 'view') {
@@ -530,6 +554,21 @@ class _events extends downloads {
 					_style('event_flyer', array(
 						'IMAGE_SRC' => $config['events_url'] . 'future/' . $this->v('id') . '.jpg?u=' . $this->v('event_update'))
 					);
+
+					$location_mini = $config['events_path'] . 'mini/' . $this->v('id') . '.jpg';
+
+					if ($user->is('colab') && !$this->v('images') && !@file_exists($location_mini)) {
+						$large_filepath = $config['events_path'] . 'future/' . $this->v('id') . '.jpg';
+
+						_style('event_flyer.thumbnail', array(
+							'ACTION' => $u_event_alias,
+							'SCALE' => ($config['events_thumb_height'] / $config['events_thumb_width']),
+							'THUMB_WIDTH' => $config['events_thumb_width'],
+							'THUMB_HEIGHT' => $config['events_thumb_height'],
+							'LARGE_WIDTH' => $upload->getWidth($large_filepath),
+							'LARGE_HEIGHT' => $upload->getHeight($large_filepath)
+						));
+					}
 				}
 				
 				list($d, $m, $y) = explode(' ', gmdate('j n Y', time() + $user->timezone + $user->dst));
@@ -809,14 +848,22 @@ class _events extends downloads {
 			_style('future.set', array(
 				'L_TITLE' => lang('ue_' . $is_date))
 			);
-			
+
 			foreach ($data as $item) {
+				$event_mini = $config['events_path'] . 'mini/' . $item['id'] . '.jpg';
+
+				if (@file_exists($event_mini)) {
+					$event_image = $config['events_url'] . 'mini/';
+				} else {
+					$event_image = $config['events_url'] . 'future/';
+				}
+
 				_style('future.set.item', array(
 					'ITEM_ID' => $item['id'],
 					'TITLE' => $item['title'],
 					'DATE' => $user->format_date($item['date'], lang('date_format')),
-					'THUMBNAIL' => $config['events_url'] . 'future/thumbnails/' . $item['id'] . '.jpg',
-					'SRC' => $config['events_url'] . 'future/' . $item['id'] . '.jpg?u=' . $item['event_update'],
+					'THUMBNAIL' => $event_image . $item['id'] . '.jpg',
+					'SRC' => $event_image . $item['id'] . '.jpg?u=' . $item['event_update'],
 					'U_TOPIC' => s_link('events', $item['event_alias']))
 				);
 			}

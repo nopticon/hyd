@@ -488,16 +488,16 @@ class upload {
 		return $thumb_image_name;
 	}
 
-	function getHeight($image) {
-		$size = getimagesize($image);
-		$height = $size[1];
-		return $height;
-	}
-
 	function getWidth($image) {
 		$size = getimagesize($image);
 		$width = $size[0];
 		return $width;
+	}
+
+	function getHeight($image) {
+		$size = getimagesize($image);
+		$height = $size[1];
+		return $height;
 	}
 	
 	public function picnik_import() {

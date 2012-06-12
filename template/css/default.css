@@ -722,6 +722,16 @@ hr {
 .comments h3 em img {
 	padding: 1px;
 }
+.thumbnail_view {
+	width: 275px;
+	height: 150px;
+	border: 1px solid #e5e5e5;
+	overflow:hidden;
+	margin: 10px auto;
+}
+.thumbnail_view img {
+	position: relative;
+}
 
 .poll {
 }
