@@ -274,8 +274,6 @@ class _events extends downloads {
 					$scale = $config['events_thumb_width'] / $w;
 					$cropped = $upload->resizeThumbnailImage($location_mini, $location_large, $w, $h, $x1, $y1, $scale);
 
-					_pre($cropped, true);
-
 					redirect(s_link('events'));
 				}
 
