@@ -78,7 +78,7 @@ $(function() {
 	});
 	
 	$("input[type=file]").filestyle({
-		image: "//assets.orion.com/style/file.png",
+		image: "//assets.rockrepublik.net/style/file.png",
 		imagewidth : 90,
 		imageheight : 20,
 		width : 250
