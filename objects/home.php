@@ -79,13 +79,6 @@ class _home {
 		foreach ($news as $i => $row) {
 			if (!$i) _style('news');
 			
-			
-			if ($user->is('founder')) {
-				//echo $config['news_path'] . $row['news_id'] . '.jpg<br />';
-			}
-			
-			//$news_image = (@file_exists('../data/news/' . $row['news_id'] . '.jpg')) ? $row['news_id'] : 'd';
-			
 			$news_image = (@file_exists($config['news_path'] . $row['news_id'] . '.jpg')) ? $row['news_id'] : 'd';
 			
 			_style('news.row', array(

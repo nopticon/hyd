@@ -198,7 +198,7 @@ class _comments {
 		*/
 		
 		//
-		// CHECK USERNAME | MESSAGE
+		// Check if message is empty
 		//
 		if (!sizeof($error)) {
 			$message = request_var('message', '', true);
@@ -210,7 +210,7 @@ class _comments {
 		}
 		
 		//
-		// INSERT DATA
+		// Insert processed data
 		//
 		if (!sizeof($error)) {
 			$update_sql = '';
