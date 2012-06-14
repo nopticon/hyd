@@ -332,7 +332,7 @@ $lang += array(
 	'MEMBER_DATE_FORMAT' => 'Formato de Fecha',
 	'MEMBER_DATE_FORMAT_EXPLAIN' => 'La sintaxis usada es id&eacute;ntica a la funci&oacute;n <strong>date()</strong> de PHP',
 	'SIGNATURE' => 'Firma',
-	'SIGNATURE_EXPLAIN' => 'Texto al pie de tus mensajes:',
+	'SIGNATURE_EXPLAIN' => 'Texto al pie de tus mensajes',
 	'PUBLIC_EMAIL' => 'Mostar p&uacute;blicamente mi email',
 	
 	'CONFIRM_EMAIL' => 'Re-escribe tu email',
