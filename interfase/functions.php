@@ -492,12 +492,31 @@ function _substr($a, $k, $r = '...') {
 	return $a;
 }
 
-function s_link($module = '', $data = false) {
+function s_link() {
 	global $config;
-	
+
+	$data = func_get_args();
+	$module = array_shift($data);
+
+	if (strpos($module, ' ') !== false) {
+		$data = array_merge(w($module), $data);
+		$module = array_shift($data);
+	}
+
+	$count_data = count($data);
+
+	switch ($count_data) {
+		case 0:
+			$data = false;
+			break;
+		case 1:
+			$data = $data[0];
+			break;
+	}
+
 	$url = 'http://';
 	$is_a = is_array($data);
-	if (v_server('REMOTE_ADDR') != '127.0.0.1' && $module == 'a' && $data !== false && ((!$is_a && !preg_match('/^_(\d+)$/i', $data)) || ($is_a && count($data) == 2))) {
+	if (v_server('REMOTE_ADDR') != '127.0.0.1' && $module == 'a' && $data !== false && ((!$is_a && !preg_match('/^_(\d+)$/i', $data)) || ($is_a && $count_data == 2))) {
 		$subdomain = ($is_a) ? $data[0] : $data;
 		$url .= str_replace('www', $subdomain, $config['server_name']) . '/';
 		
@@ -867,7 +886,7 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 			break;
 		case 'up':
 			if ($user->is('member')) {
-				redirect(s_link('my', 'profile'));
+				redirect(s_link('my profile'));
 			} else if ($user->is('bot')) {
 				redirect(s_link());
 			}
@@ -897,14 +916,6 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 					WHERE crypt_code = ?
 						AND crypt_userid = ?';
 				sql_query(sql_filter($sql, $code, $user_id));
-				
-				// Unread
-				$u_topics = array(288, 1455);
-				foreach ($u_topics as $v)
-				{
-					$user->save_unread(UH_T, $v, 0, $user_id);
-				}
-				//$user->points_add(3, $user_id);
 				
 				$emailer = new emailer();
 				
@@ -1186,7 +1197,7 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 								$emailer->assign_vars(array(
 									'INVITED' => $invite_user[0],
 									'USERNAME' => $v_fields['username'],
-									'U_REGISTER' => s_link('my', array('register', 'a', $invite_code)))
+									'U_REGISTER' => s_link('my register a', $invite_code))
 								);
 								$emailer->send();
 								$emailer->reset();
@@ -1221,7 +1232,7 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 			break;
 		case 'r':
 			if ($user->is('member')) {
-				redirect(s_link('my', 'profile'));
+				redirect(s_link('my profile'));
 			} else if ($user->is('bot')) {
 				redirect(s_link());
 			}
@@ -1766,9 +1777,9 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 		'U_REGISTER' => s_link('signup'),
 		'U_SESSION' => s_link('sign' . $u_session),
 		'U_PROFILE' => s_link('m', $user->d('username_base')),
-		'U_EDITPROFILE' => s_link('my', 'profile'),
+		'U_EDITPROFILE' => s_link('my profile'),
 		'U_PASSWORD' => s_link('signr'),
-		'U_DC' => s_link('my', 'dc'),
+		'U_DC' => s_link('my dc'),
 		
 		'U_HOME' => s_link(),
 		'U_FAQ' => s_link('faq'),
@@ -2329,7 +2340,7 @@ function validate_email($email) {
 // Does supplementary validation of optional profile fields. This expects common stuff like trim() and strip_tags()
 // to have already been run. Params are passed by-ref, so we can set them to the empty string if they fail.
 //
-function validate_optional_fields(&$icq, &$aim, &$msnm, &$yim, &$website, &$location, &$occupation, &$interests, &$sig) {
+function validate_optional_fields(&$msnm, &$yim, &$website, &$location, &$occupation, &$interests, &$sig) {
 	$check_var_length = w('aim msnm yim location occupation interests sig');
 	
 	foreach ($check_var_length as $row) {

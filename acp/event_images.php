@@ -30,7 +30,7 @@ class __event_images extends mac {
 	public function _home() {
 		global $config, $user, $cache, $upload;
 		
-		if ($this->submit) {
+		if (_button()) {
 			$event_id = request_var('event_id', 0);
 			
 			$filepath_1 = $config['events_path'] . 'tmp/';

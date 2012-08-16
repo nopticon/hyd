@@ -31,7 +31,7 @@ class __user_ip_report extends mac {
 		$username = request_var('username', '');
 		$ip = request_var('ip', '');
 		
-		if ($this->submit && ($username || $ip)) {
+		if (_button() && ($username || $ip)) {
 			if ($username) {
 				$username_base = get_username_base($username);
 				

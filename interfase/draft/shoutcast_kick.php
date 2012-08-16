@@ -24,7 +24,7 @@ if (!isset($config['kick_script']))
 	$user->init(true, true);
 	$user->setup();
 	
-	redirect(s_link('forum', 'djs'));
+	redirect(s_link('forum djs'));
 	exit;
 }
 

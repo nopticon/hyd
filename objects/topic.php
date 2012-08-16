@@ -434,7 +434,7 @@ class topic {
 			if ($user->is('member')) {
 				$poster = ($row['user_id'] != GUEST) ? $row['username'] : (($row['post_username'] != '') ? $row['post_username'] : lang('guest'));
 				
-				$controls[$row['post_id']]['reply'] = s_link('post', array($row['post_id'], 'reply'));
+				$controls[$row['post_id']]['reply'] = s_link('post', $row['post_id'], 'reply');
 				
 				if ($mod_auth) {
 					$controls[$row['post_id']]['edit'] = s_link('acp', array('forums_post_modify', 'msg_id' => $row['post_id']));
@@ -510,7 +510,7 @@ class topic {
 		if ((!$topic_data['forum_locked'] && !$topic_data['topic_locked']) || $can_reply_closed) {
 			if ($user->is('member')) {
 				if ($is_auth['auth_reply']) {
-					$s_post_action = (($reply) ? s_link('post', array($post_id, 'reply')) : $topic_url) . '#e';
+					$s_post_action = (($reply) ? s_link('post', $post_id, 'reply') : $topic_url) . '#e';
 					
 					_style('post_box', array(
 						'MESSAGE' => $post_message,

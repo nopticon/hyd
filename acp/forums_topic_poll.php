@@ -28,7 +28,7 @@ class __forums_topic_poll extends mac {
 	public function _home() {
 		global $config, $user, $cache;
 		
-		if (!$this->submit) {
+		if (!_button()) {
 			return false;
 		}
 		

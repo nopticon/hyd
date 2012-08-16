@@ -27,45 +27,38 @@ class __artist_lyric_create extends mac {
 	
 	public function _home() {
 		global $config, $user, $cache;
-		
-		if ($this->submit) {
-			$request = _request(array('ub' => 0, 'title' => '', 'author' => '', 'text' => ''));
-			
-			if (_empty($request)) {
-				_pre('Debe completar la informacion.', true);
-			}
-			
-			$sql = 'SELECT *
-				FROM _artists
-				WHERE ub = ?';
-			if (!$ad = sql_fieldrow(sql_filter($sql, $request->ub))) {
-				fatal_error();
-			}
 
-			sql_insert('artists_lyrics', $request);
-			
-			$sql = 'UPDATE _artists SET lirics = lirics + 1
-				WHERE ub = ?';
-			sql_query(sql_filter($sql, $request->ub));
-			
-			redirect(s_link('a', $ad['subdomain']));
-		}
+		$this->_artist();
 		
-		$sql = 'SELECT ub, name
-			FROM _artists
-			ORDER BY name';
-		$result = sql_rowset($sql);
-		
-		foreach ($result as $i => $row) {
-			if (!$i) _style('artists');
-			
-			_style('artists.row', array(
-				'ARTIST_ID' => $row['ub'],
-				'ARTIST_NAME' => $row['name'])
-			);
+		if ($this->create()) {
+			return;
 		}
 		
 		return;
+	}
+
+	private function create() {
+		$v = _request(array('title' => '', 'author' => '', 'text' => ''));
+
+		if (_empty($v)) {
+			return;
+		}
+
+		$sql = 'SELECT *
+			FROM _artists
+			WHERE ub = ?';
+		if (!$ad = sql_fieldrow(sql_filter($sql, $this->object['ub']))) {
+			return;
+		}
+
+		$v->ub = $this->object['ub'];
+		sql_insert('artists_lyrics', $v);
+
+		$sql = 'UPDATE _artists SET lirics = lirics + 1
+			WHERE ub = ?';
+		sql_query(sql_filter($sql, $this->object['ub']));
+
+		return redirect(s_link('a', $ad['subdomain']));
 	}
 }
 

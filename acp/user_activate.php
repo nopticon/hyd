@@ -30,7 +30,7 @@ class __user_activate extends mac {
 		
 		$user_id = request_var('uid', 0);
 		
-		if ($this->submit || $user_id)
+		if (_button() || $user_id)
 		{
 			$username = request_var('username', '');
 			$user_email = request_var('user_email', '');
@@ -68,12 +68,6 @@ class __user_activate extends mac {
 			$sql = 'DELETE FROM _crypt_confirm WHERE crypt_code = ?
 					AND crypt_userid = ?';
 			sql_query(sql_filter($sql, $code, $user_id));
-			
-			// Unread
-			$user->save_unread(UH_T, 288, 0, $user_id);
-			$user->save_unread(UH_T, 2524, 0, $user_id);
-			$user->save_unread(UH_T, 1455, 0, $user_id);
-			$user->save_unread(UH_U, $user_id);
 			
 			$emailer = new emailer();
 			

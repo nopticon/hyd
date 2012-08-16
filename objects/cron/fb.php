@@ -91,7 +91,7 @@ foreach ($wall_feed as $row) {
 			}
 		}
 		
-		$f = $upload->remote($config['news_path'], array($row['picture']), array('jpg', 'jpeg', 'png'));
+		$f = $upload->remote($config['news_path'], array($row['picture']), 'jpg png');
 				
 		foreach ($f as $row) {
 			$mini = $upload->resize($row, $config['news_path'], $config['news_path'], 1, array(100, 75), false, false, true);

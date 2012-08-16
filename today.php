@@ -142,7 +142,7 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
 			
 			_style('items.notes.item', array(
 				'S_MARK_ID' => $row['parent_id'],
-				'U_READ' => s_link('my', array('dc', 'read', $row['last_msg_id'])) . '#' . $row['last_msg_id'],
+				'U_READ' => s_link('my dc read', $row['last_msg_id']) . '#' . $row['last_msg_id'],
 				'SUBJECT' => $dc_subject,
 				'DATETIME' => $user->format_date($row['privmsgs_date']),
 				'USER_ID' => $row['user_id'],
@@ -323,7 +323,7 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
 			_style('items.downloads.item', array(
 				'S_MARK_ID' => $row['id'],
 				'UB_URL' => s_link('a', $row['subdomain']),
-				'UD_URL' => s_link('a', array($row['subdomain'], 9, $row['id'])),
+				'UD_URL' => s_link('a', $row['subdomain'], 9, $row['id']),
 				'UD_TYPE' => array_key($downloads->dl_type($row['ud_type']), 'av'),
 				'DATETIME' => $user->format_date($row['date']),
 				'UB' => $row['name'],
@@ -404,7 +404,7 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
 
 			_style('items.a_messages.item', array(
 				'S_MARK_ID' => $row['post_id'],
-				'ITEM_URL' => s_link('a', array($row['subdomain'], 12, $row['post_id'])),
+				'ITEM_URL' => s_link('a', $row['subdomain'], 12, $row['post_id']),
 				'UB_URL' => s_link('a', $row['subdomain']),
 				'UB' => $row['name'],
 				'DATETIME' => $user->format_date($row['post_time']),
@@ -445,9 +445,9 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
 			
 			_style('items.d_messages.item', array(
 				'S_MARK_ID' => $row['post_id'],
-				'ITEM_URL' => s_link('a', array($row['subdomain'], 9, $row['dl_id'])),
+				'ITEM_URL' => s_link('a', $row['subdomain'], 9, $row['dl_id']),
 				'UB_URL' => s_link('a', $row['subdomain']),
-				'UD_URL' => s_link('a', array($row['subdomain'], 9, $row['dl_id'])),
+				'UD_URL' => s_link('a', $row['subdomain'], 9, $row['dl_id']),
 				'UD_TYPE' => $download_type['av'],
 				'UB' => $row['name'],
 				'UD' => $row['title'],
@@ -560,7 +560,7 @@ $result = sql_rowset($sql);
 
 foreach ($result as $row) {
 	_style('downloads', array(
-		'URL' => s_link('a', array($row['subdomain'], 9, $row['id'])),
+		'URL' => s_link('a', $row['subdomain'], 9, $row['id']),
 		'A' => $row['name'],
 		'T' => $row['title'])
 	);

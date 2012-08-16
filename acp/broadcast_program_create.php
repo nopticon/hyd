@@ -28,7 +28,7 @@ class __broadcast_program_create extends mac {
 	public function _home() {
 		global $config, $user, $cache;
 		
-		if (!$this->submit) {
+		if (!_button()) {
 			return;
 		}
 		

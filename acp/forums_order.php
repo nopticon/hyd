@@ -28,7 +28,7 @@ class __forum_order extends mac {
 	public function _home() {
 		global $config, $user, $cache;
 		
-		if (!$this->submit) {
+		if (!_button()) {
 			$sql = 'SELECT forum_id, forum_name
 				FROM _forums
 				ORDER BY forum_order ASC';

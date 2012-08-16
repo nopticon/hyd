@@ -354,7 +354,7 @@ class topics {
 					
 					$topics_count -= $total->important;
 				
-					build_num_pagination(s_link('forum', array($forum_row['forum_alias'], 's%d')), $topics_count, $config['topics_per_page'], $start, '', 'TOPICS_');
+					build_num_pagination(s_link('forum', $forum_row['forum_alias'], 's%d'), $topics_count, $config['topics_per_page'], $start, '', 'TOPICS_');
 				}
 				
 				if (!$j) {

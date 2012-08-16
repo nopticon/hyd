@@ -44,7 +44,7 @@ class _home {
 			
 			_style('items.notes.item', array(
 				'S_MARK_ID' => $row['parent_id'],
-				'U_READ' => s_link('my', array('dc', 'read', $row['last_msg_id'])) . '#' . $row['last_msg_id'],
+				'U_READ' => s_link('my dc read', $row['last_msg_id']) . '#' . $row['last_msg_id'],
 				'SUBJECT' => $dc_subject,
 				'DATETIME' => $user->format_date($row['privmsgs_date']),
 				'USER_ID' => $row['user_id'],

@@ -28,7 +28,7 @@ class __user_team_create extends mac {
 	public function _home() {
 		global $config, $user, $cache;
 		
-		if (!$this->submit) {
+		if (!_button()) {
 			$sql = 'SELECT *
 				FROM _team
 				ORDER BY team_name';

@@ -28,7 +28,7 @@ class __forums_alias_modify extends mac {
 	public function _home() {
 		global $config, $user, $cache;
 		
-		if ($this->submit) {
+		if (_button()) {
 			$forum_id = request_var('fid', 0);
 			$forum_alias = request_var('falias', '');
 			

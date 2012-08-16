@@ -48,7 +48,7 @@ class __forums_post_modify extends mac {
 		
 		$this->object->topic = (object) $this->object->topic;
 		
-		if ($this->submit) {
+		if (_button()) {
 			$topic_title = request_var('topic_title', '');
 			$post_message = $comments->prepare(request_var('message', '', true));
 			

@@ -30,7 +30,7 @@ class __news_modify extends mac {
 		
 		$submit2 = _button('submit2');
 		
-		if ($this->submit || $submit2) {
+		if (_button() || $submit2) {
 			$news_id = request_var('news_id', 0);
 			
 			$sql = 'SELECT *
@@ -63,7 +63,7 @@ class __news_modify extends mac {
 				redirect(s_link('news', $news_id));
 			}
 			
-			if ($this->submit) {
+			if (_button()) {
 				_style('edit', array(
 					'ID' => $news_data['news_id'],
 					'SUBJECT' => $news_data['post_subject'],
@@ -73,7 +73,7 @@ class __news_modify extends mac {
 			}
 		}
 		
-		if (!$this->submit) {
+		if (!_button()) {
 			_style('field');
 		}
 		

@@ -20,13 +20,54 @@ if (!defined('IN_APP')) exit;
 
 require_once(ROOT . 'interfase/downloads.php');
 
-class layout extends downloads {
-	//
-	// Home
-	//
-	public function _1() {
-		global $user, $config, $comments;
+//
+// Class: _artists
+//
+class _artists extends downloads {
+	public $auth = array();
+	public $data = array();
+	public $adata = array();
+	public $images = array();
+	public $layout = array();
+	public $voting = array();
+	public $msg = array();
+	public $ajx = true;
+	
+	private $make;
+	private $_template;
+	private $_title;
+	
+	public function __construct() {
+		$this->layout = array(
+			'_01' => array('code' => 1, 'text' => 'UB_L01', 'tpl' => 'main'),
+			'_02' => array('code' => 2, 'text' => 'UB_L02', 'tpl' => 'bio'),
+			'_03' => array('code' => 3, 'text' => 'UB_L03', 'tpl' => 'albums'),
+			'_04' => array('code' => 4, 'text' => 'UB_L04', 'tpl' => 'gallery'),
+			'_05' => array('code' => 5, 'text' => 'UB_L05', 'tpl' => 'tabs'),
+			'_06' => array('code' => 6, 'text' => 'UB_L06', 'tpl' => 'lyrics'),
+			'_07' => array('code' => 7, 'text' => 'UB_L07', 'tpl' => 'interviews'),
+			'_09' => array('code' => 9, 'text' => 'DOWNLOADS', 'tpl' => 'downloads'),
+			'_13' => array('code' => 13, 'text' => '', 'tpl' => 'email'),
+			'_16' => array('code' => 16, 'text' => '', 'tpl' => 'news'),
+			'_18' => array('code' => 18, 'text' => 'UB_L17', 'tpl' => 'video')
+		);
 		
+		$this->voting = array(
+			'ub' => array(1, 2, 3, 5),
+			'ud' => array(1, 2, 3, 4, 5)
+		);
+	}
+
+	/*
+	Default layout for artist.
+	*/
+	public function _main() {
+		if ($this->make) {
+			return true;
+		}
+
+		global $user, $config, $comments;
+
 		//
 		// Gallery
 		//
@@ -43,7 +84,7 @@ class layout extends downloads {
 		
 		if ($this->data['images'] > 1) {
 			_style('ub_image.view', array(
-				'URL' => s_link('a', array($this->data['subdomain'], 4, $imagedata['image'], 'view')))
+				'URL' => s_link('a', $this->data['subdomain'], 4, $imagedata['image'], 'view'))
 			);
 		}
 		
@@ -53,7 +94,7 @@ class layout extends downloads {
 		if ($this->auth['user']) {
 			_style('publish', array(
 				'TITLE' => ($this->auth['mod']) ? lang('send_news') : lang('send_post'),
-				'URL' => s_link('a', array($this->data['subdomain'])))
+				'URL' => s_link('a', $this->data['subdomain']))
 			);
 		}
 		
@@ -144,15 +185,19 @@ class layout extends downloads {
 	}
 	
 	//
-	// Biography
+	// Layout to show artist's biography
 	//
-	public function _2() {
+	public function _bio() {
+		if ($this->make) {
+			return ($this->data['bio']);
+		}
+
 		global $config, $comments;
 		
 		if ($this->data['featured_image']) {
 			_style('featured_image', array(
 				'IMAGE' => $config['artists_url'] . $this->data['ub'] . '/gallery/' . $this->data['featured_image'] . '.jpg',
-				'URL' => s_link('a', array($this->data['subdomain'], 4, $this->data['featured_image'], 'view')))
+				'URL' => s_link('a', $this->data['subdomain'], 4, $this->data['featured_image'], 'view'))
 			);
 		}
 		
@@ -166,14 +211,25 @@ class layout extends downloads {
 		return;
 	}
 	
-	public function _3() {
+	/*
+	Layout to show artist's albums.
+	*/
+	public function _albums() {
+		if ($this->make) {
+			return;
+		}
+
 		return;
 	}
 	
-	//
-	// Gallery
-	//
-	public function _4() {
+	/*
+	Show all pictures associated to this artist.
+	*/
+	public function _gallery() {
+		if ($this->make) {
+			return ($this->data['images'] > 1);
+		}
+
 		global $config;
 		
 		$mode = request_var('mode', '');
@@ -181,7 +237,7 @@ class layout extends downloads {
 		
 		if ($mode == 'view') {
 			if (!$download_id) {
-				redirect(s_link('a', array($this->data['subdomain'], 4)));
+				redirect(s_link('a', $this->data['subdomain'], 4));
 			}
 			
 			if ($mode == 'view') {
@@ -204,7 +260,7 @@ class layout extends downloads {
 			}
 			
 			if (!$imagedata = sql_fieldrow($sql)) {
-				redirect(s_link('a', array($this->data['subdomain'], 4)));
+				redirect(s_link('a', $this->data['subdomain'], 4));
 			}
 		}
 		
@@ -228,7 +284,7 @@ class layout extends downloads {
 					
 					if ($imagedata['allow_dl']) {
 						_style('selected.download', array(
-							'URL' => s_link('a', array($this->data['subdomain'], 4, $imagedata['image'], 'save')))
+							'URL' => s_link('a', $this->data['subdomain'], 4, $imagedata['image'], 'save'))
 						);
 					}
 					
@@ -247,14 +303,14 @@ class layout extends downloads {
 						' . $sql_image . '
 					ORDER BY image DESC';
 				if (!$result = sql_rowset(sql_filter($sql, $this->data['ub']))) {
-					redirect(s_link('a', array($this->data['subdomain'], 4)));
+					redirect(s_link('a', $this->data['subdomain'], 4));
 				}
 				
 				foreach ($result as $i => $row) {
 					if (!$i) _style('thumbnails');
 
 					_style('thumbnails.row', array(
-						'URL' => s_link('a', array($this->data['subdomain'], 4, $row['image'], 'view')),
+						'URL' => s_link('a', $this->data['subdomain'], 4, $row['image'], 'view'),
 						'IMAGE' => $config['artists_url'] . $this->data['ub'] . '/thumbnails/' . $row['image'] . '.jpg',
 						'RIMAGE' => get_a_imagepath($config['artists_path'], $config['artists_url'], $this->data['ub'], $row['image'] . '.jpg', w('x1 gallery')),
 						'WIDTH' => $row['width'], 
@@ -268,14 +324,25 @@ class layout extends downloads {
 		return;
 	}
 	
-	public function _5() {
+	/*
+	Show all tabs for this artist.
+	*/
+	public function _tabs() {
+		if ($this->make) {
+			return;
+		}
+
 		return;
 	}
 	
-	//
-	// Lyrics
-	//
-	public function _6() {
+	/*
+	Show all lyrics associated to this artist.
+	*/
+	public function _lyrics() {
+		if ($this->make) {
+			return ($this->data['lirics'] > 0);
+		}
+
 		global $config, $lang;
 		
 		$mode = request_var('mode', '');
@@ -283,7 +350,7 @@ class layout extends downloads {
 		
 		if ($mode == 'view' || $mode == 'save') {
 			if (!$download_id) {
-				redirect(s_link('a', array($this->data['subdomain'], 6)));
+				redirect(s_link('a', $this->data['subdomain'], 6));
 			}
 			
 			$sql = 'SELECT l.*
@@ -292,7 +359,7 @@ class layout extends downloads {
 				WHERE l.ub = ?
 					AND l.id = ?';
 			if (!$lyric_data = sql_fieldrow(sql_filter($sql, $this->data['ub'], $download_id))) {
-				redirect(s_link('a', array($this->data['subdomain'], 6)));
+				redirect(s_link('a', $this->data['subdomain'], 6));
 			}
 		}
 		
@@ -328,7 +395,7 @@ class layout extends downloads {
 					if (!$i) _style('select');
 					
 					_style('select.item', array(
-						'URL' => s_link('a', array($this->data['subdomain'], 6, $row['id'], 'view')) . '#read',
+						'URL' => s_link('a', $this->data['subdomain'], 6, $row['id'], 'view') . '#read',
 						'TITLE' => $row['title'],
 						'SELECTED' => ($download_id && $download_id == $row['id']) ? true : false)
 					);
@@ -339,18 +406,25 @@ class layout extends downloads {
 		return;
 	}
 	
-	public function _7() {
+	/*
+	Show all interviews made to this artist.
+	*/
+	public function _interviews() {
+		if ($this->make) {
+			return;
+		}
+
 		return;
 	}
 	
-	public function _8() {
-		return;
-	}
-	
-	//
-	// Downloads
-	//
-	public function _9() {
+	/*
+	Show list of all songs available for listening and download.
+	*/
+	public function _downloads() {
+		if ($this->make) {
+			return ($this->data['layout'] == 'downloads');
+		}
+
 		$this->dl_setup();
 		
 		$mode = request_var('dl_mode', '');
@@ -358,7 +432,7 @@ class layout extends downloads {
 			$mode = 'view';
 		}
 		
-		if (!in_array($mode, array('view', 'save', 'vote', 'fav'))) {
+		if (!in_array($mode, w('view save vote fav'))) {
 			redirect(s_link('a', $this->data['subdomain']));
 		}
 		
@@ -370,131 +444,14 @@ class layout extends downloads {
 		return $this->$mode();
 	}
 	
-	public function _10() {
-		return;
-	}
-	
-	//
-	// Messages
-	//
-	public function _12() {
-		global $user, $config, $comments;
-		
-		$post_id = request_var('post_id', 0);
-		if (!$post_id) {
-			fatal_error();
+	/*
+	Send private message from any user to this artist.
+	*/
+	public function _email() {
+		if ($this->make) {
+			return;
 		}
-		
-		$sql = 'SELECT a.ub, p.*, m.user_id, m.username, m.username_base, m.user_color
-			FROM _artists a, _artists_posts p, _members m
-			WHERE a.ub = ?
-				AND p.post_id = ?
-				AND a.ub = p.post_ub
-				AND p.poster_id = m.user_id';
-		if (!$pdata = sql_fieldrow($sql, $this->data['ub'], $post_id)) {
-			fatal_error();
-		}
-		
-		$mode = request_var('mode', '');
-		
-		if ($mode == 'report') {
-			
-		} else {
-			$comments_ref = s_link('a', array($this->data['subdomain'], 12, $pdata['post_id'], 'reply'));
-			
-			$start = request_var('rs', 0);
-			$comments->ref = $comments_ref;
-			$comments->auth = $this->auth;
-			
-			$sql = 'SELECT p.*, m.user_id, m.username, m.username_base, m.user_color, m.user_avatar
-				FROM _artists_posts p, _members m, _artists a
-				WHERE p.post_ub = ?
-					AND (p.post_id = ? OR p.post_reply = ?)
-					AND p.post_active = 1
-					AND p.post_ub = a.ub
-					AND p.poster_id = m.user_id
-				ORDER BY p.post_reply ASC, p.post_time DESC
-				LIMIT ??, ??'; 
-			
-			$comments->data = array(
-				'A_LINKS_CLASS' => 'bold red',
-				'SQL' => sql_filter($sql, $this->data['ub'], $post_id, $post_id, $start, $config['s_posts'])
-			);
-			
-			if ($this->auth['user']) {
-				$comments->data['CONTROL']['reply'] = array(
-					'REPLY' => array(
-						'URL' => s_link('a', array($this->data['subdomain'], 12, '%d')) . '#reply',
-						'ID' => 'post_id'
-					)
-				);
-			}
-			
-			if ($this->auth['user'] && !$this->auth['mod']) {
-				$comments->data['CONTROL']['report'] = array(
-					'REPORT' => array(
-						'URL' => s_link('a', array($this->data['subdomain'], 12, '%d', 'report')),
-						'ID' => 'post_id'
-					)
-				);
-			}
-			
-			if ($this->auth['mod']) {
-				$comments->data['CONTROL']['auth'] = w();
-				
-				if ($this->auth['adm'] && $user->is('founder')) {
-					$comments->data['CONTROL']['auth']['EDIT'] = array(
-						'URL' => s_link('acp', array('artist_messages', 'a' => $this->data['subdomain'], 'id' => '%d')),
-						'ID' => 'post_id'
-					);
-				}
-				
-				$comments->data['CONTROL']['auth']['DELETE'] = array(
-					'URL' => s_link('acp', array('artist_messages', 'a' => $this->data['subdomain'], 'id' => '%d', 'action' => 'delete')),
-					'ID' => 'post_id'
-				);
-			}
-			
-			$sql = preg_replace('/LIMIT (\d+), (\d+)/', '', $comments->data['SQL']);
-			
-			$reply_result = sql_rowset($sql);
-			$total_posts = count($reply_result);
-			unset($reply_result);
-			
-			$comments->view($start, 'rs', $total_posts, $config['s_posts'], 'reply_msg', 'RMSG_', '', false);
-			
-			v_style(array(
-				'PARENT_ID' => $post_id)
-			);
-		}
-		
-		if ($this->auth['post'] && ($this->data['a_active'] || $user->is('founder'))) {
-			if ($this->auth['user']) {
-				_style('reply_post_box', array(
-					'REF' => $comments_ref)
-				);
-			} else {
-				_style('reply_no_guest_posting', array(
-					'LEGEND' => sprintf(lang('ub_no_guest_posting'), $this->data['name'], s_link('my', 'register')))
-				);
-			}
-		} else {
-			_style('reply_no_post_auth');
-			
-			if ($this->auth['post_until']) {
-				_style('reply_no_post_auth.until', array(
-					'UNTIL_DATETIME' => $user->format_date($this->auth['post_until']))
-				);
-			}
-		}
-		
-		return;
-	}
-	
-	//
-	// Email
-	//
-	public function _13() {
+
 		if (empty($this->data['email'])) {
 			fatal_error();
 		}
@@ -564,10 +521,14 @@ class layout extends downloads {
 		return;
 	}
 	
-	//
-	// Redirect to Website
-	//
-	public function _14() {
+	/*
+	Register stats when user want to view artist's website.
+	*/
+	public function _website() {
+		if ($this->make) {
+			return;
+		}
+
 		if ($this->data['www'] == '') {
 			redirect(s_link('a', $this->data['subdomain']));
 		}
@@ -586,10 +547,14 @@ class layout extends downloads {
 		exit;
 	}
 	
-	//
-	// Favorites
-	//
-	public function _15() {
+	/*
+	Manage artist's favorites from users.
+	*/
+	public function _favorites() {
+		if ($this->make) {
+			return;
+		}
+
 		global $user;
 		
 		if (!$this->auth['user']) {
@@ -641,14 +606,25 @@ class layout extends downloads {
 		return;
 	}
 	
-	public function _16() {
+	/*
+	Manage news from this artist.
+	*/
+	public function _news() {
+		if ($this->make) {
+			return;
+		}
+
 		return;
 	}
 	
-	//
-	// Vote
-	//
-	public function _17() {
+	/*
+	Users can vote and rate artist quality.
+	*/
+	public function _vote() {
+		if ($this->make) {
+			return;
+		}
+
 		if (!$this->auth['user']) {
 			do_login();
 		}
@@ -698,8 +674,15 @@ class layout extends downloads {
 		
 		redirect($url);
 	}
-	
-	public function _18() {
+
+	/*
+	Show all artist's videos.
+	*/
+	public function _video() {
+		if ($this->make) {
+			return ($this->data['a_video'] > 0);
+		}
+
 		global $user;
 		
 		$sql = 'SELECT *
@@ -720,44 +703,6 @@ class layout extends downloads {
 		
 		return;
 	}
-}
-
-//
-// Class: _artists
-//
-class _artists extends layout {
-	public $auth = array();
-	public $data = array();
-	public $adata = array();
-	public $images = array();
-	public $layout = array();
-	public $voting = array();
-	public $msg = array();
-	public $ajx = true;
-	
-	private $_template;
-	private $_title;
-	
-	public function __construct() {
-		$this->layout = array(
-			'_01' => array('code' => 1, 'text' => 'UB_L01', 'tpl' => 'main'),
-			'_02' => array('code' => 2, 'text' => 'UB_L02', 'tpl' => 'bio'),
-			'_03' => array('code' => 3, 'text' => 'UB_L03', 'tpl' => 'albums'),
-			'_04' => array('code' => 4, 'text' => 'UB_L04', 'tpl' => 'gallery'),
-			'_05' => array('code' => 5, 'text' => 'UB_L05', 'tpl' => 'tabs'),
-			'_06' => array('code' => 6, 'text' => 'UB_L06', 'tpl' => 'lyrics'),
-			'_07' => array('code' => 7, 'text' => 'UB_L07', 'tpl' => 'interviews'),
-			'_09' => array('code' => 9, 'text' => 'DOWNLOADS', 'tpl' => 'downloads'),
-			'_13' => array('code' => 13, 'text' => '', 'tpl' => 'email'),
-			'_16' => array('code' => 16, 'text' => '', 'tpl' => 'news'),
-			'_18' => array('code' => 18, 'text' => 'UB_L17', 'tpl' => 'video')
-		);
-		
-		$this->voting = array(
-			'ub' => array(1, 2, 3, 5),
-			'ud' => array(1, 2, 3, 4, 5)
-		);
-	}
 	
 	public function get_title($default = '') {
 		return (!empty($this->_title)) ? $this->_title : $default;
@@ -765,6 +710,10 @@ class _artists extends layout {
 	
 	public function get_template($default = '') {
 		return (!empty($this->_template)) ? $this->_template : $default;
+	}
+
+	private function _make($flag = false) {
+		$this->make = $flag;
 	}
 	
 	public function ajax() {
@@ -838,7 +787,7 @@ class _artists extends layout {
 		$this->auth['fav'] = false;
 		$this->auth['post'] = true;
 		
-		if (!$this->auth['user'] || $this->data['layout'] == 14) {
+		if (!$this->auth['user'] || $this->data['layout'] == 'website') {
 			return;
 		}
 		
@@ -901,7 +850,7 @@ class _artists extends layout {
 	public function call_layout() {
 		$layout = '_' . $this->data['layout'];
 		if (!method_exists($this, $layout)) {
-			redirect(s_link('a', $this->data['subdomain']));
+			redirect(s_link('a'));
 		}
 		
 		return $this->$layout();
@@ -988,7 +937,7 @@ class _artists extends layout {
 		
 		foreach ($result as $row) {
 			_style('downloads', array(
-				'URL' => s_link('a', array($row['subdomain'], 9, $row['id'])),
+				'URL' => s_link('a', $row['subdomain'], 9, $row['id']),
 				'A' => $row['name'],
 				'T' => $row['title'])
 			);
@@ -1196,7 +1145,7 @@ class _artists extends layout {
 				_style('downloads.panel.item', array(
 					'UB' => $this->adata[$dl_data[$ud_rand]['ub']]['name'],
 					'TITLE' => $dl_data[$ud_rand]['title'],
-					'URL' => s_link('a', array($this->adata[$dl_data[$ud_rand]['ub']]['subdomain'], 9, $dl_data[$ud_rand]['id'])))
+					'URL' => s_link('a', $this->adata[$dl_data[$ud_rand]['ub']]['subdomain'], 9, $dl_data[$ud_rand]['id']))
 				);
 			}
 		}
@@ -1303,37 +1252,70 @@ class _artists extends layout {
 	
 	public function _panel() {
 		global $user, $config, $template;
-		
-		$this->data['layout'] = request_var('layout', 0);
+
+		$this->data['layout'] = request_var('layout', '');
 		$this->_auth();
 		
 		if (!$this->data['layout']) {
-			$this->data['layout'] = 1;
+			$this->data['layout'] = 'main';
 		}
 		
 		switch ($this->data['layout']) {
-			case 14:
-			case 15:
-			case 17:
+			case 'website':
+			case 'favorites':
+			case 'vote':
 				$this->call_layout();
 				break;
 			default:
-				//
-				// Nav
-				//
-				$s_layout = w();
+				$this->_make(true);
+
+				/*
+				Build nav menu
+				*/
+				/*$s_layout = w();
 				$s_layout['a']['_01'] = true;
 				$s_layout['a']['_02'] = ($this->data['bio'] != '') ? true : false;
-				// $s_layout['a']['_03'] = true;
 				$s_layout['a']['_04'] = ($this->data['images'] > 1) ? true : false;
-				// $s_layout['_05'] = true;
 				$s_layout['a']['_06'] = ($this->data['lirics'] > 0) ? true : false;
-				// $s_layout['a']['_07'] = true;
 				$s_layout['a']['_09'] = ($this->data['layout'] == 9) ? true : false;
 				$s_layout['a']['_12'] = ($this->data['layout'] == 12) ? true : false;
 				$s_layout['a']['_18'] = ($this->data['a_video'] > 0) ? true : false;
+				*/
+
+				$available = w();
+				foreach ($this->layout as $i => $row) {
+					if ($this->data['layout'] == $row['tpl']) {
+						$this->data['template'] = $row['tpl'];
+					}
+
+					if ($this->{'_' . $row['tpl']}()) {
+						$available[$row['tpl']] = true;
+
+						_style('nav', array(
+							'LANG' => lang($row['text']))
+						);
+
+						if ($this->data['layout'] == $row['tpl']) {
+							_style('nav.strong');
+						} else {
+							$tpl = ($row['tpl'] == 'main') ? '' : $row['tpl'];
+							
+							_style('nav.a', array(
+								'URL' => s_link('a', $this->data['subdomain'], $tpl))
+							);
+						}
+					}
+				}
+
+				if (!isset($available[$this->data['layout']])) {
+					redirect(s_link('a', $this->data['subdomain']));
+				}
+
+				$this->_make();
+
+				//_pre($available, true);
 				
-				foreach ($this->layout as $item => $data) {
+				/*foreach ($this->layout as $item => $data) {
 					$s_layout['x'][$item] = $data['code'];
 					
 					if ($data['text'] == '') {
@@ -1348,10 +1330,10 @@ class _artists extends layout {
 						$this->data['template'] = $data['tpl'];
 					}
 				}
-				
+
 				if (!in_array($this->data['layout'], $s_layout['x']) || (!isset($s_layout['s'][$this->data['layout']]) && !in_array($this->data['layout'], $s_layout['e']))) {
 					redirect(s_link('a', $this->data['subdomain']));
-				}
+				}*/
 				
 				//
 				// Call selected layout
@@ -1361,7 +1343,7 @@ class _artists extends layout {
 				//
 				// Build nav
 				//
-				foreach ($s_layout['s'] as $data) {
+				/*foreach ($s_layout['s'] as $data) {
 					_style('nav', array(
 						'LANG' => lang($data['text']))
 					);
@@ -1374,9 +1356,9 @@ class _artists extends layout {
 					if ($data['code'] === 1) $data['code'] = ''; 
 					
 					_style('nav.a', array(
-						'URL' => s_link('a', array($this->data['subdomain'], $data['code'])))
+						'URL' => s_link('a', $this->data['subdomain'], $data['code']))
 					);
-				}
+				}*/
 				
 				//
 				// Update stats
@@ -1569,7 +1551,7 @@ class _artists extends layout {
 					}
 				} else {
 					_style('ub_poll.options', array(
-						'S_VOTE_ACTION' => s_link('a', array($this->data['subdomain'], 17)))
+						'S_VOTE_ACTION' => s_link('a', $this->data['subdomain'], 17))
 					);
 					
 					foreach ($this->voting['ub'] as $item) {
@@ -1605,7 +1587,7 @@ class _artists extends layout {
 							}
 							
 							_style('ud_block.item.a', array(
-								'URL' => s_link('a', array($this->data['subdomain'], 9, $song['id'])))
+								'URL' => s_link('a', $this->data['subdomain'], 9, $song['id']))
 							);
 						}
 					}
@@ -1625,7 +1607,7 @@ class _artists extends layout {
 				//
 				if (!$this->auth['mod'] && !$this->auth['smod']) {
 					_style('make_fans', array(
-						'FAV_URL' => s_link('a', array($this->data['subdomain'], 15)),
+						'FAV_URL' => s_link('a', $this->data['subdomain'], 15),
 						'FAV_LANG' => ($this->auth['fav']) ? '' : lang('ub_fav_add'))
 					);
 				}

@@ -98,7 +98,7 @@ class userpage {
 	
 	private function conversations() {
 		if (_button('cancel')) {
-			redirect(s_link('my', 'dc'));
+			redirect(s_link('my dc'));
 		}
 		
 		global $config, $user, $cache, $comments;
@@ -177,7 +177,7 @@ class userpage {
 				if (!sizeof($error)) {
 					$dc_id = $comments->store_dc($mode, $to_userdata, $user->d(), $dc_subject, $dc_message, true, true);
 					
-					redirect(s_link('my', array('dc', 'read', $dc_id)) . '#' . $dc_id);
+					redirect(s_link('my dc read', $dc_id) . '#' . $dc_id);
 				}
 			}
 		}
@@ -263,7 +263,7 @@ class userpage {
 				$with_username = sql_field(sql_filter($sql, $with_user), 'username', '');
 				
 				_style('conv', array(
-					'URL' => s_link('my', 'dc'),
+					'URL' => s_link('my dc'),
 					'SUBJECT' => $with_username,
 					'CAN_REPLY' => $result[0]['msg_can_reply'],)
 				);
@@ -325,19 +325,19 @@ class userpage {
 						_style('messages.item', array(
 							'S_MARK_ID' => $row['parent_id'],
 							'SUBJECT' => $dc_subject,
-							'U_READ' => s_link('my', array('dc', 'read', $row['last_msg_id'])) . '#' . $row['last_msg_id'],
+							'U_READ' => s_link('my dc read', $row['last_msg_id']) . '#' . $row['last_msg_id'],
 							'POST_DATE' => $user->format_date($row['last_privmsgs_date'], 'j F Y \a \l\a\s H:i') . ' horas.',
 							'ROOT_CONV' => $row['root_conv'],
 							
-							'DC_USERNAME' => $row['username'.$dc_with],
-							'DC_PROFILE' => s_link('m', $row['username_base'.$dc_with]),
+							'DC_USERNAME' => $row['username' . $dc_with],
+							'DC_PROFILE' => s_link('m', $row['username_base' . $dc_with]),
 							'DC_COLOR' => $row['user_color'.$dc_with])
 						);
 					}
 					
-					build_num_pagination(s_link('my', array('dc', 's%d')), $total_conv, $config['posts_per_page'], $offset);
+					build_num_pagination(s_link('my dc s%d'), $total_conv, $config['posts_per_page'], $offset);
 				} else if ($total_conv) {
-					redirect(s_link('my', 'dc'));
+					redirect(s_link('my dc'));
 				} else {
 					_style('no_messages');
 				}
@@ -358,13 +358,13 @@ class userpage {
 			ORDER BY m.username';
 		if ($result = sql_rowset(sql_filter($sql, $user->d('user_id'), $user->d('user_id')))) {
 			_style('sdc_friends', array(
-				'DC_START' => s_link('my', array('dc', 'start')))
+				'DC_START' => s_link('my dc start'))
 			);
 			
 			foreach ($result as $row) {
 				_style('sdc_friends.item', array(
 					'USERNAME' => $row['username'],
-					'URL' => s_link('my', array('dc', 'start', $row['username_base'])),
+					'URL' => s_link('my dc start', $row['username_base']),
 					'USER_COLOR' => $row['user_color'])
 				);
 			}
@@ -377,7 +377,7 @@ class userpage {
 		
 		$layout_vars = array(
 			'L_CONV' => $page_title,
-			'S_ACTION' => s_link('my', 'dc'),
+			'S_ACTION' => s_link('my dc'),
 			'S_HIDDEN_FIELDS' => s_hidden($s_hidden_fields)
 		);
 		
@@ -405,13 +405,13 @@ class userpage {
 				$layout_vars = array(
 					'MESSAGE_TEXT' => (sizeof($mark) == 1) ? lang('confirm_delete_pm') : lang('confirm_delete_pms'),
 		
-					'S_CONFIRM_ACTION' => s_link('my', 'dc'),
+					'S_CONFIRM_ACTION' => s_link('my dc'),
 					'S_HIDDEN_FIELDS' => s_hidden($s_hidden)
 				);
 				page_layout('DCONVS', 'confirm', $layout_vars);
 			}
 			
-			redirect(s_link('my', 'dc'));
+			redirect(s_link('my dc'));
 		}
 		
 		return;
@@ -421,8 +421,8 @@ class userpage {
 		global $user, $config, $comments, $cache, $upload;
 		
 		$error = w();
-		$fields = w('public_email timezone dateformat location sig msnm yim aim icq lastfm website occ interests os fav_genres fav_artists rank color');
-		$length_ary = w('location sig msnm yim aim icq website occ interests os fav_genres fav_artists');
+		$fields = w('public_email timezone dateformat location sig msnm yim lastfm website occ interests os fav_genres fav_artists rank color');
+		$length_ary = w('location sig msnm yim website occ interests os fav_genres fav_artists');
 		
 		$_fields = new stdClass;
 		foreach ($fields as $field) {
@@ -676,7 +676,7 @@ class userpage {
 				$banned_lang = ($is_blocked) ? 'REMOVE' : 'ADD';
 				
 				_style('block_member', array(
-					'URL' => s_link('m', array($this->data['username_base'], 'ban')),
+					'URL' => s_link('m', $this->data['username_base'], 'ban'),
 					'LANG' => lang('blocked_member_' . $banned_lang))
 				);
 			}
@@ -710,9 +710,9 @@ class userpage {
 		);
 		
 		if ($user->d('user_id') != $this->data['user_id']) {
-			$panel_selection['start'] = array('L' => 'DCONV_START', 'U' => s_link('my', array('dc', 'start', $this->data['username_base'])));
+			$panel_selection['start'] = array('L' => 'DCONV_START', 'U' => s_link('my dc start', $this->data['username_base']));
 		} else {
-			$panel_selection['dc'] = array('L' => 'DC', 'U' => s_link('my', 'dc'));
+			$panel_selection['dc'] = array('L' => 'DC', 'U' => s_link('my dc'));
 		}
 		
 		$panel_selection += array(
@@ -730,7 +730,7 @@ class userpage {
 			}
 			
 			_style('selected_panel.a', array(
-				'URL' => ($data['U'] !== false) ? $data['U'] : s_link('m', array($this->data['username_base'], (($link != 'main') ? $link : ''))))
+				'URL' => ($data['U'] !== false) ? $data['U'] : s_link('m', $this->data['username_base'], (($link != 'main') ? $link : '')))
 			);
 		}
 		
@@ -747,7 +747,7 @@ class userpage {
 			$friend_add_lang = ($friend_add_lang) ? 'friends_add' : 'friends_del';
 			
 			_style('friend', array(
-				'U_FRIEND' => s_link('m', array($this->data['username_base'], 'friend')),
+				'U_FRIEND' => s_link('m', $this->data['username_base'], 'friend'),
 				'L_FRIENDS_ADD' => lang($friend_add_lang))
 			);
 		}
@@ -762,7 +762,7 @@ class userpage {
 			'AVATAR_IMG' => $profile_fields['user_avatar'],
 			'USER_ONLINE' => $online,
 			
-			'PM' => s_link('my', array('dc', 'start', $this->data['username_base'])),
+			'PM' => s_link('my dc start', $this->data['username_base']),
 			'WEBSITE' => $this->data['user_website'],
 			'MSN' => $this->data['user_msnm']
 		));
@@ -819,7 +819,7 @@ class userpage {
 		
 		$user->save_unread(UH_FRIEND, $user->d('user_id'), 0, $this->data['user_id']);
 		
-		redirect(s_link('m', array($user->d('username_base'), 'friends')));
+		redirect(s_link('m', $user->d('username_base'), 'friends'));
 	}
 	
 	public function friend_list() {
@@ -1040,7 +1040,7 @@ class userpage {
 		//
 		// GET USERPAGE MESSAGES
 		//
-		$comments_ref = s_link('m', array($this->data['username_base']));
+		$comments_ref = s_link('m', $this->data['username_base']);
 		
 		if ($user->is('member')) {
 			_style('main.post_comment_box', array(
@@ -1156,7 +1156,7 @@ class userpage {
 			
 			$comments->data = array(
 				'USER_ID_FIELD' => 'userpage_id',
-				'S_DELETE_URL' => s_link('acp', array('user_post_delete', 'msg_id:%d')),
+				'S_DELETE_URL' => s_link('acp', 'user_post_delete', 'msg_id:%d'),
 				'SQL' => sql_filter($sql, $this->data['user_id'])
 			);
 			

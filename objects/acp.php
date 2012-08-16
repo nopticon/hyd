@@ -21,7 +21,6 @@ require_once('./interfase/common.php');
 
 class mac {
 	public $_access;
-	public $submit;
 	public $url;
 	public $tv = array();
 	
@@ -142,7 +141,6 @@ class _acp {
 		
 		$module = new $_object();
 		
-		$module->submit = _button();
 		$module->url = s_link() . substr(v_server('REQUEST_URI'), 1);
 		$module->alias = $this->module;
 		

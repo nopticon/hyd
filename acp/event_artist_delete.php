@@ -22,37 +22,49 @@ class __event_artist_delete extends mac {
 	public function __construct() {
 		parent::__construct();
 		
-		$this->auth('founder');
+		$this->auth('artist');
 	}
-	
+
+	/*
+	Show all events associated to this artist.
+	*/
 	public function _home() {
 		global $config, $user, $cache;
-		
-		if (!$this->submit) {
-			$sql = 'SELECT *
-				FROM _events
-				WHERE date > ??
-				ORDER BY date DESC';
-			$result = sql_rowset(sql_filter($sql, time()));
-			
-			foreach ($result as $i => $row) {
-				if (!$i) _style('events');
-				
-				_style('events.row', array(
-					'ID' => $row['id'],
-					'TITLE' => $row['title'],
-					'DATE' => $user->format_date($row['date']))
-				);
-			}
-			
+
+		$this->_artist();
+
+		if ($this->remove()) {
 			return;
 		}
+
+		$sql = 'SELECT *
+			FROM _events e, _artists_events a
+			WHERE a.a_artist = ?
+				AND a.a_event = e.id
+			ORDER BY e.date DESC';
+		$result = sql_rowset(sql_filter($sql, $this->object['ub']));
+
+		foreach ($result as $i => $row) {
+			if (!$i) _style('events');
+
+			_style('events.row', array(
+				'ID' => $row['id'],
+				'TITLE' => $row['title'],
+				'DATE' => $user->format_date($row['date']))
+			);
+		}
+
+		return;
+	}
+
+	/*
+	Remove selected events from this artist.
+	*/
+	private function remove() {
+		$v = _request(array('event' => 0));
 		
-		$event = request_var('event', 0);
-		$artist = request_var('artist', '');
-		
-		if (!$event || empty($artist)) {
-			_pre('Debe ingresar toda la informacion.', true);
+		if (_empty($v)) {
+			return;
 		}
 		
 		$sql = 'SELECT *

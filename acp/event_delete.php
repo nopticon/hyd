@@ -28,22 +28,22 @@ class __event_delete extends mac {
 	public function _home() {
 		global $config, $user, $cache;
 		
-		if (!$this->submit) {
+		if (!_button()) {
 			return;
 		}
 		
-		$request = _request(array('event' => 0));
+		$v = _request(array('event' => 0));
 		
 		$sql = 'SELECT *
 			FROM _events
 			WHERE id = ?';
-		if (!$object = sql_fieldrow(sql_filter($sql, $request->event))) {
+		if (!$object = sql_fieldrow(sql_filter($sql, $v->event))) {
 			fatal_error();
 		}
 		
 		$sql = 'DELETE FROM _events
 			WHERE id = ?';
-		sql_query(sql_filter($sql, $request->event));
+		sql_query(sql_filter($sql, $v->event));
 		
 		return redirect(s_link('events'));
 	}

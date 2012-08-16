@@ -28,7 +28,7 @@ class __news_images extends mac {
 	public function _home() {
 		global $config, $user, $cache, $upload;
 		
-		if ($this->submit) {
+		if (_button()) {
 			$news_id = request_var('news_id', 0);
 			
 			$sql = 'SELECT news_id
@@ -40,7 +40,7 @@ class __news_images extends mac {
 			
 			$filepath_1 = $config['news_path'];
 			
-			$f = $upload->process($filepath_1, 'add_image', 'jpg jpeg');
+			$f = $upload->process($filepath_1, 'add_image', 'jpg');
 			
 			if (!sizeof($upload->error) && $f !== false) {
 				foreach ($f as $row) {

@@ -25,6 +25,9 @@ class __artist_gallery extends mac {
 		$this->auth('artist');
 	}
 	
+	/*
+	List all images associated to this artist.
+	*/
 	public function _home() {
 		global $config, $user, $cache;
 		
@@ -46,7 +49,7 @@ class __artist_gallery extends mac {
 			
 			_style('gallery.row', array(
 				'ITEM' => $row['image'],
-				'URL' => s_link('a', array($this->object['subdomain'], 4, $row['image'], 'view')),
+				'URL' => s_link('a', $this->object['subdomain'], 4, $row['image'], 'view'),
 				'U_FOOTER' => s_link('acp', array('artist_gallery', 'a' => $this->object['subdomain'], 'footer' => $row['image'])),
 				'IMAGE' => $config['artists_url'] . $this->object['ub'] . '/thumbnails/' . $row['image'] . '.jpg',
 				'RIMAGE' => get_a_imagepath($config['artists_url'] . $this->object['ub'], $row['image'] . '.jpg', w('x1 gallery')),
@@ -59,6 +62,9 @@ class __artist_gallery extends mac {
 		return;
 	}
 	
+	/*
+	Upload images to artist's gallery.
+	*/
 	private function upload() {
 		global $config, $upload;
 		
@@ -122,6 +128,9 @@ class __artist_gallery extends mac {
 		return;
 	}
 	
+	/*
+	Remove selected images from artist's gallery.
+	*/
 	private function remove() {
 		global $config;
 		

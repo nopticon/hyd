@@ -26,9 +26,9 @@ class __news_create extends mac {
 	}
 	
 	public function _home() {
-		global $config, $user, $cache, $upload;
+		global $config, $user, $cache, $upload, $comments;
 		
-		if ($this->submit) {
+		if (_button()) {
 			$cat_id = request_var('cat_id', 0);
 			$post_subject = request_var('post_subject', '');
 			$post_desc = request_var('post_desc', '', true);
@@ -37,8 +37,6 @@ class __news_create extends mac {
 			if (empty($post_desc) || empty($post_message)) {
 				_pre('Campos requeridos.', true);
 			}
-			
-			$comments = new _comments();
 			
 			$post_message = $comments->prepare($post_message);
 			$post_desc = $comments->prepare($post_desc);

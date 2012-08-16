@@ -654,7 +654,7 @@ class _comments {
 			$emailer->use_template('dc_email');
 			$emailer->email_address($to['user_email']);
 			
-			$dc_url = s_link('my', array('dc', 'read', $dc_id));
+			$dc_url = s_link('my dc read', $dc_id);
 			
 			$emailer->assign_vars(array(
 				'USERNAME' => $to['username'],
@@ -977,7 +977,7 @@ class _comments {
 				if (isset($this->options['downloads']['list'][$download])) {
 					$show_a = (isset($match[2][$i]) && $match[2][$i] != '') ? true : false;
 					$orig[] = ':d' . $download . $match[2][$i] . ':';
-					$repl[] = '<a href="' . s_link('a', array($this->options['downloads']['list'][$download]['subdomain'], '9', $download)) . '" title="' . $this->options['downloads']['list'][$download]['name'] . ' - ' . $this->options['downloads']['list'][$download]['title'] . '">' . (($show_a) ? $this->options['downloads']['list'][$download]['name'] . ' - ' : '') . $this->options['downloads']['list'][$download]['title'] . '</a>';
+					$repl[] = '<a href="' . s_link('a', $this->options['downloads']['list'][$download]['subdomain'], '9', $download) . '" title="' . $this->options['downloads']['list'][$download]['name'] . ' - ' . $this->options['downloads']['list'][$download]['title'] . '">' . (($show_a) ? $this->options['downloads']['list'][$download]['name'] . ' - ' : '') . $this->options['downloads']['list'][$download]['title'] . '</a>';
 				}
 			}
 			

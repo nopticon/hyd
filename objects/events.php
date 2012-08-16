@@ -205,7 +205,7 @@ class _events extends downloads {
 					sql_insert('events_fav', $sql_insert);
 				}
 
-				redirect(s_link('events', array($this->v('event_alias'), $imagedata['image'], 'view')));
+				redirect(s_link('events', $this->v('event_alias'), $imagedata['image'], 'view'));
 				break;
 			case 'rsvp':
 				$choice = array_key(array_keys(request_var('choice', array(0 => ''))), 0);
@@ -298,7 +298,7 @@ class _events extends downloads {
 					
 					if ($user->is('founder')) {
 						_style('selected.update', array(
-							'URL' => s_link('async', 'eif'),
+							'URL' => s_link('async eif'),
 							'EID' => $this->v('id'),
 							'PID' => $imagedata['image'])
 						);
@@ -318,7 +318,7 @@ class _events extends downloads {
 					
 					if (!$is_fav || !$user->is('member')) {
 						_style('selected.fav', array(
-							'URL' => s_link('events', array($this->v('id'), $imagedata['image'], 'fav')))
+							'URL' => s_link('events', $this->v('id'), $imagedata['image'], 'fav'))
 						);
 					}
 				} else {
@@ -359,7 +359,7 @@ class _events extends downloads {
 				
 				$is_auth = $auth->forum(AUTH_ALL, $forum_id, $event_topic);
 				$u_event_alias = s_link('events', $this->v('event_alias'));
-				$u_event_publish = ($reply) ? s_link('events', array($this->v('event_alias'), $post_reply, 'reply')) : $u_event_alias;
+				$u_event_publish = ($reply) ? s_link('events', $this->v('event_alias'), $post_reply, 'reply') : $u_event_alias;
 				
 				if ($submit_reply) {
 					$auth_key = 'auth_reply';
@@ -519,13 +519,13 @@ class _events extends downloads {
 						redirect(s_link('events', $this->v('id')));
 					}
 					
-					build_num_pagination(s_link('events', array($this->v('id'), 's%d')), $this->v('images'), $t_per_page, $t_offset, 'IMG_');
+					build_num_pagination(s_link('events', $this->v('id'), 's%d'), $this->v('images'), $t_per_page, $t_offset, 'IMG_');
 					
 					_style('thumbnails');
 					
 					foreach ($result as $row) {
 						_style('thumbnails.item', array(
-							'URL' => s_link('events', array($this->v('event_alias'), $row['image'], 'view')),
+							'URL' => s_link('events', $this->v('event_alias'), $row['image'], 'view'),
 							'IMAGE' => $config['events_url'] . 'gallery/' . $this->v('id') . '/thumbnails/' . $row['image'] . '.jpg',
 							'RIMAGE' => $config['events_url'] . 'gallery/' . $this->v('id') . '/' . $row['image'] . '.jpg',
 							'FOOTER' => $row['image_footer'],
@@ -639,7 +639,7 @@ class _events extends downloads {
 							}
 						} else {
 							_style('poll.options', array(
-								'S_VOTE_ACTION' => s_link('events', array($this->v('event_alias'), 1, 'rsvp')))
+								'S_VOTE_ACTION' => s_link('events', $this->v('event_alias'), 1, 'rsvp'))
 							);
 							
 							foreach ($vote_info as $row) {
@@ -682,7 +682,7 @@ class _events extends downloads {
 					}
 					
 					if ($user->is('member')) {
-						$controls[$row['post_id']]['reply'] = s_link('events', array($this->v('event_alias'), $row['post_id'], 'reply'));
+						$controls[$row['post_id']]['reply'] = s_link('events', $this->v('event_alias'), $row['post_id'], 'reply');
 						
 						if ($mod_auth) {
 							$controls[$row['post_id']]['edit'] = s_link('acp', array('forums_post_modify', 'msg_id' => $row['post_id']));
@@ -719,9 +719,9 @@ class _events extends downloads {
 					$i++;
 				}
 				
-				build_num_pagination(s_link('events', array($this->v('event_alias'), 'ps%d')), $event_topic['topic_replies'], $config['posts_per_page'], $posts_offset, 'MSG_');
+				build_num_pagination(s_link('events', $this->v('event_alias'), 'ps%d'), $event_topic['topic_replies'], $config['posts_per_page'], $posts_offset, 'MSG_');
 				
-				$publish_ref = ($posts_offset) ? s_link('events', array($this->v('event_alias'), 's' . $t_offset)) : s_link('events', $this->v('event_alias'));
+				$publish_ref = ($posts_offset) ? s_link('events', $this->v('event_alias'), 's' . $t_offset) : s_link('events', $this->v('event_alias'));
 				
 				// Posting box
 				if ($user->is('member')) {

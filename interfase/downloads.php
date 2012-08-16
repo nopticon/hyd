@@ -85,7 +85,7 @@ class downloads {
 		}
 		
 		v_style(array(
-			'S_DOWNLOAD_ACTION' => s_link('a', array($this->data['subdomain'], 9, $this->dl_data['id'], 'save')),
+			'S_DOWNLOAD_ACTION' => s_link('a', $this->data['subdomain'], 9, $this->dl_data['id'], 'save'),
 			
 			'DL_ID' => $this->dl_data['id'],
 			'DL_A' => $this->data['ub'],
@@ -114,7 +114,7 @@ class downloads {
 		
 		if (!$is_fav) {
 			_style('dl_fav', array(
-				'URL' => s_link('a', array($this->data['subdomain'], 9, $this->dl_data['id'], 'fav')))
+				'URL' => s_link('a', $this->data['subdomain'], 9, $this->dl_data['id'], 'fav'))
 			);
 		}
 		
@@ -155,7 +155,7 @@ class downloads {
 			}
 		} else {
 			_style('ud_poll.options', array(
-				'S_VOTE_ACTION' => s_link('a', array($this->data['subdomain'], 9, $this->dl_data['id'], 'vote')))
+				'S_VOTE_ACTION' => s_link('a', $this->data['subdomain'], 9, $this->dl_data['id'], 'vote'))
 			);
 			
 			for ($i = 0, $end = sizeof($this->voting['ud']); $i < $end; $i++) {
@@ -169,7 +169,7 @@ class downloads {
 		//
 		// UD MESSAGES
 		//
-		$comments_ref = s_link('a', array($this->data['subdomain'], 9, $this->dl_data['id']));
+		$comments_ref = s_link('a', $this->data['subdomain'], 9, $this->dl_data['id']);
 		
 		if ($this->dl_data['posts']) {
 			$start = request_var('dps', 0);
@@ -194,7 +194,7 @@ class downloads {
 			if ($this->auth['user']) {
 				$comments->data['CONTROL']['reply'] = array(
 					'REPLY' => array(
-						'URL' => s_link('a', array($this->data['subdomain'], 12, '%d', 'reply')),
+						'URL' => s_link('a', $this->data['subdomain'], 12, '%d', 'reply'),
 						'ID' => 'post_id'
 					)
 				);
@@ -203,7 +203,7 @@ class downloads {
 			if ($this->auth['user'] && !$this->auth['adm'] && !$this->auth['mod']) {
 				$comments->data['CONTROL']['report'] = array(
 					'REPORT' => array(
-						'URL' => s_link('a', array($this->data['subdomain'], 12, '%d', 'report')),
+						'URL' => s_link('a', $this->data['subdomain'], 12, '%d', 'report'),
 						'ID' => 'post_id'
 					)
 				);
@@ -237,7 +237,7 @@ class downloads {
 				);
 			} else {
 				_style('dl_no_guest_posting', array(
-					'LEGEND' => sprintf(lang('ub_no_guest_posting'), $this->data['name'], s_link('my', 'register')))
+					'LEGEND' => sprintf(lang('ub_no_guest_posting'), $this->data['name'], s_link('my register')))
 				);
 			}
 		} else {
@@ -258,8 +258,6 @@ class downloads {
 			WHERE id = ?';
 		sql_query(sql_filter($sql, $this->dl_data['id']));
 		
-		// TODO: Fix enie letters.
-		
 		$orig = array('&ntilde;', '&Ntilde;', '.');
 		$repl = array('n', 'N', '');
 		
@@ -278,7 +276,7 @@ class downloads {
 		global $user;
 		
 		$option_id = request_var('vote_id', 0);
-		$url = s_link('a', array($this->data['subdomain'], 9, $this->dl_data['id']));
+		$url = s_link('a', $this->data['subdomain'], 9, $this->dl_data['id']);
 		
 		if ($this->auth['adm'] || $this->auth['mod'] || !in_array($option_id, $this->voting['ud'])) {
 			redirect($url);
@@ -343,7 +341,7 @@ class downloads {
 			$is_fav = true;
 		}
 		
-		$url = s_link('a', array($this->data['subdomain'], 9, $this->dl_data['id']));
+		$url = s_link('a', $this->data['subdomain'], 9, $this->dl_data['id']);
 		
 		if ($is_fav) {
 			redirect($url);

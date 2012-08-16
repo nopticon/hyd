@@ -30,12 +30,12 @@ class __event extends mac {
 		
 		$error = w();
 		
-		if ($this->submit) {
+		if (_button()) {
 			$filepath = $config['events_path'];
 			$filepath_1 = $filepath . 'future/';
 			$filepath_2 = $filepath_1 . 'thumbnails/';
 			
-			$f = $upload->process($filepath_1, 'event_image', 'jpg jpeg');
+			$f = $upload->process($filepath_1, 'event_image', 'jpg');
 			
 			if (!sizeof($upload->error) && $f !== false) {
 				$img = sql_total('_events');
@@ -96,7 +96,6 @@ class __event extends mac {
 					// Alice: Create topic
 					$event_url = $config['events_url'] . 'future/' . $img  . '.jpg';
 					
-					//$post_message = '<div class="a_mid"> ' . $event_url . ' </div>';
 					$post_message = 'Evento publicado';
 					$post_time = time();
 					$forum_id = 21;

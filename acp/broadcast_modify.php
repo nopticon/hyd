@@ -44,7 +44,7 @@ class __broadcast_modify extends mac {
 		$cds_file = ROOT . 'interfase/cds/schedule_playlist.txt';
 		
 		// Submit
-		if ($this->submit) {
+		if (_button()) {
 			$hours = request_var('hours', array('' => ''));
 			
 			$build = '';

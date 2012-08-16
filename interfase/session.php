@@ -798,20 +798,19 @@ class user extends session {
 	
 	Auth:
 	
-	U			USERS									ADM
-	A			ARTISTS								-
-	AF		ARTISTS FANS					ADM / USER_MOD
-	E			EVENTS								-
-	N			NEWS									-
-	NP		NEWS MESSAGES					ADM / USER_MOD / POSTERS
-	P			POSTS									-
-	D			DOWNLOADS							-
-	C			ARTISTS MESSAGES			ADM / USER_MOD / USER_FAN
-	M			DOWNLOADS MESSAGES		ADM / USER_MOD / USER_FAN
-	W			WALLPAPERS / ART			-
-	F			ARTISTS NEWS					-
-	I			ARTISTS IMAGES				-
-	
+	U	USERS				ADM
+	A	ARTISTS				-
+	AF	ARTISTS FANS		ADM / USER_MOD
+	E	EVENTS				-
+	N	NEWS				-
+	NP	NEWS MESSAGES		ADM / USER_MOD / POSTERS
+	P	POSTS				-
+	D	DOWNLOADS			-
+	C	ARTISTS MESSAGES	ADM / USER_MOD / USER_FAN
+	M	DOWNLOADS MESSAGES	ADM / USER_MOD / USER_FAN
+	W	WALLPAPERS / ART	-
+	F	ARTISTS NEWS		-
+	I	ARTISTS IMAGES		-
 	*/
 
 	public function today_type($type) {
@@ -854,7 +853,7 @@ class user extends session {
 						'object_relation' => $list,
 						'object_time' => time()
 					);
-					sql_insert('today', $sql_insert);
+					sql_insert('today_objects', $sql_insert);
 				}
 			}
 			return;

@@ -25,57 +25,80 @@ class __event_artist_create extends mac {
 		$this->auth('mod');
 	}
 	
+	/*
+	Show form listing all event available to this artist.
+	*/
 	public function _home() {
 		global $config, $user, $cache;
-		
-		if (!$this->submit) {
-			$sql = 'SELECT *
-				FROM _events
-				WHERE date > ??
-				ORDER BY date DESC';
-			$events = sql_rowset(sql_filter($sql, time()));
-			
-			foreach ($events as $i => $row) {
-				if (!$i) _style('events');
-				
-				_style('events.row', array(
-					'ID' => $row['id'],
-					'TITLE' => $row['title'],
-					'DATE' => $user->format_date($row['date']))
-				);
-			}
-			
+
+		$this->_artist();
+
+		if ($this->create()) {
 			return;
 		}
+
+		$ini_year = mktime(0, 0, 0, 1, 1);
+
+		$sql = 'SELECT *
+			FROM _events
+			WHERE date > ??
+			ORDER BY date DESC';
+		$events = sql_rowset(sql_filter($sql, $ini_year));
+
+		$last_month = '';
+		foreach ($events as $i => $row) {
+			if (!$i) _style('events');
+
+			$row_month = ucfirst($user->format_date($row['date'], 'F \'y'));
+
+			if ($last_month != $row_month) {
+				$last_month = $row_month;
+
+				_style('events.month', array(
+					'NAME' => $row_month)
+				);
+			}
+
+			_style('events.month.row', array(
+				'ID' => $row['id'],
+				'TITLE' => $row['title'],
+				'DATE' => $user->format_date($row['date']))
+			);
+		}
+
+		return;
+	}
+
+	/*
+	Assign an event to selected artist.
+	*/
+	private function create() {
+		$v = _request(array('event' => 0));
 		
-		$request = _request(array('event' => 0, 'artist' => ''));
-		
-		if (_empty($request)) {
-			_pre('Debe completar la informacion.', true);
+		if (_empty($v)) {
+			return;
 		}
 		
 		$sql = 'SELECT id, event_alias
 			FROM _events
 			WHERE id = ?';
-		if (!$event = sql_fieldrow(sql_filter($sql, $request->event))) {
-			_pre('El evento no existe.', true);
+		if (!$event = sql_fieldrow(sql_filter($sql, $v->event))) {
+			return;
 		}
-		
-		$e_artist = explode(nr(), $request->artist);
-		foreach ($e_artist as $row) {
-			$subdomain = get_subdomain($row);
-			
-			$sql = 'SELECT ub
-				FROM _artists
-				WHERE subdomain = ?';
-			if ($a_ub = sql_field(sql_filter($sql, $subdomain), 'ub', 0)) {
-				$sql_insert = array(
-					'a_artist' => $a_ub,
-					'a_event' => $event['id']
-				);
-				sql_insert('artists_events', $sql_insert);
-			}
+
+		$sql = 'SELECT ub
+			FROM _artists_events
+			WHERE a_artist = ?
+				AND a_event = ?';
+		if (sql_field(sql_filter($sql, $this->object['ub'], $v->event))) {
+			return;
 		}
+
+		$sql_insert = array(
+			'a_artist' => $this->object['ub'],
+			'a_event' => $event['id']
+		);
+		sql_insert('artists_events', $sql_insert);
 		
 		return redirect(s_link('events', $event['event_alias']));
 	}

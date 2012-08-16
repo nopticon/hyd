@@ -79,7 +79,7 @@ $lang += array(
 	'MORE_OPTIONS' => 'M&aacute;s opciones',
 	'BACK_TOP' => 'Ir arriba',
 	'COUNTRY' => 'Pa&iacute;s',
-	'SAVE_CHANGES' => 'Guardar cambios',
+	'SAVE_CHANGES' => 'Guardar informaci&oacute;n',
 	'FAN' => 'fan',
 	'FANS' => 'fans',
 	'NAVIGATION' => 'Navegaci&oacute;n',
@@ -98,8 +98,6 @@ $lang += array(
 	'TOPIC_POINTS_ADD' => 'Activar Arkanes',
 	'TOPIC_POINTS_REM' => 'Desactivar Arkanes',
 	
-	'ICQ' => 'N&uacute;mero ICQ',
-	'AIM' => 'Direcci&oacute;n AIM',
 	'MSN' => 'MSN Messenger',
 	'YIM' => 'Yahoo! Messenger',
 	
