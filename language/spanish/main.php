@@ -963,10 +963,16 @@ $lang += array(
 	'ACP_ARTIST_AUTH' => 'Miembros autorizados',
 	'ACP_ARTIST_MEDIA' => 'Canciones',
 	'ACP_ARTIST_BIOGRAPHY' => 'Editar biograf&iacute;a',
+	'ACP_ARTIST_BIOGRAPHY_UPDATE' => 'La biograf&iacute;a fue actualizada.',
+	'ACP_ARTIST_SELECT' => 'Selecciona perfil de artista',
 
 	'ACP_ARTIST_BIO_UPDATED' => 'La biograf&iacute;a fue actualizada',
 	'ACP_ARTIST_VIDEO_ADD_L' => 'Publica tus videos por medio del servicio de Youtube.<br /><br />Ingresa la URL de Youtube o el c&oacute;digo donde se encuentra el video.<br />Ejemplo: http://www.youtube.com/watch?v=<strong>VXytaD5AKyM</strong>',
-	'ACP_ARTIST_GALLERY_ADD' => 'Publica nuevas im&aacute;genes para tu galer&iacute;a.',
+	'ACP_ARTIST_GALLERY_ADD' => 'Administra las fotos de tu galer&iacute;a.',
+
+	'ACP_ARTIST_AUTH_DESC' => 'Administra los usuarios que pueden crear, modificar y eliminar contenido.',
+	'ACP_ARTIST_AUTH_DELETE' => '&iquest;Deseas eliminar los siguientes usuarios autorizados de %s?: <b>%s</b>',
+	'ACP_ARTIST_AUTH_DELETE2' => '&iquest;Deseas eliminar el siguiente usuario autorizado de %s?: <b>%s</b>'
 );
 
 ?>

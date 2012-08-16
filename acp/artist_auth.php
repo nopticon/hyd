@@ -25,41 +25,16 @@ class __artist_auth extends mac {
 		$this->auth('artist');
 	}
 	
-	private function _show($rowset, $unique = false) {
-		global $user, $comments;
-
-		$total = count($rowset);
-
-		foreach ($rowset as $i => $row) {
-			if (!$i) _style('members');
-
-			$prof = $comments->user_profile($row);
-
-			_style('members.row', array(
-				'USER_ID' => $prof['user_id'],
-				'PROFILE' => $prof['profile'],
-				'USERNAME' => $prof['username'],
-				'COLOR' => $prof['user_color'],
-				'AVATAR' => $prof['user_avatar'],
-				'DELETE' => $unique || ($total > 1 && $prof['user_id'] != $user->d('user_id')) || ($user->is('founder') && $prof['user_id'] != $user->d('user_id')),
-				'CHECK' => ($total == 1 && $unique))
-			);
-		}
-
-		return;
-	}
-	
+	/*
+	Show all authorized users to manage artist information.
+	*/
 	public function _home() {
-		global $config, $user, $cache;
+		global $config, $user, $cache, $comments;
 		
 		$this->_artist();
 		
-		if (_button()) {
-			return $this->create();
-		}
-		
-		if (_button('remove')) {
-			return $this->remove();
+		if ((_button() && $this->create()) || ((_button('confirm') || _button('remove')) && $this->remove())) {
+			return;
 		}
 		
 		$sql = 'SELECT u.user_id, u.user_type, u.username, u.username_base, u.user_color, u.user_avatar
@@ -68,274 +43,212 @@ class __artist_auth extends mac {
 				AND a.user_id = u.user_id
 			ORDER BY u.username';
 		if ($result = sql_rowset(sql_filter($sql, $this->object['ub']))) {
-			$this->_show($result);
-		}
+			$total = count($result);
 
-		return;
-	}
+			foreach ($result as $i => $row) {
+				if (!$i) _style('members');
 
-	private function create() {
-		if ($submit) {
-			$s_members = request_var('s_members', array(0));
-			$s_member = request_var('s_member', '');
+				$prof = $comments->user_profile($row);
 
-			if (sizeof($s_members)) {
-				$sql = 'SELECT user_id
-					FROM _members
-					WHERE user_id IN (??)
-					AND user_type NOT IN (??)';
-				if ($s_members = sql_rowset(sql_filter($sql, implode(',', $s_members), USER_IGNORE . ((!$user->data['is_founder']) ? ', ' . USER_FOUNDER : '')), false, 'user_id')) {
-					$s_members_a = $s_members_i = w();
+				$delete = ($total > 1 && $prof['user_id'] != $user->d('user_id')) || ($user->is('founder') && $prof['user_id'] != $user->d('user_id'));
 
-					$sql = 'SELECT user_id
-						FROM _artists_auth
-						WHERE ub = ?';
-					$result = sql_rowset(sql_filter($sql, $this->data['ub']));
-
-					foreach ($result as $row) {
-						$s_members_a[$row['user_id']] = true;
-					}
-
-					foreach ($s_members as $m) {
-						if (!isset($s_members_a[$m])) {
-							$s_members_i[] = $m;
-						}
-					}
-
-					if (sizeof($s_members_i)) {
-						$sql = 'SELECT user_id, user_color, user_rank
-							FROM _members
-							WHERE user_id IN (??)';
-						$result = sql_rowset(sql_filter($sql, implode(',', $s_members_i)));
-
-						$sd_members = w();
-						foreach ($result as $row) {
-							$sd_members[$row['user_id']] = $row;
-						}
-
-						foreach ($s_members_i as $m) {
-							$sql_insert = array(
-								'ub' => $this->data['ub'],
-								'user_id' => $m
-							);
-							sql_insert('artists_auth', $sql_insert);
-						}
-
-						foreach ($sd_members as $user_id => $item) {
-							$update = array(
-								'user_type' => USER_ARTIST,
-								'user_auth_control' => 1
-							);
-
-							if ($item['user_color'] == '4D5358') {
-								$update['user_color'] = '3DB5C2';
-							}
-
-							if (!$item['user_rank']) {
-								$update['user_rank'] = (int) $config['default_a_rank'];
-							}
-
-							$sql = 'UPDATE _members SET ??
-								WHERE user_id = ?
-									AND user_type NOT IN (' . USER_INACTIVE . ', ' . USER_IGNORE . ', ' . USER_FOUNDER . ')';
-							sql_query(sql_filter($sql, sql_build('UPDATE', $update), $user_id));
-
-							$sql = 'SELECT fan_id
-								FROM _artists_fav
-								WHERE ub = ?
-									AND user_id = ?';
-							if ($fan_id = sql_field(sql_filter($sql, $this->data['ub'], $user_id), 'fan_id', 0)) {
-								$sql = 'DELETE FROM _artists_fav
-									WHERE fan_id = ?';
-								sql_query(sql_filter($sql, $fan_id));
-							}
-						}
-
-						//
-						// Back to auth home
-						//
-						redirect(s_link('acp', array('artist_auth', 'a' => $this->data['subdomain'])));
-					}
-				}
-
-				$s_member = '';
-
-				_style('no_members', array(
-					'MESSAGE' => lang('control_a_auth_add_nomatch'))
+				_style('members.row', array(
+					'USER_ID' => $prof['user_id'],
+					'PROFILE' => $prof['profile'],
+					'USERNAME' => $prof['username'],
+					'COLOR' => $prof['user_color'],
+					'AVATAR' => $prof['user_avatar'],
+					'DELETE' => $delete,
+					'CHECK' => ($total == 1 && $unique))
 				);
 			}
-
-			if (!empty($s_member)) {
-				if ($s_member == '*') {
-					$s_member = '';
-				}
-
-				if (preg_match_all('#\*#', $s_member, $st) > 1) {
-					$s_member = str_replace('*', '', $s_member);
-				}
-			}
-
-			if (!empty($s_member)) {
-				$s_member = get_username_base(str_replace('*', '%', $s_member));
-
-				$sql = 'SELECT user_id
-					FROM _artists_auth
-					WHERE ub = ?';
-				$result = sql_rowset(sql_filter($sql, $this->data['ub']));
-
-				$s_auth = array(GUEST);
-				foreach ($result as $row) {
-					$s_auth[] = $row['user_id'];
-				}
-
-				$sql = "SELECT user_id, user_type, username, username_base, user_color, user_avatar
-					FROM _members
-					WHERE username_base LIKE ?
-						AND user_id NOT IN (??)
-						AND user_type NOT IN (??)
-					ORDER BY username";
-				if ($row = sql_rowset(sql_filter($sql, $s_member, implode(',', $s_auth), USER_IGNORE . ((!$user->data['is_founder']) ? ", " . USER_FOUNDER : '')))) {
-					if (count($row) < 11) {
-						$this->__auth_table($row, true);
-						$no_results = false;
-					} else {
-						_style('no_members', array(
-							'MESSAGE' => lang('control_a_auth_add_toomuch'))
-						);
-					}
-				} else {
-					_style('no_members', array(
-						'MESSAGE' => lang('control_a_auth_add_nomatch'))
-					);
-				}
-			} // IF !EMPTY
 		}
 
-		//
-		// Output to template
-		//
-		v_style(array(
-			'SHOW_INPUT' => !$submit || $no_results)
-		);
-		
 		return;
 	}
+
+	/*
+	Authorize new user to manage artist information.
+	*/
+	private function create() {
+		global $user;
+
+		$v = _request(array('s_member' => ''));
+
+		if (!$v->s_member) {
+			_style('no_members', array(
+				'MESSAGE' => lang('control_a_auth_add_nomatch'))
+			);
+
+			return;
+		}
+
+		$ignore = USER_INACTIVE;
+
+		if (!$user->data['is_founder']) {
+			$ignore .= ', ' . USER_FOUNDER;
+		}
+
+		$sql = 'SELECT user_id, user_type, username, username_base, user_color, user_avatar
+			FROM _members
+			WHERE username = ?
+				AND user_type NOT IN (??)';
+		if (!$member = sql_fieldrow(sql_filter($sql, $v->s_member, $ignore))) {
+			_style('no_members', array(
+				'MESSAGE' => lang('control_a_auth_add_nomatch'))
+			);
+
+			return;
+		}
+
+		$sql = 'SELECT user_id
+			FROM _artists_auth
+			WHERE ub = ?
+				AND user_id = ?';
+		if (sql_field(sql_filter($sql, $this->object['ub'], $member['user_id']), 'user_id', 0)) {
+			_style('no_members', array(
+				'MESSAGE' => lang('control_a_auth_add_nomatch'))
+			);
+
+			return;
+		}
+
+		/*
+		Authorize the selected user to this artist.
+		*/
+		$sql_insert = array(
+			'ub' => $this->object['ub'],
+			'user_id' => $member['user_id']
+		);
+		sql_insert('artists_auth', $sql_insert);
+
+		/*
+		Update information about the user with new rank.
+		*/
+		$update = array(
+			'user_type' => USER_ARTIST,
+			'user_auth_control' => 1
+		);
+
+		if (!$member['user_rank']) {
+			$update['user_rank'] = $config['default_a_rank'];
+		}
+
+		$sql = 'UPDATE _members SET ??
+			WHERE user_id = ?
+				AND user_type NOT IN (' . USER_INACTIVE . ', ' . USER_FOUNDER . ')';
+		sql_query(sql_filter($sql, sql_build('UPDATE', $update), $member['user_id']));
+
+		$sql = 'SELECT fan_id
+			FROM _artists_fav
+			WHERE ub = ?
+				AND user_id = ?';
+		if ($fan_id = sql_field(sql_filter($sql, $this->object['ub'], $member['user_id']), 'fan_id', 0)) {
+			$sql = 'DELETE FROM _artists_fav
+				WHERE fan_id = ?';
+			sql_query(sql_filter($sql, $fan_id));
+		}
+
+		/*
+		Back to auth home
+		*/
+		return redirect(s_link('acp', array('artist_auth', 'a' => $this->object['subdomain'])));
+	}
 	
+	/*
+	Revoke permission to manage artist's information, for selected users.
+	*/
 	private function remove() {
-		$auth_url = s_link('acp', array('artist_auth', 'a' => $this->data['subdomain']));
+		global $config, $user;
+
+		$auth_url = s_link('acp', array('artist_auth', 'a' => $this->object['subdomain']));
 
 		if (_button('cancel')) {
 			redirect($auth_url);
 		}
 
-		$submit = _button();
+		$submit = _button('remove');
 		$confirm = _button('confirm');
 
 		if ($submit || $confirm) {
-			global $config, $user;
+			$result = request_var('s_members', array(0));
 
-			$s_members = request_var('s_members', array(0));
-			$s_members_i = w();
-
-			if (sizeof($s_members)) {
-				$sql = 'SELECT user_id
-					FROM _artists_auth
-					WHERE ub = ?';
-				$result = sql_rowset(sql_filter($sql, $this->data['ub']));
-
-				$s_auth = w();
-				foreach ($result as $row) {
-					$s_auth[$row['user_id']] = true;
-				}
-
-				foreach ($s_members as $m) {
-					if (isset($s_auth[$m])) {
-						$s_members_i[] = $m;
-					}
-				}
+			if (sizeof($result)) {
+				$sql = 'SELECT m.user_id, m.username, m.user_rank
+					FROM _artists_auth a, _members m
+					WHERE a.ub = ?
+						AND m.user_id IN (??)
+						AND m.user_id <> ?
+						AND m.user_type <> ??
+						AND a.user_id = m.user_id
+					ORDER BY m.user_id';
+				$result = sql_rowset(sql_filter($sql, $this->object['ub'], implode(',', $result), $user->data['user_id'], USER_INACTIVE), 'user_id');
 			}
 
-			if (!sizeof($s_members_i)) {
+			if (!$result) {
 				redirect($auth_url);
 			}
 
-			//
-			// Check inputted members
-			//
-			$sql = 'SELECT user_id, username, user_color, user_rank
-				FROM _members
-				WHERE user_id IN (??)
-					AND user_id <> ?
-					AND user_type NOT IN (??)
-				ORDER BY user_id';
-			if (!$s_members = sql_rowset(sql_filter($sql, implode(',', $s_members_i), $user->data['user_id'], USER_IGNORE))) {
-				redirect($auth_url);
-			}
-
-			//
-			// Confirm
-			//
+			/*
+			If Confirm button is pressed.
+			*/
 			if ($confirm) {
-				foreach ($s_members as $item) {
+				foreach ($result as $row) {
 					$update = w();
+					$user_type = USER_ARTIST;
 
-					if (!in_array($item['user_id'], array(2, 3))) {
-						$sql = 'SELECT COUNT(ub) AS total
-							FROM _artists_auth
-							WHERE user_id = ?';
-						$total = sql_field(sql_filter($sql, $item['user_id']), 'total', 0);
-						$keep_control = ($total == 1) ? false : true;
+					$sql = 'SELECT COUNT(ub) AS total
+						FROM _artists_auth
+						WHERE user_id = ?';
+					$total = sql_field(sql_filter($sql, $row['user_id']), 'total', 0);
+					
+					if ($total == 1) {
+						$update['user_auth_control'] = 0;
 
-						$user_type = USER_ARTIST;
-						if (!$keep_control) {
-							$user_type = USER_NORMAL;
-							if ($item['user_rank'] == $config['default_a_rank']) {
-								$update['user_rank'] = 0;
-							}
-
-							$sql = 'SELECT *
-								FROM _artists_fav
-								WHERE user_id = ?';
-							if (sql_fieldrow(sql_filter($sql, $item['user_id']))) {
-								$user_type = USER_FAN;
-							}
+						$user_type = USER_NORMAL;
+						if ($item['user_rank'] == $config['default_a_rank']) {
+							$update['user_rank'] = 0;
 						}
 
-						$update['user_auth_control'] = $keep_control;
-						$update['user_type'] = $user_type;
-					}
+						$sql = 'SELECT *
+							FROM _artists_fav
+							WHERE user_id = ?';
+						if (sql_fieldrow(sql_filter($sql, $row['user_id']))) {
+							$user_type = USER_FAN;
+						}
 
-					if (sizeof($update)) {
+						$update['user_type'] = $user_type;
+
 						$sql = 'UPDATE _members SET ??
 							WHERE user_id = ?';
-						sql_query(sql_filter($sql, sql_build('UPDATE', $update), $item['user_id']));
+						sql_query(sql_filter($sql, sql_build('UPDATE', $update), $row['user_id']));
 					}
 
 					$sql = 'DELETE FROM _artists_auth
 						WHERE ub = ?
 							AND user_id = ?';
-					sql_query(sql_filter($sql, $this->data['ub'], $item['user_id']));
+					sql_query(sql_filter($sql, $this->object['ub'], $row['user_id']));
 				}
 
-				redirect($auth_url);
+				return redirect($auth_url);
 			}
 
-			//
-			// Display confirm dialog
-			//
-			$s_members_list = '';
-			$s_members_hidden = s_hidden(array('module' => $this->control->module, 'a' => $this->data['subdomain'], 'mode' => $this->mode, 'manage' => $this->manage));
-			foreach ($s_members as $data) {
-				$s_members_list .= (($s_members_list != '') ? ', ' : '') . $data['username'];
-				$s_members_hidden .= s_hidden(array('s_members[]' => $data['user_id']));
+			/*
+			Display confirm dialog
+			*/
+			$result_list = '';
+			
+			foreach ($result as $row) {
+				$result_list .= (($result_list != '') ? ', ' : '') . $row['username'];
+				$result_hidden .= s_hidden(array('s_members[]' => $row['user_id']));
 			}
 
-			$message = count($s_members) == 1 ? '2' : '';
+			$message = count($result) == 1 ? '2' : '';
 
 			$layout_vars = array(
-				'MESSAGE_TEXT' => sprintf(lang('control_a_auth_delete' . $message), $this->data['name'], $s_members_list),
-				'S_CONFIRM_ACTION' => s_link('acp', array('artist_auth', 'a' => $this->data['subdomain'])),
-				'S_HIDDEN_FIELDS' => $s_members_hidden
+				'MESSAGE_TEXT' => sprintf(lang('acp_artist_auth_delete' . $message), $this->object['name'], $result_list),
+				'S_CONFIRM_ACTION' => s_link('acp', array('artist_auth', 'a' => $this->object['subdomain'])),
+				'S_HIDDEN_FIELDS' => $result_hidden
 			);
 
 			page_layout('ACP_ARTIST_AUTH', 'confirm', $layout_vars);

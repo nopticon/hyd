@@ -30,12 +30,8 @@ class __artist_gallery extends mac {
 		
 		$this->_artist();
 		
-		if (_button()) {
-			return $this->upload();
-		}
-		
-		if (_button('remove')) {
-			return $this->remove();
+		if ((_button() && $this->upload()) || (_button('remove') && $this->remove())) {
+			return;
 		}
 		
 		$sql = 'SELECT g.*
@@ -170,23 +166,22 @@ class __artist_gallery extends mac {
 	}
 	
 	private function footer() {
-		$a = request_var('image', '');
-		$t = request_var('value', '');
-
+		$v = _request_var(array('image' => '', 'value' => ''));
+		
 		$sql = 'SELECT *
 			FROM _artists_images
 			WHERE ub = ?
 				AND image = ?';
-		if (!$row = sql_fieldrow(sql_filter($sql, $this->object['ub'], $a))) {
+		if (!$row = sql_fieldrow(sql_filter($sql, $this->object['ub'], $v->image))) {
 			fatal_error();
 		}
 
 		$sql = 'UPDATE _artists_images SET image_footer = ?
 			WHERE ub = ?
 				AND image = ?';
-		sql_query(sql_filter($sql, $t, $this->object['ub'], $a));
+		sql_query(sql_filter($sql, $v->value, $this->object['ub'], $v->image));
 
-		$this->e($t);
+		$this->e($v->value);
 	}
 }
 

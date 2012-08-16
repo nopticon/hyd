@@ -34,6 +34,10 @@ class __artist extends mac {
 		
 		$request = _request(array('name' => '', 'local' => 0, 'location' => '', 'genre' => '', 'email' => '', 'www' => '', 'mods' => ''));
 		$request->subdomain = get_subdomain($request->name);
+
+		if (!$request->name) {
+			_pre('Ingresa el nombre del artista.', true);
+		}
 		
 		$sql_insert = array(
 			'a_active' => 1,
@@ -71,7 +75,7 @@ class __artist extends mac {
 				$sql = 'SELECT *
 					FROM _members
 					WHERE username_base = ?
-						AND user_type NOT IN (??)
+						AND user_type <> ?
 						AND user_id <> ?';
 				if (!$userdata = sql_fieldrow(sql_filter($sql, $username_base, USER_INACTIVE, 1))) {
 					continue;

@@ -25,17 +25,16 @@ class __artist_video extends mac {
 		$this->auth('artist');
 	}
 	
+	/*
+	Show all videos added to the artist.
+	*/
 	public function _home() {
 		global $config, $user, $comments;
 		
 		$this->_artist();
 		
-		if (_button()) {
-			return $this->create();
-		}
-		
-		if (_button('remove')) {
-			return $this->remove();
+		if ((_button() && $this->create()) || (_button('remove') && $this->remove())) {
+			return;
 		}
 		
 		$sql = 'SELECT *
@@ -58,6 +57,9 @@ class __artist_video extends mac {
 		return;
 	}
 	
+	/*
+	Create video for this artist.
+	*/
 	private function create() {
 		$code = request_var('code', '');
 		$vname = request_var('vname', '');
@@ -92,10 +94,33 @@ class __artist_video extends mac {
 		
 		return redirect(_page());
 	}
-	
+
+	/*
+	Remove selected videos from the artist.
+	*/
 	private function remove() {
-		_pre('TODO', true);
-		return;
+		$v = _request(array('group' => array(0)));
+
+		if (!$v->group) {
+			return;
+		}
+
+		$sql = 'SELECT video_id
+			FROM _artists_video
+			WHERE video_id IN (??)
+				AND video_a = ?';
+		$result = sql_rowset(sql_filter($sql, implode(',', $v->group), $this->object['ub']), false, 'video_id');
+
+		if (!$result) {
+			return;
+		}
+
+		$sql = 'DELETE FROM _artists_video
+			WHERE video_id IN (??)
+				AND video_a = ?';
+		sql_query(sql_filter($sql, implode(',', $result), $this->object['ub']));
+
+		return redirect(s_link('acp', array('artist_video', 'a' => $this->object['subdomain'])));
 	}
 }
 

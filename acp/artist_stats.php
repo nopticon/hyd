@@ -35,7 +35,7 @@ class __artist_stats extends mac {
 			WHERE ub = ?
 			GROUP BY date
 			ORDER BY date DESC';
-		$stats = sql_rowset(sql_filter($sql, $this->data['ub']), 'date');
+		$stats = sql_rowset(sql_filter($sql, $this->object['ub']), 'date');
 
 		$years_sum = w();
 		$years_temp = w();
@@ -94,8 +94,8 @@ class __artist_stats extends mac {
 		}
 
 		v_style(array(
-			'BEFORE_VIEWS' => number_format($this->data['views']),
-			'SHOW_VIEWS_LEGEND' => ($this->data['views'] > $total_graph))
+			'BEFORE_VIEWS' => number_format($this->object['views']),
+			'SHOW_VIEWS_LEGEND' => ($this->object['views'] > $total_graph))
 		);
 		
 		return;
