@@ -61,7 +61,7 @@ class board {
 	}
 	
 	public function forums() {
-		$sql = 'SELECT f.*, t.topic_id, t.topic_title, p.post_id, p.post_time, p.post_username, u.user_id, u.username, u.username_base, u.user_color 
+		$sql = 'SELECT f.*, t.topic_id, t.topic_title, p.post_id, p.post_time, p.post_username, u.user_id, u.username, u.username_base 
 			FROM (( _forums f
 			LEFT JOIN _forum_topics t ON t.topic_id = f.forum_last_topic_id
 			LEFT JOIN _forum_posts p ON p.post_id = t.topic_last_post_id)
@@ -133,7 +133,7 @@ class board {
 	public function top_posters() {
 		global $comments;
 		
-		$sql = 'SELECT user_id, username, username_base, user_color, user_avatar, user_posts
+		$sql = 'SELECT user_id, username, username_base, user_avatar, user_posts
 			FROM _members
 			WHERE user_id <> ?
 			ORDER BY user_posts DESC
@@ -150,7 +150,6 @@ class board {
 			_style('top_posters.item', array(
 				'USERNAME' => $profile['username'],
 				'PROFILE' => $profile['profile'],
-				'COLOR' => $profile['user_color'],
 				'AVATAR' => $profile['user_avatar'],
 				'POSTS' => $profile['user_posts'])
 			);

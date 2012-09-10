@@ -22,7 +22,7 @@ class _home {
 	public function conversations() {
 		global $comments;
 
-		$sql = 'SELECT c.*, c2.privmsgs_date, m.user_id, m.username, m.username_base, m.user_color
+		$sql = 'SELECT c.*, c2.privmsgs_date, m.user_id, m.username, m.username_base
 			FROM _members_unread u, _dc c, _dc c2, _members m
 			WHERE u.user_id = ?
 				AND u.element = ?
@@ -49,7 +49,6 @@ class _home {
 				'DATETIME' => $user->format_date($row['privmsgs_date']),
 				'USER_ID' => $row['user_id'],
 				'USERNAME' => $row['username'],
-				'USER_COLOR' => $row['user_color'],
 				'U_USERNAME' => $user_profile['profile'])
 			);
 		}

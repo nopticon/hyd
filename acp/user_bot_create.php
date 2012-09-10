@@ -59,7 +59,6 @@ class __user_bot_create extends mac {
 				'user_active' => 1,
 				'username' => $bot_name,
 				'username_base' => $bot_base,
-				'user_color' => '9E8DA7',
 				'user_timezone' => -6.00,
 				'user_lang' => 'spanish'
 			);

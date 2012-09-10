@@ -942,7 +942,6 @@ $lang += array(
 	'ACP_USER_ADDRESS' => 'Visualizar direcciones de usuarios',
 	'ACP_USER_BAN' => 'Bloquear usuario',
 	'ACP_USER_BOT_CREATE' => 'Crear robots',
-	'ACP_USER_COLOR_FIX' => 'Modificar color de usuario',
 	'ACP_USER_DELETE' => 'Eliminar usuario',
 	'ACP_USER_IP_REPORT' => 'Reporte IP de usuario',
 	'ACP_USER_MASS_CONVERSATION' => 'Crear conversaci&oacute;n masiva',

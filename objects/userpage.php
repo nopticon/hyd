@@ -243,7 +243,7 @@ class userpage {
 				//
 				// Get all messages for this conversation
 				//
-				$sql = 'SELECT c.*, m.user_id, m.username, m.username_base, m.user_color, m.user_avatar, m.user_sig, m.user_rank, m.user_gender, m.user_posts
+				$sql = 'SELECT c.*, m.user_id, m.username, m.username_base, m.user_avatar, m.user_sig, m.user_rank, m.user_gender, m.user_posts
 					FROM _dc c, _members m
 					WHERE c.parent_id = ?
 						AND c.privmsgs_from_userid = m.user_id
@@ -300,7 +300,7 @@ class userpage {
 						AND (IF(c.last_msg_id,c.last_msg_id,c.msg_id) = c2.msg_id)';
 				$total_conv = sql_field(sql_filter($sql, $user->d('user_id'), $user->d('user_id'), $user->d('user_id')), 'total', 0);
 				
-				$sql = 'SELECT c.msg_id, c.parent_id, c.last_msg_id, c.root_conv, c.privmsgs_date, c.privmsgs_subject, c2.privmsgs_date as last_privmsgs_date, m.user_id, m.username, m.username_base, m.user_color, m2.user_id as user_id2, m2.username as username2, m2.username_base as username_base2, m2.user_color as user_color2
+				$sql = 'SELECT c.msg_id, c.parent_id, c.last_msg_id, c.root_conv, c.privmsgs_date, c.privmsgs_subject, c2.privmsgs_date as last_privmsgs_date, m.user_id, m.username, m.username_base, m2.user_id as user_id2, m2.username as username2, m2.username_base as username_base2
 					FROM _dc c, _dc c2, _members m, _members m2
 					WHERE (c.privmsgs_to_userid = ? OR c.privmsgs_from_userid = ?)
 						AND c.msg_id = c.parent_id
@@ -330,8 +330,7 @@ class userpage {
 							'ROOT_CONV' => $row['root_conv'],
 							
 							'DC_USERNAME' => $row['username' . $dc_with],
-							'DC_PROFILE' => s_link('m', $row['username_base' . $dc_with]),
-							'DC_COLOR' => $row['user_color'.$dc_with])
+							'DC_PROFILE' => s_link('m', $row['username_base' . $dc_with]))
 						);
 					}
 					
@@ -351,7 +350,7 @@ class userpage {
 		//
 		// Get friends for this member
 		//
-		$sql = 'SELECT DISTINCT m.user_id, m.username, m.username_base, m.user_color
+		$sql = 'SELECT DISTINCT m.user_id, m.username, m.username_base
 			FROM _members_friends f, _members m
 			WHERE (f.user_id = ? AND f.buddy_id = m.user_id)
 				OR (f.buddy_id = ? AND f.user_id = m.user_id)
@@ -364,8 +363,7 @@ class userpage {
 			foreach ($result as $row) {
 				_style('sdc_friends.item', array(
 					'USERNAME' => $row['username'],
-					'URL' => s_link('my dc start', $row['username_base']),
-					'USER_COLOR' => $row['user_color'])
+					'URL' => s_link('my dc start', $row['username_base']))
 				);
 			}
 		}
@@ -757,7 +755,6 @@ class userpage {
 		//
 		v_style(array(
 			'USERNAME' => $this->data['username'],
-			'USERNAME_COLOR' => $this->data['user_color'],
 			'POSTER_RANK' => $profile_fields['user_rank'],
 			'AVATAR_IMG' => $profile_fields['user_avatar'],
 			'USER_ONLINE' => $online,
@@ -825,7 +822,7 @@ class userpage {
 	public function friend_list() {
 		global $user, $comments;
 		
-		$sql = 'SELECT DISTINCT u.user_id AS user_id, u.username, u.username_base, u.user_color, u.user_avatar, u.user_rank, u.user_gender, u.user_posts
+		$sql = 'SELECT DISTINCT u.user_id AS user_id, u.username, u.username_base, u.user_avatar, u.user_rank, u.user_gender, u.user_posts
 			FROM _members_friends b, _members u
 			WHERE (b.user_id = ?
 				AND b.buddy_id = u.user_id) OR
@@ -841,7 +838,6 @@ class userpage {
 				_style('friends.row', array(
 					'PROFILE' => $friend_profile['profile'],
 					'USERNAME' => $friend_profile['username'],
-					'COLOR' => $friend_profile['user_color'],
 					'AVATAR' => $friend_profile['user_avatar'],
 					'RANK' => $friend_profile['user_rank'])
 				);
@@ -1145,7 +1141,7 @@ class userpage {
 			$comments->reset();
 			$comments->ref = $comments_ref;
 			
-			$sql = 'SELECT p.*, u2.user_id, u2.username, u2.username_base, u2.user_color, u2.user_avatar
+			$sql = 'SELECT p.*, u2.user_id, u2.username, u2.username_base, u2.user_avatar
 				FROM _members_posts p, _members u, _members u2
 				WHERE p.userpage_id = ?
 					AND p.userpage_id = u.user_id 

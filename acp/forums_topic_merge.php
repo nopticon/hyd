@@ -85,7 +85,7 @@ class __forums_topic_merge extends mac {
 		if ($topic_views = sql_field(sql_filter($sql, $from_topic), 'topic_views', 0)) {
 			$sql = 'UPDATE _forum_topics SET topic_views = topic_views + ??
 				WHERE topic_id = ?';
-			sql_query(sql_filter($sql, $view_row['topic_views'], $to_topic));
+			sql_query(sql_filter($sql, $topic_views, $to_topic));
 		}
 		
 		//

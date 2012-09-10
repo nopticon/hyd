@@ -117,7 +117,7 @@ class _news {
 	public function all() {
 		global $user, $cache;
 		
-		$sql = 'SELECT n.*, m.username, m.username_base, m.user_color
+		$sql = 'SELECT n.*, m.username, m.username_base
 			FROM _news n, _members m
 			WHERE n.poster_id = m.user_id
 			ORDER BY n.post_time DESC, n.news_id DESC';
@@ -132,8 +132,7 @@ class _news {
 				'DESC' => $row['post_desc'],
 				'TIME' => $user->format_date($row['post_time'], 'd M'),
 				'USERNAME' => $row['username'],
-				'PROFILE' => s_link('m', $row['username_base']),
-				'COLOR' => $row['user_color'])
+				'PROFILE' => s_link('m', $row['username_base']))
 			);
 		}
 		
@@ -156,7 +155,7 @@ class _news {
 			'POST_TIME' => $user->format_date($this->data['post_time'])
 		);
 		
-		$sql = 'SELECT user_id, username, username_base, user_color, user_avatar, user_posts, user_gender, user_rank
+		$sql = 'SELECT user_id, username, username_base, user_avatar, user_posts, user_gender, user_rank
 			FROM _members
 			WHERE user_id = ?';
 		$news_main = array_merge($news_main, _style_uv($comments->user_profile(sql_fieldrow(sql_filter($sql, $this->data['poster_id'])))));
@@ -169,7 +168,7 @@ class _news {
 			$comments->reset();
 			$comments->ref = $comments_ref;
 			
-			$sql = 'SELECT p.*, m.user_id, m.username, m.username_base, m.user_color, m.user_avatar, m.user_rank, m.user_posts, m.user_gender, m.user_sig
+			$sql = 'SELECT p.*, m.user_id, m.username, m.username_base, m.user_avatar, m.user_rank, m.user_posts, m.user_gender, m.user_sig
 				FROM _news_posts p, _members m 
 				WHERE p.news_id = ? 
 					AND p.post_active = 1 

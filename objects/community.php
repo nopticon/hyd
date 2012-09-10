@@ -38,7 +38,7 @@ class community {
 		//
 		// Online
 		//
-		$sql = 'SELECT u.user_id, u.username, u.username_base, u.user_type, u.user_hideuser, u.user_color, s.session_ip
+		$sql = 'SELECT u.user_id, u.username, u.username_base, u.user_type, u.user_hideuser, s.session_ip
 			FROM _members u, _sessions s
 			WHERE s.session_time >= ?
 				AND u.user_id = s.session_user_id
@@ -51,7 +51,7 @@ class community {
 		$minutes = date('is', time());
 		$timetoday = (time() - (60 * intval($minutes[0].$minutes[1])) - intval($minutes[2].$minutes[3])) - (3600 * $user->format_date(time(), 'H'));
 		
-		$sql = 'SELECT user_id, username, username_base, user_color, user_hideuser, user_type
+		$sql = 'SELECT user_id, username, username_base, user_hideuser, user_type
 			FROM _members
 			WHERE user_type NOT IN (??)
 				AND user_lastvisit >= ?
@@ -108,7 +108,7 @@ class community {
 		}
 		
 		if (!$team = $cache->get('team_members')) {
-			$sql = 'SELECT DISTINCT t.*, m.user_id, m.username, m.username_base, m.user_color, m.user_avatar
+			$sql = 'SELECT DISTINCT t.*, m.user_id, m.username, m.username_base, m.user_avatar
 				FROM _team_members t, _members m
 				WHERE t.member_id = m.user_id
 				ORDER BY m.username';
@@ -126,7 +126,6 @@ class community {
 				'USERNAME' => $profile['username'],
 				'REALNAME' => $profile['real_name'],
 				'PROFILE' => $profile['profile'],
-				'COLOR' => $profile['user_color'],
 				'AVATAR' => $profile['user_avatar'])
 			);
 		}
@@ -180,8 +179,7 @@ class community {
 					if (((!$row['user_hideuser'] || $is_founder) && !$is_bot) || ($is_bot && $is_founder)) {
 						_style($block . '.members.item', array(
 							'USERNAME' => $username,
-							'PROFILE' => s_link('m', $row['username_base']),
-							'USER_COLOR' =>  $row['user_color'])
+							'PROFILE' => s_link('m', $row['username_base']))
 						);
 					}
 				}
@@ -233,7 +231,7 @@ class community {
 	public function birthdays() {
 		global $comments;
 		
-		$sql = "SELECT user_id, username, username_base, user_color, user_avatar
+		$sql = "SELECT user_id, username, username_base, user_avatar
 			FROM _members
 			WHERE user_birthday LIKE ?
 				AND user_type NOT IN (??)
@@ -250,7 +248,6 @@ class community {
 			_style('birthday.row', array(
 				'USERNAME' => $profile['username'],
 				'PROFILE' => $profile['profile'],
-				'COLOR' => $profile['user_color'],
 				'AVATAR' => $profile['user_avatar'])
 			);
 		}
@@ -261,7 +258,7 @@ class community {
 	public function recent_members() {
 		global $user;
 		
-		$sql = 'SELECT username, username_base, user_color
+		$sql = 'SELECT username, username_base
 			FROM _members
 			WHERE user_type NOT IN (??)
 			ORDER BY user_regdate DESC
@@ -273,7 +270,6 @@ class community {
 			
 			_style('recent_members.item', array(
 				'USERNAME' => $row['username'],
-				'USER_COLOR' => $row['user_color'],
 				'PROFILE' => s_link('m', $row['username_base']))
 			);
 		}

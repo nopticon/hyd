@@ -42,7 +42,9 @@ RewriteRule ^(rss)/(artists|events|forum|news)/$ orion/$1.php?mode=$2 [nc]
 
 RewriteRule ^a/?(_(\d+)/?)?$ orion/artists.php?alphabet=$2 [nc]
 RewriteRule ^a/([0-9a-z]+)/(gallery|lyrics)/(\d+)/(view|save)/$ orion/artists.php?id=$1&layout=$2&download_id=$3&mode=$4 [nc]
-RewriteRule ^a/([0-9a-z]+)/(downloads)/(\d+)/((([a-z]+)/)?(dps(\d+)/)?)?$ orion/artists.php?id=$1&layout=9&download_id=$2&dl_mode=$5&dps=$7 [nc]
+
+RewriteRule ^a/([0-9a-z]+)/(downloads)/(\d+)/((([a-z]+)/)?(dps(\d+)/)?)?$ orion/artists.php?id=$1&layout=$2&download_id=$3&dl_mode=$6&dps=$8 [nc]
+
 #RewriteRule ^a/([0-9a-z]+)/(12)/(\d+)/(([a-z]+)/)?(rs(\d+)/)?$ orion/artists.php?id=$1&layout=12&post_id=$2&mode=$4&rs=$6 [nc]
 RewriteRule ^a/([0-9a-z]+)/(news)/(t|p)(\d+)/$ orion/artists.php?id=$1&layout=16&$2=$3 [nc]
 RewriteRule ^a/([0-9a-z]+)/(((\w+)/)?((gs|ps)(\d+)/)?)?$ orion/artists.php?id=$1&layout=$4&$6=$7 [nc]

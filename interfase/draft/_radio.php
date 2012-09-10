@@ -187,7 +187,7 @@ class __radio extends common
 		}
 		
 		// Radio forums
-		$sql = "SELECT t.*, u.user_id, u.username, u.username_base, u.user_color, u2.user_id as user_id2, u2.username as username2, u2.username_base as username_base2, u2.user_color as user_color2, p.post_text, p.post_username, p2.post_username AS post_username2, p2.post_time
+		$sql = "SELECT t.*, u.user_id, u.username, u.username_base, u2.user_id as user_id2, u2.username as username2, u2.username_base as username_base2, p.post_text, p.post_username, p2.post_username AS post_username2, p2.post_time
 			FROM _forum_topics t, _members u, _forum_posts p, _forum_posts p2, _members u2
 			WHERE t.forum_id = 25
 				AND t.topic_poster = u.user_id

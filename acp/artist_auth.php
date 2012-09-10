@@ -37,7 +37,7 @@ class __artist_auth extends mac {
 			return;
 		}
 		
-		$sql = 'SELECT u.user_id, u.user_type, u.username, u.username_base, u.user_color, u.user_avatar
+		$sql = 'SELECT u.user_id, u.user_type, u.username, u.username_base, u.user_avatar
 			FROM _artists_auth a, _members u
 			WHERE a.ub = ?
 				AND a.user_id = u.user_id
@@ -56,7 +56,6 @@ class __artist_auth extends mac {
 					'USER_ID' => $prof['user_id'],
 					'PROFILE' => $prof['profile'],
 					'USERNAME' => $prof['username'],
-					'COLOR' => $prof['user_color'],
 					'AVATAR' => $prof['user_avatar'],
 					'DELETE' => $delete,
 					'CHECK' => ($total == 1 && $unique))
@@ -89,7 +88,7 @@ class __artist_auth extends mac {
 			$ignore .= ', ' . USER_FOUNDER;
 		}
 
-		$sql = 'SELECT user_id, user_type, username, username_base, user_color, user_avatar
+		$sql = 'SELECT user_id, user_type, username, username_base, user_avatar
 			FROM _members
 			WHERE username = ?
 				AND user_type NOT IN (??)';

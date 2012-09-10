@@ -656,7 +656,7 @@ class _events extends downloads {
 				}
 				// END RSVP
 				
-				$sql = 'SELECT p.*, u.user_id, u.username, u.username_base, u.user_color, u.user_avatar, u.user_posts, u.user_gender, u.user_rank/*, u.user_sig*/
+				$sql = 'SELECT p.*, u.user_id, u.username, u.username_base, u.user_avatar, u.user_posts, u.user_gender, u.user_rank
 					FROM _forum_posts p, _members u
 					WHERE p.topic_id = ?
 						AND u.user_id = p.poster_id

@@ -85,7 +85,7 @@ class today {
 	private function conversations() {
 		global $user, $comments;
 		
-		$sql = 'SELECT c.*, c2.privmsgs_date, m.user_id, m.username, m.username_base, m.user_color
+		$sql = 'SELECT c.*, c2.privmsgs_date, m.user_id, m.username, m.username_base
 			FROM _dc c, _dc c2, _members m
 			INNER JOIN _today_objects t ON t.object_bio = m.user_id
 			WHERE t.object_bio = ?
@@ -117,7 +117,7 @@ class today {
 	private function friends() {
 		global $user, $comments;
 		
-		$sql = 'SELECT u.item, u.datetime, m.user_id, m.username, m.username_base, m.user_color, m.user_rank
+		$sql = 'SELECT u.item, u.datetime, m.user_id, m.username, m.username_base, m.user_rank
 			FROM _members_unread u, _members m
 			WHERE u.user_id = ?
 				AND u.element = ?
@@ -143,7 +143,7 @@ class today {
 	private function members_posts() {
 		global $user, $comments;
 		
-		$sql = 'SELECT p.*, u.*, m.user_id, m.username, m.username_base, m.user_color
+		$sql = 'SELECT p.*, u.*, m.user_id, m.username, m.username_base
 			FROM _members_unread u, _members_posts p, _members m
 			WHERE u.user_id = ?
 				AND u.element = ?
@@ -160,8 +160,7 @@ class today {
 				'S_MARK_ID' => $row['post_id'],
 				'U_PROFILE' => s_link('new', UH_UPM, $row['post_id']),
 				'POST_TIME' => $user->format_date($row['datetime']),
-				'USERNAME' => $row['username'],
-				'USER_COLOR' => $row['user_color']
+				'USERNAME' => $row['username']
 			);
 		}
 		
@@ -247,7 +246,7 @@ class today {
 	private function artists_comments() {
 		global $user, $comments;
 		
-		$sql = 'SELECT b.subdomain, b.name, p.*, m.user_id, m.username, m.username_base, m.user_color 
+		$sql = 'SELECT b.subdomain, b.name, p.*, m.user_id, m.username, m.username_base 
 			FROM _members_unread u, _artists b, _artists_posts p, _members m 
 			WHERE u.user_id = ? 
 				AND u.element = ? 
@@ -269,7 +268,6 @@ class today {
 				'UB' => $row['name'],
 				'DATETIME' => $user->format_date($row['post_time']),
 				'USER_ID' => $row['user_id'],
-				'USER_COLOR' => $user_profile['color'],
 				'USER_PROFILE' => $user_profile['profile'],
 				'USERNAME' => $user_profile['username']
 			);
@@ -281,7 +279,7 @@ class today {
 	private function artists_fav() {
 		global $user, $comments;
 		
-		$sql = 'SELECT f.fan_id, f.joined, a.name, a.subdomain, m.user_id, m.username, m.username_base, m.user_color
+		$sql = 'SELECT f.fan_id, f.joined, a.name, a.subdomain, m.user_id, m.username, m.username_base
 			FROM _members_unread u, _artists a, _artists_fav f, _members m
 			WHERE u.user_id = ?
 				AND u.element = ?
@@ -302,7 +300,6 @@ class today {
 				'UB' => $row['name'],
 				'POST_TIME' => $user->format_date($row['joined']),
 				'USER_ID' => $row['user_id'],
-				'USER_COLOR' => $user_profile['color'],
 				'USER_PROFILE' => $user_profile['profile'],
 				'USERNAME' => $user_profile['username']
 			);
@@ -344,7 +341,7 @@ class today {
 	private function downloads_comments() {
 		global $user, $comments;
 		
-		$sql = "SELECT b.ub, b.subdomain, b.name, d.id AS dl_id, d.ud AS ud_type, d.title, m.*, u.user_id, u.username, u.username_base, u.user_color
+		$sql = "SELECT b.ub, b.subdomain, b.name, d.id AS dl_id, d.ud AS ud_type, d.title, m.*, u.user_id, u.username, u.username_base
 			FROM _members_unread ur, _artists b, _dl d, _dl_posts m, _members u 
 			WHERE ur.user_id = ? 
 				AND ur.element = ? 
@@ -371,7 +368,6 @@ class today {
 				'UD' => $row['title'],
 				'POST_TIME' => $user->format_date($row['post_time']),
 				'USER_ID' => $row['user_id'],
-				'USER_COLOR' => $user_profile['color'],
 				'USER_PROFILE' => $user_profile['profile'],
 				'USERNAME' => $user_profile['username']
 			);
@@ -383,7 +379,7 @@ class today {
 	private function board() {
 		global $user, $comments;
 		
-		$sql = 'SELECT t.*, f.forum_alias, f.forum_id, f.forum_name, p.post_id, p.post_username, p.post_time, m.user_id, m.username, m.username_base, m.user_color 
+		$sql = 'SELECT t.*, f.forum_alias, f.forum_id, f.forum_name, p.post_id, p.post_username, p.post_time, m.user_id, m.username, m.username_base 
 			FROM _members_unread u, _forums f, _forum_topics t, _forum_posts p, _members m 
 			WHERE u.user_id = ? 
 				AND f.forum_id NOT IN (??)
@@ -411,7 +407,6 @@ class today {
 				'FORUM_NAME' => $row['forum_name'],
 				'DATETIME' => $user->format_date($row['post_time']),
 				'USER_ID' => $row['user_id'],
-				'USER_COLOR' => $user_profile['color'],
 				'USER_PROFILE' => $user_profile['profile'],
 				'USERNAME' => $user_profile['username']
 			);
@@ -427,7 +422,7 @@ class today {
 	private function members() {
 		global $user, $comments;
 		
-		$sql = 'SELECT m.user_id, m.username, m.username_base, m.user_color, m.user_regdate 
+		$sql = 'SELECT m.user_id, m.username, m.username_base, m.user_regdate 
 			FROM _members_unread u, _members m 
 			WHERE u.user_id = ? 
 				AND u.element = ? 
@@ -442,7 +437,6 @@ class today {
 			
 			$response[] = array(
 				'S_MARK_ID' => $row['user_id'],
-				'USER_COLOR' => $user_profile['color'],
 				'USER_PROFILE' => $user_profile['profile'],
 				'USERNAME' => $user_profile['username'],
 				'DATETIME' => $user->format_date($row['user_regdate'])

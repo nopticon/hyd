@@ -1120,7 +1120,6 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 						'user_posts' => 0,
 						'userpage_posts' => 0,
 						'user_points' => 0,
-						'user_color' => '4D5358',
 						'user_timezone' => $config['board_timezone'],
 						'user_dst' => $config['board_dst'],
 						'user_lang' => $config['default_lang'],

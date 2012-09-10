@@ -77,7 +77,7 @@ class _chat {
 			return;
 		}
 		
-		$sql = 'SELECT ch.*, m.username, m.username_base, m.user_color
+		$sql = 'SELECT ch.*, m.username, m.username_base
 			FROM _chat_ch ch, _members m
 			WHERE ch.ch_founder = m.user_id
 			ORDER BY ch_def DESC, cat_id, ch_users DESC';
@@ -103,8 +103,7 @@ class _chat {
 					'CH_DESC' => $ch_data['ch_desc'],
 					'CH_USERS' => $ch_data['ch_users'],
 					'USERNAME' => $ch_data['username'],
-					'U_USERNAME' => s_link('m', $ch_data['username_base']),
-					'USER_COLOR' => $ch_data['user_color'])
+					'U_USERNAME' => s_link('m', $ch_data['username_base']))
 				);
 				$rooms++;
 			}
@@ -203,7 +202,7 @@ class _chat {
 				$this->_message($this->data['ch_id'], 0, $message);
 				
 			case 'get':
-				$sql = 'SELECT c.*, m.username, m.user_color
+				$sql = 'SELECT c.*, m.username
 					FROM _chat_msg c, _members m
 					WHERE c.msg_ch = ?
 						AND c.msg_ignore <> ?
@@ -213,7 +212,7 @@ class _chat {
 					ORDER BY c.msg_time ASC';
 				$messages = sql_rowset(sql_filter($sql, $this->data['ch_id'], $user->d('user_id'), $last_msg, $this->data['session_start']));
 				
-				$sql = 'SELECT m.user_id, m.username, m.username_base, m.user_color
+				$sql = 'SELECT m.user_id, m.username, m.username_base
 					FROM _chat_sessions s, _members m
 					WHERE s.session_ch_id = ?
 						AND s.session_member = m.user_id
@@ -269,7 +268,7 @@ class _chat {
 				
 				/*
 				
-				$sql = 'SELECT c.*, m.username, m.user_color
+				$sql = 'SELECT c.*, m.username
 					FROM _chat_msg c, _members m
 					WHERE c.msg_ch = ?
 						AND c.msg_ignore <> ?

@@ -22,7 +22,7 @@ require_once(ROOT . 'interfase/artists.php');
 
 $user->setup();
 
-$sql = 'SELECT t.topic_id, t.topic_title, t.forum_id, t.topic_replies, f.forum_name, p.post_id, p.post_username, p.post_time, u.user_id, u.username, u.username_base, u.user_color
+$sql = 'SELECT t.topic_id, t.topic_title, t.forum_id, t.topic_replies, f.forum_name, p.post_id, p.post_username, p.post_time, u.user_id, u.username, u.username_base
 	FROM _forums f, _forum_topics t, _forum_posts p, _members u
 	WHERE t.forum_id NOT IN (??)
 		AND t.forum_id = f.forum_id
