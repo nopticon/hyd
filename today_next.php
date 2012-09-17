@@ -42,8 +42,10 @@ if ($select_all) {
 }
 
 if (count($select)) {
+	$delete = request_var('delete', array(0 => 0));
+
 	foreach ($select as $select_element => $void) {
-		if (isset($_REQUEST['delete'][$select_element])) {
+		if (isset($delete[$select_element])) {
 			$user->delete_unread($element, $select[$select_element]);
 			break;
 		}

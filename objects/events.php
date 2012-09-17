@@ -87,19 +87,22 @@ class _events extends downloads {
 		$sql = 'SELECT *
 			FROM _events
 			WHERE date >= ?
-			ORDER BY date ASC
-			LIMIT 2';
+			ORDER BY RAND()
+			LIMIT 3';
 		$result = sql_rowset(sql_filter($sql, $this->timetoday));
-		
+
 		foreach ($result as $i => $row) {
 			if (!$i) _style('next_event');
-			
+
+			$event_mini = $config['events_path'] . 'mini/' . $row['id'] . '.jpg';
+			$event_image = (@file_exists($event_mini)) ? 'mini/' : 'future/';
+
 			_style('next_event.row', array(
 				'URL' => s_link('events', $row['event_alias']),
 				'TITLE' => $row['title'],
 				'DATE' => $user->format_date($row['date'], lang('date_format')),
-				'IMAGE' => $config['events_url'] . 'future/thumbnails/' . $row['id'] . '.jpg?u=' . $row['event_update'])
-			); 
+				'IMAGE' => $config['events_url'] . $event_image . $row['id'] . '.jpg?u=' . $row['event_update'])
+			);
 		}
 		
 		return;		

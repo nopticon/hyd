@@ -1,7 +1,6 @@
 <!-- INCLUDE page.header.htm -->
 
 <div class="is_left">
-	
 	<!-- BEGIN banners -->
 	<div id="images" class="lsn">
 		<div class="z"><h3>{L_IMAGES}</h3></div>
@@ -12,6 +11,23 @@
 		</ul>
 	</div>
 	<!-- END banners -->
+
+	<!-- BEGIN next_event -->
+	<div class="ln l3 lc">
+		<ul>
+			<!-- BEGIN row -->
+			<li>
+				<ul>
+					<li><a href="{row.URL}"><img src="{row.IMAGE}" alt="" /></a></li>
+					<li class="_"><a href="{row.URL}">{row.TITLE}</a></li>
+				</ul>
+			</li>
+			<!-- END row -->
+		</ul>
+	</div>
+
+	<span class="clear"></span>
+	<!-- END next_event -->
 
 	<!-- BEGIN news -->
 	<div class="pad_top ln l2">
@@ -29,7 +45,6 @@
 		</ul>
 		
 		<span class="clear"></span>
-		
 	</div>
 	
 	<div class="pad_top pad_left a_right ctl ln">
@@ -82,23 +97,6 @@
 </div>
 
 <div class="is_right">
-	<!-- BEGIN next_event -->	
-	<div class="ln lc">
-		<div class="h"><h3><a href="{U_EVENTS}">{L_EVENTS_NEXT}</a></h3></div>
-		<ul>
-			<!-- BEGIN row -->
-			<li>
-				<ul>
-					<li><a href="{row.URL}">{row.TITLE}</a></li>
-					<li class="_">{row.DATE}</li>
-					<li><a href="{row.URL}"><img src="{row.IMAGE}" alt="" /></a></li>
-				</ul>
-			</li>
-			<!-- END row -->
-		</ul>
-	</div>
-	<!-- END next_event -->
-	
 	<!-- BEGIN thumbnails -->
 	<div class="ln lc">
 		<div class="h"><h3>{L_ARTISTS}</h3></div>
