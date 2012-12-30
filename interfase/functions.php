@@ -1820,7 +1820,7 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 	
 	$mtime = explode(' ', microtime());
 	$common_vars['S_TIME'] = sprintf('%.2f', ($mtime[0] + $mtime[1] - $starttime));
-	
+
 	v_style($common_vars);
 	
 	$template->set_filenames(array(

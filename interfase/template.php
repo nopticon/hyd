@@ -1288,6 +1288,13 @@ class Template {
 
 			return lang($lang, $lang);
 		}
+
+		if (substr($var, 0, 2) === 'U_') {
+			$lang = strtolower(substr($var, 2));
+
+			return s_link($lang);
+		}
+
 		return '';
 	}
 
