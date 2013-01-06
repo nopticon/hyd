@@ -516,7 +516,7 @@ function s_link() {
 
 	$url = 'http://';
 	$is_a = is_array($data);
-	if (v_server('REMOTE_ADDR') != '127.0.0.1' && v_server('REMOTE_ADDR') != 'dev.rockrepublik.net' && $module == 'a' && $data !== false && ((!$is_a && !preg_match('/^_(\d+)$/i', $data)) || ($is_a && $count_data == 2))) {
+	if (v_server('REMOTE_ADDR') != '127.0.0.1' && v_server('SERVER_NAME') != 'dev.rockrepublik.net' && $module == 'a' && $data !== false && ((!$is_a && !preg_match('/^_(\d+)$/i', $data)) || ($is_a && $count_data == 2))) {
 		$subdomain = ($is_a) ? $data[0] : $data;
 		$url .= str_replace('www', $subdomain, $config['server_name']) . '/';
 		
