@@ -28,6 +28,7 @@ class database extends dcom {
 		$this->connect = new mysqli($this->_access['server'], $this->_access['login'], $this->_access['secret'], $this->_access['database']);
 		
 		if ($this->connect->connect_error) {
+			print_r($this->_access);
 			echo $this->connect->connect_error;
 			exit('330');
 		}
