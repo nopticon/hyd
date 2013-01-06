@@ -182,8 +182,6 @@ function _utf8(&$a) {
 function decode_ht($path) {
 	$da_path = ROOT . '../../' . $path;
 
-	echo realpath($da_path);
-	
 	if (!@file_exists($da_path) || !$a = @file($da_path)) exit;
 	
 	return explode(',', _decode($a[0]));
