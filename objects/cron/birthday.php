@@ -55,8 +55,7 @@ foreach ($result as $row) {
 	$usernames[] = $row['username'];
 }
 
-if (count($done))
-{
+if (count($done)) {
 	$sql = 'UPDATE _members SET user_birthday_last = ?
 		WHERE user_id IN (??)';
 	sql_query(sql_filter($sql, date('Y'), implode(',', $done)));

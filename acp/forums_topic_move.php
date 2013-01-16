@@ -95,8 +95,7 @@ class __forums_topic_move extends mac {
 	}
 }
 
-function sync_topic_move($id)
-{
+function sync_topic_move($id) {
 	$last_topic = 0;
 	$total_posts = 0;
 	$total_topics = 0;

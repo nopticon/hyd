@@ -40,7 +40,7 @@ if (!$fp) {
 }
 
 $data = '';
-fputs($fp, $stats_get_line);
+fwrite($fp, $stats_get_line);
 while (!feof($fp)) {
 	$data .= fgets($fp, 1000);
 }

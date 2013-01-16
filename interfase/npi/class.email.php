@@ -440,8 +440,8 @@ class PHPMailer {
       return false;
     }
 
-    fputs($mail, $header);
-    fputs($mail, $body);
+    fwrite($mail, $header);
+    fwrite($mail, $body);
 
     $result = pclose($mail);
     if (version_compare(phpversion(), '4.2.3') == -1) {

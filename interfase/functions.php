@@ -1977,7 +1977,7 @@ function _shoutcast() {
 	
 	$s_response = '';
 	
-	fputs($connection, 'GET /admin.cgi?pass=' . $config['shoutcast_code'] . "&mode=viewxml HTTP/1.0\r\nUser-Agent: SHOUTcast Song Status (Mozilla Compatible)\r\n\r\n");
+	fwrite($connection, 'GET /admin.cgi?pass=' . $config['shoutcast_code'] . "&mode=viewxml HTTP/1.0\r\nUser-Agent: SHOUTcast Song Status (Mozilla Compatible)\r\n\r\n");
 	while (!feof($connection)) {
 		$s_response .= fgets($connection, 1000);
 	}

@@ -20,8 +20,7 @@ if (!defined('IN_APP')) exit;
 
 twitter();
 
-function twitter()
-{
+function twitter() {
 	header('Content-type: text/html; charset=utf-8');
 	
 	require_once(ROOT . 'interfase/twitter.php');

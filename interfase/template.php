@@ -1248,8 +1248,8 @@ class Template {
 			$this->cache_writable = 0;
 			return false;
 		}
-		fputs($file, "<?php\n\n// Generated on " . date('r') . " (time=" . time() . ")\n\n?>");
-		fputs($file, $code);
+		fwrite($file, "<?php\n\n// Generated on " . date('r') . " (time=" . time() . ")\n\n?>");
+		fwrite($file, $code);
 		fclose($file);
 		_chmod($filename, $config['mask']);
 

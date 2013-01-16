@@ -73,7 +73,7 @@ class cache {
 			$file_buffer = '<?php $' . 'this->cache[\'' . $var . '\'] = ' . ((is_array($data)) ? $this->format($data) : "'" . str_replace("'", "\\'", str_replace('\\', '\\\\', $data)) . "'") . '; ?>';
 			
 			@flock($fp, LOCK_EX);
-			fputs($fp, $file_buffer);
+			fwrite($fp, $file_buffer);
 			@flock($fp, LOCK_UN);
 			fclose($fp);
 			

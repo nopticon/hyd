@@ -32,8 +32,7 @@ $sql = 'SELECT *
 	ORDER BY monetize_end';
 $deleted = sql_rowset(sql_filter($sql, $_end), false, 'monetize_id');
 
-if (count($deleted))
-{
+if (count($deleted)) {
 	$sql = 'DELETE FROM _monetize
 		WHERE monetize_id IN (??)';
 	sql_query(sql_filter($sql, implode(',', $deleted)));

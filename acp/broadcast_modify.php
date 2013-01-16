@@ -54,7 +54,7 @@ class __broadcast_modify extends mac {
 			
 			if ($fp = @fopen($cds_file, 'w')) {
 				@flock($fp, LOCK_EX);
-				fputs($fp, $build);
+				fwrite($fp, $build);
 				@flock($fp, LOCK_UN);
 				fclose($fp);
 				

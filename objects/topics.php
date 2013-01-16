@@ -46,7 +46,7 @@ class topics {
 		}
 		
 		$is_int_forumid = false;
-		if (preg_match('#^(\d+)$#is', $forum_id)) {
+		if (preg_match('#^\d+$#is', $forum_id)) {
 			$is_int_forumid = true;
 			$forum_id = intval($forum_id);
 			

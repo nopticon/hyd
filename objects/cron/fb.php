@@ -27,8 +27,7 @@ require_once(ROOT . 'interfase/facebook.php');
 $d = decode_ht('.htf_');
 
 $fbd = new stdClass();
-foreach (w('page appid secret token') as $i => $k)
-{
+foreach (w('page appid secret token') as $i => $k) {
 	$fbd->$k = _decode($d[$i]);
 }
 unset($d);
@@ -40,8 +39,7 @@ $facebook = new Facebook(array(
 	'secret' => $fbd->secret)
 );
 
-foreach (w('at') as $i => $k)
-{
+foreach (w('at') as $i => $k) {
 	$htk[$k] = _decode($d[$i]);
 }
 
