@@ -172,7 +172,7 @@ class __artist_auth extends mac {
 		if ($submit || $confirm) {
 			$result = request_var('s_members', array(0));
 
-			if (sizeof($result)) {
+			if (count($result)) {
 				$sql = 'SELECT m.user_id, m.username, m.user_rank
 					FROM _artists_auth a, _members m
 					WHERE a.ub = ?
@@ -187,10 +187,9 @@ class __artist_auth extends mac {
 			if (!$result) {
 				redirect($auth_url);
 			}
-
-			/*
-			If Confirm button is pressed.
-			*/
+			
+			// If Confirm button is pressed.
+			
 			if ($confirm) {
 				foreach ($result as $row) {
 					$update = w();
@@ -232,9 +231,7 @@ class __artist_auth extends mac {
 				return redirect($auth_url);
 			}
 
-			/*
-			Display confirm dialog
-			*/
+			// Display confirm dialog			
 			$result_list = '';
 			
 			foreach ($result as $row) {

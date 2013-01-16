@@ -146,7 +146,7 @@ class userpage {
 								$error[] = 'NO_SUCH_USER';
 							}
 		
-							if (!sizeof($error) && $to_userdata['user_id'] == $user->d('user_id')) {
+							if (!count($error) && $to_userdata['user_id'] == $user->d('user_id')) {
 								$error[] = 'NO_AUTO_DC';
 							}
 						} else {
@@ -174,7 +174,7 @@ class userpage {
 					$error[] = 'EMPTY_MESSAGE';
 				}
 				
-				if (!sizeof($error)) {
+				if (!count($error)) {
 					$dc_id = $comments->store_dc($mode, $to_userdata, $user->d(), $dc_subject, $dc_message, true, true);
 					
 					redirect(s_link('my dc read', $dc_id) . '#' . $dc_id);
@@ -185,7 +185,7 @@ class userpage {
 		//
 		// Start error handling
 		//
-		if (sizeof($error)) {
+		if (count($error)) {
 			_style('error', array(
 				'MESSAGE' => parse_error($error))
 			);
@@ -385,7 +385,7 @@ class userpage {
 	private function conversations_delete() {
 		global $comments, $user;
 		
-		$mark	= request_var('mark', array(0));
+		$mark = request_var('mark', array(0));
 		
 		if (_button('delete') && $mark) {
 			if (_button('confirm')) {
@@ -401,7 +401,7 @@ class userpage {
 				// Output to template
 				//
 				$layout_vars = array(
-					'MESSAGE_TEXT' => (sizeof($mark) == 1) ? lang('confirm_delete_pm') : lang('confirm_delete_pms'),
+					'MESSAGE_TEXT' => (count($mark) == 1) ? lang('confirm_delete_pm') : lang('confirm_delete_pms'),
 		
 					'S_CONFIRM_ACTION' => s_link('my dc'),
 					'S_HIDDEN_FIELDS' => s_hidden($s_hidden)
@@ -451,7 +451,7 @@ class userpage {
 					$error[] = 'EMPTY_PASSWORD2';
 				}
 				
-				if (!sizeof($error)) {
+				if (!count($error)) {
 					if ($_fields->password1 != $_fields->password2) {
 						$error[] = 'PASSWORD_MISMATCH';
 					} else if (strlen($_fields->password1) > 30) {
@@ -480,11 +480,11 @@ class userpage {
 			
 			if (!empty($_fields->rank)) {
 				$rank_word = explode(' ', $_fields->rank);
-				if (sizeof($rank_word) > 10) {
+				if (count($rank_word) > 10) {
 					$error[] = 'RANK_TOO_LONG';
 				}
 				
-				if (!sizeof($error)) {
+				if (!count($error)) {
 					$rank_limit = 15;
 					foreach ($rank_word as $each) {
 						if (preg_match_all('#\&.*?\;#is', $each, $each_preg)) {
@@ -502,7 +502,7 @@ class userpage {
 			}
 			
 			// Rank
-			if (!empty($_fields->rank) && !sizeof($error)) {
+			if (!empty($_fields->rank) && !count($error)) {
 				$sql = 'SELECT rank_id
 					FROM _ranks
 					WHERE rank_title = ?';
@@ -522,7 +522,7 @@ class userpage {
 						WHERE user_rank = ?';
 					$size_rank = sql_rowset(sql_filter($sql, $user->d('user_rank')), false, 'user_id');
 					
-					if (sizeof($size_rank) == 1) {
+					if (count($size_rank) == 1) {
 						$sql = 'DELETE FROM _ranks
 							WHERE rank_id = ?';
 						sql_query(sql_filter($sql, $user->d('user_rank')));
@@ -538,11 +538,11 @@ class userpage {
 			}
 			
 			// Update user avatar
-			if (!sizeof($error)) {
+			if (!count($error)) {
 				$upload->avatar_process($user->d('username_base'), $_fields, $error);
 			}
 			
-			if (!sizeof($error)) {
+			if (!count($error)) {
 				if (!empty($_fields->sig)) {
 					$_fields->sig = $comments->prepare($_fields->sig);
 				}
@@ -561,7 +561,7 @@ class userpage {
 					}
 				}
 				
-				if (sizeof($member_data)) {
+				if (count($member_data)) {
 					$sql = 'UPDATE _members SET ' . sql_build('UPDATE', $member_data) . sql_filter(' 
 						WHERE user_id = ?', $user->d('user_id'));
 					
@@ -574,7 +574,7 @@ class userpage {
 			}
 		}
 		
-		if (sizeof($error)) {
+		if (count($error)) {
 			_style('error', array(
 				'MESSAGE' => parse_error($error))
 			);
@@ -802,7 +802,8 @@ class userpage {
 				//$user->points_remove(1);
 			}
 			
-			$user->delete_unread($this->data['user_id'], $user->d('user_id'));
+			// TODO: Today save
+			// $user->delete_unread($this->data['user_id'], $user->d('user_id'));
 			
 			redirect(s_link('m', $this->data['username_base']));
 		}
@@ -814,7 +815,8 @@ class userpage {
 		);
 		sql_insert('members_friends', $sql_insert);
 		
-		$user->save_unread(UH_FRIEND, $user->d('user_id'), 0, $this->data['user_id']);
+		// TODO: Today Save
+		// $user->save_unread(UH_FRIEND, $user->d('user_id'), 0, $this->data['user_id']);
 		
 		redirect(s_link('m', $user->d('username_base'), 'friends'));
 	}
@@ -1113,15 +1115,13 @@ class userpage {
 			$scrobbler = new EasyScrobbler($this->data['user_lastfm']);
 			$list = $scrobbler->getRecentTracs();
 			
-			if (sizeof($list))
-			{
+			if (count($list)) {
 				_style('main.lastfm', array(
 					'NAME' => $this->data['user_lastfm'],
 					'URL' => 'http://www.last.fm/user/' . $this->data['user_lastfm'] . '/')
 				);
 				
-				foreach ($list as $row)
-				{
+				foreach ($list as $row) {
 					_style('main.lastfm.row', array(
 						'ARTIST' => $row['ARTIST'],
 						'NAME' => $row['NAME'],

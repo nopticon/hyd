@@ -46,7 +46,8 @@ if (count($select)) {
 
 	foreach ($select as $select_element => $void) {
 		if (isset($delete[$select_element])) {
-			$user->delete_unread($element, $select[$select_element]);
+			// TODO: Today save
+			// $user->delete_unread($element, $select[$select_element]);
 			break;
 		}
 	}

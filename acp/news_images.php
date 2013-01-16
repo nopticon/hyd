@@ -42,7 +42,7 @@ class __news_images extends mac {
 			
 			$f = $upload->process($filepath_1, 'add_image', 'jpg');
 			
-			if (!sizeof($upload->error) && $f !== false) {
+			if (!count($upload->error) && $f !== false) {
 				foreach ($f as $row) {
 					$xa = $upload->resize($row, $filepath_1, $filepath_1, $news_id, array(100, 75), false, false, true);
 				}

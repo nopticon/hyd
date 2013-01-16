@@ -143,7 +143,7 @@ class downloads {
 			
 			_style('ud_poll.results');
 			
-			for ($i = 0, $end = sizeof($this->voting['ud']); $i < $end; $i++) {
+			for ($i = 0, $end = count($this->voting['ud']); $i < $end; $i++) {
 				$vote_result = (isset($results[$this->voting['ub'][$i]])) ? (int) $results[$this->voting['ub'][$i]] : 0;
 				$vote_percent = ($this->dl_data['votes'] > 0) ? $vote_result / $this->dl_data['votes'] : 0;
 
@@ -158,7 +158,7 @@ class downloads {
 				'S_VOTE_ACTION' => s_link('a', $this->data['subdomain'], 'downloads', $this->dl_data['id'], 'vote'))
 			);
 			
-			for ($i = 0, $end = sizeof($this->voting['ud']); $i < $end; $i++) {
+			for ($i = 0, $end = count($this->voting['ud']); $i < $end; $i++) {
 				_style('ud_poll.options.item', array(
 					'ID' => $this->voting['ud'][$i],
 					'CAPTION' => lang('ub_udv' . $this->voting['ud'][$i]))

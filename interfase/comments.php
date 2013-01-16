@@ -200,7 +200,7 @@ class _comments {
 		//
 		// Check if message is empty
 		//
-		if (!sizeof($error)) {
+		if (!count($error)) {
 			$message = request_var('message', '', true);
 			
 			// Check message
@@ -212,7 +212,7 @@ class _comments {
 		//
 		// Insert processed data
 		//
-		if (!sizeof($error)) {
+		if (!count($error)) {
 			$update_sql = '';
 			$post_reply = (isset($this->param[4]) && $this->param[4] == 'reply') ? $id : 0;
 			$message = $this->prepare($message);
@@ -284,7 +284,8 @@ class _comments {
 					$reply_to = ($reply_row['user_id'] != GUEST) ? $reply_row['user_id'] : 0;
 				}
 				
-				$user->delete_unread($this->data['HISTORY'], $post_reply);
+				// TODO: Today save
+				// $user->delete_unread($this->data['HISTORY'], $post_reply);
 			}
 			
 			$notify = true;
@@ -310,9 +311,11 @@ class _comments {
 					$emailer->send();
 					$emailer->reset();
 					
-					$user->save_unread($this->data['HISTORY'], $post_id, $history_extra, $post_data['user_id']);
+					// TODO: Today save
+					// $user->save_unread($this->data['HISTORY'], $post_id, $history_extra, $post_data['user_id']);
 				} else {
-					$user->save_unread($this->data['HISTORY'], $post_id, $history_extra, $reply_to, false);
+					// TODO: Today save
+					// $user->save_unread($this->data['HISTORY'], $post_id, $history_extra, $reply_to, false);
 					
 					// Points
 					//$user->points_add(1);
@@ -379,7 +382,7 @@ class _comments {
 			$this->data['CONTROL'] = w();
 		}
 		
-		$sizeof_controls = sizeof($this->data['CONTROL']);
+		$sizeof_controls = count($this->data['CONTROL']);
 		_style($tpl_prefix);
 		
 		$controls_data = w();
@@ -482,7 +485,7 @@ class _comments {
 						
 						if ($row['user_id'] != GUEST) {
 							if ($value) {
-								for ($i = 0, $end = sizeof($all_ranks); $i < $end; $i++) {
+								for ($i = 0, $end = count($all_ranks); $i < $end; $i++) {
 									if (($row['user_rank'] == $all_ranks[$i]['rank_id']) && $all_ranks[$i]['rank_special']) {
 										$ranks_e = explode('|', $all_ranks[$i]['rank_title']);
 										$value = (isset($ranks_e[$row['user_gender']]) && ($ranks_e[$row['user_gender']] != '')) ? $ranks_e[$row['user_gender']] : $ranks_e[0];
@@ -490,7 +493,7 @@ class _comments {
 								}
 							} else {
 								if (isset($row['user_gender']) && isset($row['user_posts'])) {
-									for ($i = 0, $end = sizeof($all_ranks); $i < $end; $i++) {
+									for ($i = 0, $end = count($all_ranks); $i < $end; $i++) {
 										if (($row['user_posts'] >= $all_ranks[$i]['rank_min']) && !$all_ranks[$i]['rank_special']) {
 											$ranks_e = explode('|', $all_ranks[$i]['rank_title']);
 											$value = (isset($ranks_e[$row['user_gender']]) && ($ranks_e[$row['user_gender']] != '')) ? $ranks_e[$row['user_gender']] : $ranks_e[0];
@@ -634,14 +637,16 @@ class _comments {
 				WHERE parent_id = ?';
 			sql_query(sql_filter($sql, $to['parent_id']));
 			
-			$user->delete_unread(UH_NOTE, $to['parent_id']);
+			// TODO: Today save
+			// $user->delete_unread(UH_NOTE, $to['parent_id']);
 		} else {
 			$sql = 'UPDATE _dc SET parent_id = ?, last_msg_id = ?
 				WHERE msg_id = ?';
 			sql_query(sql_filter($sql, $dc_id, $dc_id, $dc_id));
 		}
 		
-		$user->save_unread(UH_NOTE, (($mode == 'reply') ? $to['parent_id'] : $dc_id), 0, $to['user_id']);
+		// TODO: Today save
+		// $user->save_unread(UH_NOTE, (($mode == 'reply') ? $to['parent_id'] : $dc_id), 0, $to['user_id']);
 		
 		//
 		// Notify via email if user requires it
@@ -672,7 +677,7 @@ class _comments {
 	// Delete conversation/s
 	//
 	public function dc_delete($mark) {
-		if (!is_array($mark) || !sizeof($mark)) {
+		if (!is_array($mark) || !count($mark)) {
 			return;
 		}
 		
@@ -699,23 +704,25 @@ class _comments {
 		}
 
 		//
-		if (sizeof($update_a)) {
+		if (count($update_a)) {
 			$sql = 'UPDATE _dc
 				SET msg_deleted = ?
 				WHERE parent_id IN (??)
 					AND ' . $sql_member;
 			sql_query(sql_filter($sql, $user->d('user_id'), implode(',', array_map('intval', array_keys($update_a)))));
 			
-			$user->delete_unread(UH_NOTE, array_keys($update_a));
+			// TODO: Today save
+			// $user->delete_unread(UH_NOTE, array_keys($update_a));
 		}
 		
-		if (sizeof($delete_a)) {
+		if (count($delete_a)) {
 			$sql = 'DELETE FROM _dc
 				WHERE parent_id IN (??)
 					AND ' . $sql_member;
 			sql_query(sql_filter($sql, implode(',', array_map('intval', array_keys($delete_a)))));
 			
-			$user->delete_unread(UH_NOTE, array_keys($delete_a));
+			// TODO: Today save
+			// $user->delete_unread(UH_NOTE, array_keys($delete_a));
 		}
 		
 		return true;
@@ -792,7 +799,7 @@ class _comments {
 			}
 		}
 		
-		if (sizeof($exclude)) {
+		if (count($exclude)) {
 			foreach ($exclude as $item) {
 				unset($html[$item]);
 			}
@@ -840,7 +847,7 @@ class _comments {
 				$repl[] = '\\1<img src="' . $item . '" border="0" alt="" />';
 			}
 			
-			if (sizeof($orig)) {
+			if (count($orig)) {
 				$this->message = preg_replace($orig, $repl, $this->message);
 			}
 		}
@@ -904,7 +911,7 @@ class _comments {
 			}
 		}
 		
-		if (sizeof($this->options['smilies'])) {
+		if (count($this->options['smilies'])) {
 			$this->message = preg_replace($this->options['smilies']['orig'], $this->options['smilies']['repl'], $this->message);
 		}
 		
@@ -915,7 +922,7 @@ class _comments {
 		if (!isset($this->options['a'])) {
 			global $cache;
 			
-			if (!$this->options['a']['match'] = $cache->get('ub_list')) {
+			if (!$this->options['a']['match'] = $cache->get('artist_list')) {
 				$sql = 'SELECT name
 					FROM _artists
 					ORDER BY name';
@@ -925,7 +932,7 @@ class _comments {
 					$this->options['a']['match'][] = $row['name'];
 				}
 				
-				$cache->save('ub_list', $this->options['a']['match']);
+				$cache->save('artist_list', $this->options['a']['match']);
 			}
 		}
 		
@@ -981,7 +988,7 @@ class _comments {
 				}
 			}
 			
-			if (sizeof($orig)) {
+			if (count($orig)) {
 				$this->message = str_replace($orig, $repl, $this->message);
 			}
 		}
@@ -1017,7 +1024,7 @@ class _comments {
 			foreach ($match[1] as $orig_member) {
 				$member = get_username_base($orig_member);
 				if (!isset($this->options['icons'][$member])) {
-					for ($i = 0, $end = sizeof($formats); $i < $end; $i++) {
+					for ($i = 0, $end = count($formats); $i < $end; $i++) {
 						$icon_file = $config['avatar_path'] . '/' . $member . $formats[$i];
 						if (@file_exists('..' . $icon_file)) {
 							$this->options['icons'][$member] = '<a href="' . s_link('m', $member) . '" title="' . $orig_member . '"><img src="' . $icon_file . '" /></a>';

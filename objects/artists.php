@@ -592,16 +592,15 @@ class _artists extends downloads {
 			);
 			$fav_nextid = sql_insert('artists_fav', $sql_insert);
 			
-			$user->save_unread(UH_AF, $fav_nextid, $this->data['ub']);
+			// TODO: Today save
+			// $user->save_unread(UH_AF, $fav_nextid, $this->data['ub']);
 		}
 		
 		$sql = 'UPDATE _members SET ??
 			WHERE user_id = ?';
 		sql_query(sql_build($sql, sql_build('UPDATE', $sql_member), $user->d('user_id')));
 		
-		redirect($url);
-		
-		return;
+		return redirect($url);
 	}
 	
 	/*
@@ -877,14 +876,14 @@ class _artists extends downloads {
 	public function last_records() {
 		global $user, $config, $cache;
 		
-		if (!$a_records = $cache->get('a_records')) {
+		if (!$a_records = $cache->get('artist_records')) {
 			$sql = 'SELECT ub, subdomain, name, genre
 				FROM _artists
 				ORDER BY datetime DESC
 				LIMIT 3';
 			$a_records = sql_rowset($sql, 'ub');
 			
-			$cache->save('a_records', $a_records);
+			$cache->save('artist_records', $a_records);
 		}
 		
 		if (!$ai_records = $cache->get('ai_records')) {
@@ -965,7 +964,7 @@ class _artists extends downloads {
 				}
 			}
 			
-			if (sizeof($a_random)) {
+			if (count($a_random)) {
 				$selected_image = array_rand($a_random);
 				if (isset($a_random[$selected_image])) {
 					_style('a_stats.gallery', array(
@@ -994,7 +993,7 @@ class _artists extends downloads {
 	public function thumbnails() {
 		global $cache, $config;
 		
-		if (!$a_recent = $cache->get('a_recent')) {
+		if (!$a_recent = $cache->get('artist_recent')) {
 			$sql = 'SELECT ub
 				FROM _artists
 				ORDER BY datetime DESC
@@ -1006,7 +1005,7 @@ class _artists extends downloads {
 				$a_recent[$row['ub']] = 1;
 			}
 			
-			$cache->save('a_recent', $a_recent);
+			$cache->save('artist_recent', $a_recent);
 		}
 		
 		$a_ary = w();
@@ -1028,7 +1027,7 @@ class _artists extends downloads {
 			$a_ary[$_a] = $this->adata[$_a];
 		}
 		
-		if (sizeof($a_ary)) {
+		if (count($a_ary)) {
 			$sql = 'SELECT *
 				FROM _artists_images
 				WHERE ub IN (??)
@@ -1117,8 +1116,7 @@ class _artists extends downloads {
 		
 		$ud_in_ary = w();
 		foreach ($this->ud_song as $ud => $dl_data) {
-			$dl_size = sizeof($dl_data);
-			if (!$dl_size) {
+			if (!$dl_size = count($dl_data)) {
 				continue;
 			}
 			
@@ -1476,7 +1474,7 @@ class _artists extends downloads {
 					}
 				}
 				
-				if (isset($events['is_gallery']) && sizeof($events['is_gallery'])) {
+				if (isset($events['is_gallery']) && count($events['is_gallery'])) {
 					$gallery = $events['is_gallery'];
 					@krsort($gallery);
 					
@@ -1492,7 +1490,7 @@ class _artists extends downloads {
 					unset($events['is_gallery']);
 				}
 				
-				if (sizeof($events)) {
+				if (count($events)) {
 					_style('events_future');
 					
 					foreach ($events as $is_date => $data) {

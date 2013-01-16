@@ -49,12 +49,14 @@ if (isset($_POST['items']) && (isset($_POST['delete']) || isset($_POST['delete_a
 	
 	if (isset($_POST['delete_all'])) {
 		foreach ($items as $element => $data) {
-			$user->delete_unread($element, $data);
+			// TODO: Today save
+			// $user->delete_unread($element, $data);
 		}
 	} else {
 		foreach ($items as $element => $void) {
 			if (isset($_POST['delete'][$element])) {
-				$user->delete_unread($element, $items[$element]);
+				// TODO: Today save
+				// $user->delete_unread($element, $items[$element]);
 				break;
 			}
 		}
@@ -78,7 +80,8 @@ if (isset($_POST['items']) && (isset($_POST['delete']) || isset($_POST['delete_a
 	
 	if ($url != '') {
 		if ($user->data['user_mark_items'] && $delete_item) {
-			$user->delete_unread($unread_element, $unread_item);
+			// TODO: Today save
+			// $user->delete_unread($unread_element, $unread_item);
 		}
 		
 		redirect($url);

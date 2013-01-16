@@ -28,7 +28,7 @@ class upload {
 		if (!is_array($files)) return $file_ary;
 		
 		$a_keys = array_keys($files);
-		for ($i = 0, $end = sizeof($files['name']); $i < $end; $i++) {
+		for ($i = 0, $end = count($files['name']); $i < $end; $i++) {
 			foreach ($a_keys as $k) {
 				$file_ary[$i][$k] = $files[$k][$i];
 			}
@@ -75,7 +75,7 @@ class upload {
 		$files = w();
 		$umask = umask(0);
 		
-		if (!sizeof($locations)) {
+		if (!count($locations)) {
 			$this->error[] = 'FILES_NO_FILES';
 			return false;
 		}
@@ -162,7 +162,7 @@ class upload {
 			$extension = w($extension);
 		}
 		
-		if (!sizeof($files)) {
+		if (!count($files)) {
 			$this->error[] = lang('files_no_files');
 			return false;
 		}

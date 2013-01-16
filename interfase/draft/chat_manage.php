@@ -29,11 +29,11 @@ if (!$user->data['is_member']) {
 
 $mode = request_var('mode', '');
 $submit = _button();
-$error = array();
+$error = w();
 
 switch ($mode) {
 	case 'create':
-		$template_vars = array();
+		$template_vars = w();
 		
 		$ch_auth = 0;
 		$ch_type = 1;
@@ -57,7 +57,7 @@ switch ($mode) {
 			
 			$ch_int_name = strtolower($ch_name);
 			
-			if (!sizeof($error)) {
+			if (!count($error)) {
 				$sql = 'SELECT *
 					FROM _chat_ch
 					WHERE ch_int_name = ?
@@ -71,7 +71,7 @@ switch ($mode) {
 				$error[] = 'CHAT_CREATE_EMPTY_DESC';
 			}
 			
-			if (!sizeof($error)) {
+			if (!count($error)) {
 				$insert_data = array(
 					'cat_id' => (int) $ch_cat,
 					'ch_int_name' => $ch_int_name,
@@ -88,12 +88,12 @@ switch ($mode) {
 				sql_insert('chat_ch', $insert_data);
 				
 				redirect(s_link('chat', $ch_int_name));
-			} else {
-				$template_vars += array(
-					'CH_NAME' => $ch_name,
-					'CH_DESC' => $ch_desc
-				);
 			}
+
+			$template_vars += array(
+				'CH_NAME' => $ch_name,
+				'CH_DESC' => $ch_desc
+			);
 		} // IF $submit
 		
 		if ($user->data['is_founder']) {
@@ -132,7 +132,7 @@ switch ($mode) {
 			'S_ACTION' => s_link('chat-create')
 		);
 		
-		if (sizeof($error)) {
+		if (count($error)) {
 			_style('error', array(
 				'MESSAGE' => parse_error($error))
 			);

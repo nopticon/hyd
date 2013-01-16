@@ -968,8 +968,9 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 						'friend_time' => time()
 					);
 					sql_insert('members_friends', $sql_insert);
-				
-					$user->save_unread(UH_FRIEND, $user_id, 0, $ref_assoc['ref_orig']);
+					
+					// TODO: Today save
+					// $user->save_unread(UH_FRIEND, $user_id, 0, $ref_assoc['ref_orig']);
 				}
 				
 				$sql = 'DELETE FROM _members_ref_assoc
@@ -1030,14 +1031,14 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 						$error['username'] = 'USERNAME_INVALID';
 					}
 					
-					if (!sizeof($error)) {
+					if (!count($error)) {
 						$result = validate_username($v_fields['username']);
 						if ($result['error']) {
 							$error['username'] = $result['error_msg'];
 						}
 					}
 					
-					if (!sizeof($error)) {
+					if (!count($error)) {
 						$v_fields['username_base'] = get_username_base($v_fields['username']);
 						
 						$sql = 'SELECT user_id
@@ -1048,7 +1049,7 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 						}
 					}
 					
-					if (!sizeof($error)) {
+					if (!count($error)) {
 						$sql = 'SELECT ub
 							FROM _artists
 							WHERE subdomain = ?';
@@ -1100,7 +1101,7 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 					$error['tos'] = 'AGREETOS_ERROR';
 				}
 				
-				if (!sizeof($error)) {
+				if (!count($error)) {
 					//$v_fields['country'] = strtolower(geoip_country_code_by_name($user->ip));
 					$v_fields['country'] = 90;
 					$v_fields['birthday'] = leading_zero($v_fields['birthday_year']) . leading_zero($v_fields['birthday_month']) . leading_zero($v_fields['birthday_day']);
@@ -1364,7 +1365,7 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 	//
 	// Signup data
 	//
-	if (sizeof($error)) {
+	if (count($error)) {
 		_style('error', array(
 			'MESSAGE' => parse_error($error))
 		);
@@ -1834,7 +1835,7 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 
 function sidebar() {
 	$sfiles = func_get_args();
-	if (!is_array($sfiles) || !sizeof($sfiles)) {
+	if (!is_array($sfiles) || !count($sfiles)) {
 		return;
 	}
 	

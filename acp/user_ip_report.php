@@ -86,7 +86,7 @@ function timeDiff($timestamp, $now = 0, $detailed = false, $n = 0) {
 	// Go from decades backwards to seconds
 	$result = w();
 	
-	$i = sizeof($lengths);
+	$i = count($lengths);
 	$time = '';
 	while ($i >= $n) {
 		$item = $lengths[$i - 1];

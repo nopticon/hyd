@@ -95,7 +95,7 @@ class __forums_topic_merge extends mac {
 			WHERE topic_id = ?';
 		$user_ids = sql_rowset(sql_filter($sql, $to_topic), false, 'user_id');
 		
-		$sql_user = (sizeof($user_ids)) ? ' AND user_id NOT IN (' . _implode(', ', $user_ids) . ')' : '';
+		$sql_user = (count($user_ids)) ? ' AND user_id NOT IN (' . _implode(', ', $user_ids) . ')' : '';
 		
 		$sql = array(
 			sql_filter('UPDATE _forum_topics_fav SET topic_id = ? WHERE topic_id = ?', $to_topic, $from_topic) . $sql_user,
@@ -110,7 +110,8 @@ class __forums_topic_merge extends mac {
 		}
 		sql_query($sql);
 		
-		$user->save_unread(UH_T, $to_topic);
+		// TODO: Today save
+		// $user->save_unread(UH_T, $to_topic);
 		
 		if (in_array($to_forum_id, array(20, 39))) {
 			topic_feature($to_topic, 0);

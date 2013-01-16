@@ -83,7 +83,7 @@ class __artist_gallery extends mac {
 		
 		$f = $upload->process($filepath_1, 'add_image', 'jpg');
 		
-		if (!sizeof($upload->error) && $f !== false) {
+		if (!count($upload->error) && $f !== false) {
 			$sql = 'SELECT MAX(image) AS total
 				FROM _artists_images
 				WHERE ub = ?';
@@ -135,7 +135,7 @@ class __artist_gallery extends mac {
 		global $config;
 		
 		$s_images = request_var('ls_images', array(0));
-		if (sizeof($s_images)) {
+		if (count($s_images)) {
 			$common_path = $config['artists_path'] . $this->object['ub'] . '/';
 			$path = array(
 				$common_path . 'x1/',

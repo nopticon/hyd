@@ -52,13 +52,15 @@ class topics {
 			
 			$sql = 'SELECT *
 				FROM _forums
-				WHERE forum_id = ?';
-			$sql = sql_filter($sql, $forum_id);
+				WHERE forum_id = ?
+					AND forum_active = ?';
+			$sql = sql_filter($sql, $forum_id, 1);
 		} else {
 			$sql = 'SELECT *
 				FROM _forums
-				WHERE forum_alias = ?';
-			$sql = sql_filter($sql, $forum_id);
+				WHERE forum_alias = ?
+					AND forum_active = ?';
+			$sql = sql_filter($sql, $forum_id, 1);
 		}
 		
 		if (!$forum_row = sql_fieldrow($sql)) {
@@ -146,7 +148,7 @@ class topics {
 						}
 					}
 					
-					$sizeof_poll_options = sizeof($real_poll_options);
+					$sizeof_poll_options = count($real_poll_options);
 					
 					if ($sizeof_poll_options < 2) {
 						$error_msg .= (($error_msg != '') ? '<br />' : '') . lang('few_poll_options');
@@ -190,24 +192,26 @@ class topics {
 					}
 					
 					$insert_data['TOPIC'] = array(
+						'topic_active' => 1,
 						'topic_title' => $post_title,
-						'topic_poster' => (int) $user->d('user_id'),
-						'topic_time' => (int) $current_time,
-						'forum_id' => (int) $forum_id,
+						'topic_poster' => $user->d('user_id'),
+						'topic_time' => $current_time,
+						'forum_id' => $forum_id,
 						'topic_locked' => $topic_locked,
 						'topic_announce' => $topic_announce,
-						'topic_important' => (int) $topic_important,
-						'topic_vote' => (int) $topic_vote,
+						'topic_important' => $topic_important,
+						'topic_vote' => $topic_vote,
 						'topic_featured' => 1,
 						'topic_points' => 1
 					);
 					$topic_id = sql_insert('forum_topics', $insert_data['TOPIC']);
 					
 					$insert_data['POST'] = array(
-						'topic_id' => (int) $topic_id,
-						'forum_id' => (int) $forum_id,
-						'poster_id' => (int) $user->d('user_id'),
-						'post_time' => (int) $current_time,
+						'post_active' => 1,
+						'topic_id' => $topic_id,
+						'forum_id' => $forum_id,
+						'poster_id' => $user->d('user_id'),
+						'post_time' => $current_time,
 						'poster_ip' => $user->ip,
 						'post_text' => $post_message,
 						'post_np' => $post_np
@@ -241,19 +245,23 @@ class topics {
 						}
 					}
 					
-					$user->save_unread(UH_T, $topic_id);
+					// TODO: Today save
+					// $user->save_unread(UH_T, $topic_id);
 					
 					if (!in_array($forum_id, forum_for_team_array())) {
 						//$user->points_add(2);
 					}
 					
+					// Notification only if post belongs to team forums.
 					$a_list = forum_for_team_list($forum_id);
 					if (count($a_list)) {
-						$sql_delete_unread = 'DELETE FROM _members_unread
+						// TODO: Today save
+
+						/*$sql_delete_unread = 'DELETE FROM _members_unread
 							WHERE element = ?
 								AND item = ?
 								AND user_id NOT IN (??)';
-						sql_query(sql_filter($sql_delete_unread, 8, $topic_id, implode(', ', $a_list)));
+						sql_query(sql_filter($sql_delete_unread, 8, $topic_id, implode(', ', $a_list)));*/
 					}
 					
 					if (count($a_list) || in_array($forum_id, array(20, 39))) {
@@ -269,9 +277,9 @@ class topics {
 						WHERE topic_id = ?';
 					sql_query(sql_filter($sql, $post_id, $post_id, $topic_id));
 					
-					$sql = 'UPDATE _members SET user_posts = user_posts + 1
+					/*$sql = 'UPDATE _members SET user_posts = user_posts + 1
 						WHERE user_id = ?';
-					sql_query(sql_filter($sql, $user->d('user_id')));
+					sql_query(sql_filter($sql, $user->d('user_id')));*/
 					
 					redirect(s_link('topic', $topic_id));
 				}
@@ -292,12 +300,14 @@ class topics {
 		$sql = 'SELECT t.*, u.user_id, u.username, u.username_base, u2.user_id as user_id2, u2.username as username2, u2.username_base as username_base2, p.post_time, p.post_username as post_username2
 			FROM _forum_topics t, _members u, _forum_posts p, _members u2
 			WHERE t.forum_id = ?
+				AND t.topic_active = ?
+				AND p.post_active = ?
 				AND t.topic_poster = u.user_id
 				AND p.post_id = t.topic_last_post_id
 				AND p.poster_id = u2.user_id
 				AND t.topic_announce = 1
 			ORDER BY t.topic_last_post_id DESC';
-		$topics->important = sql_rowset(sql_filter($sql, $forum_id));
+		$topics->important = sql_rowset(sql_filter($sql, $forum_id, 1, 1));
 		$total->important = (is_array($topics->important)) ? count($topics->important) : 0;
 		
 		//
@@ -306,6 +316,8 @@ class topics {
 		$sql = 'SELECT t.*, u.user_id, u.username, u.username_base, u2.user_id as user_id2, u2.username as username2, u2.username_base as username_base2, p.post_username, p2.post_username AS post_username2, p2.post_time
 			FROM _forum_topics t, _members u, _forum_posts p, _forum_posts p2, _members u2
 			WHERE t.forum_id = ?
+				AND t.topic_active = ?
+				AND p.post_active = ?
 				AND t.topic_poster = u.user_id
 				AND p.post_id = t.topic_first_post_id
 				AND p2.post_id = t.topic_last_post_id
@@ -313,7 +325,7 @@ class topics {
 				AND t.topic_announce = 0
 			ORDER BY t.topic_important DESC, /*t.topic_last_post_id*/p2.post_time DESC
 			LIMIT ??, ??';
-		$topics->normal = sql_rowset(sql_filter($sql, $forum_id, $start, $config['topics_per_page']));
+		$topics->normal = sql_rowset(sql_filter($sql, $forum_id, 1, 1, $start, $config['topics_per_page']));
 		$total->normal = (is_array($topics->normal)) ? count($topics->normal) : 0;
 		
 		//

@@ -67,8 +67,7 @@ function prepare_message($message)
 	
 	$allowed_tags = split(',', $config['allow_html_tags']);
 	
-	if (sizeof($allowed_tags))
-	{
+	if (count($allowed_tags)) {
 		$message = preg_replace('#&lt;(\/?)(' . str_replace('*', '.*?', implode('|', $allowed_tags)) . ')&gt;#is', '<$1$2>', $message);
 	}
 	
@@ -90,8 +89,7 @@ function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on,
 	global $config, $userdata, $lang;
 
 	// Check subject
-	if (!empty($subject))
-	{
+	if (!empty($subject)) {
 		$subject = htmlspecialchars(trim($subject));
 	}
 	else if ($mode == 'newtopic' || ($mode == 'editpost' && $post_data['first_post']))
@@ -589,7 +587,7 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 					$update_watched_sql .= ($update_watched_sql != '') ? ', ' . $row['user_id'] : $row['user_id'];
 				}
 				
-				if (sizeof($bcc_list_ary)) {
+				if (count($bcc_list_ary)) {
 					$emailer = new emailer();
 
 					$server_name = trim($config['server_name']);

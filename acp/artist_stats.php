@@ -57,7 +57,7 @@ class __artist_stats extends mac {
 		}
 		unset($years_temp);
 
-		if (sizeof($years)) {
+		if (count($years)) {
 			rsort($years);
 		} else {
 			$years[] = date('Y');

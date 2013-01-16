@@ -30,7 +30,7 @@ class _chat {
 	public function m_rooms() {
 		$cat = $this->get_cats();
 		
-		if (!sizeof($cat)) {
+		if (!count($cat)) {
 			return;
 		}
 		
@@ -73,7 +73,7 @@ class _chat {
 	}
 	
 	public function get_ch_listing($cat) {
-		if (!sizeof($cat)) {
+		if (!count($cat)) {
 			return;
 		}
 		
@@ -219,8 +219,8 @@ class _chat {
 					ORDER BY m.username';
 				$members = sql_rowset(sql_filter($sql, $this->data['ch_id']));
 				
-				$so_messages = sizeof($messages);
-				$so_members = sizeof($members);
+				$so_messages = count($messages);
+				$so_members = count($members);
 				
 				//
 				if ($so_messages || $so_members) {

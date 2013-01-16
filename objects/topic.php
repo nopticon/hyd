@@ -49,7 +49,7 @@ class topic {
 		//
 		if ($post_id) {
 			$sql_from = ', _forum_posts p, _forum_posts p2, _members m ';
-			$sql_where = sql_filter('p.post_id = ? AND p.poster_id = m.user_id AND t.topic_id = p.topic_id AND p2.topic_id = p.topic_id AND p2.post_id <= ?', $post_id, $post_id);
+			$sql_where = sql_filter('p.post_active = ? AND p.post_id = ? AND p.poster_id = m.user_id AND t.topic_id = p.topic_id AND p2.topic_id = p.topic_id AND p2.post_id <= ?', 1, $post_id, $post_id);
 			$sql_count = ', p.post_text, m.username AS reply_username, COUNT(p2.post_id) AS prev_posts, p.post_deleted';
 			$sql_order = ' GROUP BY p.post_id, t.topic_id, t.topic_title, t.topic_locked, t.topic_replies, t.topic_time, t.topic_important, t.topic_vote, t.topic_last_post_id, f.forum_name, f.forum_locked, f.forum_id, f.auth_view, f.auth_read, f.auth_post, f.auth_reply, f.auth_announce, f.auth_pollcreate, f.auth_vote ORDER BY p.post_id ASC';
 		} else {
@@ -59,7 +59,10 @@ class topic {
 		
 		$sql = 'SELECT t.*, f.*' . $sql_count . '
 			FROM _forum_topics t, _forums f' . $sql_from . '
-			WHERE ' . $sql_where . ' AND f.forum_id = t.forum_id' . $sql_order;
+			WHERE ' . $sql_where . '
+				AND f.forum_id = t.forum_id
+				AND t.topic_active = 1' . 
+				$sql_order;
 		if (!$topic_data = sql_fieldrow($sql)) {
 			fatal_error();
 		}
@@ -76,20 +79,13 @@ class topic {
 		}
 
 		//
-		// Hide deleted posts
-		if ($topic_data['post_deleted']) {
-			fatal_error();
-		}
-		
-		//
 		// Check mod auth
 		$mod_auth = $user->is('mod');
 		
 		//
 		// Init vars
-		//
-		$forum_id = (int) $topic_data['forum_id'];
-		$topic_id = (int) $topic_data['topic_id'];
+		$forum_id = $topic_data['forum_id'];
+		$topic_id = $topic_data['topic_id'];
 		$topic_url = s_link('topic', $topic_id);
 		
 		$reply = request_var('reply', 0);
@@ -97,12 +93,9 @@ class topic {
 		$submit_reply = _button('post');
 		$submit_vote = _button('vote');
 		
-		$post_message = '';
-		$post_reply_message = '';
-		$post_np = '';
-		$current_time = time();
-		
 		$error = $is_auth = w();
+		$post_message = $post_reply_message = $post_np = '';
+		$current_time = time();
 		
 		if (!$post_id && $reply) {
 			$reply = 0;
@@ -131,12 +124,12 @@ class topic {
 					}
 				}
 				
-				if (!sizeof($error)) {
+				if (!count($error)) {
 					redirect($topic_url);
 				}
 			}
 			
-			if (!sizeof($error)) {
+			if (!count($error)) {
 				if ($submit_vote) {
 					$vote_option = request_var('vote_id', 0);
 					
@@ -183,8 +176,7 @@ class topic {
 						$error[] = 'EMPTY_MESSAGE';
 					}
 					
-					if (!sizeof($error) && !$mod_auth)
-					{
+					if (!count($error) && !$mod_auth) {
 						$sql = 'SELECT MAX(post_time) AS last_post_time
 							FROM _forum_posts
 							WHERE poster_id = ?';
@@ -195,7 +187,7 @@ class topic {
 						}
 					}
 					
-					if (!sizeof($error)) {
+					if (!count($error)) {
 						$update_topic = w();
 						
 						if (strstr($post_message, '-Anuncio-') && $user->is('mod')) {
@@ -241,8 +233,9 @@ class topic {
 						
 						$post_id = sql_insert('forum_posts', $insert_data);
 						
-						$user->delete_unread(UH_T, $topic_id);
-						$user->save_unread(UH_T, $topic_id);
+						// TODO: Today save
+						// $user->delete_unread(UH_T, $topic_id);
+						// $user->save_unread(UH_T, $topic_id);
 						
 						if (!in_array($forum_id, forum_for_team_array()) && $topic_data['topic_points']) {
 							//$user->points_add(1);
@@ -483,7 +476,7 @@ class topic {
 				}
 			}
 			
-			if (sizeof($mod_topic)) {
+			if (count($mod_topic)) {
 				_style('auth');
 				
 				foreach ($mod_topic as $k => $v) {
@@ -499,7 +492,7 @@ class topic {
 		
 		//
 		// Posting box
-		if (sizeof($error)) {
+		if (count($error)) {
 			_style('post_error', array(
 				'MESSAGE' => parse_error($error))
 			);

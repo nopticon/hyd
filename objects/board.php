@@ -53,7 +53,7 @@ class board {
 			}
 		}
 		
-		if (!sizeof($this->cat_data)) {
+		if (!count($this->cat_data)) {
 			return false;
 		}
 		

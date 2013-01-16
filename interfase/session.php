@@ -166,7 +166,7 @@ class session {
 		// User does not exist
 		// User is inactive
 		// User is bot
-		if (!sizeof($this->data) || !is_array($this->data)) {
+		if (!count($this->data) || !is_array($this->data)) {
 			$this->cookie_data['u'] = ($bot) ? $bot : GUEST;
 
 			$sql = 'SELECT *
@@ -944,7 +944,7 @@ class user extends session {
 
 				$sql = 'SELECT user_id
 					FROM _members
-					WHERE (user_type IN (??, ??)' . ((sizeof($sql_in)) ? ' OR user_id IN (' . implode(',', $sql_in) . ')' : '') . ')
+					WHERE (user_type IN (??, ??)' . (count($sql_in) ? ' OR user_id IN (' . implode(',', $sql_in) . ')' : '') . ')
 						AND user_type NOT IN (??)
 						AND user_id <> ?
 						AND user_lastvisit > ?
@@ -1033,7 +1033,7 @@ class user extends session {
 			return false;
 		}
 		
-		if (!sizeof($this->unr)) {
+		if (!count($this->unr)) {
 			$sql = 'SELECT element, item
 				FROM _members_unread
 				WHERE user_id = ?';
@@ -1281,7 +1281,7 @@ class auth {
 			}
 		}
 		
-		if ((isset($this->data[$member_id]) && is_array($this->data[$member_id]) && sizeof($this->data[$member_id])) || $user->is('founder')) {
+		if ((isset($this->data[$member_id]) && is_array($this->data[$member_id]) && count($this->data[$member_id])) || $user->is('founder')) {
 			if ($module !== false && empty($this->data[$member_id]['a_' . $module])) {
 				return false;
 			}
@@ -1447,7 +1447,7 @@ class auth {
 						break;
 				}
 			} else {
-				for ($k = 0, $end = sizeof($f_access); $k < $end; $k++) {
+				for ($k = 0, $end = count($f_access); $k < $end; $k++) {
 					$value = $f_access[$k][$a_key];
 					$f_forum_id = $f_access[$k]['forum_id'];
 					
@@ -1492,7 +1492,7 @@ class auth {
 			//$auth_user['auth_mod'] = ($user->is('member')) ? $this->check_user(AUTH_MOD, 'auth_mod', $u_access) : false;
 			$auth_user['auth_mod'] = ($user->is('member')) ? $user->is($custom_mod) : false;
 		} else {
-			for ($k = 0, $end = sizeof($f_access); $k < $end; $k++) {
+			for ($k = 0, $end = count($f_access); $k < $end; $k++) {
 				$f_forum_id = $f_access[$k]['forum_id'];
 				$custom_mod = forum_for_team($forum_id);
 	
@@ -1508,8 +1508,8 @@ class auth {
 		
 		$auth_user = 0;
 	
-		if (sizeof($u_access)) {
-			for ($j = 0, $end = sizeof($u_access); $j < $end; $j++) {
+		if ($end = count($u_access)) {
+			for ($j = 0; $j < $end; $j++) {
 				$result = 0;
 				switch ($type) {
 					case AUTH_ACL:

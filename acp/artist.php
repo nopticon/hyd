@@ -22,7 +22,7 @@ class __artist extends mac {
 	public function __construct() {
 		parent::__construct();
 		
-		$this->auth('founder');
+		$this->auth('colab');
 	}
 	
 	public function _home() {
@@ -37,6 +37,13 @@ class __artist extends mac {
 
 		if (!$request->name) {
 			_pre('Ingresa el nombre del artista.', true);
+		}
+
+		$sql = 'SELECT subdomain
+			FROM _artists
+			WHERE subdomain = ?';
+		if (sql_field(sql_filter($sql, $request->subdomain), 'subdomain', '')) {
+			_pre('El subdominio ya esta en uso.');
 		}
 		
 		$sql_insert = array(
@@ -53,7 +60,7 @@ class __artist extends mac {
 		$artist_id = sql_insert('artists', $sql_insert);
 		
 		// Cache
-		$cache->delete('ub_list a_records ai_records a_recent');
+		$cache->delete('artist_list artist_records ai_records artist_recent');
 		set_config('max_artists', $config['max_artists'] + 1);
 		
 		// Create directories
@@ -75,9 +82,8 @@ class __artist extends mac {
 				$sql = 'SELECT *
 					FROM _members
 					WHERE username_base = ?
-						AND user_type <> ?
-						AND user_id <> ?';
-				if (!$userdata = sql_fieldrow(sql_filter($sql, $username_base, USER_INACTIVE, 1))) {
+						AND user_type NOT IN (??, ??)';
+				if (!$userdata = sql_fieldrow(sql_filter($sql, $username_base, USER_INACTIVE, USER_FOUNDER))) {
 					continue;
 				}
 				

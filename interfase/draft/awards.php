@@ -56,7 +56,7 @@ if (time() >= 1197093599) {
 				AND vr.vote_id = vd.vote_id
 			ORDER BY vr.vote_option_order, vr.vote_option_id ASC';
 		if ($vote_info = sql_rowset(sql_filter($sql, $topic_id))) {
-			$vote_options = sizeof($vote_info);
+			$vote_options = count($vote_info);
 			
 			$sql = 'SELECT vote_id
 				FROM _poll_voters
@@ -69,7 +69,7 @@ if (time() >= 1197093599) {
 			);
 			
 			if ($user_voted) {
-				_style('poll.results', array());
+				_style('poll.results');
 			} else {
 				_style('poll.options', array(
 					'S_VOTE_ACTION' => $topic_url)

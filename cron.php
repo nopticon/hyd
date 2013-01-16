@@ -41,7 +41,7 @@ $matches = array(
 	'<!--#echo var="REQUEST_URI" -->' => v_server('REQUEST_URI')
 );
 
-$orig = $repl = array();
+$orig = $repl = w();
 
 foreach ($matches as $row_k => $row_v) {
 	$orig[] = $row_k;

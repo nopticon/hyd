@@ -119,7 +119,7 @@ class __artist_delete extends mac {
 		sql_query($d_sql);
 		
 		// Cache
-		$cache->delete('ub_list a_last_images');
+		$cache->delete('artist_list a_last_images');
 		
 		redirect(s_link('a'));
 	}

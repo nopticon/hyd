@@ -378,7 +378,7 @@ class _events extends downloads {
 							$error[] = 'TOPIC_LOCKED';
 						}
 						
-						if (sizeof($error)) {
+						if (count($error)) {
 							redirect($u_event_alias);
 						}
 					}
@@ -394,7 +394,7 @@ class _events extends downloads {
 						$error[] = 'EMPTY_MESSAGE';
 					}
 					
-					if (sizeof($error)) {
+					if (count($error)) {
 						redirect($u_event_alias);
 					}
 					
@@ -409,7 +409,7 @@ class _events extends downloads {
 						}
 					}
 					
-					if (sizeof($error)) {
+					if (count($error)) {
 						redirect($u_event_alias);
 					}
 					
@@ -457,9 +457,10 @@ class _events extends downloads {
 					}
 					
 					$post_id = sql_insert('forum_posts', $insert_data);
-				
-					$user->delete_unread(UH_T, $this->v('event_topic'));
-					$user->save_unread(UH_T, $this->v('event_topic'));
+					
+					// TODO: Today save
+					// $user->delete_unread(UH_T, $this->v('event_topic'));
+					// $user->save_unread(UH_T, $this->v('event_topic'));
 					
 					//
 					$a_list = forum_for_team_list($forum_id);
@@ -797,7 +798,7 @@ class _events extends downloads {
 			}
 		}
 		
-		$total_gallery = sizeof($this->data['is_gallery']);
+		$total_gallery = count($this->data['is_gallery']);
 		
 		if ($total_gallery) {
 			$gallery_offset = request_var('gallery_offset', 0);
@@ -841,7 +842,7 @@ class _events extends downloads {
 			unset($this->data['is_gallery']);
 		}
 		
-		if (!sizeof($this->data)) {
+		if (!count($this->data)) {
 			return;
 		}
 		

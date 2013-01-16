@@ -60,7 +60,7 @@ $wall = $facebook->api($fbd->page . '/feed/', $attr);
 $wall_feed = array_reverse($wall['data']);
 $from_time = 1321336800;
 
-$official_posts = array();
+$official_posts = w();
 foreach ($wall_feed as $row) {
 	if ($row['from']['id'] != $facebook_page) {
 		continue;

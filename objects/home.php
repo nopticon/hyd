@@ -71,7 +71,7 @@ class _home {
 			}
 		}
 		
-		if (!sizeof($news)) {
+		if (!count($news)) {
 			return;
 		}
 		

@@ -37,7 +37,7 @@ class __event extends mac {
 			
 			$f = $upload->process($filepath_1, 'event_image', 'jpg');
 			
-			if (!sizeof($upload->error) && $f !== false) {
+			if (!count($upload->error) && $f !== false) {
 				$img = sql_total('_events');
 				
 				// Create vars
@@ -177,12 +177,12 @@ class __event extends mac {
 						WHERE topic_id = ?';
 					sql_query(sql_filter($sql, $post_id, $post_id, $topic_id));
 					
-					$sql = 'UPDATE _members SET user_posts = user_posts + 1
+					/*$sql = 'UPDATE _members SET user_posts = user_posts + 1
 						WHERE user_id = ?';
-					sql_query(sql_filter($sql, $poster_id));
+					sql_query(sql_filter($sql, $poster_id));*/
 					
-					// Notify
-					$user->save_unread(UH_T, $topic_id);
+					// TODO: Today save
+					// $user->save_unread(UH_T, $topic_id);
 					
 					redirect(s_link('events', $event_alias));
 				}

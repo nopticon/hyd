@@ -29,7 +29,7 @@ $sql = 'SELECT *
 	WHERE forum_id = ' . (int) $forum_id;
 $result = sql_rowset(sql_filter($sql, $forum_id));
 
-$a_topics = array();
+$a_topics = w();
 foreach ($result as $row) {
 	$topic_id = $row['topic_id'];
 	

@@ -39,7 +39,7 @@ class __event_images extends mac {
 			$filepath_4 = $filepath_3 . 'thumbnails/';
 			
 			$f = $upload->process($filepath_1, 'add_zip', 'zip');
-			if (!sizeof($upload->error) && $f !== false) {
+			if (!count($upload->error) && $f !== false) {
 				@set_time_limit(0);
 				
 				foreach ($f as $row) {

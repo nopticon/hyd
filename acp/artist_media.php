@@ -73,7 +73,9 @@ class __artist_media extends mac {
 		
 		if ($f === false) {
 			return;
-		} else if (!sizeof($upload->error)) {
+		}
+
+		if (!count($upload->error)) {
 			$a = sql_total('_dl');
 			
 			foreach ($f as $i => $row) {

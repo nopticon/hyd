@@ -37,7 +37,7 @@ $sql = 'SELECT *
 	ORDER BY RAND()';
 $result = sql_rowset(sql_filter($sql, implode(',', array_keys($selected_artists))));
 
-$random_images = array();
+$random_images = w();
 foreach ($result as $row) {
 	if (!isset($random_images[$row['ub']])) {
 		$random_images[$row['ub']] = $row['image'];

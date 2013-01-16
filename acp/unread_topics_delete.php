@@ -39,7 +39,8 @@ class __unread_topics_delete extends mac {
 				FROM _forum_topics
 				WHERE topic_id = ?';
 			if (!sql_field(sql_filter($sql, $row['item']), 'topic_id', 0)) {
-				$user->delete_all_unread(UH_T, $row['item']);
+				// TODO: Today save
+				// $user->delete_all_unread(UH_T, $row['item']);
 			}
 		}
 		

@@ -512,13 +512,13 @@ class Template {
 		if (strpos($blockname, '.')) {
 			// Nested block.
 			$blocks = explode('.', $blockname);
-			$blockcount = sizeof($blocks) - 1;
+			$blockcount = count($blocks) - 1;
 
 			$str = &$this->_tpldata; 
 			for ($i = 0; $i < $blockcount; $i++) 
 			{ 
 				$str = &$str[$blocks[$i].'.']; 
-				$str = &$str[sizeof($str)-1]; 
+				$str = &$str[count($str)-1]; 
 			} 
 			// Now we add the block that we're actually assigning to. 
 			// We're adding a new iteration to this block with the given 
@@ -605,7 +605,7 @@ class Template {
 	public function generate_block_data_ref($blockname, $include_last_iterator, $defop = false) {
 		// Get an array of the blocks involved.
 		$blocks = explode('.', $blockname);
-		$blockcount = sizeof($blocks) - 1;
+		$blockcount = count($blocks) - 1;
 		
 		if ($defop) {
 			$varref = '$this->_tpldata[\'DEFINE\']';
@@ -645,7 +645,7 @@ class Template {
 
 		// Break it up into lines and put " -->" back.
 		$code_lines = explode(' -->', $code);
-		$count = sizeof($code_lines);
+		$count = count($code_lines);
 		for ($i = 0; $i < ($count - 1); $i++) {
 			$code_lines[$i] .= ' -->';
 		}
@@ -658,13 +658,13 @@ class Template {
 
 		// prepare array for compiled code
 		$compiled = array();
-		$count_bugs = sizeof($this->bugs);
+		$count_bugs = count($this->bugs);
 
 		// array of switches
 		$sw = array();
 		
 		// main loop
-		$line_count = sizeof($code_lines);
+		$line_count = count($code_lines);
 		
 		for ($i = 0; $i < $line_count; $i++) {
 			$line = $code_lines[$i];
@@ -796,7 +796,7 @@ class Template {
 				if ($block_nesting_level < 2) {
 					// Block is not nested.
 					$line = '<'."?php ";
-					$line .= '$'. $var. '_count = ( isset($this->_tpldata[\''. $var. '.\']) ) ?  sizeof($this->_tpldata[\''. $var. '.\']) : 0;';
+					$line .= '$'. $var. '_count = ( isset($this->_tpldata[\''. $var. '.\']) ) ?  count($this->_tpldata[\''. $var. '.\']) : 0;';
 					$line .= ' for ($'. $var. '_i = 0; $'. $var. '_i < $'. $var. '_count; $'. $var. '_i++)';
 					$line .= '{';
 					$line .= ' $'. $var. '_item = &$this->_tpldata[\''. $var. '.\'][$'. $var. '_i];';
@@ -814,7 +814,7 @@ class Template {
 					$varref = $this->generate_block_data_ref($namespace, false);
 					// Create the for loop code to iterate over this block.
 					$line = '<'."?php ";
-					$line .= '$'. $var. '_count = ( isset('. $varref. ') ) ? sizeof('. $varref. ') : 0;';
+					$line .= '$'. $var. '_count = ( isset('. $varref. ') ) ? count('. $varref. ') : 0;';
 					$line .= ' for ($'. $var. '_i = 0; $'. $var. '_i < $'. $var. '_count; $'. $var. '_i++)';
 					$line .= '{';
 					$line .= ' $'. $var. '_item = &'. $varref. '[$'. $var. '_i];';
@@ -882,7 +882,7 @@ class Template {
 			*/
 			if ($keyword_type == XS_TAG_INCLUDE) {
 				$params = explode(' ', $params_str);
-				if (sizeof($params) != 1) {
+				if (count($params) != 1) {
 					$compiled[] = $keyword_str;
 					continue;
 				}
@@ -969,7 +969,7 @@ class Template {
 		$varrefs = array();
 		preg_match_all('#\{(([a-z0-9\-_]+?\.)+?)([a-z0-9\-_]+?)\}#is', $code, $varrefs);
 		
-		$varcount = sizeof($varrefs[1]);
+		$varcount = count($varrefs[1]);
 		$search = array();
 		$replace = array();
 		for ($i = 0; $i < $varcount; $i++) {
@@ -1315,17 +1315,17 @@ class Template {
 		if (strstr($blockname, '.')) {
 			// Nested block.
 			$blocks = explode('.', $blockname);
-			$blockcount = sizeof($blocks) - 1;
+			$blockcount = count($blocks) - 1;
 			$str = &$this->_tpldata;
 			for($i = 0; $i < $blockcount; $i++) {
 				$str = &$str[$blocks[$i].'.'];
-				$str = &$str[sizeof($str)-1];
+				$str = &$str[count($str)-1];
 			}
 			// Now we add the block that we're actually assigning to.
 			// We're adding a new iteration to this block with the given
 			//   variable assignments.
 			$str = &$str[$blocks[$blockcount].'.'];
-			$count = sizeof($str) - 1;
+			$count = count($str) - 1;
 			if ($count >= 0) {
 				// adding only if there is at least one item
 				$str[$count] = array_merge($str[$count], $vararray);
@@ -1335,7 +1335,7 @@ class Template {
 			// Add a new iteration to this block with the variable assignments
 			// we were given.
 			$str = &$this->_tpldata[$blockname.'.'];
-			$count = sizeof($str) - 1;
+			$count = count($str) - 1;
 			if ($count >= 0) {
 				// adding only if there is at least one item
 				$str[$count] = array_merge($str[$count], $vararray);
@@ -1350,7 +1350,7 @@ class Template {
 	public function flush_block_vars($blockname) {
 		// Top-level block.
 		// flush a existing block we were given.
-		$current_iteration = sizeof($this->_tpldata[$blockname . '.']) - 1;
+		$current_iteration = count($this->_tpldata[$blockname . '.']) - 1;
 		unset($this->_tpldata[$blockname . '.']);
 		return true;
 	}

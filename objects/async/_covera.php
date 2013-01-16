@@ -23,7 +23,7 @@ require_once(ROOT . 'interfase/artists.php');
 $artists = new _artists();
 $artists->get_data();
 
-$a_ary = array();
+$a_ary = w();
 for ($i = 0; $i < 4; $i++) {
 	$_a = array_rand($artists->adata);
 	if (!$artists->adata[$_a]['images'] || isset($a_ary[$_a])) {
@@ -33,15 +33,14 @@ for ($i = 0; $i < 4; $i++) {
 	$a_ary[$_a] = $artists->adata[$_a];
 }
 
-if (sizeof($a_ary))
-{
+if (count($a_ary)) {
 	$sql = 'SELECT *
 		FROM _artists_images
 		WHERE ub IN (??)
 		ORDER BY RAND()';
 	$result = sql_rowset(sql_filter($sql, implode(',', array_keys($a_ary))));
 	
-	$random_images = array();
+	$random_images = w();
 	foreach ($result as $row) {
 		if (!isset($random_images[$row['ub']])) {
 			$random_images[$row['ub']] = $row['image'];
