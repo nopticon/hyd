@@ -12,10 +12,12 @@ RewriteCond %{HTTP_HOST} ^w3.(rockrepublik|rockrepublica|rockrepublick)
 RewriteRule ^(.*)$ http://www.rockrepublik.net/$1 [R=301,L]
 
 RewriteCond %{HTTP_HOST} !^www\.(rock|rk)
+RewriteCond %{HTTP_HOST} !^dev\.(rock|rk)
 RewriteCond %{HTTP_HOST} ^(www\.)?([a-z0-9]+)\.(rock|rk)
 RewriteRule ^(\w+)/ps(\d+)/$ orion/artists.php?id=%2&layout=$1&ps=$2 [L]
 
 RewriteCond %{HTTP_HOST} !^www\.(rock|rk)
+RewriteCond %{HTTP_HOST} !^dev\.(rock|rk)
 RewriteCond %{HTTP_HOST} ^(www\.)?([a-z0-9]+)\.(rock|metal|rk)
 RewriteRule ^([^.]+)?$ orion/artists.php?id=%2&layout=$1 [L]
 
