@@ -23,13 +23,14 @@ $max_email = 10;
 
 $emailer = new emailer();
 
-$sql = "SELECT *
-	FROM _members
+$sql = "SELECT m.* 
+	FROM _members m
+	LEFT JOIN _banlist b ON m.user_id = b.ban_userid
 	WHERE user_type NOT IN (??)
-		AND user_id NOT IN (SELECT ban_userid FROM _banlist)
-		AND user_birthday LIKE '%??'
-		AND user_birthday_last < ?
-	ORDER BY username
+		AND m.user_birthday LIKE '%??'
+		AND m.user_birthday_last < ?
+		AND b.ban_userid IS NULL 
+	ORDER BY m.username
 	LIMIT ??";
 $result = sql_rowset(sql_filter($sql, USER_INACTIVE, date('md'), date('Y'), $max_email));
 

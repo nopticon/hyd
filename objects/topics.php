@@ -293,12 +293,12 @@ class topics {
 		
 		$topics = new stdClass();
 		$total = new stdClass();
-		
+
 		//
 		// All announcement data
 		//
 		$sql = 'SELECT t.*, u.user_id, u.username, u.username_base, u2.user_id as user_id2, u2.username as username2, u2.username_base as username_base2, p.post_time, p.post_username as post_username2
-			FROM _forum_topics t, _members u, _forum_posts p, _members u2
+			FROM _forum_topics t, _members u, _forum_posts p, _members u2' . $forum_select_from . '
 			WHERE t.forum_id = ?
 				AND t.topic_active = ?
 				AND p.post_active = ?
@@ -306,26 +306,46 @@ class topics {
 				AND p.post_id = t.topic_last_post_id
 				AND p.poster_id = u2.user_id
 				AND t.topic_announce = 1
+				' . $forum_select_from . '
 			ORDER BY t.topic_last_post_id DESC';
 		$topics->important = sql_rowset(sql_filter($sql, $forum_id, 1, 1));
 		$total->important = (is_array($topics->important)) ? count($topics->important) : 0;
 		
 		//
 		// Grab all the topics data for this forum
+		// and skip topics already announced on events page
 		//
-		$sql = 'SELECT t.*, u.user_id, u.username, u.username_base, u2.user_id as user_id2, u2.username as username2, u2.username_base as username_base2, p.post_username, p2.post_username AS post_username2, p2.post_time
-			FROM _forum_topics t, _members u, _forum_posts p, _forum_posts p2, _members u2
-			WHERE t.forum_id = ?
-				AND t.topic_active = ?
-				AND p.post_active = ?
-				AND t.topic_poster = u.user_id
-				AND p.post_id = t.topic_first_post_id
-				AND p2.post_id = t.topic_last_post_id
-				AND u2.user_id = p2.poster_id
-				AND t.topic_announce = 0
-			ORDER BY t.topic_important DESC, /*t.topic_last_post_id*/p2.post_time DESC
-			LIMIT ??, ??';
-		$topics->normal = sql_rowset(sql_filter($sql, $forum_id, 1, 1, $start, $config['topics_per_page']));
+		if ($forum_id == $config['forum_for_events']) {
+			$sql = 'SELECT t.*, u.user_id, u.username, u.username_base, u2.user_id as user_id2, u2.username as username2, u2.username_base as username_base2, p.post_username, p2.post_username AS post_username2, p2.post_time
+				FROM (_forum_topics t, _members u, _forum_posts p, _forum_posts p2, _members u2)
+				LEFT JOIN _events e ON e.event_topic = t.topic_id
+				WHERE t.forum_id = ?
+					AND t.topic_active = 1
+					AND p.post_active = 1
+					AND t.topic_poster = u.user_id
+					AND p.post_id = t.topic_first_post_id
+					AND p2.post_id = t.topic_last_post_id
+					AND u2.user_id = p2.poster_id
+					AND t.topic_announce = 0
+					AND e.event_topic IS NULL
+				ORDER BY t.topic_important DESC, p2.post_time DESC
+				LIMIT ??, ??';
+		} else {
+			$sql = 'SELECT t.*, u.user_id, u.username, u.username_base, u2.user_id as user_id2, u2.username as username2, u2.username_base as username_base2, p.post_username, p2.post_username AS post_username2, p2.post_time
+				FROM _forum_topics t, _members u, _forum_posts p, _forum_posts p2, _members u2
+				WHERE t.forum_id = ?
+					AND t.topic_active = 1
+					AND p.post_active = 1
+					AND t.topic_poster = u.user_id
+					AND p.post_id = t.topic_first_post_id
+					AND p2.post_id = t.topic_last_post_id
+					AND u2.user_id = p2.poster_id
+					AND t.topic_announce = 0
+				ORDER BY t.topic_important DESC, p2.post_time DESC
+				LIMIT ??, ??';
+		}
+		
+		$topics->normal = sql_rowset(sql_filter($sql, $forum_id, $start, $config['topics_per_page']));
 		$total->normal = (is_array($topics->normal)) ? count($topics->normal) : 0;
 		
 		//
@@ -344,16 +364,13 @@ class topics {
 		}
 		
 		//
-		// Dump out the page header and load viewforum template
+		// Set template vars
 		//
 		v_style(array(
 			'FORUM_ID' => $forum_id,
 			'FORUM_NAME' => $forum_row['forum_name'],
 			'U_VIEW_FORUM' => s_link('forum', $forum_row['forum_alias']))
 		);
-		//
-		// End header
-		//
 		
 		//
 		// Let's build the topics

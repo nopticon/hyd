@@ -110,6 +110,7 @@ class _home {
 				AND p.post_deleted = 0
 				AND p.post_id = t.topic_last_post_id
 				AND p.poster_id = u.user_id
+				AND t.topic_active = 1
 				AND t.topic_featured = 1
 			ORDER BY t.topic_announce DESC, p.post_time DESC
 			LIMIT ??';
@@ -142,6 +143,7 @@ class _home {
 		$sql = 'SELECT t.topic_id, t.topic_title, t.topic_color, p.post_id, p.post_time, u.user_id, u.username, u.username_base, e.id, e.event_alias, e.date
 			FROM _forum_topics t, _forum_posts p, _events e, _members u
 			WHERE p.post_deleted = 0
+				AND t.topic_active = 1
 				AND t.topic_featured = 1
 				AND t.topic_id = e.event_topic
 				AND p.post_id = t.topic_last_post_id
