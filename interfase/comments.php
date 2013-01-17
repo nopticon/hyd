@@ -182,8 +182,7 @@ class _comments {
 		//
 		// Flood control
 		//
-		if (!$this->auth['adm'] && !$this->auth['mod'])
-		{
+		if (!$this->auth['adm'] && !$this->auth['mod']) {
 			$where_sql = (!$this->auth['user']) ? "post_ip = '$user_ip'" : "poster_id = " . $userdata['user_id'];
 			$sql = "SELECT MAX(post_time) AS last_datetime 
 				FROM " . $this->data['POST_TABLE'] . " 

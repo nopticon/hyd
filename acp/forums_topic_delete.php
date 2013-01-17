@@ -123,8 +123,7 @@ class __forums_topic_delete extends mac {
 		sql_query(sql_filter($sql, $topic_id_sql));
 		
 		//
-		foreach ($forums_id_sql as $forum_id)
-		{
+		foreach ($forums_id_sql as $forum_id) {
 			sync_topic_delete($forum_id);
 		}
 		

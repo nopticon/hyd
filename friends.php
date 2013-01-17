@@ -18,25 +18,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 define('IN_APP', true);
 require_once('./interfase/common.php');
+require_once(ROOT . 'objects/friends.php');
 
 $user->init();
 $user->setup();
 
-$sql = 'SELECT *
-	FROM _partners
-	ORDER BY partner_order';
-$partners = sql_rowset($sql);
+$friends = new _friends();
+$friends->run();
 
-foreach ($partners as $i => $row) {
-	if (!$i) _style('partners');
-	
-	_style('partners.row', array(
-		'NAME' => $row['partner_name'],
-		'IMAGE' => $row['partner_image'],
-		'URL' => $config['assets_url'] . '/style/sites/' . $row['partner_url'])
-	);
-}
-
-page_layout('PARTNERS', 'partners', false, false);
+page_layout($friends->get_title('PARTNERS'), $friends->get_template('partners'));
 
 ?>

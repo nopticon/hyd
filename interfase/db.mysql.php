@@ -190,8 +190,7 @@ class database extends dcom {
 	}
 	
 	public function fieldname($offset, $query_id = 0) {
-		if (!$query_id)
-		{
+		if (!$query_id) {
 			$query_id = $this->result;
 		}
 		
@@ -473,8 +472,7 @@ class database extends dcom {
 	}
 	
 	public function set_error($error = -1) {
-		if ($error !== -1)
-		{
+		if ($error !== -1) {
 			$this->noerror = $error;
 		}
 		

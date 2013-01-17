@@ -83,8 +83,7 @@ class __user_team_create extends mac {
 			$insert = false;
 		}
 		
-		if ($insert)
-		{
+		if ($insert) {
 			$insert = array(
 				'team_id' => $team,
 				'member_id' => $userdata['user_id'],

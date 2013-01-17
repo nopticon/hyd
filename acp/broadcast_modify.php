@@ -83,8 +83,7 @@ class __broadcast_modify extends mac {
 		print_r($filelist);
 		echo '</pre>';
 		
-		foreach ($cds as $item)
-		{
+		foreach ($cds as $item) {
 			$e_item = array_map('trim', explode(':', $item));
 			if (!empty($e_item[0]))
 			{

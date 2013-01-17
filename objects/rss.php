@@ -23,8 +23,8 @@ if (class_exists('_rss')) {
 }
 
 class _rss {
-	public $mode;
-	public $xml = array();
+	private $xml = array();
+	private $mode;
 	
 	function __construct() {
 		return;
@@ -80,34 +80,30 @@ class _rss {
 	
 	function output() {
 		global $user;
+
+		$each_format = "\t" . '<item>%s<title><![CDATA[%s]]></title><link>%s</link><guid>%s</guid><description><![CDATA[%s]]></description><pubDate>%s</pubDate></item>' . nr();
+		$full_format = '<?xml version="1.0" encoding="utf-8"?><rss version="2.0"><channel><title>%s</title><link>%s</link><description><![CDATA[%s]]></description><lastBuildDate>%s</lastBuildDate><webMaster>%s</webMaster>%s</channel></rss>';
 		
-		$umode = strtoupper($this->mode);
-		
-		$items = '';
-		foreach ($this->xml as $item)
-		{
-			$items .= "\t" . '<item>
-		' . (isset($item['author']) ? '<author>' . $item['author'] . '</author>' : '') . '
-		<title><![CDATA[' . html_entity_decode_utf8($item['title']) . ']]></title>
-		<link>' . $item['link'] . '</link>
-		<guid>' . $item['link'] . '</guid>
-		<description><![CDATA[' . html_entity_decode_utf8($item['description']) . ']]></description>
-		<pubDate>' . date('D, d M Y H:i:s \G\M\T', $item['pubdate']) . '</pubDate>
-	</item>' . nr();
+		$elements = '';
+		foreach ($this->xml as $row) {
+			$author = isset($row['author']) ? '<author>' . $row['author'] . '</author>' : '';
+			$title = html_entity_decode_utf8($row['title']);
+			$description = html_entity_decode_utf8($row['description']);
+			$pubdate = date('D, d M Y H:i:s \G\M\T', $row['pubdate']);
+
+			$elements .= sprintf($each_format, $author, $title, $row['link'], $row['link'], $description, $pubdate);
 		}
 		
+		$umode = strtoupper($this->mode);
+		$title = html_entity_decode_utf8(lang('rss_' . $umode));
+		$link = 'http://www.rockrepublik.net/';
+		$description = html_entity_decode_utf8(lang('rss_desc_' . $umode));
+		$lastbuild = date('D, d M Y H:i:s \G\M\T', $this->xml[0]['pubdate']);
+		$webmaster = 'info@rockrepublik.net';
+
 		header('Content-type: text/xml');
-		echo '<?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0">
-<channel>
-	<title>' . html_entity_decode_utf8(lang('rss_' . $umode)) . '</title>
-	<link>http://www.rockrepublik.net/</link>
-	<description><![CDATA[' . html_entity_decode_utf8(lang('rss_desc_' . $umode)) . ']]></description>
-	<lastBuildDate>' . date('D, d M Y H:i:s \G\M\T', $this->xml[0]['pubdate']) . '</lastBuildDate>
-	<webMaster>info@rockrepublik.net</webMaster>
-' . $items . '</channel>
-</rss>';
-		
+		echo sprintf($full_format, $title, $link, $description, $lastbuild, $webmaster, $elements);
+
 		sql_close();
 		exit;
 	}

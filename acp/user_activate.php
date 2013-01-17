@@ -30,8 +30,7 @@ class __user_activate extends mac {
 		
 		$user_id = request_var('uid', 0);
 		
-		if (_button() || $user_id)
-		{
+		if (_button() || $user_id) {
 			$username = request_var('username', '');
 			$user_email = request_var('user_email', '');
 			

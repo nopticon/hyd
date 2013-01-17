@@ -44,13 +44,6 @@ class __artist_lyric_create extends mac {
 			return;
 		}
 
-		$sql = 'SELECT *
-			FROM _artists
-			WHERE ub = ?';
-		if (!$ad = sql_fieldrow(sql_filter($sql, $this->object['ub']))) {
-			return;
-		}
-
 		$v->ub = $this->object['ub'];
 		sql_insert('artists_lyrics', $v);
 
@@ -58,7 +51,7 @@ class __artist_lyric_create extends mac {
 			WHERE ub = ?';
 		sql_query(sql_filter($sql, $this->object['ub']));
 
-		return redirect(s_link('a', $ad['subdomain']));
+		return redirect(s_link('a', $this->object['subdomain']));
 	}
 }
 

@@ -52,8 +52,7 @@ class __user_bot_create extends mac {
 			}
 		}
 		
-		if ($insert)
-		{
+		if ($insert) {
 			$insert_member = array(
 				'user_type' => 2,
 				'user_active' => 1,

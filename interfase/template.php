@@ -1361,13 +1361,11 @@ class Template {
 		return false;
 	}
 
-	public function add_config($tpl)
-	{
+	public function add_config($tpl) {
 		$config_name = 'xs_style_' . $tpl;
 		global $config;
 		$result = false;
-		if(empty($config[$config_name]))
-		{
+		if(empty($config[$config_name])) {
 			$old = $this->style_config;
 			$result = $this->_add_config($tpl, false);
 			$this->style_config = $old;
@@ -1383,16 +1381,17 @@ class Template {
 	}
 
 	public function refresh_config($tpl = '') {
-		if($tpl === '') {
+		if ($tpl === '') {
 			$tpl = $this->tpl;
 		}
-		if($tpl == $this->tpl) {
+		if ($tpl == $this->tpl) {
 			$result = $this->_refresh_config($tpl, true);
 		} else {
 			$old = $this->style_config;
 			$result = $this->_refresh_config($tpl, false);
 			$this->style_config = $old;
 		}
+
 		return $result;
 	}
 
@@ -1401,7 +1400,7 @@ class Template {
 	*/
 	public function _get_config($tpl, $add_config) {
 		$this->style_config = array();
-		if(empty($tpl)) {
+		if (empty($tpl)) {
 			$tpl = $this->tpl;
 		}
 		

@@ -465,8 +465,7 @@ class database extends dcom {
 	}
 	
 	public function set_error($error = -1) {
-		if ($error !== -1)
-		{
+		if ($error !== -1) {
 			$this->noerror = $error;
 		}
 		

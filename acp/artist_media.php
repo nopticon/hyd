@@ -141,23 +141,22 @@ class __artist_media extends mac {
 			FROM _dl
 			WHERE id IN (??)
 				AND ub = ?';
-		if ($result = sql_rowset(sql_filter($sql, _implode(',', $remove), $this->object['ub']))) {
-			foreach ($result as $row) {
-				$path = artist_root($this->object['ub'] . ' media ' . $row['id'] . '.mp3');
-				
-				_rm($path);
-				
-				$sql = 'DELETE FROM _dl
-					WHERE id = ?';
-				sql_query(sql_filter($sql, $row['id']));
-				
-				$cache->delete('downloads_list');
-			}
-			
-			redirect(s_link('acp', array('artist_media', 'a' => $this->object['subdomain'])));
+		if (!$result = sql_rowset(sql_filter($sql, _implode(',', $remove), $this->object['ub']))) {
+			fatal_error();
 		}
-		
-		return;
+
+		foreach ($result as $row) {
+			$path = artist_root($this->object['ub'] . ' media ' . $row['id'] . '.mp3');
+			_rm($path);
+
+			$sql = 'DELETE FROM _dl
+				WHERE id = ?';
+			sql_query(sql_filter($sql, $row['id']));
+				
+			$cache->delete('downloads_list');
+		}
+
+		return redirect(s_link('acp', array('artist_media', 'a' => $this->object['subdomain'])));
 	}
 }
 

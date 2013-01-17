@@ -65,9 +65,8 @@ class _artists extends downloads {
 
 		global $user, $config, $comments;
 
-		//
 		// Gallery
-		//
+		
 		$image = '';
 		if ($this->data['images']) {
 			$simage = $this->get_images(false, $this->data['ub'], true);
@@ -85,9 +84,8 @@ class _artists extends downloads {
 			);
 		}
 		
-		//
 		// News
-		//
+		
 		if ($this->auth['user']) {
 			_style('publish', array(
 				'TITLE' => ($this->auth['mod']) ? lang('send_news') : lang('send_post'),
@@ -260,8 +258,7 @@ class _artists extends downloads {
 			}
 		}
 		
-		switch ($mode)
-		{
+		switch ($mode) {
 			case 'view':
 			default:
 				if ($mode == 'view') {
