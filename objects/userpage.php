@@ -175,7 +175,65 @@ class userpage {
 				}
 				
 				if (!count($error)) {
-					$dc_id = $comments->store_dc($mode, $to_userdata, $user->d(), $dc_subject, $dc_message, true, true);
+					$insert = array(
+						'privmsgs_type' => PRIVMSGS_NEW_MAIL,
+						'privmsgs_from_userid' => $user->d('user_id'),
+						'privmsgs_to_userid' => $to_userdata['user_id'],
+						'privmsgs_date' => time(),
+						'msg_ip' => $user->ip,
+						'privmsgs_text' => $comments->prepare($dc_message),
+						'msg_can_reply' => 1
+					);
+
+					if ($mode == 'reply') {
+						$insert['parent_id'] = $to_userdata['parent_id'];
+					} else {
+						$insert['privmsgs_subject'] = $dc_subject;
+					}
+
+					$dc_id = sql_insert('dc', $insert);
+					
+					if ($mode == 'reply') {
+						$sql = 'UPDATE _dc SET root_conv = root_conv + 1, last_msg_id = ?
+							WHERE msg_id = ?';
+						sql_query(sql_filter($sql, $dc_id, $to_userdata['msg_id']));
+						
+						$sql = 'UPDATE _dc SET msg_deleted = 0
+							WHERE parent_id = ?';
+						sql_query(sql_filter($sql, $to_userdata['parent_id']));
+						
+						// TODO: Today save
+						// $user->delete_unread(UH_NOTE, $to_userdata['parent_id']);
+					} else {
+						$sql = 'UPDATE _dc SET parent_id = ?, last_msg_id = ?
+							WHERE msg_id = ?';
+						sql_query(sql_filter($sql, $dc_id, $dc_id, $dc_id));
+					}
+					
+					// TODO: Today save
+					// $user->save_unread(UH_NOTE, (($mode == 'reply') ? $to_userdata['parent_id'] : $dc_id), 0, $to_userdata['user_id']);
+					
+					//
+					// Notify via email if user requires it
+					//
+					if ($mode == 'start' && /*$can_email && */$user->d('user_email_dc')) {
+						$emailer = new emailer();
+						
+						$emailer->from('info');
+						$emailer->set_subject('Rock Republik: Mensaje nuevo de ' . $user->d('username'));
+						$emailer->use_template('dc_email');
+						$emailer->email_address($to_userdata['user_email']);
+						
+						$dc_url = s_link('my dc read', $dc_id);
+						
+						$emailer->assign_vars(array(
+							'USERNAME' => $to_userdata['username'],
+							'SENT_BY' => $user->d('username'),
+							'DC_URL' => $dc_url)
+						);
+						$emailer->send();
+						$emailer->reset();
+					}
 					
 					redirect(s_link('my dc read', $dc_id) . '#' . $dc_id);
 				}
@@ -383,13 +441,54 @@ class userpage {
 	}
 	
 	private function conversations_delete() {
-		global $comments, $user;
+		global $user;
 		
 		$mark = request_var('mark', array(0));
 		
-		if (_button('delete') && $mark) {
+		if (_button('delete') && count($mark)) {
 			if (_button('confirm')) {
-				$comments->dc_delete($mark);
+				$sql = '((privmsgs_to_userid = ?) OR (privmsgs_from_userid = ?))';
+				$sql_member = sql_filter($sql, $user->d('user_id'), $user->d('user_id'));
+				
+				$sql = 'SELECT *
+					FROM _dc
+					WHERE parent_id IN (??)
+						AND ' . $sql_member;
+				if (!$result = sql_rowset(sql_filter($sql, implode(',', array_map('intval', $mark))))) {
+					return false;
+				}
+				
+				$update_a = $delete_a = w();
+				
+				foreach ($result as $row) {
+					$var = ($row['msg_deleted'] && ($row['msg_deleted'] != $user->d('user_id'))) ? 'delete_a' : 'update_a';
+					
+					if (!isset(${$var}[$row['parent_id']])) {
+						${$var}[$row['parent_id']] = true;
+					}
+				}
+
+				//
+				if (count($update_a)) {
+					$sql = 'UPDATE _dc
+						SET msg_deleted = ?
+						WHERE parent_id IN (??)
+							AND ' . $sql_member;
+					sql_query(sql_filter($sql, $user->d('user_id'), implode(',', array_map('intval', array_keys($update_a)))));
+					
+					// TODO: Today save
+					// $user->delete_unread(UH_NOTE, array_keys($update_a));
+				}
+				
+				if (count($delete_a)) {
+					$sql = 'DELETE FROM _dc
+						WHERE parent_id IN (??)
+							AND ' . $sql_member;
+					sql_query(sql_filter($sql, implode(',', array_map('intval', array_keys($delete_a)))));
+					
+					// TODO: Today save
+					// $user->delete_unread(UH_NOTE, array_keys($delete_a));
+				}
 			} else {
 				$s_hidden = array('delete' => true);
 				

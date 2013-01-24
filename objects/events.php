@@ -694,7 +694,7 @@ class _events extends downloads {
 						}
 					}
 					
-					$user_profile[$row['user_id']] = $comments->user_profile($row, '', $unset_user_profile);	
+					$user_profile[$row['user_id']] = $comments->user_profile($row, $unset_user_profile);
 					
 					$data = array(
 						'POST_ID' => $row['post_id'],

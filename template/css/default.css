@@ -128,7 +128,7 @@ hr {
 	display: block;
 	clear: both;
 	float: left;
-	margin-top: 3px;
+	margin: 3px 0 0 0;
 }
 #menu ul {
 	list-style: none;
@@ -138,14 +138,13 @@ hr {
 }
 #menu ul li {
 	float: left;
-	margin-right: 8px;
+	margin: 0 8px 0 0;
 }
 #menu ul li a {
 	margin: 5px;
 	display: inline;
 }
 #menu ul li a:hover {
-	
 }
 #sign {
 	float: right;
@@ -157,8 +156,7 @@ hr {
 }
 #sign ul li {
 	float: left;
-	margin-top: 0;
-	margin-left: 15px;
+	margin: 0 15px 0 0;
 	list-style: none;
 }
 #sign ul li a {
@@ -191,7 +189,7 @@ hr {
 
 #search input {
 	background: #444;
-	border: 0px solid #383838;
+	border: 0 solid #383838;
 	box-shadow: 0 !important;
 	color: #d0ced1;
 	margin: 0 3px 0 5px;
@@ -247,7 +245,7 @@ hr {
 }
 
 .soc {
-	margin: 3px 0 0 0;
+	margin: 3px 0 0;
 	float: right;
 	position: relative;
 }
@@ -301,17 +299,17 @@ hr {
 .share span {
 	display: block;
 	width: 32px;
-	margin-top: 5px;
+	margin-top: 5px 0 0;
 	font-size: 8px;
 	text-align: center;
 }
 
 .h {
-	margin: 5px 0 10px 0;
+	margin: 5px 0 10px;
 }
 .h h3 {
 	display: inline;
-	margin: 0 10px 0 10px;
+	margin: 0 10px;
 	border-bottom: 1px solid #F5B800;
 	padding-bottom: 3px;
 	font-family: 'Ubuntu', Arial, Helvetica, sans-serif !important;
@@ -395,10 +393,10 @@ hr {
 .ls ul ul {
 	list-style: none;
 	margin: 0;
-	padding: 0px;
+	padding: 0;
 }
 .ls ul li {
-	padding: 5px 0 5px 0;
+	padding: 5px 0;
 }
 .ls ul li li {
 	padding: 0;
@@ -422,7 +420,7 @@ hr {
 	margin: 5px 0 5px 5px;
 }
 .l2 .__, .lc .__, .l3 .__, .l4 .__, .l6 .__ {
-	margin: 5px 0 5px 0;
+	margin: 5px 0;
 }
 .lc ul li {
 	margin-bottom: 10px;
@@ -442,7 +440,7 @@ hr {
 	float: left;
 }
 .l6 ul li {
-	margin: 0px 0 0 5px;
+	margin: 0 0 0 5px;
 	width: 16%;
 	height: 100px;
 	float: left;
@@ -525,7 +523,7 @@ hr {
 }
 .ctl ul {
 	list-style: none;
-	margin: 0 0 0 0;
+	margin: 0;
 	padding: 0;
 	border: 0;
 }
@@ -581,8 +579,8 @@ hr {
 }
 .publish input {
 	display: block;
-	margin: 10px 0 0 0;
-	padding: 4px 8px 4px 8px;
+	margin: 10px 0 0;
+	padding: 4px 8px;
 	border-radius: 4px;
 	background: #5DA209;
 	color: #fff;
@@ -597,7 +595,7 @@ hr {
 	border-radius: 4px;
 }
 .publish label {
-	padding: 10px 0 0 0;
+	padding: 10px 0 0;
 	margin: 0 10px 0 0;
 }
 .publish .f {
@@ -612,16 +610,16 @@ hr {
 }
 .submit {
 	display: block;
-	margin: 10px 0 0 0;
-	padding: 4px 8px 4px 8px;
+	margin: 10px 0 0;
+	padding: 4px 8px;
 	border-radius: 4px;
 	background: #5DA209;
 	color: #fff;
 }
 .remove {
 	display: block;
-	margin: 10px 0 0 0;
-	padding: 4px 8px 4px 8px;
+	margin: 10px 0 0;
+	padding: 4px 8px;
 	border-radius: 4px;
 	background: #C23000;
 	color: #fff;
@@ -682,7 +680,6 @@ hr {
 	margin: 4px 0 5px 0;
 }
 .comments blockquote div {
-	/*font-size: 0.95em;*/
 	line-height: 1.8em;
 	color: #d0ced1;
 }
@@ -690,11 +687,9 @@ hr {
 	position: absolute;
 	top: -0.6em;
 	right: 0;
-	/*padding-left: 0.5;*/
 	margin: 0;
 	font-size: 7.5pt;
 	line-height: auto;
-	/*color: #8;*/
 	text-align: right;
 	background: #161C26;
 }
@@ -810,14 +805,13 @@ html, body {
 }
 #ps_title {
 	background: url(style/tt_r.png) top right no-repeat;
-	padding: 0 5px 0 0;
-	/*color: #fff;*/
+	padding: 0 5px 0;
 	font-size: 10px;
 	font-weight: normal;
 	left: 8px;
 	position: absolute;
-	top:0;
-	z-index:999;
+	top: 0;
+	z-index: 999;
 }
 #ps_title .ps_tt_l {
 	background: url(style/tt_l.png) top left no-repeat;
@@ -877,16 +871,45 @@ html, body {
 	z-index: 1005;
 }
 
-.cb-enable, .cb-disable, .cb-enable span, .cb-disable span { background: url(style/switch.gif) repeat-x; display: block; float: left; }
-.cb-enable span, .cb-disable span { line-height: 30px; display: block; background-repeat: no-repeat; font-weight: bold; }
-.cb-enable span { background-position: left -90px; padding: 0 10px; }
-.cb-disable span { background-position: right -180px;padding: 0 10px; }
-.cb-disable.selected { background-position: 0 -30px; }
-.cb-disable.selected span { background-position: right -210px; color: #fff; }
-.cb-enable.selected { background-position: 0 -60px; }
-.cb-enable.selected span { background-position: left -150px; color: #fff; }
-.switch label { cursor: pointer; }
-.switch input { display: none; }
+.cb-enable, .cb-disable, .cb-enable span, .cb-disable span {
+	background: url(style/switch.gif) repeat-x;
+	display: block;
+	float: left;
+}
+.cb-enable span, .cb-disable span {
+	line-height: 30px;
+	display: block;
+	background-repeat: no-repeat;
+	font-weight: bold;
+}
+.cb-enable span {
+	background-position: left -90px;
+	padding: 0 10px;
+}
+.cb-disable span {
+	background-position: right -180px;
+	padding: 0 10px;
+}
+.cb-disable.selected {
+	background-position: 0 -30px;
+}
+.cb-disable.selected span {
+	background-position: right -210px;
+	color: #fff;
+}
+.cb-enable.selected {
+	background-position: 0 -60px;
+}
+.cb-enable.selected span {
+	background-position: left -150px;
+	color: #fff;
+}
+.switch label {
+	cursor: pointer;
+}
+.switch input {
+	display: none;
+}
 
 <!-- INCLUDE css/check.css -->
 <!-- INCLUDE css/player.css -->

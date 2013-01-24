@@ -384,8 +384,7 @@ class _comments {
 		$sizeof_controls = count($this->data['CONTROL']);
 		_style($tpl_prefix);
 		
-		$controls_data = w();
-		$user_profile = w();
+		$controls_data = $user_profile = w();
 		
 		foreach ($result as $row) {
 			$uid = $row['user_id'];
@@ -443,7 +442,7 @@ class _comments {
 	//
 	// Get formatted member profile fields
 	//
-	public function user_profile(&$row, $a_class = '', $unset_fields = false) {
+	public function user_profile(&$row, $unset_fields = false) {
 		global $user, $config;
 		static $all_ranks;
 		
@@ -462,7 +461,7 @@ class _comments {
 						$data['profile'] = ($row['user_id'] != GUEST) ? s_link('m', $value) : '';
 						break;
 					case 'user_sig':
-						$data[$key] = ($value != '') ? '<div' . ((isset($row['post_id'])) ? ' id="_sig_' . $row['post_id'] . '" ' : '') . 'class="lsig">' . $this->parse_message($value, $a_class) . '</div>' : '';
+						$data[$key] = ($value != '') ? '<div' . ((isset($row['post_id'])) ? ' id="_sig_' . $row['post_id'] . '" ' : '') . 'class="lsig">' . $this->parse_message($value) . '</div>' : '';
 						break;
 					case 'user_avatar':
 						if ($row['user_id'] != GUEST) {
@@ -593,145 +592,10 @@ class _comments {
 	}
 	
 	//
-	// | Conversations System
-	//
-	
-	//
-	// Store new conversation
-	//
-	public function store_dc($mode, $to, $from, $subject, $message, $can_reply = true, $can_email = false) {
-		global $user;
-		
-		if ($mode == 'reply') {
-			$insert = array(
-				'parent_id' => (int) $to['parent_id'],
-				'privmsgs_type' => PRIVMSGS_NEW_MAIL,
-				'privmsgs_from_userid' => (int) $from['user_id'],
-				'privmsgs_to_userid' => (int) $to['user_id'],
-			);
-		} else {
-			$insert = array(
-				'privmsgs_type' => PRIVMSGS_NEW_MAIL,
-				'privmsgs_subject' => $subject,
-				'privmsgs_from_userid' => (int) $from['user_id'],
-				'privmsgs_to_userid' => (int) $to['user_id']
-			);
-		}
-		
-		$insert += array(
-			'privmsgs_date' => time(),
-			'msg_ip' => $user->ip,
-			'privmsgs_text' => $this->prepare($message),
-			'msg_can_reply' => (int) $can_reply
-		);
-		
-		$dc_id = sql_insert('dc', $insert);
-		
-		if ($mode == 'reply') {
-			$sql = 'UPDATE _dc SET root_conv = root_conv + 1, last_msg_id = ?
-				WHERE msg_id = ?';
-			sql_query(sql_filter($sql, $dc_id, $to['msg_id']));
-			
-			$sql = 'UPDATE _dc SET msg_deleted = 0
-				WHERE parent_id = ?';
-			sql_query(sql_filter($sql, $to['parent_id']));
-			
-			// TODO: Today save
-			// $user->delete_unread(UH_NOTE, $to['parent_id']);
-		} else {
-			$sql = 'UPDATE _dc SET parent_id = ?, last_msg_id = ?
-				WHERE msg_id = ?';
-			sql_query(sql_filter($sql, $dc_id, $dc_id, $dc_id));
-		}
-		
-		// TODO: Today save
-		// $user->save_unread(UH_NOTE, (($mode == 'reply') ? $to['parent_id'] : $dc_id), 0, $to['user_id']);
-		
-		//
-		// Notify via email if user requires it
-		//
-		if ($mode == 'start' && $can_email && $user->d('user_email_dc')) {
-			$emailer = new emailer();
-			
-			$emailer->from('info');
-			$emailer->set_subject('Rock Republik: ' . $from['username'] . ' te ha enviado un mensaje');
-			$emailer->use_template('dc_email');
-			$emailer->email_address($to['user_email']);
-			
-			$dc_url = s_link('my dc read', $dc_id);
-			
-			$emailer->assign_vars(array(
-				'USERNAME' => $to['username'],
-				'SENT_BY' => $from['username'],
-				'DC_URL' => $dc_url)
-			);
-			$emailer->send();
-			$emailer->reset();
-		}
-		
-		return $dc_id;
-	}
-	
-	//
-	// Delete conversation/s
-	//
-	public function dc_delete($mark) {
-		if (!is_array($mark) || !count($mark)) {
-			return;
-		}
-		
-		global $user;
-		
-		$sql_member = sql_filter('((privmsgs_to_userid = ?) OR (privmsgs_from_userid = ?))', $user->d('user_id'), $user->d('user_id'));
-		
-		$sql = 'SELECT *
-			FROM _dc
-			WHERE parent_id IN (??)
-				AND ' . $sql_member;
-		if (!$result = sql_rowset(sql_filter($sql, implode(',', array_map('intval', $mark))))) {
-			return false;
-		}
-		
-		$update_a = $delete_a = w();
-		
-		foreach ($result as $row) {
-			$var = ($row['msg_deleted'] && ($row['msg_deleted'] != $user->d('user_id'))) ? 'delete_a' : 'update_a';
-			
-			if (!isset(${$var}[$row['parent_id']])) {
-				${$var}[$row['parent_id']] = true;
-			}
-		}
-
-		//
-		if (count($update_a)) {
-			$sql = 'UPDATE _dc
-				SET msg_deleted = ?
-				WHERE parent_id IN (??)
-					AND ' . $sql_member;
-			sql_query(sql_filter($sql, $user->d('user_id'), implode(',', array_map('intval', array_keys($update_a)))));
-			
-			// TODO: Today save
-			// $user->delete_unread(UH_NOTE, array_keys($update_a));
-		}
-		
-		if (count($delete_a)) {
-			$sql = 'DELETE FROM _dc
-				WHERE parent_id IN (??)
-					AND ' . $sql_member;
-			sql_query(sql_filter($sql, implode(',', array_map('intval', array_keys($delete_a)))));
-			
-			// TODO: Today save
-			// $user->delete_unread(UH_NOTE, array_keys($delete_a));
-		}
-		
-		return true;
-	}
-	
-	//
 	// Message parser methods
 	//
 	
-	public function parse_message($message, $a_class = '') {
+	public function parse_message($message) {
 		$this->message = ' ' . $message . ' ';
 		unset($message);
 		
@@ -741,7 +605,7 @@ class _comments {
 		$this->parse_url();
 		$this->parse_bbcode();
 		$this->parse_smilies();
-		$this->a_links($a_class);
+		$this->a_links();
 		$this->d_links();
 		$this->members_profile();
 		$this->members_icon();
@@ -917,7 +781,7 @@ class _comments {
 		return;
 	}
 	
-	public function a_links($style = 'ub-url') {
+	public function a_links() {
 		if (!isset($this->options['a'])) {
 			global $cache;
 			
@@ -956,7 +820,7 @@ class _comments {
 		return;
 	}
 	
-	public function d_links($style = '') {
+	public function d_links() {
 		global $user;
 		
 		if (!isset($this->options['downloads'])) {
