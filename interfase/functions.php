@@ -1600,7 +1600,7 @@ function fatal_error($mode = '404', $bp_message = '') {
 				$emailer->from('info');
 				$emailer->set_subject('MySQL error');
 				$emailer->use_template('mcp_delete', $config['default_lang']);
-				$emailer->email_address('info@rockrepublik.net');
+				$emailer->email_address($config['board_email']);
 				
 				$emailer->assign_vars(array(
 					'MESSAGE' => $bp_message,
@@ -1610,8 +1610,7 @@ function fatal_error($mode = '404', $bp_message = '') {
 				$emailer->reset();
 			} else {
 				$email_message = $bp_message . nr(false, 2) . date('r');
-				$email_headers = "From: info@rockrepublik.net\nReturn-Path: " . $config['board_email'] . "\nMessage-ID: <" . md5(uniqid(time())) . "@" . $config['server_name'] . ">\nMIME-Version: 1.0\nContent-type: text/plain; charset=iso-8859-1\nContent-transfer-encoding: 8bit\nDate: " . date('r', time()) . "\nX-Priority: 3\nX-MSMail-Priority: Normal\n"; 
-				//$result = @mail('info@rockrepublik.net', 'MySQL error', preg_replace("#(?<!\r)\n#s", "\n", $email_message), $email_headers, "-f{$config['board_email']}");
+				$email_headers = "From: " . $config['board_email'] . "\nReturn-Path: " . $config['board_email'] . "\nMessage-ID: <" . md5(uniqid(time())) . "@" . $config['server_name'] . ">\nMIME-Version: 1.0\nContent-type: text/plain; charset=iso-8859-1\nContent-transfer-encoding: 8bit\nDate: " . date('r', time()) . "\nX-Priority: 3\nX-MSMail-Priority: Normal\n"; 
 			}
 			
 			$title = 'Error del sistema';

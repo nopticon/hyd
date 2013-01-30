@@ -141,9 +141,7 @@ class __forums_post_delete extends mac {
 }
 
 function sync_post_delete($id) {
-	$last_topic = 0;
-	$total_posts = 0;
-	$total_topics = 0;
+	$last_topic = $total_posts = $total_topics = 0;
 	
 	//
 	$sql = 'SELECT COUNT(post_id) AS total 

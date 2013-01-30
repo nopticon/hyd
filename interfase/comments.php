@@ -299,7 +299,7 @@ class _comments {
 					$emailer->from('info');
 					$emailer->use_template('user_message');
 					$emailer->email_address($post_data['user_email']);
-					$emailer->set_subject($user->d('username') . ' te envio un mensaje en Rock Republik');
+					$emailer->set_subject($config['sitename'] . ': Mensaje nuevo de ' . $user->d('username'));
 					
 					$emailer->assign_vars(array(
 						'USERNAME_TO' => $post_data['username'],

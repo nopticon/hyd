@@ -32,9 +32,7 @@ class __forums_topic_delete extends mac {
 			return false;
 		}
 		
-		$topics = request_var('topic_id', '');
-		$topics = array_map('intval', explode(',', $topics));
-		
+		$topics = array_map('intval', explode(',', request_var('topic_id', '')));
 		$forums_id_sql = $topics_id = w();
 		
 		$sql = 'SELECT forum_id, topic_id
@@ -82,8 +80,7 @@ class __forums_topic_delete extends mac {
 		//
 		// Got all required info so go ahead and start deleting everything
 		//
-		$sql = 'DELETE
-			FROM _forum_topics
+		$sql = 'UPDATE _forum_topics SET topic_active = 0
 			WHERE topic_id IN (??)';
 		sql_query(sql_filter($sql, $topic_id_sql));
 		
@@ -93,34 +90,16 @@ class __forums_topic_delete extends mac {
 		sql_query(sql_filter($sql, $topic_id_sql));
 		
 		if ($post_id_sql != '') {
-			$sql = 'DELETE
-				FROM _forum_posts
+			$sql = 'UPDATE _forum_posts SET post_active = 0
 				WHERE post_id IN (??)';
 			sql_query(sql_filter($sql, $post_id_sql));
 		}
 	
-		if ($vote_id_sql != '') {
-			$sql = 'DELETE
-				FROM _poll_options
-				WHERE vote_id IN (??)';
-			sql_query(sql_filter($sql, $vote_id_sql));
-			
-			$sql = 'DELETE
-				FROM _poll_results
-				WHERE vote_id IN (??)';
-			sql_query(sql_filter($sql, $vote_id_sql));
-			
-			$sql = 'DELETE
-				FROM _poll_voters
-				WHERE vote_id IN (??)';
-			sql_query(sql_filter($sql, $vote_id_sql));
-		}
-		
 		//
-		$sql = 'DELETE FROM _members_unread
+		/*$sql = 'DELETE FROM _members_unread
 			WHERE element = 8
 				AND item IN (??)';
-		sql_query(sql_filter($sql, $topic_id_sql));
+		sql_query(sql_filter($sql, $topic_id_sql));*/
 		
 		//
 		foreach ($forums_id_sql as $forum_id) {

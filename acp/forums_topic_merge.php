@@ -78,7 +78,9 @@ class __forums_topic_merge extends mac {
 			}
 		}
 		
-		// Update destination toic
+		//
+		// Update destination topic
+		//
 		$sql = 'SELECT topic_views
 			FROM _forum_topics
 			WHERE topic_id = ?';
@@ -89,6 +91,7 @@ class __forums_topic_merge extends mac {
 		}
 		
 		//
+		// Select user_id's favourites on this topic
 		//
 		$sql = 'SELECT *
 			FROM _forum_topics_fav
@@ -109,7 +112,7 @@ class __forums_topic_merge extends mac {
 			$sql[] = sql_filter('UPDATE _forum_topics SET topic_vote = 1 WHERE topic_id = ?', $to_topic);
 		}
 		sql_query($sql);
-		
+
 		// TODO: Today save
 		// $user->save_unread(UH_T, $to_topic);
 		

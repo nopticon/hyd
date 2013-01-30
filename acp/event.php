@@ -57,6 +57,7 @@ class __event extends mac {
 					if ($xa === false) {
 						continue;
 					}
+					
 					$xb = $upload->resize($row, $filepath_1, $filepath_2, $img, array(100, 75), false, false);
 					
 					$event_alias = friendly($event_name);
@@ -148,10 +149,10 @@ class __event extends mac {
 					sql_query(sql_filter($sql, $topic_id, $event_id));
 					
 					$insert = array(
-						'topic_id' => (int) $topic_id,
+						'topic_id' => $topic_id,
 						'vote_text' => '&iquest;Asistir&aacute;s a ' . $event_name . '?',
 						'vote_start' => time(),
-						'vote_length' => (int) ($poll_length * 86400)
+						'vote_length' => ($poll_length * 86400)
 					);
 					$poll_id = sql_insert('poll_options', $insert);
 					
@@ -159,8 +160,8 @@ class __event extends mac {
 					
 					foreach ($poll_options as $option_id => $option_text) {
 						$sql_insert = array(
-							'vote_id' => (int) $poll_id,
-							'vote_option_id' => (int) $option_id,
+							'vote_id' => $poll_id,
+							'vote_option_id' => $option_id,
 							'vote_option_text' => $option_text,
 							'vote_result' => 0
 						);

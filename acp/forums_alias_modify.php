@@ -35,8 +35,8 @@ class __forums_alias_modify extends mac {
 			$sql = 'UPDATE _forums SET forum_alias = ?
 				WHERE forum_id = ?';
 			sql_query(sql_filter($sql, $forum_alias, $forum_id));
-			
-			_pre($forum_id . ' > ' . $forum_alias, true);
+
+			redirect(s_link('board', $forum_alias));
 		}
 		
 		$sql = 'SELECT forum_id, forum_name

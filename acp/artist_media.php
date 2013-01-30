@@ -119,11 +119,11 @@ class __artist_media extends mac {
 			$cache->delete('downloads_list');
 			
 			redirect(s_link('acp', array('artist_media', 'a' => $this->object['subdomain'], 'id' => $media_id)));
-		} else {
-			_style('error', array(
-				'MESSAGE' => parse_error($upload->error))
-			);
 		}
+
+		_style('error', array(
+			'MESSAGE' => parse_error($upload->error))
+		);
 		
 		return;
 	}

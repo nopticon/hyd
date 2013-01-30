@@ -220,7 +220,7 @@ class userpage {
 						$emailer = new emailer();
 						
 						$emailer->from('info');
-						$emailer->set_subject('Rock Republik: Mensaje nuevo de ' . $user->d('username'));
+						$emailer->set_subject($config['sitename'] . ': Mensaje nuevo de ' . $user->d('username'));
 						$emailer->use_template('dc_email');
 						$emailer->email_address($to_userdata['user_email']);
 						

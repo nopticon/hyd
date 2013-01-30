@@ -32,9 +32,7 @@ class __forums_topic_case extends mac {
 			return false;
 		}
 		
-		$topic_id = request_var('topic_id', 0);
-		
-		if (!$topic_id) {
+		if (!$topic_id = request_var('topic_id', 0)) {
 			fatal_error();
 		}
 	
@@ -50,8 +48,8 @@ class __forums_topic_case extends mac {
 		$sql = 'UPDATE _forum_topics SET topic_title = ?
 			WHERE topic_id = ?';
 		sql_query(sql_filter($sql, $title, $topic_id));
-		
-		return _pre($data['topic_title'] . ' > ' . $title, true);
+
+		return redirect(s_link('topic', $topic_id));
 	}
 }
 

@@ -63,8 +63,9 @@ class __news_create extends mac {
 			$sql = 'INSERT _news' . sql_build('INSERT', $sql_insert);
 			$news_id = sql_query_nextid($sql);
 			
+			//
 			// Upload news thumbnail
-			
+			//
 			$send = $upload->process($config['news_path'], 'thumbnail');
 			
 			if (count($this->error)) {

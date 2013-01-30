@@ -37,9 +37,7 @@ class __artist_stats extends mac {
 			ORDER BY date DESC';
 		$stats = sql_rowset(sql_filter($sql, $this->object['ub']), 'date');
 
-		$years_sum = w();
-		$years_temp = w();
-		$years = w();
+		$years_sum = $years_temp = $years = w();
 
 		foreach ($stats as $date => $void) {
 			$year = substr($date, 0, 4);

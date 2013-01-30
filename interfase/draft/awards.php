@@ -76,12 +76,10 @@ if (time() >= 1197093599) {
 				);
 	
 				for ($i = 0; $i < $vote_options; $i++) {
-					$subdomain = 'http://' . get_username_base($vote_info[$i]['vote_option_text']) . '.rockrepublik.net/';
-					
 					_style('poll.options.item', array(
 						'POLL_OPTION_ID' => $vote_info[$i]['vote_option_id'],
 						'POLL_OPTION_CAPTION' => $vote_info[$i]['vote_option_text'],
-						'POLL_OPTION_LINK' => $subdomain)
+						'POLL_OPTION_LINK' => s_link('a', get_username_base($vote_info[$i]['vote_option_text'])))
 					);
 				}
 			}
@@ -93,6 +91,6 @@ $template_vars = array(
 	'S_TOPIC_ACTION' => $topic_url . (($start) ? 's' . $start . '/' : ''),
 	'U_VIEW_FORUM' => s_link('forum', $forum_id)
 );
-page_layout('Rock Republik Awards', 'awards_voting', $template_vars);
+page_layout('AWARDS', 'awards_voting', $template_vars);
 
 ?>

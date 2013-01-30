@@ -32,8 +32,7 @@ class __forums_topic_poll extends mac {
 			return false;
 		}
 		
-		$topic_id = request_var('topic_id', '');
-		if (empty($topic_id)) {
+		if (!$topic_id = request_var('topic_id', '')) {
 			fatal_error();
 		}
 		
