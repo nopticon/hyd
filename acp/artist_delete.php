@@ -26,13 +26,21 @@ class __artist_delete extends mac {
 	}
 	
 	public function _home() {
+		$this->__home();
+
+		$this->warning_show();
+
+		$sql = 'SELECT ub, name
+			FROM _artists
+			ORDER BY name';
+		return _rowset_style($sql, 'artists');
+	}
+
+	private function __home() {
 		global $config, $cache;
 		
 		if (!_button()) {
-			$sql = 'SELECT ub, name
-				FROM _artists
-				ORDER BY name';
-			return _rowset_style($sql, 'artists');
+			return;
 		}
 		
 		$name = request_var('name', '');
@@ -113,7 +121,7 @@ class __artist_delete extends mac {
 		}
 		
 		if (!_rm($config['artists_path'] . $a_data['ub'])) {
-			_pre('Error al eliminar directorio de artista.', true);
+			$this->warning('Error al eliminar directorio de artista.');
 		}
 		
 		sql_query($d_sql);

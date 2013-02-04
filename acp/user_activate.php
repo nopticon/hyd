@@ -54,7 +54,7 @@ class __user_activate extends mac {
 			}
 			
 			if (!$userdata = sql_fieldrow($sql)) {
-				exit;
+				fatal_error();
 			}
 			
 			//

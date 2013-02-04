@@ -9,7 +9,7 @@
  *
  * @return  boolean     Succesful or not
  */
-function unzip ($src_file, $dest_dir = false, $create_zip_name_dir = true, $overwrite = true) {
+function unzip($src_file, $dest_dir = false, $create_zip_name_dir = true, $overwrite = true) {
 	if (!@function_exists("zip_open")) {
 		return false;
 	}

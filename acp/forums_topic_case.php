@@ -26,6 +26,12 @@ class __forums_topic_case extends mac {
 	}
 	
 	public function _home() {
+		$this->__home();
+		
+		return $this->warning_show();
+	}
+
+	private function __home() {
 		global $config, $user, $cache;
 		
 		if (!_button()) {

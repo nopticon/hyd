@@ -537,9 +537,8 @@ class _artists extends downloads {
 		$sql = 'UPDATE _artists SET www_views = www_views + 1
 			WHERE ub = ?';
 		sql_query(sql_filter($sql, $this->data['ub']));
-		
-		header('Location: http://' . $this->data['www']);
-		exit;
+
+		return redirect($this->data['www']);
 	}
 	
 	/*

@@ -26,6 +26,12 @@ class __artist extends mac {
 	}
 	
 	public function _home() {
+		$this->__home();
+
+		return $this->warning_show();
+	}
+
+	private function __home() {
 		global $config, $user, $cache;
 		
 		if (!_button()) {
@@ -36,14 +42,14 @@ class __artist extends mac {
 		$request->subdomain = get_subdomain($request->name);
 
 		if (!$request->name) {
-			_pre('Ingresa el nombre del artista.', true);
+			return $this->warning('Ingresa el nombre del artista.');
 		}
 
 		$sql = 'SELECT subdomain
 			FROM _artists
 			WHERE subdomain = ?';
 		if (sql_field(sql_filter($sql, $request->subdomain), 'subdomain', '')) {
-			_pre('El subdominio ya esta en uso.');
+			return $this->warning('El subdominio ya esta en uso.');
 		}
 		
 		$sql_insert = array(

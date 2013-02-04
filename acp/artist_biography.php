@@ -26,20 +26,9 @@ class __artist_biography extends mac {
 	}
 	
 	public function _home() {
-		global $config, $user, $comments;
-		
 		$this->_artist();
 		
-		if (_button()) {
-			$message = request_var('message', '');
-			$message = $comments->prepare($message);
-			
-			$sql = 'UPDATE _artists SET bio = ?
-				WHERE ub = ?';
-			sql_query(sql_filter($sql, $message, $this->object['ub']));
-			
-			_style('updated');
-		}
+		$this->__home();
 		
 		$sql = 'SELECT bio
 			FROM _artists
@@ -50,7 +39,22 @@ class __artist_biography extends mac {
 			'MESSAGE' => $bio)
 		);
 		
-		return;
+		return $this->warning_show();
+	}
+
+	private function __home() {
+		global $comments;
+
+		if (_button()) {
+			$message = request_var('message', '');
+			$message = $comments->prepare($message);
+			
+			$sql = 'UPDATE _artists SET bio = ?
+				WHERE ub = ?';
+			sql_query(sql_filter($sql, $message, $this->object['ub']));
+
+			$this->warning('ARTIST_BIO_UPDATED');
+		}
 	}
 }
 
