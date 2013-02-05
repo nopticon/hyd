@@ -360,7 +360,7 @@ class _events extends downloads {
 					}
 				}
 				
-				$is_auth = $auth->forum(AUTH_ALL, $forum_id, $event_topic);
+				$is_auth = $user->auth->forum(AUTH_ALL, $forum_id, $event_topic);
 				$u_event_alias = s_link('events', $this->v('event_alias'));
 				$u_event_publish = ($reply) ? s_link('events', $this->v('event_alias'), $post_reply, 'reply') : $u_event_alias;
 				
@@ -372,7 +372,7 @@ class _events extends downloads {
 							do_login();
 						}
 						
-						$can_reply_closed = $auth->option(array('forum', 'topics', 'delete'));
+						$can_reply_closed = $user->auth->option(array('forum', 'topics', 'delete'));
 						
 						if (!$can_reply_closed && ($event_topic['forum_locked'] || $event_topic['topic_locked'])) {
 							$error[] = 'TOPIC_LOCKED';

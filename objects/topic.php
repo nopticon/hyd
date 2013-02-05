@@ -104,7 +104,7 @@ class topic {
 		//
 		// Start member auth
 		//
-		$is_auth = $auth->forum(AUTH_ALL, $forum_id, $topic_data);
+		$is_auth = $user->auth->forum(AUTH_ALL, $forum_id, $topic_data);
 		
 		if ($submit_reply || $submit_vote) {
 			$auth_key = ($submit_reply) ? 'auth_reply' : 'auth_vote';
@@ -114,7 +114,7 @@ class topic {
 					do_login();
 				}
 				
-				$can_reply_closed = $auth->option(w('forum topics delete'));
+				$can_reply_closed = $user->auth->option(w('forum topics delete'));
 				
 				if (!$can_reply_closed && ($topic_data['forum_locked'] || $topic_data['topic_locked'])) {
 					$error[] = 'TOPIC_LOCKED';
@@ -471,7 +471,7 @@ class topic {
 			
 			$mod_topic = w();
 			foreach ($mod as $item) {
-				if ($auth->option(array('forum', 'topics', $item))) {
+				if ($user->auth->option(array('forum', 'topics', $item))) {
 					$mod_topic[strtoupper($item)] = s_link('acp', array('topic', topic' => $topic_id, 'mode' => $item));
 				}
 			}
@@ -498,7 +498,7 @@ class topic {
 			);
 		}
 		
-		$can_reply_closed = $auth->option(array('forum', 'topics', 'delete'));
+		$can_reply_closed = $user->auth->option(array('forum', 'topics', 'delete'));
 		
 		if ((!$topic_data['forum_locked'] && !$topic_data['topic_locked']) || $can_reply_closed) {
 			if ($user->is('member')) {

@@ -73,24 +73,40 @@ if (!defined('REQC')) {
 	define('REQC', strpos(ini_get('request_order'), 'C') === false);
 }
 
+//
+// Load basic libraries
+//
 require_once(ROOT.'interfase/constants.php');
 require_once(ROOT.'interfase/functions.php');
-require_once(ROOT.'interfase/db.mysqli.php');
-require_once(ROOT.'interfase/template.php');
-require_once(ROOT.'interfase/session.php');
-require_once(ROOT.'interfase/cache.php');
-require_once(ROOT.'interfase/comments.php');
-require_once(ROOT.'interfase/emailer.php');
-require_once(ROOT.'interfase/upload.php');
+
+//
+// Class autoload
+//
+spl_autoload_extensions('.php');
+
+spl_autoload_register(function($filename) {
+	require_once(ROOT.'objects/' . $filename);
+});
+
+spl_autoload_register(function($filename) {
+	require_once(ROOT.'interfase/' . $filename);
+});
+
+// require_once(ROOT.'interfase/db.mysqli.php');
+// require_once(ROOT.'interfase/template.php');
+// require_once(ROOT.'interfase/session.php');
+// require_once(ROOT.'interfase/cache.php');
+// require_once(ROOT.'interfase/comments.php');
+// require_once(ROOT.'interfase/emailer.php');
+// require_once(ROOT.'interfase/upload.php');
 
 set_error_handler('msg_handler');
 
 $db = new database();
 $user = new user();
-$auth = new auth();
 $cache = new cache();
 $template = new template();
-$comments = new _comments();
+$comments = new comments();
 $upload = new upload();
 
 $config = $cache->config();

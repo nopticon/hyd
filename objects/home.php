@@ -219,7 +219,7 @@ class _home {
 		
 		if ($user->is('member')) {
 			$is_auth = w();
-			$is_auth = $auth->forum(AUTH_VOTE, $forum_id, $topic_data);
+			$is_auth = $user->auth->forum(AUTH_VOTE, $forum_id, $topic_data);
 			
 			$sql = 'SELECT vote_user_id
 				FROM _poll_voters

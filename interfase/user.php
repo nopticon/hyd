@@ -24,7 +24,7 @@ class session {
 	public $ip = '';
 	public $page = '';
 	public $time = 0;
-	
+
 	public function init($update_page = true, $bypass_empty_ip = false) {
 		global $config;
 		
@@ -492,6 +492,7 @@ class user extends session {
 	public $date_format;
 	public $timezone;
 	public $dst;
+	public $auth;
 
 	public $lang_name;
 	public $lang_path;
@@ -500,7 +501,10 @@ class user extends session {
 	public $keyoptions = array('viewimg' => 0, 'viewsigs' => 3, 'viewavatars' => 4);
 	public $keyvalues = array();
 
+
 	public function __construct() {
+		$this->auth = new auth();
+
 		return;
 	}
 

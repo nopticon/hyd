@@ -77,7 +77,7 @@ class topics {
 		// Start auth check
 		//
 		$is_auth = w();
-		$is_auth = $auth->forum(AUTH_ALL, $forum_id, $forum_row);
+		$is_auth = $user->auth->forum(AUTH_ALL, $forum_id, $forum_row);
 		
 		if (!$is_auth['auth_view'] || !$is_auth['auth_read']) {
 			if (!$user->is('member')) {
