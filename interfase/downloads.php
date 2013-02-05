@@ -18,10 +18,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_APP')) exit;
 
-if (class_exists('downloads')) {
-	return;
-}
-
 class downloads {
 	public $ud;
 	public $ud_song;
@@ -400,5 +396,3 @@ class downloads {
 		return bcdiv($filesize, $div, 2) . (($mb) ? ' MB' : ' KB');
 	}
 }
-
-?>

@@ -92,5 +92,3 @@ sql_close();
 
 echo preg_replace('/\s\s+/', ' ', str_replace(array(nr(1), nr(), "\t"), '', preg_replace('!/\*.*?\*/!s', '', $template->vars['EXT'])));
 exit;
-
-?>

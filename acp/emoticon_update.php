@@ -52,5 +52,3 @@ class __emoticon_update extends mac {
 		return _pre($process . ' emoticons.');
 	}
 }
-
-?>

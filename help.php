@@ -18,14 +18,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 define('IN_APP', true);
 require_once('./interfase/common.php');
-require_once(ROOT . 'objects/help.php');
 
 $user->init();
 $user->setup();
 
-$help = new _help();
+$help = new help();
 $help->run();
 
 page_layout($help->get_title('HELP'), $help->get_template('help'));
-
-?>

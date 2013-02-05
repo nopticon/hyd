@@ -906,5 +906,3 @@ class comments {
 		return;
 	}
 }
-
-?>

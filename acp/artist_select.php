@@ -61,5 +61,3 @@ class __artist_select extends mac {
 		return;
 	}
 }
-
-?>

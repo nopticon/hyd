@@ -159,5 +159,3 @@ class __artist_media extends mac {
 		return redirect(s_link('acp', array('artist_media', 'a' => $this->object['subdomain'])));
 	}
 }
-
-?>

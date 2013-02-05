@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_APP')) exit;
 
-require_once(ROOT . 'objects/community.php');
+// require_once(ROOT . 'objects/community.php');
 
 $user->setup();
 
@@ -54,5 +54,3 @@ $template->set_filenames(array(
 	'body' => 'community.online.htm')
 );
 $template->pparse('body');
-
-?>

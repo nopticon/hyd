@@ -57,5 +57,3 @@ sql_query($sql);
 set_config('site_disable', 0);
 
 _pre('Done.', true);
-
-?>

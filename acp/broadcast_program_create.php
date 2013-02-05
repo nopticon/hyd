@@ -92,5 +92,3 @@ class __broadcast_program_create extends mac {
 		return;
 	}
 }
-
-?>

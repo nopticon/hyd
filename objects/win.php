@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_APP')) exit;
 
-class _win {
+class win {
 	private $object;
 	private $_title;
 	private $_template;
@@ -80,5 +80,3 @@ class _win {
 		return;
 	}
 }
-
-?>

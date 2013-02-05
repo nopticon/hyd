@@ -37,5 +37,3 @@ sql_query(sql_filter($sql, $image_footer, $event_id, $image_id));
 
 echo $image_footer;
 exit;
-
-?>

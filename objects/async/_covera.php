@@ -18,9 +18,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_APP')) exit;
 
-require_once(ROOT . 'interfase/artists.php');
+// require_once(ROOT . 'interfase/artists.php');
 
-$artists = new _artists();
+$artists = new artists();
 $artists->get_data();
 
 $a_ary = w();
@@ -59,5 +59,3 @@ if (count($a_ary)) {
 	$return_string .= '</tr></table>';
 	echo rawurlencode($return_string);
 }
-
-?>

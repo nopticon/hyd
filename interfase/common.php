@@ -82,23 +82,7 @@ require_once(ROOT.'interfase/functions.php');
 //
 // Class autoload
 //
-spl_autoload_extensions('.php');
-
-spl_autoload_register(function($filename) {
-	require_once(ROOT.'objects/' . $filename);
-});
-
-spl_autoload_register(function($filename) {
-	require_once(ROOT.'interfase/' . $filename);
-});
-
-// require_once(ROOT.'interfase/db.mysqli.php');
-// require_once(ROOT.'interfase/template.php');
-// require_once(ROOT.'interfase/session.php');
-// require_once(ROOT.'interfase/cache.php');
-// require_once(ROOT.'interfase/comments.php');
-// require_once(ROOT.'interfase/emailer.php');
-// require_once(ROOT.'interfase/upload.php');
+spl_autoload_register('app_autoload');
 
 set_error_handler('msg_handler');
 
@@ -110,5 +94,3 @@ $comments = new comments();
 $upload = new upload();
 
 $config = $cache->config();
-
-?>

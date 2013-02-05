@@ -158,5 +158,3 @@ class board {
 		return true;
 	}
 }
-
-?>

@@ -18,9 +18,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_APP')) exit;
 
-require_once(ROOT . 'interfase/downloads.php');
+// require_once(ROOT . 'interfase/downloads.php');
 
-class _artists extends downloads {
+class artists extends downloads {
 	public $auth = array();
 	public $data = array();
 	public $adata = array();
@@ -1653,5 +1653,3 @@ class _artists extends downloads {
 	}
 
 }
-
-?>

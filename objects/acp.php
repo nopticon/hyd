@@ -115,7 +115,7 @@ class mac {
 	}
 }
 
-class _acp {
+class acp {
 	private $module;
 	
 	public function __construct() {
@@ -245,5 +245,3 @@ class _acp {
 		return;
 	}
 }
-
-?>

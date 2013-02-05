@@ -1267,5 +1267,3 @@ class userpage {
 		return true;
 	}
 }
-
-?>

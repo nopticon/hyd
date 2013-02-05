@@ -120,5 +120,3 @@ foreach ($wall_feed as $row) {
 
 //_pre($likes);
 _pre($official_posts, true);
-
-?>

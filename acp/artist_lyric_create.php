@@ -54,5 +54,3 @@ class __artist_lyric_create extends mac {
 		return redirect(s_link('a', $this->object['subdomain']));
 	}
 }
-
-?>

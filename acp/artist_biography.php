@@ -57,5 +57,3 @@ class __artist_biography extends mac {
 		}
 	}
 }
-
-?>

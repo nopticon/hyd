@@ -18,14 +18,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 define('IN_APP', true);
 require_once('./interfase/common.php');
-require_once(ROOT . 'objects/win.php');
 
 $user->init();
 $user->setup();
 
-$win = new _win();
+$win = new win();
 $win->run();
 
 page_layout($win->get_title('WIN'), $win->get_template('win'));
-
-?>

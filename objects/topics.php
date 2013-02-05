@@ -482,5 +482,3 @@ class topics {
 		return;
 	}
 }
-
-?>

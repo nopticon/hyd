@@ -1476,5 +1476,3 @@ if (!function_exists('xs_switch')) {
 		return (isset($tpl->_tpldata[$name.'.']) && count($tpl->_tpldata[$name.'.']) > 0);
 	}
 }
-
-?>

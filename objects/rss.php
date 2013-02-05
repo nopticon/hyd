@@ -22,7 +22,7 @@ if (class_exists('_rss')) {
 	return;
 }
 
-class _rss {
+class rss {
 	private $xml = array();
 	private $mode;
 	
@@ -108,5 +108,3 @@ class _rss {
 		exit;
 	}
 }
-
-?>

@@ -103,5 +103,3 @@ class __event_artist_create extends mac {
 		return redirect(s_link('events', $event['event_alias']));
 	}
 }
-
-?>

@@ -20,7 +20,7 @@ if (!defined('IN_APP')) exit;
 
 header('Content-type: text/html; charset=utf-8');
 
-class _broadcast { 
+class broadcast { 
 	private $_template;
 	private $_title;
 	
@@ -149,5 +149,3 @@ class _broadcast {
 		return;
 	}
 }
-
-?>

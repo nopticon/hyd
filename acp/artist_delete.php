@@ -132,5 +132,3 @@ class __artist_delete extends mac {
 		redirect(s_link('a'));
 	}
 }
-
-?>

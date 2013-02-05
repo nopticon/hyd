@@ -99,5 +99,3 @@ class __artist_stats extends mac {
 		return;
 	}
 }
-
-?>

@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_APP')) exit;
 
-class _home {
+class home {
 	public function conversations() {
 		global $comments;
 
@@ -270,5 +270,3 @@ class _home {
 		return true;
 	}
 }
-
-?>

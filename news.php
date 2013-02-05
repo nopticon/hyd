@@ -18,14 +18,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 define('IN_APP', true);
 require_once('./interfase/common.php');
-require_once(ROOT . 'objects/news.php');
 
 $user->init();
 $user->setup();
 
-$news = new _news();
+$news = new news();
 $news->run();
 
 page_layout($news->get_title('NEWS'), $news->get_template('news'));
-
-?>

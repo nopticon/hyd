@@ -116,5 +116,3 @@ class __artist extends mac {
 		}
 	}
 }
-
-?>
