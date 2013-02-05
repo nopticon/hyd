@@ -107,5 +107,3 @@ function timeDiff($timestamp, $now = 0, $detailed = false, $n = 0) {
 	
 	return (count($result)) ? $result : false;
 }
-
-?>

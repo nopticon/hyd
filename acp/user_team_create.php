@@ -98,5 +98,3 @@ class __user_team_create extends mac {
 		return _pre('El usuario <strong>' . $userdata['username'] . '</strong> fue agregado al grupo <strong>' . $teamd['team_name'] . '</strong>.', true);
 	}
 }
-
-?>

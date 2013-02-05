@@ -77,5 +77,3 @@ class __news_category_move extends mac {
 		return redirect(s_link('news', $t));
 	}
 }
-
-?>

@@ -56,5 +56,3 @@ class __forums_alias_modify extends mac {
 		return;
 	}
 }
-
-?>

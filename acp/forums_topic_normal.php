@@ -73,5 +73,3 @@ class __forums_topic_normal extends mac {
 		return;
 	}
 }
-
-?>

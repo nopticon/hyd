@@ -49,5 +49,3 @@ class __unread_topics_delete extends mac {
 		return;
 	}
 }
-
-?>

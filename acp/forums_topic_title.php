@@ -49,5 +49,3 @@ class __forums_topic_title extends mac {
 		return _pre('El titulo del tema <strong>' . $topicdata['topic_title'] . '</strong> ha sido cambiado por <strong>' . $title . '</strong>.', true);
 	}
 }
-
-?>

@@ -166,5 +166,3 @@ function sync_post_delete($id) {
 	
 	return sql_affected();
 }
-
-?>

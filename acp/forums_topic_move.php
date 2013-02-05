@@ -121,5 +121,3 @@ function sync_topic_move($id) {
 	
 	return;
 }
-
-?>

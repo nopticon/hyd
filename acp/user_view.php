@@ -69,5 +69,3 @@ class __user_view extends mac {
 		return _pre($userdata, true);
 	}
 }
-
-?>

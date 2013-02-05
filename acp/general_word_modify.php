@@ -91,5 +91,3 @@ class __general_word_modify extends mac {
 		return _pre('La frase <strong>' . $orig . '</strong> fue reemplazada por <strong>' . $repl . '</strong> en ' . $total_1 . ' f, ' . $total_2 . ' a, ' . $total_3 . ' m.', true);
 	}
 }
-
-?>

@@ -49,5 +49,3 @@ class __user_mass_delete extends mac {
 		return _pre('El usuario ' . $userdata['username'] . ' no recibira email masivo.');
 	}
 }
-
-?>

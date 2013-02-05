@@ -51,5 +51,3 @@ class __user_password extends mac {
 		return _pre('La contrase&ntilde;a de ' . $userdata['username'] . ' fue actualizada.', true);
 	}
 }
-
-?>

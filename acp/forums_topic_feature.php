@@ -61,5 +61,3 @@ class __forums_topic_feature extends mac {
 		return redirect(s_link('topic', $this->id));
 	}
 }
-
-?>

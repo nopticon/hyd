@@ -70,5 +70,3 @@ class __news_images extends mac {
 		return;
 	}
 }
-
-?>

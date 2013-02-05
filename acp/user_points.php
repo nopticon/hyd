@@ -47,5 +47,3 @@ class __user_points extends mac {
 		return;
 	}
 }
-
-?>

@@ -104,5 +104,3 @@ class __user_activate extends mac {
 		return;
 	}
 }
-
-?>

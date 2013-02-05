@@ -66,5 +66,3 @@ class __forums_topic_poll extends mac {
 		return;
 	}
 }
-
-?>

@@ -68,5 +68,3 @@ class __user_ban extends mac {
 		return true;
 	}
 }
-
-?>

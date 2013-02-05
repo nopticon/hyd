@@ -58,5 +58,3 @@ class __forums_topic_case extends mac {
 		return redirect(s_link('topic', $topic_id));
 	}
 }
-
-?>

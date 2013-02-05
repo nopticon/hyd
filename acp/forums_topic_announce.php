@@ -52,5 +52,3 @@ class __forums_topic_announce extends mac {
 		return _pre('El tema <strong>' . $topicdata['topic_title'] . '</strong> ha sido anunciado.', true);
 	}
 }
-
-?>
