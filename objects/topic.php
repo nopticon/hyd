@@ -61,12 +61,13 @@ class topic {
 			FROM _forum_topics t, _forums f' . $sql_from . '
 			WHERE ' . $sql_where . '
 				AND f.forum_id = t.forum_id
+				AND f.forum_active = 1
 				AND t.topic_active = 1' . 
 				$sql_order;
 		if (!$topic_data = sql_fieldrow($sql)) {
 			fatal_error();
 		}
-		
+
 		switch ($topic_data['forum_alias']) {
 			case 'events':
 				$sql = 'SELECT event_alias

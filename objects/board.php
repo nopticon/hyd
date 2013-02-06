@@ -66,6 +66,7 @@ class board {
 			LEFT JOIN _forum_topics t ON t.topic_id = f.forum_last_topic_id
 			LEFT JOIN _forum_posts p ON p.post_id = t.topic_last_post_id)
 			LEFT JOIN _members u ON u.user_id = p.poster_id)
+			WHERE f.forum_active = 1
 			ORDER BY f.cat_id, f.forum_order';
 		if (!$this->forum_data = sql_rowset($sql)) {
 			return false;
@@ -89,9 +90,9 @@ class board {
 						continue;
 					}
 
-					if ($f_data['forum_name'] == '[root]') {
+					/*if ($f_data['forum_name'] == '[root]') {
 						continue;
-					}
+					}*/
 					
 					if ($f_data['post_id']) {
 						$f_data['topic_title'] = (strlen($f_data['topic_title']) > 30) ? substr($f_data['topic_title'], 0, 30) . '...' : $f_data['topic_title'];
