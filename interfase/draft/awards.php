@@ -92,5 +92,3 @@ $template_vars = array(
 	'U_VIEW_FORUM' => s_link('forum', $forum_id)
 );
 page_layout('AWARDS', 'awards_voting', $template_vars);
-
-?>

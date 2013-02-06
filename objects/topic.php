@@ -419,7 +419,7 @@ class topic {
 		// Advanced auth
 		//
 		
-		$controls = $user_profile = w();
+		$controls = w();
 		$unset_user_profile = w('user_id user_posts user_gender');
 		
 		_style('posts');
@@ -436,9 +436,9 @@ class topic {
 				}
 			}
 			
-			$user_profile[$row['user_id']] = $comments->user_profile($row, $unset_user_profile);	
+			$data = $comments->user_profile($row, $unset_user_profile);	
 			
-			$data = array(
+			$data += array(
 				'POST_ID' => $row['post_id'],
 				'POST_DATE' => $user->format_date($row['post_time']),
 				'MESSAGE' => $comments->parse_message($row['post_text']),
@@ -446,10 +446,6 @@ class topic {
 				'DELETED' => $row['post_deleted'],
 				'UNREAD' => 0
 			);
-			
-			foreach ($user_profile[$row['user_id']] as $key => $value) {
-				$data[strtoupper($key)] = $value;
-			}
 			
 			_style('posts.item', $data);
 			_style('posts.item.' . (($row['user_id'] != GUEST) ? 'username' : 'guestuser'));
@@ -473,7 +469,7 @@ class topic {
 			$mod_topic = w();
 			foreach ($mod as $item) {
 				if ($user->auth->option(array('forum', 'topics', $item))) {
-					$mod_topic[strtoupper($item)] = s_link('acp', array('topic', topic' => $topic_id, 'mode' => $item));
+					$mod_topic[$item] = s_link('acp', array('topic', topic' => $topic_id, 'mode' => $item));
 				}
 			}
 			

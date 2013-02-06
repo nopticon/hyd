@@ -669,5 +669,3 @@ function username_search($search_match) {
 	
 	return page_footer();
 }
-
-?>

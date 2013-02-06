@@ -85,5 +85,3 @@ if ($chat->_setup()) {
 }
 
 page_layout($page_title, $htmlpage, false, $keepalive);
-
-?>

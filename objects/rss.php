@@ -94,10 +94,9 @@ class rss {
 			$elements .= sprintf($each_format, $author, $title, $row['link'], $row['link'], $description, $pubdate);
 		}
 		
-		$umode = strtoupper($this->mode);
-		$title = html_entity_decode_utf8(lang('rss_' . $umode));
+		$title = html_entity_decode_utf8(lang('rss_' . $this->mode));
 		$link = 'http://www.rockrepublik.net/';
-		$description = html_entity_decode_utf8(lang('rss_desc_' . $umode));
+		$description = html_entity_decode_utf8(lang('rss_desc_' . $this->mode));
 		$lastbuild = date('D, d M Y H:i:s \G\M\T', $this->xml[0]['pubdate']);
 		$webmaster = 'info@rockrepublik.net';
 

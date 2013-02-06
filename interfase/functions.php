@@ -1436,7 +1436,7 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 	);
 	
 	foreach ($v_fields as $k => $v) {
-		$layout_vars['E_' . strtoupper($k)] = (isset($error[$k])) ? true : false;
+		$layout_vars['e_' . $k] = (isset($error[$k])) ? true : false;
 	}
 	
 	if ($login) {
@@ -2045,7 +2045,7 @@ function _rowset_style_row($row, $style, $prefix = '') {
 	$f = w();
 	foreach ($row as $_f => $_v) {
 		$g = array_key(array_slice(explode('_', $_f), -1), 0);
-		$f[strtoupper($prefix . $g)] = $_v;
+		$f[$prefix . $g] = $_v;
 	}
 	
 	return _style($style . '.row', $f);
@@ -2053,13 +2053,8 @@ function _rowset_style_row($row, $style, $prefix = '') {
 
 function _style_uv($a) {
 	if (!is_array($a) && !is_object($a)) $a = w();
-	
-	$b = w();
-	foreach ($a as $i => $v) {
-		$b[strtoupper($i)] = $v;
-	}
-	
-	return $b;
+
+	return array_change_key_case($a, CASE_UPPER);
 }
 
 function _style($a, $b = array(), $i = false) {

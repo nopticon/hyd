@@ -1083,5 +1083,3 @@ function generate_user_info(&$row, $date_format, $group_mod, &$from, &$posts, &$
 
 	return;
 }
-
-?>

@@ -72,5 +72,3 @@ foreach ($result as $row) {
 }
 
 _pre('', true);
-
-?>

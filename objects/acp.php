@@ -209,7 +209,6 @@ class acp {
 			require_once($acp_dir . $row);
 			
 			$acp_alias = $part[1];
-			$acp_upper = strtoupper($acp_alias);
 			$object_name = '__' . $acp_alias;
 			
 			if (!class_exists($object_name)) {

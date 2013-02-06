@@ -136,5 +136,3 @@ function sync_topic_delete($id) {
 	
 	return;
 }
-
-?>

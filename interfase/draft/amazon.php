@@ -116,5 +116,4 @@ if (file_exists('./covers/'.$amazon_album_id.'.jpg')) {
 	}	
 	// Finally print it:
 	print_cover($amazon_album_id); 
-}	
-?>
+}

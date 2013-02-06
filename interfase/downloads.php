@@ -32,7 +32,7 @@ class downloads {
 		return;
 	}
 	
-	public function dl_type($ud) {
+	public function media_type($ud) {
 		global $user;
 		
 		$type = 0;
@@ -47,26 +47,7 @@ class downloads {
 		return $type;
 	}
 	
-	public function dl_setup() {
-		$download_id = request_var('download_id', 0);
-		if (!$download_id) {
-			fatal_error();
-		}
-		
-		$sql = 'SELECT d.*
-			FROM _dl d
-			LEFT JOIN _artists a ON d.ub = a.ub 
-			WHERE d.id = ?
-				AND d.ub = ?';
-		if (!$this->dl_data = sql_fieldrow(sql_filter($sql, $download_id, $this->data['ub']))) {
-			fatal_error();
-		}
-		
-		$this->dl_data += $this->dl_type($this->dl_data['ud']);
-		return;
-	}
-	
-	public function dl_view() {
+	public function media_view() {
 		global $user, $config, $comments;
 		
 		if (!$this->auth['adm'] && !$this->auth['mod']) {
@@ -249,7 +230,7 @@ class downloads {
 		return;
 	}
 	
-	public function dl_save() {
+	public function media_save() {
 		$sql = 'UPDATE _dl SET downloads = downloads + 1
 			WHERE id = ?';
 		sql_query(sql_filter($sql, $this->dl_data['id']));
@@ -259,12 +240,12 @@ class downloads {
 		
 		$this->filename = str_replace($orig, $repl, $this->data['name']) . '_' . str_replace($orig, $repl, $this->dl_data['title']) . '.' . $this->dl_data['extension'];
 		$this->filepath = 'data/artists/' . $this->data['ub'] . '/media/' . $this->dl_data['id'] . '.' . $this->dl_data['extension'];
-		$this->dl_file();
+		$this->media_file();
 		
 		return;
 	}
 	
-	public function dl_vote() {
+	public function media_vote() {
 		if (!$this->auth['user']) {
 			do_login();
 		}
@@ -320,7 +301,7 @@ class downloads {
 		redirect($url);
 	}
 	
-	public function dl_fav() {
+	public function media_fav() {
 		if (!$this->auth['user']) {
 			do_login();
 		}
@@ -357,7 +338,7 @@ class downloads {
 		return redirect($url);
 	}
 	
-	public function dl_file($name = '', $path = '', $data = '', $content_type = 'application/octet-stream', $disposition = 'attachment') {
+	public function media_file($name = '', $path = '', $data = '', $content_type = 'application/octet-stream', $disposition = 'attachment') {
 		sql_close();
 		
 		$bad_chars = array("'", "\\", ' ', '/', ':', '*', '?', '"', '<', '>', '|');

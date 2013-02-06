@@ -85,5 +85,3 @@ if ($fp) {
 }
 
 _pre('Disconnected.');
-
-?>

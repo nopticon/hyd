@@ -260,5 +260,3 @@ function sync_topic($id) {
 		
 	return true;
 }
-
-?>

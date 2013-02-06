@@ -143,5 +143,3 @@ switch ($mode) {
 }
 
 redirect(s_link('chat'));
-
-?>

@@ -56,5 +56,3 @@ asort($a);
 foreach ($a as $i => $d) {
 	echo $d . ' > :i' . $b[$i] . ':<br />';
 }
-
-?>

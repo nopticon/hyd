@@ -98,5 +98,3 @@ class __now extends common {
 		return $this->e($response);
 	}
 }
-
-?>

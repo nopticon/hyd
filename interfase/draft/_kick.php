@@ -99,5 +99,3 @@ class __kick extends common
 		return;
 	}
 }
-
-?>

@@ -20,21 +20,17 @@ if (!defined('IN_APP')) exit;
 
 // require_once(ROOT . 'interfase/downloads.php');
 
-class events extends downloads { 
+class events { 
 	public $data = array();
 	public $images = array();
 	public $timetoday = 0;
-	
+
 	private $_template;
 	private $_title;
 	
-	public function __construct($get_timetoday = false) {
-		if (!$get_timetoday) {
-			return;
-		}
-		
+	public function __construct() {
 		global $user;
-		
+
 		$current_time = time();
 		$minutes = date('is', $current_time);
 		$this->timetoday = (int) ($current_time - (60 * intval($minutes[0].$minutes[1])) - intval($minutes[2].$minutes[3])) - (3600 * $user->format_date($current_time, 'H'));
@@ -679,8 +675,7 @@ class events extends downloads {
 				foreach ($messages as $row) {
 					if (!$i) {
 						$controls = w();
-						$user_profile = w();
-						$unset_user_profile = array('user_id', 'user_posts', 'user_gender');
+						$unset_user_profile = w('user_id user_posts user_gender');
 						
 						_style('messages');
 					}
@@ -694,19 +689,15 @@ class events extends downloads {
 						}
 					}
 					
-					$user_profile[$row['user_id']] = $comments->user_profile($row, $unset_user_profile);
+					$data = $comments->user_profile($row, $unset_user_profile);
 					
-					$data = array(
+					$data += array(
 						'POST_ID' => $row['post_id'],
 						'DATETIME' => $user->format_date($row['post_time']),
 						'MESSAGE' => $comments->parse_message($row['post_text']),
 						'PLAYING' => $row['post_np'],
 						'DELETED' => $row['post_deleted']
 					);
-					
-					foreach ($user_profile[$row['user_id']] as $key => $value) {
-						$data[strtoupper($key)] = $value;
-					}
 					
 					_style('messages.row', $data);
 				

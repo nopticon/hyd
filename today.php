@@ -324,7 +324,7 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
 				'S_MARK_ID' => $row['id'],
 				'UB_URL' => s_link('a', $row['subdomain']),
 				'UD_URL' => s_link('a', $row['subdomain'], 9, $row['id']),
-				'UD_TYPE' => array_key($downloads->dl_type($row['ud_type']), 'av'),
+				'UD_TYPE' => array_key($downloads->media_type($row['ud_type']), 'av'),
 				'DATETIME' => $user->format_date($row['date']),
 				'UB' => $row['name'],
 				'UD' => $row['title'])
@@ -438,7 +438,7 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
 				);
 			}
 			
-			$download_type = $downloads->dl_type($row['ud_type']);
+			$download_type = $downloads->media_type($row['ud_type']);
 			$user_profile = $comments->user_profile($row);
 			
 			_style('items.d_messages.item', array(

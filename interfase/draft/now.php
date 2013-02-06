@@ -67,5 +67,3 @@ if (!empty($scl['data']['stream_title']) && $scl['data']['stream_title'] != $con
 foreach ($song as $row) {
 	echo '<div>' . $row . '</div>';
 }
-
-?>

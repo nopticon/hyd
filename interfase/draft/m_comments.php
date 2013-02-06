@@ -525,5 +525,3 @@ class comments extends common {
 		
 	}
 }
-
-?>

@@ -526,27 +526,6 @@ class user extends session {
 			$this->date_format = $config['default_dateformat'];
 			$this->timezone = $config['board_timezone'] * 3600;
 			$this->dst = $config['board_dst'] * 3600;
-
-			if ($accept_lang = v_server('HTTP_ACCEPT_LANGUAGE')) {
-				$accept_lang_ary = explode(',', $accept_lang);
-				foreach ($accept_lang_ary as $accept_lang) {
-					// Set correct format ... guess full xx_YY form
-					$accept_lang = substr($accept_lang, 0, 2) . '_' . strtoupper(substr($accept_lang, 3, 2));
-					if (file_exists(ROOT.'language/' . $accept_lang . "/main.php")) {
-						$this->lang_name = $config['default_lang'] = $accept_lang;
-						$this->lang_path = ROOT.'language/' . $accept_lang . '/';
-						break;
-					} else {
-						// No match on xx_YY so try xx
-						$accept_lang = substr($accept_lang, 0, 2);
-						if (file_exists(ROOT . 'language/' . $accept_lang . "/main.php")) {
-							$this->lang_name = $config['default_lang'] = $accept_lang;
-							$this->lang_path = ROOT.'language/' . $accept_lang . '/';
-							break;
-						}
-					}
-				}
-			}
 		}
 		
 		// We include common language file here to not load it every time a custom language file is included

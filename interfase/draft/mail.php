@@ -268,5 +268,3 @@ class _mail {
 		$this->body($this->parse_header($headerpart), explode("\n", trim(implode("\n", $contentpart))));
 	}
 }
-
-?>

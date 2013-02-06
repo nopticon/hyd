@@ -33,5 +33,3 @@ class __ extends mac {
 		return;
 	}
 }
-
-?>

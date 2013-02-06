@@ -82,5 +82,3 @@ foreach ($members as $row) {
 
 _pre($rk);
 _pre($groups);
-
-?>

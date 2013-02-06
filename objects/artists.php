@@ -70,6 +70,7 @@ class artists extends downloads {
 		$image = '';
 		if ($this->data['images']) {
 			$simage = $this->get_images(false, $this->data['ub'], true);
+
 			$imagedata = $this->images[$this->data['ub']][$simage];
 			$image = $imagedata['path'];
 		}
@@ -122,17 +123,15 @@ class artists extends downloads {
 					if (!isset($user_profile[$uid]) || ($uid == GUEST)) {
 						$user_profile[$uid] = $comments->user_profile($row);
 					}
+
+					$row_data = $user_profile[$uid];
 					
-					$row_data = array(
+					$row_data += array(
 						'POST_ID' => $row['post_id'],
 						'DATETIME' => $user->format_date($row['post_time']),
 						'MESSAGE' => $comments->parse_message($row['post_text']),
 						'S_DELETE' => false
 					);
-					
-					foreach ($user_profile[$uid] as $key => $value) {
-						$row_data[strtoupper($key)] = $value;
-					}
 					
 					_style('news.row', $row_data);
 				}
@@ -275,12 +274,6 @@ class artists extends downloads {
 						'HEIGHT' => $imagedata['height'])
 					);
 					
-					/*if ($imagedata['allow_dl']) {
-						_style('selected.download', array(
-							'URL' => s_link('a', $this->data['subdomain'], 'gallery', $imagedata['image'], 'save'))
-						);
-					}*/
-					
 					$this->data['images']--;
 				}
 				
@@ -418,25 +411,28 @@ class artists extends downloads {
 			return ($this->data['layout'] == 'downloads');
 		}
 
-		$this->dl_setup();
-		
-		$mode = request_var('dl_mode', '');
-		if ($mode == '') {
-			$mode = 'view';
+		if (!$download_id = request_var('download_id', 0)) {
+			fatal_error();
 		}
-
-
 		
+		$sql = 'SELECT d.*
+			FROM _dl d
+			LEFT JOIN _artists a ON d.ub = a.ub 
+			WHERE d.id = ?
+				AND d.ub = ?';
+		if (!$this->dl_data = sql_fieldrow(sql_filter($sql, $download_id, $this->data['ub']))) {
+			fatal_error();
+		}
+		
+		$this->dl_data += $this->media_type($this->dl_data['ud']);
+
+		$mode = request_var('dl_mode', 'view');
+
 		if (!in_array($mode, w('view save vote fav'))) {
 			redirect(s_link('a', $this->data['subdomain']));
 		}
 		
-		$mode = 'dl_' . $mode;
-		if (!method_exists($this, $mode)) {
-			redirect(s_link('a', $this->data['subdomain']));
-		}
-		
-		return $this->$mode();
+		return $this->{'media_' . $mode}();
 	}
 	
 	/*
@@ -974,7 +970,7 @@ class artists extends downloads {
 		foreach ($all_data as $id => $data) {
 			if ($data['name'] != '') {
 				_style('a_stats.item', array(
-					'LANG' => lang('ub_top_' . strtoupper($id)),
+					'LANG' => lang('ub_top_' . $id),
 					'URL' => s_link('a', $data['subdomain']),
 					'NAME' => $data['name'],
 					'LOCATION' => ($data['local']) ? 'Guatemala' : $data['location'],
@@ -1117,7 +1113,7 @@ class artists extends downloads {
 			}
 			
 			$ud_size = ($dl_size > $config['main_dl']) ? $config['main_dl'] : $dl_size;
-			$download_type = $this->dl_type($ud);
+			$download_type = $this->media_type($ud);
 			
 			_style('downloads.panel', array(
 				'UD' => $download_type['lang'],
@@ -1565,7 +1561,7 @@ class artists extends downloads {
 					$this->ud_song = sql_rowset(sql_filter($sql, $this->data['ub']), 'ud', false, true);
 
 					foreach ($this->ud_song as $key => $data) {
-						$download_type = $this->dl_type($key);
+						$download_type = $this->media_type($key);
 						_style('ud_block', array('LANG' => $download_type['lang']));
 						
 						foreach ($data as $song) {

@@ -212,5 +212,3 @@ class __radio extends common {
 		return;
 	}
 }
-
-?>

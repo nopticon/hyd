@@ -62,5 +62,3 @@ foreach ($radio as $d => $row_day) {
 }
 
 page_layout('RADIO_INDEX', 'radio_body');
-
-?>

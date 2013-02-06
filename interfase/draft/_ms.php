@@ -252,5 +252,3 @@ class __ms extends common
 		
 	}
 }
-
-?>

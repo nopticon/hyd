@@ -734,17 +734,16 @@ class userpage {
 				WHERE rank_id = ?';
 			$_fields->rank = sql_field(sql_filter($sql, $user->d('rank')), 'rank_title', '--');
 		}
+
+		$output_vars = $_fields;
 		
-		$output_vars = array(
+		$output_vars += array(
 			'DATEFORMAT' => $dateformat_select,
 			'TIMEZONE' => $timezone_select,
 			'HIDEUSER_SELECTED' => ($_fields->hideuser) ? ' checked="checked"' : '',
 			'EMAIL_DC_SELECTED' => ($_fields->email_dc) ? ' checked="checked"' : ''
 		);
 		
-		foreach ($_fields as $field => $value) {
-			$output_vars[strtoupper($field)] = $value;
-		}
 		v_style($output_vars);
 		
 		$this->_title = 'MEMBER_OPTIONS';

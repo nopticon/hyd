@@ -120,5 +120,3 @@ class __conv extends common
 		return $this->e('.');
 	}
 }
-
-?>
