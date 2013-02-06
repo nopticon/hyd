@@ -57,5 +57,3 @@ class __forums_topic_points extends mac {
 		return redirect(s_link('topic', $topic_id));
 	}
 }
-
-?>

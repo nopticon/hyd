@@ -49,5 +49,3 @@ class __user_sig_delete extends mac {
 		return _pre('La firma de ' . $userdata['username'] . ' ha sido borrada.', true);
 	}
 }
-
-?>

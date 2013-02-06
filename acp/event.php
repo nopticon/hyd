@@ -214,5 +214,3 @@ class __event extends mac {
 		return;
 	}
 }
-
-?>

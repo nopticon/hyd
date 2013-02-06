@@ -49,5 +49,3 @@ class __forims_points_delete extends mac {
 		return;
 	}
 }
-
-?>

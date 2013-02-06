@@ -255,5 +255,3 @@ class __artist_auth extends mac {
 		return;
 	}
 }
-
-?>

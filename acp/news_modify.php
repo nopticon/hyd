@@ -80,5 +80,3 @@ class __news_modify extends mac {
 		return;
 	}
 }
-
-?>

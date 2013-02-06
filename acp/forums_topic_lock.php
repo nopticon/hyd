@@ -48,5 +48,3 @@ class __forums_topic_lock extends mac {
 		return redirect(s_link('topic', $topic_id));
 	}
 }
-
-?>

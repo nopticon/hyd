@@ -47,5 +47,3 @@ class __broadcast_dj_report extends mac {
 		return;
 	}
 }
-
-?>

@@ -18,18 +18,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 define('IN_APP', true);
 require_once('./interfase/common.php');
-require_once(ROOT . 'objects/home.php');
-require_once(ROOT . 'objects/artists.php');
-require_once(ROOT . 'objects/events.php');
 
 $user->init();
 $user->setup();
 
 srand((double)microtime()*1000000);
 
-$home = new _home();
-$artists = new _artists();
-$events = new _events(true);
+$home = new home();
+$artists = new artists();
+$events = new events(true);
 
 $home->news();
 $home->board_general();
@@ -42,5 +39,3 @@ $artists->thumbnails();
 $events->_nextevent();
 
 page_layout('HOME', 'home', false, false);
-
-?>

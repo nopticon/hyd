@@ -79,5 +79,3 @@ class __user_name_change extends mac {
 		return;
 	}
 }
-
-?>

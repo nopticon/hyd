@@ -54,5 +54,3 @@ class __unread_all_delete extends mac {
 		return _pre('Deleted', true);
 	}
 }
-
-?>

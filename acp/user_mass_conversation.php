@@ -114,5 +114,3 @@ class __user_mass_conversation extends mac {
 		return;
 	}
 }
-
-?>

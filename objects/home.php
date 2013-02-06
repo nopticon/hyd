@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_APP')) exit;
 
-class _home {
+class home {
 	public function conversations() {
 		global $comments;
 
@@ -219,7 +219,7 @@ class _home {
 		
 		if ($user->is('member')) {
 			$is_auth = w();
-			$is_auth = $auth->forum(AUTH_VOTE, $forum_id, $topic_data);
+			$is_auth = $user->auth->forum(AUTH_VOTE, $forum_id, $topic_data);
 			
 			$sql = 'SELECT vote_user_id
 				FROM _poll_voters
@@ -270,5 +270,3 @@ class _home {
 		return true;
 	}
 }
-
-?>

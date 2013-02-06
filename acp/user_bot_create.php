@@ -82,5 +82,3 @@ class __user_bot_create extends mac {
 		return;
 	}
 }
-
-?>

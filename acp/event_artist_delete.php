@@ -92,5 +92,3 @@ class __event_artist_delete extends mac {
 		return redirect(s_link('events', $row['event_alias']));
 	}
 }
-
-?>

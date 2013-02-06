@@ -69,5 +69,3 @@ class __user_post_delete extends mac {
 		return redirect(s_link('m', $username_base));
 	}
 }
-
-?>

@@ -85,5 +85,3 @@ class __user_delete extends mac {
 		return _pre('El registro de <strong>' . $userdata['username'] . '</strong> fue eliminado.', true);
 	}
 }
-
-?>

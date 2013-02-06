@@ -63,5 +63,3 @@ if (count($done)) {
 }
 
 _pre('Done. @ ' . implode(', ', $usernames), true);
-
-?>

@@ -103,5 +103,3 @@ class __news_create extends mac {
 		return;
 	}
 }
-
-?>

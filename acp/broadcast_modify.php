@@ -18,8 +18,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_APP')) exit;
 
-require_once(ROOT . 'interfase/ftp.php');
-
 class __broadcast_modify extends mac {
 	public function __construct() {
 		parent::__construct();
@@ -95,5 +93,3 @@ class __broadcast_modify extends mac {
 		return true;
 	}
 }
-
-?>

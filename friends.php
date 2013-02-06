@@ -18,14 +18,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 define('IN_APP', true);
 require_once('./interfase/common.php');
-require_once(ROOT . 'objects/friends.php');
 
 $user->init();
 $user->setup();
 
-$friends = new _friends();
+$friends = new friends();
 $friends->run();
 
 page_layout($friends->get_title('PARTNERS'), $friends->get_template('partners'));
-
-?>

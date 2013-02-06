@@ -25,7 +25,7 @@ if (!defined('IN_APP')) exit;
  * type_order
  */
 
-class _awards {
+class awards {
 	public function __construct() {
 		return;
 	}
@@ -48,5 +48,3 @@ class _awards {
 		return;
 	}
 }
-
-?>

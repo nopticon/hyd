@@ -53,5 +53,3 @@ foreach ($matches as $row_k => $row_v) {
 
 echo str_replace($orig, $repl, implode('', $file_content));
 exit;
-
-?>

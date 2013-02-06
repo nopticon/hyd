@@ -197,5 +197,3 @@ class __event_images extends mac {
 		return;
 	}
 }
-
-?>

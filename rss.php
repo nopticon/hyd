@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 define('IN_APP', true);
 require_once('./interfase/common.php');
-require_once(ROOT . 'objects/rss.php');
+// require_once(ROOT . 'objects/rss.php');
 
 $user->init();
 $user->setup();
@@ -28,7 +28,7 @@ if (empty($mode)) {
 	fatal_error();
 }
 
-$rss = new _rss();
+$rss = new rss();
 
 $method = '_' . $mode;
 if (!method_exists($rss, $method)) {
@@ -38,5 +38,3 @@ if (!method_exists($rss, $method)) {
 $rss->smode($mode);
 $rss->$method();
 $rss->output();
-	
-?>

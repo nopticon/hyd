@@ -76,5 +76,3 @@ function search_topic($topic_id) {
 	
 	return $result;
 }
-
-?>

@@ -16,6 +16,18 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+if (!defined('IN_APP')) exit;
+
+function app_autoload($filename) {
+	foreach (w('objects interfase') as $path) {
+		$path = ROOT . $path . DIRECTORY_SEPARATOR . $filename . '.php';
+
+		if (@file_exists($path)) {
+			require_once($path);
+			break;
+		}
+	}
+}
 
 function htmlencode($str) {
 	$result = trim(htmlentities(str_replace(array(nr(1), nr(true), '\xFF'), array(nr(), nr(), ' '), $str)));
@@ -182,7 +194,7 @@ function _utf8(&$a) {
 function decode_ht($path) {
 	$da_path = ROOT . '../../' . $path;
 
-	if (!@file_exists($da_path) || !$a = @file($da_path)) exit;
+	if (!$a = @file($da_path)) return w();
 	
 	return explode(',', _decode($a[0]));
 }
@@ -2369,5 +2381,3 @@ if (!function_exists('bcdiv')) {
 		return round($res, $scale);
 	}
 }
-
-?>

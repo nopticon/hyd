@@ -570,5 +570,3 @@ v_style(array(
 //sidebar('artists', 'events');
 
 page_layout('UNREAD_ITEMS', 'unread_body');
-	
-?>

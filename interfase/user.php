@@ -16,6 +16,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+if (!defined('IN_APP')) exit;
+
 class session {
 	public $session_id = '';
 	public $cookie_data = array();
@@ -24,7 +26,7 @@ class session {
 	public $ip = '';
 	public $page = '';
 	public $time = 0;
-	
+
 	public function init($update_page = true, $bypass_empty_ip = false) {
 		global $config;
 		
@@ -492,6 +494,7 @@ class user extends session {
 	public $date_format;
 	public $timezone;
 	public $dst;
+	public $auth;
 
 	public $lang_name;
 	public $lang_path;
@@ -500,7 +503,10 @@ class user extends session {
 	public $keyoptions = array('viewimg' => 0, 'viewsigs' => 3, 'viewavatars' => 4);
 	public $keyvalues = array();
 
+
 	public function __construct() {
+		$this->auth = new auth();
+
 		return;
 	}
 
@@ -1531,5 +1537,3 @@ class auth {
 		return $auth_user;
 	}
 }
-
-?>

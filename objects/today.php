@@ -149,5 +149,3 @@ class today {
 		return $response;
 	}
 }
-
-?>

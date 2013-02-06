@@ -89,5 +89,3 @@ class __event_update extends mac {
 		return redirect(s_link('events', $event_data['event_alias']));
 	}
 }
-
-?>

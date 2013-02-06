@@ -60,5 +60,3 @@ class __forum_order extends mac {
 		_pre('Update.', true);
 	}
 }
-
-?>

@@ -72,5 +72,3 @@ class __user_address extends mac {
 		return;
 	}
 }
-
-?>

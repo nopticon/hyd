@@ -18,14 +18,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 define('IN_APP', true);
 require_once('./interfase/common.php');
-require_once(ROOT . 'objects/broadcast.php');
 
 $user->init();
 $user->setup();
 
-$broadcast = new _broadcast();
+$broadcast = new broadcast();
 $broadcast->run();
 
 page_layout($broadcast->get_title('BROADCAST'), $broadcast->get_template('broadcast'));
-
-?>

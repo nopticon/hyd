@@ -97,5 +97,3 @@ class __forums_post_modify extends mac {
 		//return page_layout('Editar', 'modcp.edit', $tv);
 	}
 }
-
-?>

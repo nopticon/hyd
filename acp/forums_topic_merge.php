@@ -193,5 +193,3 @@ function sync_topic_merge($type, $id = false) {
 	
 	return true;
 }
-
-?>

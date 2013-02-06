@@ -73,5 +73,3 @@ class __user_post_bandelete extends mac {
 		return _pre($d, true);
 	}
 }
-
-?>

@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_APP')) exit;
 
-class _news {
+class news {
 	private $data = array();
 	private $_template;
 	private $_title;
@@ -205,5 +205,3 @@ class _news {
 		return;
 	}
 }
-
-?>

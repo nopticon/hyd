@@ -277,5 +277,3 @@ class community {
 		return true;
 	}
 }
-
-?>

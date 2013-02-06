@@ -193,5 +193,3 @@ class __artist_gallery extends mac {
 		$this->e($v->value);
 	}
 }
-
-?>

@@ -114,5 +114,3 @@ class cache {
 		return 'array(' . implode(',', $lines) . ')';
 	}
 }
-
-?>
