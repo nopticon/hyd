@@ -24,18 +24,24 @@ $user->setup();
 
 srand((double)microtime()*1000000);
 
+$board = new board();
 $home = new home();
 $artists = new artists();
 $events = new events(true);
 
+$board->popular();
+$board->newest();
+$board->list();
+
 $home->news();
-$home->board_general();
-$home->board_events();
-$home->poll();
+// $home->board_general();
+// $home->board_events();
+// $home->poll();
 
 $artists->get_data();
 $artists->thumbnails();
 
-$events->_nextevent();
+$events->future();
+$events->past();
 
 page_layout('HOME', 'home', false, false);

@@ -35,8 +35,8 @@ class board {
 			fatal_error();
 		}
 		
-		$this->index();
-		$this->popular();
+		$this->list();
+		// $this->popular();
 		
 		return true;
 	}
@@ -75,7 +75,7 @@ class board {
 		return true;
 	}
 	
-	public function index() {
+	public function list() {
 		global $user, $auth;
 		
 		$is_auth_ary = w();
@@ -128,34 +128,72 @@ class board {
 	}
 	
 	public function popular() {
+		global $config;
+
+		$sql = 'SELECT t.topic_id, t.topic_title, t.topic_color, t.topic_replies, p.post_id, p.post_time, u.user_id, u.username, u.username_base
+			FROM _forum_posts p, _members u, _forum_topics t
+			LEFT OUTER JOIN _events e ON t.topic_id = e.event_topic
+			WHERE e.event_topic IS NULL
+				AND p.post_deleted = 0
+				AND p.post_id = t.topic_last_post_id
+				AND p.poster_id = u.user_id
+				AND t.topic_active = 1
+				AND t.topic_featured = 1
+			ORDER BY t.topic_replies, t.topic_views DESC, p.post_time DESC
+			LIMIT ??';
+		if ($result = sql_rowset(sql_filter($sql, $config['main_topics']))) {
+			_style('board_popular');
+			
+			foreach ($result as $row) {
+				$username = ($row['user_id'] != GUEST) ? $row['username'] : (($row['post_username'] != '') ? $row['post_username'] : lang('guest'));
+				
+				_style('board_popular.row', array(
+					'U_TOPIC' => ($row['topic_replies']) ? s_link('post', $row['post_id']) . '#' . $row['post_id'] : s_link('topic', $row['topic_id']),
+					'TOPIC_TITLE' => $row['topic_title'],
+					'TOPIC_COLOR' => $row['topic_color'],
+					'POST_TIME' => $user->format_date($row['post_time'], 'H:i'),
+					'USER_ID' => $row['user_id'],
+					'USERNAME' => $username,
+					'PROFILE' => s_link('m', $row['username_base']))
+				);
+			}
+		}
+
 		return;
 	}
-	
-	public function top_posters() {
-		global $comments;
-		
-		$sql = 'SELECT user_id, username, username_base, user_avatar, user_posts
-			FROM _members
-			WHERE user_id <> ?
-			ORDER BY user_posts DESC
-			LIMIT 8';
-		if (!$result = sql_rowset(sql_filter($sql, GUEST))) {
-			return false;
-		}
-		
-		foreach ($result as $i => $row) {
-			if (!$i) _style('top_posters');
+
+	public function newest() {
+		global $config;
+
+		$sql = 'SELECT t.topic_id, t.topic_title, t.topic_color, t.topic_replies, p.post_id, p.post_time, u.user_id, u.username, u.username_base
+			FROM _forum_posts p, _members u, _forum_topics t
+			LEFT OUTER JOIN _events e ON t.topic_id = e.event_topic
+			WHERE e.event_topic IS NULL
+				AND p.post_deleted = 0
+				AND p.post_id = t.topic_last_post_id
+				AND p.poster_id = u.user_id
+				AND t.topic_active = 1
+				AND t.topic_featured = 1
+			ORDER BY t.topic_announce DESC, p.post_time DESC
+			LIMIT ??';
+		if ($result = sql_rowset(sql_filter($sql, $config['main_topics']))) {
+			_style('board_newest');
 			
-			$profile = $comments->user_profile($row);
-			
-			_style('top_posters.item', array(
-				'USERNAME' => $profile['username'],
-				'PROFILE' => $profile['profile'],
-				'AVATAR' => $profile['user_avatar'],
-				'POSTS' => $profile['user_posts'])
-			);
+			foreach ($result as $row) {
+				$username = ($row['user_id'] != GUEST) ? $row['username'] : (($row['post_username'] != '') ? $row['post_username'] : lang('guest'));
+				
+				_style('board_newest.row', array(
+					'U_TOPIC' => ($row['topic_replies']) ? s_link('post', $row['post_id']) . '#' . $row['post_id'] : s_link('topic', $row['topic_id']),
+					'TOPIC_TITLE' => $row['topic_title'],
+					'TOPIC_COLOR' => $row['topic_color'],
+					'POST_TIME' => $user->format_date($row['post_time'], 'H:i'),
+					'USER_ID' => $row['user_id'],
+					'USERNAME' => $username,
+					'PROFILE' => s_link('m', $row['username_base']))
+				);
+			}
 		}
-		
-		return true;
+
+		return;
 	}
 }

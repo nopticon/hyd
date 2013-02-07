@@ -77,23 +77,22 @@ class events {
 		return $this->object();
 	}
 	
-	public function _nextevent() {
+	public function future() {
 		global $config, $user;
 		
 		$sql = 'SELECT *
 			FROM _events
 			WHERE date >= ?
-			ORDER BY RAND()
-			LIMIT 3';
+			ORDER BY RAND()';
 		$result = sql_rowset(sql_filter($sql, $this->timetoday));
 
 		foreach ($result as $i => $row) {
-			if (!$i) _style('next_event');
+			if (!$i) _style('events_next');
 
 			$event_mini = $config['events_path'] . 'mini/' . $row['id'] . '.jpg';
 			$event_image = (@file_exists($event_mini)) ? 'mini/' : 'future/';
 
-			_style('next_event.row', array(
+			_style('events_next.row', array(
 				'URL' => s_link('events', $row['event_alias']),
 				'TITLE' => $row['title'],
 				'DATE' => $user->format_date($row['date'], lang('date_format')),
@@ -104,7 +103,7 @@ class events {
 		return;		
 	}	
 	
-	public function _lastevent($start = 0) {
+	public function past($start = 0) {
 		global $config;
 		
 		$sql = 'SELECT *
@@ -113,14 +112,18 @@ class events {
 				AND images > 0
 			ORDER BY date DESC
 			LIMIT ??, ??';
-		if ($row = sql_fieldrow(sql_filter($sql, $this->timetoday, $this->timetoday, $start, 1))) {
+		$result = sql_fieldrow(sql_filter($sql, $this->timetoday, $this->timetoday, $start, 3));
+
+		foreach ($result as $i => $row) {
+			if (!$i) _style('events_past');
+
 			$sql = 'SELECT *
 				FROM _events_images
 				WHERE event_id = ?
 				ORDER BY RAND()';
 			$row2 = sql_fieldrow(sql_filter($sql, $row['id']));
 			
-			_style('last_event', array(
+			_style('events_past.row', array(
 				'URL' => s_link('events', $row['event_alias']),
 				'TITLE' => $row['title'],
 				'IMAGE' => $config['events_url'] . 'gallery/' . $row['id'] . '/thumbnails/' . $row2['image'] . '.jpg?u=' . $row['event_update'])

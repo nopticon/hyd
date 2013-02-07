@@ -100,7 +100,7 @@ class home {
 		return;
 	}
 
-	public function board_general() {
+	/*public function board_general() {
 		global $user, $config;
 		
 		$sql = 'SELECT t.topic_id, t.topic_title, t.topic_color, t.topic_replies, p.post_id, p.post_time, u.user_id, u.username, u.username_base
@@ -172,7 +172,7 @@ class home {
 		}
 		
 		return true;
-	}
+	}*/
 	
 	public function poll() {
 		global $user, $auth, $config, $cache;
