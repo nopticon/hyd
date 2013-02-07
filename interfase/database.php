@@ -38,11 +38,6 @@ class database {
 		}
 		unset($d);
 
-		if (_empty($access)) {
-			error_log('No MySQL connection.');
-			exit;
-		}
-
 		$this->connect = new mysqli($access['server'], $access['login'], $access['secret'], $access['database']);
 
 		if ($this->connect->connect_errno) {
