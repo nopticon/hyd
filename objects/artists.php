@@ -985,32 +985,8 @@ class artists extends downloads {
 	public function thumbnails() {
 		global $cache, $config;
 		
-		if (!$a_recent = $cache->get('artist_recent')) {
-			$sql = 'SELECT ub
-				FROM _artists
-				ORDER BY datetime DESC
-				LIMIT 10';
-			$result = sql_rowset($sql);
-			
-			$a_recent = w();
-			foreach ($result as $row) {
-				$a_recent[$row['ub']] = 1;
-			}
-			
-			$cache->save('artist_recent', $a_recent);
-		}
-		
 		$a_ary = w();
-		for ($i = 0; $i < 3; $i++) {
-			$_a = array_rand($a_recent);
-			if (!$this->adata[$_a]['images'] || isset($a_ary[$_a])) {
-				$i--;
-				continue;
-			}
-			$a_ary[$_a] = $this->adata[$_a];
-		}
-		
-		for ($i = 0; $i < 2; $i++) {
+		for ($i = 0; $i < 4; $i++) {
 			$_a = array_rand($this->adata);
 			if (!$this->adata[$_a]['images'] || isset($a_ary[$_a])) {
 				$i--;

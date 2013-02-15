@@ -31,7 +31,7 @@ $events = new events(true);
 
 $board->popular();
 $board->newest();
-$board->list();
+$board->forum_list();
 
 $home->news();
 // $home->board_general();

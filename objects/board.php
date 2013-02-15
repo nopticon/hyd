@@ -35,7 +35,7 @@ class board {
 			fatal_error();
 		}
 		
-		$this->list();
+		$this->forum_list();
 		// $this->popular();
 		
 		return true;
@@ -75,7 +75,7 @@ class board {
 		return true;
 	}
 	
-	public function list() {
+	public function forum_list() {
 		global $user, $auth;
 		
 		$is_auth_ary = w();
@@ -128,7 +128,7 @@ class board {
 	}
 	
 	public function popular() {
-		global $config;
+		global $config, $user;
 
 		$sql = 'SELECT t.topic_id, t.topic_title, t.topic_color, t.topic_replies, p.post_id, p.post_time, u.user_id, u.username, u.username_base
 			FROM _forum_posts p, _members u, _forum_topics t
@@ -163,7 +163,7 @@ class board {
 	}
 
 	public function newest() {
-		global $config;
+		global $config, $user;
 
 		$sql = 'SELECT t.topic_id, t.topic_title, t.topic_color, t.topic_replies, p.post_id, p.post_time, u.user_id, u.username, u.username_base
 			FROM _forum_posts p, _members u, _forum_topics t
