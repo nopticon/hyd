@@ -85,7 +85,7 @@ function request_var($var_name, $default = false, $multibyte = false) {
 	if (REQC) {
 		global $config;
 		
-		if ((strpos($var_name, $config['cookie_name']) !== false) && isset($_COOKIE[$var_name])) {
+		if ((strpos($var_name, $config->cookie_name) !== false) && isset($_COOKIE[$var_name])) {
 			$_REQUEST[$var_name] = $_COOKIE[$var_name];
 		}
 	}
@@ -209,7 +209,7 @@ function set_config($config_name, $config_value) {
 		WHERE config_name = ?';
 	sql_query(sql_filter($sql, $config_value, $config_name));
 	
-	if (!sql_affectedrows() && !isset($config[$config_name])) {
+	if (!sql_affectedrows() && !isset($config->$config_name)) {
 		$sql_insert = array(
 			'config_name' => $config_name,
 			'config_value' => $config_value
@@ -217,7 +217,7 @@ function set_config($config_name, $config_value) {
 		sql_insert('application', $sql_insert);
 	}
 
-	$config[$config_name] = $config_value;
+	$config->$config_name = $config_value;
 }
 
 function monetize() {
@@ -242,15 +242,15 @@ function monetize() {
 	foreach ($monetize as $row) {
 		if (!$i) _style('monetize');
 		
-		if (!isset($set_blocks[$row['monetize_position']])) {
-			_style('monetize.' . $row['monetize_position']);
-			$set_blocks[$row['monetize_position']] = true;
+		if (!isset($set_blocks[$row->monetize_position])) {
+			_style('monetize.' . $row->monetize_position);
+			$set_blocks[$row->monetize_position] = true;
 		}
 		
-		_style('monetize.' . $row['monetize_position'] . '.row', array(
-			'URL' => $row['monetize_url'],
-			'IMAGE' => $config['assets_url'] . 'base/' . $row['monetize_image'],
-			'ALT' => $row['monetize_alt'])
+		_style('monetize.' . $row->monetize_position . '.row', array(
+			'URL' => $row->monetize_url,
+			'IMAGE' => $config->assets_url . 'base/' . $row->monetize_image,
+			'ALT' => $row->monetize_alt)
 		);
 		
 		$i++;
@@ -268,16 +268,16 @@ function forum_for_team($forum_id) {
 	
 	$response = '';
 	switch ($forum_id) {
-		case $config['forum_for_mod']:
+		case $config->forum_for_mod:
 			$response = 'mod';
 			break;
-		case $config['forum_for_radio']:
+		case $config->forum_for_radio:
 			$response = 'radio';
 			break;
-		case $config['forum_for_colab']:
+		case $config->forum_for_colab:
 			$response = 'colab';
 			break;
-		case $config['forum_for_all']:
+		case $config->forum_for_all:
 			$response = 'all';
 			break;
 	}
@@ -290,16 +290,16 @@ function forum_for_team_list($forum_id) {
 	
 	$a_list = w();
 	switch ($forum_id) {
-		case $config['forum_for_mod']:
+		case $config->forum_for_mod:
 			$a_list = $user->_team_auth_list('mod');
 			break;
-		case $config['forum_for_radio']:
+		case $config->forum_for_radio:
 			$a_list = $user->_team_auth_list('radio');
 			break;
-		case $config['forum_for_colab']:
+		case $config->forum_for_colab:
 			$a_list = $user->_team_auth_list('colab');
 			break;
-		case $config['forum_for_all']:
+		case $config->forum_for_all:
 			$a_list = $user->_team_auth_list('all');
 			break;
 	}
@@ -314,7 +314,7 @@ function forum_for_team_not() {
 	$list = w('all mod radio colab');
 	foreach ($list as $k) {
 		if (!$user->is($k)) {
-			$sql .= ', ' . (int) $config['forum_for_' . $k];
+			$sql .= ', ' . (int) $config->{'forum_for_' . $k};
 		}
 	}
 	return $sql;
@@ -326,7 +326,7 @@ function forum_for_team_array() {
 	$ary = w();
 	$list = w('all mod radio colab');
 	foreach ($list as $k) {
-		$ary[] = $config['forum_for_' . $k];
+		$ary[] = $config->{'forum_for_' . $k};
 	}
 	return $ary;
 }
@@ -684,13 +684,13 @@ function s_link() {
 	$is_a = is_array($data);
 	if (v_server('REMOTE_ADDR') != '127.0.0.1' && v_server('SERVER_NAME') != 'dev.rockrepublik.net' && $module == 'a' && $data !== false && ((!$is_a && !preg_match('/^_(\d+)$/i', $data)) || ($is_a && $count_data == 2))) {
 		$subdomain = ($is_a) ? $data[0] : $data;
-		$url .= str_replace('www', $subdomain, $config['server_name']) . '/';
+		$url .= str_replace('www', $subdomain, $config->server_name) . '/';
 		
 		if ($is_a) array_shift($data);
 		
 		if (!$is_a || ($is_a && !count($data))) $data = false;
 	} else {
-		$url .= $config['server_name'] . '/' . (($module != '') ? $module . '/' : '');
+		$url .= $config->server_name . '/' . (($module != '') ? $module . '/' : '');
 	}
 	
 	if ($data !== false) {
@@ -890,10 +890,10 @@ function _md($parent, $childs = false) {
 	if (!@file_exists($parent)) {
 		$oldumask = umask(0);
 		
-		if (!@mkdir($parent, octdec($config['mask']), true)) {
+		if (!@mkdir($parent, octdec($config->mask), true)) {
 			return false;
 		}
-		_chmod($parent, $config['mask']);
+		_chmod($parent, $config->mask);
 		
 		umask($oldumask);
 	}
@@ -1003,8 +1003,8 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 			fatal_error();
 		}
 		
-		$v_fields['ref'] = $invite_row['user_email'];
-		$v_fields['email'] = $invite_row['invite_email'];
+		$v_fields['ref'] = $invite_row->user_email;
+		$v_fields['email'] = $invite_row->invite_email;
 		unset($invite_row);
 	}
 	
@@ -1028,13 +1028,13 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 					if ($row = sql_fieldrow(sql_filter($sql, $username_base))) {
 						$exclude_type = array(USER_INACTIVE); 
 						
-						if (ValidatePassword($password, $row['user_password']) && (!in_array($row['user_type'], $exclude_type))) {
-							$user->session_create($row['user_id'], $adm);
+						if (ValidatePassword($password, $row->user_password) && (!in_array($row->user_type, $exclude_type))) {
+							$user->session_create($row->user_id, $adm);
 							
-							if (!$row['user_country'] || !$row['user_location'] || !$row['user_gender'] || !$row['user_birthday'] || !$row['user_avatar']) {
+							if (!$row->user_country || !$row->user_location || !$row->user_gender || !$row->user_birthday || !$row->user_avatar) {
 								$ref = s_link('my', 'profile');
 							} else {
-								$ref = (empty($ref) || (preg_match('#' . preg_quote($config['server_name']) . '/$#', $ref))) ? s_link('today') : $ref;
+								$ref = (empty($ref) || (preg_match('#' . preg_quote($config->server_name) . '/$#', $ref))) ? s_link('today') : $ref;
 							}
 							
 							redirect($ref);
@@ -1072,7 +1072,7 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 					fatal_error();
 				}
 				
-				$user_id = $crypt_data['user_id'];
+				$user_id = $crypt_data->user_id;
 				
 				$sql = 'UPDATE _members SET user_type = ?
 					WHERE user_id = ?';
@@ -1087,10 +1087,10 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 				
 				$emailer->from('info');
 				$emailer->use_template('user_welcome_confirm');
-				$emailer->email_address($crypt_data['user_email']);
+				$emailer->email_address($crypt_data->user_email);
 				
 				$emailer->assign_vars(array(
-					'USERNAME' => $crypt_data['username'])
+					'USERNAME' => $crypt_data->username)
 				);
 				$emailer->send();
 				$emailer->reset();
@@ -1287,10 +1287,10 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 						'user_posts' => 0,
 						'userpage_posts' => 0,
 						'user_points' => 0,
-						'user_timezone' => $config['board_timezone'],
-						'user_dst' => $config['board_dst'],
-						'user_lang' => $config['default_lang'],
-						'user_dateformat' => $config['default_dateformat'],
+						'user_timezone' => $config->board_timezone,
+						'user_dst' => $config->board_dst,
+						'user_lang' => $config->default_lang,
+						'user_dateformat' => $config->default_dateformat,
 						'user_country' => (int) $v_fields['country'],
 						'user_rank' => 0,
 						'user_avatar' => '',
@@ -1310,7 +1310,7 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 					);
 					$user_id = sql_insert('members', $member_data);
 					
-					set_config('max_users', $config['max_users'] + 1);
+					set_config('max_users', $config->max_users + 1);
 					
 					// Confirmation code
 					$verification_code = md5(unique_id());
@@ -1432,31 +1432,31 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 							
 							$sql = 'UPDATE _members SET user_password = ?
 								WHERE user_id = ?';
-							sql_query(sql_filter($sql, $crypt_password, $crypt_data['user_id']));
+							sql_query(sql_filter($sql, $crypt_password, $crypt_data->user_id));
 							
 							$sql = 'DELETE FROM _crypt_confirm
 								WHERE crypt_userid = ?';
-							sql_query(sql_filter($sql, $crypt_data['user_id']));
+							sql_query(sql_filter($sql, $crypt_data->user_id));
 							
 							// Send email
 							$emailer = new emailer();
 							
 							$emailer->from('info');
-							$emailer->use_template('user_confirm_passwd', $config['default_lang']);
-							$emailer->email_address($crypt_data['user_email']);
+							$emailer->use_template('user_confirm_passwd', $config->default_lang);
+							$emailer->email_address($crypt_data->user_email);
 							
 							$emailer->assign_vars(array(
-								'USERNAME' => $crypt_data['username'],
+								'USERNAME' => $crypt_data->username,
 								'PASSWORD' => $password,
-								'U_PROFILE' => s_link('m', $crypt_data['username_base']))
+								'U_PROFILE' => s_link('m', $crypt_data->username_base))
 							);
 							$emailer->send();
 							$emailer->reset();
 							
 							//
 							v_style(array(
-								'PAGE_MODE' => 'updated'
-							));
+								'PAGE_MODE' => 'updated')
+							);
 						} else {
 							v_style(array(
 								'PAGE_MODE' => 'nomatch',
@@ -1500,10 +1500,10 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 				
 				$sql = 'DELETE FROM _crypt_confirm
 					WHERE crypt_userid = ?';
-				sql_query(sql_filter($sql, $userdata['user_id']));
+				sql_query(sql_filter($sql, $userdata->user_id));
 				
 				$insert = array(
-					'crypt_userid' => $userdata['user_id'],
+					'crypt_userid' => $userdata->user_id,
 					'crypt_code' => $verification_code,
 					'crypt_time' => $user->time
 				);
@@ -1511,11 +1511,11 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 				
 				// Send email
 				$emailer->from('info');
-				$emailer->use_template('user_activate_passwd', $config['default_lang']);
-				$emailer->email_address($userdata['user_email']);
+				$emailer->use_template('user_activate_passwd', $config->default_lang);
+				$emailer->email_address($userdata->user_email);
 				
 				$emailer->assign_vars(array(
-					'USERNAME' => $userdata['username'],
+					'USERNAME' => $userdata->username,
 					'U_ACTIVATE' => s_link('signr', $verification_code))
 				);
 				$emailer->send();
@@ -1733,14 +1733,14 @@ function fatal_error($mode = '404', $bp_message = '') {
 	
 	switch ($mode) {
 		case 'mysql':
-			if (isset($config['default_lang']) && isset($user->lang)) {
+			if (isset($config->default_lang) && isset($user->lang)) {
 				// Send email notification
 				$emailer = new emailer();
 				
 				$emailer->from('info');
 				$emailer->set_subject('MySQL error');
-				$emailer->use_template('mcp_delete', $config['default_lang']);
-				$emailer->email_address($config['board_email']);
+				$emailer->use_template('mcp_delete', $config->default_lang);
+				$emailer->email_address($config->board_email);
 				
 				$emailer->assign_vars(array(
 					'MESSAGE' => $bp_message,
@@ -1750,7 +1750,7 @@ function fatal_error($mode = '404', $bp_message = '') {
 				$emailer->reset();
 			} else {
 				$email_message = $bp_message . nr(false, 2) . date('r');
-				$email_headers = "From: " . $config['board_email'] . "\nReturn-Path: " . $config['board_email'] . "\nMessage-ID: <" . md5(uniqid(time())) . "@" . $config['server_name'] . ">\nMIME-Version: 1.0\nContent-type: text/plain; charset=iso-8859-1\nContent-transfer-encoding: 8bit\nDate: " . date('r', time()) . "\nX-Priority: 3\nX-MSMail-Priority: Normal\n"; 
+				$email_headers = "From: " . $config->board_email . "\nReturn-Path: " . $config->board_email . "\nMessage-ID: <" . md5(uniqid(time())) . "@" . $config->server_name . ">\nMIME-Version: 1.0\nContent-type: text/plain; charset=iso-8859-1\nContent-transfer-encoding: 8bit\nDate: " . date('r', time()) . "\nX-Priority: 3\nX-MSMail-Priority: Normal\n"; 
 			}
 			
 			$title = 'Error del sistema';
@@ -1842,7 +1842,7 @@ function redirect($url, $moved = false) {
 	
 	// If relative path, prepend application url
 	if (strpos($url, '//') === false) {
-		$url = 'http://' . $config['server_name'] . trim($url);
+		$url = 'http://' . $config->server_name . trim($url);
 	}
 	
 	if (strpos($url, 'http') === false) {
@@ -1942,11 +1942,11 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 		
 		'S_YEAR' => date('Y'),
 		'S_UPLOAD' => upload_maxsize(),
-		'S_GIT' => $config['git_push_time'],
-		'S_KEYWORDS' => $config['meta_keys'],
-		'S_DESCRIPTION' => $config['meta_desc'],
-		'S_SERVER' => '//' . $config['server_name'],
-		'S_ASSETS' => $config['assets_url'],
+		'S_GIT' => $config->git_push_time,
+		'S_KEYWORDS' => $config->meta_keys,
+		'S_DESCRIPTION' => $config->meta_desc,
+		'S_SERVER' => '//' . $config->server_name,
+		'S_ASSETS' => $config->assets_url,
 		'S_SQL' => ($user->d('is_founder')) ? sql_queries() . 'q | ' : '',
 		'S_REDIRECT' => $user->d('session_page'),
 		'S_USERNAME' => $user->d('username'),
@@ -2071,7 +2071,7 @@ function check_www($url) {
 	if (strstr($domain, '?')) {
 		$domain_e = explode('/', $domain);
 		$domain = $domain_e[0];
-		if ($domain == $config['server_name']) {
+		if ($domain == $config->server_name) {
 			$domain .= '/' . $domain_e[1];
 		}
 	}
@@ -2112,13 +2112,13 @@ function _shoutcast() {
 	
 	$response = false;
 	
-	if (!$connection = @fsockopen($config['shoutcast_host'], $config['shoutcast_port'], $errno, $errstr, 5)) {
+	if (!$connection = @fsockopen($config->shoutcast_host, $config->shoutcast_port, $errno, $errstr, 5)) {
 		return $response;
 	}
 	
 	$s_response = '';
 	
-	fwrite($connection, 'GET /admin.cgi?pass=' . $config['shoutcast_code'] . "&mode=viewxml HTTP/1.0\r\nUser-Agent: SHOUTcast Song Status (Mozilla Compatible)\r\n\r\n");
+	fwrite($connection, 'GET /admin.cgi?pass=' . $config->shoutcast_code . "&mode=viewxml HTTP/1.0\r\nUser-Agent: SHOUTcast Song Status (Mozilla Compatible)\r\n\r\n");
 	while (!feof($connection)) {
 		$s_response .= fgets($connection, 1000);
 	}
@@ -2260,7 +2260,7 @@ function artist_root($alias, $check = false) {
 		$alias = w($alias);
 	}
 	
-	$response = $config['artists_path'] . artist_build($alias);
+	$response = $config->artists_path . artist_build($alias);
 	
 	if ($check) {
 		artist_check($response);
@@ -2279,7 +2279,7 @@ function artist_path($alias, $id, $build = true, $check = false) {
 	}
 	
 	if ($build) {
-		$response = $config['artists_path'] . artist_build($response) . '/';
+		$response = $config->artists_path . artist_build($response) . '/';
 	}
 	
 	return $response;
@@ -2288,7 +2288,7 @@ function artist_path($alias, $id, $build = true, $check = false) {
 function artist_check($ary) {
 	global $config;
 	
-	$fullpath = $config['artists_path'];
+	$fullpath = $config->artists_path;
 	
 	if (!is_array($ary)) $ary = w($ary);
 	
@@ -2299,7 +2299,7 @@ function artist_check($ary) {
 			if (!_md($fullpath)) {
 				return false;
 			}
-			_chmod($fullpath, $config['mask']);
+			_chmod($fullpath, $config->mask);
 		}
 	}
 	
@@ -2408,7 +2408,7 @@ function validate_username($username) {
 		FROM _members
 		WHERE LOWER(username_base) = ?';
 	if ($userdata = sql_fieldrow(sql_filter($sql, strtolower($username)))) {
-		if (($user->is('member') && $username != $userdata['username']) || !$user->is('member')) {
+		if (($user->is('member') && $username != $userdata->username) || !$user->is('member')) {
 			return array('error' => true, 'error_msg' => lang('username_taken'));
 		}
 	}
@@ -2425,7 +2425,7 @@ function validate_username($username) {
 	$result = sql_rowset($sql);
 	
 	foreach ($result as $row) {
-		if (preg_match("#\b(" . str_replace("\*", ".*?", preg_quote($row['disallow_username'], '#')) . ")\b#i", $username)) {
+		if (preg_match("#\b(" . str_replace("\*", ".*?", preg_quote($row->disallow_username, '#')) . ")\b#i", $username)) {
 			return array('error' => true, 'error_msg' => lang('username_disallowed'));
 		}
 	}
@@ -2452,7 +2452,7 @@ function validate_email($email) {
 			$result = sql_rowset($sql);
 			
 			foreach ($result as $row) {
-				$match_email = str_replace('*', '.*?', $row['ban_email']);
+				$match_email = str_replace('*', '.*?', $row->ban_email);
 				if (preg_match('/^' . $match_email . '$/is', $email)) {
 					return array('error' => true, 'error_msg' => lang('email_banned'));
 				}

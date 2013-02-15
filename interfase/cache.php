@@ -32,7 +32,7 @@ class cache {
 		$sql = 'SELECT *
 			FROM _application';
 		$config = sql_rowset($sql, 'config_name', 'config_value');
-		
+
 		return $config;
 	}
 	
@@ -70,14 +70,16 @@ class cache {
 		
 		$fp = @fopen($filename, 'w');
 		if ($fp) {
-			$file_buffer = '<?php $' . 'this->cache[\'' . $var . '\'] = ' . ((is_array($data)) ? $this->format($data) : "'" . str_replace("'", "\\'", str_replace('\\', '\\\\', $data)) . "'") . '; ?>';
+			// TODO: JSON encode
+			
+			$file_buffer = '<?php $' . 'this->cache[\'' . $var . '\'] = ' . ((is_array($data) || is_object($data)) ? $this->format($data) : "'" . str_replace("'", "\\'", str_replace('\\', '\\\\', $data)) . "'") . '; ?>';
 			
 			@flock($fp, LOCK_EX);
 			fwrite($fp, $file_buffer);
 			@flock($fp, LOCK_UN);
 			fclose($fp);
 			
-			_chmod($filename, $config['mask']);
+			_chmod($filename, $config->mask);
 		}
 		
 		return $data;

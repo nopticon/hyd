@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_APP')) exit;
 
-class database {
+/*class database {
 	protected $connect;
 	protected $result;
 	protected $history;
@@ -496,9 +496,9 @@ class database {
 		
 		return array('message' => $sql_error, 'code' => $sql_errno);
 	}
-}
+}*/
 
-function prefix($prefix, $arr) {
+/*function prefix($prefix, $arr) {
 	$prefix = ($prefix != '') ? $prefix . '_' : '';
 	
 	$a = w();
@@ -506,7 +506,7 @@ function prefix($prefix, $arr) {
 		$a[$prefix . $k] = $v;
 	}
 	return $a;
-}
+}*/
 
 // Database filter layer
 // Idea from http://us.php.net/manual/en/function.sprintf.php#93156
@@ -514,243 +514,156 @@ function sql_filter() {
 	if (!$args = func_get_args()) {
 		return false;
 	}
-	
-	$sql = array_shift($args);
-	
-	if (is_array($sql)) {
-		$sql_ary = w();
-		foreach ($sql as $row) {
-			$sql_ary[] = sql_filter($row, $args);
-		}
-		
-		return $sql_ary;
-	}
-	
-	$count_args = count($args);
-	$sql = str_replace('%', '[!]', $sql);
-	
-	if (!$count_args || $count_args < 1) {
-		return str_replace('[!]', '%', $sql);
-	}
-	
-	if ($count_args == 1 && is_array($args[0])) {
-		$args = $args[0];
-	}
-	
-	foreach ($args as $i => $arg) {
-		$args[$i] = (strpos($arg, '/***/') !== false) ? $arg : sql_escape($arg);
-	}
-	
-	foreach ($args as $i => $row) {
-		if (strpos($row, 'addquotes') !== false) {
-			$e_row = explode(',', $row);
-			array_shift($e_row);
-			
-			foreach ($e_row as $j => $jr) {
-				$e_row[$j] = "'" . $jr . "'";
-			}
-			
-			$args[$i] = implode(',', $e_row);
-		}
-	}
-	
-	array_unshift($args, str_replace(w('?? ?'), w("%s '%s'"), $sql));
-	
-	// Conditional deletion of lines if input is zero
-	if (strpos($args[0], '-- ') !== false) {
-		$e_sql = explode(nr(), $args[0]);
-		
-		$matches = 0;
-		foreach ($e_sql as $i => $row) {
-			$e_sql[$i] = str_replace('-- ', '', $row);
-			if (strpos($row, '%s')) {
-				$matches++;
-			}
-			
-			if (strpos($row, '-- ') !== false && !$args[$matches]) {
-				unset($e_sql[$i], $args[$matches]);
-			}
-		}
-		
-		$args[0] = implode($e_sql);
-	}
-	
-	return str_replace('[!]', '%', hook('sprintf', $args));
+
+	global $db;
+
+	return call_user_func_array(array($db, '__prepare'), $args);
 }
 
 function sql_insert($table, $insert) {
-	$sql = 'INSERT INTO _' . $table . sql_build('INSERT', $insert);
-	return sql_query_nextid($sql);
+	global $db;
+
+	$a = $db->sql_insert($table, $insert);
+	return sql_error($a);
 }
 
 function sql_query($sql) {
 	global $db;
 	
-	return $db->query($sql);
+	$a = $db->sql_query($sql);
+	return sql_error($a);
 }
 
 function sql_transaction($status = 'begin') {
 	global $db;
 	
-	return $db->transaction($status);
+	$a = $db->sql_transaction($status);
+	return sql_error($a);
 }
 
 function sql_field($sql, $field, $def = false) {
 	global $db;
-	
-	$db->query($sql);
-	$response = $db->fetchfield($field);
-	$db->freeresult();
-	
-	if ($response === false) {
-		$response = $def;
-	}
-	
-	if ($response !== false) {
-		$response = $response;
-	}
-	
-	return $response;
+
+	$a = $db->sql_field($sql, $field, $def);
+	return sql_error($a);
 }
 
 function sql_fieldrow($sql, $result_type = MYSQL_ASSOC) {
 	global $db;
-	
-	$db->query($sql);
-	
-	$response = false;
-	if ($row = $db->fetchrow($result_type)) {
-		$row['_numrows'] = $db->numrows();
-		$response = $row;
-	}
-	$db->freeresult();
-	
-	return $response;
+
+	$a = $db->sql_fieldrow($sql, $result_type);
+	return sql_error($a);
 }
 
 function sql_rowset($sql, $a = false, $b = false, $global = false, $type = MYSQL_ASSOC) {
 	global $db;
-	
-	$db->query($sql);
-	if (!$data = $db->fetchrowset($type)) {
-		return false;
-	}
-	
-	$arr = w();
-	foreach ($data as $row) {
-		$data = ($b === false) ? $row : $row[$b];
-		
-		if ($a === false) {
-			$arr[] = $data;
-		} else {
-			if ($global) {
-				$arr[$row[$a]][] = $data;
-			} else {
-				$arr[$row[$a]] = $data;
-			}
-		}
-	}
-	$db->freeresult();
-	
-	return $arr;
+
+	$a = $db->sql_rowset($sql, $a, $b, $global, $type);
+	return sql_error($a);
 }
 
 function sql_truncate($table) {
-	$sql = 'TRUNCATE TABLE ??';
-	
-	return sql_query(sql_filter($sql, $table));
+	global $db;
+
+	$a = $db->sql_truncate($table);
+	return sql_error($a);
 }
 
 function sql_total($table) {
-	return sql_field("SHOW TABLE STATUS LIKE '" . $table . "'", 'Auto_increment', 0);
+	global $db;
+
+	$a = $db->sql_total($table);
+	return sql_error($a);
 }
 
 function sql_close() {
 	global $db;
 
-	if (is_object($db) && $db->close()) {
-		return true;
-	}
-	
-	return false;
+	$a = $db->sql_close();
+	return sql_error($a);
 }
 
 function sql_queries() {
 	global $db;
-	
-	return $db->num_queries();
+
+	$a = $db->sql_queries();
+	return sql_error($a);
 }
 
 function sql_query_nextid($sql) {
 	global $db;
-	
-	$db->query($sql);
 
-	return $db->nextid();
+	$a = $db->sql_query_nextid($sql);
+	return sql_error($a);
 }
 
 function sql_nextid() {
 	global $db;
 	
-	return $db->nextid();
+	$a = $db->sql_nextid();
+	return sql_error($a);
 }
 
 function sql_affected($sql) {
 	global $db;
-	
-	$db->query($sql);
-	
-	return $db->affectedrows();
+
+	$a = $db->sql_affected($sql);
+	return sql_error($a);
 }
 
 function sql_affectedrows() {
 	global $db;
 	
-	return $db->affectedrows();
+	$a = $db->sql_affectedrows();
+	return sql_error($a);
 }
 
 function sql_escape($sql) {
 	global $db;
 	
-	return $db->escape($sql);
+	$a = $db->sql_escape($sql);
+	return sql_error($a);
 }
 
 function sql_build($cmd, $a, $b = false) {
 	global $db;
-	
-	if (is_object($a)) {
-		$_a = w();
-		foreach ($a as $a_k => $a_v) {
-			$_a[$a_k] = $a_v;
-		}
-		
-		$a = $_a;
-	}
-	
-	return '/***/' . $db->build($cmd, $a, $b);
+
+	$a = $db->sql_build($cmd, $a, $b);
+	return sql_error($a);
 }
 
 function sql_cache($sql, $sid = '', $private = true) {
 	global $db;
 	
-	return $db->cache($sql, $sid, $private);
+	$a = $db->sql_cache($sql, $sid, $private);
+	return sql_error($a);
 }
 
 function sql_cache_limit(&$arr, $start, $end = 0) {
 	global $db;
 	
-	return $db->cache_limit($arr, $start, $end);
+	$a = $db->sql_cache_limit($arr, $start, $end);
+	return sql_error($a);
 }
 
 function sql_numrows(&$a) {
-	$response = $a['_numrows'];
-	unset($a['_numrows']);
-	
-	return $response;
+	global $db;
+
+	$a = $db->sql_numrows($a);
+	return sql_error($a);
 }
 
 function sql_history() {
 	global $db;
 	
-	return $db->history();
+	$a = $db->sql_history();
+	return sql_error($a);
+}
+
+function sql_error($a) {
+	if (isset($a->type)) {
+		_pre($a, true);
+	}
+
+	return $a;
 }

@@ -77,16 +77,18 @@ if (!defined('REQC')) {
 // Load basic libraries
 //
 require_once(ROOT.'interfase/constants.php');
+require_once(ROOT.'interfase/npi/cliws.php');
 require_once(ROOT.'interfase/functions.php');
+require_once(ROOT.'interfase/database.php');
 
 //
 // Class autoload
 //
 spl_autoload_register('app_autoload');
-
 set_error_handler('msg_handler');
 
-$db = new database();
+$db = npi('./htrd:mysql');
+
 $user = new user();
 $cache = new cache();
 $template = new template();

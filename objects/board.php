@@ -85,8 +85,8 @@ class board {
 			$no_catdata = false;
 			
 			foreach ($this->forum_data as $f_data) {
-				if ($f_data['cat_id'] == $c_data['cat_id']) {
-					if (!$is_auth_ary[$f_data['forum_id']]['auth_view']) {
+				if ($f_data->cat_id == $c_data->cat_id) {
+					if (!$is_auth_ary[$f_data->forum_id]['auth_view']) {
 						continue;
 					}
 
@@ -94,33 +94,33 @@ class board {
 						continue;
 					}*/
 					
-					if ($f_data['post_id']) {
-						$f_data['topic_title'] = (strlen($f_data['topic_title']) > 30) ? substr($f_data['topic_title'], 0, 30) . '...' : $f_data['topic_title'];
+					if ($f_data->post_id) {
+						$f_data->topic_title = (strlen($f_data->topic_title) > 30) ? substr($f_data->topic_title, 0, 30) . '...' : $f_data->topic_title;
 						
-						$last_topic = '<a href="' . s_link('topic', $f_data['topic_id']) . '">' . $f_data['topic_title'] . '</a>';
-						$last_poster = ($f_data['user_id'] == GUEST) ? '<span>*' . (($f_data['post_username'] != '') ? $f_data['post_username'] : lang('guest')) . '</span>' : '<a href="' . s_link('m', $f_data['username_base']) . '">' . $f_data['username'] . '</a>';
-						$last_post_time = '<a href="' . s_link('post', $f_data['post_id']) . '#' . $f_data['post_id'] . '">' . $user->format_date($f_data['post_time']) . '</a>';
+						$last_topic = '<a href="' . s_link('topic', $f_data->topic_id) . '">' . $f_data->topic_title . '</a>';
+						$last_poster = ($f_data->user_id == GUEST) ? '<span>*' . (($f_data->post_username != '') ? $f_data->post_username : lang('guest')) . '</span>' : '<a href="' . s_link('m', $f_data->username_base) . '">' . $f_data->username . '</a>';
+						$last_post_time = '<a href="' . s_link('post', $f_data->post_id) . '#' . $f_data->post_id . '">' . $user->format_date($f_data->post_time) . '</a>';
 					} else {
 						$last_poster = $last_post_time = $last_topic = '';
 					}
 					
 					if (!$no_catdata) {
 						_style('category', array(
-							'DESCRIPTION' => $c_data['cat_title'])
+							'DESCRIPTION' => $c_data->cat_title)
 						);
 						$no_catdata = true;
 					}
 		
 					_style('category.forums',	array(
-						'FORUM_NAME' => $f_data['forum_name'],
-						'FORUM_DESC' => $f_data['forum_desc'],
-						'POSTS' => $f_data['forum_posts'],
-						'TOPICS' => $f_data['forum_topics'],
+						'FORUM_NAME' => $f_data->forum_name,
+						'FORUM_DESC' => $f_data->forum_desc,
+						'POSTS' => $f_data->forum_posts,
+						'TOPICS' => $f_data->forum_topics,
 						'LAST_TOPIC' => $last_topic,
 						'LAST_POSTER' => $last_poster,
 						'LAST_POST_TIME' => $last_post_time,
 						
-						'U_FORUM' => s_link('forum', $f_data['forum_alias']))
+						'U_FORUM' => s_link('forum', $f_data->forum_alias))
 					);
 				}
 			}
@@ -141,20 +141,20 @@ class board {
 				AND t.topic_featured = 1
 			ORDER BY t.topic_replies, t.topic_views DESC, p.post_time DESC
 			LIMIT ??';
-		if ($result = sql_rowset(sql_filter($sql, $config['main_topics']))) {
+		if ($result = sql_rowset(sql_filter($sql, $config->main_topics))) {
 			_style('board_popular');
 			
 			foreach ($result as $row) {
-				$username = ($row['user_id'] != GUEST) ? $row['username'] : (($row['post_username'] != '') ? $row['post_username'] : lang('guest'));
+				$username = ($row->user_id != GUEST) ? $row->username : (($row->post_username != '') ? $row->post_username : lang('guest'));
 				
 				_style('board_popular.row', array(
-					'U_TOPIC' => ($row['topic_replies']) ? s_link('post', $row['post_id']) . '#' . $row['post_id'] : s_link('topic', $row['topic_id']),
-					'TOPIC_TITLE' => $row['topic_title'],
-					'TOPIC_COLOR' => $row['topic_color'],
-					'POST_TIME' => $user->format_date($row['post_time'], 'H:i'),
-					'USER_ID' => $row['user_id'],
+					'U_TOPIC' => ($row->topic_replies) ? s_link('post', $row->post_id) . '#' . $row->post_id : s_link('topic', $row->topic_id),
+					'TOPIC_TITLE' => $row->topic_title,
+					'TOPIC_COLOR' => $row->topic_color,
+					'POST_TIME' => $user->format_date($row->post_time, 'H:i'),
+					'USER_ID' => $row->user_id,
 					'USERNAME' => $username,
-					'PROFILE' => s_link('m', $row['username_base']))
+					'PROFILE' => s_link('m', $row->username_base))
 				);
 			}
 		}
@@ -176,20 +176,20 @@ class board {
 				AND t.topic_featured = 1
 			ORDER BY t.topic_announce DESC, p.post_time DESC
 			LIMIT ??';
-		if ($result = sql_rowset(sql_filter($sql, $config['main_topics']))) {
+		if ($result = sql_rowset(sql_filter($sql, $config->main_topics))) {
 			_style('board_newest');
 			
 			foreach ($result as $row) {
-				$username = ($row['user_id'] != GUEST) ? $row['username'] : (($row['post_username'] != '') ? $row['post_username'] : lang('guest'));
+				$username = ($row->user_id != GUEST) ? $row->username : (($row->post_username != '') ? $row->post_username : lang('guest'));
 				
 				_style('board_newest.row', array(
-					'U_TOPIC' => ($row['topic_replies']) ? s_link('post', $row['post_id']) . '#' . $row['post_id'] : s_link('topic', $row['topic_id']),
-					'TOPIC_TITLE' => $row['topic_title'],
-					'TOPIC_COLOR' => $row['topic_color'],
-					'POST_TIME' => $user->format_date($row['post_time'], 'H:i'),
-					'USER_ID' => $row['user_id'],
+					'U_TOPIC' => ($row->topic_replies) ? s_link('post', $row->post_id) . '#' . $row->post_id : s_link('topic', $row->topic_id),
+					'TOPIC_TITLE' => $row->topic_title,
+					'TOPIC_COLOR' => $row->topic_color,
+					'POST_TIME' => $user->format_date($row->post_time, 'H:i'),
+					'USER_ID' => $row->user_id,
 					'USERNAME' => $username,
-					'PROFILE' => s_link('m', $row['username_base']))
+					'PROFILE' => s_link('m', $row->username_base))
 				);
 			}
 		}

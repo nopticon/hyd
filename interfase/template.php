@@ -147,7 +147,7 @@ class Template {
 		
 		$this->vars = &$this->_tpldata['.'][0];
 		
-		$this->use_cache = $config['xs_use_cache'];
+		$this->use_cache = $config->xs_use_cache;
 		$this->cache_search = array('.', '\\', '/', '_tpl');
 		$this->cache_replace = array('_', '.', '.', '.php');
 		
@@ -343,7 +343,7 @@ class Template {
 		// checking if we should recompile cache
 		if (!empty($this->files_cache[$handle]) && $this->auto_recompile) {
 			$cache_time = @filemtime($this->files_cache[$handle]);
-			if(@filemtime($this->files[$handle]) > $cache_time || $config['xs_template_time'] > $cache_time) {	
+			if(@filemtime($this->files[$handle]) > $cache_time || $config->xs_template_time > $cache_time) {	
 				// file was changed. don't use cache file (will be recompled if configuration allowes it)
 				$this->files_cache[$handle] = '';
 			}
@@ -1218,9 +1218,9 @@ class Template {
 				if (!@mkdir($path)) {
 					$this->cache_writable = 0;
 					return false;
-				} else {
-					_chmod($path, $config['mask']);
 				}
+
+				_chmod($path, $config->mask);
 			}
 			
 			$count = count($dirs);
@@ -1234,9 +1234,9 @@ class Template {
 						if(!@mkdir($path)) {
 							$this->cache_writable = 0;
 							return false;
-						} else {
-							_chmod($path, $config['mask']);
 						}
+
+						_chmod($path, $config->mask);
 					}
 				}
 			}
@@ -1251,7 +1251,7 @@ class Template {
 		fwrite($file, "<?php\n\n// Generated on " . date('r') . " (time=" . time() . ")\n\n?>");
 		fwrite($file, $code);
 		fclose($file);
-		_chmod($filename, $config['mask']);
+		_chmod($filename, $config->mask);
 
 		return true;
 	}
