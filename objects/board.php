@@ -90,10 +90,6 @@ class board {
 						continue;
 					}
 
-					/*if ($f_data['forum_name'] == '[root]') {
-						continue;
-					}*/
-					
 					if ($f_data->post_id) {
 						$f_data->topic_title = (strlen($f_data->topic_title) > 30) ? substr($f_data->topic_title, 0, 30) . '...' : $f_data->topic_title;
 						

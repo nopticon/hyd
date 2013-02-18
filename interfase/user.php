@@ -393,10 +393,10 @@ class session {
 	public function set_cookie($name, $cookiedata, $cookietime) {
 		global $config;
 		
-		//if ($config['cookie_domain'] != 'localhost') {
+		//if ($config->cookie_domain != 'localhost') {
 		setcookie($config->cookie_name . '_' . $name, $cookiedata, $cookietime, $config->cookie_path, $config->cookie_domain);
 		//} else {
-		//	setcookie($config['cookie_name'] . '_' . $name, $cookiedata, $cookietime, $config['cookie_path']);
+		//	setcookie($config->cookie_name . '_' . $name, $cookiedata, $cookietime, $config->cookie_path->);
 		//}
 	}
 

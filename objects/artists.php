@@ -68,10 +68,10 @@ class artists extends downloads {
 		// Gallery
 		
 		$image = '';
-		if ($this->data['images']) {
-			$simage = $this->get_images(false, $this->data['ub'], true);
+		if ($this->data->images) {
+			$simage = $this->get_images(false, $this->data->ub, true);
 
-			$imagedata = $this->images[$this->data['ub']][$simage];
+			$imagedata = $this->images[$this->data->ub][$simage];
 			$image = $imagedata['path'];
 		}
 		
@@ -81,7 +81,7 @@ class artists extends downloads {
 		
 		if ($this->data['images'] > 1) {
 			_style('ub_image.view', array(
-				'URL' => s_link('a', $this->data['subdomain'], 'gallery', $imagedata['image'], 'view'))
+				'URL' => s_link('a', $this->data->subdomain, 'gallery', $imagedata['image'], 'view'))
 			);
 		}
 		
@@ -90,11 +90,11 @@ class artists extends downloads {
 		if ($this->auth['user']) {
 			_style('publish', array(
 				'TITLE' => ($this->auth['mod']) ? lang('send_news') : lang('send_post'),
-				'URL' => s_link('a', $this->data['subdomain']))
+				'URL' => s_link('a', $this->data->subdomain))
 			);
 		}
 		
-		if ($this->data['news'] || $this->data['posts']) {
+		if ($this->data->news || $this->data->posts) {
 			$sql = "(SELECT ?, p.topic_id, p.post_text, t.topic_time as post_time, m.user_id, m.username, m.username_base, m.user_avatar
 				FROM _forum_topics t, _forum_posts p, _members m
 				WHERE t.forum_id = ?
@@ -113,12 +113,12 @@ class artists extends downloads {
 				ORDER BY p.post_time DESC 
 				LIMIT ??, ??)
 				ORDER BY post_time DESC";
-			if ($result = sql_rowset(sql_filter($sql, 'news', $config['ub_fans_f'], $this->data['ub'], 'post', $this->data['ub'], 0, 10))) {
+			if ($result = sql_rowset(sql_filter($sql, 'news', $config->ub_fans_f, $this->data->ub, 'post', $this->data->ub, 0, 10))) {
 				_style('news');
 				
 				$user_profile = w();
 				foreach ($result as $row) {
-					$uid = $row['user_id'];
+					$uid = $row->user_id;
 					
 					if (!isset($user_profile[$uid]) || ($uid == GUEST)) {
 						$user_profile[$uid] = $comments->user_profile($row);
@@ -128,8 +128,8 @@ class artists extends downloads {
 					
 					$row_data += array(
 						'POST_ID' => $row['post_id'],
-						'DATETIME' => $user->format_date($row['post_time']),
-						'MESSAGE' => $comments->parse_message($row['post_text']),
+						'DATETIME' => $user->format_date($row->post_time),
+						'MESSAGE' => $comments->parse_message($row->post_text),
 						'S_DELETE' => false
 					);
 					
@@ -137,30 +137,28 @@ class artists extends downloads {
 				}
 			}
 			
-			$total_rows = $this->data['news'] + $this->data['posts']; 
+			$total_rows = $this->data->news + $this->data->posts;
 		}
 		
 		//
 		// Auth Members
 		//
-		if ($this->auth['mod'] || $this->data['mods_legend']) {
+		if ($this->auth['mod'] || $this->data->mods_legend) {
 			$sql = 'SELECT b.ub, u.user_id, u.username, u.username_base, u.user_avatar, u.user_avatar_type
 				FROM _artists_auth a, _artists b, _members u
 				WHERE a.ub = ?
 					AND a.ub = b.ub 
 					AND a.user_id = u.user_id 
 				ORDER BY u.username';
-			if ($result = sql_rowset(sql_filter($sql, $this->data['ub']))) {
+			if ($result = sql_rowset(sql_filter($sql, $this->data->ub))) {
 				foreach ($result as $i => $row) {
-					if (!$i) {
-						_style('mods');
-					}
+					if (!$i) _style('mods');
 					
 					$user_profile = $comments->user_profile($row);
 					
 					_style('mods.item', array(
-						'PROFILE' => $user_profile['profile'],
-						'USERNAME' => $user_profile['username'])
+						'PROFILE' => $user_profile->profile,
+						'USERNAME' => $user_profile->username)
 					);
 				}
 				

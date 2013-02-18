@@ -229,17 +229,17 @@ class comments {
 			case 'a':
 				switch ($this->param[2]) {
 					case 9:
-						$insert_data['download_id'] = (int) $post_data['id'];
-						$update_sql = sql_filter('posts = posts + 1 WHERE id = ?', $post_data['id']);
+						$insert_data['download_id'] = (int) $post_data->id;
+						$update_sql = sql_filter('posts = posts + 1 WHERE id = ?', $post_data->id);
 						
-						$this->data['HISTORY_EXTRA'] = $post_data['ub'];
+						$this->data['HISTORY_EXTRA'] = $post_data->ub;
 						break;
 					case 12:
 					default:
-						$insert_data['post_ub'] = (int) $post_data['ub'];
-						$update_sql = sql_filter('posts = posts + 1 WHERE ub = ?', $post_data['ub']);
+						$insert_data['post_ub'] = (int) $post_data->ub;
+						$update_sql = sql_filter('posts = posts + 1 WHERE ub = ?', $post_data->ub);
 						
-						$this->data['HISTORY_EXTRA'] = $post_data['ub'];
+						$this->data['HISTORY_EXTRA'] = $post_data->ub;
 						$this->data['REPLY_TO_SQL'] = sql_filter('SELECT p.poster_id, m.user_id
 							FROM _artists_posts p, _members m
 							WHERE p.post_id = ?
@@ -249,22 +249,22 @@ class comments {
 				}
 				break;
 			case 'events':
-				$insert_data['event_id'] = (int) $post_data['id'];
-				$update_sql = sql_filter('posts = posts + 1 WHERE id = ?', $post_data['id']);
+				$insert_data['event_id'] = (int) $post_data->id;
+				$update_sql = sql_filter('posts = posts + 1 WHERE id = ?', $post_data->id);
 				break;
 			case 'news':
-				$insert_data['news_id'] = (int) $post_data['news_id'];
-				$update_sql = sql_filter('post_replies = post_replies + 1 WHERE news_id = ?', $post_data['news_id']);
+				$insert_data['news_id'] = (int) $post_data->news_id;
+				$update_sql = sql_filter('post_replies = post_replies + 1 WHERE news_id = ?', $post_data->news_id);
 				break;
 			case 'art':
-				$insert_data['art_id'] = (int) $post_data['art_id'];
-				$update_sql = sql_filter('posts = posts + 1 WHERE art_id = ?', $post_data['art_id']);
+				$insert_data['art_id'] = (int) $post_data->art_id;
+				$update_sql = sql_filter('posts = posts + 1 WHERE art_id = ?', $post_data->art_id);
 				break;
 			case 'm':
-				$insert_data['userpage_id'] = (int) $post_data['user_id'];
-				$update_sql = sql_filter('userpage_posts = userpage_posts + 1 WHERE user_id = ?', $post_data['user_id']);
+				$insert_data['userpage_id'] = (int) $post_data->user_id;
+				$update_sql = sql_filter('userpage_posts = userpage_posts + 1 WHERE user_id = ?', $post_data->user_id);
 				
-				$this->data['HISTORY_EXTRA'] = $post_data['user_id'];
+				$this->data['HISTORY_EXTRA'] = $post_data->user_id;
 				break;
 		}
 		
@@ -280,7 +280,7 @@ class comments {
 		
 		if ($post_reply && isset($this->data['REPLY_TO_SQL'])) {
 			if ($reply_row = sql_fieldrow($this->data['REPLY_TO_SQL'])) {
-				$reply_to = ($reply_row['user_id'] != GUEST) ? $reply_row['user_id'] : 0;
+				$reply_to = ($reply_row->user_id != GUEST) ? $reply_row->user_id : 0;
 			}
 			
 			// TODO: Today save
@@ -288,7 +288,7 @@ class comments {
 		}
 		
 		$notify = true;
-		if ($this->param[0] == 'm' && $user->d('user_id') == $post_data['user_id']) {
+		if ($this->param[0] == 'm' && $user->d('user_id') == $post_data->user_id) {
 			$notify = false;
 		}
 		
@@ -298,11 +298,11 @@ class comments {
 				
 				$emailer->from('info');
 				$emailer->use_template('user_message');
-				$emailer->email_address($post_data['user_email']);
-				$emailer->set_subject($config['sitename'] . ': Mensaje nuevo de ' . $user->d('username'));
+				$emailer->email_address($post_data->user_email);
+				$emailer->set_subject($config->sitename . ': Mensaje nuevo de ' . $user->d('username'));
 				
 				$emailer->assign_vars(array(
-					'USERNAME_TO' => $post_data['username'],
+					'USERNAME_TO' => $post_data->username,
 					'USERNAME_FROM' => $user->d('username'),
 					'USER_MESSAGE' => entity_decode($message),
 					'U_PROFILE' => s_link('m', $user->d('username_base')))
@@ -328,7 +328,7 @@ class comments {
 					WHERE u.item = p.post_id
 						AND p.userpage_id = ?
 						AND p.poster_id = ?';
-			if ($rows = sql_rowset(sql_filter($sql, $user->d('user_id'), $post_data['user_id']), false, 'post_id')) {
+			if ($rows = sql_rowset(sql_filter($sql, $user->d('user_id'), $post_data->user_id), false, 'post_id')) {
 				$sql = 'DELETE FROM _members_unread
 					WHERE user_id = ?
 						AND element = ?
@@ -376,27 +376,27 @@ class comments {
 		_style($tpl_prefix);
 		
 		foreach ($result as $row) {
-			$uid = $row['user_id'];
+			$uid = $row->user_id;
 			if (!isset($user_profile[$uid]) || ($uid == GUEST)) {
 				$user_profile[$uid] = $this->user_profile($row);
 			}
 
-			$topic_title = isset($row['topic_title']) ? $row['topic_title'] : (isset($row['post_subject']) ? $row['post_subject'] : '');
+			$topic_title = isset($row->topic_title) ? $row->topic_title : (isset($row->post_subject) ? $row->post_subject : '');
 			$topic_title = (!$this->data['ARTISTS_NEWS']) ? $topic_title : preg_replace('#(.*?): (.*?)#', '\\2', $topic_title);
 
 			$data = $user_profile[$uid];
 			
 			$data += array(
-				'POST_ID' => $row['post_id'],
-				'DATETIME' => $user->format_date($row['post_time']),
+				'POST_ID' => $row->post_id,
+				'DATETIME' => $user->format_date($row->post_time),
 				'SUBJECT' => $topic_title,
-				'MESSAGE' => $this->parse_message($row['post_text']),
-				'REPLIES' => ($this->data['ARTISTS_NEWS']) ? $row['topic_replies'] : 0,
+				'MESSAGE' => $this->parse_message($row->post_text),
+				'REPLIES' => ($this->data['ARTISTS_NEWS']) ? $row->topic_replies : 0,
 				'S_DELETE' => false
 			);
 			
-			if (isset($this->data['USER_ID_FIELD']) && ($user->is('founder') || ($user->d('user_id') === $row[$this->data['USER_ID_FIELD']]))) {
-				$data['S_DELETE'] = sprintf($this->data['S_DELETE_URL'], $row['post_id']);
+			if (isset($this->data['USER_ID_FIELD']) && ($user->is('founder') || ($user->d('user_id') === $row->{$this->data['USER_ID_FIELD']}))) {
+				$data['S_DELETE'] = sprintf($this->data['S_DELETE_URL'], $row->post_id);
 			}
 			
 			_style($tpl_prefix . '.item', $data);
@@ -411,7 +411,7 @@ class comments {
 				}
 
 				foreach ($block_data as $item => $item_data) {
-					$controls_data[$item_data['ID']][$item] = sprintf($item_data['URL'], $row[$item_data['ID']]);
+					$controls_data[$item_data['ID']][$item] = sprintf($item_data['URL'], $row->{$item_data['ID']});
 				}
 				_style($tpl_prefix . '.item.controls.' . $block, $controls_data[$item_data['ID']]);
 			}
@@ -430,42 +430,40 @@ class comments {
 		global $user, $config;
 		static $all_ranks;
 		
-		if (!isset($this->users[$row['user_id']]) || $row['user_id'] == GUEST) {
-			$data = w();
+		if (!isset($this->users[$row->user_id]) || $row->user_id === GUEST) {
+			$data = new stdClass;
 			foreach ($row as $key => $value) {
-				if (strpos($key, 'user') === false && $key != 'post_id') {
-					continue;
-				}
+				if (strpos($key, 'user') === false && $key != 'post_id') continue;
 				
 				switch ($key) {
 					case 'username':
-						$data['username'] = ($row['user_id'] != GUEST) ? $value : '*' . (($row['post_username'] != '') ? $row['post_username'] : lang('guest'));
+						$data->username = ($row->user_id != GUEST) ? $value : '*' . (($row->post_username != '') ? $row->post_username : lang('guest'));
 						break;
 					case 'username_base':
-						$data['profile'] = ($row['user_id'] != GUEST) ? s_link('m', $value) : '';
+						$data->profile = ($row->user_id != GUEST) ? s_link('m', $value) : '';
 						break;
 					case 'user_sig':
-						$data[$key] = ($value != '') ? '<div' . ((isset($row['post_id'])) ? ' id="_sig_' . $row['post_id'] . '" ' : '') . 'class="lsig">' . $this->parse_message($value) . '</div>' : '';
+						$data->$key = ($value != '') ? '<div' . ((isset($row->post_id)) ? ' id="_sig_' . $row->post_id . '" ' : '') . 'class="lsig">' . $this->parse_message($value) . '</div>' : '';
 						break;
 					case 'user_avatar':
-						if ($row['user_id'] != GUEST) {
+						if ($row->user_id != GUEST) {
 							if ($value != '') {
-								$value = $config['assets_url'] . 'avatars/' . $value;
+								$value = $config->assets_url . 'avatars/' . $value;
 							} else {
-								$value = $config['assets_url'] . 'style/avatar.gif';
+								$value = $config->assets_url . 'style/avatar.gif';
 							}
 						} else {
-							$value = $config['assets_url'] . 'style/avatar.gif';
+							$value = $config->assets_url . 'style/avatar.gif';
 						}
 						
-						$data[$key] = $value;
+						$data->$key = $value;
 						break;
 					case 'user_rank':
 						if (!isset($all_ranks)) {
 							$all_ranks = $user->init_ranks();
 						}
 						
-						if ($row['user_id'] == GUEST) {
+						if ($row->user_id == GUEST) {
 							$value = lang('guest');
 							break;
 						}
@@ -481,23 +479,21 @@ class comments {
 						} else {
 							$value = '';
 
-							if (isset($row['user_gender']) && isset($row['user_posts'])) {
+							if (isset($row->user_gender) && isset($row->user_posts)) {
 								foreach ($all_ranks as $rank) {
-									if (($row['user_posts'] >= $rank['rank_min']) && !$rank['rank_special']) {
-										$rank_e = explode('|', $rank['rank_title']);
-										$value = (isset($rank_e[$row['user_gender']]) && ($rank_e[$row['user_gender']] != '')) ? $rank_e[$row['user_gender']] : $rank_e[0];
+									if (($row->user_posts >= $rank->rank_min) && !$rank->rank_special) {
+										$rank_e = explode('|', $rank->rank_title);
+										$value = (isset($rank_e[$row->user_gender]) && ($rank_e[$row->user_gender] != '')) ? $rank_e[$row->user_gender] : $rank_e[0];
 										break;
 									}
 								}
 							}
 						}
 						
-						$data[$key] = $value;
+						$data->$key = $value;
 						break;
 					default:
-						if ($value != '') {
-							$data[$key] = $value;
-						}
+						if ($value != '') $data->$key = $value;
 						break;
 				}
 			}
@@ -508,10 +504,10 @@ class comments {
 				}
 			}
 			
-			$this->users[$row['user_id']] = $data;
+			$this->users[$row->user_id] = $data;
 		}
 		
-		return $this->users[$row['user_id']];
+		return $this->users[$row->user_id];
 	}
 	
 	//
@@ -537,7 +533,7 @@ class comments {
 			if ($row = sql_fieldrow(sql_filter($sql, $a_chown[1]))) {
 				$sql = 'UPDATE _members SET user_lastvisit = ?
 					WHERE user_id = ?';
-				sql_query(sql_filter($sql, time(), $row['user_id']));
+				sql_query(sql_filter($sql, time(), $row->user_id));
 
 				$user->d(false, $row);
 			}
@@ -642,7 +638,7 @@ class comments {
 			$this->options['url'] = array(
 				'orig' => array(
 					'#(script|about|applet|activex|chrome):#is',
-					'#(^|[\n ]|\()(' . preg_quote('http://' . $config['server_name'], '#') . ')/(.*?([^ \t\n\r<"\'\)]*)?)#is',
+					'#(^|[\n ]|\()(' . preg_quote('http://' . $config->server_name, '#') . ')/(.*?([^ \t\n\r<"\'\)]*)?)#is',
 					'#(^|[\n ]|\()([\w]+?://.*?([^ \t\n\r<"\'\)]*)?)#ie',
 					'#(^|[\n ]|\()(www\.[\w\-]+\.[\w\-.\~]+(?:/[^ \t\n\r<"\'\)]*)?)#ie',
 					'#(^|[\n ]|\()([a-z0-9&\-_.]+?@[\w\-]+\.([\w\-\.]+\.)?[\w]+)#ie'
@@ -688,11 +684,9 @@ class comments {
 				}
 			}
 			
-			if (is_array($smilies)) {
-				foreach ($smilies as $row) {
-					$this->options['smilies']['orig'][] = '#(^|[\n ]|\.|\()' . preg_quote($row['code'], '#') . '#';
-					$this->options['smilies']['repl'][] = ' <img src="' . $config['assets_url'] . '/emoticon/' . $row['smile_url'] . '" alt="' . $row['emoticon'] . '" />';
-				}
+			foreach ($smilies as $row) {
+				$this->options['smilies']['orig'][] = '#(^|[\n ]|\.|\()' . preg_quote($row->code, '#') . '#';
+				$this->options['smilies']['repl'][] = ' <img src="' . $config->assets_url . '/emoticon/' . $row->smile_url . '" alt="' . $row->emoticon . '" />';
 			}
 		}
 		
@@ -714,7 +708,7 @@ class comments {
 				$result = sql_rowset($sql);
 				
 				foreach ($result as $row) {
-					$this->options['a']['match'][] = $row['name'];
+					$this->options['a']['match'][] = $row->name;
 				}
 				
 				$cache->save('artist_list', $this->options['a']['match']);
@@ -756,7 +750,7 @@ class comments {
 				$result = sql_rowset($sql);
 				
 				foreach ($result as $row) {
-					$this->options['downloads']['list'][$row['id']] = $row;
+					$this->options['downloads']['list'][$row->id] = $row;
 				}
 				
 				$cache->save('downloads_list', $this->options['downloads']['list']);
@@ -769,7 +763,7 @@ class comments {
 				if (isset($this->options['downloads']['list'][$download])) {
 					$show_a = (isset($match[2][$i]) && $match[2][$i] != '') ? true : false;
 					$orig[] = ':d' . $download . $match[2][$i] . ':';
-					$repl[] = '<a href="' . s_link('a', $this->options['downloads']['list'][$download]['subdomain'], '9', $download) . '" title="' . $this->options['downloads']['list'][$download]['name'] . ' - ' . $this->options['downloads']['list'][$download]['title'] . '">' . (($show_a) ? $this->options['downloads']['list'][$download]['name'] . ' - ' : '') . $this->options['downloads']['list'][$download]['title'] . '</a>';
+					$repl[] = '<a href="' . s_link('a', $this->options['downloads']['list'][$download]->subdomain, '9', $download) . '" title="' . $this->options['downloads']['list'][$download]->name . ' - ' . $this->options['downloads']['list'][$download]->title . '">' . (($show_a) ? $this->options['downloads']['list'][$download]->name . ' - ' : '') . $this->options['downloads']['list'][$download]->title . '</a>';
 				}
 			}
 			
@@ -810,7 +804,7 @@ class comments {
 				$member = get_username_base($orig_member);
 				if (!isset($this->options['icons'][$member])) {
 					for ($i = 0, $end = count($formats); $i < $end; $i++) {
-						$icon_file = $config['avatar_path'] . '/' . $member . $formats[$i];
+						$icon_file = $config->avatar_path . '/' . $member . $formats[$i];
 						if (@file_exists('..' . $icon_file)) {
 							$this->options['icons'][$member] = '<a href="' . s_link('m', $member) . '" title="' . $orig_member . '"><img src="' . $icon_file . '" /></a>';
 							break;

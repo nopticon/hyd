@@ -48,7 +48,7 @@ class emailer {
 		if (strpos($address, '@') === false) {
 			global $config;
 			
-			$address = $config['sitename'] . ' <' . $address . '@' . array_key(explode('@', $config['board_email']), 1) . '>';
+			$address = $config->sitename . ' <' . $address . '@' . array_key(explode('@', $config->board_email), 1) . '>';
 		}
 		
 		$this->addresses['cc'][] = trim($address);
@@ -58,7 +58,7 @@ class emailer {
 		if (strpos($address, '@') === false) {
 			global $config;
 			
-			$address = $config['sitename'] . ' <' . $address . '@' . array_key(explode('@', $config['board_email']), 1) . '>';
+			$address = $config->sitename . ' <' . $address . '@' . array_key(explode('@', $config->board_email), 1) . '>';
 		}
 		
 		$this->addresses['bcc'][] = trim($address);
@@ -68,7 +68,7 @@ class emailer {
 		if (strpos($address, '@') === false) {
 			global $config;
 			
-			$address = $address . '@' . array_key(explode('@', $config['board_email']), 1);
+			$address = $address . '@' . array_key(explode('@', $config->board_email), 1);
 		}
 		
 		$this->reply_to = trim($address);
@@ -78,7 +78,7 @@ class emailer {
 		if (strpos($address, '@') === false) {
 			global $config;
 			
-			$address = $config['sitename'] . ' <' . $address . '@' . array_key(explode('@', $config['board_email']), 1) . '>';
+			$address = $config->sitename . ' <' . $address . '@' . array_key(explode('@', $config->board_email), 1) . '>';
 		}
 		
 		$this->from = trim($address);
@@ -102,14 +102,14 @@ class emailer {
 		}
 
 		if (trim($template_lang) == '') {
-			$template_lang = $config['default_lang'];
+			$template_lang = $config->default_lang;
 		}
 
 		if (empty($this->tpl_msg[$template_lang . $template_file])) {
 			$tpl_file = ROOT.'language/' . $template_lang . '/email/' . $template_file . '.tpl';
 
 			if (!@file_exists(@realpath($tpl_file))) {
-				$tpl_file = ROOT.'language/' . $config['default_lang'] . '/email/' . $template_file . '.tpl';
+				$tpl_file = ROOT.'language/' . $config->default_lang . '/email/' . $template_file . '.tpl';
 
 				if (!@file_exists(@realpath($tpl_file))) {
 					trigger_error('Could not find email template file :: ' . $template_file);
@@ -184,23 +184,23 @@ class emailer {
 		$bcc = (isset($this->addresses['bcc']) && count($this->addresses['bcc'])) ? implode(', ', $this->addresses['bcc']) : '';
 
 		// Build header
-		$this->extra_headers = (($this->reply_to != '') ? "Reply-to: $this->reply_to\n" : '') . (($this->from != '') ? "From: $this->from\n" : "From: " . $config['board_email'] . "\n") . "Return-Path: " . $config['board_email'] . "\nMessage-ID: <" . md5(uniqid(time())) . '@' . substr($config['cookie_domain'], 1) . ">\nMIME-Version: 1.0\nContent-type: text/plain; charset=" . $this->encoding . "\nContent-transfer-encoding: 8bit\nDate: " . date('r', time()) . "\nX-Priority: 3\nX-MSMail-Priority: Normal\n" . $this->extra_headers . (($cc != '') ? "Cc: $cc\n" : '')  . (($bcc != '') ? "Bcc: $bcc\n" : ''); 
+		$this->extra_headers = (($this->reply_to != '') ? "Reply-to: $this->reply_to\n" : '') . (($this->from != '') ? "From: $this->from\n" : "From: " . $config->board_email . "\n") . "Return-Path: " . $config->board_email . "\nMessage-ID: <" . md5(uniqid(time())) . '@' . substr($config->cookie_domain, 1) . ">\nMIME-Version: 1.0\nContent-type: text/plain; charset=" . $this->encoding . "\nContent-transfer-encoding: 8bit\nDate: " . date('r', time()) . "\nX-Priority: 3\nX-MSMail-Priority: Normal\n" . $this->extra_headers . (($cc != '') ? "Cc: $cc\n" : '')  . (($bcc != '') ? "Bcc: $bcc\n" : ''); 
 
 		// Send message ... removed $this->encode() from subject for time being
 		$empty_to_header = ($to == '') ? true : false;
-		$to = ($to == '') ? (($config['sendmail_fix']) ? ' ' : 'Undisclosed-recipients:;') : $to;
+		$to = ($to == '') ? (($config->sendmail_fix) ? ' ' : 'Undisclosed-recipients:;') : $to;
 
 		$this->subject = entity_decode($this->subject);
 		$this->msg = entity_decode($this->msg);
 		
-		$result = @mail($to, $this->subject, preg_replace("#(?<!\r)\n#s", "\n", $this->msg), $this->extra_headers, "-f{$config['board_email']}");
+		$result = @mail($to, $this->subject, preg_replace("#(?<!\r)\n#s", "\n", $this->msg), $this->extra_headers, "-f{$config->board_email}");
 		
-		if (!$result && !$config['sendmail_fix'] && $empty_to_header) {
+		if (!$result && !$config->sendmail_fix && $empty_to_header) {
 			$to = ' ';
 			
 			set_config('sendmail_fix', 1);
 			
-			$result = @mail($to, $this->subject, preg_replace("#(?<!\r)\n#s", "\n", $this->msg), $this->extra_headers, "-f{$config['board_email']}");
+			$result = @mail($to, $this->subject, preg_replace("#(?<!\r)\n#s", "\n", $this->msg), $this->extra_headers, "-f{$config->board_email}");
 		}
 		
 		if (!$result) {

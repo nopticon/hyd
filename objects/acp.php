@@ -108,7 +108,7 @@ class mac {
 		
 		v_style(array(
 			'ARTIST_SELECT' => $url,
-			'ARTIST_NAME' => $this->object['name'])
+			'ARTIST_NAME' => $this->object->name)
 		);
 		
 		return;
