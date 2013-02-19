@@ -30,7 +30,7 @@ class home {
 				AND c.last_msg_id = c2.msg_id
 				AND c2.privmsgs_from_userid = m.user_id 
 			ORDER BY c2.privmsgs_date DESC';
-		$result = sql_rowset(sql_filter($sql, $user->data['user_id'], UH_NOTE));
+		$result = sql_rowset(sql_filter($sql, $user->d('user_id'), UH_NOTE));
 		
 		foreach ($result as $i => $row) {
 			if (!$i) {
@@ -40,16 +40,16 @@ class home {
 			}
 			
 			$user_profile = $comments->user_profile($row);
-			$dc_subject = 'Conversaci&oacute;n con ' . $row['username'];
+			$dc_subject = 'Conversaci&oacute;n con ' . $row->username;
 			
 			_style('items.notes.item', array(
-				'S_MARK_ID' => $row['parent_id'],
-				'U_READ' => s_link('my dc read', $row['last_msg_id']) . '#' . $row['last_msg_id'],
+				'S_MARK_ID' => $row->parent_id,
+				'U_READ' => s_link('my dc read', $row->last_msg_id) . '#' . $row->last_msg_id,
 				'SUBJECT' => $dc_subject,
-				'DATETIME' => $user->format_date($row['privmsgs_date']),
-				'USER_ID' => $row['user_id'],
-				'USERNAME' => $row['username'],
-				'U_USERNAME' => $user_profile['profile'])
+				'DATETIME' => $user->format_date($row->privmsgs_date),
+				'USER_ID' => $row->user_id,
+				'USERNAME' => $row->username,
+				'U_USERNAME' => $user_profile->profile)
 			);
 		}
 
@@ -71,23 +71,19 @@ class home {
 			}
 		}
 		
-		if (!count($news)) {
-			return;
-		}
-		
 		foreach ($news as $i => $row) {
 			if (!$i) _style('news');
 			
-			$news_image = (@file_exists($config['news_path'] . $row['news_id'] . '.jpg')) ? $row['news_id'] : 'd';
+			$news_image = (@file_exists($config->news_path . $row->news_id . '.jpg')) ? $row->news_id : 'd';
 			
 			_style('news.row', array(
-				'TIMESTAMP' => $user->format_date($row['post_time'], 'j \d\e F Y'),
-				'URL' => s_link('news', $row['news_alias']),
-				'SUBJECT' => $row['post_subject'],
-				'CAT' => $row['cat_name'],
-				'U_CAT' => s_link('news', $row['cat_url']),
-				'MESSAGE' => $comments->parse_message($row['post_desc']),
-				'IMAGE' => $config['news_url'] . $news_image . '.jpg')
+				'TIMESTAMP' => $user->format_date($row->post_time, 'j \d\e F Y'),
+				'URL' => s_link('news', $row->news_alias),
+				'SUBJECT' => $row->post_subject,
+				'CAT' => $row->cat_name,
+				'U_CAT' => s_link('news', $row->cat_url),
+				'MESSAGE' => $comments->parse_message($row->post_desc),
+				'IMAGE' => $config->news_url . $news_image . '.jpg')
 			);
 		}
 		
