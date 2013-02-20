@@ -28,7 +28,7 @@ $banner_end = mktime(23, 59, 0, $d['mon'], $d['mday'], $d['year']);
 
 $sql = 'SELECT *
 	FROM _monetize
-	WHERE monetize_end > ' . (int) $_end . '
+	WHERE monetize_end > ?
 	ORDER BY monetize_end';
 $deleted = sql_rowset(sql_filter($sql, $_end), false, 'monetize_id');
 

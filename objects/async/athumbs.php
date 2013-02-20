@@ -39,18 +39,18 @@ $result = sql_rowset(sql_filter($sql, implode(',', array_keys($selected_artists)
 
 $random_images = w();
 foreach ($result as $row) {
-	if (!isset($random_images[$row['ub']])) {
-		$random_images[$row['ub']] = $row['image'];
+	if (!isset($random_images[$row->ub])) {
+		$random_images[$row->ub] = $row->image;
 	}
 }
 
 foreach ($selected_artists as $ub => $data) {
 	_style('row', array(
-		'NAME' => $data['name'],
-		'IMAGE' => $config['artists_url'] . $ub . '/thumbnails/' . $random_images[$ub] . '.jpg',
-		'URL' => s_link('a', $data['subdomain']),
-		'LOCATION' => ($data['local']) ? 'Guatemala' : $data['location'],
-		'GENRE' => $data['genre'])
+		'NAME' => $data->name,
+		'IMAGE' => $config->artists_url . $ub . '/thumbnails/' . $random_images[$ub] . '.jpg',
+		'URL' => s_link('a', $data->subdomain),
+		'LOCATION' => ($data->local) ? 'Guatemala' : $data->location,
+		'GENRE' => $data->genre)
 	);
 }
 

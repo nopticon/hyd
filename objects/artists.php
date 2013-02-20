@@ -67,22 +67,22 @@ class artists extends downloads {
 
 		// Gallery
 		
-		$image = '';
 		if ($this->data->images) {
-			$simage = $this->get_images(false, $this->data->ub, true);
+			$sql = 'SELECT image
+				FROM _artists_images 
+				WHERE image_default = 1
+				WHERE ub = ?';
+			$row = sql_fieldrow(sql_filter($sql, $this->data->ub));
 
-			$imagedata = $this->images[$this->data->ub][$simage];
-			$image = $imagedata->path;
-		}
-		
-		_style('ub_image', array(
-			'IMAGE' => $image)
-		);
-		
-		if ($this->data->images > 1) {
-			_style('ub_image.view', array(
-				'URL' => s_link('a', $this->data->subdomain, 'gallery', $imagedata->image, 'view'))
+			_style('ub_image', array(
+				'IMAGE' => $config->artists_url . $this->data->ub . '/gallery/' . $row->image . '.jpg')
 			);
+	
+			if ($this->data->images > 1) {
+				_style('ub_image.view', array(
+					'URL' => s_link('a', $this->data->subdomain, 'gallery', $row->image, 'view'))
+				);
+			}
 		}
 		
 		// News
@@ -124,16 +124,12 @@ class artists extends downloads {
 						$user_profile[$uid] = $comments->user_profile($row);
 					}
 
-					$row_data = $user_profile[$uid];
-					
-					$row_data += array(
-						'POST_ID' => $row->post_id,
-						'DATETIME' => $user->format_date($row->post_time),
-						'MESSAGE' => $comments->parse_message($row->post_text),
-						'S_DELETE' => false
-					);
-					
-					_style('news.row', $row_data);
+					_style('news.row', object_merge($user_profile[$uid], array(
+						'post_id' => $row->post_id,
+						'datetime' => $user->format_date($row->post_time),
+						'message' => $comments->parse_message($row->post_text),
+						's_delete' => false)
+					));
 				}
 			}
 			
@@ -422,7 +418,7 @@ class artists extends downloads {
 			fatal_error();
 		}
 		
-		$this->dl_data += $this->media_type($this->dl_data->ud);
+		$this->dl_data = object_merge($this->dl_data, $this->media_type($this->dl_data->ud));
 
 		$mode = request_var('dl_mode', 'view');
 
@@ -982,90 +978,25 @@ class artists extends downloads {
 	
 	public function thumbnails() {
 		global $cache, $config;
-		
-		$a_ary = w();
-		for ($i = 0; $i < 4; $i++) {
-			$_a = array_rand($this->adata);
-			_pre($_a, true);
-			if (!$this->adata[$_a]->images || isset($a_ary[$_a])) {
-				$i--;
-				continue;
-			}
-			$a_ary[$_a] = $this->adata[$_a];
-		}
-		
-		if (count($a_ary)) {
-			$sql = 'SELECT *
-				FROM _artists_images
-				WHERE ub IN (??)
-				ORDER BY RAND()';
-			$result = sql_rowset(sql_filter($sql, implode(',', array_keys($a_ary))));
-			
-			$random_images = w();
-			foreach ($result as $row) {
-				if (!isset($random_images[$row->ub])) {
-					$random_images[$row->ub] = $row->image;
-				}
-			}
-			
-			_style('thumbnails');
-			
-			foreach ($a_ary as $ub => $data) {
-				_style('thumbnails.item', array(
-					'NAME' => $data->name,
-					'IMAGE' => $config->artists_url . $ub . '/thumbnails/' . $random_images[$ub] . '.jpg',
-					'URL' => s_link('a', $data->subdomain),
-					'LOCATION' => ($data->local) ? 'Guatemala' : $data->location,
-					'GENRE' => $data->genre)
-				);
-			}
-		}
-		
-		return;
-	}
-	
-	public function get_images($mainframe = false, $ub = 0, $rand = false) {
-		if ($this->images) {
-			return;
-		}
-		
-		global $config;
-		
-		if ($mainframe) {
-			$sql = 'SELECT i.* 
-				FROM _artists_images i, _artists a 
-				WHERE i.ub = a.ub 
-				ORDER BY i.image';
-		} else {
-			if ($ub) {
-				$sql = 'SELECT i.* 
-					FROM _artists_images i 
-					LEFT JOIN _artists a ON a.ub = i.ub 
-					WHERE i.ub = ? 
-					ORDER BY ' . (($rand) ? 'RAND() LIMIT 1' : 'image');
-				$sql = sql_filter($sql, $ub);
-			}
-		}
-		
-		if ($ub && !$mainframe) {
-			if ($row = sql_fieldrow($sql)) {
-				$this->images[$row->ub][$row->image] = array(
-					'path' => $config->artists_url . $row->ub . '/gallery/' . $row->image . '.jpg',
-					'image' => $row->image,
-					'allow_dl' => $row->allow_dl
-				);
-			}
-			
-			return $row->image;
-		}
-		
-		$result = sql_rowset($sql);
-		
-		foreach ($result as $row) {
-			$this->images[$row->ub][$row->image] = array(
-				'path' => $config->artists_url . $row->ub . '/gallery/' . $row->image . '.jpg',
-				'image' => $row->image,
-				'allow_dl' => $row->allow_dl
+
+		$sql = 'SELECT ub, name, subdomain, location, genre, image
+			FROM _artists a
+			INNER JOIN _artists_images i ON a.ub = i.ub
+			WHERE a.a_active = 1
+				AND i.image_default = 1
+			ORDER BY RAND()
+			LIMIT 4';
+		$artists = sql_rowset($sql);
+
+		foreach ($artists as $i => $row) {
+			if (!$i) _style('thumbnails');
+
+			_style('thumbnails.item', array(
+				'NAME' => $row->name,
+				'IMAGE' => $config->artists_url . $row->ub . '/thumbnails/' . $row->image . '.jpg',
+				'URL' => s_link('a', $row->subdomain),
+				'LOCATION' => ($row->local) ? 'Guatemala' : $row->location,
+				'GENRE' => $row->genre)
 			);
 		}
 		
@@ -1116,97 +1047,34 @@ class artists extends downloads {
 	
 	public function _list() {
 		global $user, $config;
+
+		$genre = request_var('genre', '');
+		$search = request_var('search', '');
 		
-		$sql = 'SELECT *
-			FROM _artists
-			ORDER BY local DESC, name ASC';
-		$result = sql_rowset($sql);
-		
-		$alphabet = w();
-		foreach ($result as $row) {
-			$this->adata[$row->local][$row->ub] = $row;
-			
-			$alpha_id = strtolower($row->name);
-			$alpha_id = $alpha_id{0};
-			if (!isset($alphabet[$alpha_id])) {
-				if (is_numb($alpha_id)) {
-					$alpha_id = '#';
-				}
-				$alphabet[$alpha_id] = true;
-			}
-		}
-		
-		$selected_char = '';
-		$s_alphabet = request_var('alphabet', 0);
-		
-		if ($s_alphabet) {
-			$selected_char = chr(octdec($s_alphabet));
-			if (!preg_match('/([\#a-z])/', $selected_char)) {
-				redirect(s_link('a'));
-			}
-		}
-		
-		if ($s_alphabet) {
-			$sql_where = (($selected_char == '#') ? "name NOT RLIKE '^[a-z]'" : sql_filter('name LIKE ?', $selected_char . '%'));
-		} else {
-			$sql_where = 'images > 1';
-		}
-		
-		$sql_order = (!$s_alphabet) ? 'RAND() LIMIT 12' : 'name';
-		
-		$sql = 'SELECT *
-			FROM _artists
-			WHERE ' . $sql_where . '
-			ORDER BY ' . $sql_order;
-		if (!$selected_artists = sql_rowset($sql, 'ub')) {
+		//
+		// Select artists based on genre or search criteria or default list
+		//
+		$sql = 'SELECT a.ub, a.name, a.subdomain, a.local, a.location, a.genre, a.image, 
+			FROM _artists a
+			INNER JOIN _artists_images i ON i.ub = a.ub
+			WHERE i.image_default = 1
+				AND a.images > 1
+			ORDER BY name';
+		if (!$artists = sql_rowset($sql)) {
 			redirect(s_link('a'));
 		}
 
-		$sql = 'SELECT *
-			FROM _artists_images
-			WHERE ub IN (??)
-			ORDER BY RAND()';
-		$result = sql_rowset(sql_filter($sql, implode(',', array_keys($selected_artists))));
-		
-		$random_images = w();
-		foreach ($result as $row) {
-			if (!isset($random_images[$row->ub])) {
-				$random_images[$row->ub] = $row->image;
-			}
-		}
-		
-		_style('search_match');
-		
-		if (!$s_alphabet) {
-			_style('search_match.ajx');
-			$this->ajx = false;
-		}
-		
-		foreach ($selected_artists as $ub => $data) {
-			$image = $ub . '/thumbnails/' . $random_images[$ub] . '.jpg';
-			
+		foreach ($artists as $i => $row) {
+			if (!$i) _style('search_match');
+
 			_style('row', array(
-				'NAME' => $data->name,
-				'IMAGE' => $config->artists_url . $image,
-				'URL' => s_link('a', $data->subdomain),
-				'LOCATION' => ($data->local) ? 'Guatemala' : $data->location,
-				'GENRE' => $data->genre)
+				'NAME' => $row->name,
+				'IMAGE' => $config->artists_url . $row->ub . '/thumbnails/' . $row->image . '.jpg',
+				'URL' => s_link('a', $row->subdomain),
+				'LOCATION' => ($row->local) ? 'Guatemala' : $row->location,
+				'GENRE' => $row->genre)
 			);
 		}
-		
-		ksort($alphabet);
-		
-		foreach ($alphabet as $key => $null) {
-			_style('alphabet_item', array(
-				'CHAR' => strtoupper($key),
-				'URL' => s_link('a', '_' . decoct(ord($key))))
-			);
-		}
-		
-		v_style(array(
-			'TOTAL_A' => $config->max_artists,
-			'SELECTED_LETTER' => ($selected_char) ? strtoupper($selected_char) : '')
-		);
 		
 		return;
 	}
@@ -1547,9 +1415,10 @@ class artists extends downloads {
 	public function a_sidebar() {
 		global $config;
 		
-		$sql = 'SELECT *
-			FROM _artists a, _artists_images i
-			WHERE a.ub = i.ub
+		$sql = 'SELECT ub, name, subdomain, genre, image
+			FROM _artists a
+			INNER JOIN _artists_images i ON a.ub = i.image
+			WHERE i.image_default = 1
 			ORDER BY RAND()
 			LIMIT 1';
 		if ($row = sql_fieldrow($sql)) {

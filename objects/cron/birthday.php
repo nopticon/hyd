@@ -40,20 +40,20 @@ $usernames = array();
 foreach ($result as $row) {
 	$emailer->from('notify');
 	$emailer->use_template('user_birthday');
-	$emailer->email_address($row['user_email']);
-	if (!empty($row['user_public_email']) && $row['user_email'] != $row['user_public_email'])
-	{
-		$emailer->cc($row['user_public_email']);
+	$emailer->email_address($row->user_email);
+
+	if (!empty($row->user_public_email) && $row->user_email != $row->user_public_email) {
+		$emailer->cc($row->user_public_email);
 	}
 	
 	$emailer->assign_vars(array(
-		'USERNAME' => $row['username'])
+		'USERNAME' => $row->username)
 	);
 	$emailer->send();
 	$emailer->reset();
 	
-	$done[] = $row['user_id'];
-	$usernames[] = $row['username'];
+	$done[] = $row->user_id;
+	$usernames[] = $row->username;
 }
 
 if (count($done)) {

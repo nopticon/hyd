@@ -68,12 +68,12 @@ class topic {
 			fatal_error();
 		}
 
-		switch ($topic_data['forum_alias']) {
+		switch ($topic_data->forum_alias) {
 			case 'events':
 				$sql = 'SELECT event_alias
 					FROM _events
 					WHERE event_topic = ?';
-				if ($event_alias = sql_field(sql_filter($sql, $topic_data['topic_id']), 'event_alias', '')) {
+				if ($event_alias = sql_field(sql_filter($sql, $topic_data->topic_id), 'event_alias', '')) {
 					redirect(s_link('events', $event_alias));
 				}
 				break;
@@ -85,8 +85,8 @@ class topic {
 		
 		//
 		// Init vars
-		$forum_id = $topic_data['forum_id'];
-		$topic_id = $topic_data['topic_id'];
+		$forum_id = $topic_data->forum_id;
+		$topic_id = $topic_data->topic_id;
 		$topic_url = s_link('topic', $topic_id);
 		
 		$reply = request_var('reply', 0);
@@ -117,10 +117,10 @@ class topic {
 				
 				$can_reply_closed = $user->auth->option(w('forum topics delete'));
 				
-				if (!$can_reply_closed && ($topic_data['forum_locked'] || $topic_data['topic_locked'])) {
+				if (!$can_reply_closed && ($topic_data->forum_locked || $topic_data->topic_locked)) {
 					$error[] = 'TOPIC_LOCKED';
 					
-					if ($submit_vote && !$topic_data['topic_vote']) {
+					if ($submit_vote && !$topic_data->topic_vote) {
 						$error[] = 'POST_HAS_NO_POLL';
 					}
 				}
@@ -182,7 +182,7 @@ class topic {
 							FROM _forum_posts
 							WHERE poster_id = ?';
 						if ($last_post_time = sql_field(sql_filter($sql, $user->d('user_id')))) {
-							if (intval($last_post_time) > 0 && ($current_time - intval($last_post_time)) < intval($config['flood_interval'])) {
+							if (intval($last_post_time) > 0 && ($current_time - intval($last_post_time)) < intval($config->flood_interval)) {
 								$error[] = 'FLOOD_ERROR';
 							}
 						}
@@ -214,7 +214,7 @@ class topic {
 						}
 		
 						if ($reply && $post_reply_message != '') {
-							$post_message = '<blockquote><strong>' . $topic_data['reply_username'] . "</strong>" . nr(false, 2) . $post_reply_message . '</blockquote><br /> ' . $post_message;
+							$post_message = '<blockquote><strong>' . $topic_data->reply_username . "</strong>" . nr(false, 2) . $post_reply_message . '</blockquote><br /> ' . $post_message;
 						} else {
 							$reply = 0;
 						}
@@ -238,7 +238,7 @@ class topic {
 						// $user->delete_unread(UH_T, $topic_id);
 						// $user->save_unread(UH_T, $topic_id);
 						
-						if (!in_array($forum_id, forum_for_team_array()) && $topic_data['topic_points']) {
+						if (!in_array($forum_id, forum_for_team_array()) && $topic_data->topic_points) {
 							//$user->points_add(1);
 						}
 						
@@ -285,7 +285,7 @@ class topic {
 		}
 		
 		if ($post_id) {
-			$start = floor(($topic_data['prev_posts'] - 1) / (int) $config['posts_per_page']) * (int) $config['posts_per_page'];
+			$start = floor(($topic_data->prev_posts - 1) / (int) $config->posts_per_page) * (int) $config->posts_per_page;
 			$user->d('user_topic_order', 0);
 		}
 		
@@ -329,9 +329,9 @@ class topic {
 				AND p.post_deleted = 0
 				AND ' . sql_build('SELECT', $get_post_data) . '
 			ORDER BY p.post_time ' . (($user->d('user_topic_order')) ? 'DESC' : 'ASC') . 
-			((!$reply) ? ' LIMIT ' . (int) $start . ', ' . (int) $config['posts_per_page'] : '');
+			((!$reply) ? ' LIMIT ' . (int) $start . ', ' . (int) $config->posts_per_page : '');
 		if (!$messages = sql_rowset($sql)) {
-			if ($topic_data['topic_replies'] + 1) {
+			if ($topic_data->topic_replies + 1) {
 				fatal_error();
 			}
 			
@@ -347,7 +347,7 @@ class topic {
 				WHERE p.topic_id = ?
 					AND u.user_id = p.poster_id';
 			if ($total = sql_field(sql_filter($sql, $topic_id))) {
-				$topic_data['topic_replies2'] = $total - 1;
+				$topic_data->topic_replies2 = $total - 1;
 			}
 		}
 		
@@ -364,7 +364,7 @@ class topic {
 		//
 		// If the topic contains a poll, then process it
 		//
-		if ($topic_data['topic_vote']) {
+		if ($topic_data->topic_vote) {
 			$sql = 'SELECT vd.vote_id, vd.vote_text, vd.vote_start, vd.vote_length, vr.vote_option_id, vr.vote_option_text, vr.vote_result
 				FROM _poll_options vd, _poll_results vr
 				WHERE vd.topic_id = ?
@@ -375,28 +375,28 @@ class topic {
 					FROM _poll_voters
 					WHERE vote_id = ?
 						AND vote_user_id = ?';
-				$user_voted = sql_field(sql_filter($sql, $vote_info[0]['vote_id'], $user->d('user_id')), 'vote_id', 0);
+				$user_voted = sql_field(sql_filter($sql, $vote_info[0]->vote_id, $user->d('user_id')), 'vote_id', 0);
 				
-				$poll_expired = ($vote_info[0]['vote_length']) ? (($vote_info[0]['vote_start'] + $vote_info[0]['vote_length'] < $current_time) ? true : 0) : 0;
+				$poll_expired = ($vote_info[0]->vote_length) ? (($vote_info[0]->vote_start + $vote_info[0]->vote_length < $current_time) ? true : 0) : 0;
 				
 				_style('poll', array(
-					'POLL_TITLE' => $vote_info[0]['vote_text'])
+					'POLL_TITLE' => $vote_info[0]->vote_text)
 				);
 		
-				if ($user_voted || $poll_expired || !$is_auth['auth_vote'] || $topic_data['topic_locked']) {
+				if ($user_voted || $poll_expired || !$is_auth['auth_vote'] || $topic_data->topic_locked) {
 					$vote_results_sum = 0;
 					foreach ($vote_info as $row) {
-						$vote_results_sum += $row['vote_result'];
+						$vote_results_sum += $row->vote_result;
 					}
 					
 					_style('poll.results');
 					
 					foreach ($vote_info as $row) {
-						$vote_percent = ($vote_results_sum > 0) ? $row['vote_result'] / $vote_results_sum : 0;
+						$vote_percent = ($vote_results_sum > 0) ? $row->vote_result / $vote_results_sum : 0;
 		
 						_style('poll.results.item', array(
-							'CAPTION' => $row['vote_option_text'],
-							'RESULT' => $row['vote_result'],
+							'CAPTION' => $row->vote_option_text,
+							'RESULT' => $row->vote_result,
 							'PERCENT' => sprintf("%.1d", ($vote_percent * 100)))
 						);
 					}
@@ -407,8 +407,8 @@ class topic {
 					
 					foreach ($vote_info as $row) {
 						_style('poll.options.item', array(
-							'POLL_OPTION_ID' => $row['vote_option_id'],
-							'POLL_OPTION_CAPTION' => $row['vote_option_text'])
+							'POLL_OPTION_ID' => $row->vote_option_id,
+							'POLL_OPTION_CAPTION' => $row->vote_option_text)
 						);
 					}
 				}
@@ -426,34 +426,31 @@ class topic {
 		
 		foreach ($messages as $row) {
 			if ($user->is('member')) {
-				$poster = ($row['user_id'] != GUEST) ? $row['username'] : (($row['post_username'] != '') ? $row['post_username'] : lang('guest'));
+				$poster = ($row->user_id != GUEST) ? $row->username : (($row->post_username != '') ? $row->post_username : lang('guest'));
 				
-				$controls[$row['post_id']]['reply'] = s_link('post', $row['post_id'], 'reply');
+				$controls[$row->post_id]['reply'] = s_link('post', $row->post_id, 'reply');
 				
 				if ($mod_auth) {
-					$controls[$row['post_id']]['edit'] = s_link('acp', array('forums_post_modify', 'msg_id' => $row['post_id']));
-					$controls[$row['post_id']]['delete'] = s_link('acp', array('forums_post_delete', 'msg_id' => $row['post_id']));
+					$controls[$row->post_id]['edit'] = s_link('acp', array('forums_post_modify', 'msg_id' => $row->post_id));
+					$controls[$row->post_id]['delete'] = s_link('acp', array('forums_post_delete', 'msg_id' => $row->post_id));
 				}
 			}
 			
-			$data = $comments->user_profile($row, $unset_user_profile);	
+			_style('posts.item', object_merge($comments->user_profile($row, $unset_user_profile), array(
+				'post_id' => $row->post_id,
+				'post_date' => $user->format_date($row->post_time),
+				'message' => $comments->parse_message($row->post_text),
+				'playing' => $row->post_np,
+				'deleted' => $row->post_deleted,
+				'unread' => 0)
+			));
 			
-			$data += array(
-				'POST_ID' => $row['post_id'],
-				'POST_DATE' => $user->format_date($row['post_time']),
-				'MESSAGE' => $comments->parse_message($row['post_text']),
-				'PLAYING' => $row['post_np'],
-				'DELETED' => $row['post_deleted'],
-				'UNREAD' => 0
-			);
-			
-			_style('posts.item', $data);
-			_style('posts.item.' . (($row['user_id'] != GUEST) ? 'username' : 'guestuser'));
+			_style('posts.item.' . (($row->user_id != GUEST) ? 'username' : 'guestuser'));
 		
-			if (isset($controls[$row['post_id']])) {
+			if (isset($controls[$row->post_id])) {
 				_style('posts.item.controls');
 				
-				foreach ($controls[$row['post_id']] as $item => $url) {
+				foreach ($controls[$row->post_id] as $item => $url) {
 					_style('posts.item.controls.'.$item, array('URL' => $url));
 				}
 			}
@@ -464,7 +461,7 @@ class topic {
 		//
 		/*
 		if ($mod_auth) {
-			$mod = array((($topic_data['topic_important']) ? 'important' : 'normal'), 'delete', 'move', ((!$topic_data['topic_locked']) ? 'lock' : 'unlock'), 'split', 'merge');
+			$mod = array((($topic_data->topic_important) ? 'important' : 'normal'), 'delete', 'move', ((!$topic_data->topic_locked) ? 'lock' : 'unlock'), 'split', 'merge');
 			
 			$mod_topic = w();
 			foreach ($mod as $item) {
@@ -485,7 +482,7 @@ class topic {
 			}
 		}
 		*/
-		build_num_pagination($topic_url . 's%d/', ($topic_data['topic_replies'] + 1), $config['posts_per_page'], $start, '', 'TOPIC_');
+		build_num_pagination($topic_url . 's%d/', ($topic_data->topic_replies + 1), $config->posts_per_page, $start, '', 'TOPIC_');
 		
 		//
 		// Posting box
@@ -497,7 +494,7 @@ class topic {
 		
 		$can_reply_closed = $user->auth->option(array('forum', 'topics', 'delete'));
 		
-		if ((!$topic_data['forum_locked'] && !$topic_data['topic_locked']) || $can_reply_closed) {
+		if ((!$topic_data->forum_locked && !$topic_data->topic_locked) || $can_reply_closed) {
 			if ($user->is('member')) {
 				if ($is_auth['auth_reply']) {
 					$s_post_action = (($reply) ? s_link('post', $post_id, 'reply') : $topic_url) . '#e';
@@ -510,7 +507,7 @@ class topic {
 					
 					if ($reply) {
 						if (empty($post_reply_message)) {
-							$post_reply_message = $comments->remove_quotes($topic_data['post_text']);
+							$post_reply_message = $comments->remove_quotes($topic_data->post_text);
 						}
 						
 						if (!empty($post_reply_message)) {
@@ -532,10 +529,10 @@ class topic {
 		
 		// MOD: Featured topic
 		if ($user->is('mod')) {
-			$v_lang = ($topic_data['topic_featured']) ? 'REM' : 'ADD';
+			$v_lang = ($topic_data->topic_featured) ? 'REM' : 'ADD';
 			
 			_style('feature', array(
-				'U_FEAT' => s_link('acp', array('forums_topic_feature', 'msg_id', $topic_data['topic_id'])),
+				'U_FEAT' => s_link('acp', array('forums_topic_feature', 'msg_id', $topic_data->topic_id)),
 				'V_LANG' => lang('topic_featured_' . $v_lang))
 			);
 		}
@@ -544,12 +541,12 @@ class topic {
 		// Send vars to template
 		//
 		v_style(array(
-			'FORUM_NAME' => $topic_data['forum_name'],
-			'TOPIC_TITLE' => $topic_data['topic_title'],
-			'TOPIC_REPLIES' => $topic_data['topic_replies'],
+			'FORUM_NAME' => $topic_data->forum_name,
+			'TOPIC_TITLE' => $topic_data->topic_title,
+			'TOPIC_REPLIES' => $topic_data->topic_replies,
 			
 			'S_TOPIC_ACTION' => $topic_url . (($start) ? 's' . $start . '/' : ''),
-			'U_VIEW_FORUM' => s_link('forum', $topic_data['forum_alias']))
+			'U_VIEW_FORUM' => s_link('forum', $topic_data->forum_alias))
 		);
 		
 		$layout_file = 'topic';
@@ -561,7 +558,7 @@ class topic {
 			$layout_file = 'custom/topic_' . $topic_id;
 		}
 		
-		$this->_title = $topic_data['topic_title'];
+		$this->_title = $topic_data->topic_title;
 		$this->_template = $layout_file;
 		
 		return;

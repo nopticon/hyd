@@ -50,11 +50,11 @@ class help {
 			$module = sql_rowset(sql_filter($sql, $alias));
 			
 			foreach ($module as $i => $row) {
-				if (!$i) _style('module', array('TITLE' => $row['help_es']));
+				if (!$i) _style('module', array('TITLE' => $row->help_es));
 				
 				_style('module.row', array(
-					'QUESTION' => $row['faq_question_es'],
-					'ANSWER' => $comments->parse_message($row['faq_answer_es']))
+					'QUESTION' => $row->faq_question_es,
+					'ANSWER' => $comments->parse_message($row->faq_answer_es))
 				);
 			}
 		}
@@ -73,8 +73,8 @@ class help {
 			if (!$i) _style('categories');
 			
 			_style('categories.row', array(
-				'URL' => s_link('help', $row['module_name']),
-				'TITLE' => $row['help_es'])
+				'URL' => s_link('help', $row->module_name),
+				'TITLE' => $row->help_es)
 			);
 		}
 		

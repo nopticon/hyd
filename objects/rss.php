@@ -44,11 +44,11 @@ class rss {
 		
 		foreach ($result as $row) {
 			$this->xml[] = array(
-				'title' => $row['post_subject'],
-				'link' => s_link('news', $row['news_id']),
-				'description' => $row['post_desc'],
-				'pubdate' => $row['post_time'],
-				'author' => $row['username']
+				'title' => $row->post_subject,
+				'link' => s_link('news', $row->news_id),
+				'description' => $row->post_desc,
+				'pubdate' => $row->post_time,
+				'author' => $row->username
 			);
 		}
 		
@@ -68,10 +68,10 @@ class rss {
 		
 		foreach ($result as $row) {
 			$this->xml[] = array(
-				'title' => $row['name'],
-				'link' => s_link('a', $row['subdomain']),
-				'description' => ($row['genre'] . "<br />" . (($row['local']) ? 'Guatemala' : $row['location'])),
-				'pubdate' => $row['datetime']
+				'title' => $row->name,
+				'link' => s_link('a', $row->subdomain),
+				'description' => ($row->genre . "<br />" . (($row->local) ? 'Guatemala' : $row->location)),
+				'pubdate' => $row->datetime
 			);
 		}
 		

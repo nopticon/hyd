@@ -38,7 +38,6 @@ $home->news();
 // $home->board_events();
 // $home->poll();
 
-$artists->get_data();
 $artists->thumbnails();
 
 $events->future();

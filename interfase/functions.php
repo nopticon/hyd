@@ -453,6 +453,17 @@ function alias($s) {
 	return strtolower(trim($s, '-'));
 }
 
+function object_merge() {
+	$r = new stdClass;
+
+	foreach (func_get_args() as $a) {
+		foreach ($a as $k => $v)
+			$r->$k = $v;
+	}
+
+	return $r;
+}
+
 function Obj2ArrRecursivo($Objeto) {
 	if (is_object($Objeto))
 	$Objeto = get_object_vars($Objeto);

@@ -37,11 +37,11 @@ class broadcast {
 	}
 
 	private function v($property) {
-		if (!isset($this->data[$property])) {
+		if (!isset($this->data->$property)) {
 			return false;
 		}
 		
-		return $this->data[$property];
+		return $this->data->$property;
 	}
 
 	public function run() {
@@ -92,12 +92,12 @@ class broadcast {
 		foreach ($podcast as $i => $row) {
 			if (!$i) _style('podcast');
 			
-			$title = htmlentities(utf8_encode($row['post_title']), ENT_COMPAT, 'utf-8');
+			$title = htmlentities(utf8_encode($row->post_title), ENT_COMPAT, 'utf-8');
 			
 			_style('podcast.row', array(
-				'POST_DATE' => $row['post_date'],
-				'POST_URL' => s_link('broadcast', $row['slug']),
-				'POST_CONTENT' => $row['post_content'],
+				'POST_DATE' => $row->post_date,
+				'POST_URL' => s_link('broadcast', $row->slug),
+				'POST_CONTENT' => $row->post_content,
 				'POST_TITLE' => $title)
 			);
 		}
@@ -125,17 +125,17 @@ class broadcast {
 		foreach ($podcast as $i => $row) {
 			if (!$i) _style('podcast');
 			
-			$dmedia = array_key(unserialize($row['meta_value']), 0);
+			$dmedia = array_key(unserialize($row->meta_value), 0);
 			
-			$title = htmlentities(utf8_encode($row['post_title']), ENT_COMPAT, 'utf-8');
-			$artist = htmlentities(utf8_encode($row['name']), ENT_COMPAT, 'utf-8');
+			$title = htmlentities(utf8_encode($row->post_title), ENT_COMPAT, 'utf-8');
+			$artist = htmlentities(utf8_encode($row->name), ENT_COMPAT, 'utf-8');
 			
 			_style('podcast.row', array(
 				'MP3' => $dmedia['URI'],
 				'OGG' => '',
 				'TITLE' => $title,
 				'ARTIST' => $artist,
-				'COVER' => $row['slug'],
+				'COVER' => $row->slug,
 				'DURATION' => $dmedia['duration'])
 			);
 		}

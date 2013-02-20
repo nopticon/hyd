@@ -110,22 +110,22 @@ class home {
 				AND t.topic_featured = 1
 			ORDER BY t.topic_announce DESC, p.post_time DESC
 			LIMIT ??';
-		if ($result = sql_rowset(sql_filter($sql, $config['main_topics']))) {
+		if ($result = sql_rowset(sql_filter($sql, $config->main_topics))) {
 			_style('board_general', array(
 				'L_TOP_POSTS' => sprintf(lang('top_forum'), count($result)))
 			);
 			
 			foreach ($result as $row) {
-				$username = ($row['user_id'] != GUEST) ? $row['username'] : (($row['post_username'] != '') ? $row['post_username'] : lang('guest'));
+				$username = ($row->user_id != GUEST) ? $row->username : (($row->post_username != '') ? $row->post_username : lang('guest'));
 				
 				_style('board_general.item', array(
-					'U_TOPIC' => ($row['topic_replies']) ? s_link('post', $row['post_id']) . '#' . $row['post_id'] : s_link('topic', $row['topic_id']),
-					'TOPIC_TITLE' => $row['topic_title'],
-					'TOPIC_COLOR' => $row['topic_color'],
-					'POST_TIME' => $user->format_date($row['post_time'], 'H:i'),
-					'USER_ID' => $row['user_id'],
+					'U_TOPIC' => ($row->topic_replies) ? s_link('post', $row->post_id) . '#' . $row->post_id : s_link('topic', $row->topic_id),
+					'TOPIC_TITLE' => $row->topic_title,
+					'TOPIC_COLOR' => $row->topic_color,
+					'POST_TIME' => $user->format_date($row->post_time, 'H:i'),
+					'USER_ID' => $row->user_id,
 					'USERNAME' => $username,
-					'PROFILE' => s_link('m', $row['username_base']))
+					'PROFILE' => s_link('m', $row->username_base))
 				);
 			}
 		}
@@ -146,23 +146,23 @@ class home {
 				AND p.poster_id = u.user_id
 			ORDER BY t.topic_announce DESC, p.post_time DESC
 			LIMIT ??';
-		if ($result = sql_rowset(sql_filter($sql, $config['main_topics']))) {
+		if ($result = sql_rowset(sql_filter($sql, $config->main_topics))) {
 			_style('board_events', array(
 				'L_TOP_POSTS' => sprintf(lang('top_forum'), count($result)))
 			);
 			
 			foreach ($result as $row) {
-				$username = ($row['user_id'] != GUEST) ? $row['username'] : (($row['post_username'] != '') ? $row['post_username'] : lang('guest'));
+				$username = ($row->user_id != GUEST) ? $row->username : (($row->post_username != '') ? $row->post_username : lang('guest'));
 				
 				_style('board_events.item', array(
-					'U_TOPIC' => s_link('events', $row['event_alias']),
-					'TOPIC_TITLE' => $row['topic_title'],
-					'TOPIC_COLOR' => $row['topic_color'],
-					'EVENT_DATE' => $user->format_date($row['date'], lang('date_format')),
-					'POST_TIME' => $user->format_date($row['post_time'], 'H:i'),
-					'USER_ID' => $row['user_id'],
+					'U_TOPIC' => s_link('events', $row->event_alias),
+					'TOPIC_TITLE' => $row->topic_title,
+					'TOPIC_COLOR' => $row->topic_color,
+					'EVENT_DATE' => $user->format_date($row->date, lang('date_format')),
+					'POST_TIME' => $user->format_date($row->post_time, 'H:i'),
+					'USER_ID' => $row->user_id,
 					'USERNAME' => $username,
-					'PROFILE' => s_link('m', $row['username_base']))
+					'PROFILE' => s_link('m', $row->username_base))
 				);
 			}
 		}
@@ -182,8 +182,8 @@ class home {
 					AND t.topic_vote = 1 
 				ORDER BY t.topic_time DESC 
 				LIMIT 1';
-			if ($row = sql_fieldrow(sql_filter($sql, $config['main_poll_f']))) {
-				$topic_id = $row['topic_id'];
+			if ($row = sql_fieldrow(sql_filter($sql, $config->main_poll_f))) {
+				$topic_id = $row->topic_id;
 				$cache->save('last_poll_id', $topic_id);
 			}
 		}
@@ -202,7 +202,7 @@ class home {
 			return false;
 		}
 		
-		$forum_id = (int) $topic_data['forum_id'];
+		$forum_id = (int) $topic_data->forum_id;
 		
 		$sql = 'SELECT vd.*, vr.*
 			FROM _poll_options vd, _poll_results vr
@@ -221,32 +221,32 @@ class home {
 				FROM _poll_voters
 				WHERE vote_id = ?
 					AND vote_user_id = ?';
-			$user_voted = (sql_field(sql_filter($sql, $vote_info[0]['vote_id'], $user->d('user_id')), 'vote_user_id', false)) ? true : false;
+			$user_voted = (sql_field(sql_filter($sql, $vote_info[0]->vote_id, $user->d('user_id')), 'vote_user_id', false)) ? true : false;
 		}
 		
-		$poll_expired = ($vote_info[0]['vote_length']) ? (($vote_info[0]['vote_start'] + $vote_info[0]['vote_length'] < $current_time) ? true : 0) : 0;
+		$poll_expired = ($vote_info[0]->vote_length) ? (($vote_info[0]->vote_start + $vote_info[0]->vote_length < $current_time) ? true : 0) : 0;
 		
 		_style('poll', array(
 			'U_POLL_TOPIC' => s_link('topic', $topic_id),
-			'S_REPLIES' => $topic_data['topic_replies'],
-			'U_POLL_FORUM' => s_link('forum', $config['main_poll_f']),
-			'POLL_TITLE' => $vote_info[0]['vote_text'])
+			'S_REPLIES' => $topic_data->topic_replies,
+			'U_POLL_FORUM' => s_link('forum', $config->main_poll_f),
+			'POLL_TITLE' => $vote_info[0]->vote_text)
 		);
 		
-		if (!$user->is('member') || $user_voted || $poll_expired || !$is_auth['auth_vote'] || $topic_data['topic_locked']) {
+		if (!$user->is('member') || $user_voted || $poll_expired || !$is_auth['auth_vote'] || $topic_data->topic_locked) {
 			$vote_results_sum = 0;
 			foreach ($vote_info as $row) {
-				$vote_results_sum += $row['vote_result'];
+				$vote_results_sum += $row->vote_result;
 			}
 			
 			_style('poll.results');
 			
 			foreach ($vote_info as $row) {
-				$vote_percent = ($vote_results_sum) ? $row['vote_result'] / $vote_results_sum : 0;
+				$vote_percent = ($vote_results_sum) ? $row->vote_result / $vote_results_sum : 0;
 				
 				_style('poll.results.item', array(
-					'CAPTION' => $row['vote_option_text'],
-					'RESULT' => $row['vote_result'],
+					'CAPTION' => $row->vote_option_text,
+					'RESULT' => $row->vote_result,
 					'PERCENT' => sprintf("%.1d", ($vote_percent * 100)))
 				);
 			}
@@ -257,8 +257,8 @@ class home {
 			
 			foreach ($vote_info as $row) {
 				_style('poll.options.item', array(
-					'POLL_OPTION_ID' => $row['vote_option_id'],
-					'POLL_OPTION_CAPTION' => $row['vote_option_text'])
+					'POLL_OPTION_ID' => $row->vote_option_id,
+					'POLL_OPTION_CAPTION' => $row->vote_option_text)
 				);
 			}
 		}

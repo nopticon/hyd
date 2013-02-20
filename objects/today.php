@@ -53,13 +53,13 @@ class today {
 		$this->downloads = new downloads();
 		
 		foreach ($elements as $row) {
-			if ($response = $this->{$row['type_alias']}()) {
-				_style($row['type_alias'], array(
-					'ID' => $row['type_id'])
+			if ($response = $this->{$row->type_alias}()) {
+				_style($row->type_alias, array(
+					'ID' => $row->type_id)
 				);
 				
 				foreach ($response as $_row) {
-					_style($row['type_alias'] . '.row', $_row);
+					_style($row->type_alias . '.row', $_row);
 				}
 			}
 		}
@@ -97,13 +97,13 @@ class today {
 			$user_profile = $comments->user_profile($row);
 			
 			$response[] = array(
-				'S_MARK_ID' => $row['parent_id'],
-				'U_READ' => s_link('my dc read', $row['last_msg_id']),
-				'SUBJECT' => $row['privmsgs_subject'],
-				'DATETIME' => $user->format_date($row['privmsgs_date']),
-				'USER_ID' => $row['user_id'],
-				'USERNAME' => $row['username'],
-				'U_USERNAME' => $user_profile['profile']
+				'S_MARK_ID' => $row->parent_id,
+				'U_READ' => s_link('my dc read', $row->last_msg_id),
+				'SUBJECT' => $row->privmsgs_subject,
+				'DATETIME' => $user->format_date($row->privmsgs_date),
+				'USER_ID' => $row->user_id,
+				'USERNAME' => $row->username,
+				'U_USERNAME' => $user_profile->profile
 			);
 		}
 		
@@ -131,18 +131,18 @@ class today {
 			$user_profile = $comments->user_profile($row);
 			
 			$response[] = array(
-				'S_MARK_ID' => $row['topic_id'],
-				'FOR_MODS' => in_array($row['forum_id'], forum_for_team_array()),
-				'TOPIC_URL' => s_link('post', $row['post_id']) . '#' . $row['post_id'],
-				'TOPIC_TITLE' => $row['topic_title'],
-				'TOPIC_REPLIES' => $row['topic_replies'],
-				'TOPIC_COLOR' => $row['topic_color'],
-				'FORUM_URL' => s_link('forum', $row['forum_alias']),
-				'FORUM_NAME' => $row['forum_name'],
-				'DATETIME' => $user->format_date($row['post_time']),
-				'USER_ID' => $row['user_id'],
-				'USER_PROFILE' => $user_profile['profile'],
-				'USERNAME' => $user_profile['username']
+				'S_MARK_ID' => $row->topic_id,
+				'FOR_MODS' => in_array($row->forum_id, forum_for_team_array()),
+				'TOPIC_URL' => s_link('post', $row->post_id) . '#' . $row->post_id,
+				'TOPIC_TITLE' => $row->topic_title,
+				'TOPIC_REPLIES' => $row->topic_replies,
+				'TOPIC_COLOR' => $row->topic_color,
+				'FORUM_URL' => s_link('forum', $row->forum_alias),
+				'FORUM_NAME' => $row->forum_name,
+				'DATETIME' => $user->format_date($row->post_time),
+				'USER_ID' => $row->user_id,
+				'USER_PROFILE' => $user_profile->profile,
+				'USERNAME' => $user_profile->username
 			);
 		}
 		

@@ -37,11 +37,11 @@ class broadcast {
 	}
 
 	private function v($property) {
-		if (!isset($this->data[$property])) {
+		if (!isset($this->data->$property)) {
 			return false;
 		}
 		
-		return $this->data[$property];
+		return $this->data->$property;
 	}
 
 	public function run() {
@@ -62,9 +62,9 @@ class broadcast {
 			if (!$i) _style('partners');
 			
 			_style('partners.row', array(
-				'NAME' => $row['partner_name'],
-				'IMAGE' => $row['partner_image'],
-				'URL' => $config['assets_url'] . '/style/sites/' . $row['partner_url'])
+				'NAME' => $row->partner_name,
+				'IMAGE' => $row->partner_image,
+				'URL' => $config->assets_url . '/style/sites/' . $row->partner_url)
 			);
 		}
 

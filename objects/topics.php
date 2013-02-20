@@ -68,10 +68,10 @@ class topics {
 		}
 		
 		if ($is_int_forumid) {
-			redirect(s_link('forum', $forum_row['forum_alias']), true);
+			redirect(s_link('forum', $forum_row->forum_alias), true);
 		}
 		
-		$forum_id = $forum_row['forum_id'];
+		$forum_id = $forum_row->forum_id;
 		
 		//
 		// Start auth check
@@ -100,7 +100,7 @@ class topics {
 			$topic_important = _button('topictype');
 			$auth_key = ($topic_important) ? 'auth_announce' : 'auth_post';
 			
-			if ($forum_row['forum_locked'] && !$is_auth['auth_mod']) {
+			if ($forum_row->forum_locked && !$is_auth['auth_mod']) {
 				$error_msg .= (($error_msg != '') ? '<br />' : '') . lang('forum_locked');
 			}
 			
@@ -152,7 +152,7 @@ class topics {
 					
 					if ($sizeof_poll_options < 2) {
 						$error_msg .= (($error_msg != '') ? '<br />' : '') . lang('few_poll_options');
-					} else if ($sizeof_poll_options > $config['max_poll_options']) {
+					} else if ($sizeof_poll_options > $config->max_poll_options) {
 						$error_msg .= (($error_msg != '') ? '<br />' : '') . lang('many_poll_options');
 					} else if ($poll_title == '') {
 						$error_msg .= (($error_msg != '') ? '<br />' : '') . lang('empty_poll_title');
@@ -164,7 +164,7 @@ class topics {
 						FROM _forum_posts
 						WHERE poster_id = ?';
 					if ($last_post_time = sql_field(sql_filter($sql, $user->d('user_id')))) {
-						if (intval($last_post_time) > 0 && ($current_time - intval($last_post_time)) < intval($config['flood_interval'])) {
+						if (intval($last_post_time) > 0 && ($current_time - intval($last_post_time)) < intval($config->flood_interval)) {
 							$error_msg .= (($error_msg != '') ? '<br />' : '') . lang('flood_error');
 						}
 					}
@@ -240,7 +240,7 @@ class topics {
 							$poll_option_id++;
 						}
 						
-						if ($forum_id == $config['main_poll_f']) {
+						if ($forum_id == $config->main_poll_f) {
 							$cache->delete('last_poll_id');
 						}
 					}
@@ -289,7 +289,7 @@ class topics {
 		// End Submit
 		//
 		
-		$topics_count = ($forum_row['forum_topics']) ? $forum_row['forum_topics'] : 1;
+		$topics_count = ($forum_row->forum_topics) ? $forum_row->forum_topics : 1;
 		
 		$topics = new stdClass();
 		$total = new stdClass();
@@ -315,7 +315,7 @@ class topics {
 		// Grab all the topics data for this forum
 		// and skip topics already announced on events page
 		//
-		if ($forum_id == $config['forum_for_events']) {
+		if ($forum_id == $config->forum_for_events) {
 			$sql = 'SELECT t.*, u.user_id, u.username, u.username_base, u2.user_id as user_id2, u2.username as username2, u2.username_base as username_base2, p.post_username, p2.post_username AS post_username2, p2.post_time
 				FROM (_forum_topics t, _members u, _forum_posts p, _forum_posts p2, _members u2)
 				LEFT JOIN _events e ON e.event_topic = t.topic_id
@@ -345,7 +345,7 @@ class topics {
 				LIMIT ??, ??';
 		}
 		
-		$topics->normal = sql_rowset(sql_filter($sql, $forum_id, $start, $config['topics_per_page']));
+		$topics->normal = sql_rowset(sql_filter($sql, $forum_id, $start, $config->topics_per_page));
 		$total->normal = (is_array($topics->normal)) ? count($topics->normal) : 0;
 		
 		//
@@ -359,7 +359,7 @@ class topics {
 		//
 		if ($is_auth['auth_post'] || $is_auth['auth_mod']) {
 			_style('topic_create', array(
-				'L_POST_NEW_TOPIC' => ($forum_row['forum_locked']) ? lang('forum_locked') : lang('post_newtopic'))
+				'L_POST_NEW_TOPIC' => ($forum_row->forum_locked) ? lang('forum_locked') : lang('post_newtopic'))
 			);
 		}
 		
@@ -368,8 +368,8 @@ class topics {
 		//
 		v_style(array(
 			'FORUM_ID' => $forum_id,
-			'FORUM_NAME' => $forum_row['forum_name'],
-			'U_VIEW_FORUM' => s_link('forum', $forum_row['forum_alias']))
+			'FORUM_NAME' => $forum_row->forum_name,
+			'U_VIEW_FORUM' => s_link('forum', $forum_row->forum_alias))
 		);
 		
 		//
@@ -383,7 +383,7 @@ class topics {
 					
 					$topics_count -= $total->important;
 				
-					build_num_pagination(s_link('forum', $forum_row['forum_alias'], 's%d'), $topics_count, $config['topics_per_page'], $start, '', 'TOPICS_');
+					build_num_pagination(s_link('forum', $forum_row->forum_alias, 's%d'), $topics_count, $config->topics_per_page, $start, '', 'TOPICS_');
 				}
 				
 				if (!$j) {
@@ -427,7 +427,7 @@ class topics {
 		
 		if (!$topics_count) {
 			if ($start) {
-				redirect(s_link('forum', $forum_row['forum_alias']), true);
+				redirect(s_link('forum', $forum_row->forum_alias), true);
 			}
 			_style('no_topics');
 		}
@@ -435,14 +435,14 @@ class topics {
 		//
 		// Posting box
 		//
-		if (!empty($error_msg) || (!$is_auth['auth_mod'] && $forum_row['forum_locked']) || (!$is_auth['auth_post'] && $forum_row['auth_post'] == AUTH_REG) || $is_auth['auth_post']) {
+		if (!empty($error_msg) || (!$is_auth['auth_mod'] && $forum_row->forum_locked) || (!$is_auth['auth_post'] && $forum_row->auth_post == AUTH_REG) || $is_auth['auth_post']) {
 			if ($is_auth['auth_post']) {
 				if (!empty($poll_options)) {
 					$poll_options = implode(nr(), $poll_options);
 				}
 				
 				_style('publish', array(
-					'S_POST_ACTION' => s_link('forum', $forum_row['forum_alias']),
+					'S_POST_ACTION' => s_link('forum', $forum_row->forum_alias),
 					
 					'TOPIC_TITLE' => $post_title,
 					'MESSAGE' => $post_message,
@@ -476,7 +476,7 @@ class topics {
 			$layout_file = $use_m_template;
 		}
 		
-		$this->_title = $forum_row['forum_name'];
+		$this->_title = $forum_row->forum_name;
 		$this->_template = $layout_file;
 		
 		return;

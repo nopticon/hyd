@@ -384,19 +384,17 @@ class comments {
 			$topic_title = isset($row->topic_title) ? $row->topic_title : (isset($row->post_subject) ? $row->post_subject : '');
 			$topic_title = (!$this->data['ARTISTS_NEWS']) ? $topic_title : preg_replace('#(.*?): (.*?)#', '\\2', $topic_title);
 
-			$data = $user_profile[$uid];
-			
-			$data += array(
-				'POST_ID' => $row->post_id,
-				'DATETIME' => $user->format_date($row->post_time),
-				'SUBJECT' => $topic_title,
-				'MESSAGE' => $this->parse_message($row->post_text),
-				'REPLIES' => ($this->data['ARTISTS_NEWS']) ? $row->topic_replies : 0,
-				'S_DELETE' => false
+			$data = object_merge($user_profile[$uid], array(
+				'post_id' => $row->post_id,
+				'datetime' => $user->format_date($row->post_time),
+				'subject' => $topic_title,
+				'message' => $this->parse_message($row->post_text),
+				'replies' => ($this->data['ARTISTS_NEWS']) ? $row->topic_replies : 0,
+				's_delete' => false)
 			);
-			
+
 			if (isset($this->data['USER_ID_FIELD']) && ($user->is('founder') || ($user->d('user_id') === $row->{$this->data['USER_ID_FIELD']}))) {
-				$data['S_DELETE'] = sprintf($this->data['S_DELETE_URL'], $row->post_id);
+				$data->s_delete = sprintf($this->data['S_DELETE_URL'], $row->post_id);
 			}
 			
 			_style($tpl_prefix . '.item', $data);

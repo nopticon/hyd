@@ -18,9 +18,30 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_APP')) exit;
 
+$sql = 'SELECT ub, name, subdomain, location, genre, image
+	FROM _artists a
+	INNER JOIN _artists_images i ON a.ub = i.ub
+	WHERE a.a_active = 1
+		AND i.image_default = 1
+	ORDER BY RAND()
+	LIMIT 4';
+$artists = sql_rowset($sql);
+
+foreach ($artists as $i => $row) {
+	if (!$i) _style('thumbnails');
+
+	_style('thumbnails.item', array(
+		'NAME' => $row->name,
+		'IMAGE' => $config->artists_url . $row->ub . '/thumbnails/' . $row->image . '.jpg',
+		'URL' => s_link('a', $row->subdomain),
+		'LOCATION' => ($row->local) ? 'Guatemala' : $row->location,
+		'GENRE' => $row->genre)
+	);
+}
+
 // require_once(ROOT . 'interfase/artists.php');
 
-$artists = new artists();
+/*$artists = new artists();
 $artists->get_data();
 
 $a_ary = w();
@@ -59,4 +80,4 @@ if (count($a_ary)) {
 	}
 	
 	echo rawurlencode('<table width="100%" class="t-collapse"><tr>' .  $return_string. '</tr></table>');
-}
+}*/

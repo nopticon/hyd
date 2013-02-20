@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_APP')) exit;
 
-function a_thumbnails($selected_artists, $random_images, $lang_key, $block, $item_per_col = 2) {
+function a_thumbnails($selected_artists, $lang_key, $block, $item_per_col = 2) {
 	global $config, $user;
 	
 	_style('main.' . $block, array(
@@ -29,11 +29,11 @@ function a_thumbnails($selected_artists, $random_images, $lang_key, $block, $ite
 		$image = $ub . '/thumbnails/' . $random_images[$ub] . '.jpg';
 		
 		_style('main.' . $block . '.row', array(
-			'NAME' => $data['name'],
-			'IMAGE' => $config['artists_url'] . $image,
-			'URL' => s_link('a', $data['subdomain']),
-			'LOCATION' => ($data['local']) ? 'Guatemala' : $data['location'],
-			'GENRE' => $data['genre'])
+			'NAME' => $data->name,
+			'IMAGE' => $config->artists_url . $image,
+			'URL' => s_link('a', $data->subdomain),
+			'LOCATION' => ($data->local) ? 'Guatemala' : $data->location,
+			'GENRE' => $data->genre)
 		);
 	}
 	
@@ -130,8 +130,8 @@ class userpage {
 						fatal_error();
 					}
 					
-					$privmsgs_to_userid = ($user->d('user_id') == $to_userdata['privmsgs_to_userid']) ? 'privmsgs_from_userid' : 'privmsgs_to_userid';
-					$to_userdata['user_id'] = $to_userdata[$privmsgs_to_userid];
+					$privmsgs_to_userid = ($user->d('user_id') == $to_userdata->privmsgs_to_userid) ? 'privmsgs_from_userid' : 'privmsgs_to_userid';
+					$to_userdata->user_id = $to_userdata->$privmsgs_to_userid;
 				} else {
 					$member = request_var('member', '');
 					if (!empty($member)) {
@@ -146,7 +146,7 @@ class userpage {
 								$error[] = 'NO_SUCH_USER';
 							}
 		
-							if (!count($error) && $to_userdata['user_id'] == $user->d('user_id')) {
+							if (!count($error) && $to_userdata->user_id == $user->d('user_id')) {
 								$error[] = 'NO_AUTO_DC';
 							}
 						} else {
@@ -158,13 +158,13 @@ class userpage {
 					}
 				}
 				
-				if (isset($to_userdata) && isset($to_userdata['user_id'])) {
+				if (isset($to_userdata) && isset($to_userdata->user_id)) {
 					// Check blocked member
 					$sql = 'SELECT ban_id
 						FROM _members_ban
 						WHERE user_id = ?
 							AND banned_user = ?';
-					if ($ban_profile = sql_fieldrow(sql_filter($sql, $to_userdata['user_id'], $user->d('user_id')))) {
+					if ($ban_profile = sql_fieldrow(sql_filter($sql, $to_userdata->user_id, $user->d('user_id')))) {
 						$error[] = 'BLOCKED_MEMBER';
 					}
 				}
@@ -178,7 +178,7 @@ class userpage {
 					$insert = array(
 						'privmsgs_type' => PRIVMSGS_NEW_MAIL,
 						'privmsgs_from_userid' => $user->d('user_id'),
-						'privmsgs_to_userid' => $to_userdata['user_id'],
+						'privmsgs_to_userid' => $to_userdata->user_id,
 						'privmsgs_date' => time(),
 						'msg_ip' => $user->ip,
 						'privmsgs_text' => $comments->prepare($dc_message),
@@ -186,7 +186,7 @@ class userpage {
 					);
 
 					if ($mode == 'reply') {
-						$insert['parent_id'] = $to_userdata['parent_id'];
+						$insert['parent_id'] = $to_userdata->parent_id;
 					} else {
 						$insert['privmsgs_subject'] = $dc_subject;
 					}
@@ -196,14 +196,14 @@ class userpage {
 					if ($mode == 'reply') {
 						$sql = 'UPDATE _dc SET root_conv = root_conv + 1, last_msg_id = ?
 							WHERE msg_id = ?';
-						sql_query(sql_filter($sql, $dc_id, $to_userdata['msg_id']));
+						sql_query(sql_filter($sql, $dc_id, $to_userdata->msg_id));
 						
 						$sql = 'UPDATE _dc SET msg_deleted = 0
 							WHERE parent_id = ?';
-						sql_query(sql_filter($sql, $to_userdata['parent_id']));
+						sql_query(sql_filter($sql, $to_userdata->parent_id));
 						
 						// TODO: Today save
-						// $user->delete_unread(UH_NOTE, $to_userdata['parent_id']);
+						// $user->delete_unread(UH_NOTE, $to_userdata->parent_id);
 					} else {
 						$sql = 'UPDATE _dc SET parent_id = ?, last_msg_id = ?
 							WHERE msg_id = ?';
@@ -211,7 +211,7 @@ class userpage {
 					}
 					
 					// TODO: Today save
-					// $user->save_unread(UH_NOTE, (($mode == 'reply') ? $to_userdata['parent_id'] : $dc_id), 0, $to_userdata['user_id']);
+					// $user->save_unread(UH_NOTE, (($mode == 'reply') ? $to_userdata->parent_id : $dc_id), 0, $to_userdata->user_id);
 					
 					//
 					// Notify via email if user requires it
@@ -220,14 +220,14 @@ class userpage {
 						$emailer = new emailer();
 						
 						$emailer->from('info');
-						$emailer->set_subject($config['sitename'] . ': Mensaje nuevo de ' . $user->d('username'));
+						$emailer->set_subject($config->sitename . ': Mensaje nuevo de ' . $user->d('username'));
 						$emailer->use_template('dc_email');
-						$emailer->email_address($to_userdata['user_email']);
+						$emailer->email_address($to_userdata->user_email);
 						
 						$dc_url = s_link('my dc read', $dc_id);
 						
 						$emailer->assign_vars(array(
-							'USERNAME' => $to_userdata['username'],
+							'USERNAME' => $to_userdata->username,
 							'SENT_BY' => $user->d('username'),
 							'DC_URL' => $dc_url)
 						);
@@ -306,13 +306,13 @@ class userpage {
 					WHERE c.parent_id = ?
 						AND c.privmsgs_from_userid = m.user_id
 					ORDER BY c.privmsgs_date';
-				if (!$result = sql_rowset(sql_filter($sql, $msg_data['parent_id']))) {
+				if (!$result = sql_rowset(sql_filter($sql, $msg_data->parent_id))) {
 					fatal_error();
 				}
 				
-				$with_user = $msg_data['privmsgs_to_userid'];
+				$with_user = $msg_data->privmsgs_to_userid;
 				if ($with_user == $user->d('user_id')) {
-					$with_user = $msg_data['privmsgs_from_userid'];
+					$with_user = $msg_data->privmsgs_from_userid;
 				}
 				
 				$sql = 'SELECT username
@@ -323,24 +323,24 @@ class userpage {
 				_style('conv', array(
 					'URL' => s_link('my dc'),
 					'SUBJECT' => $with_username,
-					'CAN_REPLY' => $result[0]['msg_can_reply'],)
+					'CAN_REPLY' => $result[0]->msg_can_reply,)
 				);
 				
 				foreach ($result as $row) {
 					$user_profile = $comments->user_profile($row);
 					
 					_style('conv.row', array(
-						'USERNAME' => $user_profile['username'],
-						'AVATAR' => $user_profile['user_avatar'],
-						'SIGNATURE' => ($row['user_sig'] != '') ? $comments->parse_message($row['user_sig']) : '',
-						'PROFILE' => $user_profile['profile'],
-						'MESSAGE' => $comments->parse_message($row['privmsgs_text']),
-						'POST_ID' => $row['msg_id'],
-						'POST_DATE' => $user->format_date($row['privmsgs_date']))
+						'USERNAME' => $user_profile->username,
+						'AVATAR' => $user_profile->user_avatar,
+						'SIGNATURE' => ($row->user_sig-> != '') ? $comments->parse_message($row->user_sig) : '',
+						'PROFILE' => $user_profile->profile,
+						'MESSAGE' => $comments->parse_message($row->privmsgs_text),
+						'POST_ID' => $row->msg_id,
+						'POST_DATE' => $user->format_date($row->privmsgs_date))
 					);
 				}
 				
-				$s_hidden_fields = array('mark[]' => $msg_data['parent_id'], 'p' => $msg_id, 'parent' => $msg_data['parent_id'], 'mode' => 'reply');
+				$s_hidden_fields = array('mark[]' => $msg_data->parent_id, 'p' => $msg_id, 'parent' => $msg_data->parent_id, 'mode' => 'reply');
 				break;
 			default:
 				//
@@ -368,31 +368,31 @@ class userpage {
 						AND (IF(c.last_msg_id,c.last_msg_id,c.msg_id) = c2.msg_id)
 					ORDER BY c2.privmsgs_date DESC 
 					LIMIT ??, ??';
-				if ($result = sql_rowset(sql_filter($sql, $user->d('user_id'), $user->d('user_id'), $user->d('user_id'), $offset, $config['posts_per_page']))) {
+				if ($result = sql_rowset(sql_filter($sql, $user->d('user_id'), $user->d('user_id'), $user->d('user_id'), $offset, $config->posts_per_page))) {
 					_style('messages');
 					
 					foreach ($result as $row) {
-						$dc_with = ($user->d('user_id') == $row['user_id']) ? '2' : '';
-						if (!$row['last_msg_id']) {
-							$row['last_msg_id'] = $row['msg_id'];
-							$row['last_privmsgs_date'] = $row['privmsgs_date'];
+						$dc_with = ($user->d('user_id') == $row->user_id) ? '2' : '';
+						if (!$row->last_msg_id) {
+							$row->last_msg_id = $row->msg_id;
+							$row->last_privmsgs_date = $row->privmsgs_date;
 						}
 						
-						$dc_subject = 'Conversaci&oacute;n con ' . $row['username'.$dc_with];
+						$dc_subject = 'Conversaci&oacute;n con ' . $row->{'username' . $dc_with};
 						
 						_style('messages.item', array(
-							'S_MARK_ID' => $row['parent_id'],
+							'S_MARK_ID' => $row->parent_id,
 							'SUBJECT' => $dc_subject,
-							'U_READ' => s_link('my dc read', $row['last_msg_id']) . '#' . $row['last_msg_id'],
-							'POST_DATE' => $user->format_date($row['last_privmsgs_date'], 'j F Y \a \l\a\s H:i') . ' horas.',
-							'ROOT_CONV' => $row['root_conv'],
+							'U_READ' => s_link('my dc read', $row->last_msg_id) . '#' . $row->last_msg_id,
+							'POST_DATE' => $user->format_date($row->last_privmsgs_date, 'j F Y \a \l\a\s H:i') . ' horas.',
+							'ROOT_CONV' => $row->root_conv,
 							
-							'DC_USERNAME' => $row['username' . $dc_with],
-							'DC_PROFILE' => s_link('m', $row['username_base' . $dc_with]))
+							'DC_USERNAME' => $row->{'username' . $dc_with},
+							'DC_PROFILE' => s_link('m', $row->{'username_base' . $dc_with}))
 						);
 					}
 					
-					build_num_pagination(s_link('my dc s%d'), $total_conv, $config['posts_per_page'], $offset);
+					build_num_pagination(s_link('my dc s%d'), $total_conv, $config->posts_per_page, $offset);
 				} else if ($total_conv) {
 					redirect(s_link('my dc'));
 				} else {
@@ -420,8 +420,8 @@ class userpage {
 			
 			foreach ($result as $row) {
 				_style('sdc_friends.item', array(
-					'USERNAME' => $row['username'],
-					'URL' => s_link('my dc start', $row['username_base']))
+					'USERNAME' => $row->username,
+					'URL' => s_link('my dc start', $row->username_base))
 				);
 			}
 		}
@@ -461,10 +461,10 @@ class userpage {
 				$update_a = $delete_a = w();
 				
 				foreach ($result as $row) {
-					$var = ($row['msg_deleted'] && ($row['msg_deleted'] != $user->d('user_id'))) ? 'delete_a' : 'update_a';
+					$var = ($row->msg_deleted && ($row->msg_deleted != $user->d('user_id'))) ? 'delete_a' : 'update_a';
 					
-					if (!isset(${$var}[$row['parent_id']])) {
-						${$var}[$row['parent_id']] = true;
+					if (!isset(${$var}[$row->parent_id])) {
+						${$var}[$row->parent_id] = true;
 					}
 				}
 
@@ -681,7 +681,7 @@ class userpage {
 		
 		if ($user->d('user_avatar')) {
 			_style('current_avatar', array(
-				'IMAGE' => $config['assets_url'] . 'avatars/' . $user->d('user_avatar'))
+				'IMAGE' => $config->assets_url . 'avatars/' . $user->d('user_avatar'))
 			);
 		}
 		
@@ -757,22 +757,22 @@ class userpage {
 		
 		$mode = request_var('mode', 'main');
 		
-		if ($user->d('user_id') != $this->data['user_id'] && !in_array($mode, w('friend ban'))) {
+		if ($user->d('user_id') != $this->data->user_id && !in_array($mode, w('friend ban'))) {
 			$is_blocked = false;
 			
-			if (!$user->is('all', $this->data['user_id'])) {
+			if (!$user->is('all', $this->data->user_id)) {
 				$sql = 'SELECT ban_id
 					FROM _members_ban
 					WHERE user_id = ?
 						AND banned_user = ?';
-				if ($banned_row = sql_fieldrow(sql_filter($sql, $user->d('user_id'), $this->data['user_id']))) {
+				if ($banned_row = sql_fieldrow(sql_filter($sql, $user->d('user_id'), $this->data->user_id))) {
 					$is_blocked = true;
 				}
 				
 				$banned_lang = ($is_blocked) ? 'REMOVE' : 'ADD';
 				
 				_style('block_member', array(
-					'URL' => s_link('m', $this->data['username_base'], 'ban'),
+					'URL' => s_link('m', $this->data->username_base, 'ban'),
 					'LANG' => lang('blocked_member_' . $banned_lang))
 				);
 			}
@@ -805,8 +805,8 @@ class userpage {
 			'main' => array('L' => 'MAIN', 'U' => false)
 		);
 		
-		if ($user->d('user_id') != $this->data['user_id']) {
-			$panel_selection['start'] = array('L' => 'DCONV_START', 'U' => s_link('my dc start', $this->data['username_base']));
+		if ($user->d('user_id') != $this->data->user_id) {
+			$panel_selection['start'] = array('L' => 'DCONV_START', 'U' => s_link('my dc start', $this->data->username_base));
 		} else {
 			$panel_selection['dc'] = array('L' => 'DC', 'U' => s_link('my dc'));
 		}
@@ -826,24 +826,24 @@ class userpage {
 			}
 			
 			_style('selected_panel.a', array(
-				'URL' => ($data['U'] !== false) ? $data['U'] : s_link('m', $this->data['username_base'], (($link != 'main') ? $link : '')))
+				'URL' => ($data['U'] !== false) ? $data['U'] : s_link('m', $this->data->username_base, (($link != 'main') ? $link : '')))
 			);
 		}
 		
 		//
 		// Check if friends
 		//
-		if ($user->d('user_id') != $this->data['user_id']) {
+		if ($user->d('user_id') != $this->data->user_id) {
 			$friend_add_lang = true;
 			
 			if ($user->is('member')) {
-				$friend_add_lang = $this->is_friend($user->d('user_id'), $this->data['user_id']);
+				$friend_add_lang = $this->is_friend($user->d('user_id'), $this->data->user_id);
 			}
 			
 			$friend_add_lang = ($friend_add_lang) ? 'friends_add' : 'friends_del';
 			
 			_style('friend', array(
-				'U_FRIEND' => s_link('m', $this->data['username_base'], 'friend'),
+				'U_FRIEND' => s_link('m', $this->data->username_base, 'friend'),
 				'L_FRIENDS_ADD' => lang($friend_add_lang))
 			);
 		}
@@ -852,24 +852,24 @@ class userpage {
 		// Generate page
 		//
 		v_style(array(
-			'USERNAME' => $this->data['username'],
-			'POSTER_RANK' => $profile_fields['user_rank'],
-			'AVATAR_IMG' => $profile_fields['user_avatar'],
+			'USERNAME' => $this->data->username,
+			'POSTER_RANK' => $profile_fields->user_rank,
+			'AVATAR_IMG' => $profile_fields->user_avatar,
 			'USER_ONLINE' => $online,
 			
-			'PM' => s_link('my dc start', $this->data['username_base']),
-			'WEBSITE' => $this->data['user_website'],
-			'MSN' => $this->data['user_msnm']
+			'PM' => s_link('my dc start', $this->data->username_base),
+			'WEBSITE' => $this->data->user_website,
+			'MSN' => $this->data->user_msnm
 		));
 		
 		$layout_file = 'userpage';
 		
-		$use_m_template = 'custom/profile_' . $this->data['username_base'];
+		$use_m_template = 'custom/profile_' . $this->data->username_base;
 		if (@file_exists(ROOT . 'template/' . $use_m_template . '.htm')) {
 			$layout_file = $use_m_template;
 		}
 		
-		$this->_title = $this->data['username'];
+		$this->_title = $this->data->username;
 		$this->_template = $layout_file;
 		
 		return;
@@ -882,39 +882,39 @@ class userpage {
 			do_login();
 		}
 		
-		if ($user->d('user_id') == $this->data['user_id']) {
-			redirect(s_link('m', $this->data['username_base']));
+		if ($user->d('user_id') == $this->data->user_id) {
+			redirect(s_link('m', $this->data->username_base));
 		}
 		
 		$sql = 'SELECT *
 			FROM _members_friends
 			WHERE user_id = ?
 				AND buddy_id = ?';
-		if ($row = sql_fieldrow(sql_filter($sql, $user->d('user_id'), $this->data['user_id']))) {
+		if ($row = sql_fieldrow(sql_filter($sql, $user->d('user_id'), $this->data->user_id))) {
 			$sql = 'DELETE FROM _members_friends
 				WHERE user_id = ?
 					AND buddy_id = ?';
-			sql_query(sql_filter($sql, $user->d('user_id'), $this->data['user_id']));
+			sql_query(sql_filter($sql, $user->d('user_id'), $this->data->user_id));
 			
-			if ($row['friend_time']) {
+			if ($row->friend_time) {
 				//$user->points_remove(1);
 			}
 			
 			// TODO: Today save
-			// $user->delete_unread($this->data['user_id'], $user->d('user_id'));
+			// $user->delete_unread($this->data->user_id, $user->d('user_id'));
 			
-			redirect(s_link('m', $this->data['username_base']));
+			redirect(s_link('m', $this->data->username_base));
 		}
 		
 		$sql_insert = array(
 			'user_id' => $user->d('user_id'),
-			'buddy_id' => $this->data['user_id'],
+			'buddy_id' => $this->data->user_id,
 			'friend_time' => time()
 		);
 		sql_insert('members_friends', $sql_insert);
 		
 		// TODO: Today Save
-		// $user->save_unread(UH_FRIEND, $user->d('user_id'), 0, $this->data['user_id']);
+		// $user->save_unread(UH_FRIEND, $user->d('user_id'), 0, $this->data->user_id);
 		
 		redirect(s_link('m', $user->d('username_base'), 'friends'));
 	}
@@ -929,17 +929,17 @@ class userpage {
 				(b.buddy_id = ?
 					AND b.user_id = u.user_id)
 			ORDER BY u.username';
-		if ($result = sql_rowset(sql_filter($sql, $this->data['user_id'], $this->data['user_id']))) {
+		if ($result = sql_rowset(sql_filter($sql, $this->data->user_id, $this->data->user_id))) {
 			_style('friends');
 			
 			foreach ($result as $row) {
 				$friend_profile = $comments->user_profile($row);
 				
 				_style('friends.row', array(
-					'PROFILE' => $friend_profile['profile'],
-					'USERNAME' => $friend_profile['username'],
-					'AVATAR' => $friend_profile['user_avatar'],
-					'RANK' => $friend_profile['user_rank'])
+					'PROFILE' => $friend_profile->profile,
+					'USERNAME' => $friend_profile->username,
+					'AVATAR' => $friend_profile->user_avatar,
+					'RANK' => $friend_profile->user_rank)
 				);
 			}
 		}
@@ -968,8 +968,8 @@ class userpage {
 			do_login();
 		}
 		
-		if ($user->d('user_id') == $this->data['user_id']) {
-			redirect(s_link('m', $this->data['username_base']));
+		if ($user->d('user_id') == $this->data->user_id) {
+			redirect(s_link('m', $this->data->username_base));
 		}
 		
 		if ($epbi) {
@@ -980,17 +980,17 @@ class userpage {
 			FROM _members_ban
 			WHERE user_id = ?
 				AND banned_user = ?';
-		if ($row = sql_fieldrow(sql_filter($sql, $user->d('user_id'), $this->data['user_id']))) {
+		if ($row = sql_fieldrow(sql_filter($sql, $user->d('user_id'), $this->data->user_id))) {
 			$sql = 'DELETE FROM _members_ban
 				WHERE ban_id = ?';
-			sql_query(sql_filter($sql, $row['ban_id']));
+			sql_query(sql_filter($sql, $row->ban_id));
 			
-			redirect(s_link('m', $this->data['username_base']));
+			redirect(s_link('m', $this->data->username_base));
 		}
 		
 		$sql_insert = array(
 			'user_id' => $user->d('user_id'),
-			'banned_user' => $this->data['user_id'],
+			'banned_user' => $this->data->user_id,
 			'ban_time' => $user->time
 		);
 		sql_insert('members_ban', $sql_insert);
@@ -998,26 +998,26 @@ class userpage {
 		$sql = 'DELETE FROM _members_friends
 			WHERE user_id = ?
 				AND buddy_id = ?';
-		sql_query(sql_filter($sql, $user->d('user_id'), $this->data['user_id']));
+		sql_query(sql_filter($sql, $user->d('user_id'), $this->data->user_id));
 		
 		$sql = 'DELETE FROM _members_friends
 			WHERE user_id = ?
 				AND buddy_id = ?';
-		sql_query(sql_filter($sql, $this->data['user_id'], $user->d('user_id')));
+		sql_query(sql_filter($sql, $this->data->user_id, $user->d('user_id')));
 		
 		$sql = 'DELETE FROM _members_viewers
 			WHERE user_id = ?
 				AND viewer_id = ?';
-		sql_query(sql_filter($sql, $this->data['user_id'], $user->d('user_id')));
+		sql_query(sql_filter($sql, $this->data->user_id, $user->d('user_id')));
 		
-		redirect(s_link('m', $this->data['username_base']));
+		redirect(s_link('m', $this->data->username_base));
 	}
 	
 	public function user_stats() {
 		$user_stats = array(
-			'VISITS_COUNT' => $this->data['user_totallogon'],
-			'PAGEVIEWS_COUNT' => $this->data['user_totalpages'],
-			'FORUM_POSTS' => $this->data['user_posts']
+			'VISITS_COUNT' => $this->data->user_totallogon,
+			'PAGEVIEWS_COUNT' => $this->data->user_totalpages,
+			'FORUM_POSTS' => $this->data->user_posts
 		);
 		
 		$m = false;
@@ -1048,26 +1048,15 @@ class userpage {
 		//
 		// Get artists where this member is an authorized member
 		//
-		$sql = 'SELECT au.user_id, a.ub, a.name, a.subdomain, a.images, a.local, a.location, a.genre
+		$sql = 'SELECT au.user_id, a.ub, a.name, a.subdomain, a.images, a.local, a.location, a.genre, i.image
 			FROM _artists_auth au, _artists a
+			INNER JOIN _artists_images i ON a.ub = i.image
 			WHERE au.user_id = ?
 				AND au.ub = a.ub
+				AND i.image_default = 1
 			ORDER BY a.name';
-		if ($selected_artists = sql_rowset(sql_filter($sql, $this->data['user_id']), 'ub')) {
-			$sql = 'SELECT ub, image
-				FROM _artists_images
-				WHERE ub IN (??)
-				ORDER BY RAND()';
-			$result = sql_rowset(sql_filter($sql, implode(',', array_keys($selected_artists))));
-			
-			$random_images = w();
-			foreach ($result as $row) {
-				if (!isset($random_images[$row['ub']])) {
-					$random_images[$row['ub']] = $row['image'];
-				}
-			}
-			
-			a_thumbnails($selected_artists, $random_images, 'USERPAGE_MOD', 'thumbnails');
+		if ($artists = sql_rowset(sql_filter($sql, $this->data->user_id), 'ub')) {
+			a_thumbnails($artists, 'USERPAGE_MOD', 'thumbnails');
 		}
 		
 		//
@@ -1078,7 +1067,7 @@ class userpage {
 			WHERE f.user_id = ?
 				AND f.ub = a.ub
 			ORDER BY RAND()';
-		if ($result2 = sql_rowset(sql_filter($sql, $this->data['user_id']), 'ub')) {
+		if ($result2 = sql_rowset(sql_filter($sql, $this->data->user_id), 'ub')) {
 			
 			$sql = 'SELECT ub, image
 				FROM _artists_images
@@ -1088,8 +1077,8 @@ class userpage {
 			
 			$random_images2 = w();
 			foreach ($result_images as $row) {
-				if (!isset($random_images2[$row['ub']])) {
-					$random_images2[$row['ub']] = $row['image'];
+				if (!isset($random_images2[$row->ub])) {
+					$random_images2[$row->ub] = $row->image;
 				}
 			}
 			
@@ -1098,7 +1087,7 @@ class userpage {
 			
 			foreach ($result2 as $row) {
 				if ($total_a < 6) {
-					$selected_artists2[$row['ub']] = $row;
+					$selected_artists2[$row->ub] = $row;
 				}
 				$total_a++;
 			}
@@ -1119,24 +1108,24 @@ class userpage {
 			GROUP BY p.topic_id
 			ORDER BY p.post_time DESC
 			LIMIT 10";
-		$result = sql_rowset(sql_filter($sql, $this->data['user_id']));
+		$result = sql_rowset(sql_filter($sql, $this->data->user_id));
 		
 		foreach ($result as $i => $row) {
 			if (!$i) _style('main.lastboard');
 			
 			_style('main.lastboard.row', array(
-				'URL' => s_link('post', $row['post_id']) . '#' . $row['post_id'],
-				'TITLE' => $row['topic_title'],
-				'TOPIC_COLOR' => $row['topic_color'],
-				'TIME' => $user->format_date($row['post_time'], 'H:i'),
-				'DATE' => $user->format_date($row['post_time'], lang('date_format')))
+				'URL' => s_link('post', $row->post_id) . '#' . $row->post_id,
+				'TITLE' => $row->topic_title,
+				'TOPIC_COLOR' => $row->topic_color,
+				'TIME' => $user->format_date($row->post_time, 'H:i'),
+				'DATE' => $user->format_date($row->post_time, lang('date_format')))
 			);
 		}
 		
 		//
 		// GET USERPAGE MESSAGES
 		//
-		$comments_ref = s_link('m', $this->data['username_base']);
+		$comments_ref = s_link('m', $this->data->username_base);
 		
 		if ($user->is('member')) {
 			_style('main.post_comment_box', array(
@@ -1149,18 +1138,18 @@ class userpage {
 		//
 		$birthday = '';
 		$age = 0;
-		if ($this->data['user_birthday']) {
-			$bd_month = gmmktime(0, 0, 0, substr($this->data['user_birthday'], 4, 2) + 1, 0, 0);
-			$birthday = (int) substr($this->data['user_birthday'], 6, 2) . ' ' . $user->format_date($bd_month, 'F') . ' ' . substr($this->data['user_birthday'], 0, 4);
+		if ($this->data->user_birthday) {
+			$bd_month = gmmktime(0, 0, 0, substr($this->data->user_birthday, 4, 2) + 1, 0, 0);
+			$birthday = (int) substr($this->data->user_birthday, 6, 2) . ' ' . $user->format_date($bd_month, 'F') . ' ' . substr($this->data->user_birthday, 0, 4);
 			
-			$age = date('Y', time()) - intval(substr($this->data['user_birthday'], 0, 4));
-			if (intval(substr($this->data['user_birthday'], 4, 4)) > date('md', time())) {
+			$age = date('Y', time()) - intval(substr($this->data->user_birthday, 0, 4));
+			if (intval(substr($this->data->user_birthday, 4, 4)) > date('md', time())) {
 				$age--;
 			}
 			$age .= ' ' . lang('years');
 		}
 		
-		switch ($this->data['user_gender']) {
+		switch ($this->data->user_gender) {
 			case 0:
 				$gender = 'NO_GENDER';
 				break;
@@ -1175,17 +1164,17 @@ class userpage {
 		$gender = lang($gender);
 		
 		$user_fields = array(
-			//'JOINED' => ($this->data['user_regdate'] && (!$this->data['user_hideuser'] || $epbi2)) ? $user->format_date($this->data['user_regdate']) . sprintf(lang('joined_since'), $memberdays) : '',
-			'LAST_LOGON' => ($this->data['user_lastvisit'] && (!$this->data['user_hideuser'] || $epbi2)) ? $user->format_date($this->data['user_lastvisit']) : '',
+			//'JOINED' => ($this->data->user_regdate && (!$this->data->user_hideuser || $epbi2)) ? $user->format_date($this->data->user_regdate) . sprintf(lang('joined_since'), $memberdays) : '',
+			'LAST_LOGON' => ($this->data->user_lastvisit && (!$this->data->user_hideuser || $epbi2)) ? $user->format_date($this->data->user_lastvisit) : '',
 			'GENDER' => $gender,
 			'AGE' => $age,
 			'BIRTHDAY' => $birthday,
-			'FAV_GENRES' => $this->data['user_fav_genres'],
-			'FAV_BANDS' => $this->data['user_fav_artists'],
-			'LOCATION' => $this->data['user_location'],
-			'OCCUPATION' => $this->data['user_occ'],
-			'INTERESTS' => $this->data['user_interests'],
-			'MEMBER_OS' => $this->data['user_os']
+			'FAV_GENRES' => $this->data->user_fav_genres,
+			'FAV_BANDS' => $this->data->user_fav_artists,
+			'LOCATION' => $this->data->user_location,
+			'OCCUPATION' => $this->data->user_occ,
+			'INTERESTS' => $this->data->user_interests,
+			'MEMBER_OS' => $this->data->user_os
 		);
 		
 		$m = 0;
@@ -1207,16 +1196,16 @@ class userpage {
 		// Get Last.fm Feed
 		//
 		// http://ws.audioscrobbler.com/1.0/user//recenttracks.xml
-		if (!empty($this->data['user_lastfm'])) {
+		if (!empty($this->data->user_lastfm)) {
 			include_once('./interfase/scrobbler.php');
 			
-			$scrobbler = new EasyScrobbler($this->data['user_lastfm']);
+			$scrobbler = new EasyScrobbler($this->data->user_lastfm);
 			$list = $scrobbler->getRecentTracs();
 			
 			if (count($list)) {
 				_style('main.lastfm', array(
-					'NAME' => $this->data['user_lastfm'],
-					'URL' => 'http://www.last.fm/user/' . $this->data['user_lastfm'] . '/')
+					'NAME' => $this->data->user_lastfm,
+					'URL' => 'http://www.last.fm/user/' . $this->data->user_lastfm . '/')
 				);
 				
 				foreach ($list as $row) {
@@ -1234,8 +1223,8 @@ class userpage {
 		//
 		// Get public messages
 		//
-		$comments_ref = s_link('m', $this->data['username_base']);
-		if ($this->data['userpage_posts']) {
+		$comments_ref = s_link('m', $this->data->username_base);
+		if ($this->data->userpage_posts) {
 			$comments->reset();
 			$comments->ref = $comments_ref;
 			
@@ -1251,10 +1240,10 @@ class userpage {
 			$comments->data = array(
 				'USER_ID_FIELD' => 'userpage_id',
 				'S_DELETE_URL' => s_link('acp', 'user_post_delete', 'msg_id:%d'),
-				'SQL' => sql_filter($sql, $this->data['user_id'])
+				'SQL' => sql_filter($sql, $this->data->user_id)
 			);
 			
-			$comments->view(0, '', $this->data['userpage_posts'], $this->data['userpage_posts'], 'main.posts');
+			$comments->view(0, '', $this->data->userpage_posts, $this->data->userpage_posts, 'main.posts');
 		}
 		
 		if ($user->is('member')) {

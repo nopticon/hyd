@@ -40,8 +40,8 @@ class awards {
 			if (!$i) _style('awards');
 			
 			_style('awards.row', array(
-				'NAME' => $row['type_name'],
-				'DESC' => $row['type_desc'])
+				'NAME' => $row->type_name,
+				'DESC' => $row->type_desc)
 			);
 		}
 		
