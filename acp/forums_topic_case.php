@@ -49,7 +49,7 @@ class __forums_topic_case extends mac {
 			fatal_error();
 		}
 		
-		$title = ucfirst(strtolower($data['topic_title']));
+		$title = ucfirst(strtolower($data->topic_title));
 		
 		$sql = 'UPDATE _forum_topics SET topic_title = ?
 			WHERE topic_id = ?';

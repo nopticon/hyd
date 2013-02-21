@@ -55,13 +55,13 @@ class __user_ip_report extends mac {
 				if (!$i) _style('log');
 				
 				_style('log.row', array(
-					'UID' => $row['log_user_id'],
-					'USERNAME' => $row['username'],
-					'TIME' => $user->format_date($row['log_time']),
-					'ENDTIME' => (($row['log_endtime']) ? $user->format_date($row['log_endtime']) : '&nbsp;'),
-					'DIFFTIME' => (($row['log_endtime']) ? _implode(' ', timeDiff($row['log_endtime'], $row['log_time'], true, 1)) : '&nbsp;'),
-					'IP' => $row['log_ip'],
-					'AGENT' => $row['log_agent'])
+					'UID' => $row->log_user_id,
+					'USERNAME' => $row->username,
+					'TIME' => $user->format_date($row->log_time),
+					'ENDTIME' => (($row->log_endtime) ? $user->format_date($row->log_endtime) : '&nbsp;'),
+					'DIFFTIME' => (($row->log_endtime) ? _implode(' ', timeDiff($row->log_endtime, $row->log_time, true, 1)) : '&nbsp;'),
+					'IP' => $row->log_ip,
+					'AGENT' => $row->log_agent)
 				);
 			}
 		}

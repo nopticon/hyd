@@ -31,7 +31,7 @@ class __event extends mac {
 		$error = w();
 		
 		if (_button()) {
-			$filepath = $config['events_path'];
+			$filepath = $config->events_path;
 			$filepath_1 = $filepath . 'future/';
 			$filepath_2 = $filepath_1 . 'thumbnails/';
 			
@@ -84,9 +84,9 @@ class __event extends mac {
 								FROM _artists_events
 								WHERE a_artist = ?
 									AND a_event = ?';
-							if (!sql_fieldrow(sql_filter($sql, $a_row['ub'], $event_id))) {
+							if (!sql_fieldrow(sql_filter($sql, $a_row->ub, $event_id))) {
 								$sql_insert = array(
-									'a_artist' => $a_row['ub'],
+									'a_artist' => $a_row->ub,
 									'a_event' => $event_id
 								);
 								sql_insert('artists_events', $sql_insert);
@@ -95,7 +95,7 @@ class __event extends mac {
 					}
 					
 					// Alice: Create topic
-					$event_url = $config['events_url'] . 'future/' . $img  . '.jpg';
+					$event_url = $config->events_url . 'future/' . $img  . '.jpg';
 					
 					$post_message = 'Evento publicado';
 					$post_time = time();
@@ -206,8 +206,8 @@ class __event extends mac {
 			if (!$i) _style('topics');
 			
 			_style('topics.row', array(
-				'TOPIC_ID' => $row['topic_id'],
-				'TOPIC_TITLE' => $row['topic_title'])
+				'TOPIC_ID' => $row->topic_id,
+				'TOPIC_TITLE' => $row->topic_title)
 			);
 		}
 		

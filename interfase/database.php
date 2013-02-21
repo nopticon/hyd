@@ -21,7 +21,7 @@ if (!defined('IN_APP')) exit;
 function sql_filter() {
 	global $db;
 
-	return call_user_func_array(array($db, '__prepare'), $args);
+	return call_user_func_array(array($db, '__prepare'), func_get_args());
 }
 
 function sql_insert($table, $insert) {

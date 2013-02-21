@@ -86,12 +86,12 @@ class __user_mass_conversation extends mac {
 		$result = sql_rowset(sql_filter($sql, $user->d('user_id')));
 		
 		foreach ($result as $row) {
-			$row_message = str_replace('[username]', $row['username'], $post_message);
+			$row_message = str_replace('[username]', $row->username, $post_message);
 			
 			$insert = array(
 				'privmsgs_subject' => $post_subject,
 				'privmsgs_from_userid' => (int) $user->d('user_id'),
-				'privmsgs_to_userid' => (int) $row['user_id'],
+				'privmsgs_to_userid' => (int) $row->user_id,
 				'privmsgs_date' => $user->time,
 				'msg_ip' => $user->ip,
 				'msg_can_reply' => (int) $post_reply,
@@ -105,9 +105,9 @@ class __user_mass_conversation extends mac {
 			sql_query(sql_filter($sql, $dc_id, $dc_id, $user->d('user_id'), $dc_id));
 			
 			// TODO: Today save
-			// $user->save_unread(UH_NOTE, $dc_id, 0, $row['user_id']);
+			// $user->save_unread(UH_NOTE, $dc_id, 0, $row->user_id);
 			
-			echo $row['username'] . '<br />';
+			echo $row->username . '<br />';
 			flush();
 		}
 		

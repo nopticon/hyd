@@ -38,7 +38,7 @@ class __news_images extends mac {
 				fatal_error();
 			}
 			
-			$filepath_1 = $config['news_path'];
+			$filepath_1 = $config->news_path;
 			
 			$f = $upload->process($filepath_1, 'add_image', 'jpg');
 			
@@ -62,8 +62,8 @@ class __news_images extends mac {
 		
 		foreach ($result as $row) {
 			_style('news_list', array(
-				'NEWS_ID' => $row['news_id'],
-				'NEWS_TITLE' => $row['post_subject'])
+				'NEWS_ID' => $row->news_id,
+				'NEWS_TITLE' => $row->post_subject)
 			);
 		}
 		

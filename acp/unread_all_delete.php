@@ -49,7 +49,7 @@ class __unread_all_delete extends mac {
 		$sql = 'DELETE FROM _members_unread
 			WHERE user_id = ?
 				AND element <> ?';
-		sql_query(sql_filter($sql, $row['user_id'], 16));
+		sql_query(sql_filter($sql, $row->user_id, 16));
 		
 		return _pre('Deleted', true);
 	}

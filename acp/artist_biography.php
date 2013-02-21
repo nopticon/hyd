@@ -33,7 +33,7 @@ class __artist_biography extends mac {
 		$sql = 'SELECT bio
 			FROM _artists
 			WHERE ub = ?';
-		$bio = sql_field(sql_filter($sql, $this->object['ub']), 'bio');
+		$bio = sql_field(sql_filter($sql, $this->object->ub), 'bio');
 
 		v_style(array(
 			'MESSAGE' => $bio)
@@ -51,7 +51,7 @@ class __artist_biography extends mac {
 			
 			$sql = 'UPDATE _artists SET bio = ?
 				WHERE ub = ?';
-			sql_query(sql_filter($sql, $message, $this->object['ub']));
+			sql_query(sql_filter($sql, $message, $this->object->ub));
 
 			$this->warning('ARTIST_BIO_UPDATED');
 		}

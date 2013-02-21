@@ -67,7 +67,7 @@ class __artist extends mac {
 		
 		// Cache
 		$cache->delete('artist_list artist_records ai_records artist_recent');
-		set_config('max_artists', $config['max_artists'] + 1);
+		set_config('max_artists', $config->max_artists + 1);
 		
 		// Create directories
 		artist_check($artist_id);
@@ -95,21 +95,21 @@ class __artist extends mac {
 				
 				$sql_insert = array(
 					'ub' => $artist_id,
-					'user_id' => $userdata['user_id']
+					'user_id' => $userdata->user_id
 				);
 				sql_insert('artists_auth', $sql_insert);
 				
 				//
 				$update = array('user_type' => USER_ARTIST, 'user_auth_control' => 1);
 				
-				if (!$userdata['user_rank']) {
-					$update['user_rank'] = (int) $config['default_a_rank'];
+				if (!$userdata->user_rank) {
+					$update['user_rank'] = (int) $config->default_a_rank;
 				}
 				
 				$sql = 'UPDATE _members SET ??
 					WHERE user_id = ?
 						AND user_type NOT IN (??, ??)';
-				sql_query(sql_filter($sql, sql_build('UPDATE', $update), $userdata['user_id'], USER_INACTIVE, USER_FOUNDER));
+				sql_query(sql_filter($sql, sql_build('UPDATE', $update), $userdata->user_id, USER_INACTIVE, USER_FOUNDER));
 			}
 			
 			redirect(s_link('a', $subdomain));

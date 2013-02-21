@@ -49,6 +49,6 @@ class __forums_topic_announce extends mac {
 			WHERE topic_id = ?';
 		sql_query(sql_filter($sql, 'E1CB39', $topic));
 		
-		return _pre('El tema <strong>' . $topicdata['topic_title'] . '</strong> ha sido anunciado.', true);
+		return _pre('El tema <strong>' . $topicdata->topic_title . '</strong> ha sido anunciado.', true);
 	}
 }

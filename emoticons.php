@@ -32,11 +32,11 @@ if (!$smilies = $cache->get('smilies')) {
 	}
 }
 
-foreach ($smilies as $smile_url => $data) {
+foreach ($smilies as $smile_url => $row) {
 	_style('smilies_row', array(
-		'CODE' => $data['code'],
-		'IMAGE' => $config['assets_url'] . '/emoticon/' . $data['smile_url'],
-		'DESC' => $data['emoticon'])
+		'CODE' => $row->code,
+		'IMAGE' => $config->assets_url . '/emoticon/' . $row->smile_url,
+		'DESC' => $row->emoticon)
 	);
 }
 

@@ -43,7 +43,7 @@ class __forums_topic_lock extends mac {
 		
 		$sql = 'UPDATE _forum_topics SET topic_locked = ?
 			WHERE topic_id = ?';
-		sql_query(sql_filter($sql, !$topicdata['topic_locked'], $topic_id));
+		sql_query(sql_filter($sql, !$topicdata->topic_locked, $topic_id));
 
 		return redirect(s_link('topic', $topic_id));
 	}

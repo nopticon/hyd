@@ -58,16 +58,16 @@ class __user_name_change extends mac {
 		//
 		$sql = 'UPDATE _members SET username = ?, username_base = ?
 			WHERE user_id = ?';
-		sql_query(sql_filter($sql, $username2, $username_base2, $userdata['user_id']));
+		sql_query(sql_filter($sql, $username2, $username_base2, $userdata->user_id));
 		
 		$emailer = new emailer();
 		
 		$emailer->from('info');
-		$emailer->use_template('username_change', $config['default_lang']);
-		$emailer->email_address($userdata['user_email']);
+		$emailer->use_template('username_change', $config->default_lang);
+		$emailer->email_address($userdata->user_email);
 		
 		$emailer->assign_vars(array(
-			'USERNAME' => $userdata['username'],
+			'USERNAME' => $userdata->username,
 			'NEW_USERNAME' => $username2,
 			'U_USERNAME' => s_link('m', $username_base2))
 		);

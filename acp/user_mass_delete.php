@@ -44,8 +44,8 @@ class __user_mass_delete extends mac {
 		
 		$sql = 'UPDATE _members SET user_send_mass = 0
 			WHERE user_id = ?';
-		sql_query(sql_filter($sql, $userdata['user_id']));
+		sql_query(sql_filter($sql, $userdata->user_id));
 		
-		return _pre('El usuario ' . $userdata['username'] . ' no recibira email masivo.');
+		return _pre('El usuario ' . $userdata->username . ' no recibira email masivo.');
 	}
 }

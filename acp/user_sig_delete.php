@@ -44,8 +44,8 @@ class __user_sig_delete extends mac {
 		
 		$sql = 'UPDATE _members SET user_sig = ?
 			WHERE user_id = ?';
-		sql_query(sql_filter($sql, '', $userdata['user_id']));
+		sql_query(sql_filter($sql, '', $userdata->user_id));
 		
-		return _pre('La firma de ' . $userdata['username'] . ' ha sido borrada.', true);
+		return _pre('La firma de ' . $userdata->username . ' ha sido borrada.', true);
 	}
 }

@@ -38,9 +38,9 @@ class __user_points extends mac {
 			if (!$i) _style('members');
 			
 			_style('members.row', array(
-				'BASE' => s_link('m', $row['username_base']),
-				'USERNAME' => $row['username'],
-				'POINTS' => $row['user_points'])
+				'BASE' => s_link('m', $row->username_base),
+				'USERNAME' => $row->username,
+				'POINTS' => $row->user_points)
 			);
 		}
 		

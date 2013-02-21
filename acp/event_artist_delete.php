@@ -42,15 +42,15 @@ class __event_artist_delete extends mac {
 			WHERE a.a_artist = ?
 				AND a.a_event = e.id
 			ORDER BY e.date DESC';
-		$result = sql_rowset(sql_filter($sql, $this->object['ub']));
+		$result = sql_rowset(sql_filter($sql, $this->object->ub));
 
 		foreach ($result as $i => $row) {
 			if (!$i) _style('events');
 
 			_style('events.row', array(
-				'ID' => $row['id'],
-				'TITLE' => $row['title'],
-				'DATE' => $user->format_date($row['date']))
+				'ID' => $row->id,
+				'TITLE' => $row->title,
+				'DATE' => $user->format_date($row->date))
 			);
 		}
 
@@ -85,10 +85,10 @@ class __event_artist_delete extends mac {
 				$sql = 'DELETE FROM _artists_events
 					WHERE a_artist = ?
 						AND a_event = ?';
-				sql_query(sql_filter($sql, $a_row['ub'], $event));
+				sql_query(sql_filter($sql, $a_row->ub, $event));
 			}
 		}
 		
-		return redirect(s_link('events', $row['event_alias']));
+		return redirect(s_link('events', $row->event_alias));
 	}
 }

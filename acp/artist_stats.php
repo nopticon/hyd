@@ -35,7 +35,7 @@ class __artist_stats extends mac {
 			WHERE ub = ?
 			GROUP BY date
 			ORDER BY date DESC';
-		$stats = sql_rowset(sql_filter($sql, $this->object['ub']), 'date');
+		$stats = sql_rowset(sql_filter($sql, $this->object->ub), 'date');
 
 		$years_sum = $years_temp = $years = w();
 
@@ -51,7 +51,7 @@ class __artist_stats extends mac {
 				$years_sum[$year] = 0;
 			}
 
-			$years_sum[$year] += $void['total'];
+			$years_sum[$year] += $void->total;
 		}
 		unset($years_temp);
 

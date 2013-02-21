@@ -46,8 +46,8 @@ class __user_password extends mac {
 		
 		$sql = 'UPDATE _members SET user_password = ?
 			WHERE user_id = ?';
-		sql_query(sql_filter($sql, HashPassword($password), $userdata['user_id']));
+		sql_query(sql_filter($sql, HashPassword($password), $userdata->user_id));
 		
-		return _pre('La contrase&ntilde;a de ' . $userdata['username'] . ' fue actualizada.', true);
+		return _pre('La contrase&ntilde;a de ' . $userdata->username . ' fue actualizada.', true);
 	}
 }

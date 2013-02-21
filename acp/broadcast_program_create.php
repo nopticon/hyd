@@ -67,7 +67,7 @@ class __broadcast_program_create extends mac {
 			if ($row = sql_fieldrow(sql_filter($sql, $rowu))) {
 				$sql_insert = array(
 					'dj_show' => $show_id,
-					'dj_uid' => $row['user_id']
+					'dj_uid' => $row->user_id
 				);
 				sql_insert('radio_dj', $sql_insert);
 				
@@ -75,10 +75,10 @@ class __broadcast_program_create extends mac {
 					FROM _team_members
 					WHERE team_id = 4
 						AND member_id = ?';
-				if (!$row2 = sql_fieldrow(sql_filter($sql, $row['user_id']))) {
+				if (!$row2 = sql_fieldrow(sql_filter($sql, $row->user_id))) {
 					$sql_insert = array(
 						'team_id' => 4,
-						'member_id' =>  $row['user_id'],
+						'member_id' =>  $row->user_id,
 						'real_name' => '',
 						'member_mod' => 0
 					);

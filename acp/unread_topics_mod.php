@@ -39,9 +39,9 @@ class __unread_topics_mod extends mac {
 		foreach ($result as $row) {
 			$delete = false;
 			
-			if ($t = search_topic($row['item'])) {
-				if (in_array($t['forum_id'], array(16, 17))) {
-					$a = $user->is($auth[$t['forum_id']], $row['user_id']);
+			if ($t = search_topic($row->item)) {
+				if (in_array($t->forum_id, array(16, 17))) {
+					$a = $user->is($auth[$t->forum_id], $row->user_id);
 					if (!$a) {
 						$delete = true;
 					}
@@ -55,7 +55,7 @@ class __unread_topics_mod extends mac {
 					WHERE user_id = ?
 						AND element = 8
 						AND item = ?';
-				sql_query(sql_filter($sql, $row['user_id'], $row['item']));
+				sql_query(sql_filter($sql, $row->user_id, $row->item));
 			}
 		}
 		

@@ -42,7 +42,7 @@ class __artist_auth extends mac {
 			WHERE a.ub = ?
 				AND a.user_id = u.user_id
 			ORDER BY u.username';
-		if ($result = sql_rowset(sql_filter($sql, $this->object['ub']))) {
+		if ($result = sql_rowset(sql_filter($sql, $this->object->ub))) {
 			$total = count($result);
 
 			foreach ($result as $i => $row) {
@@ -50,13 +50,13 @@ class __artist_auth extends mac {
 
 				$prof = $comments->user_profile($row);
 
-				$delete = ($total > 1 && $prof['user_id'] != $user->d('user_id')) || ($user->is('founder') && $prof['user_id'] != $user->d('user_id'));
+				$delete = ($total > 1 && $prof->user_id != $user->d('user_id')) || ($user->is('founder') && $prof->user_id != $user->d('user_id'));
 
 				_style('members.row', array(
-					'USER_ID' => $prof['user_id'],
-					'PROFILE' => $prof['profile'],
-					'USERNAME' => $prof['username'],
-					'AVATAR' => $prof['user_avatar'],
+					'USER_ID' => $prof->user_id,
+					'PROFILE' => $prof->profile,
+					'USERNAME' => $prof->username,
+					'AVATAR' => $prof->user_avatar,
 					'DELETE' => $delete,
 					'CHECK' => ($total == 1 && $unique))
 				);
@@ -84,7 +84,7 @@ class __artist_auth extends mac {
 
 		$ignore = USER_INACTIVE;
 
-		if (!$user->data['is_founder']) {
+		if (!$user->is('founder')) {
 			$ignore .= ', ' . USER_FOUNDER;
 		}
 
@@ -104,7 +104,7 @@ class __artist_auth extends mac {
 			FROM _artists_auth
 			WHERE ub = ?
 				AND user_id = ?';
-		if (sql_field(sql_filter($sql, $this->object['ub'], $member['user_id']), 'user_id', 0)) {
+		if (sql_field(sql_filter($sql, $this->object->ub, $member->user_id), 'user_id', 0)) {
 			_style('no_members', array(
 				'MESSAGE' => lang('control_a_auth_add_nomatch'))
 			);
@@ -116,8 +116,8 @@ class __artist_auth extends mac {
 		Authorize the selected user to this artist.
 		*/
 		$sql_insert = array(
-			'ub' => $this->object['ub'],
-			'user_id' => $member['user_id']
+			'ub' => $this->object->ub,
+			'user_id' => $member->user_id
 		);
 		sql_insert('artists_auth', $sql_insert);
 
@@ -130,19 +130,19 @@ class __artist_auth extends mac {
 		);
 
 		if (!$member['user_rank']) {
-			$update['user_rank'] = $config['default_a_rank'];
+			$update['user_rank'] = $config->default_a_rank;
 		}
 
 		$sql = 'UPDATE _members SET ??
 			WHERE user_id = ?
 				AND user_type NOT IN (' . USER_INACTIVE . ', ' . USER_FOUNDER . ')';
-		sql_query(sql_filter($sql, sql_build('UPDATE', $update), $member['user_id']));
+		sql_query(sql_filter($sql, sql_build('UPDATE', $update), $member->user_id));
 
 		$sql = 'SELECT fan_id
 			FROM _artists_fav
 			WHERE ub = ?
 				AND user_id = ?';
-		if ($fan_id = sql_field(sql_filter($sql, $this->object['ub'], $member['user_id']), 'fan_id', 0)) {
+		if ($fan_id = sql_field(sql_filter($sql, $this->object->ub, $member->user_id), 'fan_id', 0)) {
 			$sql = 'DELETE FROM _artists_fav
 				WHERE fan_id = ?';
 			sql_query(sql_filter($sql, $fan_id));
@@ -151,7 +151,7 @@ class __artist_auth extends mac {
 		/*
 		Back to auth home
 		*/
-		return redirect(s_link('acp', array('artist_auth', 'a' => $this->object['subdomain'])));
+		return redirect(s_link('acp', array('artist_auth', 'a' => $this->object->subdomain)));
 	}
 	
 	/*
@@ -160,7 +160,7 @@ class __artist_auth extends mac {
 	private function remove() {
 		global $config, $user;
 
-		$auth_url = s_link('acp', array('artist_auth', 'a' => $this->object['subdomain']));
+		$auth_url = s_link('acp', array('artist_auth', 'a' => $this->object->subdomain));
 
 		if (_button('cancel')) {
 			redirect($auth_url);
@@ -181,7 +181,7 @@ class __artist_auth extends mac {
 						AND m.user_type <> ??
 						AND a.user_id = m.user_id
 					ORDER BY m.user_id';
-				$result = sql_rowset(sql_filter($sql, $this->object['ub'], implode(',', $result), $user->data['user_id'], USER_INACTIVE), 'user_id');
+				$result = sql_rowset(sql_filter($sql, $this->object->ub, implode(',', $result), $user->data->user_id, USER_INACTIVE), 'user_id');
 			}
 
 			if (!$result) {
@@ -198,20 +198,20 @@ class __artist_auth extends mac {
 					$sql = 'SELECT COUNT(ub) AS total
 						FROM _artists_auth
 						WHERE user_id = ?';
-					$total = sql_field(sql_filter($sql, $row['user_id']), 'total', 0);
+					$total = sql_field(sql_filter($sql, $row->user_id), 'total', 0);
 					
 					if ($total == 1) {
 						$update['user_auth_control'] = 0;
 
 						$user_type = USER_NORMAL;
-						if ($item['user_rank'] == $config['default_a_rank']) {
+						if ($item['user_rank'] == $config->default_a_rank) {
 							$update['user_rank'] = 0;
 						}
 
 						$sql = 'SELECT *
 							FROM _artists_fav
 							WHERE user_id = ?';
-						if (sql_fieldrow(sql_filter($sql, $row['user_id']))) {
+						if (sql_fieldrow(sql_filter($sql, $row->user_id))) {
 							$user_type = USER_FAN;
 						}
 
@@ -219,13 +219,13 @@ class __artist_auth extends mac {
 
 						$sql = 'UPDATE _members SET ??
 							WHERE user_id = ?';
-						sql_query(sql_filter($sql, sql_build('UPDATE', $update), $row['user_id']));
+						sql_query(sql_filter($sql, sql_build('UPDATE', $update), $row->user_id));
 					}
 
 					$sql = 'DELETE FROM _artists_auth
 						WHERE ub = ?
 							AND user_id = ?';
-					sql_query(sql_filter($sql, $this->object['ub'], $row['user_id']));
+					sql_query(sql_filter($sql, $this->object->ub, $row->user_id));
 				}
 
 				return redirect($auth_url);
@@ -235,15 +235,15 @@ class __artist_auth extends mac {
 			$result_list = '';
 			
 			foreach ($result as $row) {
-				$result_list .= (($result_list != '') ? ', ' : '') . $row['username'];
-				$result_hidden .= s_hidden(array('s_members[]' => $row['user_id']));
+				$result_list .= (($result_list != '') ? ', ' : '') . $row->username;
+				$result_hidden .= s_hidden(array('s_members[]' => $row->user_id));
 			}
 
 			$message = count($result) == 1 ? '2' : '';
 
 			$layout_vars = array(
-				'MESSAGE_TEXT' => sprintf(lang('acp_artist_auth_delete' . $message), $this->object['name'], $result_list),
-				'S_CONFIRM_ACTION' => s_link('acp', array('artist_auth', 'a' => $this->object['subdomain'])),
+				'MESSAGE_TEXT' => sprintf(lang('acp_artist_auth_delete' . $message), $this->object->name, $result_list),
+				'S_CONFIRM_ACTION' => s_link('acp', array('artist_auth', 'a' => $this->object->subdomain)),
 				'S_HIDDEN_FIELDS' => $result_hidden
 			);
 

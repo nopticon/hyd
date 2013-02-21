@@ -30,11 +30,11 @@ class __broadcast_modify extends mac {
 		
 		$ftp = new ftp();
 		
-		if (!$ftp->ftp_connect($config['broadcast_host'])) {
+		if (!$ftp->ftp_connect($config->broadcast_host)) {
 			_pre('Can not connect', true);
 		}
 		
-		if (!$ftp->ftp_login($config['broadcast_username'], $config['broadcast_password'])) {
+		if (!$ftp->ftp_login($config->broadcast_username, $config->broadcast_password)) {
 			$ftp->ftp_quit();
 			_pre('Can not login', true);
 		}
@@ -56,7 +56,7 @@ class __broadcast_modify extends mac {
 				@flock($fp, LOCK_UN);
 				fclose($fp);
 				
-				_chmod($cds_file, $config['mask']);
+				_chmod($cds_file, $config->mask);
 				
 				if ($ftp->ftp_put('/Schedule/schedule_playlist.txt', $cds_file)) {
 					echo '<h1>El archivo fue procesado correctamente.</h1>';

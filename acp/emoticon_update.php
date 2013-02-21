@@ -30,7 +30,7 @@ class __emoticon_update extends mac {
 		
 		sql_truncate('_smilies');
 		
-		$emoticon_path = $config['assets_path'] . 'emoticon/';
+		$emoticon_path = $config->assets_path . 'emoticon/';
 		$process = 0;
 		
 		$fp = @opendir($emoticon_path);

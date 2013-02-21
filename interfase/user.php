@@ -48,7 +48,7 @@ class session {
 			$this->cookie_data['u'] = request_var($config->cookie_name . '_u', 0);
 			$this->session_id = request_var($config->cookie_name . '_sid', '');
 		}
-		
+
 		// Is session_id is set
 		if (!empty($this->session_id)) {
 			$sql = 'SELECT m.*, s.*
@@ -56,7 +56,7 @@ class session {
 				WHERE s.session_id = ?
 					AND m.user_id = s.session_user_id';
 			$this->data = sql_fieldrow(sql_filter($sql, $this->session_id));
-			
+
 			// Did the session exist in the DB?
 			if (isset($this->data->user_id)) {
 				$s_ip = implode('.', array_slice(explode('.', $this->data->session_ip), 0, 4));
@@ -163,7 +163,7 @@ class session {
 					AND user_type <> ?';
 			$this->data = sql_fieldrow(sql_filter($sql, $this->cookie_data['u'], USER_INACTIVE));
 		}
-		
+
 		// If no data was returned one or more of the following occured:
 		// User does not exist
 		// User is inactive
@@ -176,7 +176,7 @@ class session {
 				WHERE user_id = ?';
 			$this->data = sql_fieldrow(sql_filter($sql, $this->cookie_data['u']));
 		}
-		
+
 		if ($this->data->user_id != 1) {
 			$sql = 'SELECT session_time, session_id
 				FROM _sessions

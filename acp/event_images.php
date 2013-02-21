@@ -33,8 +33,8 @@ class __event_images extends mac {
 		if (_button()) {
 			$event_id = request_var('event_id', 0);
 			
-			$filepath_1 = $config['events_path'] . 'tmp/';
-			$filepath_2 = $config['events_path'] . 'gallery/';
+			$filepath_1 = $config->events_path . 'tmp/';
+			$filepath_2 = $config->events_path . 'gallery/';
 			$filepath_3 = $filepath_1 . $event_id . '/';
 			$filepath_4 = $filepath_3 . 'thumbnails/';
 			
@@ -188,9 +188,9 @@ class __event_images extends mac {
 		
 		foreach ($result as $row) {
 			_style('event_list', array(
-				'EVENT_ID' => $row['id'],
-				'EVENT_TITLE' => (($row['images']) ? '* ' : '') . $row['title'],
-				'EVENT_DATE' => $user->format_date($row['date']))
+				'EVENT_ID' => $row->id,
+				'EVENT_TITLE' => (($row->images) ? '* ' : '') . $row->title,
+				'EVENT_DATE' => $user->format_date($row->date))
 			);
 		}
 		

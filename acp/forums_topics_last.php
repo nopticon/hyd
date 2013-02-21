@@ -41,12 +41,12 @@ class __forums_topics_last extends mac {
 			if (!$i) _style('topics');
 			
 			_style('topics.row', array(
-				'TOPIC_ID' => s_link('topic', $row['topic_id']),
-				'TOPIC_FORUM' => $row['forum_name'],
-				'TOPIC_EVENT' => $row['event_topic'],
-				'TOPIC_TITLE' => $row['topic_title'],
-				'TOPIC_VIEWS' => $row['topic_views'],
-				'TOPIC_REPLIES' => $row['topic_replies'])
+				'TOPIC_ID' => s_link('topic', $row->topic_id),
+				'TOPIC_FORUM' => $row->forum_name,
+				'TOPIC_EVENT' => $row->event_topic,
+				'TOPIC_TITLE' => $row->topic_title,
+				'TOPIC_VIEWS' => $row->topic_views,
+				'TOPIC_REPLIES' => $row->topic_replies)
 			);
 		}
 		

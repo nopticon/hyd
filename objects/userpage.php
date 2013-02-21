@@ -59,11 +59,11 @@ class userpage {
 	
 	public function run() {
 		global $user;
-		
+
 		if (!$user->is('member')) {
 			do_login();
 		}
-		
+
 		$userpage = request_var('member', '');
 		$page = request_var('page', '');
 		
@@ -332,7 +332,7 @@ class userpage {
 					_style('conv.row', array(
 						'USERNAME' => $user_profile->username,
 						'AVATAR' => $user_profile->user_avatar,
-						'SIGNATURE' => ($row->user_sig-> != '') ? $comments->parse_message($row->user_sig) : '',
+						'SIGNATURE' => ($row->user_sig != '') ? $comments->parse_message($row->user_sig) : '',
 						'PROFILE' => $user_profile->profile,
 						'MESSAGE' => $comments->parse_message($row->privmsgs_text),
 						'POST_ID' => $row->msg_id,
@@ -700,7 +700,7 @@ class userpage {
 		}
 		
 		$s_month_select = '';
-		$months = array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
+		$months = w('January February March April May June July August September October November December');
 		foreach ($months as $id => $value) {
 			$s_month_select .= '<option value="' . ($id + 1) . '"' . (($_fields->birthday_month == ($id + 1)) ? ' selected="true"' : '') . '>' . $user->lang['datetime'][$value] . '</option>';
 		}
@@ -783,22 +783,22 @@ class userpage {
 		switch ($mode) {
 			case 'friend':
 				$this->friend_add();
-			break;
+				break;
 			case 'ban':
 				$this->user_ban();
-			break;
+				break;
 			case 'favs':
-			break;
+				break;
 			case 'friends':
 				$this->friend_list();
-			break;
+				break;
 			case 'stats':
 				$this->user_stats();
-			break;
+				break;
 			case 'main':
 			default:
 				$this->user_main();
-			break;
+				break;
 		}
 		
 		$panel_selection = array(

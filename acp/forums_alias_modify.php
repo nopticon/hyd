@@ -48,8 +48,8 @@ class __forums_alias_modify extends mac {
 			if (!$i) _style('forums');
 			
 			_style('forums.row', array(
-				'FORUM_ID' => $row['forum_id'],
-				'FORUM_NAME' => $row['forum_name'])
+				'FORUM_ID' => $row->forum_id,
+				'FORUM_NAME' => $row->forum_name)
 			);
 		}
 		

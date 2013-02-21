@@ -41,8 +41,8 @@ class __forums_topic_delete extends mac {
 		$result = sql_rowset(sql_filter($sql, _implode(', ', $topics)));
 		
 		foreach ($result as $row) {
-			$forums_id_sql[] = (int) $row['forum_id'];
-			$topics_id[] = (int) $row['topic_id'];
+			$forums_id_sql[] = (int) $row->forum_id;
+			$topics_id[] = (int) $row->topic_id;
 		}
 		
 		$topic_id_sql = _implode(',', $topics_id);
@@ -72,7 +72,7 @@ class __forums_topic_delete extends mac {
 		foreach ($result as $row) {
 			$sql = 'UPDATE _members SET user_posts = user_posts - ??
 				WHERE user_id = ?';
-			$members_sql[] = sql_filter($sql, $row['posts'], $row['poster_id']);
+			$members_sql[] = sql_filter($sql, $row->posts, $row->poster_id);
 		}
 		
 		sql_query($members_sql);
@@ -125,8 +125,8 @@ function sync_topic_delete($id) {
 		FROM _forum_topics
 		WHERE forum_id = ?';
 	if ($row = sql_fieldrow(sql_filter($sql, $id))) {
-		$last_topic = $row['last_topic'];
-		$total_topics = $row['total'];
+		$last_topic = $row->last_topic;
+		$total_topics = $row->total;
 	}
 	
 	//

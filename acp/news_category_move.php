@@ -38,8 +38,8 @@ class __news_category_move extends mac {
 				if (!$i) _style('categories');
 				
 				_style('categories.row', array(
-					'CAT_ID' => $row['cat_id'],
-					'CAT_NAME' => $row['cat_name'])
+					'CAT_ID' => $row->cat_id,
+					'CAT_NAME' => $row->cat_name)
 				);
 			}
 			

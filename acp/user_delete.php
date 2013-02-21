@@ -66,7 +66,7 @@ class __user_delete extends mac {
 		
 		$sql = w();
 		foreach ($ary_sql as $row) {
-			$sql[] = sql_filter($row, $userdata['user_id']);
+			$sql[] = sql_filter($row, $userdata->user_id);
 		}
 		
 		$ary_sql = array(
@@ -77,11 +77,11 @@ class __user_delete extends mac {
 		);
 		
 		foreach ($ary_sql as $row) {
-			$sql[] = sql_filter($row, $userdata['user_id'], $userdata['user_id']);
+			$sql[] = sql_filter($row, $userdata->user_id, $userdata->user_id);
 		}
 		
 		sql_query($sql);
 		
-		return _pre('El registro de <strong>' . $userdata['username'] . '</strong> fue eliminado.', true);
+		return _pre('El registro de <strong>' . $userdata->username . '</strong> fue eliminado.', true);
 	}
 }

@@ -44,7 +44,7 @@ class __forums_topic_normal extends mac {
 			sql_query(sql_filter($sql, '', $topic));
 			
 			_style('updated', array(
-				'MESSAGE' => 'El tema <strong>' . $topicdata['topic_title'] . '</strong> ha sido normalizado.')
+				'MESSAGE' => 'El tema <strong>' . $topicdata->topic_title . '</strong> ha sido normalizado.')
 			);
 		}
 		
@@ -60,13 +60,13 @@ class __forums_topic_normal extends mac {
 		foreach ($topics as $i => $row) {
 			if (!$i) _style('topics');
 			
-			if ($forum_name != $row['forum_name']) _style('topics.forum', array('FORUM_NAME' => $row['forum_name']));
+			if ($forum_name != $row->forum_name) _style('topics.forum', array('FORUM_NAME' => $row->forum_name));
 			
-			$forum_name = $row['forum_name'];
+			$forum_name = $row->forum_name;
 			
 			_style('topics.forum.row', array(
-				'TOPIC_ID' => $row['topic_id'],
-				'TOPIC_TITLE' => $row['topic_title'])
+				'TOPIC_ID' => $row->topic_id,
+				'TOPIC_TITLE' => $row->topic_title)
 			);
 		}
 		
