@@ -18,15 +18,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_APP')) exit;
 
-function a_thumbnails($selected_artists, $lang_key, $block, $item_per_col = 2) {
+function a_thumbnails($artists, $lang_key, $block, $item_per_col = 2) {
 	global $config, $user;
 	
 	_style('main.' . $block, array(
 		'L_TITLE' => lang($lang_key))
 	);
 	
-	foreach ($selected_artists as $ub => $data) {
-		$image = $ub . '/thumbnails/' . $random_images[$ub] . '.jpg';
+	foreach ($artists as $ub => $data) {
+		$image = $ub . '/thumbnails/' . $row->image . '.jpg';
 		
 		_style('main.' . $block . '.row', array(
 			'NAME' => $data->name,
@@ -366,7 +366,7 @@ class userpage {
 						AND c.privmsgs_from_userid = m.user_id
 						AND c.privmsgs_to_userid = m2.user_id
 						AND (IF(c.last_msg_id,c.last_msg_id,c.msg_id) = c2.msg_id)
-					ORDER BY c2.privmsgs_date DESC 
+					ORDER BY c2.privmsgs_date DESC
 					LIMIT ??, ??';
 				if ($result = sql_rowset(sql_filter($sql, $user->d('user_id'), $user->d('user_id'), $user->d('user_id'), $offset, $config->posts_per_page))) {
 					_style('messages');

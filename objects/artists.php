@@ -979,7 +979,7 @@ class artists extends downloads {
 	public function thumbnails() {
 		global $cache, $config;
 
-		$sql = 'SELECT ub, name, subdomain, location, genre, image
+		$sql = 'SELECT a.ub, a.name, a.subdomain, a.location, a.genre, i.image
 			FROM _artists a
 			INNER JOIN _artists_images i ON a.ub = i.ub
 			WHERE a.a_active = 1

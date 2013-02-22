@@ -1934,6 +1934,7 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 		'U_HOME' => s_link(),
 		'U_FAQ' => s_link('faq'),
 		'U_WHATS_NEW' => s_link('today'),
+		'U_ABOUT' => s_link('about'),
 		'U_ARTISTS'	=> s_link('a'),
 		'U_AWARDS' => s_link('awards'),
 		'U_RADIO' => s_link('radio'),

@@ -21,9 +21,9 @@ if (!is_array($lang) || empty($lang)) {
 }
 
 $lang += array(
-	'APPLICATION' => 'Rock Republik',
+	'APPLICATION' => 'H',
 	'APPLICATION_FULL' => 'Rock Republik Networks',
-	'APPLICATION_DESC' => 'La comunidad m&aacute;s grande de Rock en Guatemala',
+	'APPLICATION_DESC' => 'D',/*La comunidad m&aacute;s grande de Rock en Guatemala',*/
 	'APPLICATION_START' => 'Apoyando el rock desde el <strong>15 de marzo de 2004</strong>',
 
 	'ENCODING' => "utf-8",
@@ -669,6 +669,9 @@ $lang += array(
 	'VIDEO' => 'Videos',
 	'PLAY_FILE' => 'Reproducir archivo',
 	'DOWNLOADS' => 'Descargas',
+
+	// ABOUT
+	'ABOUT' => 'Conoce Rock Republik',
 	
 	// ARTISTS
 	'ARTISTS' => 'Artistas',
@@ -682,8 +685,6 @@ $lang += array(
 	'UB_TOP_VOTES' => 'M&aacute;s votada',
 	'UB_TOP_POSTS' => 'M&aacute;s mensajes',
 	'UB_TOP_U_UD' => 'M&aacute;s descargas',
-	
-	'RAND_A' => 'Mostrar 10 al azar',
 	
 	'NO_ARTIST_EXIST' => 'La banda seleccionada no existe.<br /><br /><a href="%s">Click AQUI</a> para ir al men&uacute; de bandas.',
 	'ARTIST_INACTIVE' => 'Banda inactiva',
