@@ -1064,23 +1064,12 @@ class userpage {
 		//
 		$sql = 'SELECT f.user_id, a.ub, a.name, a.subdomain, a.images, a.local, a.location, a.genre
 			FROM _artists_fav f, _artists a
+			INNER JOIN _artists_images ON a.ub = i.ub
 			WHERE f.user_id = ?
 				AND f.ub = a.ub
+				AND i.image_default = 1
 			ORDER BY RAND()';
 		if ($result2 = sql_rowset(sql_filter($sql, $this->data->user_id), 'ub')) {
-			
-			$sql = 'SELECT ub, image
-				FROM _artists_images
-				WHERE ub IN (??)
-				ORDER BY RAND()';
-			$result_images = sql_rowset(sql_filter($sql, implode(',', array_keys($result2))));
-			
-			$random_images2 = w();
-			foreach ($result_images as $row) {
-				if (!isset($random_images2[$row->ub])) {
-					$random_images2[$row->ub] = $row->image;
-				}
-			}
 			
 			$total_a = 0;
 			$selected_artists2 = w();
