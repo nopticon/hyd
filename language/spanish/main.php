@@ -702,6 +702,7 @@ $lang += array(
 	'VIEW_ALL_ARTISTS' => 'Ver lista completa',
 	'SEARCH_ARTISTS' => 'Buscar bandas',
 	'SELECTED_LETTER' => 'Letra seleccionada',
+	'SEARCH_IN' => 'Buscar en',
 	
 	'UB_NOT_DEF' => 'No definido',
 	'UB_ORDER_BY' => 'Ordenar bandas por',

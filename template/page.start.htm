@@ -9,7 +9,7 @@
 		<div id="search">
 			<form id="searchForm" method="post">
 				<fieldset>
-					<input id="s" type="text" title="Buscar en Rock Republik">
+					<input id="s" type="text" title="{SEARCH_IN} {L_APPLICATION}">
 					<input id="sb" type="submit" value=" &gt; " />
 				</fieldset>
 			</form>
@@ -38,32 +38,20 @@
 				<li class="mb"><a href="{U_PROFILE}" title="{S_USERNAME}"><i class="icon-user"></i> {S_USERNAME}</a>
 				<li class="mb"><a href="{U_WHATS_NEW}" title="{S_TODAY_COUNT}"><i class="icon-star"></i> {L_THENEW}</a></li>
 				<!-- ENDIF -->
-				<li class="mb"><a href="{U_ARTISTS}" title="{L_UB}"><i class="icon-fire"></i> {L_UB}</a></li>
+				<li class="mb"><a href="{U_ARTISTS}" title="{L_UB}"><i class="icon-fire"></i> {L_ARTISTS}</a></li>
 				<li class="mb mb-events"><a href="{U_EVENTS}" title="{L_UE}"><i class="icon-camera"></i> {L_UE}</a></li>
 				<li class="mb mb-forum"><a href="{U_FORUM}" title="{L_FORUM}"><i class="icon-th-list"></i> {L_FORUM}</a></li>
 				<li class="mb mb-broadcast"><a href="{U_BROADCAST}" title="{L_BROADCAST}"><i class="icon-volume-up"></i> {L_BROADCAST}</a></li>
 				<li class="mb mb-community"><a href="{U_COMMUNITY}" title="{L_COMMUNITY}"><i class="icon-th"></i> {L_COMMUNITY}</a></li>
+
 				<!-- BEGIN hide -->
 				<li><a href="{U_ALLIES}" title="{L_ALLIES}">{L_ALLIES}</a></li>
 				<li><a href="{U_AWARDS}" title="{L_AWARDS}">{L_AWARDS}</a></li>
 				<!-- END hide -->
+
 				<!-- IF U_ACP != '' -->
 				<li class="mb mb-acp"><a href="{U_ACP}"><i class="icon-share"></i> {L_CONTROL_PANEL}</a></li>
 				<!-- ENDIF -->
-				<!-- BEGIN hide -->
-				<li><a id="facebook" href="//www.facebook.com/rockrepublik" target="_facebook">Facebook</a>
-					<!-- BEGIN hide -->
-					<ul id="expand_facebook">
-						<li>
-							<script type="text/javascript" src="http://static.ak.connect.facebook.com/js/api_lib/v0.4/FeatureLoader.js.php/en_US"></script>
-							<script type="text/javascript">FB.init("fed8ea7d6067b5b601104fb41cabf9c0");</script>
-							<fb:fan profile_id="48722647107" stream="1" connections="0" width="212"></fb:fan>
-						</li>
-					</ul>
-					<!-- END hide -->
-				</li>
-				<li><a id="twitter" href="//www.twitter.com/rockrepublik" target="_twitter">Twitter</a></li>
-				<!-- END hide -->
 			</ul>
 		</div>
 		
