@@ -1657,7 +1657,7 @@ function exception($filename, $dynamics = false) {
 	return $a;
 }
 
-function hook($name, $args = array(), $arr = false) {
+/*function hook($name, $args = array(), $arr = false) {
 	switch ($name) {
 		case 'isset':
 			eval('$a = ' . $name . '($args' . ((is_array($args)) ? '[0]' . $args[1] : '') . ');');
@@ -1678,7 +1678,7 @@ function hook($name, $args = array(), $arr = false) {
 	
 	$f = 'call_user_func' . ((!$arr) ? '_array' : '');
 	return $f($name, $args);
-}
+}*/
 
 function email_format($email) {
 	if (preg_match('/^[a-z0-9&\'\.\-_\+]+@[a-z0-9\-]+\.([a-z0-9\-]+\.)*?[a-z]+$/is', $email)) {
