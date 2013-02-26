@@ -1433,6 +1433,9 @@ class auth {
 						break;
 				}
 			} else {
+				
+				// TODO: Convert $f_access to object.
+
 				for ($k = 0, $end = count($f_access); $k < $end; $k++) {
 					$value = $f_access[$k][$a_key];
 					$f_forum_id = $f_access[$k]['forum_id'];

@@ -1054,7 +1054,7 @@ class artists extends downloads {
 		//
 		// Select artists based on genre or search criteria or default list
 		//
-		$sql = 'SELECT a.ub, a.name, a.subdomain, a.local, a.location, a.genre, a.image, 
+		$sql = 'SELECT a.ub, a.name, a.subdomain, a.local, a.location, a.genre, i.image
 			FROM _artists a
 			INNER JOIN _artists_images i ON i.ub = a.ub
 			WHERE i.image_default = 1
