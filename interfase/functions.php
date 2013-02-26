@@ -191,13 +191,13 @@ function _utf8(&$a) {
 	}
 }
 
-function decode_ht($path) {
+/*function decode_ht($path) {
 	$da_path = ROOT . '../../' . $path;
 
 	if (!$a = @file($da_path)) return w();
 	
 	return explode(',', _decode($a[0]));
-}
+}*/
 
 //
 // Set or create config value
