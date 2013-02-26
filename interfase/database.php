@@ -18,10 +18,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_APP')) exit;
 
-function sql_filter() {
-	global $db;
+if (!function_exists('sql_filter')) {
+	function sql_filter() {
+		global $db;
 
-	return call_user_func_array(array($db, '__prepare'), func_get_args());
+		return call_user_func_array(array($db, '__prepare'), func_get_args());
+	}
 }
 
 function sql_insert($table, $insert) {
