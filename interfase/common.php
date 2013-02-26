@@ -87,7 +87,7 @@ require_once(ROOT.'interfase/database.php');
 spl_autoload_register('app_autoload');
 set_error_handler('msg_handler');
 
-$db = npi('./htrd:mysql');
+$db = npi('htrd:mysql');
 
 $user = new user();
 $cache = new cache();
