@@ -2205,8 +2205,13 @@ function _style($a, $b = array(), $i = false) {
 	}
 	
 	global $template;
-	
+
+	if (is_object($b)) {
+		$b = (array) $b;
+	}
+
 	$template->assign_block_vars($a, _style_uv($b));
+
 	return true;
 }
 

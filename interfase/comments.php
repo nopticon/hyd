@@ -468,9 +468,9 @@ class comments {
 
 						if ($value) {
 							foreach ($all_ranks as $rank) {
-								if (($value == $rank['rank_id']) && $rank['rank_special']) {
-									$rank_e = explode('|', $rank['rank_title']);
-									$value = (isset($rank_e[$row['user_gender']]) && ($rank_e[$row['user_gender']] != '')) ? $rank_e[$row['user_gender']] : $rank_e[0];
+								if (($value == $rank->rank_id) && $rank->rank_special) {
+									$rank_e = explode('|', $rank->rank_title);
+									$value = (isset($rank_e[$row->user_gender]) && ($rank_e[$row->user_gender] != '')) ? $rank_e[$row->user_gender] : $rank_e[0];
 									break;
 								}
 							}
@@ -498,7 +498,7 @@ class comments {
 			
 			if ($unset_fields !== false) {
 				foreach ($unset_fields as $field) {
-					unset($data[$field]);
+					unset($data->$fields);
 				}
 			}
 			

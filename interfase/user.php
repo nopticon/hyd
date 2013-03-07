@@ -1402,7 +1402,7 @@ class auth {
 		$auth_user = w();
 		foreach ($auth_fields as $a_key) {
 			if ($forum_id != AUTH_LIST_ALL) {
-				$value = $f_access[$a_key];
+				$value = $f_access->$a_key;
 				
 				$custom_mod = forum_for_team($forum_id);
 	

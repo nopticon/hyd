@@ -71,7 +71,7 @@ class artists extends downloads {
 			$sql = 'SELECT image
 				FROM _artists_images 
 				WHERE image_default = 1
-				WHERE ub = ?';
+					AND ub = ?';
 			$row = sql_fieldrow(sql_filter($sql, $this->data->ub));
 
 			_style('ub_image', array(
@@ -1310,9 +1310,9 @@ class artists extends downloads {
 					$results = sql_rowset(sql_filter($sql, $this->data->ub), 'option_id', 'vote_result');
 					
 					_style('ub_poll.results');
-					
+
 					foreach ($this->voting['ub'] as $item) {
-						$vote_result = (isset($results[$item])) ? intval($results[$item]) : 0;
+						$vote_result = (isset($results->$item)) ? intval($results->$item) : 0;
 						$vote_percent = ($this->data->votes > 0) ? $vote_result / $this->data->votes : 0;
 		
 						_style('ub_poll.results.item', array(

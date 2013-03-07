@@ -673,6 +673,8 @@ class events {
 				if (!$posts_offset) {
 					//unset($messages[0]);
 				}
+
+				// _pre($messages, true);
 				
 				$i = 0;
 				foreach ($messages as $row) {
@@ -691,7 +693,7 @@ class events {
 							$controls[$row->post_id]['delete'] = s_link('acp', array('forums_post_delete', 'msg_id' => $row->post_id));
 						}
 					}
-					
+
 					_style('messages.row', object_merge($comments->user_profile($row, $unset_user_profile), array(
 						'post_id' => $row->post_id,
 						'datetime' => $user->format_date($row->post_time),
