@@ -168,7 +168,7 @@ class session {
 		// User does not exist
 		// User is inactive
 		// User is bot
-		if (!count($this->data) || !is_array($this->data)) {
+		if (!count($this->data) || !is_object($this->data)) {
 			$this->cookie_data['u'] = ($bot) ? $bot : GUEST;
 
 			$sql = 'SELECT *
@@ -177,6 +177,8 @@ class session {
 			$this->data = sql_fieldrow(sql_filter($sql, $this->cookie_data['u']));
 		}
 
+		// _pre($this->data, true);
+
 		if ($this->data->user_id != 1) {
 			$sql = 'SELECT session_time, session_id
 				FROM _sessions
@@ -184,7 +186,7 @@ class session {
 				ORDER BY session_time DESC
 				LIMIT 1';
 			if ($sdata = sql_fieldrow(sql_filter($sql, $this->data->user_id))) {
-				$this->data = array_merge($sdata, $this->data);
+				$this->data = object_merge($sdata, $this->data);
 				unset($sdata);
 				$this->session_id = $this->data->session_id;
 			}
@@ -767,7 +769,7 @@ class user extends session {
 		
 		if ($mode != 'founder' && is_array($response)) {
 			if ($response_founder = $this->_team_auth_list('founder')) {
-				$response = array_merge($response, $response_founder);
+				$response = object_merge($response, $response_founder);
 			}
 		}
 		
@@ -1380,7 +1382,7 @@ class auth {
 				if ($forum_id != AUTH_LIST_ALL) {
 					$u_access[] = $row;
 				} else {
-					$u_access[$row['forum_id']][] = $row;
+					$u_access[$row->forum_id][] = $row;
 				}
 			}
 		}
@@ -1436,7 +1438,41 @@ class auth {
 				
 				// TODO: Convert $f_access to object.
 
-				for ($k = 0, $end = count($f_access); $k < $end; $k++) {
+				foreach ($f_access as $k => $row) {
+					$value = $row->$a_key;
+					$f_forum_id = $row->forum_id;
+					
+					$custom_mod = forum_for_team($forum_id);
+	
+					switch ($value) {
+						case AUTH_ALL:
+							$auth_user[$f_forum_id][$a_key] = true;
+							$auth_user[$f_forum_id][$a_key . '_type'] = lang('auth_anonymous_users');
+							break;
+						case AUTH_REG:
+							$auth_user[$f_forum_id][$a_key] = $user->is('member');
+							$auth_user[$f_forum_id][$a_key . '_type'] = lang('auth_registered_users');
+							break;
+						case AUTH_ACL:
+							$auth_user[$f_forum_id][$a_key] = ($user->is('member')) ? $this->check_user(AUTH_ACL, $a_key, $u_access[$f_forum_id], $custom_mod) : false;
+							$auth_user[$f_forum_id][$a_key . '_type'] = lang('auth_users_granted_access');
+							break;
+						case AUTH_MOD:
+							//$auth_user[$f_forum_id][$a_key] = ($user->is('member')) ? $this->check_user(AUTH_MOD, 'auth_mod', $u_access[$f_forum_id]) : false;
+							$auth_user[$f_forum_id][$a_key] = $user->is($custom_mod);
+							$auth_user[$f_forum_id][$a_key . '_type'] = lang('auth_moderators');
+							break;
+						case AUTH_ADMIN:
+							$auth_user[$f_forum_id][$a_key] = $this->founder;
+							$auth_user[$f_forum_id][$a_key . '_type'] = lang('auth_administrators');
+							break;
+						default:
+							$auth_user[$f_forum_id][$a_key] = false;
+							break;
+					}
+				}
+
+				/*for ($k = 0, $end = count($f_access); $k < $end; $k++) {
 					$value = $f_access[$k][$a_key];
 					$f_forum_id = $f_access[$k]['forum_id'];
 					
@@ -1468,7 +1504,7 @@ class auth {
 							$auth_user[$f_forum_id][$a_key] = false;
 							break;
 					}
-				}
+				}*/
 			}
 		}
 	
@@ -1481,12 +1517,18 @@ class auth {
 			//$auth_user['auth_mod'] = ($user->is('member')) ? $this->check_user(AUTH_MOD, 'auth_mod', $u_access) : false;
 			$auth_user['auth_mod'] = ($user->is('member')) ? $user->is($custom_mod) : false;
 		} else {
-			for ($k = 0, $end = count($f_access); $k < $end; $k++) {
-				$f_forum_id = $f_access[$k]['forum_id'];
+			foreach ($f_access as $k => $row) {
+				$f_forum_id = $row->forum_id;
 				$custom_mod = forum_for_team($forum_id);
 	
 				$auth_user[$f_forum_id]['auth_mod'] = ($user->is('member')) ? (isset($u_access[$f_forum_id]) ? $this->check_user(AUTH_MOD, 'auth_mod', $u_access[$f_forum_id], $custom_mod) : false) : false;
 			}
+			/*for ($k = 0, $end = count($f_access); $k < $end; $k++) {
+				$f_forum_id = $f_access[$k]['forum_id'];
+				$custom_mod = forum_for_team($forum_id);
+	
+				$auth_user[$f_forum_id]['auth_mod'] = ($user->is('member')) ? (isset($u_access[$f_forum_id]) ? $this->check_user(AUTH_MOD, 'auth_mod', $u_access[$f_forum_id], $custom_mod) : false) : false;
+			}*/
 		}
 	
 		return $auth_user;

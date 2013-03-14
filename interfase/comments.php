@@ -498,7 +498,7 @@ class comments {
 			
 			if ($unset_fields !== false) {
 				foreach ($unset_fields as $field) {
-					unset($data->$fields);
+					unset($data->$field);
 				}
 			}
 			
@@ -539,14 +539,10 @@ class comments {
 			$message = str_replace('[chown:' . $a_chown[1] . ']', '', $message);
 		}
 
-		$allowed_tags = w('br strong ul ol li em small');
 		$is_mod = $user->is('mod');
-
-		if ($is_mod) {
-			$allowed_tags = array_merge($allowed_tags, w('blockquote a h1 h2 h3 div span img'));
-		}
+		$allowed_tags = 'br strong ul ol li em small' . (($is_mod) ? ' blockquote a h1 h2 h3 div span img' : '');
 		
-		$ptags = str_replace('*', '.*?', implode('|', $allowed_tags));
+		$ptags = str_replace('*', '.*?', implode('|', w($allowed_tags)));
 		$message = preg_replace('#&lt;(\/?)(' . $ptags . ')&gt;#is', '<$1$2>', $message);
 		
 		if ($is_mod) {

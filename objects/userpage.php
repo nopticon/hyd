@@ -1064,7 +1064,7 @@ class userpage {
 		//
 		$sql = 'SELECT f.user_id, a.ub, a.name, a.subdomain, a.images, a.local, a.location, a.genre
 			FROM _artists_fav f, _artists a
-			INNER JOIN _artists_images ON a.ub = i.ub
+			INNER JOIN _artists_images i ON a.ub = i.ub
 			WHERE f.user_id = ?
 				AND f.ub = a.ub
 				AND i.image_default = 1
