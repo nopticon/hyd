@@ -80,7 +80,7 @@ class board {
 		
 		$is_auth_ary = w();
 		$is_auth_ary = $user->auth->forum(AUTH_VIEW, AUTH_LIST_ALL, $this->forum_data);
-		
+
 		foreach ($this->cat_data as $c_data) {
 			$no_catdata = false;
 			
