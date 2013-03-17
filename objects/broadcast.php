@@ -68,6 +68,8 @@ class broadcast {
 	private function all() {
 		global $user, $config, $comments;
 
+		$offset = request_var('offset', '');
+
 		$programs = w('supernova invasionrock antifm metalebrios themetalroom');
 
 		foreach ($programs as $i => $row) {
