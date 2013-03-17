@@ -50,7 +50,7 @@ class cache {
 			}
 			
 			if (!empty($this->cache[$var])) {
-				return $this->cache[$var];
+				return json_decode($this->cache[$var]);
 			}
 			
 			return true;
@@ -68,16 +68,13 @@ class cache {
 		
 		$filename = ROOT . 'cache/' . $var . '.php';
 		
-		$fp = @fopen($filename, 'w');
-		if ($fp) {
-			// TODO: JSON encode
-			
-			$file_buffer = '<?php $' . 'this->cache[\'' . $var . '\'] = ' . ((is_array($data) || is_object($data)) ? $this->format($data) : "'" . str_replace("'", "\\'", str_replace('\\', '\\\\', $data)) . "'") . '; ?>';
+		if ($fp = @fopen($filename, 'w')) {
+			$file_buffer = '<?php $' . "this->cache['" . $var . "'] = '" . json_encode($data) . "';";
 			
 			@flock($fp, LOCK_EX);
-			fwrite($fp, $file_buffer);
+			@fwrite($fp, $file_buffer);
 			@flock($fp, LOCK_UN);
-			fclose($fp);
+			@fclose($fp);
 			
 			_chmod($filename, $config->mask);
 		}
@@ -98,21 +95,5 @@ class cache {
 		}
 		
 		return;
-	}
-	
-	public function format($data) {
-		$lines = w();
-		foreach ($data as $k => $v) {
-			if (is_array($v)) {
-				$lines[] = "'$k'=>" . $this->format($v);
-			} elseif (is_int($v)) {
-				$lines[] = "'$k'=>$v";
-			} elseif (is_bool($v)) {
-				$lines[] = "'$k'=>" . (($v) ? 'true' : 'false');
-			} else {
-				$lines[] = "'$k'=>'" . str_replace("'", "\\'", str_replace('\\', '\\\\', $v)) . "'";
-			}
-		}
-		return 'array(' . implode(',', $lines) . ')';
 	}
 }

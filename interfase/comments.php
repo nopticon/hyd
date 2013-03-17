@@ -577,7 +577,7 @@ class comments {
 		foreach (w($parse) as $method) {
 			$this->{'parse_' . $method}();
 		}
-		
+
 		return str_replace(nr(), '<br />', substr($this->message, 1, -1));
 	}
 	
@@ -612,7 +612,7 @@ class comments {
 			foreach ($match[0] as $item) {
 				$item = trim($item);
 				$orig[] = '#(^|[\n ]|\()(' . preg_quote($item) . ')#i';
-				$repl[] = '\\1<img src="' . $item . '" border="0" alt="" />';
+				$repl[] = '\\1<img src="' . $item . '" alt="" />';
 			}
 			
 			if (count($orig)) {
@@ -677,17 +677,17 @@ class comments {
 					$cache->save('smilies', $smilies);
 				}
 			}
-			
+
 			foreach ($smilies as $row) {
 				$this->options['smilies']['orig'][] = '#(^|[\n ]|\.|\()' . preg_quote($row->code, '#') . '#';
 				$this->options['smilies']['repl'][] = ' <img src="' . $config->assets_url . '/emoticon/' . $row->smile_url . '" alt="' . $row->emoticon . '" />';
 			}
 		}
-		
+
 		if (count($this->options['smilies'])) {
 			$this->message = preg_replace($this->options['smilies']['orig'], $this->options['smilies']['repl'], $this->message);
 		}
-		
+
 		return;
 	}
 	
