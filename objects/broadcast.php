@@ -68,7 +68,7 @@ class broadcast {
 	private function all() {
 		global $user, $config, $comments;
 
-		$offset = request_var('offset', '');
+		$offset = request_var('offset', 0);
 
 		$programs = w('supernova invasionrock antifm metalebrios themetalroom');
 
