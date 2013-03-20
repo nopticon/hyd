@@ -40,6 +40,12 @@ function htmlencode($str) {
 	return $result;
 }
 
+function compress_html($compress) {
+	$i = array('/>[^S ]+/s','/[^S ]+</s','/(s)+/s');
+	$ii = array('>','<','1');
+	return preg_replace($i, $ii, $compress);
+}
+
 function set_var(&$result, $var, $type, $multibyte = false) {
 	settype($var, $type);
 	$result = $var;
@@ -2455,6 +2461,15 @@ function validate_username($username) {
 	}
 
 	return array('error' => false, 'error_msg' => '');
+}
+
+function etag($filename, $quote = true) {
+	if (!file_exists($filename) || !($info = stat($filename))) {
+		return false;
+	}
+	
+	$q = ($quote) ? '"' : '';
+	return sprintf("$q%x-%x-%x$q", $info['ino'], $info['size'], $info['mtime']);
 }
 
 //

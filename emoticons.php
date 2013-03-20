@@ -23,21 +23,6 @@ require_once('./interfase/common.php');
 $user->init();
 $user->setup();
 
-if (!$smilies = $cache->get('smilies')) {
-	$sql = 'SELECT *
-		FROM _smilies
-		ORDER BY LENGTH(code) DESC';
-	if ($smilies = sql_rowset($sql)) {
-		$cache->save('smilies', $smilies);
-	}
-}
-
-foreach ($smilies as $smile_url => $row) {
-	_style('smilies_row', array(
-		'CODE' => $row->code,
-		'IMAGE' => $config->assets_url . '/emoticon/' . $row->smile_url,
-		'DESC' => $row->emoticon)
-	);
-}
+$comments->emoticons();
 
 page_layout('EMOTICONS', 'emoticons');

@@ -44,6 +44,27 @@ class comments {
 
 		return true;
 	}
+
+	public function emoticons() {
+		global $config, $cache;
+
+		if (!$emoticons = $cache->get('emoticons')) {
+			$sql = 'SELECT *
+				FROM _smilies
+				ORDER BY LENGTH(code) DESC';
+			if ($emoticons = sql_rowset($sql)) {
+				$cache->save('emoticons', $emoticons);
+			}
+		}
+
+		foreach ($emoticons as $smile_url => $row) {
+			_style('smilies_row', array(
+				'CODE' => $row->code,
+				'IMAGE' => $config->assets_url . '/emoticon/' . $row->smile_url,
+				'DESC' => $row->emoticon)
+			);
+		}
+	}
 	
 	//
 	// Store user comments for all comment areas.
