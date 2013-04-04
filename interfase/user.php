@@ -498,6 +498,7 @@ class user extends session {
 	public $timezone;
 	public $dst;
 	public $auth;
+	public $today_counter = false;
 
 	public $lang_name;
 	public $lang_path;
@@ -505,7 +506,6 @@ class user extends session {
 
 	public $keyoptions = array('viewimg' => 0, 'viewsigs' => 3, 'viewavatars' => 4);
 	public $keyvalues = array();
-
 
 	public function __construct() {
 		$this->auth = new auth();
@@ -859,6 +859,30 @@ class user extends session {
 
 	public function today_delete() {
 
+	}
+
+	public function today_count() {
+		if (!$this->is('member')) {
+			$this->today_counter = 0;
+
+			return;
+		}
+
+		// Get today items count
+		$sql = 'SELECT COUNT(element) AS total
+			FROM _members_unread
+			WHERE user_id = ?';
+		$this->today_counter = sql_field(sql_filter($sql, $user->d('user_id')), 'total', 0);
+
+		return $this->today_counter;
+	}
+
+	public function today_count_text() {
+		if ($this->today_counter === false) {
+			$this->today_count();
+		}
+
+		return ($this->today_counter == 1) ? sprintf(lang('unread_item_count'), $this->today_counter) : sprintf(lang('unread_items_count'), $this->today_counter);
 	}
 
 	public function save_unread($element, $item, $where_id = 0, $reply_to = 0, $reply_to_return = true, $update_rows = false) {
