@@ -43,9 +43,6 @@ foreach ($genres as $row) {
 	$all[strtolower($row)] = $genre_id;
 }
 
-_pre($success);
-_pre($all);
-
 $sql = 'SELECT ub, name, genre
 	FROM _artists
 	ORDER BY ub';
@@ -69,6 +66,9 @@ foreach ($artists as $row) {
 
 	$updated[] = $row->name . ' - ' . $row->genre;
 }
+
+_pre($success);
+_pre($all);
 
 _pre($noexists);
 _pre($updated);
