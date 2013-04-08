@@ -1906,12 +1906,6 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 	
 	monetize();
 	
-	// Get today items count
-	$sql = 'SELECT COUNT(element) AS total
-		FROM _members_unread
-		WHERE user_id = ?';
-	$today_count = sql_field(sql_filter($sql, $user->d('user_id')), 'total', 0);
-	
 	//
 	// Send headers
 	//	
@@ -1967,11 +1961,12 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 		'S_DESCRIPTION' => $config->meta_desc,
 		'S_SERVER' => '//' . $config->server_name,
 		'S_ASSETS' => $config->assets_url,
+		'S_ANALYTICS' => $config->google_analytics_code,
 		'S_SQL' => ($user->d('is_founder')) ? sql_queries() . 'q | ' : '',
 		'S_REDIRECT' => $user->d('session_page'),
 		'S_USERNAME' => $user->d('username'),
 		'S_MEMBER' => $user->is('member'),
-		'S_TODAY_COUNT' => (($today_count == 1) ? sprintf(lang('unread_item_count'), $today_count) : sprintf(lang('unread_items_count'), $today_count))
+		'S_TODAY_COUNT' => $user->today_count_text()
 	);
 	
 	if ($custom_vars !== false) {
@@ -1994,7 +1989,7 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 
 function sidebar() {
 	$sfiles = func_get_args();
-	if (!is_array($sfiles) || !count($sfiles)) {
+	if (!count($sfiles)) {
 		return;
 	}
 	
