@@ -1,4 +1,4 @@
-Subject: Rock Republik: Confirmaci&oacute;n de nueva contrase&ntilde;a
+Subject: Confirmaci&oacute;n de nueva contrase&ntilde;a en Rock Republik
 Charset: iso-8859-1
 
 Hola {USERNAME},

@@ -7,7 +7,7 @@ Est&aacute;s recibiendo este mensaje porque {ARTIST} tiene su p&aacute;gina en R
 El espacio de la banda ha sido suspendido por falta de material para que los usuarios puedan conocer.
 
 Si deseas inscribir nuevamente a {ARTIST}, puedes encontrar m&aacute;s informaci&oacute;n en:
-http://www.rockrepublik.net/ y http://www.rockrepublik.net/help/10/
+http://www.rockrepublik.net/help/10/
 
 Atentamente,
 

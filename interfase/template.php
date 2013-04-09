@@ -154,7 +154,8 @@ class Template {
 		$old_root = $this->root;
 		
 		$root = str_replace('\\', '/', $root);
-		$this->cachedir = ROOT . 'cache/';
+		// $this->cachedir = ROOT . 'cache/';
+		$this->cachedir = $config->cache_path;
 		$this->tpldir = ROOT . 'template/';
 		$this->tpldir_len = strlen($this->tpldir);
 		$this->root = $root;

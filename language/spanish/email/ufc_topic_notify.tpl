@@ -1,4 +1,4 @@
-Subject: Rock Republik NET [ {UBNAME} - {TOPIC_TITLE} ]
+Subject: {UBNAME} - {TOPIC_TITLE} en Rock Republik
 Charset: iso-8859-1
 
 Hola {USERNAME},

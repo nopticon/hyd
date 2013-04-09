@@ -4,7 +4,7 @@ Hola {USERNAME},
 
 Rock Republik te invita a escribir una cr&iacute;tica y puntuaci&oacute;n sobre:
 
-"{UD_TITLE}" de {UB_NAME}
+&quot;{UD_TITLE}&quot; de {UB_NAME}
 
 Si est&aacute;s de acuerdo, visita el siguiente enlace e ingresa los datos de tu cuenta Rock Republik:
 

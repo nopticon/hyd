@@ -1,4 +1,4 @@
-Subject: Rock Republik: Confirmacion de usuario
+Subject: Confirmacion de usuario en Rock Republik
 Charset: iso-8859-1
 
 Hola {USERNAME},

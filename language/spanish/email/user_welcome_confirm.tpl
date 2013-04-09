@@ -1,4 +1,4 @@
-Subject: Rock Republik: Bienvenido
+Subject: Bienvenido a la comunidad Rock Republik
 Charset: iso-8859-1
 
 Hola {USERNAME},

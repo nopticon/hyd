@@ -40,8 +40,10 @@ class cache {
 		if (!$this->use) {
 			return false;
 		}
+
+		global $config;
 		
-		$filename = ROOT . 'cache/' . $var . '.php';
+		$filename = $config->cache_path . $var . '.php';
 		
 		if (@file_exists($filename)) {
 			if (!@require_once($filename)) {
@@ -66,7 +68,7 @@ class cache {
 			return;
 		}
 		
-		$filename = ROOT . 'cache/' . $var . '.php';
+		$filename = $config->cache_path . $var . '.php';
 		
 		if ($fp = @fopen($filename, 'w')) {
 			$file_buffer = '<?php $' . "this->cache['" . $var . "'] = '" . json_encode($data) . "';";
@@ -88,7 +90,7 @@ class cache {
 		}
 		
 		foreach (w($list) as $var) {
-			$cache_filename = ROOT . 'cache/' . $var . '.php';
+			$cache_filename = $config->cache_path . $var . '.php';
 			if (file_exists($cache_filename)) {
 				_rm($cache_filename);
 			}

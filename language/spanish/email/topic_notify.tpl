@@ -1,9 +1,9 @@
-Subject: Rock Republik: Respuesta a "{TOPIC_TITLE}"
+Subject: Respuesta a "{TOPIC_TITLE}" en Rock Republik
 Charset: iso-8859-1
 
 Hola {USERNAME},
 
-El tema "{TOPIC_TITLE}" en Rock Republik tiene nuevas respuestas, puedes leer los mensajes en el siguiente enlace:
+El tema &quot;{TOPIC_TITLE}&quot; en Rock Republik tiene nuevas respuestas, puedes leer los mensajes en el siguiente enlace:
 
 {U_TOPIC}
 
