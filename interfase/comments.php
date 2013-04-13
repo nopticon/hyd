@@ -686,11 +686,12 @@ class comments {
 
 	private function parse_html() {
 		// $is_mod = $user->is('mod');
-		$allowed_tags = 'br strong blockquote';
+		$allowed_tags = 'strong blockquote';
 		// . (($is_mod) ? ' a h1 h2 h3 div span img' : '');
 		
 		$ptags = str_replace('*', '.*?', implode('|', w($allowed_tags)));
-		$this->message = preg_replace('#&lt;(\/?)(' . $ptags . '( \/)?)&gt;#is', '<$1$2>', $this->message);
+		$this->message = preg_replace('#&lt;(\/?)(' . $ptags . ')&gt;#is', '<$1$2>', $this->message);
+		$this->message = str_replace('&lt;br /&gt;', '<br />', $this->message);
 		
 		/*if ($is_mod) {
 			if (preg_match_all('#&lt;(' . $ptags . ') (.*?)&gt;#is', $message, $in_quotes)) {
