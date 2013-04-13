@@ -681,7 +681,7 @@ class userpage {
 		
 		if ($user->d('user_avatar')) {
 			_style('current_avatar', array(
-				'IMAGE' => $config->assets_url . 'avatars/' . $user->d('user_avatar'))
+				'IMAGE' => $config->avatar_url . $user->d('user_avatar'))
 			);
 		}
 		

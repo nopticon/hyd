@@ -115,7 +115,7 @@ class upload {
 	public function avatar_process($alias, &$_fields, &$error) {
 		global $config, $user;
 		
-		$path = $config->assets_path . 'avatars/';
+		$path = $config->avatar_path;
 		
 		$send = $this->process($path, 'avatar');
 		

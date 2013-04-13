@@ -467,7 +467,7 @@ class comments {
 					case 'user_avatar':
 						if ($row->user_id != GUEST) {
 							if ($value != '') {
-								$value = $config->assets_url . 'avatars/' . $value;
+								$value = $config->avatar_url . $value;
 							} else {
 								$value = $config->assets_url . 'style/avatar.gif';
 							}
@@ -819,9 +819,9 @@ class comments {
 				$member = get_username_base($orig_member);
 				if (!isset($this->options['icons'][$member])) {
 					for ($i = 0, $end = count($formats); $i < $end; $i++) {
-						$icon_file = $config->avatar_path . '/' . $member . $formats[$i];
-						if (@file_exists('..' . $icon_file)) {
-							$this->options['icons'][$member] = '<a href="' . s_link('m', $member) . '" title="' . $orig_member . '"><img src="' . $icon_file . '" /></a>';
+						$icon_file = $member . $formats[$i];
+						if (@file_exists($config->avatar_path . $icon_file)) {
+							$this->options['icons'][$member] = '<a href="' . s_link('m', $member) . '" title="' . $orig_member . '"><img src="' . $config->avatar_url . $icon_file . '" /></a>';
 							break;
 						}
 					}
