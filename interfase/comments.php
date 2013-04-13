@@ -690,7 +690,7 @@ class comments {
 		// . (($is_mod) ? ' a h1 h2 h3 div span img' : '');
 		
 		$ptags = str_replace('*', '.*?', implode('|', w($allowed_tags)));
-		$this->message = preg_replace('#&lt;(\/?)(' . $ptags . ')&gt;#is', '<$1$2>', $this->message);
+		$this->message = preg_replace('#&lt;(\/?)(' . $ptags . '( \/)?)&gt;#is', '<$1$2>', $this->message);
 		
 		/*if ($is_mod) {
 			if (preg_match_all('#&lt;(' . $ptags . ') (.*?)&gt;#is', $message, $in_quotes)) {
