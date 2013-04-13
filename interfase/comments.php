@@ -560,8 +560,8 @@ class comments {
 			$message = str_replace('[chown:' . $a_chown[1] . ']', '', $message);
 		}
 
-		$is_mod = $user->is('mod');
-		$allowed_tags = 'br strong ul ol li em small' . (($is_mod) ? ' blockquote a h1 h2 h3 div span img' : '');
+		/*$is_mod = $user->is('mod');
+		$allowed_tags = 'br strong ul ol li em blockquote' . (($is_mod) ? ' a h1 h2 h3 div span img' : '');
 		
 		$ptags = str_replace('*', '.*?', implode('|', w($allowed_tags)));
 		$message = preg_replace('#&lt;(\/?)(' . $ptags . ')&gt;#is', '<$1$2>', $message);
@@ -574,7 +574,7 @@ class comments {
 					$message = preg_replace('#' . preg_quote($item, '#') . '#is', str_replace(array_keys($repl), array_values($repl), $item), $message);
 				}
 			}
-		}
+		}*/
 		
 		return $message;
 	}
@@ -593,7 +593,7 @@ class comments {
 		$this->message = ' ' . $message . ' ';
 		unset($message);
 
-		$parse = 'flash youtube images url bbcode smilies artists downloads profiles avatars';
+		$parse = 'flash youtube images url bbcode html smilies artists downloads profiles avatars';
 
 		foreach (w($parse) as $method) {
 			$this->{'parse_' . $method}();
@@ -682,6 +682,25 @@ class comments {
 		$repl = array('<blockquote>', '</blockquote>');
 
 		$this->message = str_replace($orig, $repl, $this->message);
+	}
+
+	private function parse_html() {
+		// $is_mod = $user->is('mod');
+		$allowed_tags = 'br strong blockquote';
+		// . (($is_mod) ? ' a h1 h2 h3 div span img' : '');
+		
+		$ptags = str_replace('*', '.*?', implode('|', w($allowed_tags)));
+		$this->message = preg_replace('#&lt;(\/?)(' . $ptags . ')&gt;#is', '<$1$2>', $this->message);
+		
+		/*if ($is_mod) {
+			if (preg_match_all('#&lt;(' . $ptags . ') (.*?)&gt;#is', $message, $in_quotes)) {
+				$repl = array('&lt;' => '<', '&gt;' => '>', '&quot;' => '"');
+				
+				foreach ($in_quotes[0] as $item) {
+					$message = preg_replace('#' . preg_quote($item, '#') . '#is', str_replace(array_keys($repl), array_values($repl), $item), $message);
+				}
+			}
+		}*/
 	}
 	
 	private function parse_smilies() {
