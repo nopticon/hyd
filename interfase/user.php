@@ -1,4 +1,4 @@
-©<?php
+<?php
 /*
 <Orion, a web development framework for RK.>
 Copyright (C) <2011>  <Orion>
