@@ -1,4 +1,4 @@
-<?php
+©<?php
 /*
 <Orion, a web development framework for RK.>
 Copyright (C) <2011>  <Orion>
@@ -872,7 +872,7 @@ class user extends session {
 		$sql = 'SELECT COUNT(element) AS total
 			FROM _members_unread
 			WHERE user_id = ?';
-		$this->today_counter = sql_field(sql_filter($sql, $user->d('user_id')), 'total', 0);
+		$this->today_counter = sql_field(sql_filter($sql, $this->d('user_id')), 'total', 0);
 
 		return $this->today_counter;
 	}
