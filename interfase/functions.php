@@ -1897,13 +1897,6 @@ function topic_arkane($topic_id, $value) {
 function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive = true) {
 	global $config, $user, $cache, $starttime, $template;
 	
-	//
-	// gzip_compression
-	//
-	if (strstr($user->browser, 'compatible') || strstr($user->browser, 'Gecko')) {
-		// ob_start('ob_gzhandler');exit;
-	}
-	
 	monetize();
 	
 	//
