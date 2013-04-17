@@ -867,6 +867,7 @@ class user extends session {
 
 			return;
 		}
+		return;
 
 		// Get today items count
 		$sql = 'SELECT COUNT(element) AS total
