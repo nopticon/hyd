@@ -1900,8 +1900,8 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 	//
 	// gzip_compression
 	//
-	if (strstr($user->browser,'compatible') || strstr($user->browser,'Gecko')) {
-		ob_start('ob_gzhandler');
+	if (strstr($user->browser, 'compatible') || strstr($user->browser, 'Gecko')) {
+		// ob_start('ob_gzhandler');exit;
 	}
 	
 	monetize();
@@ -1966,7 +1966,7 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 		'S_REDIRECT' => $user->d('session_page'),
 		'S_USERNAME' => $user->d('username'),
 		'S_MEMBER' => $user->is('member'),
-		'S_TODAY_COUNT' => $user->today_count_text()
+		// 'S_TODAY_COUNT' => $user->today_count_text()
 	);
 	
 	if ($custom_vars !== false) {
