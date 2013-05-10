@@ -65,6 +65,12 @@ if (!defined('ROOT')) {
 }
 
 //
+// Set the vendor path
+if (!defined('VENDOR')) {
+	define('VENDOR', ROOT . '../../vendor/');
+}
+
+//
 // Start the main system
 define('USE_CACHE', true);
 define('STRIP', (get_magic_quotes_gpc()) ? true : false);
@@ -77,7 +83,7 @@ if (!defined('REQC')) {
 // Load basic libraries
 //
 require_once(ROOT.'interfase/constants.php');
-require_once(ROOT.'interfase/npi/cliws.php');
+require_once(VENDOR.'npi/cliws.php');
 require_once(ROOT.'interfase/functions.php');
 require_once(ROOT.'interfase/database.php');
 

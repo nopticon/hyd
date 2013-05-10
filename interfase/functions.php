@@ -1898,6 +1898,7 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 	global $config, $user, $cache, $starttime, $template;
 	
 	monetize();
+	build_main_menu();
 	
 	//
 	// Send headers
@@ -1927,24 +1928,6 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 		'U_DC' => s_link('my dc'),
 		
 		'U_HOME' => s_link(),
-		'U_FAQ' => s_link('faq'),
-		'U_WHATS_NEW' => s_link('today'),
-		'U_ABOUT' => s_link('about'),
-		'U_ARTISTS'	=> s_link('a'),
-		'U_AWARDS' => s_link('awards'),
-		'U_RADIO' => s_link('radio'),
-		'U_BROADCAST' => s_link('broadcast'),
-		'U_NEWS' => s_link('news'),
-		'U_EVENTS' => s_link('events'),
-		'U_FORUM' => s_link('board'),
-		'U_COMMUNITY'	=> s_link('community'),
-		'U_ALLIES'	=> s_link('allies'),		
-		'U_TOS' => s_link('tos'),
-		'U_HELP' => s_link('help'),
-		'U_RSS_NEWS' => s_link('rss', 'news'),
-		'U_RSS_ARTISTS' => s_link('rss', 'artists'),
-		'U_COMMENTS' => s_link('comments'),
-		'U_EMOTICONS' => s_link('emoticons'),
 		'U_ACP' => (isset($template->vars['U_ACP'])) ? $template->vars['U_ACP'] : ($user->is('artist') || $user->is('mod') ? s_link('acp') : ''),
 		
 		'S_YEAR' => date('Y'),
@@ -1994,6 +1977,33 @@ function sidebar() {
 	}
 	
 	return;
+}
+
+function build_main_menu() {
+	global $cache, $config, $user;
+	
+	if (!$menu = $cache->get('menu')) {
+		$sql = 'SELECT *
+			FROM _menu
+			ORDER BY menu_order';
+		if ($menu = sql_rowset($sql)) {
+			$cache->save('menu', $menu);
+		}
+	}
+
+	$i = 0;
+	foreach ($menu as $row) {
+		if (!empty($row->menu_validate) && !$user->is($row->menu_validate)) continue;
+
+		if (!$i) _style('main_menu');
+
+		_style('main_menu.row', array(
+			'HREF' => s_link($row->menu_alias),
+			'TITLE' => lang($row->menu_name),
+			'ICON' => $row->menu_icon)
+		);
+		$i++;
+	}
 }
 
 //

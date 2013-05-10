@@ -93,6 +93,7 @@ $lang += array(
 	'SEARCH' => 'B&uacute;squeda',
 	'HI' => 'Hola',
 	'INFORMATION' => 'Informaci&oacute;n',
+	'READ_MORE' => 'Leer m&aacute;s...',
 	
 	'PAGES_PREV' => '&lt;&lt; <strong>Anteriores %d</strong>',
 	'PAGES_NEXT' => '<strong>Siguientes %d</strong> &gt;&gt;',
@@ -694,7 +695,7 @@ $lang += array(
 	'UB_BAN_POST_UNTIL' => 'Se permite de nuevo',
 	'UB_NO_GUEST_POSTING' => '<strong>%s</strong> s&oacute;lo permite comentarios de miembros registrados.<br /><br />Por favor <a href="#top"><i>inicia sesi&oacute;n</i></a> &oacute; <a href="%s">suscribete</a>.<br />',
 	'UB_MANAGE_MODS' => 'Administrar Miembros',
-	'A_NEWS_CREATE' => 'Publicar art&iacute;culo',
+	'A_NEWS_CREATE' => 'Publicar noticia',
 	
 	'LOCAL_ARTISTS' => 'Guatemala',
 	'NON_LOCAL_ARTISTS' => 'Internacionales',
