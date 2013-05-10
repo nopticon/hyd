@@ -505,7 +505,7 @@ class userpage {
 					'S_CONFIRM_ACTION' => s_link('my dc'),
 					'S_HIDDEN_FIELDS' => s_hidden($s_hidden)
 				);
-				page_layout('DCONVS', 'confirm', $layout_vars);
+				page_layout('CONVERSATIONS', 'confirm', $layout_vars);
 			}
 			
 			redirect(s_link('my dc'));

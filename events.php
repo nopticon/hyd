@@ -25,4 +25,4 @@ $user->setup();
 $events = new events();
 $events->run();
 
-page_layout($events->get_title('UE'), $events->get_template('events'));
+page_layout($events->get_title('EVENTS'), $events->get_template('events'));

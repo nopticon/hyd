@@ -29,6 +29,14 @@ $lang += array(
 	'ENCODING' => "utf-8",
 	'DIRECTION' => '',
 	'DATE_FORMAT' => 'j F Y',
+
+	'OF' => 'de',
+	'OF_COMM' => '\d\e',
+	'IN' => 'en',
+	'BY' => 'por',
+	'FROM' => 'De',
+	'TO' => 'Para',
+	'DATE' => 'Fecha',
 	
 	'FORUM' => 'Foro',
 	'CATEGORY' => 'Categor&iacute;a',
@@ -43,7 +51,6 @@ $lang += array(
 	'TOPIC_IMPORTANT' => 'Anuncios',
 	'TOPIC_NORMAL' => 'Temas',
 	'POSTED_BY' => 'Publicado por',
-	'BY' => 'por',
 	'LASTPOST' => 'Ultimo mensaje',
 	'USERNAME' => 'Usuario',
 	'USERNAME2' => 'Nombre de Usuario',
@@ -85,6 +92,7 @@ $lang += array(
 	'NAVIGATION' => 'Navegaci&oacute;n',
 	'SEARCH' => 'B&uacute;squeda',
 	'HI' => 'Hola',
+	'INFORMATION' => 'Informaci&oacute;n',
 	
 	'PAGES_PREV' => '&lt;&lt; <strong>Anteriores %d</strong>',
 	'PAGES_NEXT' => '<strong>Siguientes %d</strong> &gt;&gt;',
@@ -167,7 +175,6 @@ $lang += array(
 	
 	'MEMBERLIST' => 'Miembros',
 	'HELP' => 'Ayuda',
-	'HELP_BACK' => 'Regresar a P&aacute;gina Principal',
 	'MODERATOR' => 'Moderador',
 	'MODERATORS' => 'Moderadores',
 	
@@ -248,7 +255,7 @@ $lang += array(
 	
 	'POLL_DELETE' => 'La encuesta ha sido borrada.',
 	
-	'DCONVS' => 'Conversaciones',
+	'CONVERSATIONS' => 'Conversaciones',
 	'DCONVS_READ' => 'Conversaciones',
 	'DCONV_READ' => 'Conversaci&oacute;n',
 	'USERPAGE_DCONV_START' => 'Iniciar Conversaci&oacute;n',
@@ -257,9 +264,6 @@ $lang += array(
 	'DC_READ_MESSAGE' => 'Leer',
 	'FOLDERS' => 'Carpetas',
 	'INBOX' => 'Volver a la lista de conversaciones',
-	'FROM' => 'De',
-	'TO' => 'Para',
-	'DATE' => 'Fecha',
 	'DCS_MEMBER' => 'Miembro',
 	'DCS_SUBJECT' => 'Asunto',
 	'DELETE_MARKED' => 'Borrar Marcados',
@@ -565,7 +569,6 @@ $lang += array(
 	'VISITS_COUNT' => 'N&uacute;mero de visitas',
 	'PAGEVIEWS_COUNT' => 'P&aacute;ginas vistas',
 	
-	'INFORMATION' => 'Informaci&oacute;n',
 	'COMMENTS' => 'Comentarios',
 	'VIEW_COMMENTS' => 'Ver comentarios',
 	'VIEW_COMPLETE_LIST' => 'Ver lista completa',
@@ -615,8 +618,7 @@ $lang += array(
 	
 	// PAGE HEADER
 	'HOME' => 'Inicio',
-	'UB' => 'Artistas',
-	'UB_NEW' => 'Artistas nuevos',
+	'ARTISTS' => 'Artistas',
 	'COMMUNITY' => 'Comunidad',
 	'USERS' => 'Usuarios',
 	'TOP_FORUM' => 'Ultimos %s mensajes del Foro',
@@ -626,9 +628,6 @@ $lang += array(
 	'VIEW_INFO' => 'Ver Informaci&oacute;n',
 	'SEND_POST' => 'Env&iacute;a tu comentario',
 	'SEND_NEWS' => 'Env&iacute;a tu publicaci&oacute;n',
-	'OF' => 'de',
-	'OF_COMM' => '\d\e',
-	'IN' => 'en',
 	'PRIVACY_POLICY' => 'Pol&iacute;tica de Privacidad y T&eacute;rminos de servicio',
 	
 	// SITE NOTICES
@@ -796,7 +795,7 @@ $lang += array(
 	
 	// EVENTS
 	'EVENTS_NEXT' => 'Pr&oacute;ximos Eventos',
-	'UE' => 'Eventos',
+	'EVENTS' => 'Eventos',
 	'UE_NO_INFO' => 'No hay fotograf&iacute;as disponibles de este evento.',
 	'UE_DOWNLOAD_IMAGE' => 'Descargar Imagen',
 	'LAST_EVENT' => 'Ultimo Evento',
