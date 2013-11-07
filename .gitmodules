@@ -1,3 +1,0 @@
-[submodule "interfase/npi"]
-	path = interfase/npi
-	url = git@github.com:nopticon/libws.git
