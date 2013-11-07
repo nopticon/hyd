@@ -21,25 +21,25 @@ if (!defined('IN_APP')) exit;
 class __event extends mac {
 	public function __construct() {
 		parent::__construct();
-		
+
 		$this->auth('colab');
 	}
-	
+
 	public function _home() {
 		global $config, $user, $cache, $upload;
-		
+
 		$error = w();
-		
+
 		if (_button()) {
 			$filepath = $config->events_path;
 			$filepath_1 = $filepath . 'future/';
 			$filepath_2 = $filepath_1 . 'thumbnails/';
-			
+
 			$f = $upload->process($filepath_1, 'event_image', 'jpg');
-			
+
 			if (!count($upload->error) && $f !== false) {
 				$img = sql_total('_events');
-				
+
 				// Create vars
 				$event_name = request_var('event_name', '');
 				$event_artists = request_var('event_artists', '', true);
@@ -49,19 +49,19 @@ class __event extends mac {
 				$event_hours = request_var('event_hours', 0);
 				$event_minutes = request_var('event_minutes', 0);
 				$event_current_topic = request_var('event_current_topic', 0);
-				
+
 				$v_date = gmmktime($event_hours, $event_minutes, 0, $event_month, $event_day, $event_year) - $user->timezone - $user->dst;
-				
+
 				foreach ($f as $row) {
 					$xa = $upload->resize($row, $filepath_1, $filepath_1, $img, array(600, 400), false, false, true);
 					if ($xa === false) {
 						continue;
 					}
-					
+
 					$xb = $upload->resize($row, $filepath_1, $filepath_2, $img, array(100, 75), false, false);
-					
+
 					$event_alias = friendly($event_name);
-					
+
 					$insert = array(
 						'event_alias' => $event_alias,
 						'title' => $event_name,
@@ -70,12 +70,12 @@ class __event extends mac {
 						'event_update' => time()
 					);
 					$event_id = sql_insert('events', $insert);
-					
+
 					//
 					$artists_ary = explode(nr(), $event_artists);
 					foreach ($artists_ary as $row) {
 						$subdomain = get_subdomain($row);
-						
+
 						$sql = 'SELECT *
 							FROM _artists
 							WHERE subdomain = ?';
@@ -93,15 +93,15 @@ class __event extends mac {
 							}
 						}
 					}
-					
+
 					// Alice: Create topic
 					$event_url = $config->events_url . 'future/' . $img  . '.jpg';
-					
+
 					$post_message = 'Evento publicado';
 					$post_time = time();
 					$forum_id = 21;
 					$poster_id = 1433;
-					
+
 					$sql = 'SELECT *
 						FROM _forum_topics
 						WHERE topic_id = ?';
@@ -119,20 +119,20 @@ class __event extends mac {
 							'topic_points' => 1
 						);
 						$topic_id = sql_insert('forum_topics', $insert);
-						
+
 						$event_current_topic = 0;
 					} else {
 						$topic_id = $event_current_topic;
-						
+
 						$post_message .= ' en la secci&oacute;n de eventos';
-						
+
 						$sql = 'UPDATE _forum_topics SET topic_title = ?
 							WHERE topic_id = ?';
 						sql_query(sql_filter($sql, $event_name, $topic_id));
 					}
-					
+
 					$post_message .= '.';
-					
+
 					$insert = array(
 						'topic_id' => (int) $topic_id,
 						'forum_id' => $forum_id,
@@ -143,11 +143,11 @@ class __event extends mac {
 						'post_np' => ''
 					);
 					$post_id = sql_insert('forum_posts', $insert);
-					
+
 					$sql = 'UPDATE _events SET event_topic = ?
 						WHERE id = ?';
 					sql_query(sql_filter($sql, $topic_id, $event_id));
-					
+
 					$insert = array(
 						'topic_id' => $topic_id,
 						'vote_text' => '&iquest;Asistir&aacute;s a ' . $event_name . '?',
@@ -155,9 +155,9 @@ class __event extends mac {
 						'vote_length' => ($poll_length * 86400)
 					);
 					$poll_id = sql_insert('poll_options', $insert);
-					
+
 					$poll_options = array(1 => 'Si asistir&eacute;');
-					
+
 					foreach ($poll_options as $option_id => $option_text) {
 						$sql_insert = array(
 							'vote_id' => $poll_id,
@@ -166,25 +166,25 @@ class __event extends mac {
 							'vote_result' => 0
 						);
 						sql_insert('poll_results', $sql_insert);
-						
+
 						$poll_option_id++;
 					}
-					
+
 					$sql = 'UPDATE _forums SET forum_posts = forum_posts + 1, forum_last_topic_id = ?' . ((!$event_current_topic) ? ', forum_topics = forum_topics + 1 ' : '') . '
 						WHERE forum_id = ?';
 					sql_query(sql_filter($sql, $topic_id, $forum_id));
-					
+
 					$sql = 'UPDATE _forum_topics SET topic_first_post_id = ?, topic_last_post_id = ?
 						WHERE topic_id = ?';
 					sql_query(sql_filter($sql, $post_id, $post_id, $topic_id));
-					
+
 					/*$sql = 'UPDATE _members SET user_posts = user_posts + 1
 						WHERE user_id = ?';
 					sql_query(sql_filter($sql, $poster_id));*/
-					
+
 					// TODO: Today save
 					// $user->save_unread(UH_T, $topic_id);
-					
+
 					redirect(s_link('events', $event_alias));
 				}
 			}
@@ -193,7 +193,7 @@ class __event extends mac {
 				'MESSAGE' => parse_error($upload->error))
 			);
 		}
-		
+
 		$sql = 'SELECT topic_id, topic_title
 			FROM _forum_topics t
 			LEFT OUTER JOIN _events e ON t.topic_id = e.event_topic
@@ -201,16 +201,22 @@ class __event extends mac {
 				AND forum_id = 21
 			ORDER BY topic_time DESC';
 		$topics = sql_rowset($sql);
-		
+
 		foreach ($topics as $i => $row) {
 			if (!$i) _style('topics');
-			
+
 			_style('topics.row', array(
 				'TOPIC_ID' => $row->topic_id,
 				'TOPIC_TITLE' => $row->topic_title)
 			);
 		}
-		
+
+		v_style(array(
+			'V_DAY' => date('d'),
+			'V_MONTH' => date('m'),
+			'V_YEAR' => date('Y'),
+		));
+
 		return;
 	}
 }

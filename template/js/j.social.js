@@ -4,15 +4,15 @@
  * Description: Include this plugin in your webpage and let people
  * share your content like never before.
  * Website: http://no-margin-for-errors.com/projects/prettySociable/
- * 						
- * Thank You: 
+ *
+ * Thank You:
  * Chris Wallace, for the nice icons
  * http://www.chris-wallace.com/2009/05/28/free-social-media-icons-socialize/
  * ------------------------------------------------------------------------- */
 
 (function($){$.prettySociable = {version: 1.21};
 
-var pretty_domain = '//assets.rockrepublik.net/';
+var pretty_domain = '/assets/';
 
 $.prettySociable = function(settings) {
 	$.prettySociable.settings = jQuery.extend({
@@ -99,18 +99,18 @@ $.prettySociable = function(settings) {
 		popup: {width:900, height:500},
 		callback: function(){}
 	},settings);
-	
+
 	var websites, settings = $.prettySociable.settings, show_timer, ps_hover;
-	
+
 	$.each(settings.websites, function(i) {
 		var preload = new Image();
 		preload.src = this.icon;
 	});
-	
+
 	$('a[rel^=prettySociable]').hover(function() {
 		_self = this;
 		_container = this;
-		
+
 		if ($(_self).find('img').size() > 0) {
 			_self = $(_self).find('img');
 		} else if ($.browser.msie) {
@@ -124,9 +124,9 @@ $.prettySociable = function(settings) {
 				$(_self).css({'display':'block'});
 			}
 		}
-		
+
 		$(_self).css({'cursor':'move','position':'relative','z-index':1005});
-		
+
 		offsetLeft = (parseFloat($(_self).css('borderLeftWidth'))) ? parseFloat($(_self).css('borderLeftWidth')) : 0;
 		offsetTop = (parseFloat($(_self).css('borderTopWidth'))) ? parseFloat($(_self).css('borderTopWidth')) : 0;
 		offsetLeft += (parseFloat($(_self).css('paddingLeft'))) ? parseFloat($(_self).css('paddingLeft')) : 0;

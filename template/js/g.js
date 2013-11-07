@@ -47,22 +47,22 @@ $(function() {
 	var doctitle = document.title;
 	var docurl = window.location.href;
 	var window_size = $(window).width();
-	
+
 	$('#searchForm').jQLiteID();
-	
+
 	$('ul[id^="expand_"]').hide().addClass('flying');
-	
+
 	$('.expand').click(function(event) {
 		event.preventDefault();
-		
+
 		position = $(this).position();
 		$('#expand_' + $(this).attr('id')).css('top', position.top + $(this).height() + 9);
 		$('#expand_' + $(this).attr('id')).css('left', position.left + 1);
-		
+
 		$('#expand_' + $(this).attr('id')).slideToggle('medium');
 		return false;
 	});
-	
+
 	$('textarea').autoResize({
 		onReize: function() {
 			$(this).css({opacity: 0.8});
@@ -72,24 +72,24 @@ $(function() {
 		},
 		limit: 250
 	});
-	
+
 	$('.w_broadcast a').click(function(event) {
 		event.preventDefault();
-		
+
 		popup($(this).attr('href'), '_broadcast', 400, 500);
 	});
-	
+
 	$('.pub').click(function(event) {
 		event.preventDefault();
 		$.scrollTo('.publish');
 	});
-	
+
 	$('.share').each(function() {
 		if (docurl && doctitle) {
 			$(this).html('<a rel="prettySociable" href="' + docurl + '"></a><span>Arrastra<br />y comparte</span>');
 		}
 	});
-	
+
 	$.prettySociable({
 		share_on_label: 'Compartir en ',
 		share_label: 'Comparte',
@@ -99,17 +99,17 @@ $(function() {
 			offsetLeft: 0
 		}
 	});
-	
+
 	$("input[type=file]").filestyle({
-		image: "//assets.rockrepublik.net/style/file.png",
+		image: "/assets/style/file.png",
 		imagewidth : 90,
 		imageheight : 20,
 		width : 250
 	});
-	
+
 	$(".vcheck").vchecks();
 	$(".fancy").fancybox();
-	
+
 	$('.smile').each(function() {
 		$(this).html('&#8594;&#9786;');
 		$(this).attr('title', 'Mostrar emociones');
@@ -117,7 +117,7 @@ $(function() {
 		popup($(this).attr('href'), '_emoticons', 300, 450);
 		return false;
 	});
-	
+
 	if ($.url.segment() > 0) {
 		switch ($.url.segment(0)) {
 			case 'my':
@@ -161,7 +161,7 @@ $(function() {
 				break;
 		}
 	}
-	
+
 	if (xka) {
 		// Keep alive
 		$.PeriodicalUpdater('/async/ka/', {
@@ -171,7 +171,7 @@ $(function() {
 			maxTimeout: 15000
 		});
 	}
-	
+
 	$('div[id^="hse_"]').each(function() {
 		$d = $('#se_' + this.id.substr(4)).empty();
 		$('ins:first', this).appendTo($d).addClass('rows5_top_2');
@@ -216,7 +216,7 @@ var _ = {
 				}
 			}
 			new Ajax.Request('/async/' + action + '/', v);
-			
+
 			_.frame.call(action, el, rate, decode);
 		}
 	}

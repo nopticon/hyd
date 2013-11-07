@@ -12,3 +12,7 @@ CREATE TABLE IF NOT EXISTS `_genres` (
   `genre_name` varchar(100) NOT NULL,
   PRIMARY KEY (`genre_id`)
 ) ENGINE=InnoDB
+
+ALTER TABLE `_events` CHANGE COLUMN `text` `text` TEXT NULL;
+
+ALTER TABLE `_members` CHANGE COLUMN `user_posts` `user_posts` INT(11) UNSIGNED NOT NULL DEFAULT '0';
