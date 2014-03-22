@@ -234,6 +234,25 @@ class __event extends mac {
 			);
 		}
 
+		//
+		// Get artists where this member is an authorized member
+		//
+		$sql = 'SELECT a.ub, a.name, a.subdomain
+			FROM _artists_auth au
+			INNER JOIN _artists a ON au.ub = a.ub
+			WHERE au.user_id = ?
+			ORDER BY a.name';
+		if ($artists = sql_rowset(sql_filter($sql, $user->d('id')))) {
+			foreach ($artists as $i => $row) {
+				if (!$i) _style('artists');
+
+				_style('artists.row', array(
+					'NAME' => $row->name,
+					'SUBDOMAIN' => $row->subdomain
+				));
+			}
+		}
+
 		$current_month = date('m');
 		$current_day = date('d');
 		$current_year = date('Y');
