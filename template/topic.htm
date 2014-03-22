@@ -1,10 +1,8 @@
 <!-- INCLUDE page.header.htm -->
 
-<div class="share">&nbsp;</div>
-
 <div class="is_left">
 	<div class="h"><h3><a href="{U_VIEW_FORUM}">{FORUM_NAME}</a> &mdash; <a href="{S_TOPIC_ACTION}">{TOPIC_TITLE}</a></h3></div>
-	
+
 	<div class="pad_top pad_left ctl ls">
 		<ul>
 			<!-- BEGIN post_box -->
@@ -60,38 +58,40 @@
 
 <!-- BEGIN posts -->
 <div class="comments">
-<a name="first"></a>
-<!-- BEGIN item -->
-<a name="{item.POST_ID}"></a>
-<div id="comment-{item.S_ROW_COUNT}">
-<h3><strong>{item.S_ROW_COUNT}</strong><span>.</span> <em><!-- BEGIN username --><a href="{item.PROFILE}"><!-- END username --><img src="{item.USER_AVATAR}" alt="{item.USERNAME}'s Avatar" /><!-- BEGIN username --></a><!-- END username --></em><cite><!-- BEGIN username --><a href="{item.PROFILE}"><!-- END username -->{item.USERNAME}<!-- BEGIN username --></a><!-- END username --></cite> <span>dijo:</span></h3>
-<blockquote>
-<!-- BEGIN controls -->
-<div class="pad_top ctl el_right a_right">
-	<ul>
-		<!-- BEGIN reply --><li><a href="{reply.URL}">{L_CMT_REPLY}</a><!-- END reply -->
-		<!-- BEGIN report --><li><a href="{report.URL}">{L_CMT_REPORT}</a><!-- END report -->
-		<!-- BEGIN edit --><li><a href="{edit.URL}">{L_CMT_EDIT}</a><!-- END edit -->
-		<!-- BEGIN restore --><li><a href="{restore.URL}"><span class="red">{L_CMT_RESTORE}</span></a><!-- END restore -->
-		<!-- BEGIN delete --><li><a onclick="return confirm('&iquest;Confirmas borrar el mensaje?');" href="{delete.URL}">{L_CMT_DELETE}</a><!-- END delete -->
-	</ul>
-</div>
-<span class="clear"></span>
-<!-- END controls -->
+	<a name="first"></a>
+	<!-- BEGIN item -->
+	<a name="{item.POST_ID}"></a>
+	<div id="comment-{item.S_ROW_COUNT}">
+		<h3><strong>{item.S_ROW_COUNT}</strong><span>.</span> <em><!-- BEGIN username --><a href="{item.PROFILE}"><!-- END username --><img src="{item.USER_AVATAR}" alt="{item.USERNAME}'s Avatar" /><!-- BEGIN username --></a><!-- END username --></em><cite><!-- BEGIN username --><a href="{item.PROFILE}"><!-- END username -->{item.USERNAME}<!-- BEGIN username --></a><!-- END username --></cite> <span>dijo:</span></h3>
 
-<div class="col_fr nowraptext">
-{item.MESSAGE}
-<!-- IF item.PLAYING != '' -->
-<br /><br /><div class="a_right nowplay">{item.PLAYING} &nbsp;<img src="{S_ASSETS}/emoticon/arkane.png" alt="" /></div>
-<!-- ENDIF -->
-</div>
-<!-- IF item.USER_SIG != '' -->
-<div class="col_fr nowraptext"><p>--{item.USER_SIG}</p></div>
-<!-- ENDIF -->
-<p class="dtposted">{item.POST_DATE}</p>
-</blockquote>
-<hr /></div>
-<!-- END item -->
+		<blockquote>
+			<div class="x3 col_fr nowraptext">
+				{item.MESSAGE}
+
+				<!-- IF item.PLAYING != '' -->
+				<div class="a_right nowplay">{item.PLAYING} &nbsp;<img src="{S_ASSETS}/emoticon/arkane.png" alt="" /></div>
+				<!-- ENDIF -->
+			</div>
+
+			<!-- IF item.USER_SIG != '' -->
+			<!-- <div class="col_fr nowraptext"><p>--{item.USER_SIG}</p></div> -->
+			<!-- ENDIF -->
+
+			<!-- BEGIN controls -->
+			<p class="controls">
+				<!-- BEGIN reply --><a href="{reply.URL}">{L_CMT_REPLY}</a><!-- END reply -->
+				<!-- BEGIN report --><a href="{report.URL}">{L_CMT_REPORT}</a><!-- END report -->
+				<!-- BEGIN edit --><a href="{edit.URL}">{L_CMT_EDIT}</a><!-- END edit -->
+				<!-- BEGIN restore --><a href="{restore.URL}">{L_CMT_RESTORE}</a><!-- END restore -->
+				<!-- BEGIN delete --><a class="ask_remove" href="{delete.URL}">{L_CMT_DELETE}</a><!-- END delete -->
+			</p>
+			<!-- END controls -->
+
+			<p class="dtposted">{item.POST_DATE}</p>
+		</blockquote>
+		<hr />
+	</div>
+	<!-- END item -->
 </div>
 <!-- END posts -->
 

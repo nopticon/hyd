@@ -94,7 +94,7 @@ switch ($format) {
 		break;
 	case 'js':
 		require_once(ROOT . 'interfase/jsmin.php');
-		$code = JSMin::minify($code);
+		// $code = JSMin::minify($code);
 
 		$content_type = 'application/javascript; charset=utf-8';
 		break;
@@ -103,7 +103,7 @@ switch ($format) {
 //
 // Send headers to client
 //
-header('Content-type: ');
+header('Content-type: ' . $content_type);
 header('Expires: ' . gmdate('D, d M Y H:i:s', time() + (60 * 60 * 24 * 30)) . ' GMT');
 status('200 OK');
 

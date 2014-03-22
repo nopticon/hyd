@@ -35,14 +35,15 @@ function sql_insert($table, $insert) {
 
 function sql_query($sql) {
 	global $db;
-	
+
 	$a = $db->sql_query($sql);
+
 	return sql_error($a);
 }
 
 function sql_transaction($status = 'begin') {
 	global $db;
-	
+
 	$a = $db->sql_transaction($status);
 	return sql_error($a);
 }
@@ -105,7 +106,7 @@ function sql_query_nextid($sql) {
 
 function sql_nextid() {
 	global $db;
-	
+
 	$a = $db->sql_nextid();
 	return sql_error($a);
 }
@@ -119,14 +120,14 @@ function sql_affected($sql) {
 
 function sql_affectedrows() {
 	global $db;
-	
+
 	$a = $db->sql_affectedrows();
 	return sql_error($a);
 }
 
 function sql_escape($sql) {
 	global $db;
-	
+
 	$a = $db->sql_escape($sql);
 	return sql_error($a);
 }
@@ -140,14 +141,14 @@ function sql_build($cmd, $a, $b = false) {
 
 function sql_cache($sql, $sid = '', $private = true) {
 	global $db;
-	
+
 	$a = $db->sql_cache($sql, $sid, $private);
 	return sql_error($a);
 }
 
 function sql_cache_limit(&$arr, $start, $end = 0) {
 	global $db;
-	
+
 	$a = $db->sql_cache_limit($arr, $start, $end);
 	return sql_error($a);
 }
@@ -161,14 +162,14 @@ function sql_numrows(&$a) {
 
 function sql_history() {
 	global $db;
-	
+
 	$a = $db->sql_history();
 	return sql_error($a);
 }
 
 function sql_error($a) {
-	if (isset($a->type)) {
-		_pre($a, true);
+	if (isset($a->type) && $a->type == 'mysql') {
+		return fatal_error('mysql', html_entity_decode($a->message->message, ENT_QUOTES) . "\n\n" . html_entity_decode($a->message->sqltext, ENT_QUOTES));
 	}
 
 	return $a;

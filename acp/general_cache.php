@@ -18,37 +18,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_APP')) exit;
 
-class __emoticon_update extends mac {
+class __general_cache extends mac {
 	public function __construct() {
 		parent::__construct();
-		
+
 		$this->auth('founder');
 	}
-	
+
 	public function _home() {
 		global $config, $user, $cache;
-		
-		sql_truncate('_smilies');
-		
-		$emoticon_path = $config->assets_path . 'emoticon/';
-		$process = 0;
-		
-		$fp = @opendir($emoticon_path);
-		while ($file = @readdir($fp)) {
-			if (preg_match('#([a-z0-9]+)\.(gif|png)#is', $file, $part)) {
-				$insert = array(
-					'code' => ':' . $part[1] . ':',
-					'smile_url' => $part[0]
-				);
-				sql_insert('smilies', $insert);
-				
-				$process++;
-			}
+
+		$list = w();
+		foreach (array_dir($config->cache_path) as $row) {
+			if (preg_match('/(.*?)\.php$/i', $row, $part)) $list[] = $part[1];
 		}
-		@closedir($fp);
-		
-		$cache->delete('smilies');
-		
-		return _pre($process . ' emoticons.');
+
+		if ($list) {
+			$cache->delete(implode(' ', $list));
+		}
+
+		return _pre('All cache was removed.', true);
 	}
 }

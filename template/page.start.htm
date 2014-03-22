@@ -1,11 +1,14 @@
 <div class="page">
 	<div class="header">
-		<div class="brand">
-			<h1><a href="{U_HOME}" title="{L_APPLICATION}">{L_APPLICATION}</a></h1>
-			<h2>{L_APPLICATION_DESC}</h2>
-		</div>
-		
+		<!-- <div class="brand"> -->
+			<!-- <h1><a href="{U_HOME}" title="{L_APPLICATION}">{L_APPLICATION}</a></h1>
+			<h2>{L_APPLICATION_DESC}</h2> -->
+
+			<!-- <h1 class="new_header"><a href="{U_HOME}" title="{L_APPLICATION}">Republica Rock</a></h1> -->
+		<!-- </div> -->
+
 		<!-- IF S_MEMBER -->
+		<!-- BEGIN hide -->
 		<div id="search">
 			<form id="searchForm" method="post">
 				<fieldset>
@@ -13,7 +16,8 @@
 					<input id="sb" type="submit" value=" &gt; " />
 				</fieldset>
 			</form>
-		</div>	
+		</div>
+		<!-- END hide -->
 		<!-- ELSE -->
 		<div id="sign">
 			<ul>
@@ -21,30 +25,42 @@
 			</ul>
 		</div>
 		<!-- ENDIF -->
-		
+
 		<span class="clear"></span>
-		
+
 		<!-- BEGIN main_menu -->
 		<div id="menu">
 			<ul>
 				<!-- BEGIN row -->
-				<li><a href="{row.HREF}" title="{row.TITLE}"><!-- IF row.ICON != '' --><i class="icon-{row.ICON}"></i> <!-- ENDIF -->{row.TITLE}</a></li>
+				<li><a href="{row.HREF}" title="{row.TITLE}">{row.TITLE}</a></li>
 				<!-- END row -->
 			</ul>
 		</div>
 		<!-- END main_menu -->
-		
-		<div class="soc ls_inline">
+
+		<!-- <div class="soc ls_inline">
 			<ul>
-				<li><a id="facebook" href="//www.facebook.com/rockrepublik" target="_facebook">Facebook</a></li>
-				<li><a id="twitter" href="//www.twitter.com/rockrepublik" target="_twitter">Twitter</a></li>
+				<li><a id="soc_facebook" href="//www.facebook.com/rockrepublik" target="_facebook">Facebook</a></li>
+				<li><a id="soc_twitter" href="//www.twitter.com/rockrepublik" target="_twitter">Twitter</a></li>
 			</ul>
-		</div>
-		
+		</div> -->
+
 		<span class="clear"></span>
 	</div>
-	
+
 	<hr />
 	<div id="search_result"></div>
-	
+
+	<div class="pad_top ls">
+		<!-- BEGIN error -->
+		<ul>
+			<li>{L_LOGIN_ERROR}</li>
+		</ul>
+		<!-- END error -->
+	</div>
+
+	<!-- IF CUSTOM_MESSAGE -->
+	<div class="pad_top a_mid">{CUSTOM_MESSAGE}</div>
+	<!-- ENDIF -->
+
 	<div id="content">

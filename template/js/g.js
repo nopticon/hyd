@@ -1,23 +1,11 @@
-<!-- INCLUDE js/j.js -->
 <!-- INCLUDE js/j.value.js -->
 <!-- INCLUDE js/j.periodic.js -->
 <!-- INCLUDE js/j.url.js -->
 <!-- INCLUDE js/j.textarea.js -->
-<!-- INCLUDE js/j.social.js -->
 <!-- INCLUDE js/j.search.js -->
-<!-- INCLUDE js/j.check.js -->
-<!-- INCLUDE js/j.scroll.js -->
-<!-- INCLUDE js/j.wheel.js -->
-<!-- INCLUDE js/j.fancy.js -->
 <!-- INCLUDE js/j.slider.js -->
-<!-- INCLUDE js/j.filestyle.js -->
-<!-- INCLUDE js/j.faq.js -->
 <!-- INCLUDE js/j.area.js -->
-
-<!-- INCLUDE js/hammer.js -->
-<!-- INCLUDE js/j.masonry.js -->
-<!-- INCLUDE js/metro.js -->
-
+<!-- INCLUDE js/j.input-complete.js -->
 <!-- INCLUDE js/png.js -->
 
 function popup(url, name, width, height) {
@@ -36,18 +24,57 @@ function save_thumb() {
 	if (x1 == '' || y1 == '' || x2 == '' || y2 == '' || w == '' || h == '') {
 		alert("Select area first");
 		return false;
-	} else {
-		return true;
 	}
+
+	return true;
+}
+
+function strpos(text, search) {
+	return text.indexOf(search);
 }
 
 $(function() {
+	'use strict';
+
 	var xka = true;
 	var $d;
 	var doctitle = document.title;
 	var docurl = window.location.href;
 	var window_size = $(window).width();
+	var filesList = []
 
+	//
+	// Ajax: Account login
+	//
+	$('#account_login').submit(function(event) {
+		event.preventDefault();
+
+		$.ajax({
+			type: "POST",
+			url: $(this).attr('action'),
+			data: $(this).serialize() + '&login=1&_ghost=1',
+			success: function(msg) {
+				switch (msg) {
+					case '401':
+						alert('authentication failed!');
+						return;
+					default:
+						if (strpos(msg, 'Location: ') !== false) {
+							window.location = msg.replace('Location: ', '');
+							return;
+						}
+				}
+
+				return;
+			}
+		});
+
+		return false;
+	});
+
+	//
+	// Search box on header
+	//
 	$('#searchForm').jQLiteID();
 
 	$('ul[id^="expand_"]').hide().addClass('flying');
@@ -55,11 +82,13 @@ $(function() {
 	$('.expand').click(function(event) {
 		event.preventDefault();
 
-		position = $(this).position();
-		$('#expand_' + $(this).attr('id')).css('top', position.top + $(this).height() + 9);
-		$('#expand_' + $(this).attr('id')).css('left', position.left + 1);
+		var id = $(this).attr('id');
 
-		$('#expand_' + $(this).attr('id')).slideToggle('medium');
+		position = $(this).position();
+		$('#expand_' + id).css('top', position.top + $(this).height() + 9);
+		$('#expand_' + id).css('left', position.left + 1);
+
+		$('#expand_' + id).slideToggle('medium');
 		return false;
 	});
 
@@ -84,31 +113,13 @@ $(function() {
 		$.scrollTo('.publish');
 	});
 
-	$('.share').each(function() {
-		if (docurl && doctitle) {
-			$(this).html('<a rel="prettySociable" href="' + docurl + '"></a><span>Arrastra<br />y comparte</span>');
+	$('.ask_remove').on('click', function() {
+		if (confirm('Confirma si deseas eliminar esta publicacion')) {
+			return true;
 		}
-	});
 
-	$.prettySociable({
-		share_on_label: 'Compartir en ',
-		share_label: 'Comparte',
-		hover_padding: 0,
-		tooltip: {
-			offsetTop:500,
-			offsetLeft: 0
-		}
+		return false;
 	});
-
-	$("input[type=file]").filestyle({
-		image: "/assets/style/file.png",
-		imagewidth : 90,
-		imageheight : 20,
-		width : 250
-	});
-
-	$(".vcheck").vchecks();
-	$(".fancy").fancybox();
 
 	$('.smile').each(function() {
 		$(this).html('&#8594;&#9786;');
@@ -124,7 +135,7 @@ $(function() {
 				switch ($.url.segment(1)) {
 					case 'register':
 						$('#refop').change(function() {
-							switch (this.value) {
+							switch ($(this).val()) {
 								case '1':
 									text = 'E-mail de tu amigo';
 									break;
@@ -143,39 +154,184 @@ $(function() {
 				break;
 			case 'topic':
 			case 'post':
-				$('.lsig').each(function() {
-					if ($(this).height() > 275) {
-						$(this).addClass('sig-of');
-					}
-				});
+				// $('.lsig').each(function() {
+				// 	if ($(this).height() > 275) {
+				// 		$(this).addClass('sig-of');
+				// 	}
+				// });
 				break;
 			case 'a':
-				if (!$.url.segment(1)) {
-					xka = false;
-					_.call('athumbs', 'ajx-thumbnails', 30);
-				}
+				// if (!$.url.segment(1)) {
+				// 	xka = false;
+				// 	_.call('athumbs', 'ajx-thumbnails', 30);
+				// }
 				break;
 			case 'community':
-				xka = false;
-				_.call('commol', 'online', 10);
+				// xka = false;
+				// _.call('commol', 'online', 10);
 				break;
 		}
 	}
 
 	if (xka) {
 		// Keep alive
-		$.PeriodicalUpdater('/async/ka/', {
-			method: 'post',
-			data: {ajax: '1'},
-			minTimeout: 10000,
-			maxTimeout: 15000
-		});
+		// $.PeriodicalUpdater('/async/ka/', {
+		// 	method: 'post',
+		// 	data: {ajax: '1'},
+		// 	minTimeout: 10000,
+		// 	maxTimeout: 15000
+		// });
 	}
 
-	$('div[id^="hse_"]').each(function() {
-		$d = $('#se_' + this.id.substr(4)).empty();
-		$('ins:first', this).appendTo($d).addClass('rows5_top_2');
-	});
+	function getNumberOfFiles() {
+		return $('#files').find('div').size();
+	}
+
+	function fileuploadadd(e, data) {
+		filesList.push(data.files[0])
+
+     	data.context = $('<div/>').appendTo('#files');
+	    $.each(data.files, function (index, file) {
+            var node = $('<p/>').append($('<span/>').text(file.name));
+            node.appendTo(data.context);
+        });
+
+     //    var form = $(this).closest('form');
+    	// form.on('submit', function(event) {
+    	// 	event.preventDefault();
+
+    	// 	// alert(form.serializeArray());
+
+    	// 	// data.submit();
+
+    	// 	return false;
+    	// });
+    }
+
+    function fileuploadadd_single(e, data) {
+        if (getNumberOfFiles() > 0) {
+        	return false;
+        }
+
+        fileuploadadd(e, data);
+    }
+
+    function fileuploadprocessalways(e, data) {
+    	try {
+    		var index = data.index,
+	            file = data.files[index],
+	            node = $(data.context.children()[index]);
+
+	    	if (file.preview) {
+	            node.prepend('<br>').prepend(file.preview);
+	        }
+	        if (file.error) {
+	            node.append('<br>').append($('<span class="text-danger"/>').text(file.error));
+	        }
+	        // if (index + 1 === data.files.length && typeof data.context != 'undefined') {
+	        //     data.context.find('button').text('Upload').prop('disabled', !!data.files.error);
+	        // }
+    	} catch(e) {}
+    }
+
+    function fileuploadprogressall(e, data) {
+        var progress = parseInt(data.loaded / data.total * 100, 10);
+        $('#progress .progress-bar').css('width', progress + '%');
+    }
+
+    function fileuploaddone(e, data) {
+        $.each(data.result.files, function (index, file) {
+            if (file.url) {
+                var link = $('<a>')
+                    .attr('target', '_blank')
+                    .prop('href', file.url);
+                $(data.context.children()[index])
+                    .wrap(link);
+            } else if (file.error) {
+                var error = $('<span class="text-danger"/>').text(file.error);
+                $(data.context.children()[index])
+                    .append('<br>')
+                    .append(error);
+            }
+        });
+    }
+
+    function fileuploadfail(e, data) {
+        $.each(data.files, function (index, file) {
+            var error = $('<span class="text-danger"/>').text('File upload failed.');
+            $(data.context.children()[index])
+                .append('<br>')
+                .append(error);
+        });
+    }
+
+	try {
+		var url = window.location;
+
+        $('.fileupload_single button[type=submit]').click(function(event) {
+        	event.preventDefault();
+
+	        $('.fileupload_single').fileupload('send', {files:filesList});
+
+	        return false;
+	    });
+
+	    $('.fileupload button[type=submit]').click(function(event) {
+        	event.preventDefault();
+
+	        $('.fileupload').fileupload('send', {files:filesList});
+
+	        return false;
+	    });
+
+        $('.fileupload_single').fileupload({
+	        url: url,
+	        dataType: 'json',
+	        autoUpload: false,
+
+	        singleFileUploads: true,
+		    limitMultiFileUploads: undefined,
+		    maxNumberOfFiles: 2,
+
+	        acceptFileTypes: /(\.|\/)(gif|jpe?g|png|mp3)$/i,
+	        maxFileSize: 20000000, // 20 MB
+	        disableImageResize: /Android(?!.*Chrome)|Opera/
+	            .test(window.navigator.userAgent),
+	        previewMaxWidth: 100,
+	        previewMaxHeight: 100,
+	        previewCrop: true
+	    })
+	    .on('fileuploadadd', fileuploadadd_single)
+	    .on('fileuploadprocessalways', fileuploadprocessalways)
+	    .on('fileuploadprogressall', fileuploadprogressall)
+	    .on('fileuploaddone', fileuploaddone)
+	    .on('fileuploadfail', fileuploadfail);
+
+	    $('.fileupload').fileupload({
+	        url: url,
+	        dataType: 'json',
+	        autoUpload: false,
+
+	        acceptFileTypes: /(\.|\/)(gif|jpe?g|png|mp3)$/i,
+	        maxFileSize: 20000000, // 20 MB
+	        disableImageResize: /Android(?!.*Chrome)|Opera/
+	            .test(window.navigator.userAgent),
+	        previewMaxWidth: 100,
+	        previewMaxHeight: 100,
+	        previewCrop: true
+	    })
+	    .on('fileuploadadd', fileuploadadd)
+	    .on('fileuploadprocessalways', fileuploadprocessalways)
+	    .on('fileuploadprogressall', fileuploadprogressall)
+	    .on('fileuploaddone', fileuploaddone)
+	    .on('fileuploadfail', fileuploadfail)
+	    .prop('disabled', !$.support.fileInput);
+	} catch(e) { }
+
+	// $('div[id^="hse_"]').each(function() {
+	// 	$d = $('#se_' + this.id.substr(4)).empty();
+	// 	$('ins:first', this).appendTo($d).addClass('rows5_top_2');
+	// });
 });
 
 var _ = {
@@ -194,31 +350,3 @@ var _ = {
 		});
 	}
 }
-
-/*
-var _ = {
-	frame: {
-		list: [],
-		call: function(action, el, rate, decode) {
-			clearTimeout(_.frame.list[el]);
-			_.frame.list[el] = setTimeout("_.frame.ajax('" + action + "', '" + el + "', '" + rate + "', '" + decode + "');", rate * 1000);
-		},
-		ajax: function(action, el, rate, decode) {
-			var v = {
-				method: 'post',
-				postBody: 'ajax=1',
-				asynchronous: true,
-				onSuccess: function(t) {
-					if (el) {
-						response = (decode) ? unescape(t.responseText) : t.responseText;
-						Element.update(el, response);
-					}
-				}
-			}
-			new Ajax.Request('/async/' + action + '/', v);
-
-			_.frame.call(action, el, rate, decode);
-		}
-	}
-}
-*/

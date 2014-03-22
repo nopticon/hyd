@@ -30,7 +30,32 @@ class __event extends mac {
 
 		$error = w();
 
-		if (_button()) {
+		if (request_method() == 'post') {
+			$options = array(
+				'param_name' => 'event_image',
+
+				'upload_dir' => $config->events_path . 'prev/',
+				'upload_url' => $config->events_url . 'prev/',
+
+				'image_versions' => array(
+	                'mini' => array(
+	                	'upload_dir' => $config->events_path . 'mini2/',
+		                'upload_url' => $config->events_url . 'mini2/',
+		                'max_width' => 200,
+		                'max_height' => 200,
+		                'crop' => true
+	                )
+	            )
+			);
+
+			$upload_handler = new UploadHandler($options, false);
+
+			$post_response = $upload_handler->post();
+
+			_pre($options);
+			_pre($post_response);
+			_pre($_REQUEST, true);
+
 			$filepath = $config->events_path;
 			$filepath_1 = $filepath . 'future/';
 			$filepath_2 = $filepath_1 . 'thumbnails/';
@@ -42,7 +67,7 @@ class __event extends mac {
 
 				// Create vars
 				$event_name = request_var('event_name', '');
-				$event_artists = request_var('event_artists', '', true);
+				$event_artists = request_var('event_artists', array(0 => ''));
 				$event_year = request_var('event_year', 0);
 				$event_month = request_var('event_month', 0);
 				$event_day = request_var('event_day', 0);
@@ -72,10 +97,7 @@ class __event extends mac {
 					$event_id = sql_insert('events', $insert);
 
 					//
-					$artists_ary = explode(nr(), $event_artists);
-					foreach ($artists_ary as $row) {
-						$subdomain = get_subdomain($row);
-
+					foreach ($event_artists as $subdomain) {
 						$sql = 'SELECT *
 							FROM _artists
 							WHERE subdomain = ?';
@@ -99,8 +121,8 @@ class __event extends mac {
 
 					$post_message = 'Evento publicado';
 					$post_time = time();
-					$forum_id = 21;
-					$poster_id = 1433;
+					$forum_id = $config->forum_for_events;
+					$poster_id = $config->official_user;
 
 					$sql = 'SELECT *
 						FROM _forum_topics
@@ -198,9 +220,10 @@ class __event extends mac {
 			FROM _forum_topics t
 			LEFT OUTER JOIN _events e ON t.topic_id = e.event_topic
 			WHERE e.event_topic IS NULL
-				AND forum_id = 21
+				AND forum_id = ?
+				AND t.topic_active = 1
 			ORDER BY topic_time DESC';
-		$topics = sql_rowset($sql);
+		$topics = sql_rowset(sql_filter($sql, $config->forum_for_events));
 
 		foreach ($topics as $i => $row) {
 			if (!$i) _style('topics');
@@ -211,10 +234,54 @@ class __event extends mac {
 			);
 		}
 
+		$current_month = date('m');
+		$current_day = date('d');
+		$current_year = date('Y');
+
+		foreach (range(1, 31) as $row) {
+			_style('event_day', array(
+				'VALUE' => $row,
+				'TEXT' => $row,
+				'SELECTED' => ($row == $current_day) ? ' selected="selected"' : '',
+			));
+		}
+
+		foreach (range(1, 12) as $row) {
+			_style('event_month', array(
+				'VALUE' => $row,
+				'TEXT' => $row,
+				'SELECTED' => ($row == $current_month) ? ' selected="selected"' : '',
+			));
+		}
+
+		foreach (range($current_year + 2, $current_year - 2) as $row) {
+			_style('event_year', array(
+				'VALUE' => $row,
+				'TEXT' => $row,
+				'SELECTED' => ($row == $current_year) ? ' selected="selected"' : '',
+			));
+		}
+
+		foreach (range(0, 23) as $row) {
+			_style('event_hours', array(
+				'VALUE' => $row,
+				'TEXT' => $row,
+				'SELECTED' => '',
+			));
+		}
+
+		foreach (range(0, 55, 5) as $row) {
+			_style('event_minutes', array(
+				'VALUE' => $row,
+				'TEXT' => $row,
+				'SELECTED' => '',
+			));
+		}
+
 		v_style(array(
-			'V_DAY' => date('d'),
-			'V_MONTH' => date('m'),
-			'V_YEAR' => date('Y'),
+			'V_DAY' => $current_day,
+			'V_MONTH' => $current_month,
+			'V_YEAR' => $current_year,
 		));
 
 		return;

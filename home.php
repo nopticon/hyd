@@ -29,13 +29,15 @@ $home = new home();
 $artists = new artists();
 $events = new events(true);
 
-$board->popular();
-$board->newest();
+// $board->popular();
+// $board->newest();
+$board->categories();
+$board->forums();
 $board->forum_list();
 
 $home->news();
-$home->board_general();
-$home->board_events();
+// $home->board_general();
+// $home->board_events();
 // $home->poll();
 
 $artists->thumbnails();
