@@ -849,13 +849,16 @@ class comments {
 			$orig = $repl = w();
 			$formats = w('.jpg .gif .png');
 
+			$assets_url = $config->assets_url . 'avatars/';
+			$assets_path = $config->assets_path . 'avatars/';
+
 			foreach ($match[1] as $orig_member) {
 				$member = get_username_base($orig_member);
 				if (!isset($this->options['icons'][$member])) {
 					for ($i = 0, $end = count($formats); $i < $end; $i++) {
 						$icon_file = $member . $formats[$i];
-						if (@file_exists($config->avatar_path . $icon_file)) {
-							$this->options['icons'][$member] = '<a href="' . s_link('m', $member) . '" title="' . $orig_member . '"><img src="' . $config->avatar_url . $icon_file . '" /></a>';
+						if (@file_exists($assets_path . $icon_file)) {
+							$this->options['icons'][$member] = '<a href="' . s_link('m', $member) . '" title="' . $orig_member . '"><img src="' . $assets_url . $icon_file . '" /></a>';
 							break;
 						}
 					}

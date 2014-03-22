@@ -24,7 +24,8 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
 
 body {
 	padding: 20px;
-	background: url(style/wood2.jpg) fixed top center #202837;
+	/*background: url(style/wood2.jpg) fixed top center #202837;*/
+	background: #222;
 }
 /*p, div, span, select {
 	cursor: default;
@@ -386,6 +387,15 @@ hr {
 .smile:hover {
 	text-decoration: none;
 	color: #A4DB00;
+}
+
+.lc2 ul li {
+	float: left;
+	width: 24%;
+}
+.lc2 ul li ul li {
+	float: none;
+	width: 100%;
 }
 
 .ln, .ls_inline {

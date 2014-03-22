@@ -40,12 +40,11 @@ class home {
 			}
 
 			$user_profile = $comments->user_profile($row);
-			$dc_subject = 'Conversaci&oacute;n con ' . $row->username;
 
 			_style('items.notes.item', array(
 				'S_MARK_ID' => $row->parent_id,
 				'U_READ' => s_link('my dc read', $row->last_msg_id) . '#' . $row->last_msg_id,
-				'SUBJECT' => $dc_subject,
+				'SUBJECT' => lang('dc_with') . ' ' . $row->username,
 				'DATETIME' => $user->format_date($row->privmsgs_date),
 				'USER_ID' => $row->user_id,
 				'USERNAME' => $row->username,
