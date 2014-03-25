@@ -38,7 +38,7 @@ class __artist extends mac {
 			return false;
 		}
 
-		$request = _request(array('name' => '', 'local' => 0, 'location' => '', 'genre' => '', 'email' => '', 'www' => '', 'mods' => ''));
+		$request = _request(array('name' => '', 'local' => 0, 'location' => '', 'genre' => 0, 'email' => '', 'www' => '', 'mods' => ''));
 		$request->subdomain = get_subdomain($request->name);
 
 		if (!$request->name) {
@@ -59,14 +59,28 @@ class __artist extends mac {
 			'local' => (int) $request->local,
 			'datetime' => time(),
 			'location' => $request->location,
-			'genre' => $requeset->genre,
+			// 'genre' => $requeset->genre,
 			'email' => $request->email,
 			'www' => str_replace('http://', '', $request->www)
 		);
 		$artist_id = sql_insert('artists', $sql_insert);
 
+		//
+		// Search for selected genre
+		//
+		$sql = 'SELECT genre_id
+			FROM _genres
+			WHERE genre_id = ?';
+		if (sql_field(sql_filter($sql, $request->genre))) {
+			$sql_insert = array(
+				'ag_artist' => $artist_id,
+				'ag_genre' => $request->genre
+			);
+			sql_insert('artists_genres', $sql_insert);
+		}
+
 		// Cache
-		$cache->delete('artist_list artist_records ai_records artist_recent');
+		$cache->delete('artist_list artist_records ai_records artist_recent artist_genre');
 
 		// Create directories
 		artist_check($artist_id);
