@@ -1076,9 +1076,32 @@ class artists extends downloads {
 		$search = request_var('search', '');
 
 		//
+		// Search for all genres with artists.
+		//
+		$sql = 'SELECT DISTINCT g.*
+			FROM _genres g
+			INNER JOIN _artists_genres ag ON ag.ag_genre = g.genre_id
+			ORDER BY genre_name';
+		/*
+			LEFT OUTER JOIN _events e ON t.topic_id = e.event_topic
+			WHERE e.event_topic IS NULL
+				AND forum_id = ?
+				AND t.topic_active = 1
+			ORDER BY topic_time DESC*/
+		$genres = sql_rowset($sql);
+
+		foreach ($genres as $i => $row) {
+			if (!$i) _style('genres');
+
+			_style('genres.row', array(
+				'GENRE' => $row->genre_name)
+			);
+		}
+
+		//
 		// Select artists based on genre or search criteria or default list
 		//
-		$sql = 'SELECT a.ub, a.name, a.subdomain, a.local, a.location, a.genre, i.image
+		$sql = 'SELECT a.ub, a.name, a.subdomain, a.local, a.location, i.image
 			FROM _artists a
 			INNER JOIN _artists_images i ON i.ub = a.ub
 			WHERE i.image_default = 1
