@@ -1,4 +1,4 @@
-Subject: Reactiva tu cuenta en Rock Republik
+Subject: Rock Republik [ Reactiva tu cuenta ]
 Charset: iso-8859-1
 
 Hola {USERNAME},

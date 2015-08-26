@@ -16,8 +16,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-if (!defined('IN_APP')) exit;
-
 class session {
 	public $session_id = '';
 	public $cookie_data = array();
@@ -26,7 +24,7 @@ class session {
 	public $ip = '';
 	public $page = '';
 	public $time = 0;
-
+	
 	public function init($update_page = true, $bypass_empty_ip = false) {
 		global $config;
 		
@@ -44,11 +42,11 @@ class session {
 		}
 		
 		$this->cookie_data = w();
-		if (isset($_COOKIE[$config->cookie_name . '_sid']) || isset($_COOKIE[$config->cookie_name . '_u'])) {
-			$this->cookie_data['u'] = request_var($config->cookie_name . '_u', 0);
-			$this->session_id = request_var($config->cookie_name . '_sid', '');
+		if (isset($_COOKIE[$config['cookie_name'] . '_sid']) || isset($_COOKIE[$config['cookie_name'] . '_u'])) {
+			$this->cookie_data['u'] = request_var($config['cookie_name'] . '_u', 0);
+			$this->session_id = request_var($config['cookie_name'] . '_sid', '');
 		}
-
+		
 		// Is session_id is set
 		if (!empty($this->session_id)) {
 			$sql = 'SELECT m.*, s.*
@@ -56,16 +54,16 @@ class session {
 				WHERE s.session_id = ?
 					AND m.user_id = s.session_user_id';
 			$this->data = sql_fieldrow(sql_filter($sql, $this->session_id));
-
+			
 			// Did the session exist in the DB?
-			if (isset($this->data->user_id)) {
-				$s_ip = implode('.', array_slice(explode('.', $this->data->session_ip), 0, 4));
+			if (isset($this->data['user_id'])) {
+				$s_ip = implode('.', array_slice(explode('.', $this->data['session_ip']), 0, 4));
 				$u_ip = implode('.', array_slice(explode('.', $this->ip), 0, 4));
 				
-				if (/*$u_ip == $s_ip && */$this->data->session_browser == $this->browser) {
+				if (/*$u_ip == $s_ip && */$this->data['session_browser'] == $this->browser) {
 					
 					// Only update session DB a minute or so after last update or if page changes
-					if ($this->time - $this->data->session_time > 60 || $this->data->session_page != $this->page) {
+					if ($this->time - $this->data['session_time'] > 60 || $this->data['session_page'] != $this->page) {
 						$sql_update = array(
 							'session_time' => $this->time
 						);
@@ -80,13 +78,13 @@ class session {
 					}
 					
 					if ($update_page) {
-						$this->data->session_page = $this->page;
+						$this->data['session_page'] = $this->page;
 					}
 					
 					// Ultimately to be removed
-					$this->data->is_member = ($this->data->user_id != 1/* && ($this->data['user_type'] == USER_NORMAL || $this->data['user_type'] == USER_FOUNDER)*/) ? true : false;
-					$this->data->is_bot = (!$this->data->is_member && $this->data->user_id != 1) ? true : false;
-					$this->data->is_founder = ($this->data->user_id != 1 && $this->data->user_type == USER_FOUNDER && !$this->data->is_bot) ? true : false;
+					$this->data['is_member'] = ($this->data['user_id'] != 1/* && ($this->data['user_type'] == USER_NORMAL || $this->data['user_type'] == USER_FOUNDER)*/) ? true : false;
+					$this->data['is_bot'] = (!$this->data['is_member'] && $this->data['user_id'] != 1) ? true : false;
+					$this->data['is_founder'] = ($this->data['user_id'] != 1 && $this->data['user_type'] == USER_FOUNDER && !$this->data['is_bot']) ? true : false;
 					
 					return true;
 				}
@@ -117,7 +115,7 @@ class session {
 		
 		// Garbage collection ... remove old sessions updating user information
 		// if necessary. It means (potentially) 11 queries but only infrequently
-		if ($this->time > $config->session_last_gc + $config->session_gc) {
+		if ($this->time > $config['session_last_gc'] + $config['session_gc']) {
 			$this->session_gc();
 		}
 		
@@ -131,18 +129,18 @@ class session {
 		obtain_bots($active_bots);
 		
 		foreach ($active_bots as $row) {
-			if ($row->bot_agent && strpos(strtolower($this->browser), strtolower($row->bot_agent)) !== false) {
-				$bot = $row->user_id;
+			if ($row['bot_agent'] && strpos(strtolower($this->browser), strtolower($row['bot_agent'])) !== false) {
+				$bot = $row['user_id'];
 			}
 			
 			// If ip is supplied, we will make sure the ip is matching too...
-			if ($row->bot_ip && ($bot || !$row->bot_agent)) {
+			if ($row['bot_ip'] && ($bot || !$row['bot_agent'])) {
 				// Set bot to false, then we only have to set it to true if it is matching
 				$bot = false;
 
-				foreach (explode(',', $row->bot_ip) as $bot_ip) {
+				foreach (explode(',', $row['bot_ip']) as $bot_ip) {
 					if (strpos($this->ip, $bot_ip) === 0) {
-						$bot = $row->user_id;
+						$bot = (int) $row['user_id'];
 						break;
 					}
 				}
@@ -163,12 +161,12 @@ class session {
 					AND user_type <> ?';
 			$this->data = sql_fieldrow(sql_filter($sql, $this->cookie_data['u'], USER_INACTIVE));
 		}
-
+		
 		// If no data was returned one or more of the following occured:
 		// User does not exist
 		// User is inactive
 		// User is bot
-		if (!count($this->data) || !is_object($this->data)) {
+		if (!sizeof($this->data) || !is_array($this->data)) {
 			$this->cookie_data['u'] = ($bot) ? $bot : GUEST;
 
 			$sql = 'SELECT *
@@ -176,24 +174,22 @@ class session {
 				WHERE user_id = ?';
 			$this->data = sql_fieldrow(sql_filter($sql, $this->cookie_data['u']));
 		}
-
-		// _pre($this->data, true);
-
-		if ($this->data->user_id != 1) {
+		
+		if ($this->data['user_id'] != 1) {
 			$sql = 'SELECT session_time, session_id
 				FROM _sessions
 				WHERE session_user_id = ?
 				ORDER BY session_time DESC
 				LIMIT 1';
-			if ($sdata = sql_fieldrow(sql_filter($sql, $this->data->user_id))) {
-				$this->data = object_merge($sdata, $this->data);
+			if ($sdata = sql_fieldrow(sql_filter($sql, $this->data['user_id']))) {
+				$this->data = array_merge($sdata, $this->data);
 				unset($sdata);
-				$this->session_id = $this->data->session_id;
+				$this->session_id = $this->data['session_id'];
 			}
 
-			$this->data->session_last_visit = (isset($this->data->session_time) && $this->data->session_time) ? $this->data->session_time : (($this->data->user_lastvisit) ? $this->data->user_lastvisit : $this->time);
+			$this->data['session_last_visit'] = (isset($this->data['session_time']) && $this->data['session_time']) ? $this->data['session_time'] : (($this->data['user_lastvisit']) ? $this->data['user_lastvisit'] : $this->time);
 		} else {
-			$this->data->session_last_visit = $this->time;
+			$this->data['session_last_visit'] = $this->time;
 		}
 		
 		// At this stage we should have a filled data array, defined cookie u and k data.
@@ -209,17 +205,17 @@ class session {
 		
 		//
 		// Do away with ultimately?
-		$this->data->is_member = (!$bot && $this->data->user_id != 1) ? true : false;
-		$this->data->is_bot = ($bot) ? true : false;
-		$this->data->is_founder = ($this->data->user_id != 1 && $this->data->user_type == USER_FOUNDER && !$this->data->is_bot) ? true : false;
+		$this->data['is_member'] = (!$bot && $this->data['user_id'] != 1) ? true : false;
+		$this->data['is_bot'] = ($bot) ? true : false;
+		$this->data['is_founder'] = ($this->data['user_id'] != 1 && $this->data['user_type'] == USER_FOUNDER && !$this->data['is_bot']) ? true : false;
 		//
 		//
 		
 		// Create or update the session
 		$sql_ary = array(
-			'session_user_id' => (int) $this->data->user_id,
+			'session_user_id' => (int) $this->data['user_id'],
 			'session_start' => (int) $this->time,
-			'session_last_visit' => (int) $this->data->session_last_visit,
+			'session_last_visit' => (int) $this->data['session_last_visit'],
 			'session_time' => (int) $this->time,
 			'session_browser' => (string) $this->browser,
 			'session_ip' => (string) $this->ip,
@@ -228,15 +224,15 @@ class session {
 		
 		if ($update_page) {
 			$sql_ary['session_page'] = (string) $this->page;
-			$this->data->session_page = $sql_ary['session_page'];
+			$this->data['session_page'] = $sql_ary['session_page'];
 		}
-
+		
 		$sql = 'UPDATE _sessions SET ??
 			WHERE session_id = ?';
 		sql_query(sql_filter($sql, sql_build('UPDATE', $sql_ary), $this->session_id));
 		
 		if (!$this->session_id || !sql_affectedrows()) {
-			$this->session_id = $this->data->session_id = md5(unique_id());
+			$this->session_id = $this->data['session_id'] = md5(unique_id());
 
 			$sql_ary['session_id'] = (string) $this->session_id;
 			sql_insert('sessions', $sql_ary);
@@ -248,7 +244,7 @@ class session {
 			$this->set_cookie('u', $this->cookie_data['u'], $cookie_expire);
 			$this->set_cookie('sid', $this->session_id, 0);
 			
-			if ($this->data->is_member) {
+			if ($this->data['is_member']) {
 				$this->register_ip();
 			}
 
@@ -260,7 +256,7 @@ class session {
 	
 	public function register_ip() {
 		$insert = array(
-			'log_user_id' => (int) $this->data->user_id,
+			'log_user_id' => (int) $this->data['user_id'],
 			'log_session' => $this->session_id,
 			'log_ip' => $this->ip,
 			'log_agent' => $this->browser,
@@ -274,7 +270,7 @@ class session {
 			WHERE log_user_id = ?
 			ORDER BY log_time DESC
 			LIMIT 10, 1';
-		if ($log_time = sql_field(sql_filter($sql, $this->data->user_id), 'log_time', '')) {
+		if ($log_time = sql_field(sql_filter($sql, $this->data['user_id']), 'log_time', '')) {
 			$sql = 'DELETE FROM _members_iplog
 				WHERE log_time = ?';
 			sql_query(sql_filter($sql, $log_time));
@@ -297,19 +293,19 @@ class session {
 		$sql = 'DELETE FROM _sessions
 			WHERE session_id = ?
 				AND session_user_id = ?';
-		sql_query(sql_filter($sql, $this->session_id, $this->data->user_id));
+		sql_query(sql_filter($sql, $this->session_id, $this->data['user_id']));
 
-		if ($this->data->user_id != GUEST) {
+		if ($this->data['user_id'] != GUEST) {
 			// Delete existing session, update last visit info first!
 			$sql = 'UPDATE _members
 				SET user_lastvisit = ?
 				WHERE user_id = ?';
-			sql_query(sql_filter($sql, $this->data->session_time, $this->data->user_id));
+			sql_query(sql_filter($sql, $this->data['session_time'], $this->data['user_id']));
 			
 			$sql = 'UPDATE _members_iplog SET log_endtime = ?
 				WHERE log_session = ?
 					AND log_user_id = ?';
-			sql_query(sql_filter($sql, $this->time, $this->session_id, $this->data->user_id));
+			sql_query(sql_filter($sql, $this->time, $this->session_id, $this->data['user_id']));
 
 			// Reset the data array
 			$this->data = w();
@@ -341,32 +337,32 @@ class session {
 	*/
 	public function session_gc() {
 		global $config;
-
+		
 		// Get expired sessions, only most recent for each user
 		$sql = 'SELECT session_id, session_user_id, session_page, MAX(session_time) AS recent_time
 			FROM _sessions
 			WHERE session_time < ?
 			GROUP BY session_user_id, session_page
 			LIMIT 5';
-		$result = sql_rowset(sql_filter($sql, ($this->time - $config->session_length)));
-
+		$result = sql_rowset(sql_filter($sql, ($this->time - $config['session_length'])));
+		
 		$del_user_id = '';
 		$del_sessions = 0;
-
+		
 		foreach ($result as $row) {
-			if ($row->session_user_id != GUEST) {
+			if ($row['session_user_id'] != GUEST) {
 				$sql = 'UPDATE _members
 					SET user_lastvisit = ?, user_lastpage = ?
 					WHERE user_id = ?';
-				sql_query(sql_filter($sql, $row->recent_time, $row->session_page, $row->session_user_id));
+				sql_query(sql_filter($sql, $row['recent_time'], $row['session_page'], $row['session_user_id']));
 				
 				$sql = 'UPDATE _members_iplog SET log_endtime = ?
 					WHERE log_session = ?
 						AND log_user_id = ?';
-				sql_query(sql_filter($sql, $row->recent_time, $row->session_id, $row->session_user_id));
+				sql_query(sql_filter($sql, $row['recent_time'], $row['session_id'], $row['session_user_id']));
 			}
 			
-			$del_user_id .= (($del_user_id != '') ? ', ' : '') . (int) $row->session_user_id;
+			$del_user_id .= (($del_user_id != '') ? ', ' : '') . (int) $row['session_user_id'];
 			$del_sessions++;
 		}
 		
@@ -375,7 +371,7 @@ class session {
 			$sql = 'DELETE FROM _sessions
 				WHERE session_user_id IN (??)
 					AND session_time < ?';
-			sql_query(sql_filter($sql, $del_user_id, ($this->time - $config->session_length)));
+			sql_query(sql_filter($sql, $del_user_id, ($this->time - $config['session_length'])));
 		}
 
 		if ($del_sessions < 5) {
@@ -395,10 +391,10 @@ class session {
 	public function set_cookie($name, $cookiedata, $cookietime) {
 		global $config;
 		
-		//if ($config->cookie_domain != 'localhost') {
-		setcookie($config->cookie_name . '_' . $name, $cookiedata, $cookietime, $config->cookie_path, $config->cookie_domain);
+		//if ($config['cookie_domain'] != 'localhost') {
+		setcookie($config['cookie_name'] . '_' . $name, $cookiedata, $cookietime, $config['cookie_path'], $config['cookie_domain']);
 		//} else {
-		//	setcookie($config->cookie_name . '_' . $name, $cookiedata, $cookietime, $config->cookie_path->);
+		//	setcookie($config['cookie_name'] . '_' . $name, $cookiedata, $cookietime, $config['cookie_path']);
 		//}
 	}
 
@@ -413,9 +409,9 @@ class session {
 	public function check_ban($user_id = false, $user_ip = false, $user_email = false) {
 		global $config;
 		
-		$user_id = ($user_id === false) ? $this->data->user_id : $user_id;
+		$user_id = ($user_id === false) ? $this->data['user_id'] : $user_id;
 		$user_ip = ($user_ip === false) ? $this->ip : $user_ip;
-		$user_email = ($user_email === false) ? $this->data->user_email : $user_email;
+		$user_email = ($user_email === false) ? $this->data['user_email'] : $user_email;
 		
 		$banned = false;
 
@@ -426,15 +422,14 @@ class session {
 		$result = sql_rowset(sql_filter($sql, time()));
 		
 		foreach ($result as $row) {
-			if ((!empty($row->ban_userid) && intval($row->ban_userid) == $user_id) ||
-				(!empty($row->ban_ip) && preg_match('#^' . str_replace('*', '.*?', $row->ban_ip) . '$#i', $user_ip)) ||
-				(!empty($row->ban_email) && preg_match('#^' . str_replace('*', '.*?', $row->ban_email) . '$#i', $user_email))) {
-				if (!empty($row->ban_exclude)) {
+			if ((!empty($row['ban_userid']) && intval($row['ban_userid']) == $user_id) ||
+				(!empty($row['ban_ip']) && preg_match('#^' . str_replace('*', '.*?', $row['ban_ip']) . '$#i', $user_ip)) ||
+				(!empty($row['ban_email']) && preg_match('#^' . str_replace('*', '.*?', $row['ban_email']) . '$#i', $user_email))) {
+				if (!empty($row['ban_exclude'])) {
 					$banned = false;
 					break;
 				} else {
 					$banned = true;
-					break;
 				}
 			}
 		}
@@ -459,27 +454,27 @@ class session {
 	public function d($d = false, $v = false) {
 		if ($d === false) {
 			if ($v !== false) {
-				$v->is_member = ($v->user_id != 1) ? true : false;
-				$v->is_bot = false;
-				$v->is_founder = ($v->user_id != 1 && $v->user_type == USER_FOUNDER && !$v->is_bot) ? true : false;
+				$v['is_member'] = ($v['user_id'] != 1) ? true : false;
+				$v['is_bot'] = false;
+				$v['is_founder'] = ($v['user_id'] != 1 && $v['user_type'] == USER_FOUNDER && !$v['is_bot']) ? true : false;
 
 				$this->data = $v;
 			}
 			
 			$r = $this->data;
-			unset($r->user_password);
+			unset($r['user_password']);
 			return $r;
 		}
 		
-		if (!preg_match('/^user_/', $d) && !isset($this->data->$d)) {
+		if (!preg_match('/^user_/', $d) && !isset($this->data[$d])) {
 			$d = 'user_' . $d;
 		}
 		
 		if ($v !== false) {
-			$this->data->$d = $v;
+			$this->data[$d] = $v;
 		}
 		
-		return (isset($this->data->$d)) ? $this->data->$d : false;
+		return (isset($this->data[$d])) ? $this->data[$d] : false;
 	}
 }
 
@@ -497,8 +492,6 @@ class user extends session {
 	public $date_format;
 	public $timezone;
 	public $dst;
-	public $auth;
-	public $today_counter = false;
 
 	public $lang_name;
 	public $lang_path;
@@ -508,27 +501,46 @@ class user extends session {
 	public $keyvalues = array();
 
 	public function __construct() {
-		$this->auth = new auth();
-
 		return;
 	}
 
 	public function setup($lang_set = false, $style = false) {
 		global $template, $config, $auth, $cache;
 
-		if ($this->data->user_id != GUEST) {
-			$this->lang_name = (file_exists(ROOT.'language/' . $this->data->user_lang . "/main.php")) ? $this->data->user_lang : $config->default_lang;
+		if ($this->data['user_id'] != GUEST) {
+			$this->lang_name = (file_exists(ROOT.'language/' . $this->data['user_lang'] . "/main.php")) ? $this->data['user_lang'] : $config['default_lang'];
 			$this->lang_path = ROOT.'language/' . $this->lang_name . '/';
 
-			$this->date_format = $this->data->user_dateformat;
-			$this->timezone = $this->data->user_timezone * 3600;
-			$this->dst = $this->data->user_dst * 3600;
+			$this->date_format = $this->data['user_dateformat'];
+			$this->timezone = $this->data['user_timezone'] * 3600;
+			$this->dst = $this->data['user_dst'] * 3600;
 		} else {
-			$this->lang_name = $config->default_lang;
+			$this->lang_name = $config['default_lang'];
 			$this->lang_path = ROOT.'language/' . $this->lang_name . '/';
-			$this->date_format = $config->default_dateformat;
-			$this->timezone = $config->board_timezone * 3600;
-			$this->dst = $config->board_dst * 3600;
+			$this->date_format = $config['default_dateformat'];
+			$this->timezone = $config['board_timezone'] * 3600;
+			$this->dst = $config['board_dst'] * 3600;
+
+			if ($accept_lang = v_server('HTTP_ACCEPT_LANGUAGE')) {
+				$accept_lang_ary = explode(',', $accept_lang);
+				foreach ($accept_lang_ary as $accept_lang) {
+					// Set correct format ... guess full xx_YY form
+					$accept_lang = substr($accept_lang, 0, 2) . '_' . strtoupper(substr($accept_lang, 3, 2));
+					if (file_exists(ROOT.'language/' . $accept_lang . "/main.php")) {
+						$this->lang_name = $config['default_lang'] = $accept_lang;
+						$this->lang_path = ROOT.'language/' . $accept_lang . '/';
+						break;
+					} else {
+						// No match on xx_YY so try xx
+						$accept_lang = substr($accept_lang, 0, 2);
+						if (file_exists(ROOT . 'language/' . $accept_lang . "/main.php")) {
+							$this->lang_name = $config['default_lang'] = $accept_lang;
+							$this->lang_path = ROOT.'language/' . $accept_lang . '/';
+							break;
+						}
+					}
+				}
+			}
 		}
 		
 		// We include common language file here to not load it every time a custom language file is included
@@ -545,8 +557,8 @@ class user extends session {
 		// Is board disabled and user not an admin or moderator?
 		// TODO
 		// New ACL enabling board access while offline?
-		if ($config->site_disable && $this->is('founder')) {
-			status('503 Service Temporarily Unavailable');
+		if ($config['site_disable'] && $this->is('founder')) {
+			status("503 Service Temporarily Unavailable");
 			header("Retry-After: 3600");
 
 			sql_close();
@@ -630,7 +642,7 @@ class user extends session {
 		}
 
 		if (!$this->lang_name) {
-			$this->lang_name = $config->default_lang;
+			$this->lang_name = $config['default_lang'];
 		}
 
 		$sql = 'SELECT lang_id
@@ -641,8 +653,8 @@ class user extends session {
 	}
 	
 	public function is($name, $user_id = false, $artist = false) {
-		if (isset($this->data->{'is_' . $name})) {
-			return $this->data->{'is_' . $name};
+		if (isset($this->data['is_' . $name])) {
+			return $this->data['is_' . $name];
 		}
 
 		if ($user_id === false) {
@@ -769,7 +781,7 @@ class user extends session {
 		
 		if ($mode != 'founder' && is_array($response)) {
 			if ($response_founder = $this->_team_auth_list('founder')) {
-				$response = object_merge($response, $response_founder);
+				$response = array_merge($response, $response_founder);
 			}
 		}
 		
@@ -861,31 +873,6 @@ class user extends session {
 
 	}
 
-	public function today_count() {
-		if (!$this->is('member')) {
-			$this->today_counter = 0;
-
-			return;
-		}
-		return;
-
-		// Get today items count
-		$sql = 'SELECT COUNT(element) AS total
-			FROM _members_unread
-			WHERE user_id = ?';
-		$this->today_counter = sql_field(sql_filter($sql, $this->d('user_id')), 'total', 0);
-
-		return $this->today_counter;
-	}
-
-	public function today_count_text() {
-		if ($this->today_counter === false) {
-			$this->today_count();
-		}
-
-		return ($this->today_counter == 1) ? sprintf(lang('unread_item_count'), $this->today_counter) : sprintf(lang('unread_items_count'), $this->today_counter);
-	}
-
 	public function save_unread($element, $item, $where_id = 0, $reply_to = 0, $reply_to_return = true, $update_rows = false) {
 		static $from_lastvisit;
 		
@@ -894,7 +881,7 @@ class user extends session {
 		}
 		
 		if ($reply_to) {
-			if ($reply_to == $this->data->user_id) {
+			if ($reply_to == $this->data['user_id']) {
 				return;
 			}
 			
@@ -927,7 +914,7 @@ class user extends session {
 						AND a.user_id = m.user_id
 						AND m.user_id <> ?
 					ORDER BY m.user_id';
-				$sql = sql_filter($sql, $where_id, $this->data->user_id);
+				$sql = sql_filter($sql, $where_id, $this->data['user_id']);
 				break;
 			case UH_C:
 			case UH_M:
@@ -940,7 +927,7 @@ class user extends session {
 				$result = sql_rowset(sql_filter($sql, $where_id));
 				
 				foreach ($result as $row) {
-					$sql_in[] = $row->user_id;
+					$sql_in[] = $row['user_id'];
 				}
 				
 				$sql = 'SELECT u.user_id
@@ -952,17 +939,17 @@ class user extends session {
 				$result = sql_rowset(sql_filter($sql, $where_id));
 				
 				foreach ($result as $row) {
-					$sql_in[] = $row->user_id;
+					$sql_in[] = $row['user_id'];
 				}
 
 				$sql = 'SELECT user_id
 					FROM _members
-					WHERE (user_type IN (??, ??)' . (count($sql_in) ? ' OR user_id IN (' . implode(',', $sql_in) . ')' : '') . ')
+					WHERE (user_type IN (??, ??)' . ((sizeof($sql_in)) ? ' OR user_id IN (' . implode(',', $sql_in) . ')' : '') . ')
 						AND user_type NOT IN (??)
 						AND user_id <> ?
 						AND user_lastvisit > ?
 					ORDER BY user_id';
-				$sql = sql_filter($sql, USER_FOUNDER, USER_ADMIN, USER_INACTIVE, $this->data->user_id, $from_lastvisit);
+				$sql = sql_filter($sql, USER_FOUNDER, USER_ADMIN, USER_INACTIVE, $this->data['user_id'], $from_lastvisit);
 				break;
 			case UH_B:
 				$sql = 'SELECT user_id
@@ -990,7 +977,7 @@ class user extends session {
 						AND user_lastvisit > 0 
 						AND user_lastvisit > ?
 					ORDER BY user_id';
-				$sql = sql_filter($sql, USER_INACTIVE, $this->data->user_id, $from_lastvisit);
+				$sql = sql_filter($sql, USER_INACTIVE, $this->data['user_id'], $from_lastvisit);
 				break;
 		}
 		
@@ -1002,15 +989,15 @@ class user extends session {
 		$result = sql_rowset(sql_filter($sql_items, $element, $item));
 		
 		foreach ($result as $row) {
-			$this->items[$row->user_id] = true;
+			$this->items[$row['user_id']] = true;
 		}
 		
 		// Process members SQL
 		$result = sql_rowset($sql);
 		
 		foreach ($result as $row) {
-			if (!isset($this->items[$row->user_id])) {
-				$this->insert_unread($row->user_id, $element, $item);
+			if (!isset($this->items[$row['user_id']])) {
+				$this->insert_unread($row['user_id'], $element, $item);
 			}
 		}
 		
@@ -1042,18 +1029,18 @@ class user extends session {
 	}
 	
 	public function get_unread($element, $item) {
-		if (!$this->data->is_member || !$element || !$item) {
+		if (!$this->data['is_member'] || !$element || !$item) {
 			return false;
 		}
 		
-		if (!count($this->unr)) {
+		if (!sizeof($this->unr)) {
 			$sql = 'SELECT element, item
 				FROM _members_unread
 				WHERE user_id = ?';
-			$result = sql_rowset(sql_filter($sql, $this->data->user_id));
+			$result = sql_rowset(sql_filter($sql, $this->data['user_id']));
 			
 			foreach ($result as $row) {
-				$this->unr[$row->element][$row->item] = true;
+				$this->unr[$row['element']][$row['item']] = true;
 			}
 		}
 		
@@ -1076,7 +1063,7 @@ class user extends session {
 				WHERE user_id = ?
 					AND element = ?
 					AND item IN (??)';
-			sql_query(sql_filter($sql, $this->data->user_id, $element, $items));
+			sql_query(sql_filter($sql, $this->data['user_id'], $element, $items));
 			
 			return true;
 		}
@@ -1106,14 +1093,14 @@ class user extends session {
 		global $user;
 		
 		if ($uid === false) {
-			$uid = $this->data->user_id;
-			$block = $this->data->user_block_points;
+			$uid = $this->data['user_id'];
+			$block = $this->data['user_block_points'];
 		} else {
 			$sql = 'SELECT user_block_points
 				FROM _members
 				WHERE user_id = ?';
 			if ($row = sql_fieldrow(sql_filter($sql, $uid))) {
-				$block = $row->user_block_points;
+				$block = $row['user_block_points'];
 			}
 		}
 		
@@ -1131,7 +1118,7 @@ class user extends session {
 	
 	public function points_remove($n, $uid = false) {
 		if ($uid === false) {
-			$uid = $this->data->user_id;
+			$uid = $this->data['user_id'];
 		}
 		
 		$sql = 'UPDATE _members
@@ -1161,7 +1148,7 @@ class user extends session {
 		$excref = $domain[0] . '/' . $domain[1];
 		$domain = trim($domain[0]);
 		
-		if (($domain == '') || preg_match('#^.*?' . $config->server_name . '.*?$#i', $domain)) {
+		if (($domain == '') || preg_match('#^.*?' . $config['server_name'] . '.*?$#i', $domain)) {
 			return;
 		}
 		
@@ -1207,14 +1194,14 @@ class user extends session {
 		
 		foreach ($result as $row) {
 			if ($group_id == '') {
-				$group_id = $row->group_id;
+				$group_id = $row['group_id'];
 			}
 			
-			if ($row->banned) {
+			if ($row['banned']) {
 				$banned = true;
 			}
 			
-			if (($row->url == $url) && !$update) {
+			if (($row['url'] == $url) && !$update) {
 				$sql_banned = '';
 				$update = true;
 				$insert = false;
@@ -1294,7 +1281,7 @@ class auth {
 			}
 		}
 		
-		if ((isset($this->data[$member_id]) && is_array($this->data[$member_id]) && count($this->data[$member_id])) || $user->is('founder')) {
+		if ((isset($this->data[$member_id]) && is_array($this->data[$member_id]) && sizeof($this->data[$member_id])) || $user->is('founder')) {
 			if ($module !== false && empty($this->data[$member_id]['a_' . $module])) {
 				return false;
 			}
@@ -1407,7 +1394,7 @@ class auth {
 				if ($forum_id != AUTH_LIST_ALL) {
 					$u_access[] = $row;
 				} else {
-					$u_access[$row->forum_id][] = $row;
+					$u_access[$row['forum_id']][] = $row;
 				}
 			}
 		}
@@ -1429,7 +1416,7 @@ class auth {
 		$auth_user = w();
 		foreach ($auth_fields as $a_key) {
 			if ($forum_id != AUTH_LIST_ALL) {
-				$value = $f_access->$a_key;
+				$value = $f_access[$a_key];
 				
 				$custom_mod = forum_for_team($forum_id);
 	
@@ -1460,44 +1447,7 @@ class auth {
 						break;
 				}
 			} else {
-				
-				// TODO: Convert $f_access to object.
-
-				foreach ($f_access as $k => $row) {
-					$value = $row->$a_key;
-					$f_forum_id = $row->forum_id;
-					
-					$custom_mod = forum_for_team($forum_id);
-	
-					switch ($value) {
-						case AUTH_ALL:
-							$auth_user[$f_forum_id][$a_key] = true;
-							$auth_user[$f_forum_id][$a_key . '_type'] = lang('auth_anonymous_users');
-							break;
-						case AUTH_REG:
-							$auth_user[$f_forum_id][$a_key] = $user->is('member');
-							$auth_user[$f_forum_id][$a_key . '_type'] = lang('auth_registered_users');
-							break;
-						case AUTH_ACL:
-							$auth_user[$f_forum_id][$a_key] = ($user->is('member')) ? $this->check_user(AUTH_ACL, $a_key, $u_access[$f_forum_id], $custom_mod) : false;
-							$auth_user[$f_forum_id][$a_key . '_type'] = lang('auth_users_granted_access');
-							break;
-						case AUTH_MOD:
-							//$auth_user[$f_forum_id][$a_key] = ($user->is('member')) ? $this->check_user(AUTH_MOD, 'auth_mod', $u_access[$f_forum_id]) : false;
-							$auth_user[$f_forum_id][$a_key] = $user->is($custom_mod);
-							$auth_user[$f_forum_id][$a_key . '_type'] = lang('auth_moderators');
-							break;
-						case AUTH_ADMIN:
-							$auth_user[$f_forum_id][$a_key] = $this->founder;
-							$auth_user[$f_forum_id][$a_key . '_type'] = lang('auth_administrators');
-							break;
-						default:
-							$auth_user[$f_forum_id][$a_key] = false;
-							break;
-					}
-				}
-
-				/*for ($k = 0, $end = count($f_access); $k < $end; $k++) {
+				for ($k = 0, $end = sizeof($f_access); $k < $end; $k++) {
 					$value = $f_access[$k][$a_key];
 					$f_forum_id = $f_access[$k]['forum_id'];
 					
@@ -1529,7 +1479,7 @@ class auth {
 							$auth_user[$f_forum_id][$a_key] = false;
 							break;
 					}
-				}*/
+				}
 			}
 		}
 	
@@ -1542,18 +1492,12 @@ class auth {
 			//$auth_user['auth_mod'] = ($user->is('member')) ? $this->check_user(AUTH_MOD, 'auth_mod', $u_access) : false;
 			$auth_user['auth_mod'] = ($user->is('member')) ? $user->is($custom_mod) : false;
 		} else {
-			foreach ($f_access as $k => $row) {
-				$f_forum_id = $row->forum_id;
-				$custom_mod = forum_for_team($forum_id);
-	
-				$auth_user[$f_forum_id]['auth_mod'] = ($user->is('member')) ? (isset($u_access[$f_forum_id]) ? $this->check_user(AUTH_MOD, 'auth_mod', $u_access[$f_forum_id], $custom_mod) : false) : false;
-			}
-			/*for ($k = 0, $end = count($f_access); $k < $end; $k++) {
+			for ($k = 0, $end = sizeof($f_access); $k < $end; $k++) {
 				$f_forum_id = $f_access[$k]['forum_id'];
 				$custom_mod = forum_for_team($forum_id);
 	
 				$auth_user[$f_forum_id]['auth_mod'] = ($user->is('member')) ? (isset($u_access[$f_forum_id]) ? $this->check_user(AUTH_MOD, 'auth_mod', $u_access[$f_forum_id], $custom_mod) : false) : false;
-			}*/
+			}
 		}
 	
 		return $auth_user;
@@ -1564,8 +1508,8 @@ class auth {
 		
 		$auth_user = 0;
 	
-		if ($end = count($u_access)) {
-			for ($j = 0; $j < $end; $j++) {
+		if (sizeof($u_access)) {
+			for ($j = 0, $end = sizeof($u_access); $j < $end; $j++) {
 				$result = 0;
 				switch ($type) {
 					case AUTH_ACL:
@@ -1587,3 +1531,5 @@ class auth {
 		return $auth_user;
 	}
 }
+
+?>

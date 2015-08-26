@@ -192,7 +192,7 @@ class comments extends common {
 					}
 					
 					// Insert
-					if (!count($error)) {
+					if (!sizeof($error)) {
 						$sql_insert = array(
 							'help_module' => (int) $module_id,
 							'help_es' => $help_es,
@@ -213,7 +213,7 @@ class comments extends common {
 						$error[] = 'CONTROL_COMMENTS_HELP_EMPTY';
 					}
 					
-					if (!count($error)) {
+					if (!sizeof($error)) {
 						$sql_insert = array(
 							'help_id' => $help_id,
 							'faq_question_es' => $question_es,
@@ -231,7 +231,7 @@ class comments extends common {
 						$error[] = 'CONTROL_COMMENTS_HELP_EMPTY';
 					}
 					
-					if (!count($error)) {
+					if (!sizeof($error)) {
 						$sql_insert = array(
 							'module_name' => $module_name
 						);
@@ -240,7 +240,7 @@ class comments extends common {
 					break;
 			}
 			
-			if (!count($error)) {
+			if (!sizeof($error)) {
 				sql_query($sql);
 				
 				$cache->delete('help_cat help_faq help_modules');
@@ -403,7 +403,7 @@ class comments extends common {
 					}
 					
 					// Update
-					if (!count($error)) {
+					if (!sizeof($error)) {
 						$sql_update = array(
 							'help_es' => $help_es,
 							'help_en' => $help_en,
@@ -430,7 +430,7 @@ class comments extends common {
 						$error[] = 'CONTROL_COMMENTS_HELP_EMPTY';
 					}
 					
-					if (!count($error)) {
+					if (!sizeof($error)) {
 						$sql = 'SELECT *
 							FROM _help_cat
 							WHERE help_id = ?';
@@ -440,7 +440,7 @@ class comments extends common {
 					}
 					
 					// Update
-					if (!count($error)) {
+					if (!sizeof($error)) {
 						$sql_update = array(
 							'help_id' => (int) $help_id,
 							'faq_question_es' => $question_es,
@@ -460,7 +460,7 @@ class comments extends common {
 					break;
 			} // switch
 			
-			if (count($error)) {
+			if (sizeof($error)) {
 				_style('error', array(
 					'MESSAGE' => parse_error($error))
 				);
@@ -525,3 +525,5 @@ class comments extends common {
 		
 	}
 }
+
+?>

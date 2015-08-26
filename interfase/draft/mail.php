@@ -32,8 +32,8 @@ class _mail {
 	
 	public function parse_header($header) {
 		$last_header = '';
-		$parsed_header = w();
-		for ($j = 0, $end = count($header); $j < $end; $j++) {
+		$parsed_header = array();
+		for ($j = 0, $end = sizeof($header); $j < $end; $j++) {
 			$hd = split(':', $header[$j], 2);
 			
 			if (preg_match_all("/\s/", $hd[0], $matches) || !isset($hd[1]) || !$hd[1]) {
@@ -160,7 +160,7 @@ class _mail {
 		}
 		
 		$content_type = split(';', $header["content-type"]);
-		for ($i = 0, $end = count($content_type); $i < $end; $i++) {
+		for ($i = 0, $end = sizeof($content_type); $i < $end; $i++) {
 			$content_type[$i] = trim(strtolower($content_type[$i]));
 		}
 		
@@ -212,7 +212,7 @@ class _mail {
 				$dec_text = explode("\n", quoted_printable_decode(implode("\n", $text)));
 				break;
 			case 'base64':
-				for($i = 0, $end = count($text); $i < $end; $i++) {
+				for($i = 0, $end = sizeof($text); $i < $end; $i++) {
 					$text[$i] = trim($text[$i]);
 				}
 				$dec_text = explode("\n", base64_decode(@implode('', $text)));
@@ -241,7 +241,7 @@ class _mail {
 			}
 		}
 		
-		for ($i = 0, $end = count($parts); $i < $end; $i++) {
+		for ($i = 0, $end = sizeof($parts); $i < $end; $i++) {
 			$parts[$i] = explode("\n", trim(implode("\n", $parts[$i])));
 		}
 		
@@ -268,3 +268,5 @@ class _mail {
 		$this->body($this->parse_header($headerpart), explode("\n", trim(implode("\n", $contentpart))));
 	}
 }
+
+?>

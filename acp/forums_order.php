@@ -38,8 +38,8 @@ class __forum_order extends mac {
 				if (!$i) _style('forums');
 				
 				_style('forums.row', array(
-					'FORUM_ID' => $row->forum_id,
-					'FORUM_NAME' => $row->forum_name)
+					'FORUM_ID' => $row['forum_id'],
+					'FORUM_NAME' => $row['forum_name'])
 				);
 			}	
 			
@@ -60,3 +60,5 @@ class __forum_order extends mac {
 		_pre('Update.', true);
 	}
 }
+
+?>

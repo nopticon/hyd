@@ -32,7 +32,8 @@ class __forums_topic_poll extends mac {
 			return false;
 		}
 		
-		if (!$topic_id = request_var('topic_id', '')) {
+		$topic_id = request_var('topic_id', '');
+		if (empty($topic_id)) {
 			fatal_error();
 		}
 		
@@ -49,15 +50,15 @@ class __forums_topic_poll extends mac {
 				AND v.vote_id = r.vote_id
 				AND v.vote_user_id = m.user_id
 				AND r.vote_option_id = v.vote_cast';
-		$result = sql_rowset(sql_filter($sql, $data_opt->vote_id));
+		$result = sql_rowset(sql_filter($sql, $data_opt['vote_id']));
 		
 		echo '<table>';
 		
 		foreach ($result as $row) {
 			echo '<tr>
-			<td>' . $row->username . '</td>
-			<td>' . $row->vote_option_text . '</td>
-			<td>' . $row->vote_user_ip . '</td>
+			<td>' . $row['username'] . '</td>
+			<td>' . $row['vote_option_text'] . '</td>
+			<td>' . $row['vote_user_ip'] . '</td>
 			</tr>';
 		}
 		
@@ -66,3 +67,5 @@ class __forums_topic_poll extends mac {
 		return;
 	}
 }
+
+?>

@@ -768,3 +768,6 @@ class pop3
 		return "<$banner>";
 	}
 }
+// End class
+
+?>

@@ -49,7 +49,7 @@ class __event_artist_create extends mac {
 		foreach ($events as $i => $row) {
 			if (!$i) _style('events');
 
-			$row_month = ucfirst($user->format_date($row->date, 'F \'y'));
+			$row_month = ucfirst($user->format_date($row['date'], 'F \'y'));
 
 			if ($last_month != $row_month) {
 				$last_month = $row_month;
@@ -60,9 +60,9 @@ class __event_artist_create extends mac {
 			}
 
 			_style('events.month.row', array(
-				'ID' => $row->id,
-				'TITLE' => $row->title,
-				'DATE' => $user->format_date($row->date))
+				'ID' => $row['id'],
+				'TITLE' => $row['title'],
+				'DATE' => $user->format_date($row['date']))
 			);
 		}
 
@@ -90,16 +90,18 @@ class __event_artist_create extends mac {
 			FROM _artists_events
 			WHERE a_artist = ?
 				AND a_event = ?';
-		if (sql_field(sql_filter($sql, $this->object->ub, $v->event))) {
+		if (sql_field(sql_filter($sql, $this->object['ub'], $v->event))) {
 			return;
 		}
 
 		$sql_insert = array(
-			'a_artist' => $this->object->ub,
-			'a_event' => $event->id
+			'a_artist' => $this->object['ub'],
+			'a_event' => $event['id']
 		);
 		sql_insert('artists_events', $sql_insert);
 		
-		return redirect(s_link('events', $event->event_alias));
+		return redirect(s_link('events', $event['event_alias']));
 	}
 }
+
+?>

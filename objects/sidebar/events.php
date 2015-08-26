@@ -18,7 +18,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_APP')) exit;
 
-// require_once(ROOT . 'objects/events.php');
+require_once(ROOT . 'objects/events.php');
 
-$events = new events();
-$events->past();
+$events = new _events(true);
+$events->_lastevent();
+
+?>

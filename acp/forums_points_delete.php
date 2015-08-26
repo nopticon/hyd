@@ -37,15 +37,17 @@ class __forims_points_delete extends mac {
 			$sql = 'UPDATE _forum_topics
 				SET topic_points = 0
 				WHERE topic_id = ?';
-			sql_query(sql_filter($sql, $row->exclude_topic));
+			sql_query(sql_filter($sql, $row['exclude_topic']));
 			
 			if (!$i) _style('topics');
 			
 			_style('topics.rows', array(
-				'NAME' => $row->exclude_topic)
+				'NAME' => $row['exclude_topic'])
 			);
 		}
 		
 		return;
 	}
 }
+
+?>

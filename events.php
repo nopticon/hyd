@@ -18,11 +18,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 define('IN_APP', true);
 require_once('./interfase/common.php');
+require_once(ROOT . 'objects/events.php');
 
 $user->init();
 $user->setup();
 
-$events = new events();
+$events = new _events();
 $events->run();
 
-page_layout($events->get_title('EVENTS'), $events->get_template('events'));
+page_layout($events->get_title('UE'), $events->get_template('events'));
+
+?>

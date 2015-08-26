@@ -18,11 +18,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 define('IN_APP', true);
 require_once('./interfase/common.php');
+require_once(ROOT . 'objects/artists.php');
 
 $user->init();
 $user->setup();
 
-$artists = new artists();
+$artists = new _artists();
 $artists->run();
 
-page_layout($artists->get_title('ARTISTS'), $artists->get_template('artists'), false, $artists->ajax());
+page_layout($artists->get_title('UB'), $artists->get_template('artists'), false, $artists->ajax());
+
+?>

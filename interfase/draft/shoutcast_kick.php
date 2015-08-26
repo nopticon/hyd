@@ -16,7 +16,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-if (!isset($config['kick_script'])) {
+if (!isset($config['kick_script']))
+{
 	define('IN_APP', true);
 	require_once('./interfase/common.php');
 	
@@ -24,6 +25,7 @@ if (!isset($config['kick_script'])) {
 	$user->setup();
 	
 	redirect(s_link('forum djs'));
+	exit;
 }
 
 $scl = array(
@@ -44,36 +46,43 @@ $stats_get_line.= "User-Agent: StreamSolutions  (Mozilla Compatible)\r\n\r\n";
 
 // Open Connection
 $fp = fsockopen($scl['host'] , $scl['host_port'], &$errno, &$errstr, 30);
-if ($fp) {
+if ($fp)
+{
 	fputs($fp, $stats_get_line);
 	
 	$scl['data'][$scl['var']] = '';
-	while (!feof($fp)) {
+	while (!feof($fp))
+	{
 		$scl['data'][$scl['var']] .= fgets($fp, 1000);
 	}
 	fclose($fp);
 	
 	$lines = split("\n", $scl['data'][$scl['var']]);
-	if ($lines[8] != $scl['value']) {
+	if ($lines[8] != $scl['value'])
+	{
 		$fp = @fsockopen($scl['ip'] , $scl['port'], &$errno, &$errstr, 30);
-		if ($fp) {
+		if ($fp)
+		{
 			$kick_request = 'GET /admin.cgi?pass=' . $scl['passwd'] . '&mode=kicksrc' . " HTTP/1.0\r\n";
 			$kick_request.= "User-Agent: StreamSolutions  (Mozilla Compatible)\r\n\r\n";
 			$data = '';
 			
-			fwrite($fp, $kick_request);
-			while (!feof($fp)) {
+			fputs($fp, $kick_request);
+			while (!feof($fp))
+			{
 				$data .= fgets($fp, 1000);
 			}
 			fclose($fp);
 			
 			$lines = split("\n", trim($data));
-			if (!isset($lines[4])) {
+			if (!isset($lines[4]))
+			{
 				$lines[4] = '';
 			}
 			
 			// If successful
-			if (strstr($lines[4], 'redirect')) {
+			if (strstr($lines[4], 'redirect'))
+			{
 				$insert = array(
 					'log_uid' => $user->data['user_id'],
 					'log_time' => time()
@@ -85,3 +94,5 @@ if ($fp) {
 }
 
 _pre('Disconnected.');
+
+?>

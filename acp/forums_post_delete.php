@@ -44,39 +44,43 @@ class __forums_post_delete extends mac {
 			fatal_error();
 		}
 		
-		$forum_id = $post_info->forum_id;
-		$topic_id = $post_info->topic_id;
+		$forum_id = $post_info['forum_id'];
+		$topic_id = $post_info['topic_id'];
 		
 		$post_data = array(
-			'poster_post' => ($post_info->poster_id == $userdata->user_id) ? true : false,
-			'first_post' => ($post_info->topic_first_post_id == $post_id) ? true : false,
-			'last_post' => ($post_info->topic_last_post_id == $post_id) ? true : false,
-			'last_topic' => ($post_info->forum_last_topic_id == $topic_id) ? true : false,
-			'has_poll' => ($post_info->topic_vote) ? true : false
+			'poster_post' => ($post_info['poster_id'] == $userdata['user_id']) ? true : false,
+			'first_post' => ($post_info['topic_first_post_id'] == $post_id) ? true : false,
+			'last_post' => ($post_info['topic_last_post_id'] == $post_id) ? true : false,
+			'last_topic' => ($post_info['forum_last_topic_id'] == $topic_id) ? true : false,
+			'has_poll' => ($post_info['topic_vote']) ? true : false
 		);
 		
-		if ($post_data->first_post && $post_data->has_poll) {
+		if ($post_data['first_post'] && $post_data['has_poll']) {
 			$sql = 'SELECT *
 				FROM _poll_options vd, _poll_results vr
 				WHERE vd.topic_id = ?
 					AND vr.vote_id = vd.vote_id
 				ORDER BY vr.vote_option_id';
 			if ($row = sql_fieldrow(sql_filter($sql, $topic_id))) {
-				$poll_id = $row->vote_id;
+				$poll_id = $row['vote_id'];
 			}
 		}
 		
 		//
 		// Process
 		//
-		$sql = 'UPDATE _forums_posts SET post_active = ?
+		$sql = 'DELETE FROM _forum_posts
 			WHERE post_id = ?';
-		sql_query(sql_filter($sql, 0, $post_id));
+		sql_query(sql_filter($sql, $post_id));
 		
-		if ($post_data->first_post && $post_data->last_post) {
-			$sql = 'UPDATE _forum_topics SET topic_active = ?
+		if ($post_data['first_post'] && $post_data['last_post']) {
+			$sql = 'DELETE FROM _forum_topics
 				WHERE topic_id = ?';
-			sql_query(sql_filter($sql, 0, $topic_id));
+			sql_query(sql_filter($sql, $topic_id));
+			
+			$sql = 'DELETE FROM _forum_topics_fav
+				WHERE topic_id = ?';
+			sql_query(sql_filter($sql, $topic_id));
 		}
 		
 		//
@@ -85,37 +89,34 @@ class __forums_post_delete extends mac {
 		$forum_update_sql = 'forum_posts = forum_posts - 1';
 		$topic_update_sql = '';
 	
-		if ($post_data->last_post) {
-			if ($post_data->first_post) {
+		if ($post_data['last_post']) {
+			if ($post_data['first_post']) {
 				$forum_update_sql .= ', forum_topics = forum_topics - 1';
 			} else {
 				$topic_update_sql .= 'topic_replies = topic_replies - 1';
 				
 				$sql = 'SELECT MAX(post_id) AS last_post_id
 					FROM _forum_posts
-					WHERE topic_id = ?
-						AND topic_active = 1';
+					WHERE topic_id = ?';
 				if ($last_post_id = sql_field(sql_filter($sql, $topic_id), 'last_post_id', 0)) {
 					$topic_update_sql .= ', topic_last_post_id = ' . $last_post_id;
 				}
 			}
 	
-			if ($post_data->last_topic) {
+			if ($post_data['last_topic']) {
 				$sql = 'SELECT MAX(topic_id) AS last_topic_id
 					FROM _forum_topics
-					WHERE forum_id = ?
-						AND topic_active = 1';
+					WHERE forum_id = ?';
 				if ($last_topic_id = sql_field(sql_filter($sql, $forum_id), 'last_topic_id', 0)) {
 					$forum_update_sql .= ', forum_last_topic_id = ' . $last_topic_id;
 				}
 			}
-		} else if ($post_data->first_post) {
+		} else if ($post_data['first_post']) {
 			$sql = 'SELECT MIN(post_id) AS first_post_id
 				FROM _forum_posts
-				WHERE topic_id = ?
-					AND post_active = 1';
+				WHERE topic_id = ?';
 			if ($first_post_id = sql_field(sql_filter($sql, $topic_id), 'first_post_id', 0)) {
-				$topic_update_sql .= 'topic_replies = topic_replies - 1, topic_first_post_id = ' . $first_post_id->first_post_id;
+				$topic_update_sql .= 'topic_replies = topic_replies - 1, topic_first_post_id = ' . $first_post_id['first_post_id'];
 			}
 		} else {
 			$topic_update_sql .= 'topic_replies = topic_replies - 1';
@@ -132,31 +133,31 @@ class __forums_post_delete extends mac {
 			sql_query(sql_filter($sql, $topic_id));
 		}
 	
-		/*$sql = 'UPDATE _members SET user_posts = user_posts - 1
+		$sql = 'UPDATE _members SET user_posts = user_posts - 1
 			WHERE user_id = ?';
-		sql_query(sql_filter($sql, $post_info->poster_id));*/
+		sql_query(sql_filter($sql, $post_info['poster_id']));
 		
 		redirect(s_link('topic', $topic_id));
 	}
 }
 
 function sync_post_delete($id) {
-	$last_topic = $total_posts = $total_topics = 0;
+	$last_topic = 0;
+	$total_posts = 0;
+	$total_topics = 0;
 	
 	//
 	$sql = 'SELECT COUNT(post_id) AS total 
 		FROM _forum_posts
-		WHERE forum_id = ?
-			AND post_active = 1';
+		WHERE forum_id = ?';
 	$total_posts = sql_field(sql_filter($sql, $id), 'total', 0);
 	
 	$sql = 'SELECT MAX(topic_id) as last_topic, COUNT(topic_id) AS total
 		FROM _forum_topics
-		WHERE forum_id = ?
-			AND topic_active = 1';
+		WHERE forum_id = ?';
 	if ($row = sql_fieldrow(sql_filter($sql, $id))) {
-		$last_topic = $row->last_topic;
-		$total_topics = $row->total;
+		$last_topic = $row['last_topic'];
+		$total_topics = $row['total'];
 	}
 	
 	//
@@ -164,5 +165,7 @@ function sync_post_delete($id) {
 		WHERE forum_id = ?';
 	sql_query(sql_filter($sql, $last_topic, $total_posts, $total_topics, $id));
 	
-	return sql_affected();
+	return;
 }
+
+?>

@@ -48,3 +48,5 @@ class __event_delete extends mac {
 		return redirect(s_link('events'));
 	}
 }
+
+?>

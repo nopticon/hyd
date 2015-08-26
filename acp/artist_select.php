@@ -53,11 +53,13 @@ class __artist_select extends mac {
 			if (!$i) _style('artist_list');
 			
 			_style('artist_list.row', array(
-				'URL' => s_link('acp', array($redirect, 'a' => $row->subdomain)),
-				'NAME' => $row->name)
+				'URL' => s_link('acp', array($redirect, 'a' => $row['subdomain'])),
+				'NAME' => $row['name'])
 			);
 		}
 		
 		return;
 	}
 }
+
+?>

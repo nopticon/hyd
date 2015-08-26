@@ -20,18 +20,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 if (strtolower($_SERVER['REQUEST_METHOD']) == 'post') {
 	define('IN_APP', true);
 	define('ROOT', './');
-	
+
 	require_once(ROOT . 'interfase/common.php');
-	
+
 	$module = request_var('module', '');
-	
+
 	if (!empty($module) && preg_match('#^([a-z\_]+)$#i', $module)) {
 		$module_path = ROOT . 'objects/async/' . $module . '.php';
-		
+
 		if (@file_exists($module_path)) {
 			$user->init(false);
 			$user->setup();
-			
+
 			@require_once($module_path);
 			return;
 		}
@@ -53,3 +53,5 @@ foreach ($matches as $row_k => $row_v) {
 
 echo str_replace($orig, $repl, implode('', $file_content));
 exit;
+
+?>

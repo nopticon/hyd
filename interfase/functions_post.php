@@ -27,7 +27,8 @@ $unhtml_specialchars_replace = array('>', '<', '"', '&');
 /**
 * DECODE TEXT -> This will/should be handled eventually
 */
-function decode_message(&$message, $bbcode_uid = '') {
+function decode_message(&$message, $bbcode_uid = '')
+{
 	global $config;
 
 	$message = str_replace('<br />', nr(), $message);
@@ -53,7 +54,8 @@ function decode_message(&$message, $bbcode_uid = '') {
 // This function will prepare a posted message for
 // entry into the database.
 //
-function prepare_message($message) {
+function prepare_message($message)
+{
 	global $config;
 	
 	// Do some general 'cleanup' first before processing message,
@@ -65,14 +67,16 @@ function prepare_message($message) {
 	
 	$allowed_tags = split(',', $config['allow_html_tags']);
 	
-	if (count($allowed_tags)) {
+	if (sizeof($allowed_tags))
+	{
 		$message = preg_replace('#&lt;(\/?)(' . str_replace('*', '.*?', implode('|', $allowed_tags)) . ')&gt;#is', '<$1$2>', $message);
 	}
 	
 	return $message;
 }
 
-function unprepare_message($message) {
+function unprepare_message($message)
+{
 	global $unhtml_specialchars_match, $unhtml_specialchars_replace;
 
 	return preg_replace($unhtml_specialchars_match, $unhtml_specialchars_replace, $message);
@@ -81,48 +85,65 @@ function unprepare_message($message) {
 //
 // Prepare a message for posting
 // 
-function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on, &$error_msg, &$username, &$bbcode_uid, &$subject, &$message, &$nowplaying, &$poll_title, &$poll_options, &$poll_length) {
+function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on, &$error_msg, &$username, &$bbcode_uid, &$subject, &$message, &$nowplaying, &$poll_title, &$poll_options, &$poll_length)
+{
 	global $config, $userdata, $lang;
 
 	// Check subject
-	if (!empty($subject)) {
+	if (!empty($subject))
+	{
 		$subject = htmlspecialchars(trim($subject));
-	} else if ($mode == 'newtopic' || ($mode == 'editpost' && $post_data['first_post'])) {
+	}
+	else if ($mode == 'newtopic' || ($mode == 'editpost' && $post_data['first_post']))
+	{
 		$error_msg .= (!empty($error_msg)) ? '<br />' . $lang['Empty_subject'] : $lang['Empty_subject'];
 	}
 
 	// Check message
-	if (!empty($message)) {
+	if (!empty($message))
+	{
 		$message = prepare_message($message, $html_on, $bbcode_on, $smilies_on);
-	} else if ($mode != 'delete' && $mode != 'poll_delete') {
+	}
+	else if ($mode != 'delete' && $mode != 'poll_delete') 
+	{
 		$error_msg .= (!empty($error_msg)) ? '<br />' . $lang['Empty_message'] : $lang['Empty_message'];
 	}
 	
 	//
 	// Handle poll stuff
 	//
-	if ($mode == 'newtopic' || ($mode == 'editpost' && $post_data['first_post'])) {
+	if ($mode == 'newtopic' || ($mode == 'editpost' && $post_data['first_post']))
+	{
 		$poll_length = (isset($poll_length)) ? max(0, intval($poll_length)) : 0;
 
-		if (!empty($poll_title)) {
+		if (!empty($poll_title))
+		{
 			$poll_title = htmlspecialchars(trim($poll_title));
 		}
 
-		if(!empty($poll_options)) {
+		if(!empty($poll_options))
+		{
 			$temp_option_text = w();
-			while(list($option_id, $option_text) = @each($poll_options)) {
+			while(list($option_id, $option_text) = @each($poll_options))
+			{
 				$option_text = trim($option_text);
-				if (!empty($option_text)) {
+				if (!empty($option_text))
+				{
 					$temp_option_text[$option_id] = htmlspecialchars($option_text);
 				}
 			}
 			$option_text = $temp_option_text;
 
-			if (count($poll_options) < 2) {
+			if (count($poll_options) < 2)
+			{
 				$error_msg .= (!empty($error_msg)) ? '<br />' . $lang['To_few_poll_options'] : $lang['To_few_poll_options'];
-			} else if (count($poll_options) > $config['max_poll_options']) {
+			}
+			else if (count($poll_options) > $config['max_poll_options']) 
+			{
 				$error_msg .= (!empty($error_msg)) ? '<br />' . $lang['To_many_poll_options'] : $lang['To_many_poll_options'];
-			} else if ($poll_title == '') {
+			}
+			else if ($poll_title == '')
+			{
 				$error_msg .= (!empty($error_msg)) ? '<br />' . $lang['Empty_poll_title'] : $lang['Empty_poll_title'];
 			}
 		}
@@ -134,7 +155,8 @@ function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on,
 //
 // Post a new topic/reply/poll or edit existing post/poll
 //
-function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_id, &$post_id, &$poll_id, &$topic_type, &$bbcode_on, &$html_on, &$smilies_on, &$attach_sig, &$bbcode_uid, &$post_username, &$post_subject, &$post_message, &$post_np, &$poll_title, &$poll_options, &$poll_length, $ub = '') {
+function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_id, &$post_id, &$poll_id, &$topic_type, &$bbcode_on, &$html_on, &$smilies_on, &$attach_sig, &$bbcode_uid, &$post_username, &$post_subject, &$post_message, &$post_np, &$poll_title, &$poll_options, &$poll_length, $ub = '')
+{
 	global $config, $lang, $userdata, $user_ip, $tree;
 	
 	$current_time = time();
@@ -163,7 +185,8 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 	}
 	*/
 	
-	if ($mode == 'newtopic' || ($mode == 'editpost' && $post_data['first_post'])) {
+	if ($mode == 'newtopic' || ($mode == 'editpost' && $post_data['first_post']))
+	{
 		$topic_vote = (!empty($poll_title) && count($poll_options) >= 2) ? 1 : 0;
 		
 		if ($mode != 'editpost') {
@@ -237,7 +260,8 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 	//
 	// Add poll
 	// 
-	if (($mode == 'newtopic' || ($mode == 'editpost' && $post_data['edit_poll'])) && !empty($poll_title) && count($poll_options) >= 2) {
+	if (($mode == 'newtopic' || ($mode == 'editpost' && $post_data['edit_poll'])) && !empty($poll_title) && count($poll_options) >= 2)
+	{
 		if ($post_data['has_poll']) {
 			$sql_update = array(
 				'vote_text' => $poll_title,
@@ -306,7 +330,8 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 			}
 		}
 
-		if (!empty($delete_option_sql)) {
+		if (!empty($delete_option_sql))
+		{
 			$sql = 'DELETE FROM _poll_results
 				WHERE vote_option_id IN (??)
 					AND vote_id = ?';
@@ -322,7 +347,8 @@ function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 //
 // Update post stats and details
 //
-function update_post_stats(&$mode, &$post_data, &$forum_id, &$topic_id, &$post_id, &$user_id) {
+function update_post_stats(&$mode, &$post_data, &$forum_id, &$topic_id, &$post_id, &$user_id)
+{
 	$sign = ($mode == 'delete') ? '- 1' : '+ 1';
 	$forum_update_sql = "forum_posts = forum_posts $sign";
 	$topic_update_sql = '';
@@ -371,14 +397,16 @@ function update_post_stats(&$mode, &$post_data, &$forum_id, &$topic_id, &$post_i
 		WHERE forum_id = ' . $forum_id;
 	sql_query($sql);
 
-	if ($topic_update_sql != '') {
+	if ($topic_update_sql != '')
+	{
 		$sql = "UPDATE _forum_topics SET
 			$topic_update_sql
 			WHERE topic_id = $topic_id";
 		sql_query($sql);
 	}
 
-	if ($mode != 'poll_delete') {
+	if ($mode != 'poll_delete')
+	{
 		$sql = "UPDATE _members
 			SET user_posts = user_posts $sign
 			WHERE user_id = $user_id";
@@ -421,7 +449,10 @@ function update_post_stats(&$mode, &$post_data, &$forum_id, &$topic_id, &$post_i
 				'user_pending' => 0
 			);
 			sql_insert('members_group', $sql_insert);
-		} elseif ( $user_already_added && $user_remove) {
+		}
+		else
+		if ( $user_already_added && $user_remove)
+		{
 			//remove user from auto group
 			$sql = 'DELETE FROM _members_group
 				WHERE group_id = ? 
@@ -436,16 +467,20 @@ function update_post_stats(&$mode, &$post_data, &$forum_id, &$topic_id, &$post_i
 //
 // Delete a post/poll
 //
-function delete_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_id, &$post_id, &$poll_id) {
+function delete_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_id, &$post_id, &$poll_id)
+{
 	global $config, $lang, $userdata, $user_ip;
 
-	if ($mode != 'poll_delete') {
+	if ($mode != 'poll_delete')
+	{
 		$sql = 'DELETE FROM _forum_posts
 			WHERE post_id = ?';
 		sql_query(sql_filter($sql, $post_id));
 
-		if ($post_data['last_post']) {
-			if ($post_data['first_post']) {
+		if ($post_data['last_post'])
+		{
+			if ($post_data['first_post'])
+			{
 				$forum_update_sql .= ', forum_topics = forum_topics - 1';
 				
 				$sql = 'DELETE FROM _forum_topics
@@ -461,7 +496,8 @@ function delete_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 		}
 	}
 
-	if ($mode == 'poll_delete' || ($mode == 'delete' && $post_data['first_post'] && $post_data['last_post']) && $post_data['has_poll'] && $post_data['edit_poll']) {
+	if ($mode == 'poll_delete' || ($mode == 'delete' && $post_data['first_post'] && $post_data['last_post']) && $post_data['has_poll'] && $post_data['edit_poll'])
+	{
 		$sql = 'DELETE FROM _poll_options
 			WHERE topic_id = ?';
 		sql_query(sql_filter($sql, $topic_id));
@@ -475,10 +511,13 @@ function delete_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 		sql_query(sql_filter($sql, $poll_id));
 	}
 
-	if ($mode == 'delete' && $post_data['first_post'] && $post_data['last_post']) {
+	if ($mode == 'delete' && $post_data['first_post'] && $post_data['last_post'])
+	{
 		$meta = '<meta http-equiv="refresh" content="3;url=' . s_link('forum', $forum_id) . '">';
 		$message = $lang['Deleted'];
-	} else {
+	}
+	else
+	{
 		$meta = '<meta http-equiv="refresh" content="3;url=' . s_link('topic', $topic_id) . '">';
 		$message = (($mode == 'poll_delete') ? $lang['Poll_delete'] : $lang['Deleted']) . '<br /><br />' . sprintf($lang['Click_return_topic'], '<a href="' . s_link('topic', $topic_id) . '">', '</a>');
 	}
@@ -491,18 +530,23 @@ function delete_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_
 //
 // Handle user notification on new post
 //
-function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topic_id, &$post_id, &$notify_user) {
+function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topic_id, &$post_id, &$notify_user)
+{
 	global $config, $lang, $userdata, $user_ip;
 
 	$current_time = time();
 
-	if ($mode == 'delete') {
+	if ($mode == 'delete')
+	{
 		$delete_sql = (!$post_data['first_post'] && !$post_data['last_post']) ? sql_filter(' AND user_id = ? ', $userdata['user_id']) : '';
 		
 		$sql = 'DELETE FROM _forum_topics_fav WHERE topic_id = ?' . $delete_sql;
 		sql_query(sql_filter($sql, $topic_id));
-	} else {
-		if ($mode == 'reply') {
+	}
+	else 
+	{
+		if ($mode == 'reply')
+		{
 			$sql = 'SELECT ban_userid
 				FROM _banlist';
 			$result = sql_rowset($sql);
@@ -545,7 +589,7 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 					$update_watched_sql .= ($update_watched_sql != '') ? ', ' . $row['user_id'] : $row['user_id'];
 				}
 				
-				if (count($bcc_list_ary)) {
+				if (sizeof($bcc_list_ary)) {
 					$emailer = new emailer();
 
 					$server_name = trim($config['server_name']);
@@ -559,10 +603,12 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 					$topic_title = unprepare_message($topic_title);
 
 					@reset($bcc_list_ary);
-					while (list($user_lang, $bcc_list) = each($bcc_list_ary)) {
+					while (list($user_lang, $bcc_list) = each($bcc_list_ary))
+					{
 						$emailer->use_template('topic_notify', $user_lang);
 		
-						for ($i = 0; $i < count($bcc_list); $i++) {
+						for ($i = 0; $i < count($bcc_list); $i++)
+						{
 							$emailer->bcc($bcc_list[$i]);
 						}
 
@@ -590,7 +636,8 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 				}
 			}
 
-			if ($update_watched_sql != '') {
+			if ($update_watched_sql != '')
+			{
 				$sql = 'UPDATE _forum_topics_fav
 					SET notify_status = ?
 					WHERE topic_id = ?
@@ -621,7 +668,8 @@ function user_notification($mode, &$post_data, &$topic_title, &$forum_id, &$topi
 //
 // Username search
 //
-function username_search($search_match) {
+function username_search($search_match)
+{
 	global $config, $template, $lang, $images, $themeset, $starttime, $gen_simple_header, $admin_level, $level_prior;
 	
 	$gen_simple_header = true;
@@ -669,3 +717,5 @@ function username_search($search_match) {
 	
 	return page_footer();
 }
+
+?>

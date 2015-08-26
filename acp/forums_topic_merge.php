@@ -53,10 +53,10 @@ class __forums_topic_merge extends mac {
 			fatal_error();
 		}
 		
-		$from_forum_id = (int) $row->forum_id;
-		$from_poll = (int) $row->topic_vote;
-		$to_forum_id = (int) $row->forum_id;
-		$to_poll = (int) $row->topic_vote;
+		$from_forum_id = (int) $row['forum_id'];
+		$from_poll = (int) $row['topic_vote'];
+		$to_forum_id = (int) $row['forum_id'];
+		$to_poll = (int) $row['topic_vote'];
 		
 		if ($from_poll) {
 			if ($to_poll) {
@@ -78,9 +78,7 @@ class __forums_topic_merge extends mac {
 			}
 		}
 		
-		//
-		// Update destination topic
-		//
+		// Update destination toic
 		$sql = 'SELECT topic_views
 			FROM _forum_topics
 			WHERE topic_id = ?';
@@ -91,14 +89,13 @@ class __forums_topic_merge extends mac {
 		}
 		
 		//
-		// Select user_id's favourites on this topic
 		//
 		$sql = 'SELECT *
 			FROM _forum_topics_fav
 			WHERE topic_id = ?';
 		$user_ids = sql_rowset(sql_filter($sql, $to_topic), false, 'user_id');
 		
-		$sql_user = (count($user_ids)) ? ' AND user_id NOT IN (' . _implode(', ', $user_ids) . ')' : '';
+		$sql_user = (sizeof($user_ids)) ? ' AND user_id NOT IN (' . _implode(', ', $user_ids) . ')' : '';
 		
 		$sql = array(
 			sql_filter('UPDATE _forum_topics_fav SET topic_id = ? WHERE topic_id = ?', $to_topic, $from_topic) . $sql_user,
@@ -112,9 +109,8 @@ class __forums_topic_merge extends mac {
 			$sql[] = sql_filter('UPDATE _forum_topics SET topic_vote = 1 WHERE topic_id = ?', $to_topic);
 		}
 		sql_query($sql);
-
-		// TODO: Today save
-		// $user->save_unread(UH_T, $to_topic);
+		
+		$user->save_unread(UH_T, $to_topic);
 		
 		if (in_array($to_forum_id, array(20, 39))) {
 			topic_feature($to_topic, 0);
@@ -140,7 +136,7 @@ function sync_topic_merge($type, $id = false) {
 			$result = sql_rowset($sql);
 			
 			foreach ($result as $row) {
-				sync('forum', $row->forum_id);
+				sync('forum', $row['forum_id']);
 			}
 			break;
 		case 'all topics':
@@ -149,7 +145,7 @@ function sync_topic_merge($type, $id = false) {
 			$result = sql_rowset($sql);
 			
 			foreach ($result as $row) {
-				sync('topic', $row->topic_id);
+				sync('topic', $row['topic_id']);
 			}
 			break;
 		case 'forum':
@@ -179,10 +175,10 @@ function sync_topic_merge($type, $id = false) {
 				FROM _forum_posts
 				WHERE topic_id = ?';
 			if ($row = sql_fieldrow(sql_filter($sql, $id))) {
-				if ($row->total_posts) {
+				if ($row['total_posts']) {
 					$sql = 'UPDATE _forum_topics SET topic_replies = ?, topic_first_post_id = ?, topic_last_post_id = ?
 						WHERE topic_id = ?';
-					$sql = sql_filter($sql, ($row->total_posts - 1), $row->first_post, $row->last_post, $id);
+					$sql = sql_filter($sql, ($row['total_posts'] - 1), $row['first_post'], $row['last_post'], $id);
 				} else {
 					$sql = sql_filter('DELETE FROM _forum_topics WHERE topic_id = ?', $id);
 				}
@@ -193,3 +189,5 @@ function sync_topic_merge($type, $id = false) {
 	
 	return true;
 }
+
+?>

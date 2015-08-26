@@ -25,7 +25,7 @@ if (!defined('IN_APP')) exit;
  * type_order
  */
 
-class awards {
+class _awards {
 	public function __construct() {
 		return;
 	}
@@ -40,11 +40,13 @@ class awards {
 			if (!$i) _style('awards');
 			
 			_style('awards.row', array(
-				'NAME' => $row->type_name,
-				'DESC' => $row->type_desc)
+				'NAME' => $row['type_name'],
+				'DESC' => $row['type_desc'])
 			);
 		}
 		
 		return;
 	}
 }
+
+?>

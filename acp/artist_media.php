@@ -42,19 +42,19 @@ class __artist_media extends mac {
 			FROM _dl
 			WHERE ub = ?
 			ORDER BY title';
-		if ($result = sql_rowset(sql_filter($sql, $this->object->ub))) {
+		if ($result = sql_rowset(sql_filter($sql, $this->object['ub']))) {
 			foreach ($result as $i => $row) {
 				if (!$i) _style('media');
 				
 				_style('media.row', array(
-					'ITEM' => $row->id,
-					'URL' => s_link('a', $this->object->subdomain, 9, $row->id),
-					'POSTS_URL' => s_link('a', $this->object->subdomain, 9, $row->id) . '#dpf',
-					'IMAGE_TYPE' => $downloads_type[$row->ud],
-					'DOWNLOAD_TITLE' => $row->title,
-					'VIEWS' => $row->views,
-					'DOWNLOADS' => $row->downloads)
-				);
+					'ITEM' => $row['id'],
+					'URL' => s_link('a', $this->object['subdomain'], 9, $row['id']),
+					'POSTS_URL' => s_link('a', $this->object['subdomain'], 9, $row['id']) . '#dpf',
+					'IMAGE_TYPE' => $downloads_type[$row['ud']],
+					'DOWNLOAD_TITLE' => $row['title'],
+					'VIEWS' => $row['views'],
+					'DOWNLOADS' => $row['downloads']
+				));
 			}
 		}
 		
@@ -66,16 +66,14 @@ class __artist_media extends mac {
 		
 		$limit = set_time_limit(0);
 		
-		$filepath = $config->artists_path . $this->object->ub . '/';
+		$filepath = $config['artists_path'] . $this->object['ub'] . '/';
 		$filepath_1 = $filepath . 'media/';
 		
-		$f = (artist_check($this->object->ub . ' media') !== false) ? $upload->process($filepath_1, 'create', 'mp3') : false;
+		$f = (artist_check($this->object['ub'] . ' media') !== false) ? $upload->process($filepath_1, 'create', 'mp3') : false;
 		
 		if ($f === false) {
 			return;
-		}
-
-		if (!count($upload->error)) {
+		} else if (!sizeof($upload->error)) {
 			$a = sql_total('_dl');
 			
 			foreach ($f as $i => $row) {
@@ -95,7 +93,7 @@ class __artist_media extends mac {
 				
 				$sql_insert = array(
 					'ud' => 1,
-					'ub' => $this->object->ub,
+					'ub' => $this->object['ub'],
 					'alias' => friendly($mt->title),
 					'title' => $mt->title,
 					'views' => 0,
@@ -118,12 +116,12 @@ class __artist_media extends mac {
 			
 			$cache->delete('downloads_list');
 			
-			redirect(s_link('acp', array('artist_media', 'a' => $this->object->subdomain, 'id' => $media_id)));
+			redirect(s_link('acp', array('artist_media', 'a' => $this->object['subdomain'], 'id' => $media_id)));
+		} else {
+			_style('error', array(
+				'MESSAGE' => parse_error($upload->error))
+			);
 		}
-
-		_style('error', array(
-			'MESSAGE' => parse_error($upload->error))
-		);
 		
 		return;
 	}
@@ -141,21 +139,24 @@ class __artist_media extends mac {
 			FROM _dl
 			WHERE id IN (??)
 				AND ub = ?';
-		if (!$result = sql_rowset(sql_filter($sql, _implode(',', $remove), $this->object->ub))) {
-			fatal_error();
-		}
-
-		foreach ($result as $row) {
-			$path = artist_root($this->object->ub . ' media ' . $row->id . '.mp3');
-			_rm($path);
-
-			$sql = 'DELETE FROM _dl
-				WHERE id = ?';
-			sql_query(sql_filter($sql, $row->id));
+		if ($result = sql_rowset(sql_filter($sql, _implode(',', $remove), $this->object['ub']))) {
+			foreach ($result as $row) {
+				$path = artist_root($this->object['ub'] . ' media ' . $row['id'] . '.mp3');
 				
-			$cache->delete('downloads_list');
+				_rm($path);
+				
+				$sql = 'DELETE FROM _dl
+					WHERE id = ?';
+				sql_query(sql_filter($sql, $row['id']));
+				
+				$cache->delete('downloads_list');
+			}
+			
+			redirect(s_link('acp', array('artist_media', 'a' => $this->object['subdomain'])));
 		}
-
-		return redirect(s_link('acp', array('artist_media', 'a' => $this->object->subdomain)));
+		
+		return;
 	}
 }
+
+?>

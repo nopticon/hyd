@@ -27,6 +27,14 @@ require_once(ROOT . 'interfase/common.php');
 $user->init(false);
 $user->setup();
 
+function etag($filename, $quote = true) {
+	if (!file_exists($filename) || !($info = stat($filename))) {
+		return false;
+	}
+	$q = ($quote) ? '"' : '';
+	return sprintf("$q%x-%x-%x$q", $info['ino'], $info['size'], $info['mtime']);
+}
+
 $filename = request_var('filename', '');
 if (empty($filename) || !preg_match('#[a-z\_]+#i', $filename)) {
 	fatal_error();
@@ -84,3 +92,5 @@ sql_close();
 
 echo preg_replace('/\s\s+/', ' ', str_replace(array(nr(1), nr(), "\t"), '', preg_replace('!/\*.*?\*/!s', '', $template->vars['EXT'])));
 exit;
+
+?>

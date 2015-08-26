@@ -31,13 +31,13 @@ class __event extends mac {
 		$error = w();
 		
 		if (_button()) {
-			$filepath = $config->events_path;
+			$filepath = $config['events_path'];
 			$filepath_1 = $filepath . 'future/';
 			$filepath_2 = $filepath_1 . 'thumbnails/';
 			
 			$f = $upload->process($filepath_1, 'event_image', 'jpg');
 			
-			if (!count($upload->error) && $f !== false) {
+			if (!sizeof($upload->error) && $f !== false) {
 				$img = sql_total('_events');
 				
 				// Create vars
@@ -57,7 +57,6 @@ class __event extends mac {
 					if ($xa === false) {
 						continue;
 					}
-					
 					$xb = $upload->resize($row, $filepath_1, $filepath_2, $img, array(100, 75), false, false);
 					
 					$event_alias = friendly($event_name);
@@ -84,9 +83,9 @@ class __event extends mac {
 								FROM _artists_events
 								WHERE a_artist = ?
 									AND a_event = ?';
-							if (!sql_fieldrow(sql_filter($sql, $a_row->ub, $event_id))) {
+							if (!sql_fieldrow(sql_filter($sql, $a_row['ub'], $event_id))) {
 								$sql_insert = array(
-									'a_artist' => $a_row->ub,
+									'a_artist' => $a_row['ub'],
 									'a_event' => $event_id
 								);
 								sql_insert('artists_events', $sql_insert);
@@ -95,7 +94,7 @@ class __event extends mac {
 					}
 					
 					// Alice: Create topic
-					$event_url = $config->events_url . 'future/' . $img  . '.jpg';
+					$event_url = $config['events_url'] . 'future/' . $img  . '.jpg';
 					
 					$post_message = 'Evento publicado';
 					$post_time = time();
@@ -149,10 +148,10 @@ class __event extends mac {
 					sql_query(sql_filter($sql, $topic_id, $event_id));
 					
 					$insert = array(
-						'topic_id' => $topic_id,
+						'topic_id' => (int) $topic_id,
 						'vote_text' => '&iquest;Asistir&aacute;s a ' . $event_name . '?',
 						'vote_start' => time(),
-						'vote_length' => ($poll_length * 86400)
+						'vote_length' => (int) ($poll_length * 86400)
 					);
 					$poll_id = sql_insert('poll_options', $insert);
 					
@@ -160,8 +159,8 @@ class __event extends mac {
 					
 					foreach ($poll_options as $option_id => $option_text) {
 						$sql_insert = array(
-							'vote_id' => $poll_id,
-							'vote_option_id' => $option_id,
+							'vote_id' => (int) $poll_id,
+							'vote_option_id' => (int) $option_id,
 							'vote_option_text' => $option_text,
 							'vote_result' => 0
 						);
@@ -178,12 +177,12 @@ class __event extends mac {
 						WHERE topic_id = ?';
 					sql_query(sql_filter($sql, $post_id, $post_id, $topic_id));
 					
-					/*$sql = 'UPDATE _members SET user_posts = user_posts + 1
+					$sql = 'UPDATE _members SET user_posts = user_posts + 1
 						WHERE user_id = ?';
-					sql_query(sql_filter($sql, $poster_id));*/
+					sql_query(sql_filter($sql, $poster_id));
 					
-					// TODO: Today save
-					// $user->save_unread(UH_T, $topic_id);
+					// Notify
+					$user->save_unread(UH_T, $topic_id);
 					
 					redirect(s_link('events', $event_alias));
 				}
@@ -206,11 +205,13 @@ class __event extends mac {
 			if (!$i) _style('topics');
 			
 			_style('topics.row', array(
-				'TOPIC_ID' => $row->topic_id,
-				'TOPIC_TITLE' => $row->topic_title)
+				'TOPIC_ID' => $row['topic_id'],
+				'TOPIC_TITLE' => $row['topic_title'])
 			);
 		}
 		
 		return;
 	}
 }
+
+?>

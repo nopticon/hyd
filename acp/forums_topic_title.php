@@ -46,6 +46,8 @@ class __forums_topic_title extends mac {
 			WHERE topic_id = ?';
 		sql_query(sql_filter($sql, $title, $topic));
 		
-		return _pre('El titulo del tema <strong>' . $topicdata->topic_title . '</strong> ha sido cambiado por <strong>' . $title . '</strong>.', true);
+		return _pre('El titulo del tema <strong>' . $topicdata['topic_title'] . '</strong> ha sido cambiado por <strong>' . $title . '</strong>.', true);
 	}
 }
+
+?>

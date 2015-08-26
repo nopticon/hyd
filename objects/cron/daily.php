@@ -28,11 +28,12 @@ $banner_end = mktime(23, 59, 0, $d['mon'], $d['mday'], $d['year']);
 
 $sql = 'SELECT *
 	FROM _monetize
-	WHERE monetize_end > ?
+	WHERE monetize_end > ' . (int) $_end . '
 	ORDER BY monetize_end';
 $deleted = sql_rowset(sql_filter($sql, $_end), false, 'monetize_id');
 
-if (count($deleted)) {
+if (count($deleted))
+{
 	$sql = 'DELETE FROM _monetize
 		WHERE monetize_id IN (??)';
 	sql_query(sql_filter($sql, implode(',', $deleted)));
@@ -57,3 +58,5 @@ sql_query($sql);
 set_config('site_disable', 0);
 
 _pre('Done.', true);
+
+?>

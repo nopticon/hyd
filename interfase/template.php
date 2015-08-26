@@ -147,15 +147,14 @@ class Template {
 		
 		$this->vars = &$this->_tpldata['.'][0];
 		
-		$this->use_cache = $config->xs_use_cache;
+		$this->use_cache = $config['xs_use_cache'];
 		$this->cache_search = array('.', '\\', '/', '_tpl');
 		$this->cache_replace = array('_', '.', '.', '.php');
 		
 		$old_root = $this->root;
 		
 		$root = str_replace('\\', '/', $root);
-		// $this->cachedir = ROOT . 'cache/';
-		$this->cachedir = $config->cache_path;
+		$this->cachedir = ROOT . 'cache/';
 		$this->tpldir = ROOT . 'template/';
 		$this->tpldir_len = strlen($this->tpldir);
 		$this->root = $root;
@@ -344,7 +343,7 @@ class Template {
 		// checking if we should recompile cache
 		if (!empty($this->files_cache[$handle]) && $this->auto_recompile) {
 			$cache_time = @filemtime($this->files_cache[$handle]);
-			if(@filemtime($this->files[$handle]) > $cache_time || $config->xs_template_time > $cache_time) {	
+			if(@filemtime($this->files[$handle]) > $cache_time || $config['xs_template_time'] > $cache_time) {	
 				// file was changed. don't use cache file (will be recompled if configuration allowes it)
 				$this->files_cache[$handle] = '';
 			}
@@ -513,13 +512,13 @@ class Template {
 		if (strpos($blockname, '.')) {
 			// Nested block.
 			$blocks = explode('.', $blockname);
-			$blockcount = count($blocks) - 1;
+			$blockcount = sizeof($blocks) - 1;
 
 			$str = &$this->_tpldata; 
 			for ($i = 0; $i < $blockcount; $i++) 
 			{ 
 				$str = &$str[$blocks[$i].'.']; 
-				$str = &$str[count($str)-1]; 
+				$str = &$str[sizeof($str)-1]; 
 			} 
 			// Now we add the block that we're actually assigning to. 
 			// We're adding a new iteration to this block with the given 
@@ -606,7 +605,7 @@ class Template {
 	public function generate_block_data_ref($blockname, $include_last_iterator, $defop = false) {
 		// Get an array of the blocks involved.
 		$blocks = explode('.', $blockname);
-		$blockcount = count($blocks) - 1;
+		$blockcount = sizeof($blocks) - 1;
 		
 		if ($defop) {
 			$varref = '$this->_tpldata[\'DEFINE\']';
@@ -646,7 +645,7 @@ class Template {
 
 		// Break it up into lines and put " -->" back.
 		$code_lines = explode(' -->', $code);
-		$count = count($code_lines);
+		$count = sizeof($code_lines);
 		for ($i = 0; $i < ($count - 1); $i++) {
 			$code_lines[$i] .= ' -->';
 		}
@@ -659,13 +658,13 @@ class Template {
 
 		// prepare array for compiled code
 		$compiled = array();
-		$count_bugs = count($this->bugs);
+		$count_bugs = sizeof($this->bugs);
 
 		// array of switches
 		$sw = array();
 		
 		// main loop
-		$line_count = count($code_lines);
+		$line_count = sizeof($code_lines);
 		
 		for ($i = 0; $i < $line_count; $i++) {
 			$line = $code_lines[$i];
@@ -797,7 +796,7 @@ class Template {
 				if ($block_nesting_level < 2) {
 					// Block is not nested.
 					$line = '<'."?php ";
-					$line .= '$'. $var. '_count = ( isset($this->_tpldata[\''. $var. '.\']) ) ?  count($this->_tpldata[\''. $var. '.\']) : 0;';
+					$line .= '$'. $var. '_count = ( isset($this->_tpldata[\''. $var. '.\']) ) ?  sizeof($this->_tpldata[\''. $var. '.\']) : 0;';
 					$line .= ' for ($'. $var. '_i = 0; $'. $var. '_i < $'. $var. '_count; $'. $var. '_i++)';
 					$line .= '{';
 					$line .= ' $'. $var. '_item = &$this->_tpldata[\''. $var. '.\'][$'. $var. '_i];';
@@ -815,7 +814,7 @@ class Template {
 					$varref = $this->generate_block_data_ref($namespace, false);
 					// Create the for loop code to iterate over this block.
 					$line = '<'."?php ";
-					$line .= '$'. $var. '_count = ( isset('. $varref. ') ) ? count('. $varref. ') : 0;';
+					$line .= '$'. $var. '_count = ( isset('. $varref. ') ) ? sizeof('. $varref. ') : 0;';
 					$line .= ' for ($'. $var. '_i = 0; $'. $var. '_i < $'. $var. '_count; $'. $var. '_i++)';
 					$line .= '{';
 					$line .= ' $'. $var. '_item = &'. $varref. '[$'. $var. '_i];';
@@ -883,7 +882,7 @@ class Template {
 			*/
 			if ($keyword_type == XS_TAG_INCLUDE) {
 				$params = explode(' ', $params_str);
-				if (count($params) != 1) {
+				if (sizeof($params) != 1) {
 					$compiled[] = $keyword_str;
 					continue;
 				}
@@ -970,7 +969,7 @@ class Template {
 		$varrefs = array();
 		preg_match_all('#\{(([a-z0-9\-_]+?\.)+?)([a-z0-9\-_]+?)\}#is', $code, $varrefs);
 		
-		$varcount = count($varrefs[1]);
+		$varcount = sizeof($varrefs[1]);
 		$search = array();
 		$replace = array();
 		for ($i = 0; $i < $varcount; $i++) {
@@ -1219,9 +1218,9 @@ class Template {
 				if (!@mkdir($path)) {
 					$this->cache_writable = 0;
 					return false;
+				} else {
+					_chmod($path, $config['mask']);
 				}
-
-				_chmod($path, $config->mask);
 			}
 			
 			$count = count($dirs);
@@ -1235,9 +1234,9 @@ class Template {
 						if(!@mkdir($path)) {
 							$this->cache_writable = 0;
 							return false;
+						} else {
+							_chmod($path, $config['mask']);
 						}
-
-						_chmod($path, $config->mask);
 					}
 				}
 			}
@@ -1249,10 +1248,10 @@ class Template {
 			$this->cache_writable = 0;
 			return false;
 		}
-		fwrite($file, "<?php\n\n// Generated on " . date('r') . " (time=" . time() . ")\n\n?>");
-		fwrite($file, $code);
+		fputs($file, "<?php\n\n// Generated on " . date('r') . " (time=" . time() . ")\n\n?>");
+		fputs($file, $code);
 		fclose($file);
-		_chmod($filename, $config->mask);
+		_chmod($filename, $config['mask']);
 
 		return true;
 	}
@@ -1316,17 +1315,17 @@ class Template {
 		if (strstr($blockname, '.')) {
 			// Nested block.
 			$blocks = explode('.', $blockname);
-			$blockcount = count($blocks) - 1;
+			$blockcount = sizeof($blocks) - 1;
 			$str = &$this->_tpldata;
 			for($i = 0; $i < $blockcount; $i++) {
 				$str = &$str[$blocks[$i].'.'];
-				$str = &$str[count($str)-1];
+				$str = &$str[sizeof($str)-1];
 			}
 			// Now we add the block that we're actually assigning to.
 			// We're adding a new iteration to this block with the given
 			//   variable assignments.
 			$str = &$str[$blocks[$blockcount].'.'];
-			$count = count($str) - 1;
+			$count = sizeof($str) - 1;
 			if ($count >= 0) {
 				// adding only if there is at least one item
 				$str[$count] = array_merge($str[$count], $vararray);
@@ -1336,7 +1335,7 @@ class Template {
 			// Add a new iteration to this block with the variable assignments
 			// we were given.
 			$str = &$this->_tpldata[$blockname.'.'];
-			$count = count($str) - 1;
+			$count = sizeof($str) - 1;
 			if ($count >= 0) {
 				// adding only if there is at least one item
 				$str[$count] = array_merge($str[$count], $vararray);
@@ -1351,7 +1350,7 @@ class Template {
 	public function flush_block_vars($blockname) {
 		// Top-level block.
 		// flush a existing block we were given.
-		$current_iteration = count($this->_tpldata[$blockname . '.']) - 1;
+		$current_iteration = sizeof($this->_tpldata[$blockname . '.']) - 1;
 		unset($this->_tpldata[$blockname . '.']);
 		return true;
 	}
@@ -1362,11 +1361,13 @@ class Template {
 		return false;
 	}
 
-	public function add_config($tpl) {
+	public function add_config($tpl)
+	{
 		$config_name = 'xs_style_' . $tpl;
 		global $config;
 		$result = false;
-		if(empty($config[$config_name])) {
+		if(empty($config[$config_name]))
+		{
 			$old = $this->style_config;
 			$result = $this->_add_config($tpl, false);
 			$this->style_config = $old;
@@ -1382,17 +1383,16 @@ class Template {
 	}
 
 	public function refresh_config($tpl = '') {
-		if ($tpl === '') {
+		if($tpl === '') {
 			$tpl = $this->tpl;
 		}
-		if ($tpl == $this->tpl) {
+		if($tpl == $this->tpl) {
 			$result = $this->_refresh_config($tpl, true);
 		} else {
 			$old = $this->style_config;
 			$result = $this->_refresh_config($tpl, false);
 			$this->style_config = $old;
 		}
-
 		return $result;
 	}
 
@@ -1401,7 +1401,7 @@ class Template {
 	*/
 	public function _get_config($tpl, $add_config) {
 		$this->style_config = array();
-		if (empty($tpl)) {
+		if(empty($tpl)) {
 			$tpl = $this->tpl;
 		}
 		
@@ -1477,3 +1477,5 @@ if (!function_exists('xs_switch')) {
 		return (isset($tpl->_tpldata[$name.'.']) && count($tpl->_tpldata[$name.'.']) > 0);
 	}
 }
+
+?>

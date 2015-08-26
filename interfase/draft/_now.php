@@ -16,17 +16,20 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-class __now extends common {
+class __now extends common
+{
 	var $_no = true;
 	var $methods = array(
 		'listeners' => array()
 	);
 	
-	function home() {
+	function home()
+	{
 		global $nucleo;
 		
 		$v = $this->control->__(array('a' => array('default' => 0)));
-		if (!$v['a']) {
+		if (!$v['a'])
+		{
 			$nucleo->redirect($nucleo->link('radio'));
 		}
 		
@@ -36,19 +39,22 @@ class __now extends common {
 		$connect_param.= "User-Agent: StreamSolutions  (Mozilla Compatible)\r\n\r\n";
 		
 		$connect_recv = $this->sock($nucleo->config['sc_stats_host'], $connect_param, $nucleo->config['sc_stats_port']);
-		if (!$connect_recv) {
+		if (!$connect_recv)
+		{
 			$this->e('RADIO_UNAVAILABLE');
 		}
 		
 		//
 		$response = array();
 		$lines = array_slice(split("\n", trim($connect_recv)), 8);
-		foreach ($lines as $line) {
+		foreach ($lines as $line)
+		{
 			$e = explode('<SSTAG>', $line);
 			$response[$e[0]] = $e[1];
 		}
 		
-		if ($response['server_status'] == $nucleo->config['sc_stats_down']) {
+		if ($response['server_status'] == $nucleo->config['sc_stats_down'])
+		{
 			$this->e('RADIO_UNAVAILABLE');
 		}
 		
@@ -57,11 +63,13 @@ class __now extends common {
 		$song[1] = array_pop($song);
 		
 		$result = '';
-		if (!empty($response['stream_title']) && $response['stream_title'] != $config['sitename']) {
+		if (!empty($response['stream_title']) && $response['stream_title'] != 'Rock Republik Radio')
+		{
 			$result .= '<div class="live">Al aire</div><div class="livetitle"><span>' . $response['stream_title'] . '</span></div>';
 		}
 		
-		foreach ($song as $row) {
+		foreach ($song as $row)
+		{
 			$result .= '<div>' . $row . '</div>';
 		}
 		
@@ -70,10 +78,12 @@ class __now extends common {
 		return;
 	}
 	
-	function listeners() {
+	function listeners()
+	{
 		global $nucleo, $user;
 		
-		if (!$user->data['is_founder']) {
+		if (!$user->data['is_founder'])
+		{
 			$nucleo->redirect($nucleo->link('radio'));
 		}
 		
@@ -83,18 +93,24 @@ class __now extends common {
 		$connect_param.= "User-Agent: StreamSolutions  (Mozilla Compatible)\r\n\r\n";
 		
 		$connect_recv = $this->sock($nucleo->config['sc_stats_host'], $connect_param, $nucleo->config['sc_stats_port']);
-		if (!$connect_recv) {
+		if (!$connect_recv)
+		{
 			$this->e('RADIO_UNAVAILABLE');
 		}
 		
 		//
 		$response = array();
 		$lines = array_slice(split("\n", trim($connect_recv)), 8);
-		foreach ($lines as $line) {
+		foreach ($lines as $line)
+		{
 			$e = explode('<SSTAG>', $line);
 			$response[$e[0]] = $e[1];
 		}
 		
-		return $this->e($response);
+		$this->e($response);
+		
+		return;
 	}
 }
+
+?>

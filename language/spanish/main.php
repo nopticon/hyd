@@ -21,22 +21,14 @@ if (!is_array($lang) || empty($lang)) {
 }
 
 $lang += array(
-	'APPLICATION' => 'H',
+	'APPLICATION' => 'Rock Republik',
 	'APPLICATION_FULL' => 'Rock Republik Networks',
-	'APPLICATION_DESC' => 'D',/*La comunidad m&aacute;s grande de Rock en Guatemala',*/
+	'APPLICATION_DESC' => 'La comunidad m&aacute;s grande de Rock en Guatemala',
 	'APPLICATION_START' => 'Apoyando el rock desde el <strong>15 de marzo de 2004</strong>',
 
 	'ENCODING' => "utf-8",
 	'DIRECTION' => '',
 	'DATE_FORMAT' => 'j F Y',
-
-	'OF' => 'de',
-	'OF_COMM' => '\d\e',
-	'IN' => 'en',
-	'BY' => 'por',
-	'FROM' => 'De',
-	'TO' => 'Para',
-	'DATE' => 'Fecha',
 	
 	'FORUM' => 'Foro',
 	'CATEGORY' => 'Categor&iacute;a',
@@ -51,6 +43,7 @@ $lang += array(
 	'TOPIC_IMPORTANT' => 'Anuncios',
 	'TOPIC_NORMAL' => 'Temas',
 	'POSTED_BY' => 'Publicado por',
+	'BY' => 'por',
 	'LASTPOST' => 'Ultimo mensaje',
 	'USERNAME' => 'Usuario',
 	'USERNAME2' => 'Nombre de Usuario',
@@ -92,8 +85,6 @@ $lang += array(
 	'NAVIGATION' => 'Navegaci&oacute;n',
 	'SEARCH' => 'B&uacute;squeda',
 	'HI' => 'Hola',
-	'INFORMATION' => 'Informaci&oacute;n',
-	'READ_MORE' => 'Leer m&aacute;s...',
 	
 	'PAGES_PREV' => '&lt;&lt; <strong>Anteriores %d</strong>',
 	'PAGES_NEXT' => '<strong>Siguientes %d</strong> &gt;&gt;',
@@ -176,6 +167,7 @@ $lang += array(
 	
 	'MEMBERLIST' => 'Miembros',
 	'HELP' => 'Ayuda',
+	'HELP_BACK' => 'Regresar a P&aacute;gina Principal',
 	'MODERATOR' => 'Moderador',
 	'MODERATORS' => 'Moderadores',
 	
@@ -256,7 +248,7 @@ $lang += array(
 	
 	'POLL_DELETE' => 'La encuesta ha sido borrada.',
 	
-	'CONVERSATIONS' => 'Conversaciones',
+	'DCONVS' => 'Conversaciones',
 	'DCONVS_READ' => 'Conversaciones',
 	'DCONV_READ' => 'Conversaci&oacute;n',
 	'USERPAGE_DCONV_START' => 'Iniciar Conversaci&oacute;n',
@@ -265,6 +257,9 @@ $lang += array(
 	'DC_READ_MESSAGE' => 'Leer',
 	'FOLDERS' => 'Carpetas',
 	'INBOX' => 'Volver a la lista de conversaciones',
+	'FROM' => 'De',
+	'TO' => 'Para',
+	'DATE' => 'Fecha',
 	'DCS_MEMBER' => 'Miembro',
 	'DCS_SUBJECT' => 'Asunto',
 	'DELETE_MARKED' => 'Borrar Marcados',
@@ -570,6 +565,7 @@ $lang += array(
 	'VISITS_COUNT' => 'N&uacute;mero de visitas',
 	'PAGEVIEWS_COUNT' => 'P&aacute;ginas vistas',
 	
+	'INFORMATION' => 'Informaci&oacute;n',
 	'COMMENTS' => 'Comentarios',
 	'VIEW_COMMENTS' => 'Ver comentarios',
 	'VIEW_COMPLETE_LIST' => 'Ver lista completa',
@@ -619,7 +615,8 @@ $lang += array(
 	
 	// PAGE HEADER
 	'HOME' => 'Inicio',
-	'ARTISTS' => 'Artistas',
+	'UB' => 'Artistas',
+	'UB_NEW' => 'Artistas nuevos',
 	'COMMUNITY' => 'Comunidad',
 	'USERS' => 'Usuarios',
 	'TOP_FORUM' => 'Ultimos %s mensajes del Foro',
@@ -629,6 +626,9 @@ $lang += array(
 	'VIEW_INFO' => 'Ver Informaci&oacute;n',
 	'SEND_POST' => 'Env&iacute;a tu comentario',
 	'SEND_NEWS' => 'Env&iacute;a tu publicaci&oacute;n',
+	'OF' => 'de',
+	'OF_COMM' => '\d\e',
+	'IN' => 'en',
 	'PRIVACY_POLICY' => 'Pol&iacute;tica de Privacidad y T&eacute;rminos de servicio',
 	
 	// SITE NOTICES
@@ -669,9 +669,6 @@ $lang += array(
 	'VIDEO' => 'Videos',
 	'PLAY_FILE' => 'Reproducir archivo',
 	'DOWNLOADS' => 'Descargas',
-
-	// ABOUT
-	'ABOUT' => 'Conoce Rock Republik',
 	
 	// ARTISTS
 	'ARTISTS' => 'Artistas',
@@ -686,6 +683,8 @@ $lang += array(
 	'UB_TOP_POSTS' => 'M&aacute;s mensajes',
 	'UB_TOP_U_UD' => 'M&aacute;s descargas',
 	
+	'RAND_A' => 'Mostrar 10 al azar',
+	
 	'NO_ARTIST_EXIST' => 'La banda seleccionada no existe.<br /><br /><a href="%s">Click AQUI</a> para ir al men&uacute; de bandas.',
 	'ARTIST_INACTIVE' => 'Banda inactiva',
 	'ARTIST_INACTIVE_DESC' => 'Si tienes informaci&oacute;n env&iacute;alo a <a href="/community/">nuestro correo electr&oacute;nico</a>.',
@@ -695,14 +694,13 @@ $lang += array(
 	'UB_BAN_POST_UNTIL' => 'Se permite de nuevo',
 	'UB_NO_GUEST_POSTING' => '<strong>%s</strong> s&oacute;lo permite comentarios de miembros registrados.<br /><br />Por favor <a href="#top"><i>inicia sesi&oacute;n</i></a> &oacute; <a href="%s">suscribete</a>.<br />',
 	'UB_MANAGE_MODS' => 'Administrar Miembros',
-	'A_NEWS_CREATE' => 'Publicar noticia',
+	'A_NEWS_CREATE' => 'Publicar art&iacute;culo',
 	
 	'LOCAL_ARTISTS' => 'Guatemala',
 	'NON_LOCAL_ARTISTS' => 'Internacionales',
 	'VIEW_ALL_ARTISTS' => 'Ver lista completa',
 	'SEARCH_ARTISTS' => 'Buscar bandas',
 	'SELECTED_LETTER' => 'Letra seleccionada',
-	'SEARCH_IN' => 'Buscar en',
 	
 	'UB_NOT_DEF' => 'No definido',
 	'UB_ORDER_BY' => 'Ordenar bandas por',
@@ -771,32 +769,10 @@ $lang += array(
 	'CHAT_NO_USERS' => 'Debes escribir tu nombre de usuario!',
 	'CHAT_FOR_USERS' => 'Debes iniciar sesi&oacute;n para entrar!',
 	'CHATTERS' => 'miembros chateando!',
-
-	'CHAT_NOW' => 'Chatear Ahora!',
-	'CHAT_CREATE' => 'Crear Canal',
-	'CHAT_CHANNEL_LISTING' => 'Lista de Canales',
-	'CHAT_MANAGE_CHANNEL' => 'Administrar Canal',
-	'CHAT_NOCH' => 'No hay canales',
-	'RETURN_CHAT' => 'Regresar a la lista',
-	'CHAT_CREATE_NAME' => 'Nombre del canal',
-	'CHAT_CREATE_DESC' => 'Descripci&oacute;n',
-	'CHAT_CREATE_CAT' => 'Categor&iacute;a',
-	'CHAT_CREATE_AUTH' => 'Permitir acceso',
-	'CHAT_CREATE_TYPE' => 'Tipo de canal',
-	'CHAT_CREATE_SUBMIT' => 'Crear!',
-	'CHAT_CREATE_EMPTY' => 'Debes completar el nombre del canal.',
-	'CHAT_CREATE_INVALID_NAME' => 'El nombre del canal &uacute;nicamente puede contener letras, n&uacute;meros y <strong>-</strong>',
-	'CHAT_CREATE_EMPTY_DESC' => 'Debes completar la descripci&oacute;n del canal.',
-	'CHAT_ALREADY_CREATED' => 'El nombre del canal ya existe, escoge otro.',
-	
-	'CHAT_MEMBER_ENTERED' => '<strong>%s</strong> entr&oacute; al canal.',
-	'CHAT_MEMBER_LOGOUT' => '<strong>%s</strong> sali&oacute; del canal.',
-	'CHAT_MEMBER_TIMEOUT' => '<strong>%s</strong> sali&oacute; del canal por inactividad.',
-	'CHAT_LOGOUT' => 'Salir del chat',
 	
 	// EVENTS
 	'EVENTS_NEXT' => 'Pr&oacute;ximos Eventos',
-	'EVENTS' => 'Eventos',
+	'UE' => 'Eventos',
 	'UE_NO_INFO' => 'No hay fotograf&iacute;as disponibles de este evento.',
 	'UE_DOWNLOAD_IMAGE' => 'Descargar Imagen',
 	'LAST_EVENT' => 'Ultimo Evento',
@@ -995,3 +971,5 @@ $lang += array(
 	'ACP_ARTIST_AUTH_DELETE' => '&iquest;Deseas eliminar los siguientes usuarios autorizados de %s?: <b>%s</b>',
 	'ACP_ARTIST_AUTH_DELETE2' => '&iquest;Deseas eliminar el siguiente usuario autorizado de %s?: <b>%s</b>'
 );
+
+?>

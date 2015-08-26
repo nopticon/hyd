@@ -1,7 +1,7 @@
 <?php
 /*
-<Orion, a web development framework for RK.>
-Copyright (C) <2011>  <Orion>
+<NPT, a web development framework.>
+Copyright (C) <2009>  <NPT>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -16,13 +16,24 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-define('IN_APP', true);
-require_once('./interfase/common.php');
+if (!defined('IN_APP')) exit;
 
-$user->init();
-$user->setup();
+class objects {
+	public function select($table, $fields, $where) {
+		
+	}
+	
+	public function insert($table, $values) {
+		
+	}
+	
+	public function update($table, $update, $where) {
+		
+	}
+	
+	public function delete($table, $where) {
+		
+	}
+}
 
-$friends = new friends();
-$friends->run();
-
-page_layout($friends->get_title('PARTNERS'), $friends->get_template('partners'));
+?>

@@ -35,9 +35,11 @@ class __artist_stats extends mac {
 			WHERE ub = ?
 			GROUP BY date
 			ORDER BY date DESC';
-		$stats = sql_rowset(sql_filter($sql, $this->object->ub), 'date');
+		$stats = sql_rowset(sql_filter($sql, $this->object['ub']), 'date');
 
-		$years_sum = $years_temp = $years = w();
+		$years_sum = w();
+		$years_temp = w();
+		$years = w();
 
 		foreach ($stats as $date => $void) {
 			$year = substr($date, 0, 4);
@@ -51,11 +53,11 @@ class __artist_stats extends mac {
 				$years_sum[$year] = 0;
 			}
 
-			$years_sum[$year] += $void->total;
+			$years_sum[$year] += $void['total'];
 		}
 		unset($years_temp);
 
-		if (count($years)) {
+		if (sizeof($years)) {
 			rsort($years);
 		} else {
 			$years[] = date('Y');
@@ -99,3 +101,5 @@ class __artist_stats extends mac {
 		return;
 	}
 }
+
+?>

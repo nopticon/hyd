@@ -30,7 +30,8 @@ class __user_activate extends mac {
 		
 		$user_id = request_var('uid', 0);
 		
-		if (_button() || $user_id) {
+		if (_button() || $user_id)
+		{
 			$username = request_var('username', '');
 			$user_email = request_var('user_email', '');
 			
@@ -54,11 +55,11 @@ class __user_activate extends mac {
 			}
 			
 			if (!$userdata = sql_fieldrow($sql)) {
-				fatal_error();
+				exit;
 			}
 			
 			//
-			$user_id = $userdata->user_id;
+			$user_id = $userdata['user_id'];
 			
 			$sql = 'UPDATE _members SET user_type = ?
 				WHERE user_id = ?';
@@ -72,15 +73,15 @@ class __user_activate extends mac {
 			
 			$emailer->from('info');
 			$emailer->use_template('user_welcome_confirm');
-			$emailer->email_address($userdata->user_email);
+			$emailer->email_address($userdata['user_email']);
 			
 			$emailer->assign_vars(array(
-				'USERNAME' => $userdata->username)
+				'USERNAME' => $userdata['username'])
 			);
 			$emailer->send();
 			$emailer->reset();
 			
-			_pre('La cuenta de <strong>' . $userdata->username . '</strong> ha sido activada.', true);
+			_pre('La cuenta de <strong>' . $userdata['username'] . '</strong> ha sido activada.', true);
 		}
 		
 		$sql = 'SELECT *
@@ -93,14 +94,16 @@ class __user_activate extends mac {
 			if (!$i) _style('list');
 			
 			_style('list.row', array(
-				'LINK' => s_link($this->name, $row->user_id),
-				'USERNAME' => $row->username,
-				'EMAIL' => $row->user_email,
-				'DATE' => $row->user_regdate,
-				'IP' => $row->user_regip)
+				'LINK' => s_link($this->name, $row['user_id']),
+				'USERNAME' => $row['username'],
+				'EMAIL' => $row['user_email'],
+				'DATE' => $row['user_regdate'],
+				'IP' => $row['user_regip'])
 			);
 		}
 		
 		return;
 	}
 }
+
+?>

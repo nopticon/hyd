@@ -45,14 +45,15 @@ class __user_bot_create extends mac {
 		if ($row = sql_fieldrow(sql_filter($sql, $bot_name))) {
 			$insert = false;
 			
-			if ($row->bot_ip != $bot_ip) {
+			if ($row['bot_ip'] != $bot_ip) {
 				$sql = 'UPDATE _bots SET bot_ip = ?
 					WHERE bot_id = ?';
-				sql_query(sql_filter($sql, $row->bot_ip . ',' . $bot_ip, $row->bot_id));
+				sql_query(sql_filter($sql, $row['bot_ip'] . ',' . $bot_ip, $row['bot_id']));
 			}
 		}
 		
-		if ($insert) {
+		if ($insert)
+		{
 			$insert_member = array(
 				'user_type' => 2,
 				'user_active' => 1,
@@ -82,3 +83,5 @@ class __user_bot_create extends mac {
 		return;
 	}
 }
+
+?>

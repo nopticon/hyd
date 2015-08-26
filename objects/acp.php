@@ -23,42 +23,11 @@ class mac {
 	public $_access;
 	public $url;
 	public $tv = array();
-	public $warning_ls = array();
 	
 	protected $object;
 	
 	public function __construct() {
 		return;
-	}
-
-	public function warning($message) {
-		$this->warning_ls['warning'][] = lang($message);
-		return false;
-	}
-
-	public function success($message) {
-		$this->warning_ls['success'][] = lang($message);
-		return false;
-	}
-
-	public function warning_show() {
-		if ($this->warning_ls) {
-			_style('alert');
-
-			ksort($this->warning_ls);
-
-			foreach($this->warning_ls as $type => $row) {
-				_style('alert.row', array(
-					'MESSAGE' => implode('<br />', $row),
-					'CLASS' => $type)
-				);
-			}
-
-			$this->warning_ls = w();
-			return false;
-		}
-
-		return true;
 	}
 	
 	public function auth($name) {
@@ -108,14 +77,14 @@ class mac {
 		
 		v_style(array(
 			'ARTIST_SELECT' => $url,
-			'ARTIST_NAME' => $this->object->name)
+			'ARTIST_NAME' => $this->object['name'])
 		);
 		
 		return;
 	}
 }
 
-class acp {
+class _acp {
 	private $module;
 	
 	public function __construct() {
@@ -209,6 +178,7 @@ class acp {
 			require_once($acp_dir . $row);
 			
 			$acp_alias = $part[1];
+			$acp_upper = strtoupper($acp_alias);
 			$object_name = '__' . $acp_alias;
 			
 			if (!class_exists($object_name)) {
@@ -244,3 +214,5 @@ class acp {
 		return;
 	}
 }
+
+?>

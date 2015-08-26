@@ -41,7 +41,7 @@ $matches = array(
 	'<!--#echo var="REQUEST_URI" -->' => v_server('REQUEST_URI')
 );
 
-$orig = $repl = w();
+$orig = $repl = array();
 
 foreach ($matches as $row_k => $row_v) {
 	$orig[] = $row_k;
@@ -50,3 +50,5 @@ foreach ($matches as $row_k => $row_v) {
 
 echo str_replace($orig, $repl, implode('', $file_content));
 exit;
+
+?>

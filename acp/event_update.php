@@ -40,9 +40,9 @@ class __event_update extends mac {
 		
 		foreach ($result as $row) {
 			_style('event_list', array(
-				'EVENT_ID' => $row->id,
-				'EVENT_TITLE' => $row->title,
-				'EVENT_DATE' => $user->format_date($row->date))
+				'EVENT_ID' => $row['id'],
+				'EVENT_TITLE' => $row['title'],
+				'EVENT_DATE' => $user->format_date($row['date']))
 			);
 		}
 		
@@ -61,8 +61,8 @@ class __event_update extends mac {
 			return;
 		}
 		
-		$filepath_1 = $config->events_path . 'future/';
-		$filepath_2 = $config->events_path . 'future/thumbnails/';
+		$filepath_1 = $config['events_path'] . 'future/';
+		$filepath_2 = $config['events_path'] . 'future/thumbnails/';
 		
 		$f = $upload->process($filepath_1, 'event_image', 'jpg');
 		
@@ -86,6 +86,8 @@ class __event_update extends mac {
 			WHERE id = ?';
 		sql_query(sql_filter($sql, time(), $v->event_id));
 			
-		return redirect(s_link('events', $event_data->event_alias));
+		return redirect(s_link('events', $event_data['event_alias']));
 	}
 }
+
+?>

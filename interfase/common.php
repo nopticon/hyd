@@ -65,12 +65,6 @@ if (!defined('ROOT')) {
 }
 
 //
-// Set the vendor path
-if (!defined('VENDOR')) {
-	define('VENDOR', ROOT . '../../vendor/');
-}
-
-//
 // Start the main system
 define('USE_CACHE', true);
 define('STRIP', (get_magic_quotes_gpc()) ? true : false);
@@ -79,26 +73,26 @@ if (!defined('REQC')) {
 	define('REQC', strpos(ini_get('request_order'), 'C') === false);
 }
 
-//
-// Load basic libraries
-//
 require_once(ROOT.'interfase/constants.php');
-require_once(VENDOR.'npi/cliws.php');
 require_once(ROOT.'interfase/functions.php');
-require_once(ROOT.'interfase/database.php');
+require_once(ROOT.'interfase/db.mysqli.php');
+require_once(ROOT.'interfase/template.php');
+require_once(ROOT.'interfase/session.php');
+require_once(ROOT.'interfase/cache.php');
+require_once(ROOT.'interfase/comments.php');
+require_once(ROOT.'interfase/emailer.php');
+require_once(ROOT.'interfase/upload.php');
 
-//
-// Class autoload
-//
-spl_autoload_register('app_autoload');
 set_error_handler('msg_handler');
 
-$db = npi('htrd:mysql');
-
+$db = new database();
 $user = new user();
+$auth = new auth();
 $cache = new cache();
 $template = new template();
-$comments = new comments();
+$comments = new _comments();
 $upload = new upload();
 
 $config = $cache->config();
+
+?>

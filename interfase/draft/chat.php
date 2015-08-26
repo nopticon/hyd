@@ -64,7 +64,7 @@ if ($chat->_setup()) {
 } else {
 	$cat = $chat->get_cats();
 	
-	if (!count($cat)) {
+	if (!sizeof($cat)) {
 		trigger_error('NO_CHAT_CATS');
 	}
 	
@@ -85,3 +85,5 @@ if ($chat->_setup()) {
 }
 
 page_layout($page_title, $htmlpage, false, $keepalive);
+
+?>

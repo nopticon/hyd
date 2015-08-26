@@ -27,7 +27,8 @@ class __conv extends common
 		
 		error_reporting(0);
 		$v = $this->control->__(array('v' => array('default' => 0)));
-		if (!$v['v']) {
+		if (!$v['v'])
+		{
 			$sql = 'SELECT id
 				FROM _dl
 				WHERE ud = 1
@@ -41,14 +42,16 @@ class __conv extends common
 			FROM _dl d, _artists a
 			WHERE d.id = ' . (int) $v['v'] . '
 				AND d.ub = a.ub';
-		if ($songd = $this->_fieldrow($sql)) {
+		if ($songd = $this->_fieldrow($sql))
+		{
 			$spaths = '/data/artists/' . $songd['ub'] . '/media/';
 			$spath = '/var/www/vhosts/rockrepublik.net/httpdocs' . $spaths;
 			$songid = $songd['id'];
 			$fwma = $spath . $songid . '.wma';
 			$fmp3 = $spath . $songid . '.mp3';
 			
-			if (@file_exists('.' . $spaths . $songid . '.wma') && !@file_exists('.' . $spaths . $songid . '.mp3') && !$songd['dl_mp3']) {
+			if (@file_exists('.' . $spaths . $songid . '.wma') && !@file_exists('.' . $spaths . $songid . '.mp3') && !$songd['dl_mp3'])
+			{
 				exec('ffmpeg -i ' . $fwma . ' -vn -ar 44100 -ac 2 -ab 64kb -f mp3 ' . $fmp3);
 				
 				// MP3 tags
@@ -110,13 +113,20 @@ class __conv extends common
 				AND dl_mp3 = 0
 			ORDER BY id
 			LIMIT 1';
-		if ($v_next = $this->_field($sql, 'id', 0)) {
+		if ($v_next = $this->_field($sql, 'id', 0))
+		{
 			sleep(1);
 			$nucleo->redirect($nucleo->link('conv', array('v' => $v_next)));
-		} else {
+		}
+		else
+		{
 			die('no_next');
 		}
 		
-		return $this->e('.');
+		$this->e('.');
+		
+		return;
 	}
 }
+
+?>

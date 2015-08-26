@@ -32,19 +32,23 @@ class __forums_topic_lock extends mac {
 			return false;
 		}
 		
-		$topic_id = request_var('topic', 0);
+		$topic = request_var('topic', 0);
 		
 		$sql = 'SELECT *
 			FROM _forum_topics
 			WHERE topic_id = ?';
-		if (!$topicdata = sql_fieldrow(sql_filter($sql, $topic_id))) {
+		if (!$topicdata = sql_fieldrow(sql_filter($sql, $topic))) {
 			fatal_error();
 		}
 		
 		$sql = 'UPDATE _forum_topics SET topic_locked = ?
 			WHERE topic_id = ?';
-		sql_query(sql_filter($sql, !$topicdata->topic_locked, $topic_id));
-
-		return redirect(s_link('topic', $topic_id));
+		sql_query(sql_filter($sql, !$topicdata['topic_locked'], $topic));
+		
+		_pre('El tema <strong>' . $topicdata['topic_title'] . '</strong> ha sido ' . (($topicdata['topic_locked']) ? 'abierto' : 'cerrado'), true);
+		
+		return;
 	}
 }
+
+?>

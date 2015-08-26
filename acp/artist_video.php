@@ -41,16 +41,16 @@ class __artist_video extends mac {
 			FROM _artists_video
 			WHERE video_a = ?
 			ORDER BY video_added DESC';
-		$result = sql_rowset(sql_filter($sql, $this->object->ub));
+		$result = sql_rowset(sql_filter($sql, $this->object['ub']));
 
 		foreach ($result as $i => $row) {
 			if (!$i) _style('video');
 
 			_style('video.row', array(
-				'ID' => $row->video_id,
-				'CODE' => $row->video_code,
-				'NAME' => $row->video_name,
-				'TIME' => $user->format_date($row->video_added))
+				'ID' => $row['video_id'],
+				'CODE' => $row['video_code'],
+				'NAME' => $row['video_name'],
+				'TIME' => $user->format_date($row['video_added']))
 			);
 		}
 		
@@ -69,7 +69,7 @@ class __artist_video extends mac {
 				FROM _artists_video
 				WHERE video_a = ?
 					AND video_code = ?';
-			if (sql_fieldrow(sql_filter($sql, $this->object->ub, $code))) {
+			if (sql_fieldrow(sql_filter($sql, $this->object['ub'], $code))) {
 				$code = '';
 			}
 		}
@@ -80,7 +80,7 @@ class __artist_video extends mac {
 		
 		if (!empty($code)) {
 			$insert = array(
-				'video_a' => $this->object->ub,
+				'video_a' => $this->object['ub'],
 				'video_name' => $vname,
 				'video_code' => $code,
 				'video_added' => time()
@@ -89,7 +89,7 @@ class __artist_video extends mac {
 
 			$sql = 'UPDATE _artists SET a_video = a_video + 1
 				WHERE ub = ?';
-			sql_query(sql_filter($sql, $this->object->ub));
+			sql_query(sql_filter($sql, $this->object['ub']));
 		}
 		
 		return redirect(_page());
@@ -109,7 +109,7 @@ class __artist_video extends mac {
 			FROM _artists_video
 			WHERE video_id IN (??)
 				AND video_a = ?';
-		$result = sql_rowset(sql_filter($sql, implode(',', $v->group), $this->object->ub), false, 'video_id');
+		$result = sql_rowset(sql_filter($sql, implode(',', $v->group), $this->object['ub']), false, 'video_id');
 
 		if (!$result) {
 			return;
@@ -118,8 +118,10 @@ class __artist_video extends mac {
 		$sql = 'DELETE FROM _artists_video
 			WHERE video_id IN (??)
 				AND video_a = ?';
-		sql_query(sql_filter($sql, implode(',', $result), $this->object->ub));
+		sql_query(sql_filter($sql, implode(',', $result), $this->object['ub']));
 
-		return redirect(s_link('acp', array('artist_video', 'a' => $this->object->subdomain)));
+		return redirect(s_link('acp', array('artist_video', 'a' => $this->object['subdomain'])));
 	}
 }
+
+?>

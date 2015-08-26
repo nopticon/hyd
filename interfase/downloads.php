@@ -18,6 +18,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_APP')) exit;
 
+if (class_exists('downloads')) {
+	return;
+}
+
 class downloads {
 	public $ud;
 	public $ud_song;
@@ -32,7 +36,7 @@ class downloads {
 		return;
 	}
 	
-	public function media_type($ud) {
+	public function dl_type($ud) {
 		global $user;
 		
 		$type = 0;
@@ -47,33 +51,52 @@ class downloads {
 		return $type;
 	}
 	
-	public function media_view() {
+	public function dl_setup() {
+		$download_id = request_var('download_id', 0);
+		if (!$download_id) {
+			fatal_error();
+		}
+		
+		$sql = 'SELECT d.*
+			FROM _dl d
+			LEFT JOIN _artists a ON d.ub = a.ub 
+			WHERE d.id = ?
+				AND d.ub = ?';
+		if (!$this->dl_data = sql_fieldrow(sql_filter($sql, $download_id, $this->data['ub']))) {
+			fatal_error();
+		}
+		
+		$this->dl_data += $this->dl_type($this->dl_data['ud']);
+		return;
+	}
+	
+	public function dl_view() {
 		global $user, $config, $comments;
 		
 		if (!$this->auth['adm'] && !$this->auth['mod']) {
 			$sql = 'UPDATE _dl SET views = views + 1
 				WHERE id = ?';
-			sql_query(sql_filter($sql, $this->dl_data->id));
+			sql_query(sql_filter($sql, $this->dl_data['id']));
 		}
 		
 		$stats_text = '';
 		foreach (array('views' => 'VIEW', 'downloads' => 'DL') as $item => $stats_lang) {
-			$stats_text .= (($stats_text != '') ? ', ' : '') . '<strong>' . $this->dl_data->$item . '</strong> ' . lang($stats_lang) . (($this->dl_data->$item > 1) ? 's' : '');
+			$stats_text .= (($stats_text != '') ? ', ' : '') . '<strong>' . $this->dl_data[$item] . '</strong> ' . lang($stats_lang) . (($this->dl_data[$item] > 1) ? 's' : '');
 		}
 		
 		v_style(array(
-			'S_DOWNLOAD_ACTION' => s_link('a', $this->data->subdomain, 'downloads', $this->dl_data->id, 'save'),
+			'S_DOWNLOAD_ACTION' => s_link('a', $this->data['subdomain'], 'downloads', $this->dl_data['id'], 'save'),
 			
-			'DL_ID' => $this->dl_data->id,
-			'DL_A' => $this->data->ub,
-			'DL_TITLE' => $this->dl_data->title,
-			'DL_FORMAT' => $this->dl_data->av,
-			'DL_DURATION' => $this->dl_data->duration,
-			'DL_ALBUM' => $this->dl_data->album,
-			'DL_YEAR' => $this->dl_data->year,
-			'DL_POSTS' => $this->dl_data->posts,
-			'DL_VOTES' => $this->dl_data->votes,
-			'DL_FILESIZE' => $this->format_filesize($this->dl_data->filesize),
+			'DL_ID' => $this->dl_data['id'],
+			'DL_A' => $this->data['ub'],
+			'DL_TITLE' => $this->dl_data['title'],
+			'DL_FORMAT' => $this->dl_data['av'],
+			'DL_DURATION' => $this->dl_data['duration'],
+			'DL_ALBUM' => $this->dl_data['album'],
+			'DL_YEAR' => $this->dl_data['year'],
+			'DL_POSTS' => $this->dl_data['posts'],
+			'DL_VOTES' => $this->dl_data['votes'],
+			'DL_FILESIZE' => $this->format_filesize($this->dl_data['filesize']),
 			'DL_STATS' => $stats_text)
 		);
 		
@@ -81,18 +104,17 @@ class downloads {
 		// FAV
 		//
 		$is_fav = false;
-
 		$sql = 'SELECT dl_id
 			FROM _dl_fav
 			WHERE dl_id = ?
 				AND user_id = ?';
-		if (sql_field(sql_filter($sql, $this->dl_data->id, $user->d('user_id')), 'dl_id', 0)) {
+		if (sql_field(sql_filter($sql, $this->dl_data['id'], $user->d('user_id')), 'dl_id', 0)) {
 			$is_fav = true;
 		}
 		
 		if (!$is_fav) {
 			_style('dl_fav', array(
-				'URL' => s_link('a', $this->data->subdomain, 'downloads', $this->dl_data->id, 'fav'))
+				'URL' => s_link('a', $this->data['subdomain'], 'downloads', $this->dl_data['id'], 'fav'))
 			);
 		}
 		
@@ -100,12 +122,12 @@ class downloads {
 		// UD POLL
 		//
 		$user_voted = false;
-		if ($this->dl_data->votes && $this->auth['user'] && !$this->auth['adm'] && !$this->auth['mod']) {
+		if ($this->dl_data['votes'] && $this->auth['user'] && !$this->auth['adm'] && !$this->auth['mod']) {
 			$sql = 'SELECT user_id
 				FROM _dl_voters
 				WHERE ud = ?
 					AND user_id = ?';
-			if (sql_field(sql_filter($sql, $this->dl_data->id, $user->d('user_id')), 'user_id', 0)) {
+			if (sql_field(sql_filter($sql, $this->dl_data['id'], $user->d('user_id')), 'user_id', 0)) {
 				$user_voted = true;
 			}
 		}
@@ -117,29 +139,29 @@ class downloads {
 				FROM _dl_vote
 				WHERE ud = ?
 				ORDER BY option_id';
-			$results = sql_rowset(sql_filter($sql, $this->dl_data->id), 'option_id', 'vote_result');
+			$results = sql_rowset(sql_filter($sql, $this->dl_data['id']), 'option_id', 'vote_result');
 			
 			_style('ud_poll.results');
-
-			foreach ($this->voting['ud'] as $row) {
-				$vote_result = (isset($results[$row])) ? (int) $results[$row] : 0;
-				$vote_percent = ($this->dl_data->votes > 0) ? $vote_result / $this->dl_data->votes : 0;
+			
+			for ($i = 0, $end = sizeof($this->voting['ud']); $i < $end; $i++) {
+				$vote_result = (isset($results[$this->voting['ub'][$i]])) ? (int) $results[$this->voting['ub'][$i]] : 0;
+				$vote_percent = ($this->dl_data['votes'] > 0) ? $vote_result / $this->dl_data['votes'] : 0;
 
 				_style('ud_poll.results.item', array(
-					'CAPTION' => lang('ub_udv' . $row),
+					'CAPTION' => lang('ub_udv' . $this->voting['ud'][$i]),
 					'RESULT' => $vote_result,
 					'PERCENT' => sprintf("%.1d", ($vote_percent * 100)))
 				);
 			}
 		} else {
 			_style('ud_poll.options', array(
-				'S_VOTE_ACTION' => s_link('a', $this->data->subdomain, 'downloads', $this->dl_data->id, 'vote'))
+				'S_VOTE_ACTION' => s_link('a', $this->data['subdomain'], 'downloads', $this->dl_data['id'], 'vote'))
 			);
 			
-			foreach ($this->voting['ud'] as $row) {
+			for ($i = 0, $end = sizeof($this->voting['ud']); $i < $end; $i++) {
 				_style('ud_poll.options.item', array(
-					'ID' => $row,
-					'CAPTION' => lang('ub_udv' . $row))
+					'ID' => $this->voting['ud'][$i],
+					'CAPTION' => lang('ub_udv' . $this->voting['ud'][$i]))
 				);
 			}
 		}
@@ -147,9 +169,9 @@ class downloads {
 		//
 		// UD MESSAGES
 		//
-		$comments_ref = s_link('a', $this->data->subdomain, 'downloads', $this->dl_data->id);
+		$comments_ref = s_link('a', $this->data['subdomain'], 'downloads', $this->dl_data['id']);
 		
-		if ($this->dl_data->posts) {
+		if ($this->dl_data['posts']) {
 			$start = request_var('dps', 0);
 			$comments->ref = $comments_ref;
 			$comments->auth = $this->auth;
@@ -166,13 +188,13 @@ class downloads {
 				LIMIT ??, ??';
 			
 			$comments->data = array(
-				'SQL' => sql_filter($sql, $this->dl_data->id, $this->data->ub, $start, $config->s_posts)
+				'SQL' => sql_filter($sql, $this->dl_data['id'], $this->data['ub'], $start, $config['s_posts'])
 			);
 			
 			if ($this->auth['user']) {
 				$comments->data['CONTROL']['reply'] = array(
 					'REPLY' => array(
-						'URL' => s_link('a', $this->data->subdomain, 'comments', '%d', 'reply'),
+						'URL' => s_link('a', $this->data['subdomain'], 'comments', '%d', 'reply'),
 						'ID' => 'post_id'
 					)
 				);
@@ -181,7 +203,7 @@ class downloads {
 			if ($this->auth['user'] && !$this->auth['adm'] && !$this->auth['mod']) {
 				$comments->data['CONTROL']['report'] = array(
 					'REPORT' => array(
-						'URL' => s_link('a', $this->data->subdomain, 'comments', '%d', 'report'),
+						'URL' => s_link('a', $this->data['subdomain'], 'comments', '%d', 'report'),
 						'ID' => 'post_id'
 					)
 				);
@@ -192,19 +214,19 @@ class downloads {
 				
 				if ($this->auth['adm'] && $user->is('founder')) {
 					$comments->data['CONTROL']['auth']['EDIT'] = array(
-						'URL' => s_link('acp', array('artist_message', 'a' => $this->data->subdomain, 'id' => '%d', 'action' => 'modify')),
+						'URL' => s_link('acp', array('artist_message', 'a' => $this->data['subdomain'], 'id' => '%d', 'action' => 'modify')),
 						'ID' => 'post_id'
 					);
 				}
 				
 				$comments->data['CONTROL']['auth']['DELETE'] = array(
-					'URL' => s_link('acp', array('artist_message', 'a' => $this->data->subdomain, 'id' => '%d', 'action' => 'remove')),
+					'URL' => s_link('acp', array('artist_message', 'a' => $this->data['subdomain'], 'id' => '%d', 'action' => 'remove')),
 					'ID' => 'post_id'
 				);
 			}
 			
 			//
-			$comments->view($start, 'dps', $this->dl_data->posts, $config->s_posts, 'ud_posts', 'DMSG_', 'TOPIC_', false);
+			$comments->view($start, 'dps', $this->dl_data['posts'], $config['s_posts'], 'ud_posts', 'DMSG_', 'TOPIC_', false);
 		}
 		
 		if ($this->auth['post']) {
@@ -215,7 +237,7 @@ class downloads {
 				);
 			} else {
 				_style('dl_no_guest_posting', array(
-					'LEGEND' => sprintf(lang('ub_no_guest_posting'), $this->data->name, s_link('my register')))
+					'LEGEND' => sprintf(lang('ub_no_guest_posting'), $this->data['name'], s_link('my register')))
 				);
 			}
 		} else {
@@ -231,22 +253,22 @@ class downloads {
 		return;
 	}
 	
-	public function media_save() {
+	public function dl_save() {
 		$sql = 'UPDATE _dl SET downloads = downloads + 1
 			WHERE id = ?';
-		sql_query(sql_filter($sql, $this->dl_data->id));
+		sql_query(sql_filter($sql, $this->dl_data['id']));
 		
 		$orig = array('&ntilde;', '&Ntilde;', '.');
 		$repl = array('n', 'N', '');
 		
-		$this->filename = str_replace($orig, $repl, $this->data->name) . '_' . str_replace($orig, $repl, $this->dl_data->title) . '.' . $this->dl_data->extension;
-		$this->filepath = 'data/artists/' . $this->data->ub . '/media/' . $this->dl_data->id . '.' . $this->dl_data->extension;
-		$this->media_file();
+		$this->filename = str_replace($orig, $repl, $this->data['name']) . '_' . str_replace($orig, $repl, $this->dl_data['title']) . '.' . $this->dl_data['extension'];
+		$this->filepath = 'data/artists/' . $this->data['ub'] . '/media/' . $this->dl_data['id'] . '.' . $this->dl_data['extension'];
+		$this->dl_file();
 		
 		return;
 	}
 	
-	public function media_vote() {
+	public function dl_vote() {
 		if (!$this->auth['user']) {
 			do_login();
 		}
@@ -254,28 +276,34 @@ class downloads {
 		global $user;
 		
 		$option_id = request_var('vote_id', 0);
-		$url = s_link('a', $this->data['subdomain'], 'downloads', $this->dl_data->id);
+		$url = s_link('a', $this->data['subdomain'], 'downloads', $this->dl_data['id']);
 		
 		if ($this->auth['adm'] || $this->auth['mod'] || !in_array($option_id, $this->voting['ud'])) {
 			redirect($url);
 		}
 		
+		$user_voted = false;
+		
 		$sql = 'SELECT user_id
 			FROM _dl_voters
 			WHERE ud = ?
 				AND user_id = ?';
-		if (sql_field(sql_filter($sql, $this->dl_data->id, $user->d('user_id')), 'user_id', 0)) {
+		if (sql_field(sql_filter($sql, $this->dl_data['id'], $user->d('user_id')), 'user_id', 0)) {
+			$user_voted = true;
+		}
+		
+		if ($user_voted) {
 			redirect($url);
 		}
 		
 		$sql = 'UPDATE _dl_vote SET vote_result = vote_result + 1
 			WHERE ud = ?
 				AND option_id = ?';
-		sql_query(sql_filter($sql, $this->dl_data->id, $option_id));
+		sql_query(sql_filter($sql, $this->dl_data['id'], $option_id));
 		
 		if (!sql_affectedrows()) {
 			$sql_insert = array(
-				'ud' => $this->dl_data->id,
+				'ud' => $this->dl_data['id'],
 				'option_id' => $option_id,
 				'vote_result' => 1
 			);
@@ -283,7 +311,7 @@ class downloads {
 		}
 		
 		$sql_insert = array(
-			'ud' => $this->dl_data->id,
+			'ud' => $this->dl_data['id'],
 			'user_id' => $user->d('user_id'),
 			'user_option' => $option_id
 		);
@@ -291,30 +319,36 @@ class downloads {
 		
 		$sql = 'UPDATE _dl SET votes = votes + 1
 			WHERE id = ?';
-		sql_query(sql_filter($sql, $this->dl_data->id));
+		sql_query(sql_filter($sql, $this->dl_data['id']));
 		
 		redirect($url);
 	}
 	
-	public function media_fav() {
+	public function dl_fav() {
 		if (!$this->auth['user']) {
 			do_login();
 		}
 		
 		global $user;
-
-		$url = s_link('a', $this->data->subdomain, 'downloads', $this->dl_data->id);
+		
+		$is_fav = false;
 		
 		$sql = 'SELECT dl_id
 			FROM _dl_fav
 			WHERE dl_id = ?
 				AND user_id = ?';
-		if (sql_field(sql_filter($sql, $this->dl_data->id, $user->d('user_id')), 'dl_id', 0)) {
+		if (sql_field(sql_filter($sql, $this->dl_data['id'], $user->d('user_id')), 'dl_id', 0)) {
+			$is_fav = true;
+		}
+		
+		$url = s_link('a', $this->data['subdomain'], 'downloads', $this->dl_data['id']);
+		
+		if ($is_fav) {
 			redirect($url);
 		}
 		
 		$sql_insert = array(
-			'dl_id' => $this->dl_data->id,
+			'dl_id' => $this->dl_data['id'],
 			'user_id' => $user->d('user_id'),
 			'favtime' => time()
 		);
@@ -327,7 +361,7 @@ class downloads {
 		return redirect($url);
 	}
 	
-	public function media_file($name = '', $path = '', $data = '', $content_type = 'application/octet-stream', $disposition = 'attachment') {
+	public function dl_file($name = '', $path = '', $data = '', $content_type = 'application/octet-stream', $disposition = 'attachment') {
 		sql_close();
 		
 		$bad_chars = array("'", "\\", ' ', '/', ':', '*', '?', '"', '<', '>', '|');
@@ -366,3 +400,5 @@ class downloads {
 		return bcdiv($filesize, $div, 2) . (($mb) ? ' MB' : ' KB');
 	}
 }
+
+?>

@@ -19,21 +19,22 @@
 </div>
 
 <div class="is_right">
-	<!-- BEGIN latest_topics -->
+	<!-- BEGIN top_posters -->
 	<div class="pad_top ls_none">
-		<div class="h"><h3>{L_LATEST_TOPICS}</h3></div>
+		<div class="h"><h3>{L_TODAY_BIRTHS}</h3></div>
 		<ul>
-			<!-- BEGIN row -->
+			<!-- BEGIN item -->
 			<li>
 				<ul>
-					<li><a href="{item.PROFILE}">{row.USERNAME}</a></li>
-					<li>{row.POSTS} {L_POSTS}</li>
+					<li><a href="{item.PROFILE}">{item.USERNAME}</a></li>
+					<li>{item.POSTS} {L_POSTS}</li>
+					<li><a href="{item.PROFILE}"><img src="{item.AVATAR}" alt="{item.USERNAME}" /></a></li>
 				</ul>
 			</li>
-			<!-- END row -->
+			<!-- END item -->
 		</ul>
 	</div>
-	<!-- END latest_topics -->
+	<!-- END top_posters -->
 </div>
 
 <!-- INCLUDE page.footer.htm -->

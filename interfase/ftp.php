@@ -100,3 +100,5 @@ class ftp {
 		return @ftp_rename($this->conn_id, $src, $dest);
 	}
 }
+
+?>

@@ -41,8 +41,8 @@ class __forums_topic_move extends mac {
 				if (!$i) _style('forums');
 				
 				_style('forums.row', array(
-					'FORUM_ID' => $row->forum_id,
-					'FORUM_NAME' => $row->forum_name)
+					'FORUM_ID' => $row['forum_id'],
+					'FORUM_NAME' => $row['forum_name'])
 				);
 			}
 			
@@ -87,7 +87,7 @@ class __forums_topic_move extends mac {
 		}
 		
 		sync_topic_move($f);
-		sync_topic_move($tdata->forum_id);
+		sync_topic_move($tdata['forum_id']);
 		
 		//redirect(s_link('forum', $f));
 		
@@ -95,7 +95,8 @@ class __forums_topic_move extends mac {
 	}
 }
 
-function sync_topic_move($id) {
+function sync_topic_move($id)
+{
 	$last_topic = 0;
 	$total_posts = 0;
 	$total_topics = 0;
@@ -110,8 +111,8 @@ function sync_topic_move($id) {
 		FROM _forum_topics
 		WHERE forum_id = ?';
 	if ($row = sql_fieldrow(sql_filter($sql, $id))) {
-		$last_topic = $row->last_topic;
-		$total_topics = $row->total;
+		$last_topic = $row['last_topic'];
+		$total_topics = $row['total'];
 	}
 	
 	//
@@ -121,3 +122,5 @@ function sync_topic_move($id) {
 	
 	return;
 }
+
+?>

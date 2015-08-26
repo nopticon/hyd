@@ -56,7 +56,7 @@ if (time() >= 1197093599) {
 				AND vr.vote_id = vd.vote_id
 			ORDER BY vr.vote_option_order, vr.vote_option_id ASC';
 		if ($vote_info = sql_rowset(sql_filter($sql, $topic_id))) {
-			$vote_options = count($vote_info);
+			$vote_options = sizeof($vote_info);
 			
 			$sql = 'SELECT vote_id
 				FROM _poll_voters
@@ -69,17 +69,19 @@ if (time() >= 1197093599) {
 			);
 			
 			if ($user_voted) {
-				_style('poll.results');
+				_style('poll.results', array());
 			} else {
 				_style('poll.options', array(
 					'S_VOTE_ACTION' => $topic_url)
 				);
 	
 				for ($i = 0; $i < $vote_options; $i++) {
+					$subdomain = 'http://' . get_username_base($vote_info[$i]['vote_option_text']) . '.rockrepublik.net/';
+					
 					_style('poll.options.item', array(
 						'POLL_OPTION_ID' => $vote_info[$i]['vote_option_id'],
 						'POLL_OPTION_CAPTION' => $vote_info[$i]['vote_option_text'],
-						'POLL_OPTION_LINK' => s_link('a', get_username_base($vote_info[$i]['vote_option_text'])))
+						'POLL_OPTION_LINK' => $subdomain)
 					);
 				}
 			}
@@ -91,4 +93,6 @@ $template_vars = array(
 	'S_TOPIC_ACTION' => $topic_url . (($start) ? 's' . $start . '/' : ''),
 	'U_VIEW_FORUM' => s_link('forum', $forum_id)
 );
-page_layout('AWARDS', 'awards_voting', $template_vars);
+page_layout('Rock Republik Awards', 'awards_voting', $template_vars);
+
+?>

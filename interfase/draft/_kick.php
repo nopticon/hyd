@@ -26,24 +26,30 @@ class __kick extends common
 		global $nucleo, $user;
 		
 		$v = $this->control->__(array('a' => array('default' => 0)));
-		if (!$v['a']) {
+		if (!$v['a'])
+		{
 			$nucleo->redirect($nucleo->link('radio'));
 		}
 		
-		if (!$user->data['is_member'] || request_method() != 'post') {
-			if ($v['a']) {
+		if (!$user->data['is_member'] || request_method() != 'post')
+		{
+			if ($v['a'])
+			{
 				$this->e('403 Forbidden.');
 			}
 			$nucleo->redirect($nucleo->link('radio'));
 		}
 		
-		if (!$user->data['is_founder']) {
+		if (!$user->data['is_founder'])
+		{
 			$sql = 'SELECT *
 				FROM _team_members
 				WHERE team_id = 4
 					AND member_id = ' . (int) $user->data['user_id'];
-			if (!$this->_fieldrow($sql)) {
-				if ($v['a']) {
+			if (!$this->_fieldrow($sql))
+			{
+				if ($v['a'])
+				{
 					$this->e('403 Forbidden.');
 				}
 				$nucleo->redirect($nucleo->link('radio'));
@@ -56,18 +62,21 @@ class __kick extends common
 		$connect_param.= "User-Agent: StreamSolutions  (Mozilla Compatible)\r\n\r\n";
 		
 		$connect_recv = $this->sock($nucleo->config['sc_stats_host'], $connect_param, $nucleo->config['sc_stats_port']);
-		if (!$connect_recv) {
+		if (!$connect_recv)
+		{
 			$this->e('RADIO_UNAVAILABLE');
 		}
 		
 		$response = array();
 		$lines = array_slice(split("\n", trim($connect_recv)), 8);
-		foreach ($lines as $line) {
+		foreach ($lines as $line)
+		{
 			$e = explode('<SSTAG>', $line);
 			$response[$e[0]] = $e[1];
 		}
 		
-		if ($response['server_status'] == $nucleo->config['sc_stats_down']) {
+		if ($response['server_status'] == $nucleo->config['sc_stats_down'])
+		{
 			$this->e('RADIO_UNAVAILABLE');
 		}
 		
@@ -77,17 +86,20 @@ class __kick extends common
 		$this->e($kick_request . '/' . $nucleo->config['sc_stats_ip'] . '/' . $nucleo->config['sc_stats_ipport'] . '/');
 		
 		$kick_recv = $this->sock($nucleo->config['sc_stats_ip'], $connect_param, $nucleo->config['sc_stats_ipport']);
-		if (!$kick_recv) {
+		if (!$kick_recv)
+		{
 			$this->e('RADIO_UNAVAILABLE');
 		}
 		
 		$lines2 = split("\n", trim($kick_recv));
-		if (!isset($lines2[4])) {
+		if (!isset($lines2[4]))
+		{
 			$lines2[4] = '';
 		}
 		
 		// If successful
-		if (strstr($lines2[4], 'redirect')) {
+		if (strstr($lines2[4], 'redirect'))
+		{
 			$insert = array(
 				'log_uid' => $user->data['user_id'],
 				'log_time' => time()
@@ -99,3 +111,5 @@ class __kick extends common
 		return;
 	}
 }
+
+?>

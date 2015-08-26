@@ -46,21 +46,19 @@ class topics {
 		}
 		
 		$is_int_forumid = false;
-		if (preg_match('#^\d+$#is', $forum_id)) {
+		if (preg_match('#^(\d+)$#is', $forum_id)) {
 			$is_int_forumid = true;
 			$forum_id = intval($forum_id);
 			
 			$sql = 'SELECT *
 				FROM _forums
-				WHERE forum_id = ?
-					AND forum_active = ?';
-			$sql = sql_filter($sql, $forum_id, 1);
+				WHERE forum_id = ?';
+			$sql = sql_filter($sql, $forum_id);
 		} else {
 			$sql = 'SELECT *
 				FROM _forums
-				WHERE forum_alias = ?
-					AND forum_active = ?';
-			$sql = sql_filter($sql, $forum_id, 1);
+				WHERE forum_alias = ?';
+			$sql = sql_filter($sql, $forum_id);
 		}
 		
 		if (!$forum_row = sql_fieldrow($sql)) {
@@ -68,16 +66,16 @@ class topics {
 		}
 		
 		if ($is_int_forumid) {
-			redirect(s_link('forum', $forum_row->forum_alias), true);
+			redirect(s_link('forum', $forum_row['forum_alias']), true);
 		}
 		
-		$forum_id = $forum_row->forum_id;
+		$forum_id = $forum_row['forum_id'];
 		
 		//
 		// Start auth check
 		//
 		$is_auth = w();
-		$is_auth = $user->auth->forum(AUTH_ALL, $forum_id, $forum_row);
+		$is_auth = $auth->forum(AUTH_ALL, $forum_id, $forum_row);
 		
 		if (!$is_auth['auth_view'] || !$is_auth['auth_read']) {
 			if (!$user->is('member')) {
@@ -100,7 +98,7 @@ class topics {
 			$topic_important = _button('topictype');
 			$auth_key = ($topic_important) ? 'auth_announce' : 'auth_post';
 			
-			if ($forum_row->forum_locked && !$is_auth['auth_mod']) {
+			if ($forum_row['forum_locked'] && !$is_auth['auth_mod']) {
 				$error_msg .= (($error_msg != '') ? '<br />' : '') . lang('forum_locked');
 			}
 			
@@ -148,11 +146,11 @@ class topics {
 						}
 					}
 					
-					$sizeof_poll_options = count($real_poll_options);
+					$sizeof_poll_options = sizeof($real_poll_options);
 					
 					if ($sizeof_poll_options < 2) {
 						$error_msg .= (($error_msg != '') ? '<br />' : '') . lang('few_poll_options');
-					} else if ($sizeof_poll_options > $config->max_poll_options) {
+					} else if ($sizeof_poll_options > $config['max_poll_options']) {
 						$error_msg .= (($error_msg != '') ? '<br />' : '') . lang('many_poll_options');
 					} else if ($poll_title == '') {
 						$error_msg .= (($error_msg != '') ? '<br />' : '') . lang('empty_poll_title');
@@ -164,7 +162,7 @@ class topics {
 						FROM _forum_posts
 						WHERE poster_id = ?';
 					if ($last_post_time = sql_field(sql_filter($sql, $user->d('user_id')))) {
-						if (intval($last_post_time) > 0 && ($current_time - intval($last_post_time)) < intval($config->flood_interval)) {
+						if (intval($last_post_time) > 0 && ($current_time - intval($last_post_time)) < intval($config['flood_interval'])) {
 							$error_msg .= (($error_msg != '') ? '<br />' : '') . lang('flood_error');
 						}
 					}
@@ -192,26 +190,24 @@ class topics {
 					}
 					
 					$insert_data['TOPIC'] = array(
-						'topic_active' => 1,
 						'topic_title' => $post_title,
-						'topic_poster' => $user->d('user_id'),
-						'topic_time' => $current_time,
-						'forum_id' => $forum_id,
+						'topic_poster' => (int) $user->d('user_id'),
+						'topic_time' => (int) $current_time,
+						'forum_id' => (int) $forum_id,
 						'topic_locked' => $topic_locked,
 						'topic_announce' => $topic_announce,
-						'topic_important' => $topic_important,
-						'topic_vote' => $topic_vote,
+						'topic_important' => (int) $topic_important,
+						'topic_vote' => (int) $topic_vote,
 						'topic_featured' => 1,
 						'topic_points' => 1
 					);
 					$topic_id = sql_insert('forum_topics', $insert_data['TOPIC']);
 					
 					$insert_data['POST'] = array(
-						'post_active' => 1,
-						'topic_id' => $topic_id,
-						'forum_id' => $forum_id,
-						'poster_id' => $user->d('user_id'),
-						'post_time' => $current_time,
+						'topic_id' => (int) $topic_id,
+						'forum_id' => (int) $forum_id,
+						'poster_id' => (int) $user->d('user_id'),
+						'post_time' => (int) $current_time,
 						'poster_ip' => $user->ip,
 						'post_text' => $post_message,
 						'post_np' => $post_np
@@ -240,28 +236,24 @@ class topics {
 							$poll_option_id++;
 						}
 						
-						if ($forum_id == $config->main_poll_f) {
+						if ($forum_id == $config['main_poll_f']) {
 							$cache->delete('last_poll_id');
 						}
 					}
 					
-					// TODO: Today save
-					// $user->save_unread(UH_T, $topic_id);
+					$user->save_unread(UH_T, $topic_id);
 					
 					if (!in_array($forum_id, forum_for_team_array())) {
 						//$user->points_add(2);
 					}
 					
-					// Notification only if post belongs to team forums.
 					$a_list = forum_for_team_list($forum_id);
 					if (count($a_list)) {
-						// TODO: Today save
-
-						/*$sql_delete_unread = 'DELETE FROM _members_unread
+						$sql_delete_unread = 'DELETE FROM _members_unread
 							WHERE element = ?
 								AND item = ?
 								AND user_id NOT IN (??)';
-						sql_query(sql_filter($sql_delete_unread, 8, $topic_id, implode(', ', $a_list)));*/
+						sql_query(sql_filter($sql_delete_unread, 8, $topic_id, implode(', ', $a_list)));
 					}
 					
 					if (count($a_list) || in_array($forum_id, array(20, 39))) {
@@ -277,9 +269,9 @@ class topics {
 						WHERE topic_id = ?';
 					sql_query(sql_filter($sql, $post_id, $post_id, $topic_id));
 					
-					/*$sql = 'UPDATE _members SET user_posts = user_posts + 1
+					$sql = 'UPDATE _members SET user_posts = user_posts + 1
 						WHERE user_id = ?';
-					sql_query(sql_filter($sql, $user->d('user_id')));*/
+					sql_query(sql_filter($sql, $user->d('user_id')));
 					
 					redirect(s_link('topic', $topic_id));
 				}
@@ -289,63 +281,39 @@ class topics {
 		// End Submit
 		//
 		
-		$topics_count = ($forum_row->forum_topics) ? $forum_row->forum_topics : 1;
+		$topics_count = ($forum_row['forum_topics']) ? $forum_row['forum_topics'] : 1;
 		
 		$topics = new stdClass();
 		$total = new stdClass();
-
+		
 		//
 		// All announcement data
 		//
 		$sql = 'SELECT t.*, u.user_id, u.username, u.username_base, u2.user_id as user_id2, u2.username as username2, u2.username_base as username_base2, p.post_time, p.post_username as post_username2
-			FROM _forum_topics t, _members u, _forum_posts p, _members u2' . $forum_select_from . '
+			FROM _forum_topics t, _members u, _forum_posts p, _members u2
 			WHERE t.forum_id = ?
-				AND t.topic_active = ?
-				AND p.post_active = ?
 				AND t.topic_poster = u.user_id
 				AND p.post_id = t.topic_last_post_id
 				AND p.poster_id = u2.user_id
 				AND t.topic_announce = 1
-				' . $forum_select_from . '
 			ORDER BY t.topic_last_post_id DESC';
-		$topics->important = sql_rowset(sql_filter($sql, $forum_id, 1, 1));
+		$topics->important = sql_rowset(sql_filter($sql, $forum_id));
 		$total->important = (is_array($topics->important)) ? count($topics->important) : 0;
 		
 		//
 		// Grab all the topics data for this forum
-		// and skip topics already announced on events page
 		//
-		if ($forum_id == $config->forum_for_events) {
-			$sql = 'SELECT t.*, u.user_id, u.username, u.username_base, u2.user_id as user_id2, u2.username as username2, u2.username_base as username_base2, p.post_username, p2.post_username AS post_username2, p2.post_time
-				FROM (_forum_topics t, _members u, _forum_posts p, _forum_posts p2, _members u2)
-				LEFT JOIN _events e ON e.event_topic = t.topic_id
-				WHERE t.forum_id = ?
-					AND t.topic_active = 1
-					AND p.post_active = 1
-					AND t.topic_poster = u.user_id
-					AND p.post_id = t.topic_first_post_id
-					AND p2.post_id = t.topic_last_post_id
-					AND u2.user_id = p2.poster_id
-					AND t.topic_announce = 0
-					AND e.event_topic IS NULL
-				ORDER BY t.topic_important DESC, p2.post_time DESC
-				LIMIT ??, ??';
-		} else {
-			$sql = 'SELECT t.*, u.user_id, u.username, u.username_base, u2.user_id as user_id2, u2.username as username2, u2.username_base as username_base2, p.post_username, p2.post_username AS post_username2, p2.post_time
-				FROM _forum_topics t, _members u, _forum_posts p, _forum_posts p2, _members u2
-				WHERE t.forum_id = ?
-					AND t.topic_active = 1
-					AND p.post_active = 1
-					AND t.topic_poster = u.user_id
-					AND p.post_id = t.topic_first_post_id
-					AND p2.post_id = t.topic_last_post_id
-					AND u2.user_id = p2.poster_id
-					AND t.topic_announce = 0
-				ORDER BY t.topic_important DESC, p2.post_time DESC
-				LIMIT ??, ??';
-		}
-		
-		$topics->normal = sql_rowset(sql_filter($sql, $forum_id, $start, $config->topics_per_page));
+		$sql = 'SELECT t.*, u.user_id, u.username, u.username_base, u2.user_id as user_id2, u2.username as username2, u2.username_base as username_base2, p.post_username, p2.post_username AS post_username2, p2.post_time
+			FROM _forum_topics t, _members u, _forum_posts p, _forum_posts p2, _members u2
+			WHERE t.forum_id = ?
+				AND t.topic_poster = u.user_id
+				AND p.post_id = t.topic_first_post_id
+				AND p2.post_id = t.topic_last_post_id
+				AND u2.user_id = p2.poster_id
+				AND t.topic_announce = 0
+			ORDER BY t.topic_important DESC, /*t.topic_last_post_id*/p2.post_time DESC
+			LIMIT ??, ??';
+		$topics->normal = sql_rowset(sql_filter($sql, $forum_id, $start, $config['topics_per_page']));
 		$total->normal = (is_array($topics->normal)) ? count($topics->normal) : 0;
 		
 		//
@@ -359,18 +327,21 @@ class topics {
 		//
 		if ($is_auth['auth_post'] || $is_auth['auth_mod']) {
 			_style('topic_create', array(
-				'L_POST_NEW_TOPIC' => ($forum_row->forum_locked) ? lang('forum_locked') : lang('post_newtopic'))
+				'L_POST_NEW_TOPIC' => ($forum_row['forum_locked']) ? lang('forum_locked') : lang('post_newtopic'))
 			);
 		}
 		
 		//
-		// Set template vars
+		// Dump out the page header and load viewforum template
 		//
 		v_style(array(
 			'FORUM_ID' => $forum_id,
-			'FORUM_NAME' => $forum_row->forum_name,
-			'U_VIEW_FORUM' => s_link('forum', $forum_row->forum_alias))
+			'FORUM_NAME' => $forum_row['forum_name'],
+			'U_VIEW_FORUM' => s_link('forum', $forum_row['forum_alias']))
 		);
+		//
+		// End header
+		//
 		
 		//
 		// Let's build the topics
@@ -383,7 +354,7 @@ class topics {
 					
 					$topics_count -= $total->important;
 				
-					build_num_pagination(s_link('forum', $forum_row->forum_alias, 's%d'), $topics_count, $config->topics_per_page, $start, '', 'TOPICS_');
+					build_num_pagination(s_link('forum', $forum_row['forum_alias'], 's%d'), $topics_count, $config['topics_per_page'], $start, '', 'TOPICS_');
 				}
 				
 				if (!$j) {
@@ -427,7 +398,7 @@ class topics {
 		
 		if (!$topics_count) {
 			if ($start) {
-				redirect(s_link('forum', $forum_row->forum_alias), true);
+				redirect(s_link('forum', $forum_row['forum_alias']), true);
 			}
 			_style('no_topics');
 		}
@@ -435,14 +406,14 @@ class topics {
 		//
 		// Posting box
 		//
-		if (!empty($error_msg) || (!$is_auth['auth_mod'] && $forum_row->forum_locked) || (!$is_auth['auth_post'] && $forum_row->auth_post == AUTH_REG) || $is_auth['auth_post']) {
+		if (!empty($error_msg) || (!$is_auth['auth_mod'] && $forum_row['forum_locked']) || (!$is_auth['auth_post'] && $forum_row['auth_post'] == AUTH_REG) || $is_auth['auth_post']) {
 			if ($is_auth['auth_post']) {
 				if (!empty($poll_options)) {
 					$poll_options = implode(nr(), $poll_options);
 				}
 				
 				_style('publish', array(
-					'S_POST_ACTION' => s_link('forum', $forum_row->forum_alias),
+					'S_POST_ACTION' => s_link('forum', $forum_row['forum_alias']),
 					
 					'TOPIC_TITLE' => $post_title,
 					'MESSAGE' => $post_message,
@@ -476,9 +447,11 @@ class topics {
 			$layout_file = $use_m_template;
 		}
 		
-		$this->_title = $forum_row->forum_name;
+		$this->_title = $forum_row['forum_name'];
 		$this->_template = $layout_file;
 		
 		return;
 	}
 }
+
+?>

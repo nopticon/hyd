@@ -9,16 +9,20 @@
  *
  * @return  boolean     Succesful or not
  */
-function unzip($src_file, $dest_dir = false, $create_zip_name_dir = true, $overwrite = true) {
-	if (!@function_exists("zip_open")) {
+function unzip ($src_file, $dest_dir = false, $create_zip_name_dir = true, $overwrite = true)
+{
+	if (!@function_exists("zip_open"))
+	{
 		return false;
 	}
 	
-	if (!is_resource(zip_open($src_file))) {
+	if (!is_resource(zip_open($src_file)))
+	{
 		$src_file = dirname($_SERVER['SCRIPT_FILENAME']) . '/' . $src_file;
 	}
 	
-	if (!is_resource($zip = zip_open($src_file))) {
+	if (!is_resource($zip = zip_open($src_file)))
+	{
 		return false;
 	}
 	
@@ -30,27 +34,32 @@ function unzip($src_file, $dest_dir = false, $create_zip_name_dir = true, $overw
 	
 	$response_folder = '';
 	// For every file in the zip-packet
-	while ($zip_entry = zip_read($zip)) {
+	while ($zip_entry = zip_read($zip))
+	{
 		// Now we're going to create the directories in the destination directories
 		
 		// If the file is not in the root dir
 		$pos_last_slash = strrpos(zip_entry_name($zip_entry), '/');
-		if ($pos_last_slash !== false) {
+		if ($pos_last_slash !== false)
+		{
 			// Create the directory where the zip-entry should be saved (with a "/" at the end)
 			$entry_folder = substr(zip_entry_name($zip_entry), 0, $pos_last_slash + 1);
 			create_dirs($dest_dir . $entry_folder);
-			if ($response_folder == '') {
+			if ($response_folder == '')
+			{
 				$response_folder = $entry_folder;
 			}
 		}
 		
 		// Open the entry
-		if (zip_entry_open($zip, $zip_entry, 'r')) {
+		if (zip_entry_open($zip, $zip_entry, 'r'))
+		{
 			// The name of the file to save on the disk
 			$file_name = $dest_dir.zip_entry_name($zip_entry);
 			
 			// Check if the files should be overwritten or not
-			if ($overwrite === true || $overwrite === false && !is_file($file_name)) {
+			if ($overwrite === true || $overwrite === false && !is_file($file_name))
+			{
 				// Get the content of the zip entry
 				$fstream = zip_entry_read($zip_entry, zip_entry_filesize($zip_entry));
 				if (!is_dir($file_name))
@@ -72,15 +81,19 @@ function unzip($src_file, $dest_dir = false, $create_zip_name_dir = true, $overw
 	return $response_folder;
 }
 
-function create_dirs($path) {
-	if (!is_dir($path)) {
+function create_dirs($path)
+{
+	if (!is_dir($path))
+	{
 		$directory_path = '';
 		$directories = explode('/',$path);
 		array_pop($directories);
 		
-		foreach ($directories as $directory) {
+		foreach ($directories as $directory)
+		{
 			$directory_path .= $directory . '/';
-			if (!is_dir($directory_path)) {
+			if (!is_dir($directory_path))
+			{
 				@mkdir($directory_path);
 				@chmod($directory_path, 0777);
 			}
@@ -94,7 +107,8 @@ function create_dirs($path) {
  * @author Rochak Chauhan
  */
 
-class createZip {
+class createZip  {  
+
 	public $compressedData = array(); 
 	public $centralDirectory = array(); // central directory   
 	public $endOfCentralDirectory = "\x50\x4b\x05\x06\x00\x00\x00\x00"; //end of Central directory record
@@ -164,7 +178,8 @@ class createZip {
 	 *
 	 */
 	
-	public function addFile($data, $directoryName) {
+	public function addFile($data, $directoryName)   {
+ 
 		$directoryName = str_replace("\\", "/", $directoryName);  
 	
 		$feedArrayRow = "\x50\x4b\x03\x04";
@@ -226,6 +241,7 @@ class createZip {
 	 */
 
 	public function getZippedfile() { 
+
 		$data = implode("", $this -> compressedData);  
 		$controlDirectory = implode("", $this -> centralDirectory);  
 
@@ -233,8 +249,8 @@ class createZip {
 			$data.  
 			$controlDirectory.  
 			$this -> endOfCentralDirectory.  
-			pack("v", count($this -> centralDirectory)).     
-			pack("v", count($this -> centralDirectory)).     
+			pack("v", sizeof($this -> centralDirectory)).     
+			pack("v", sizeof($this -> centralDirectory)).     
 			pack("V", strlen($controlDirectory)).             
 			pack("V", strlen($data)).                
 			"\x00\x00";                             
@@ -273,5 +289,8 @@ class createZip {
 		header("Content-Transfer-Encoding: binary");
 		header("Content-Length: ".filesize($archiveName));
 		readfile("$archiveName");
+		
 	 }
 }
+
+?>

@@ -29,9 +29,7 @@ $sql = 'SELECT username, user_birthday
 	ORDER BY username_base';
 $members = sql_rowset($sql);
 
-$a = $b = $u = w();
-$i = 0;
-
+$u = array();
 foreach ($members as $row) {
 	$p = array(
 		(int) substr($row['user_birthday'], 4, 2),
@@ -46,6 +44,8 @@ foreach ($members as $row) {
 	$u[$row['username']] = $p;
 }
 
+$a = $b = array();
+$i = 0;
 foreach ($u as $n => $d) {
 	$a[$i] = $d[1];
 	$b[$i] = $n;
@@ -56,3 +56,5 @@ asort($a);
 foreach ($a as $i => $d) {
 	echo $d . ' > :i' . $b[$i] . ':<br />';
 }
+
+?>

@@ -32,7 +32,7 @@ class community {
 		$this->birthdays();
 		
 		v_style(array(
-			'MEMBERS_COUNT' => number_format($config->max_users))
+			'MEMBERS_COUNT' => number_format($config['max_users']))
 		);
 		
 		//
@@ -74,9 +74,9 @@ class community {
 			
 			$founders = w();
 			foreach ($result as $row) {
-				if ($row->username_base == 'rockrepublik') continue;
+				if ($row['username_base'] == 'rockrepublik') continue;
 				
-				$founders[$row->user_id] = $comments->user_profile($row);
+				$founders[$row['user_id']] = $comments->user_profile($row);
 			}
 			
 			$cache->save('founders', $founders);
@@ -84,10 +84,10 @@ class community {
 		
 		foreach ($founders as $user_id => $data) {
 			_style('founders', array(
-				'REALNAME' => $data->username,
-				'USERNAME' => $data->username,
-				'AVATAR' => $data->user_avatar,
-				'PROFILE' => $data->profile)
+				'REALNAME' => $data['username'],
+				'USERNAME' => $data['username'],
+				'AVATAR' => $data['user_avatar'],
+				'PROFILE' => $data['profile'])
 			);
 		}
 		
@@ -123,10 +123,10 @@ class community {
 			$profile = $comments->user_profile($row);
 			
 			_style('team.row', array(
-				'USERNAME' => $profile->username,
-				'REALNAME' => $profile->real_name,
-				'PROFILE' => $profile->profile,
-				'AVATAR' => $profile->user_avatar)
+				'USERNAME' => $profile['username'],
+				'REALNAME' => $profile['real_name'],
+				'PROFILE' => $profile['profile'],
+				'AVATAR' => $profile['user_avatar'])
 			);
 		}
 		
@@ -142,7 +142,7 @@ class community {
 			
 			$bots = w();
 			foreach ($bots as $row) {
-				$user_bots[$row->user_id] = true;
+				$user_bots[$row['user_id']] = true;
 			}
 		}
 		
@@ -159,12 +159,12 @@ class community {
 		$result = sql_rowset($sql);
 		
 		foreach ($result as $row) {
-			if ($row->user_id != GUEST) {
-				if ($row->user_id != $last_user_id) {
-					$is_bot = isset($user_bots[$row->user_id]);
+			if ($row['user_id'] != GUEST) {
+				if ($row['user_id'] != $last_user_id) {
+					$is_bot = isset($user_bots[$row['user_id']]);
 					
-					if (!$row->user_hideuser) {
-						$username = $row->username;
+					if (!$row['user_hideuser']) {
+						$username = $row['username'];
 						
 						if ($is_bot) {
 							$users_bots++;
@@ -172,25 +172,25 @@ class community {
 							$users_visible++;
 						}
 					} else {
-						$username = '*' . $row->username;
+						$username = '*' . $row['username'];
 						$users_hidden++;
 					}
 					
-					if (((!$row->user_hideuser || $is_founder) && !$is_bot) || ($is_bot && $is_founder)) {
+					if (((!$row['user_hideuser'] || $is_founder) && !$is_bot) || ($is_bot && $is_founder)) {
 						_style($block . '.members.item', array(
 							'USERNAME' => $username,
-							'PROFILE' => s_link('m', $row->username_base))
+							'PROFILE' => s_link('m', $row['username_base']))
 						);
 					}
 				}
 				
-				$last_user_id = $row->user_id;
+				$last_user_id = $row['user_id'];
 			} else {
-				if ($row->session_ip != $last_ip) {
+				if ($row['session_ip'] != $last_ip) {
 					$users_guests++;
 				}
 				
-				$last_ip = $row->session_ip;
+				$last_ip = $row['session_ip'];
 			}
 		}
 		
@@ -235,9 +235,8 @@ class community {
 			FROM _members
 			WHERE user_birthday LIKE ?
 				AND user_type NOT IN (??)
-				AND user_avatar <> ?
 			ORDER BY user_posts DESC, username";
-		if (!$result = sql_rowset(sql_filter($sql, date('%md'), USER_INACTIVE, ''))) {
+		if (!$result = sql_rowset(sql_filter($sql, date('%md'), USER_INACTIVE))) {
 			return false;
 		}
 		
@@ -247,9 +246,9 @@ class community {
 			$profile = $comments->user_profile($row);
 			
 			_style('birthday.row', array(
-				'USERNAME' => $profile->username,
-				'PROFILE' => $profile->profile,
-				'AVATAR' => $profile->user_avatar)
+				'USERNAME' => $profile['username'],
+				'PROFILE' => $profile['profile'],
+				'AVATAR' => $profile['user_avatar'])
 			);
 		}
 
@@ -270,11 +269,13 @@ class community {
 			if (!$i) _style('recent_members');
 			
 			_style('recent_members.item', array(
-				'USERNAME' => $row->username,
-				'PROFILE' => s_link('m', $row->username_base))
+				'USERNAME' => $row['username'],
+				'PROFILE' => s_link('m', $row['username_base']))
 			);
 		}
 		
 		return true;
 	}
 }
+
+?>

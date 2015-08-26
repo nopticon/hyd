@@ -3,30 +3,52 @@
 </div>
 
 <!-- BEGIN hidden -->
-<!-- {S_SQL}{S_TIME}s -->
+{S_SQL}{S_TIME}s
 <!-- END hidden -->
 
 <div id="footer">
-	<div class="el_left"><a href="{S_SERVER}">{L_APPLICATION_FULL}</a> &copy; {S_YEAR}</div>
+	<div class="el_left"><a href="{S_SERVER}">Rock Republik Networks</a> &copy; {S_YEAR}</div>
+	<div class="el_right a_right ls_inline">
+		<ul>
+			<li><a href="mailto:info&#64;rockrepublik.net">Cont&aacute;ctanos</a></li>
+			<li><a href="{U_HELP}">{L_HELP}</a></li>
+			<li><a href="{U_TOS}">{L_TOS}</a></li>
+		</ul>
+	</div>
 </div>
 
 </div>
 
-<!-- IF S_ANALYTICS != '' -->
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5286468b2c629d0f"></script>
 <script type="text/javascript">
-
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', '{S_ANALYTICS}']);
-  _gaq.push(['_trackPageview']);
-
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-
+  addthis.layers({
+    'theme' : 'transparent',
+    'share' : {
+      'position' : 'left',
+      'numPreferredServices' : 5
+    },
+    'follow' : {
+      'services' : [
+        {'service': 'facebook', 'id': 'rockrepublik'},
+        {'service': 'twitter', 'id': 'rockrepublik'}
+      ]
+    }
+  });
 </script>
-<!-- ENDIF -->
+
+<!-- BEGIN hide -->
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+<!-- BEGIN hide -->
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+<!-- END hide -->
+document.write(unescape("%3Cscript src='{S_SERVER}/home/style/js/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+var pageTracker = _gat._getTracker("UA-1853605-2");
+pageTracker._trackPageview();
+</script>
+<!-- END hide -->
 
 </body>
 </html>

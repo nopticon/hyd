@@ -49,7 +49,8 @@ class __ms extends common
 		
 		$v = $this->control->__(array('lastpage', 'address', 'password'));
 		
-		if ($user->data['is_member']) {
+		if ($user->data['is_member'])
+		{
 			$nucleo->redirect($v['lastpage']);
 		}
 		
@@ -252,3 +253,5 @@ class __ms extends common
 		
 	}
 }
+
+?>

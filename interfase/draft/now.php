@@ -40,7 +40,7 @@ if (!$fp) {
 }
 
 $data = '';
-fwrite($fp, $stats_get_line);
+fputs($fp, $stats_get_line);
 while (!feof($fp)) {
 	$data .= fgets($fp, 1000);
 }
@@ -60,10 +60,12 @@ if ($scl['data']['server_status'] == $scl['value']) {
 $song = array_map('trim', explode('-', $scl['data']['current_song']));
 $song[1] = array_pop($song);
 
-if (!empty($scl['data']['stream_title']) && $scl['data']['stream_title'] != $config['sitename']) {
+if (!empty($scl['data']['stream_title']) && $scl['data']['stream_title'] != 'Rock Republik Radio') {
 	echo '<div class="live">Al Aire</div><div class="livetitle"><span>' . $scl['data']['stream_title'] . '</span></div>';
 }
 
 foreach ($song as $row) {
 	echo '<div>' . $row . '</div>';
 }
+
+?>

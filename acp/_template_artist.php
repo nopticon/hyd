@@ -33,3 +33,5 @@ class __artist_ extends mac {
 		return;
 	}
 }
+
+?>

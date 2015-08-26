@@ -26,21 +26,13 @@ class __artist_delete extends mac {
 	}
 	
 	public function _home() {
-		$this->__home();
-
-		$this->warning_show();
-
-		$sql = 'SELECT ub, name
-			FROM _artists
-			ORDER BY name';
-		return _rowset_style($sql, 'artists');
-	}
-
-	private function __home() {
 		global $config, $cache;
 		
 		if (!_button()) {
-			return;
+			$sql = 'SELECT ub, name
+				FROM _artists
+				ORDER BY name';
+			return _rowset_style($sql, 'artists');
 		}
 		
 		$name = request_var('name', '');
@@ -56,11 +48,11 @@ class __artist_delete extends mac {
 			FROM _artists_auth a, _members m
 			WHERE a.ub = ?
 				AND a.user_id = m.user_id';
-		$result = sql_rowset(sql_filter($sql, $a_data->ub));
+		$result = sql_rowset(sql_filter($sql, $a_data['ub']));
 		
 		$mods = w();
 		foreach ($result as $row) {
-			$mods[] = $row->user_id;
+			$mods[] = $row['user_id'];
 		}
 		
 		if (count($mods)) {
@@ -97,12 +89,12 @@ class __artist_delete extends mac {
 			'DELETE FROM _forum_topics WHERE topic_ub = ?',
 			'DELETE FROM _dl WHERE ub = ?'
 		);
-		$d_sql = sql_filter($ary_sql, $a_data->ub);
+		$d_sql = sql_filter($ary_sql, $a_data['ub']);
 		
 		$sql = 'SELECT topic_id
 			FROM _forum_topics
 			WHERE topic_ub = ?';
-		if ($topics = sql_rowset(sql_filter($sql, $a_data->ub), false, 'topic_id')) {
+		if ($topics = sql_rowset(sql_filter($sql, $a_data['ub']), false, 'topic_id')) {
 			$d_sql[] = sql_filter('DELETE FROM _forum_posts
 				WHERE topic_id IN (??)', _implode(',', $topics));
 		}
@@ -110,7 +102,7 @@ class __artist_delete extends mac {
 		$sql = 'SELECT id
 			FROM _dl
 			WHERE ub = ?';
-		if ($downloads = sql_rowset(sql_filter($sql, $a_data->ub), false, 'id')) {
+		if ($downloads = sql_rowset(sql_filter($sql, $a_data['ub']), false, 'id')) {
 			$ary_sql = array(
 				'DELETE FROM _dl_fav WHERE dl_id IN (??)',
 				'DELETE FROM _dl_posts WHERE download_id IN (??)',
@@ -120,15 +112,17 @@ class __artist_delete extends mac {
 			$d_sql = array_merge($d_sql, sql_filter($ary_sql, _implode(',', $downloads)));
 		}
 		
-		if (!_rm($config->artists_path . $a_data->ub)) {
-			$this->warning('Error al eliminar directorio de artista.');
+		if (!_rm($config['artists_path'] . $a_data['ub'])) {
+			_pre('Error al eliminar directorio de artista.', true);
 		}
 		
 		sql_query($d_sql);
 		
 		// Cache
-		$cache->delete('artist_list a_last_images');
+		$cache->delete('ub_list a_last_images');
 		
 		redirect(s_link('a'));
 	}
 }
+
+?>

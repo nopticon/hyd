@@ -47,8 +47,8 @@ class __user_address extends mac {
 		$result = sql_rowset(sql_filter($sql, USER_INACTIVE));
 		
 		foreach ($result as $row) {
-			if (!preg_match('/^[a-z0-9&\'\.\-_\+]+@[a-z0-9\-]+\.([a-z0-9\-]+\.)*?[a-z]+$/is', $row->user_email)) {
-				$trash[] = $row->user_email;
+			if (!preg_match('/^[a-z0-9&\'\.\-_\+]+@[a-z0-9\-]+\.([a-z0-9\-]+\.)*?[a-z]+$/is', $row['user_email'])) {
+				$trash[] = $row['user_email'];
 				continue;
 			}
 			
@@ -62,8 +62,8 @@ class __user_address extends mac {
 			}
 			
 			_style('step.item', array(
-				'USERNAME' => $row->username,
-				'USER_EMAIL' => $row->user_email)
+				'USERNAME' => $row['username'],
+				'USER_EMAIL' => $row['user_email'])
 			);
 		
 			$items++;
@@ -72,3 +72,5 @@ class __user_address extends mac {
 		return;
 	}
 }
+
+?>

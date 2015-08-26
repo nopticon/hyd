@@ -38,11 +38,11 @@ class __news_images extends mac {
 				fatal_error();
 			}
 			
-			$filepath_1 = $config->news_path;
+			$filepath_1 = $config['news_path'];
 			
 			$f = $upload->process($filepath_1, 'add_image', 'jpg');
 			
-			if (!count($upload->error) && $f !== false) {
+			if (!sizeof($upload->error) && $f !== false) {
 				foreach ($f as $row) {
 					$xa = $upload->resize($row, $filepath_1, $filepath_1, $news_id, array(100, 75), false, false, true);
 				}
@@ -62,11 +62,13 @@ class __news_images extends mac {
 		
 		foreach ($result as $row) {
 			_style('news_list', array(
-				'NEWS_ID' => $row->news_id,
-				'NEWS_TITLE' => $row->post_subject)
+				'NEWS_ID' => $row['news_id'],
+				'NEWS_TITLE' => $row['post_subject'])
 			);
 		}
 		
 		return;
 	}
 }
+
+?>

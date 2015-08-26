@@ -16,8 +16,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-if (!defined('IN_APP')) exit;
-
 class upload {
 	public $error = array();
 	
@@ -30,7 +28,7 @@ class upload {
 		if (!is_array($files)) return $file_ary;
 		
 		$a_keys = array_keys($files);
-		for ($i = 0, $end = count($files['name']); $i < $end; $i++) {
+		for ($i = 0, $end = sizeof($files['name']); $i < $end; $i++) {
 			foreach ($a_keys as $k) {
 				$file_ary[$i][$k] = $files[$k][$i];
 			}
@@ -53,7 +51,7 @@ class upload {
 		
 		$filename = str_replace($a->random, $b, $a->filepath);
 		@rename($a->filepath, $filename);
-		_chmod($filename, $config->mask);
+		_chmod($filename, $config['mask']);
 		
 		return $filename;
 	}
@@ -77,7 +75,7 @@ class upload {
 		$files = w();
 		$umask = umask(0);
 		
-		if (!count($locations)) {
+		if (!sizeof($locations)) {
 			$this->error[] = 'FILES_NO_FILES';
 			return false;
 		}
@@ -103,7 +101,7 @@ class upload {
 				continue;
 			}
 			
-			_chmod($row->filepath, $config->mask);
+			_chmod($row->filepath, $config['mask']);
 			
 			$files[] = $row;
 		}
@@ -115,7 +113,7 @@ class upload {
 	public function avatar_process($alias, &$_fields, &$error) {
 		global $config, $user;
 		
-		$path = $config->avatar_path;
+		$path = $config['assets_path'] . 'avatars/';
 		
 		$send = $this->process($path, 'avatar');
 		
@@ -164,7 +162,7 @@ class upload {
 			$extension = w($extension);
 		}
 		
-		if (!count($files)) {
+		if (!sizeof($files)) {
 			$this->error[] = lang('files_no_files');
 			return false;
 		}
@@ -215,7 +213,7 @@ class upload {
 				continue;
 			}
 			
-			_chmod($row['filepath'], $config->mask);
+			_chmod($row['filepath'], $config['mask']);
 			
 			if (@filesize($r->filepath) > $filesize) {
 				_rm($r->filepath);
@@ -304,7 +302,7 @@ class upload {
 		// Watermark
 		if ($watermark) {
 			if ($watermark_file === false) {
-				$watermark_file = $config->watermark;
+				$watermark_file = $config['watermark'];
 			}
 			
 			if (!empty($watermark_file)) {
@@ -338,7 +336,7 @@ class upload {
 			return false;
 		}
 		
-		_chmod($t->destination, $config->mask);
+		_chmod($t->destination, $config['mask']);
 		imagedestroy($thumb);
 		imagedestroy($image);
 		
@@ -637,3 +635,5 @@ if (_button('address')) {
 </html>
 
 */
+
+?>

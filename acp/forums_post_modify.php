@@ -53,15 +53,10 @@ class __forums_post_modify extends mac {
 			$post_message = $comments->prepare(request_var('message', '', true));
 			
 			if (!empty($topic_title) && $topic_title != $this->object->topic->topic_title) {
-				// 
-				// Update topic title
-				// 
 				$sql = 'UPDATE _forum_topics SET topic_title = ?
 					WHERE topic_id = ?';
 				sql_query(sql_filter($sql, $topic_title, $this->object->topic->topic_id));
-
-				// Update event title
-				// 
+				
 				$sql = 'SELECT id
 					FROM _events
 					WHERE event_topic = ?';
@@ -97,3 +92,5 @@ class __forums_post_modify extends mac {
 		//return page_layout('Editar', 'modcp.edit', $tv);
 	}
 }
+
+?>

@@ -44,13 +44,22 @@ class __artist_lyric_create extends mac {
 			return;
 		}
 
-		$v->ub = $this->object->ub;
+		$sql = 'SELECT *
+			FROM _artists
+			WHERE ub = ?';
+		if (!$ad = sql_fieldrow(sql_filter($sql, $this->object['ub']))) {
+			return;
+		}
+
+		$v->ub = $this->object['ub'];
 		sql_insert('artists_lyrics', $v);
 
 		$sql = 'UPDATE _artists SET lirics = lirics + 1
 			WHERE ub = ?';
-		sql_query(sql_filter($sql, $this->object->ub));
+		sql_query(sql_filter($sql, $this->object['ub']));
 
-		return redirect(s_link('a', $this->object->subdomain));
+		return redirect(s_link('a', $ad['subdomain']));
 	}
 }
+
+?>

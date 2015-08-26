@@ -35,8 +35,8 @@ class __forums_alias_modify extends mac {
 			$sql = 'UPDATE _forums SET forum_alias = ?
 				WHERE forum_id = ?';
 			sql_query(sql_filter($sql, $forum_alias, $forum_id));
-
-			redirect(s_link('board', $forum_alias));
+			
+			_pre($forum_id . ' > ' . $forum_alias, true);
 		}
 		
 		$sql = 'SELECT forum_id, forum_name
@@ -48,11 +48,13 @@ class __forums_alias_modify extends mac {
 			if (!$i) _style('forums');
 			
 			_style('forums.row', array(
-				'FORUM_ID' => $row->forum_id,
-				'FORUM_NAME' => $row->forum_name)
+				'FORUM_ID' => $row['forum_id'],
+				'FORUM_NAME' => $row['forum_name'])
 			);
 		}
 		
 		return;
 	}
 }
+
+?>

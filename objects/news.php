@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 if (!defined('IN_APP')) exit;
 
-class news {
+class _news {
 	private $data = array();
 	private $_template;
 	private $_title;
@@ -106,8 +106,8 @@ class news {
 					if (!$i) _style('news_cat');
 					
 					_style('news_cat.row', array(
-						'CAT_ID' => $row->cat_id,
-						'CAT_NAME' => $row->cat_name)
+						'CAT_ID' => $row['cat_id'],
+						'CAT_NAME' => $row['cat_name'])
 					);
 				}
 				break;
@@ -127,12 +127,12 @@ class news {
 			if (!$i) _style('cat');
 			
 			_style('cat.row', array(
-				'URL' => s_link('news', $row->news_alias),
-				'SUBJECT' => $row->post_subject,
-				'DESC' => $row->post_desc,
-				'TIME' => $user->format_date($row->post_time, 'd M'),
-				'USERNAME' => $row->username,
-				'PROFILE' => s_link('m', $row->username_base))
+				'URL' => s_link('news', $row['news_alias']),
+				'SUBJECT' => $row['post_subject'],
+				'DESC' => $row['post_desc'],
+				'TIME' => $user->format_date($row['post_time'], 'd M'),
+				'USERNAME' => $row['username'],
+				'PROFILE' => s_link('m', $row['username_base']))
 			);
 		}
 		
@@ -144,27 +144,27 @@ class news {
 		
 		$offset = request_var('ps', 0);
 		
-		if ($this->data->poster_id != $user->d('user_id') && !$offset) {
+		if ($this->data['poster_id'] != $user->d('user_id') && !$offset) {
 			$sql = 'UPDATE _news SET post_views = post_views + 1
 				WHERE news_id = ?';
-			sql_query(sql_filter($sql, $this->data->news_id));
+			sql_query(sql_filter($sql, $this->data['news_id']));
 		}
 		
 		$news_main = array(
-			'MESSAGE' => $comments->parse_message($this->data->post_text),
-			'POST_TIME' => $user->format_date($this->data->post_time)
+			'MESSAGE' => $comments->parse_message($this->data['post_text']),
+			'POST_TIME' => $user->format_date($this->data['post_time'])
 		);
 		
 		$sql = 'SELECT user_id, username, username_base, user_avatar, user_posts, user_gender, user_rank
 			FROM _members
 			WHERE user_id = ?';
-		$news_main = array_merge($news_main, _style_uv($comments->user_profile(sql_fieldrow(sql_filter($sql, $this->data->poster_id)))));
+		$news_main = array_merge($news_main, _style_uv($comments->user_profile(sql_fieldrow(sql_filter($sql, $this->data['poster_id'])))));
 		
 		_style('mainpost', $news_main);
 		
-		$comments_ref = s_link('news', $this->data->news_alias);
+		$comments_ref = s_link('news', $this->data['news_alias']);
 		
-		if ($this->data->post_replies) {
+		if ($this->data['post_replies']) {
 			$comments->reset();
 			$comments->ref = $comments_ref;
 			
@@ -177,17 +177,17 @@ class news {
 				LIMIT ??, ??';
 			
 			$comments->data = array(
-				'SQL' => sql_filter($sql, $this->data->news_id, $offset, $config->posts_per_page)
+				'SQL' => sql_filter($sql, $this->data['news_id'], $offset, $config['posts_per_page'])
 			);
 			
-			$comments->view($offset, 'ps', $this->data->post_replies, $config->posts_per_page, '', '', 'TOPIC_');
+			$comments->view($offset, 'ps', $this->data['post_replies'], $config['posts_per_page'], '', '', 'TOPIC_');
 		}
 		
 		v_style(array(
-			'CAT_URL' => s_link('news', $this->data->cat_url),
-			'CAT_NAME' => $this->data->cat_name,
-			'POST_SUBJECT' => $this->data->post_subject,
-			'POST_REPLIES' => number_format($this->data->post_replies))
+			'CAT_URL' => s_link('news', $this->data['cat_url']),
+			'CAT_NAME' => $this->data['cat_name'],
+			'POST_SUBJECT' => $this->data['post_subject'],
+			'POST_REPLIES' => number_format($this->data['post_replies']))
 		);
 		
 		//
@@ -200,8 +200,10 @@ class news {
 		}
 		
 		$this->_template = 'news.view';
-		$this->_title = $this->data->post_subject;
+		$this->_title = $this->data['post_subject'];
 		
 		return;
 	}
 }
+
+?>

@@ -59,8 +59,7 @@ class __user_post_delete extends mac {
 			WHERE user_id = ?';
 		sql_query(sql_filter($sql, $this->object->userpage_id));
 		
-		// TODO: Today save
-		// $user->delete_unread(UH_UPM, $this->id);
+		$user->delete_unread(UH_UPM, $this->id);
 		
 		if ($this->object->post_time > points_start_date() && $this->object->post_time < 1203314400) {
 			//$user->points_remove(1, $this->object->poster_id);
@@ -69,3 +68,5 @@ class __user_post_delete extends mac {
 		return redirect(s_link('m', $username_base));
 	}
 }
+
+?>

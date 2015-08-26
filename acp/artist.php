@@ -22,16 +22,10 @@ class __artist extends mac {
 	public function __construct() {
 		parent::__construct();
 		
-		$this->auth('colab');
+		$this->auth('founder');
 	}
 	
 	public function _home() {
-		$this->__home();
-
-		return $this->warning_show();
-	}
-
-	private function __home() {
 		global $config, $user, $cache;
 		
 		if (!_button()) {
@@ -42,14 +36,7 @@ class __artist extends mac {
 		$request->subdomain = get_subdomain($request->name);
 
 		if (!$request->name) {
-			return $this->warning('Ingresa el nombre del artista.');
-		}
-
-		$sql = 'SELECT subdomain
-			FROM _artists
-			WHERE subdomain = ?';
-		if (sql_field(sql_filter($sql, $request->subdomain), 'subdomain', '')) {
-			return $this->warning('El subdominio ya esta en uso.');
+			_pre('Ingresa el nombre del artista.', true);
 		}
 		
 		$sql_insert = array(
@@ -66,8 +53,8 @@ class __artist extends mac {
 		$artist_id = sql_insert('artists', $sql_insert);
 		
 		// Cache
-		$cache->delete('artist_list artist_records ai_records artist_recent');
-		set_config('max_artists', $config->max_artists + 1);
+		$cache->delete('ub_list a_records ai_records a_recent');
+		set_config('max_artists', $config['max_artists'] + 1);
 		
 		// Create directories
 		artist_check($artist_id);
@@ -88,31 +75,34 @@ class __artist extends mac {
 				$sql = 'SELECT *
 					FROM _members
 					WHERE username_base = ?
-						AND user_type NOT IN (??, ??)';
-				if (!$userdata = sql_fieldrow(sql_filter($sql, $username_base, USER_INACTIVE, USER_FOUNDER))) {
+						AND user_type <> ?
+						AND user_id <> ?';
+				if (!$userdata = sql_fieldrow(sql_filter($sql, $username_base, USER_INACTIVE, 1))) {
 					continue;
 				}
 				
 				$sql_insert = array(
 					'ub' => $artist_id,
-					'user_id' => $userdata->user_id
+					'user_id' => $userdata['user_id']
 				);
 				sql_insert('artists_auth', $sql_insert);
 				
 				//
 				$update = array('user_type' => USER_ARTIST, 'user_auth_control' => 1);
 				
-				if (!$userdata->user_rank) {
-					$update['user_rank'] = (int) $config->default_a_rank;
+				if (!$userdata['user_rank']) {
+					$update['user_rank'] = (int) $config['default_a_rank'];
 				}
 				
 				$sql = 'UPDATE _members SET ??
 					WHERE user_id = ?
 						AND user_type NOT IN (??, ??)';
-				sql_query(sql_filter($sql, sql_build('UPDATE', $update), $userdata->user_id, USER_INACTIVE, USER_FOUNDER));
+				sql_query(sql_filter($sql, sql_build('UPDATE', $update), $userdata['user_id'], USER_INACTIVE, USER_FOUNDER));
 			}
 			
 			redirect(s_link('a', $subdomain));
 		}
 	}
 }
+
+?>

@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 define('IN_APP', true);
 require_once('./interfase/common.php');
+require_once(ROOT . 'objects/board.php');
 
 $user->init();
 $user->setup();
@@ -26,3 +27,5 @@ $board = new board();
 $board->run();
 
 page_layout('FORUM_INDEX', 'board');
+
+?>

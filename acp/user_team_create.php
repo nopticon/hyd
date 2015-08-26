@@ -38,8 +38,8 @@ class __user_team_create extends mac {
 				if (!$i) _style('team');
 				
 				_style('team.row', array(
-					'TEAM_ID' => $row->team_id,
-					'TEAM_NAME' => $row->team_name)
+					'TEAM_ID' => $row['team_id'],
+					'TEAM_NAME' => $row['team_name'])
 				);
 			}
 			
@@ -72,21 +72,22 @@ class __user_team_create extends mac {
 			FROM _team_members
 			WHERE team_id = ?
 				AND member_id = ?';
-		if ($row = sql_fieldrow(sql_filter($sql, $team, $userdata->user_id))) {
-			if ($ismod && !$row->member_mod) {
+		if ($row = sql_fieldrow(sql_filter($sql, $team, $userdata['user_id']))) {
+			if ($ismod && !$row['member_mod']) {
 				$sql = 'UPDATE _team_members SET member_mod = 1
 					WHERE team_id = ?
 						AND member_id = ?';
-				sql_query(sql_filter($sql, $team, $userdata->user_id));
+				sql_query(sql_filter($sql, $team, $userdata['user_id']));
 			}
 			
 			$insert = false;
 		}
 		
-		if ($insert) {
+		if ($insert)
+		{
 			$insert = array(
 				'team_id' => $team,
-				'member_id' => $userdata->user_id,
+				'member_id' => $userdata['user_id'],
 				'real_name' => $realname,
 				'member_mod' => $ismod
 			);
@@ -95,6 +96,8 @@ class __user_team_create extends mac {
 		
 		$cache->delete('team team_all team_members team_mod team_radio team_colab');
 		
-		return _pre('El usuario <strong>' . $userdata->username . '</strong> fue agregado al grupo <strong>' . $teamd->team_name . '</strong>.', true);
+		return _pre('El usuario <strong>' . $userdata['username'] . '</strong> fue agregado al grupo <strong>' . $teamd['team_name'] . '</strong>.', true);
 	}
 }
+
+?>

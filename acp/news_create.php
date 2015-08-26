@@ -63,10 +63,9 @@ class __news_create extends mac {
 			$sql = 'INSERT _news' . sql_build('INSERT', $sql_insert);
 			$news_id = sql_query_nextid($sql);
 			
-			//
 			// Upload news thumbnail
-			//
-			$send = $upload->process($config->news_path, 'thumbnail');
+			
+			$send = $upload->process($config['news_path'], 'thumbnail');
 			
 			if (count($this->error)) {
 				$error = array_merge($error, $this->error);
@@ -75,7 +74,7 @@ class __news_create extends mac {
 			
 			if ($send !== false) {
 				foreach ($send as $row) {
-					$resize = $upload->resize($row, $config->news_path, $config->news_path, $news_id, array(100, 100), false, false, true);
+					$resize = $upload->resize($row, $config['news_path'], $config['news_path'], $news_id, array(100, 100), false, false, true);
 					if ($resize === false) {
 						continue;
 					}
@@ -95,11 +94,13 @@ class __news_create extends mac {
 			if (!$i) _style('cat');
 			
 			_style('cat.row', array(
-				'CAT_ID' => $row->cat_id,
-				'CAT_NAME' => $row->cat_name)
+				'CAT_ID' => $row['cat_id'],
+				'CAT_NAME' => $row['cat_name'])
 			);
 		}
 		
 		return;
 	}
 }
+
+?>
