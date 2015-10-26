@@ -10,6 +10,7 @@ public/assets/news/*
 public/assets/images/*
 public/assets/g*.js
 public/assets/g*.css
+public/assets/g*.map
 
 composer.lock
 .htda
