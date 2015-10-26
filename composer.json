@@ -1,0 +1,14 @@
+{
+	"name": "nopticon/republica-rock",
+	"authors": [{
+		"name": "Guillermo Azurdia",
+		"email": "info@nopticon.com"
+	}],
+	"config": {
+		"preferred-install": "dist"
+	},
+	"require": {
+		"illuminate/routing": "4.2.*",
+		"illuminate/events": "4.2.*"
+	}
+}
