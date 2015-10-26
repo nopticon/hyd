@@ -1,3 +1,5 @@
+'use strict';
+
 function popup(url, name, width, height) {
 	var win = window.open(url, name, 'toolbar = 0, scrollbars = 1, location = 0, statusbar = 0, menubar = 0, resizable = 1, width=' + width + ', height=' + height);
 	return false;
@@ -24,8 +26,6 @@ function strpos(text, search) {
 }
 
 $(function() {
-	'use strict';
-
 	var xka = true;
 	var $d;
 	var doctitle = document.title;
