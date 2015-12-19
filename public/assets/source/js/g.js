@@ -65,7 +65,7 @@ $(function() {
 	//
 	// Search box on header
 	//
-	$('#searchForm').jQLiteID();
+	// $('#searchForm').jQLiteID();
 
 	$('ul[id^="expand_"]').hide().addClass('flying');
 
@@ -92,13 +92,13 @@ $(function() {
 		limit: 250
 	});
 
-	$('.w_broadcast a').click(function(event) {
+	$('.w_broadcast a').on('click', function(event) {
 		event.preventDefault();
 
 		popup($(this).attr('href'), '_broadcast', 400, 500);
 	});
 
-	$('.pub').click(function(event) {
+	$('.pub').on('click', function(event) {
 		event.preventDefault();
 		$.scrollTo('.publish');
 	});
@@ -114,7 +114,7 @@ $(function() {
 	$('.smile').each(function() {
 		$(this).html('&#8594;&#9786;');
 		$(this).attr('title', 'Mostrar emociones');
-	}).click(function() {
+	}).on('click', function() {
 		popup($(this).attr('href'), '_emoticons', 300, 450);
 		return false;
 	});

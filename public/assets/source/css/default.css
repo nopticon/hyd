@@ -1,35 +1,10 @@
-/* Eric Meyer's Reset CSS v2.0 - http://cssreset.com */
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,embed,figure,figcaption,footer,header,hgroup,menu,nav,output,ruby,section,summary,time,mark,audio,video{border:0;font-size:100%;font:inherit;vertical-align:baseline;margin:0;padding:0}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:none}table{border-collapse:collapse;border-spacing:0}
-
-@font-face {
-	font-family: 'Open Sans';
-	font-style: normal;
-	font-weight: 300;
-	src: local('Open Sans Light'), local('OpenSans-Light'), url('http://themes.googleusercontent.com/static/fonts/opensans/v6/DXI1ORHCpsQm3Vp6mXoaTXhCUOGz7vYGh680lGh-uXM.woff') format('woff');
-}
-@font-face {
-  font-family: 'Bitter';
-  font-style: normal;
-  font-weight: 400;
-  src: local('Bitter-Regular'), url(http://themes.googleusercontent.com/static/fonts/bitter/v4/2PcBT6-VmYhQCus-O11S5-vvDin1pK8aKteLpeZ5c0A.woff) format('woff');
-}
-
-.new_header a {
-	font-family: "Bitter";
-	font-size: 300%;
-	color: #eee;
-	/*text-shadow: -1px -1px #000, 1px 1px #333*/
-	/*text-shadow: 0 0 0.1em #757575, 0 0 0.1em #757575;*/
-}
-
 body {
 	padding: 20px;
 	background: url(images/wood2.jpg) fixed top center #202837;
-	/*background: #222;*/
 }
-/*p, div, span, select {
+p, div, span, select {
 	cursor: default;
-}*/
+}
 p, div, span, input, textarea, select, a, optgroup {
 	font-family: 'Open Sans', Verdana, Arial, Helvetica, sans-serif;
 	text-decoration: none;
@@ -66,16 +41,6 @@ input, button, textarea, select {
 	padding: 2px;
 	border: 0;
 }
-optgroup {
-	background: #eee;
-}
-hr {
-	display: block;
-	clear: both;
-	visibility: hidden;
-	height: 0.1em;
-	line-height: 0.1em;
-}
 
 #content {
 	padding: 10px;
@@ -83,41 +48,6 @@ hr {
 	border: 1px solid #111;
 	background: rgba(0,0,0,0.6);
 	/*border-radius: 10px;*/
-}
-
-.page {
-	/*width: 960px;*/
-	width: 100%;
-	margin: 0 auto;
-}
-.header {
-	display: block;
-	width: 100%;
-	margin: 5px 0 5px 0;
-	overflow: hidden;
-}
-.brand {
-	width: 70%;
-	float: left;
-}
-.brand h1 {
-	width: 300px;
-	height: 51px;
-}
-.brand h1 a {
-	display: block;
-	width: 300px;
-	height: 47px;
-	background: url(images/header.gif) no-repeat;
-	text-indent: 100%;
-	white-space: nowrap;
-	overflow: hidden;
-}
-.brand h1 a:hover {
-	background-position: 0 -47px;
-}
-.brand h2 {
-	display: none;
 }
 #menu {
 	display: block;
@@ -210,43 +140,54 @@ hr {
 	background: #5DA209;
 	color: #fff;
 }
-.webResult {
-	/*margin-bottom: 10px;*/
+#footer {
+	padding: 22px 0 25px 0;
 }
-.webResult h2 {
-	width: 100%;
-	background-color: #5D6F7B;
-	font-size: 11px;
-	font-weight: bold;
-	/*border-radius: 3px;*/
-	height: auto !important;
-	text-indent: 0 !important;
+
+.new_header a {
+	font-family: "Bitter";
+	font-size: 300%;
+	color: #eee;
 }
-.webResult h2 a {
-	color: #fff;
-	padding: 4px;
-	margin: 0;
+.page {
+	/*width: 960px;*/
+	width: 1170px;
+	margin: 0 auto;
 }
-.webResult p {
-	padding: 5px;
-}
-.webResult p b {
-	color: #FFF;
-}
-.webResult a {
-	color: #919FAC;
+.header {
 	display: block;
-	margin: 0 0 10px 5px;
+	width: 100%;
+	margin: 5px 0 5px 0;
+	overflow: hidden;
+}
+.brand {
+	width: 70%;
+	float: left;
+}
+.brand h1 {
+	width: 300px;
+	height: 51px;
+}
+.brand h1 a {
+	display: block;
+	width: 300px;
+	height: 47px;
+	background: url(images/header.gif) no-repeat;
+	text-indent: 100%;
+	white-space: nowrap;
+	overflow: hidden;
+}
+.brand h1 a:hover {
+	background-position: 0 -47px;
+}
+.brand h2 {
+	display: none;
 }
 
 .soc {
 	margin: 3px 0 0;
 	float: right;
 	position: relative;
-}
-
-#footer {
-	padding: 22px 0 25px 0;
 }
 
 .defaultInput {
@@ -432,9 +373,6 @@ hr {
 	width: 49%;
 	float: left;
 }
-/*.l2 ul li img, .l3 ul li img {
-	width: 100%;
-}*/
 .l2 ul li ul li, .l3 ul li ul li, .l4 ul li ul li, .l6 ul li ul li {
 	margin: 0;
 	width: 100%;

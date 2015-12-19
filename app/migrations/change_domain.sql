@@ -30,9 +30,9 @@ ALTER TABLE `_forum_posts` ADD COLUMN `post_active` TINYINT(1) NOT NULL DEFAULT 
 ALTER TABLE `_forums` ADD COLUMN `forum_active` TINYINT(1) NOT NULL DEFAULT '1' AFTER `cat_id`;
 
 ALTER TABLE `_forum_topics` ADD COLUMN `topic_active` TINYINT(1) NULL AFTER `topic_last_post_id`;
-UPDATE _forum_topics SET topic_active = 1 WHERE topic_active = 0;
+UPDATE _forum_topics SET topic_active = 1 WHERE topic_active IS NULL OR topic_active = 1;
 
-CREATE TABLE _menu IF NOT EXISTS (
+CREATE TABLE IF NOT EXISTS _menu (
 	`menu_id` mediumint(5) NOT NULL AUTO_INCREMENT,
 	`menu_alias` varchar(100) NOT NULL,
 	`menu_name` varchar(100) NOT NULL,

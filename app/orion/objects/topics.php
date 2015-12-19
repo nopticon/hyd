@@ -349,12 +349,6 @@ class topics {
 		$total->normal = (is_array($topics->normal)) ? count($topics->normal) : 0;
 
 		//
-		// Total topics ...
-		//
-		//$total_topics += $total_announcements;
-		//$total_topics = $total->important + $total->normal;
-
-		//
 		// Post URL generation for templating vars
 		//
 		if ($is_auth['auth_post'] || $is_auth['auth_mod']) {

@@ -21,9 +21,9 @@ if (!is_array($lang) || empty($lang)) {
 }
 
 $lang += array(
-	'APPLICATION' => 'H',
+	'APPLICATION' => 'Republica Rock',
 	'APPLICATION_FULL' => 'Rock Republik Networks',
-	'APPLICATION_DESC' => 'D',/*La comunidad m&aacute;s grande de Rock en Guatemala',*/
+	'APPLICATION_DESC' => 'La comunidad m&aacute;s grande de Rock en Guatemala',
 	'APPLICATION_START' => 'Apoyando el rock desde el <strong>15 de marzo de 2004</strong>',
 
 	'ENCODING' => "utf-8",

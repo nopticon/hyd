@@ -9,11 +9,11 @@ var gulp = require('gulp'),
 	$ = require('gulp-load-plugins')();
 
 var styles_path = [
+	'public/assets/source/css/reset.css',
+	'public/assets/source/css/fonts.css',
 	'public/assets/source/css/default.css',
 	'public/assets/source/css/check.css',
-	// 'public/assets/source/css/player.css',
 	'public/assets/source/css/fancy.css',
-	// 'public/assets/source/css/slider.css',
 	'public/assets/source/css/icons.css'
 ];
 var scripts_path = [
@@ -21,11 +21,8 @@ var scripts_path = [
 	'public/assets/source/js/j.periodic.js',
 	'public/assets/source/js/j.url.js',
 	'public/assets/source/js/j.textarea.js',
-	// 'public/assets/source/js/j.search.js',
-	// 'public/assets/source/js/j.slider.js',
 	'public/assets/source/js/j.area.js',
 	'public/assets/source/js/j.input-complete.js',
-	// 'public/assets/source/js/png.js',
 	'public/assets/source/js/g.js'
 ];
 var images_path = 'public/assets/source/images/**/*';
@@ -33,6 +30,12 @@ var images_path = 'public/assets/source/images/**/*';
 var styles_dest = 'public/assets/';
 var scripts_dest = 'public/assets/';
 var images_dest = 'public/assets/images/';
+
+gulp.task('browser-sync', function() {
+    $.browserSync.create().init({
+        proxy: "dev.republicarock.com"
+    });
+});
 
 gulp.task('styles', function() {
 	return gulp.src(styles_path)

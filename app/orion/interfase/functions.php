@@ -40,6 +40,13 @@ function htmlencode($str) {
 	return $result;
 }
 
+function d($mixed, $halt = false) {
+	echo '<pre>';
+	print_r($mixed);
+
+	if ($halt) exit;
+}
+
 function compress_html($compress) {
 	$i = array('/>[^S ]+/s','/[^S ]+</s','/(s)+/s');
 	$ii = array('>','<','1');
