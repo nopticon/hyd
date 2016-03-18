@@ -1,4 +1,7 @@
-!cache/.gitkeep
-cache/*
+!www/cache/.gitkeep
+!www/data/.gitkeep
+www/cache/*
+www/data/*
+
 sftp-config*.json
 .DS_Store
