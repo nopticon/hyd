@@ -1,0 +1,27 @@
+User-agent: *
+Disallow:
+
+#Block the bad bots
+User-agent: ia_archiver
+Disallow: /
+ 
+User-agent: VoilaBot
+Disallow: /
+ 
+User-agent: Baiduspider
+Disallow: /
+ 
+User-agent: MJ12bot
+Disallow: /
+ 
+User-agent: BecomeJPBot
+Disallow: /
+ 
+User-agent: Exabot
+Disallow: /
+ 
+User-agent: 008
+Disallow: /
+ 
+User-agent: Sosospider
+Disallow: /
