@@ -5,3 +5,4 @@ www/data/*
 
 sftp-config*.json
 .DS_Store
+.htda
