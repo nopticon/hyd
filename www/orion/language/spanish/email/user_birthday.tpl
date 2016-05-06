@@ -3,12 +3,12 @@ Charset: iso-8859-1
 
 Hola {USERNAME},
 
-&iexcl;Rock Republik te desea feliz cumplea&nilde;os!
+&iexcl;Rock Republik te desea feliz cumplea&ntilde;os!
 
 Muchas gracias por formar parte de nuestra comunidad.
-Deseamos que la pases muy bien.
+Te deseamos que la pases muy bien.
 
 Atentamente,
 
-Rock Republik Networks
+Rock Republik Net
 http://www.rockrepublik.net/
