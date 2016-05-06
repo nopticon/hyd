@@ -2,6 +2,7 @@
 !www/data/.gitkeep
 www/cache/*
 www/data/*
+podcast/
 
 sftp-config*.json
 .DS_Store
