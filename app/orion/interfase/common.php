@@ -94,7 +94,7 @@ require_once(ROOT.'interfase/fileupload.php');
 spl_autoload_register('app_autoload');
 set_error_handler('msg_handler');
 
-//setup php for working with Unicode data
+// Setup for working with Unicode data
 mb_internal_encoding('UTF-8');
 mb_http_output('UTF-8');
 mb_http_input('UTF-8');

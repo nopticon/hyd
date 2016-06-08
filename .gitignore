@@ -12,7 +12,7 @@ public/assets/g*.js
 public/assets/g*.css
 public/assets/g*.map
 
-composer.lock
 .htda
-sftp-config*.json
 .DS_Store
+composer.lock
+sftp-config*.json

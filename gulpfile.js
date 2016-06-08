@@ -3,92 +3,109 @@
  * $ npm install gulp-sourcemaps gulp-load-plugins gulp-ruby-sass gulp-autoprefixer gulp-minify-css gulp-jshint gulp-concat gulp-uglify gulp-imagemin gulp-notify gulp-rename gulp-livereload gulp-cache del --save-dev
  */
 
+// 
 // Load plugins
+// 
 var gulp = require('gulp'),
-	del = require('del'),
-	$ = require('gulp-load-plugins')();
+	nib  = require('nib'),
+	$    = require('gulp-load-plugins')();
+
+var resources = 'resources/';
+var destination = 'public/assets/';
 
 var styles_path = [
-	'public/assets/source/css/reset.css',
-	'public/assets/source/css/fonts.css',
-	'public/assets/source/css/default.css',
-	'public/assets/source/css/check.css',
-	'public/assets/source/css/fancy.css',
-	'public/assets/source/css/icons.css'
+	resources + 'css/reset.css',
+	resources + 'css/fonts.css',
+	resources + 'css/default.css',
+	resources + 'css/check.css',
+	resources + 'css/fancy.css',
+	resources + 'css/icons.css'
 ];
 var scripts_path = [
-	'public/assets/source/js/j.value.js',
-	'public/assets/source/js/j.periodic.js',
-	'public/assets/source/js/j.url.js',
-	'public/assets/source/js/j.textarea.js',
-	'public/assets/source/js/j.area.js',
-	'public/assets/source/js/j.input-complete.js',
-	'public/assets/source/js/g.js'
+	resources + 'js/j.value.js',
+	resources + 'js/j.periodic.js',
+	resources + 'js/j.url.js',
+	resources + 'js/j.textarea.js',
+	resources + 'js/j.area.js',
+	resources + 'js/j.input-complete.js',
+	resources + 'js/g.js'
 ];
-var images_path = 'public/assets/source/images/**/*';
+var images_path = resources + 'images/**/*';
 
-var styles_dest = 'public/assets/';
-var scripts_dest = 'public/assets/';
-var images_dest = 'public/assets/images/';
+var destination_images = destination + 'images/';
 
-gulp.task('browser-sync', function() {
-    $.browserSync.create().init({
-        proxy: "dev.republicarock.com"
-    });
-});
-
-gulp.task('styles', function() {
+// 
+// Define tasks
+// 
+gulp.task('css', function() {
 	return gulp.src(styles_path)
 		.pipe($.sourcemaps.init())
+		.pipe($.stylus({ use: nib() }))
+		.pipe($.concatCss('g.css'))
 		.pipe($.autoprefixer('last 2 version'))
-		.pipe($.concat('g.css'))
-		.pipe(gulp.dest(styles_dest))
+		.pipe(gulp.dest(destination))
 		.pipe($.rename({ suffix: '.min' }))
-		.pipe($.minifyCss())
+		.pipe($.cssnano())
 		.pipe($.sourcemaps.write('.', {
 			sourceMappingURL: function(file) {
 				return file.relative + '.map';
 			}
 		}))
-		.pipe(gulp.dest(styles_dest))
-		.pipe($.notify({ message: 'Styles task complete' }));
+		.pipe(gulp.dest(destination));
 });
 
-gulp.task('scripts', function() {
-  return gulp.src(scripts_path)
-	// .pipe(jshint('.jshintrc'))
-	// .pipe(jshint.reporter('default'))
-	
-	.pipe($.concat('g.js'))
-	.pipe(gulp.dest(scripts_dest))
-	.pipe($.rename({ suffix: '.min' }))
-	.pipe($.uglify())
-	.pipe(gulp.dest(scripts_dest))
-	.pipe($.notify({ message: 'Scripts task complete' }));
+gulp.task('js', function() {
+	return gulp.src(scripts_path)
+		.pipe($.concat('g.js'))
+		.pipe(gulp.dest(destination))
+		.pipe($.rename({ suffix: '.min' }))
+		.pipe($.uglify())
+		.pipe(gulp.dest(destination));
 });
 
 gulp.task('images', function() {
-  return gulp.src(images_path)
-	.pipe($.cache($.imagemin({
+	return gulp.src(images_path)
+		.pipe($.cache($.imagemin({
 		optimizationLevel: 3,
 		progressive: true,
 		interlaced: true
 	})))
-	.pipe(gulp.dest(images_dest));
-	// .pipe(notify({ message: 'Images task complete' }));
+	.pipe(gulp.dest(destination_images));
 });
 
 gulp.task('clean', function(cb) {
-	del([styles_dest + '*.css', scripts_dest + '*.js', images_dest], cb)
+	gulp.src([destination + '*.css', destination + '*.js', destination_images + '**/*'], {read: false})
+	.pipe($.rimraf());
 });
 
-gulp.task('default', ['clean', 'styles', 'scripts', 'images', 'watch']);
+gulp.task('default', ['clean', 'css', 'js', 'images'/*, 'watch'*/]);
 
 gulp.task('watch', function() {
-	gulp.watch(styles_path, ['styles']);
-	gulp.watch(scripts_path, ['scripts']);
+	gulp.watch(styles_path, ['css']);
+	gulp.watch(scripts_path, ['js']);
 	gulp.watch(images_path, ['images']);
+});
 
-	// livereload.listen();
-	// gulp.watch(['public/**']).on('change', livereload.changed);
+gulp.task('bs', ['default'], function() {
+	$.browserSync.create().init({
+		startPath: "/",
+        open: "local", // external | ui
+        online: true,
+        logLevel: "info",
+        port: 3000,
+        proxy: "dev.republicarock.com",
+        files: [],
+        directory: true,
+        ui: {
+        	port: 9080,
+        	weinre: {
+        		port: 9090
+        	}
+        },
+        serveStatic: []
+	});
+
+	gulp.watch([resources + '**/*.styl', resources + '**/*.css'], ['css']).on('change', $.browserSync.reload);
+    gulp.watch([resources + '**/*.js', resources + '**/*.coffee'], ['js']).on('change', $.browserSync.reload);
+    gulp.watch('**/*.php').on('change', $.browserSync.reload);
 });
