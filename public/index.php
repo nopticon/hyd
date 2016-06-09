@@ -10,8 +10,8 @@ require VENDOR . 'autoload.php';
 require VENDOR . 'illuminate/support/Illuminate/Support/helpers.php';
 require ROOT . 'interfase/common.php';
 
-$controllersDirectory = APP . 'Controllers';
-$modelsDirectory      = APP . 'Models';
+$controllersDirectory = APP . 'controllers';
+$modelsDirectory      = APP . 'models';
 
 Illuminate\Support\ClassLoader::register();
 Illuminate\Support\ClassLoader::addDirectories(array($controllersDirectory, $modelsDirectory));

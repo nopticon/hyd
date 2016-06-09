@@ -3,14 +3,6 @@
 $app['router']->get('/', 'HomeController@start');
 
 // 
-// assets/filename.extension
-// 
-$app['router']->get('assets/{filename}.{extension}', 'AssetsController@deliver')->where([
-	'filename' => '[0-9a-zA-Z\-\_]+',
-	'extension' => 'css|js'
-]);
-
-// 
 // today/(task|fault|attends)/id
 // 
 $app['router']->any('{controller}/{mode}/{id}', function($controller, $mode, $id) {
