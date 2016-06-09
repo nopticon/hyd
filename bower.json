@@ -1,0 +1,26 @@
+{
+  "name": "republica-rock",
+  "version": "10.0.0",
+  "homepage": "https://github.com/nopticon/rockr",
+  "moduleType": [
+    "node"
+  ],
+  "authors": [
+    "Guillermo Azurdia <info@nopticon.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "resources/components/",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "cropper": "~2.3.2",
+    "js-url": "~2.3.0",
+    "textarea-autosize": "~0.4.2",
+    "open-sans-fontface": "~1.4.2"
+  }
+}

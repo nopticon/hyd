@@ -1,0 +1,44 @@
+ul
+	&.geogoer_vchecks
+		list-style-type none
+		li
+			position relative
+			&.first
+				span
+			span
+				cursor pointer
+				display block
+				padding-top 3px
+				padding-left 25px
+			&.checked
+				div
+					&.check_div
+						background-image url(style/tick.png)
+						background-repeat no-repeat
+			&.unchecked
+				div
+					&.check_div
+						background-image url(style/cross.png)
+						background-repeat no-repeat
+				span
+			div
+				&.check_div
+					display block
+					height 16px
+					width 16px
+					position absolute
+					top 5px
+					left 0
+					padding-left 5px
+	&.vcheck
+		._
+			padding-left 25px !important
+
+.ln
+	ul
+		&.vcheck
+			li
+				padding 3px 0 3px 0
+				li
+					padding 0
+

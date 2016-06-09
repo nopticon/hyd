@@ -4,6 +4,7 @@ cache/*
 vendor/*
 
 node_modules/*
+resources/components/*
 public/assets/artists/*
 public/assets/events/*
 public/assets/news/*
@@ -16,3 +17,4 @@ public/assets/g*.map
 .DS_Store
 composer.lock
 sftp-config*.json
+npm-debug*.log

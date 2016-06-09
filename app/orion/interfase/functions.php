@@ -2055,32 +2055,38 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 		$user->d('session_page', '');
 	}
 
+	$s_page = v_server('REQUEST_URI');
+	
+	$page_title  = (($s_page != '/') ? lang($page_title, $page_title) . ' ' . lang('in') . ' ' : '');
+	$page_title .= lang('application') . (($s_page == '/') ? ', ' . lang('application_desc') : '');
+	
 	$common_vars = array(
-		'PAGE_TITLE' => lang($page_title, $page_title),
-		'_SELF' => _page(),
+		'PAGE_TITLE'       => $page_title,
+		'_SELF'            => _page(),
 
-		'U_REGISTER' => s_link('signup'),
-		'U_SESSION' => s_link('sign' . $u_session),
-		'U_PROFILE' => s_link('m', $user->d('username_base')),
-		'U_EDITPROFILE' => s_link('my profile'),
-		'U_PASSWORD' => s_link('signr'),
-		'U_DC' => s_link('my dc'),
+		'U_REGISTER'       => s_link('signup'),
+		'U_SESSION'        => s_link('sign' . $u_session),
+		'U_PROFILE'        => s_link('m', $user->d('username_base')),
+		'U_EDITPROFILE'    => s_link('my profile'),
+		'U_PASSWORD'       => s_link('signr'),
+		'U_DC'             => s_link('my dc'),
 
-		'U_HOME' => s_link(),
-		'U_ACP' => (isset($template->vars['U_ACP'])) ? $template->vars['U_ACP'] : ($user->is('artist') || $user->is('mod') ? s_link('acp') : ''),
+		'U_HOME'           => s_link(),
+		'U_ACP'            => (isset($template->vars['U_ACP'])) ? $template->vars['U_ACP'] : ($user->is('artist') || $user->is('mod') ? s_link('acp') : ''),
 
-		'S_YEAR' => date('Y'),
-		'S_UPLOAD' => upload_maxsize(),
-		'S_GIT' => $config->git_push_time,
-		'S_KEYWORDS' => $config->meta_keys,
-		'S_DESCRIPTION' => $config->meta_desc,
-		'S_SERVER' => s_link(),
-		'S_ASSETS' => assets_url(),
-		'S_ANALYTICS' => $config->google_analytics_code,
-		'S_SQL' => ($user->d('is_founder')) ? sql_queries() . 'q | ' : '',
-		'S_REDIRECT' => $user->d('session_page'),
-		'S_USERNAME' => $user->d('username'),
-		'S_MEMBER' => $user->is('member'),
+		'S_YEAR'           => date('Y'),
+		'S_UPLOAD'         => upload_maxsize(),
+		'S_GIT'            => $config->git_push_time,
+		'S_KEYWORDS'       => $config->meta_keys,
+		'S_DESCRIPTION'    => $config->meta_desc,
+		'S_PAGE'           => $s_page,
+		'S_SERVER'         => s_link(),
+		'S_ASSETS'         => assets_url(),
+		'S_ANALYTICS'      => $config->google_analytics_code,
+		'S_SQL'            => ($user->d('is_founder')) ? sql_queries() . 'q | ' : '',
+		'S_REDIRECT'       => $user->d('session_page'),
+		'S_USERNAME'       => $user->d('username'),
+		'S_MEMBER'         => $user->is('member'),
 		// 'S_TODAY_COUNT' => $user->today_count_text()
 	);
 
