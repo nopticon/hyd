@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-function htmlencode($str) {
+function htmlencode($str, $multibyte = false) {
 	$result = trim(htmlentities(str_replace(array(nr(1), nr(true), '\xFF'), array(nr(), nr(), ' '), $str)));
 	$result = (STRIP) ? stripslashes($result) : $result;
 
@@ -807,9 +807,10 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 	}
 
 	$code_invite = request_var('invite', '');
-	$admin = _button('admin');
-	$login = _button('login');
-	$submit = _button();
+	$admin       = _button('admin');
+	$login       = _button('login');
+	$submit      = _button();
+	$need_auth   = false;
 
 	if ($admin) {
 		$need_auth = true;
@@ -864,7 +865,7 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 						$exclude_type = array(USER_INACTIVE);
 
 						if (ValidatePassword($password, $row['user_password']) && (!in_array($row['user_type'], $exclude_type))) {
-							$user->session_create($row['user_id'], $adm);
+							$user->session_create($row['user_id'], $admin);
 
 							if (!$row['user_country'] || !$row['user_location'] || !$row['user_gender'] || !$row['user_birthday'] || !$row['user_avatar']) {
 								$ref = s_link('my', 'profile');
@@ -1396,8 +1397,19 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 		$s_byear_select .= '<option value="' . $i . '"' . (($v_fields['birthday_year'] == $i) ? ' selected="true"' : '') . '>' . $i . '</option>';
 	}
 
+	$v_fields['birthday'] = false;
+
 	if (isset($error['birthday'])) {
 		$v_fields['birthday'] = true;
+	}
+
+	$s_hidden = w();
+	if ($need_auth) {
+		$s_hidden = array('admin' => 1);
+	}
+
+	if (!isset($v_fields['refby'])) {
+		$v_fields['refby'] = '';
 	}
 
 	$layout_vars = array(
@@ -1420,7 +1432,8 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 		'V_BIRTHDAY_DAY' => $s_bday_select,
 		'V_BIRTHDAY_MONTH' => $s_bmonth_select,
 		'V_BIRTHDAY_YEAR' => $s_byear_select,
-		'V_TOS' => ($v_fields['tos']) ? ' checked="true"' : ''
+		'V_TOS' => ($v_fields['tos']) ? ' checked="true"' : '',
+		'PAGE_MODE' => ''
 	);
 
 	foreach ($v_fields as $k => $v) {
@@ -1433,11 +1446,6 @@ function do_login($box_text = '', $need_admin = false, $extra_vars = false) {
 		_style('error', array(
 			'LASTPAGE' => ($ref != '') ? $ref : s_link())
 		);
-	}
-
-	$s_hidden = w();
-	if ($need_auth) {
-		$s_hidden = array('admin' => 1);
 	}
 
 	$box_text = (!empty($box_text)) ? lang($box_text, $box_text) : '';
@@ -1664,7 +1672,7 @@ function msg_handler($errno, $msg_text, $errfile, $errline) {
 	switch ($errno) {
 		case E_NOTICE:
 		case E_WARNING:
-			//echo '<b>PHP Notice</b>: in file <b>' . $errfile . '</b> on line <b>' . $errline . '</b>: <b>' . $msg_text . '</b><br>';
+			echo '<b>PHP Notice</b>: in file <b>' . $errfile . '</b> on line <b>' . $errline . '</b>: <b>' . $msg_text . '</b><br>';
 			break;
 		case E_USER_ERROR:
 			sql_close();

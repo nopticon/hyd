@@ -229,7 +229,7 @@ class database extends dcom {
 		return false;
 	}
 
-	public function fetchrow($result_type = MYSQL_BOTH) {
+	public function fetchrow($result_type = MYSQLI_BOTH) {
 		if ($this->result && is_object($this->result)) {
 			return $this->result->fetch_array($result_type);
 		}
@@ -365,7 +365,7 @@ class database extends dcom {
 			return;
 		}
 
-		if (!$whitelist = get_file(XFS.XCOR . 'store/sql_history')) {
+		if (empty(SQL_HISTORY_FILE) || !$whitelist = get_file(SQL_HISTORY_FILE)) {
 			return;
 		}
 

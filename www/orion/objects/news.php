@@ -158,7 +158,10 @@ class _news {
 		$sql = 'SELECT user_id, username, username_base, user_avatar, user_posts, user_gender, user_rank
 			FROM _members
 			WHERE user_id = ?';
-		$news_main = array_merge($news_main, _style_uv($comments->user_profile(sql_fieldrow(sql_filter($sql, $this->data['poster_id'])))));
+		$result = sql_fieldrow(sql_filter($sql, $this->data['poster_id']));
+
+		$user_profile = $comments->user_profile($result);
+		$news_main = array_merge($news_main, _style_uv($user_profile));
 
 		_style('mainpost', $news_main);
 

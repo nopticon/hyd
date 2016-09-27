@@ -122,6 +122,10 @@ class community {
 
 			$profile = $comments->user_profile($row);
 
+			if (!isset($profile['real_name'])) {
+				$profile['real_name'] = '';
+			}
+
 			_style('team.row', array(
 				'USERNAME' => $profile['username'],
 				'REALNAME' => $profile['real_name'],
