@@ -617,6 +617,8 @@ class userpage {
 			'YEAR' => $s_year_select)
 		);
 
+		$dateset = w();
+
 		$dateformat_select = '';
 		foreach ($dateset as $id => $value) {
 			$dateformat_select .= '<option value="' . $id . '"' . (($value == $_fields->dateformat) ? ' selected="selected"' : '') . '>' . $user->format_date(time(), $value) . '</option>';
@@ -749,6 +751,8 @@ class userpage {
 				'L_FRIENDS_ADD' => lang($friend_add_lang))
 			);
 		}
+
+		$online = false;
 
 		//
 		// Generate page
@@ -1073,6 +1077,7 @@ class userpage {
 		}
 
 		$gender = lang($gender);
+		$epbi2 = false;
 
 		$user_fields = array(
 			//'JOINED' => ($this->data['user_regdate'] && (!$this->data['user_hideuser'] || $epbi2)) ? $user->format_date($this->data['user_regdate']) . sprintf(lang('joined_since'), $memberdays) : '',
@@ -1105,33 +1110,32 @@ class userpage {
 
 		//
 		// Get Last.fm Feed
+		// !! Disable temporary
 		//
 		// http://ws.audioscrobbler.com/1.0/user//recenttracks.xml
-		if (!empty($this->data['user_lastfm'])) {
-			include_once('./interfase/scrobbler.php');
+		// if (!empty($this->data['user_lastfm'])) {
+		// 	include_once('./interfase/scrobbler.php');
 
-			$scrobbler = new EasyScrobbler($this->data['user_lastfm']);
-			$list = $scrobbler->getRecentTracs();
+		// 	$scrobbler = new EasyScrobbler($this->data['user_lastfm']);
+		// 	$list = @$scrobbler->getRecentTracs();
 
-			if (sizeof($list))
-			{
-				_style('main.lastfm', array(
-					'NAME' => $this->data['user_lastfm'],
-					'URL' => 'http://www.last.fm/user/' . $this->data['user_lastfm'] . '/')
-				);
+		// 	if (sizeof($list)) {
+		// 		_style('main.lastfm', array(
+		// 			'NAME' => $this->data['user_lastfm'],
+		// 			'URL' => 'http://www.last.fm/user/' . $this->data['user_lastfm'] . '/')
+		// 		);
 
-				foreach ($list as $row)
-				{
-					_style('main.lastfm.row', array(
-						'ARTIST' => $row['ARTIST'],
-						'NAME' => $row['NAME'],
-						'ALBUM' => $row['ALBUM'],
-						'URL' => $row['URL'],
-						'TIME' => $user->format_date($row['DATE_UTS'], 'H:i'))
-					);
-				}
-			}
-		}
+		// 		foreach ($list as $row) {
+		// 			_style('main.lastfm.row', array(
+		// 				'ARTIST' => $row['ARTIST'],
+		// 				'NAME' => $row['NAME'],
+		// 				'ALBUM' => $row['ALBUM'],
+		// 				'URL' => $row['URL'],
+		// 				'TIME' => $user->format_date($row['DATE_UTS'], 'H:i'))
+		// 			);
+		// 		}
+		// 	}
+		// }
 
 		//
 		// Get public messages

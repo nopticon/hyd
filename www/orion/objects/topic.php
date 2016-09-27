@@ -77,7 +77,7 @@ class topic {
 
 		//
 		// Hide deleted posts
-		if ($topic_data['post_deleted']) {
+		if (isset($topic_data['post_deleted']) && $topic_data['post_deleted']) {
 			fatal_error();
 		}
 

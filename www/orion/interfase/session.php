@@ -339,7 +339,7 @@ class session {
 		global $config;
 
 		// Get expired sessions, only most recent for each user
-		$sql = 'SELECT session_id, session_user_id, session_page, MAX(session_time) AS recent_time
+		$sql = 'SELECT ANY_VALUE(session_id), session_user_id, session_page, MAX(session_time) AS recent_time
 			FROM _sessions
 			WHERE session_time < ?
 			GROUP BY session_user_id, session_page
@@ -557,7 +557,7 @@ class user extends session {
 		// Is board disabled and user not an admin or moderator?
 		// TODO
 		// New ACL enabling board access while offline?
-		if ($config['site_disable'] && $this->is('founder')) {
+		if (isset($config['site_disable']) && $config['site_disable'] && $this->is('founder')) {
 			status("503 Service Temporarily Unavailable");
 			header("Retry-After: 3600");
 

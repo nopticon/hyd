@@ -489,12 +489,20 @@ class upload {
 	}
 
 	function getWidth($image) {
-		$size = getimagesize($image);
+		if (!@file_exists($image)) {
+			return false;
+		}
+
+		$size = @getimagesize($image);
 		$width = $size[0];
 		return $width;
 	}
 
 	function getHeight($image) {
+		if (!@file_exists($image)) {
+			return false;
+		}
+
 		$size = getimagesize($image);
 		$height = $size[1];
 		return $height;

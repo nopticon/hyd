@@ -158,7 +158,7 @@ function sql_field($sql, $field, $def = false) {
 	return $response;
 }
 
-function sql_fieldrow($sql, $result_type = MYSQL_ASSOC) {
+function sql_fieldrow($sql, $result_type = MYSQLI_ASSOC) {
 	global $db;
 
 	$db->query($sql);
@@ -173,15 +173,16 @@ function sql_fieldrow($sql, $result_type = MYSQL_ASSOC) {
 	return $response;
 }
 
-function sql_rowset($sql, $a = false, $b = false, $global = false, $type = MYSQL_ASSOC) {
+function sql_rowset($sql, $a = false, $b = false, $global = false, $type = MYSQLI_ASSOC) {
 	global $db;
+
+	$arr = w();
 
 	$db->query($sql);
 	if (!$data = $db->fetchrowset($type)) {
-		return false;
+		return $arr;
 	}
 
-	$arr = w();
 	foreach ($data as $row) {
 		$data = ($b === false) ? $row : $row[$b];
 
