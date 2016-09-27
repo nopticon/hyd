@@ -61,5 +61,3 @@ $template->pparse('body');
 
 sql_close();
 exit;
-
-?>

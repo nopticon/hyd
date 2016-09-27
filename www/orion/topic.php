@@ -27,5 +27,3 @@ $topic = new topic();
 $topic->run();
 
 page_layout($topic->get_title(), $topic->get_template());
-
-?>

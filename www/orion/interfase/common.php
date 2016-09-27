@@ -94,5 +94,3 @@ $comments = new _comments();
 $upload = new upload();
 
 $config = $cache->config();
-
-?>

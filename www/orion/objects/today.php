@@ -22,24 +22,24 @@ class today {
 	private $type = array();
 	private $elements;
 	public $downloads;
-	
+
 	public function __construct() {
 		return;
 	}
-	
+
 	public function clear_all($user_id = false) {
 		global $user;
-		
+
 		$sql = 'DELETE FROM _today_objects
 			WHERE object_bio = ?';
 		sql_query(sql_filter($sql, $user->d('user_id')));
-		
+
 		return true;
 	}
-	
+
 	public function run() {
 		global $user;
-		
+
 		$sql = 'SELECT *
 			FROM _today_objects o
 			INNER JOIN _today_type t ON t.type_id = o.object_type
@@ -49,24 +49,24 @@ class today {
 		if (!$elements = sql_rowset(sql_filter($sql, $user->d('user_id')))) {
 			return false;
 		}
-		
+
 		$this->downloads = new downloads();
-		
+
 		foreach ($elements as $row) {
 			if ($response = $this->{$row['type_alias']}()) {
 				_style($row['type_alias'], array(
 					'ID' => $row['type_id'])
 				);
-				
+
 				foreach ($response as $_row) {
 					_style($row['type_alias'] . '.row', $_row);
 				}
 			}
 		}
-		
+
 		return;
 	}
-	
+
 	private function _($name) {
 		if (!count($this->type)) {
 			$sql = 'SELECT type_id, type_alias
@@ -74,13 +74,13 @@ class today {
 				ORDER BY type_order';
 			$this->type = sql_rowset($sql, 'type_alias', 'type_id');
 		}
-		
+
 		return (isset($this->type[$name])) ? $this->type[$name] : 0;
 	}
-	
+
 	private function conversations() {
 		global $user, $comments;
-		
+
 		$sql = 'SELECT c.*, c2.privmsgs_date, m.user_id, m.username, m.username_base
 			FROM _dc c, _dc c2, _members m
 			INNER JOIN _today_objects t ON t.object_bio = m.user_id
@@ -88,14 +88,14 @@ class today {
 				AND t.object_type = ?
 				AND t.object_relation = c.msg_id
 				AND c.last_msg_id = c2.msg_id
-				AND c2.privmsgs_from_userid = m.user_id 
+				AND c2.privmsgs_from_userid = m.user_id
 			ORDER BY c2.privmsgs_date DESC';
 		$result = sql_rowset(sql_filter($sql, $user->d('user_id'), __FUNCTION__));
-		
+
 		$response = w();
 		foreach ($result as $i => $row) {
 			$user_profile = $comments->user_profile($row);
-			
+
 			$response[] = array(
 				'S_MARK_ID' => $row['parent_id'],
 				'U_READ' => s_link('my dc read', $row['last_msg_id']),
@@ -106,30 +106,30 @@ class today {
 				'U_USERNAME' => $user_profile['profile']
 			);
 		}
-		
+
 		return $response;
 	}
-	
+
 	private function board() {
 		global $user, $comments;
-		
-		$sql = 'SELECT t.*, f.forum_alias, f.forum_id, f.forum_name, p.post_id, p.post_username, p.post_time, m.user_id, m.username, m.username_base 
-			FROM _members_unread u, _forums f, _forum_topics t, _forum_posts p, _members m 
-			WHERE u.user_id = ? 
+
+		$sql = 'SELECT t.*, f.forum_alias, f.forum_id, f.forum_name, p.post_id, p.post_username, p.post_time, m.user_id, m.username, m.username_base
+			FROM _members_unread u, _forums f, _forum_topics t, _forum_posts p, _members m
+			WHERE u.user_id = ?
 				AND f.forum_id NOT IN (??)
-				AND u.element = ? 
-				AND u.item = t.topic_id 
-				AND t.topic_id = p.topic_id 
-				AND t.topic_last_post_id = p.post_id 
-				AND t.forum_id = f.forum_id 
-				AND p.poster_id = m.user_id 
+				AND u.element = ?
+				AND u.item = t.topic_id
+				AND t.topic_id = p.topic_id
+				AND t.topic_last_post_id = p.post_id
+				AND t.forum_id = f.forum_id
+				AND p.poster_id = m.user_id
 			ORDER BY t.topic_announce DESC, p.post_time DESC';
 		$result = sql_rowset(sql_filter($sql, $user->d('user_id'), '22' . forum_for_team_not(), UH_T));
-		
+
 		$response = w();
 		foreach ($result as $i => $row) {
 			$user_profile = $comments->user_profile($row);
-			
+
 			$response[] = array(
 				'S_MARK_ID' => $row['topic_id'],
 				'FOR_MODS' => in_array($row['forum_id'], forum_for_team_array()),
@@ -145,9 +145,7 @@ class today {
 				'USERNAME' => $user_profile['username']
 			);
 		}
-		
+
 		return $response;
 	}
 }
-
-?>

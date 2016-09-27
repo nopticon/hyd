@@ -44,13 +44,13 @@ foreach ($result as $row) {
 	{
 		$emailer->cc($row['user_public_email']);
 	}
-	
+
 	$emailer->assign_vars(array(
 		'USERNAME' => $row['username'])
 	);
 	$emailer->send();
 	$emailer->reset();
-	
+
 	$done[] = $row['user_id'];
 	$usernames[] = $row['username'];
 }
@@ -63,5 +63,3 @@ if (count($done))
 }
 
 _pre('Done. @ ' . implode(', ', $usernames), true);
-
-?>

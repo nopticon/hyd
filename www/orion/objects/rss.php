@@ -25,15 +25,15 @@ if (class_exists('_rss')) {
 class _rss {
 	public $mode;
 	public $xml = array();
-	
+
 	function __construct() {
 		return;
 	}
-	
+
 	function smode($mode) {
 		$this->mode = $mode;
 	}
-	
+
 	function _news() {
 		$sql = 'SELECT n.*, m.username
 			FROM _news n, _members m
@@ -41,7 +41,7 @@ class _rss {
 			ORDER BY post_time DESC
 			LIMIT 15';
 		$result = sql_rowset($sql);
-		
+
 		foreach ($result as $row) {
 			$this->xml[] = array(
 				'title' => $row['post_subject'],
@@ -51,21 +51,21 @@ class _rss {
 				'author' => $row['username']
 			);
 		}
-		
+
 		return;
 	}
-	
+
 	function _events() {
 		return;
 	}
-	
+
 	function _artists() {
 		$sql = 'SELECT name, subdomain, genre, datetime, local, location
 			FROM _artists
 			ORDER BY datetime DESC
 			LIMIT 15';
 		$result = sql_rowset($sql);
-		
+
 		foreach ($result as $row) {
 			$this->xml[] = array(
 				'title' => $row['name'],
@@ -74,15 +74,15 @@ class _rss {
 				'pubdate' => $row['datetime']
 			);
 		}
-		
+
 		return;
 	}
-	
+
 	function output() {
 		global $user;
-		
+
 		$umode = strtoupper($this->mode);
-		
+
 		$items = '';
 		foreach ($this->xml as $item)
 		{
@@ -95,7 +95,7 @@ class _rss {
 		<pubDate>' . date('D, d M Y H:i:s \G\M\T', $item['pubdate']) . '</pubDate>
 	</item>' . nr();
 		}
-		
+
 		header('Content-type: text/xml');
 		echo '<?xml version="1.0" encoding="utf-8"?>
 <rss version="2.0">
@@ -107,10 +107,8 @@ class _rss {
 	<webMaster>info@rockrepublik.net</webMaster>
 ' . $items . '</channel>
 </rss>';
-		
+
 		sql_close();
 		exit;
 	}
 }
-
-?>

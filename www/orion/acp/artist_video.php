@@ -21,22 +21,22 @@ if (!defined('IN_APP')) exit;
 class __artist_video extends mac {
 	public function __construct() {
 		parent::__construct();
-		
+
 		$this->auth('artist');
 	}
-	
+
 	/*
 	Show all videos added to the artist.
 	*/
 	public function _home() {
 		global $config, $user, $comments;
-		
+
 		$this->_artist();
-		
+
 		if ((_button() && $this->create()) || (_button('remove') && $this->remove())) {
 			return;
 		}
-		
+
 		$sql = 'SELECT *
 			FROM _artists_video
 			WHERE video_a = ?
@@ -53,17 +53,17 @@ class __artist_video extends mac {
 				'TIME' => $user->format_date($row['video_added']))
 			);
 		}
-		
+
 		return;
 	}
-	
+
 	/*
 	Create video for this artist.
 	*/
 	private function create() {
 		$code = request_var('code', '');
 		$vname = request_var('vname', '');
-		
+
 		if (!empty($code)) {
 			$sql = 'SELECT *
 				FROM _artists_video
@@ -73,11 +73,11 @@ class __artist_video extends mac {
 				$code = '';
 			}
 		}
-		
+
 		if (!empty($code)) {
 			$code = get_yt_code($code);
 		}
-		
+
 		if (!empty($code)) {
 			$insert = array(
 				'video_a' => $this->object['ub'],
@@ -91,7 +91,7 @@ class __artist_video extends mac {
 				WHERE ub = ?';
 			sql_query(sql_filter($sql, $this->object['ub']));
 		}
-		
+
 		return redirect(_page());
 	}
 
@@ -123,5 +123,3 @@ class __artist_video extends mac {
 		return redirect(s_link('acp', array('artist_video', 'a' => $this->object['subdomain'])));
 	}
 }
-
-?>

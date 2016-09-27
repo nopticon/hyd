@@ -64,5 +64,3 @@ $layout_vars = array(
 );
 
 page_layout('HOME', 'ssv', $layout_vars, false);
-
-?>

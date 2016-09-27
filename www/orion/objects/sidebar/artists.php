@@ -22,5 +22,3 @@ require_once(ROOT . 'objects/artists.php');
 
 $artists = new _artists();
 $artists->a_sidebar();
-
-?>

@@ -27,5 +27,3 @@ $events = new _events();
 $events->run();
 
 page_layout($events->get_title('UE'), $events->get_template('events'));
-
-?>

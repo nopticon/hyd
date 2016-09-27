@@ -24,29 +24,29 @@ class session {
 	public $ip = '';
 	public $page = '';
 	public $time = 0;
-	
+
 	public function init($update_page = true, $bypass_empty_ip = false) {
 		global $config;
-		
+
 		$this->time = time();
 		$this->browser = v_server('HTTP_USER_AGENT');
 		$this->page = _page();
 		$this->ip = htmlspecialchars(get_real_ip());
-		
+
 		if (empty($this->ip) && !$bypass_empty_ip) {
 			fatal_error('600');
 		}
-		
+
 		if (!empty($this->ip) && $bypass_empty_ip) {
 			//redirect(s_link());
 		}
-		
+
 		$this->cookie_data = w();
 		if (isset($_COOKIE[$config['cookie_name'] . '_sid']) || isset($_COOKIE[$config['cookie_name'] . '_u'])) {
 			$this->cookie_data['u'] = request_var($config['cookie_name'] . '_u', 0);
 			$this->session_id = request_var($config['cookie_name'] . '_sid', '');
 		}
-		
+
 		// Is session_id is set
 		if (!empty($this->session_id)) {
 			$sql = 'SELECT m.*, s.*
@@ -54,38 +54,38 @@ class session {
 				WHERE s.session_id = ?
 					AND m.user_id = s.session_user_id';
 			$this->data = sql_fieldrow(sql_filter($sql, $this->session_id));
-			
+
 			// Did the session exist in the DB?
 			if (isset($this->data['user_id'])) {
 				$s_ip = implode('.', array_slice(explode('.', $this->data['session_ip']), 0, 4));
 				$u_ip = implode('.', array_slice(explode('.', $this->ip), 0, 4));
-				
+
 				if (/*$u_ip == $s_ip && */$this->data['session_browser'] == $this->browser) {
-					
+
 					// Only update session DB a minute or so after last update or if page changes
 					if ($this->time - $this->data['session_time'] > 60 || $this->data['session_page'] != $this->page) {
 						$sql_update = array(
 							'session_time' => $this->time
 						);
-						
+
 						if ($update_page) {
 							$sql_update['session_page'] = $this->page;
 						}
-						
+
 						$sql = 'UPDATE _sessions SET ??
 							WHERE session_id = ?';
 						sql_query(sql_filter($sql, sql_build('UPDATE', $sql_update), $this->session_id));
 					}
-					
+
 					if ($update_page) {
 						$this->data['session_page'] = $this->page;
 					}
-					
+
 					// Ultimately to be removed
 					$this->data['is_member'] = ($this->data['user_id'] != 1/* && ($this->data['user_type'] == USER_NORMAL || $this->data['user_type'] == USER_FOUNDER)*/) ? true : false;
 					$this->data['is_bot'] = (!$this->data['is_member'] && $this->data['user_id'] != 1) ? true : false;
 					$this->data['is_founder'] = ($this->data['user_id'] != 1 && $this->data['user_type'] == USER_FOUNDER && !$this->data['is_bot']) ? true : false;
-					
+
 					return true;
 				}
 			}
@@ -94,7 +94,7 @@ class session {
 		// If we reach here then no (valid) session exists. So we'll create a new one
 		return $this->session_create(false, false, $update_page);
 	}
-	
+
 	/**
 	* Create a new session
 	*
@@ -108,31 +108,31 @@ class session {
 		global $config;
 
 		$this->data = w();
-		
+
 		if (strpos($this->page, 'signin')) {
 			$this->page = '';
 		}
-		
+
 		// Garbage collection ... remove old sessions updating user information
 		// if necessary. It means (potentially) 11 queries but only infrequently
 		if ($this->time > $config['session_last_gc'] + $config['session_gc']) {
 			$this->session_gc();
 		}
-		
+
 		/**
-		* Here we do a bot check. We loop through the list of bots defined by 
-		* the admin and see if we have any useragent and/or IP matches. If we 
+		* Here we do a bot check. We loop through the list of bots defined by
+		* the admin and see if we have any useragent and/or IP matches. If we
 		* do, this is a bot, act accordingly
-		*/		
+		*/
 		$bot = false;
 		$active_bots = w();
 		obtain_bots($active_bots);
-		
+
 		foreach ($active_bots as $row) {
 			if ($row['bot_agent'] && strpos(strtolower($this->browser), strtolower($row['bot_agent'])) !== false) {
 				$bot = $row['user_id'];
 			}
-			
+
 			// If ip is supplied, we will make sure the ip is matching too...
 			if ($row['bot_ip'] && ($bot || !$row['bot_agent'])) {
 				// Set bot to false, then we only have to set it to true if it is matching
@@ -150,18 +150,18 @@ class session {
 				break;
 			}
 		}
-		
+
 		// If we've been passed a user_id we'll grab data based on that
 		if ($user_id !== false) {
 			$this->cookie_data['u'] = $user_id;
-			
+
 			$sql = 'SELECT *
 				FROM _members
 				WHERE user_id = ?
 					AND user_type <> ?';
 			$this->data = sql_fieldrow(sql_filter($sql, $this->cookie_data['u'], USER_INACTIVE));
 		}
-		
+
 		// If no data was returned one or more of the following occured:
 		// User does not exist
 		// User is inactive
@@ -174,7 +174,7 @@ class session {
 				WHERE user_id = ?';
 			$this->data = sql_fieldrow(sql_filter($sql, $this->cookie_data['u']));
 		}
-		
+
 		if ($this->data['user_id'] != 1) {
 			$sql = 'SELECT session_time, session_id
 				FROM _sessions
@@ -191,7 +191,7 @@ class session {
 		} else {
 			$this->data['session_last_visit'] = $this->time;
 		}
-		
+
 		// At this stage we should have a filled data array, defined cookie u and k data.
 		// data array should contain recent session info if we're a real user and a recent
 		// session exists in which case session_id will also be set
@@ -202,7 +202,7 @@ class session {
 		//if ($this->data['user_type'] != USER_FOUNDER) {
 			//$this->check_ban();
 		//}
-		
+
 		//
 		// Do away with ultimately?
 		$this->data['is_member'] = (!$bot && $this->data['user_id'] != 1) ? true : false;
@@ -210,7 +210,7 @@ class session {
 		$this->data['is_founder'] = ($this->data['user_id'] != 1 && $this->data['user_type'] == USER_FOUNDER && !$this->data['is_bot']) ? true : false;
 		//
 		//
-		
+
 		// Create or update the session
 		$sql_ary = array(
 			'session_user_id' => (int) $this->data['user_id'],
@@ -221,29 +221,29 @@ class session {
 			'session_ip' => (string) $this->ip,
 			'session_admin' => ($set_admin) ? 1 : 0
 		);
-		
+
 		if ($update_page) {
 			$sql_ary['session_page'] = (string) $this->page;
 			$this->data['session_page'] = $sql_ary['session_page'];
 		}
-		
+
 		$sql = 'UPDATE _sessions SET ??
 			WHERE session_id = ?';
 		sql_query(sql_filter($sql, sql_build('UPDATE', $sql_ary), $this->session_id));
-		
+
 		if (!$this->session_id || !sql_affectedrows()) {
 			$this->session_id = $this->data['session_id'] = md5(unique_id());
 
 			$sql_ary['session_id'] = (string) $this->session_id;
 			sql_insert('sessions', $sql_ary);
 		}
-		
+
 		if (!$bot) {
 			$cookie_expire = $this->time + 31536000;
-			
+
 			$this->set_cookie('u', $this->cookie_data['u'], $cookie_expire);
 			$this->set_cookie('sid', $this->session_id, 0);
-			
+
 			if ($this->data['is_member']) {
 				$this->register_ip();
 			}
@@ -253,7 +253,7 @@ class session {
 
 		return true;
 	}
-	
+
 	public function register_ip() {
 		$insert = array(
 			'log_user_id' => (int) $this->data['user_id'],
@@ -264,7 +264,7 @@ class session {
 			'log_endtime' => 0
 		);
 		sql_insert('members_iplog', $insert);
-		
+
 		$sql = 'SELECT log_time
 			FROM _members_iplog
 			WHERE log_user_id = ?
@@ -275,10 +275,10 @@ class session {
 				WHERE log_time = ?';
 			sql_query(sql_filter($sql, $log_time));
 		}
-		
+
 		return;
 	}
-	
+
 	/**
 	* Kills a session
 	*
@@ -301,7 +301,7 @@ class session {
 				SET user_lastvisit = ?
 				WHERE user_id = ?';
 			sql_query(sql_filter($sql, $this->data['session_time'], $this->data['user_id']));
-			
+
 			$sql = 'UPDATE _members_iplog SET log_endtime = ?
 				WHERE log_session = ?
 					AND log_user_id = ?';
@@ -309,18 +309,18 @@ class session {
 
 			// Reset the data array
 			$this->data = w();
-			
+
 			$sql = 'SELECT *
 				FROM _members
 				WHERE user_id = ?';
 			$this->data = sql_fieldrow(sql_filter($sql, GUEST));
 		}
-		
+
 		$cookie_expire = $this->time - 31536000;
 		$this->set_cookie('u', '', $cookie_expire);
 		$this->set_cookie('sid', '', $cookie_expire);
 		unset($cookie_expire);
-		
+
 		$this->session_id = '';
 
 		return true;
@@ -329,15 +329,15 @@ class session {
 	/**
 	* Session garbage collection
 	*
-	* Effectively we are deleting any sessions older than an admin definable 
-	* limit. Due to the way in which we maintain session data we have to 
-	* ensure we update user data before those sessions are destroyed. 
-	* In addition this method removes autologin key information that is older 
+	* Effectively we are deleting any sessions older than an admin definable
+	* limit. Due to the way in which we maintain session data we have to
+	* ensure we update user data before those sessions are destroyed.
+	* In addition this method removes autologin key information that is older
 	* than an admin defined limit.
 	*/
 	public function session_gc() {
 		global $config;
-		
+
 		// Get expired sessions, only most recent for each user
 		$sql = 'SELECT session_id, session_user_id, session_page, MAX(session_time) AS recent_time
 			FROM _sessions
@@ -345,27 +345,27 @@ class session {
 			GROUP BY session_user_id, session_page
 			LIMIT 5';
 		$result = sql_rowset(sql_filter($sql, ($this->time - $config['session_length'])));
-		
+
 		$del_user_id = '';
 		$del_sessions = 0;
-		
+
 		foreach ($result as $row) {
 			if ($row['session_user_id'] != GUEST) {
 				$sql = 'UPDATE _members
 					SET user_lastvisit = ?, user_lastpage = ?
 					WHERE user_id = ?';
 				sql_query(sql_filter($sql, $row['recent_time'], $row['session_page'], $row['session_user_id']));
-				
+
 				$sql = 'UPDATE _members_iplog SET log_endtime = ?
 					WHERE log_session = ?
 						AND log_user_id = ?';
 				sql_query(sql_filter($sql, $row['recent_time'], $row['session_id'], $row['session_user_id']));
 			}
-			
+
 			$del_user_id .= (($del_user_id != '') ? ', ' : '') . (int) $row['session_user_id'];
 			$del_sessions++;
 		}
-		
+
 		if ($del_user_id) {
 			// Delete expired sessions
 			$sql = 'DELETE FROM _sessions
@@ -390,7 +390,7 @@ class session {
 	*/
 	public function set_cookie($name, $cookiedata, $cookietime) {
 		global $config;
-		
+
 		//if ($config['cookie_domain'] != 'localhost') {
 		setcookie($config['cookie_name'] . '_' . $name, $cookiedata, $cookietime, $config['cookie_path'], $config['cookie_domain']);
 		//} else {
@@ -402,17 +402,17 @@ class session {
 	* Check for banned user
 	*
 	* Checks whether the supplied user is banned by id, ip or email. If no parameters
-	* are passed to the method pre-existing session data is used. This routine does 
-	* not return on finding a banned user, it outputs a relevant message and stops 
+	* are passed to the method pre-existing session data is used. This routine does
+	* not return on finding a banned user, it outputs a relevant message and stops
 	* execution.
 	*/
 	public function check_ban($user_id = false, $user_ip = false, $user_email = false) {
 		global $config;
-		
+
 		$user_id = ($user_id === false) ? $this->data['user_id'] : $user_id;
 		$user_ip = ($user_ip === false) ? $this->ip : $user_ip;
 		$user_email = ($user_email === false) ? $this->data['user_email'] : $user_email;
-		
+
 		$banned = false;
 
 		$sql = 'SELECT ban_ip, ban_userid, ban_email, ban_exclude, ban_give_reason, ban_end
@@ -420,7 +420,7 @@ class session {
 			WHERE ban_end >= ?
 				OR ban_end = 0';
 		$result = sql_rowset(sql_filter($sql, time()));
-		
+
 		foreach ($result as $row) {
 			if ((!empty($row['ban_userid']) && intval($row['ban_userid']) == $user_id) ||
 				(!empty($row['ban_ip']) && preg_match('#^' . str_replace('*', '.*?', $row['ban_ip']) . '$#i', $user_ip)) ||
@@ -447,10 +447,10 @@ class session {
 			trigger_error($message);
 			*/
 		}
-		
+
 		return;
 	}
-	
+
 	public function d($d = false, $v = false) {
 		if ($d === false) {
 			if ($v !== false) {
@@ -460,20 +460,20 @@ class session {
 
 				$this->data = $v;
 			}
-			
+
 			$r = $this->data;
 			unset($r['user_password']);
 			return $r;
 		}
-		
+
 		if (!preg_match('/^user_/', $d) && !isset($this->data[$d])) {
 			$d = 'user_' . $d;
 		}
-		
+
 		if ($v !== false) {
 			$this->data[$d] = $v;
 		}
-		
+
 		return (isset($this->data[$d])) ? $this->data[$d] : false;
 	}
 }
@@ -542,7 +542,7 @@ class user extends session {
 				}
 			}
 		}
-		
+
 		// We include common language file here to not load it every time a custom language file is included
 		$lang = &$this->lang;
 		if ((require_once($this->lang_path . 'main.php')) === false) {
@@ -562,7 +562,7 @@ class user extends session {
 			header("Retry-After: 3600");
 
 			sql_close();
-			
+
 			echo exception('disabled');
 			exit;
 		}
@@ -588,7 +588,7 @@ class user extends session {
 		} else if ($lang_set) {
 			$this->set_lang($this->lang, $this->help, $lang_set);
 		}
-		
+
 		return;
 	}
 
@@ -608,10 +608,10 @@ class user extends session {
 		}
 
 		$format = (!$format) ? $this->date_format : $format;
-		
+
 		$current_year = date('Y');
 		$this_year = date('Y', $gmepoch);
-		
+
 		if ($current_year == $this_year) {
 			$format = str_replace(' Y', ((strpos($format, 'H') !== false) ? '\, ' : ''), $format);
 		}
@@ -651,7 +651,7 @@ class user extends session {
 
 		return (int) sql_field(sql_filter($sql, $this->lang_name), 'lang_id', 0);
 	}
-	
+
 	public function is($name, $user_id = false, $artist = false) {
 		if (isset($this->data['is_' . $name])) {
 			return $this->data['is_' . $name];
@@ -660,12 +660,12 @@ class user extends session {
 		if ($user_id === false) {
 			$user_id = $this->d('user_id');
 		}
-		
+
 		$response = false;
 		if ($this->is('member')) {
 			$all = $this->_team_auth_list($name);
 			$response = (is_array($all) && count($all)) ? in_array($user_id, $all) : $all;
-			
+
 			if ($name == 'artist' && $response && $artist !== false) {
 				$sql = 'SELECT ub
 					FROM _artists_auth
@@ -676,13 +676,13 @@ class user extends session {
 				}
 			}
 		}
-		
+
 		return $response;
 	}
-	
+
 	public function init_ranks() {
 		global $cache;
-		
+
 		if (!$ranks = $cache->get('ranks')) {
 			$sql = 'SELECT *
 				FROM _ranks
@@ -690,13 +690,13 @@ class user extends session {
 			$ranks = sql_rowset($sql);
 			$cache->save('ranks', $ranks);
 		}
-		
+
 		return $ranks;
 	}
-	
+
 	/*
 	 * Auth types
-	 * 
+	 *
 	 * founder
 	 * mod
 	 * colab
@@ -706,7 +706,7 @@ class user extends session {
 	 * all
 	 *
 	 */
-	
+
 	public function _team_auth_list($mode = '') {
 		global $cache;
 
@@ -778,26 +778,26 @@ class user extends session {
 				}
 			break;
 		}
-		
+
 		if ($mode != 'founder' && is_array($response)) {
 			if ($response_founder = $this->_team_auth_list('founder')) {
 				$response = array_merge($response, $response_founder);
 			}
 		}
-		
+
 		return $response;
 	}
-	
+
 	/*
 	User Unread Messages (Message Center) Functions
-	
-	Who will be receive recently addded items, 
-	in their unread message center? If for some 
-	reason the item is deleted in original 
+
+	Who will be receive recently addded items,
+	in their unread message center? If for some
+	reason the item is deleted in original
 	location, then will be removed here too.
-	
+
 	Auth:
-	
+
 	U	USERS				ADM
 	A	ARTISTS				-
 	AF	ARTISTS FANS		ADM / USER_MOD
@@ -831,7 +831,7 @@ class user extends session {
 	}
 
 	public function today_get() {
-		
+
 	}
 
 	public function today_create($type, $list, $filter = false, $to = false) {
@@ -875,16 +875,16 @@ class user extends session {
 
 	public function save_unread($element, $item, $where_id = 0, $reply_to = 0, $reply_to_return = true, $update_rows = false) {
 		static $from_lastvisit;
-		
+
 		if (!$element || !$item || in_array($element, array(UH_EP, UH_NP, UH_W))) {
 			return;
 		}
-		
+
 		if ($reply_to) {
 			if ($reply_to == $this->data['user_id']) {
 				return;
 			}
-			
+
 			$sql = 'SELECT user_id
 				FROM _members_unread
 				WHERE element = ?
@@ -894,17 +894,17 @@ class user extends session {
 			if (!sql_field(sql_filter($sql, $element, $item, $reply_to))) {
 				$this->insert_unread($reply_to, $element, $item);
 			}
-			
+
 			if ($reply_to_return) {
 				return;
 			}
 		}
-		
+
 		if (!$from_lastvisit) {
 			list($d, $m, $y) = explode(' ', gmdate('j n Y', time() - 15552000)); // (30 * 6) * 86400
 			$from_lastvisit = gmmktime(0, 0, 0, $m, $d, $y);
 		}
-		
+
 		$sql_in = w();
 		switch ($element) {
 			case UH_AF:
@@ -919,25 +919,25 @@ class user extends session {
 			case UH_C:
 			case UH_M:
 				$sql_in = w();
-				
-				$sql = 'SELECT m.user_id 
+
+				$sql = 'SELECT m.user_id
 					FROM _artists_auth a, _members m
 					WHERE a.ub = ?
 						AND a.user_id = m.user_id';
 				$result = sql_rowset(sql_filter($sql, $where_id));
-				
+
 				foreach ($result as $row) {
 					$sql_in[] = $row['user_id'];
 				}
-				
+
 				$sql = 'SELECT u.user_id
 					FROM _artists_fav f, _artists b, _members u
 					WHERE f.ub = ?
-						AND f.ub = b.ub 
-						AND f.user_id = u.user_id 
+						AND f.ub = b.ub
+						AND f.user_id = u.user_id
 					ORDER BY u.user_id';
 				$result = sql_rowset(sql_filter($sql, $where_id));
-				
+
 				foreach ($result as $row) {
 					$sql_in[] = $row['user_id'];
 				}
@@ -965,7 +965,7 @@ class user extends session {
 					WHERE user_type IN (??)
 						AND user_type NOT IN (??)
 						AND user_id <> ?
-						AND user_active = 1 
+						AND user_active = 1
 					ORDER BY user_id';
 				$sql = sql_filter($sql, USER_FOUNDER, USER_INACTIVE, $item);
 				break;
@@ -974,40 +974,40 @@ class user extends session {
 					FROM _members
 					WHERE user_type NOT IN (??)
 						AND user_id <> ?
-						AND user_lastvisit > 0 
+						AND user_lastvisit > 0
 						AND user_lastvisit > ?
 					ORDER BY user_id';
 				$sql = sql_filter($sql, USER_INACTIVE, $this->data['user_id'], $from_lastvisit);
 				break;
 		}
-		
+
 		$sql_items = 'SELECT user_id
 			FROM _members_unread
 			WHERE element = ?
 				AND item = ?
 			ORDER BY user_id';
 		$result = sql_rowset(sql_filter($sql_items, $element, $item));
-		
+
 		foreach ($result as $row) {
 			$this->items[$row['user_id']] = true;
 		}
-		
+
 		// Process members SQL
 		$result = sql_rowset($sql);
-		
+
 		foreach ($result as $row) {
 			if (!isset($this->items[$row['user_id']])) {
 				$this->insert_unread($row['user_id'], $element, $item);
 			}
 		}
-		
+
 		if ($update_rows) {
 			$this->update_unread($element, $item);
 		}
-		
+
 		return;
 	}
-	
+
 	public function insert_unread($uid, $cat, $el) {
 		$row = array(
 			'user_id' => (int) $uid,
@@ -1018,39 +1018,39 @@ class user extends session {
 		$sql = 'INSERT LOW_PRIORITY INTO _members_unread' . sql_build('INSERT', $row);
 		sql_query($sql);
 	}
-	
+
 	public function update_unread($cat, $el) {
 		global $user;
-		
+
 		$sql = 'UPDATE _members_unread SET datetime = ?
 			WHERE element = ?
 				AND item = ?';
 		sql_query(sql_filter($sql, $user->time, $cat, $el));
 	}
-	
+
 	public function get_unread($element, $item) {
 		if (!$this->data['is_member'] || !$element || !$item) {
 			return false;
 		}
-		
+
 		if (!sizeof($this->unr)) {
 			$sql = 'SELECT element, item
 				FROM _members_unread
 				WHERE user_id = ?';
 			$result = sql_rowset(sql_filter($sql, $this->data['user_id']));
-			
+
 			foreach ($result as $row) {
 				$this->unr[$row['element']][$row['item']] = true;
 			}
 		}
-		
+
 		if (isset($this->unr[$element][$item]) && $this->unr[$element][$item]) {
 			return true;
 		}
-		
+
 		return false;
 	}
-	
+
 	public function delete_unread($element, $item) {
 		if (!$element || !$item) {
 			return false;
@@ -1064,34 +1064,34 @@ class user extends session {
 					AND element = ?
 					AND item IN (??)';
 			sql_query(sql_filter($sql, $this->data['user_id'], $element, $items));
-			
+
 			return true;
 		}
-		
+
 		return false;
 	}
-	
+
 	public function delete_all_unread($element, $item) {
 		if (!$element || !$item) {
 			return false;
 		}
-		
+
 		$items = (is_array($item)) ? implode(',', array_map('intval', $item)) : (int) $item;
-		
+
 		$sql = 'DELETE FROM _members_unread
 			WHERE element = ?
 				AND item IN (??)';
 		sql_query(sql_filter($sql, $element, $items));
-		
+
 		return true;
 	}
-	
+
 	//
 	// POINTS SYSTEM
 	//
 	public function points_add($n, $uid = false) {
 		global $user;
-		
+
 		if ($uid === false) {
 			$uid = $this->data['user_id'];
 			$block = $this->data['user_block_points'];
@@ -1103,125 +1103,125 @@ class user extends session {
 				$block = $row['user_block_points'];
 			}
 		}
-		
+
 		if ($block) {
 			return;
 		}
-		
+
 		$sql = 'UPDATE _members
 			SET user_points = user_points + ??
 			WHERE user_id = ?';
 		sql_query(sql_filter($sql, $n, $uid));
-		
+
 		return;
 	}
-	
+
 	public function points_remove($n, $uid = false) {
 		if ($uid === false) {
 			$uid = $this->data['user_id'];
 		}
-		
+
 		$sql = 'UPDATE _members
 			SET user_points = user_points - ??
 			WHERE user_id = ?';
 		sql_query(sql_filter($sql, $n, $uid));
-		
+
 		return;
 	}
-	
+
 	//
 	// END - USER HISTORY FUNCTIONS
 	//
-	
+
 	public function check_ref($block_ud = false, $auto_block = false) {
 		global $config;
-		
+
 		$url = (getenv('HTTP_REFERER')) ? trim(getenv('HTTP_REFERER')) : v_server('HTTP_REFERER');
 		$url = $this->clean_value($url);
 		if ($url == '') {
 			return;
 		}
-		
+
 		$domain = explode('?', str_replace(array('http://', 'https://'), '', $url));
 		$domain = trim($domain[0]);
 		$domain = explode('/', $domain);
 		$excref = $domain[0] . '/' . $domain[1];
 		$domain = trim($domain[0]);
-		
+
 		if (($domain == '') || preg_match('#^.*?' . $config['server_name'] . '.*?$#i', $domain)) {
 			return;
 		}
-		
+
 		if (is_array($this->config['exclude_refs'])) {
 			$this->config['exclude_refs'] = $this->config['exclude_refs'][0];
 		}
-		
+
 		if ($this->config['exclude_refs'] != '') {
 			$this->config['exclude_refs'] = explode(nr(), $this->config['exclude_refs']);
-			
+
 			foreach ($this->config['exclude_refs'] as $e_domain) {
 				if (strstr($e_domain, 'www.')) {
 					$this->config['exclude_refs'][] = str_replace('www.', '', $e_domain);
 				}
 			}
 		}
-		
+
 		if (in_array($excref, $this->config['exclude_refs'])) {
 			return;
 		}
-		
+
 		$not_allowed_ref = true;
 		if (in_array($excref, $this->config['exclude_refs'])) {
 			$domain = $excref;
 			$not_allowed_ref = false;
 		}
-		
+
 		$request = $this->clean_value(v_server('REQUEST_URI'));
 		$auto_block = ($auto_block) ? 1 : 0;
-		
+
 		$insert = true;
 		$update = false;
 		$banned = false;
 		$group_id = '';
 		$datetime = time();
-		
+
 		$sql = 'SELECT *
 			FROM _ref
 			WHERE domain = ?
 				OR url = ?
 			ORDER BY url';
 		$result = sql_rowset(sql_filter($sql, $domain, $url));
-		
+
 		foreach ($result as $row) {
 			if ($group_id == '') {
 				$group_id = $row['group_id'];
 			}
-			
+
 			if ($row['banned']) {
 				$banned = true;
 			}
-			
+
 			if (($row['url'] == $url) && !$update) {
 				$sql_banned = '';
 				$update = true;
 				$insert = false;
-				
+
 				if (!$banned) {
 					$sql_banned = ", banned = " . intval($auto_block);
 				}
-				
+
 				$sql = 'UPDATE _ref SET request = ?' . $sql_banned . ', views = views + 1, last_datetime = ?, last_ip = ?
 					WHERE domain = ?
 						AND url = ?';
 				sql_query(sql_filter($sql, $request, $datetime, $user_ip, $domain, $url));
 			}
 		}
-		
+
 		if ($insert) {
 			if ($group_id == '') {
 				$group_id = md5(uniqid(time()));
 			}
-			
+
 			$sql_insert = array(
 				'group_id' => $group_id,
 				'domain' => $domain,
@@ -1235,17 +1235,17 @@ class user extends session {
 			);
 			sql_insert('ref', $sql_insert);
 		}
-		
+
 		if ($not_allowed_ref) {
 			if ($banned) {
 				fatal_error();
 			}
-			
+
 			if ($block_ud) {
 				redirect(s_link());
 			}
 		}
-		
+
 		return;
 	}
 }
@@ -1253,21 +1253,21 @@ class user extends session {
 class auth {
 	public $founder = false;
 	public $data = array();
-	
+
 	//
 	// @ $member_id
 	//
 	public function query($module = false, $member_id = false) {
 		if ($member_id === false) {
 			global $user;
-			
+
 			$member_id = $user->d('user_id');
-			
+
 			if ($user->is('founder')) {
 				return true;
 			}
 		}
-		
+
 		if (!isset($this->data[$member_id])) {
 			$sql = 'SELECT *
 				FROM _auth_control
@@ -1280,46 +1280,46 @@ class auth {
 				}
 			}
 		}
-		
+
 		if ((isset($this->data[$member_id]) && is_array($this->data[$member_id]) && sizeof($this->data[$member_id])) || $user->is('founder')) {
 			if ($module !== false && empty($this->data[$member_id]['a_' . $module])) {
 				return false;
 			}
-			
+
 			return true;
 		}
-		
+
 		return false;
 	}
-	
+
 	public function option($ary, $member_id = false) {
 		global $user;
-		
+
 		if ($member_id === false) {
 			$member_id = $user->d('user_id');
-			
+
 			if ($user->is('founder')) {
 				return true;
 			}
 		}
-		
+
 		if (!isset($this->data[$member_id]) || !is_array($ary)) {
 			return;
 		}
-		
+
 		$a = '';
 		foreach ($ary as $i => $k) {
 			if (!$i) $k = 'a_' . $k;
 			$a .= "['" . $k . "']";
 		}
-		
+
 		eval('$b = (isset($this->data[$member_id]' . $a . ')) ? true : false;');
 		return $b;
 	}
-	
+
 	public function forum($type, $forum_id, $f_access = false) {
 		global $config, $user;
-		
+
 		switch ($type) {
 			case AUTH_ALL:
 				$a_sql = 'a.auth_view, a.auth_read, a.auth_post, a.auth_reply, a.auth_announce, a.auth_vote, a.auth_pollcreate';
@@ -1356,7 +1356,7 @@ class auth {
 			default:
 				break;
 		}
-		
+
 		//
 		// If f_access has been passed, or auth is needed to return an array of forums
 		// then we need to pull the auth information on the given forum (or all forums)
@@ -1364,7 +1364,7 @@ class auth {
 		if ($f_access === false) {
 			$forum_match_sql = ($forum_id != AUTH_LIST_ALL) ? sql_filter('WHERE a.forum_id = ?', $forum_id) : '';
 			$sql_fetchrow = ($forum_id != AUTH_LIST_ALL) ? 'sql_fieldrow' : 'sql_rowset';
-			
+
 			$sql = 'SELECT a.forum_id, ' . $a_sql . '
 				FROM _forums a
 				' . $forum_match_sql;
@@ -1372,7 +1372,7 @@ class auth {
 				return w();
 			}
 		}
-	
+
 		//
 		// If the user isn't logged on then all we need do is check if the forum
 		// has the type set to ALL, if yes they are good to go, if not then they
@@ -1381,7 +1381,7 @@ class auth {
 		$u_access = w();
 		if ($user->is('member')) {
 			$forum_match_sql = ($forum_id != AUTH_LIST_ALL) ? sql_filter('AND a.forum_id = ?', $forum_id) : '';
-	
+
 			$sql = 'SELECT a.forum_id, ' . $a_sql . ', a.auth_mod
 				FROM _auth_access a, _members_group ug
 				WHERE ug.user_id = ?
@@ -1389,7 +1389,7 @@ class auth {
 					AND a.group_id = ug.group_id
 					' . $forum_match_sql;
 			$result = sql_rowset(sql_filter($sql, $user->d('user_id')));
-			
+
 			foreach ($result as $row) {
 				if ($forum_id != AUTH_LIST_ALL) {
 					$u_access[] = $row;
@@ -1398,7 +1398,7 @@ class auth {
 				}
 			}
 		}
-		
+
 		//
 		// If the user is logged on and the forum type is either ALL or REG then the user has access
 		//
@@ -1410,16 +1410,16 @@ class auth {
 		// and admin automatically have access to an ACL forum, similarly we assume admins meet an
 		// auth requirement of USER_MOD
 		//
-		
+
 		$this->founder = $user->is('founder');
-		
+
 		$auth_user = w();
 		foreach ($auth_fields as $a_key) {
 			if ($forum_id != AUTH_LIST_ALL) {
 				$value = $f_access[$a_key];
-				
+
 				$custom_mod = forum_for_team($forum_id);
-	
+
 				switch ($value) {
 					case AUTH_ALL:
 						$auth_user[$a_key] = true;
@@ -1450,9 +1450,9 @@ class auth {
 				for ($k = 0, $end = sizeof($f_access); $k < $end; $k++) {
 					$value = $f_access[$k][$a_key];
 					$f_forum_id = $f_access[$k]['forum_id'];
-					
+
 					$custom_mod = forum_for_team($forum_id);
-	
+
 					switch ($value) {
 						case AUTH_ALL:
 							$auth_user[$f_forum_id][$a_key] = true;
@@ -1482,32 +1482,32 @@ class auth {
 				}
 			}
 		}
-	
+
 		//
 		// Is user a moderator?
 		//
 		if ($forum_id != AUTH_LIST_ALL) {
 			$custom_mod = forum_for_team($forum_id);
-			
+
 			//$auth_user['auth_mod'] = ($user->is('member')) ? $this->check_user(AUTH_MOD, 'auth_mod', $u_access) : false;
 			$auth_user['auth_mod'] = ($user->is('member')) ? $user->is($custom_mod) : false;
 		} else {
 			for ($k = 0, $end = sizeof($f_access); $k < $end; $k++) {
 				$f_forum_id = $f_access[$k]['forum_id'];
 				$custom_mod = forum_for_team($forum_id);
-	
+
 				$auth_user[$f_forum_id]['auth_mod'] = ($user->is('member')) ? (isset($u_access[$f_forum_id]) ? $this->check_user(AUTH_MOD, 'auth_mod', $u_access[$f_forum_id], $custom_mod) : false) : false;
 			}
 		}
-	
+
 		return $auth_user;
 	}
-	
+
 	public function check_user($type, $key, $u_access, $custom_mod) {
 		global $user;
-		
+
 		$auth_user = 0;
-	
+
 		if (sizeof($u_access)) {
 			for ($j = 0, $end = sizeof($u_access); $j < $end; $j++) {
 				$result = 0;
@@ -1521,15 +1521,13 @@ class auth {
 						$result = $result || $this->founder;
 						break;
 				}
-	
+
 				$auth_user = $auth_user || $result;
 			}
 		} else {
 			$auth_user = $this->founder;
 		}
-	
+
 		return $auth_user;
 	}
 }
-
-?>

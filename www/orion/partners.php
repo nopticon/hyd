@@ -29,7 +29,7 @@ $partners = sql_rowset($sql);
 
 foreach ($partners as $i => $row) {
 	if (!$i) _style('partners');
-	
+
 	_style('partners.row', array(
 		'NAME' => $row['partner_name'],
 		'IMAGE' => $row['partner_image'],
@@ -38,5 +38,3 @@ foreach ($partners as $i => $row) {
 }
 
 page_layout('PARTNERS', 'partners', false, false);
-
-?>

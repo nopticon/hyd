@@ -27,5 +27,3 @@ $userpage = new userpage();
 $userpage->run();
 
 page_layout($userpage->get_title(), $userpage->get_template());
-
-?>

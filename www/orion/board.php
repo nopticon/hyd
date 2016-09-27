@@ -27,5 +27,3 @@ $board = new board();
 $board->run();
 
 page_layout('FORUM_INDEX', 'board');
-
-?>

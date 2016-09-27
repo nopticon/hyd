@@ -57,5 +57,3 @@ if (!$today->run()) {
 }
 
 page_layout('UNREAD_ITEMS', 'unread');
-
-?>

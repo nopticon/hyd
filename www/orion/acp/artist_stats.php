@@ -21,15 +21,15 @@ if (!defined('IN_APP')) exit;
 class __artist_stats extends mac {
 	public function __construct() {
 		parent::__construct();
-		
+
 		$this->auth('founder');
 	}
-	
+
 	public function _home() {
 		global $config, $user, $comments;
-		
+
 		$this->_artist();
-		
+
 		$sql = 'SELECT *, SUM(members + guests) AS total
 			FROM _artists_stats
 			WHERE ub = ?
@@ -97,9 +97,7 @@ class __artist_stats extends mac {
 			'BEFORE_VIEWS' => number_format($this->object['views']),
 			'SHOW_VIEWS_LEGEND' => ($this->object['views'] > $total_graph))
 		);
-		
+
 		return;
 	}
 }
-
-?>

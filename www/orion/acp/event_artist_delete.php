@@ -21,7 +21,7 @@ if (!defined('IN_APP')) exit;
 class __event_artist_delete extends mac {
 	public function __construct() {
 		parent::__construct();
-		
+
 		$this->auth('artist');
 	}
 
@@ -62,22 +62,22 @@ class __event_artist_delete extends mac {
 	*/
 	private function remove() {
 		$v = _request(array('event' => 0));
-		
+
 		if (_empty($v)) {
 			return;
 		}
-		
+
 		$sql = 'SELECT *
 			FROM _events
 			WHERE id = ?';
 		if (!$row = sql_fieldrow(sql_filter($sql, $event))) {
 			_pre('El evento no existe.', true);
 		}
-		
+
 		$e_artist = explode(nr(), $artist);
 		foreach ($e_artist as $row) {
 			$subdomain = get_subdomain($row);
-			
+
 			$sql = 'SELECT *
 				FROM _artists
 				WHERE subdomain = ?';
@@ -88,9 +88,7 @@ class __event_artist_delete extends mac {
 				sql_query(sql_filter($sql, $a_row['ub'], $event));
 			}
 		}
-		
+
 		return redirect(s_link('events', $row['event_alias']));
 	}
 }
-
-?>

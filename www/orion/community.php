@@ -27,5 +27,3 @@ $community = new community();
 $community->run();
 
 page_layout('COMMUNITY', 'community', false, false);
-
-?>

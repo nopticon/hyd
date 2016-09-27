@@ -37,11 +37,9 @@ $lang += array(
 	'CHAT_CREATE_INVALID_NAME' => 'El nombre del canal &uacute;nicamente puede contener letras, n&uacute;meros y <strong>-</strong>',
 	'CHAT_CREATE_EMPTY_DESC' => 'Debes completar la descripci&oacute;n del canal.',
 	'CHAT_ALREADY_CREATED' => 'El nombre del canal ya existe, escoge otro.',
-	
+
 	'CHAT_MEMBER_ENTERED' => '<strong>%s</strong> entr&oacute; al canal.',
 	'CHAT_MEMBER_LOGOUT' => '<strong>%s</strong> sali&oacute; del canal.',
 	'CHAT_MEMBER_TIMEOUT' => '<strong>%s</strong> sali&oacute; del canal por inactividad.',
 	'CHAT_LOGOUT' => 'Salir del chat'
 );
-
-?>

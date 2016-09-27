@@ -27,5 +27,3 @@ $news = new _news();
 $news->run();
 
 page_layout($news->get_title('NEWS'), $news->get_template('news'));
-
-?>

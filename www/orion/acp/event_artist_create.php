@@ -21,10 +21,10 @@ if (!defined('IN_APP')) exit;
 class __event_artist_create extends mac {
 	public function __construct() {
 		parent::__construct();
-		
+
 		$this->auth('mod');
 	}
-	
+
 	/*
 	Show form listing all event available to this artist.
 	*/
@@ -74,11 +74,11 @@ class __event_artist_create extends mac {
 	*/
 	private function create() {
 		$v = _request(array('event' => 0));
-		
+
 		if (_empty($v)) {
 			return;
 		}
-		
+
 		$sql = 'SELECT id, event_alias
 			FROM _events
 			WHERE id = ?';
@@ -99,9 +99,7 @@ class __event_artist_create extends mac {
 			'a_event' => $event['id']
 		);
 		sql_insert('artists_events', $sql_insert);
-		
+
 		return redirect(s_link('events', $event['event_alias']));
 	}
 }
-
-?>
