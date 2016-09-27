@@ -27,5 +27,3 @@ $help = new _help();
 $help->run();
 
 page_layout($help->get_title('HELP'), $help->get_template('help'));
-
-?>

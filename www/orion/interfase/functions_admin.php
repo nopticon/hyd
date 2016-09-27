@@ -27,10 +27,10 @@ function make_forum_select($box_name, $ignore_forum = false, $select_forum = '')
 
 	$sql = 'SELECT f.forum_id, f.forum_name
 		FROM _forum_categories c, _forums f
-		WHERE f.cat_id = c.cat_id 
+		WHERE f.cat_id = c.cat_id
 		ORDER BY c.cat_order, f.forum_order';
 	$result = sql_rowset($sql);
-	
+
 	$forum_list = '';
 	foreach ($result as $row) {
 		if ($is_auth_ary[$row['forum_id']]['auth_read'] && $ignore_forum != $row['forum_id']) {
@@ -38,7 +38,7 @@ function make_forum_select($box_name, $ignore_forum = false, $select_forum = '')
 			$forum_list .= '<option value="' . $row['forum_id'] . '"' . $selected .'>' . $row['forum_name'] . '</option>';
 		}
 	}
-	
+
 	$forum_list = ($forum_list == '') ? '<option value="-1">--</option>' : '<select name="' . $box_name . '">' . $forum_list . '</select>';
 
 	return $forum_list;
@@ -53,7 +53,7 @@ function sync($type, $id = false) {
 			$sql = "SELECT forum_id
 				FROM _forums";
 			$result = sql_rowset($sql);
-			
+
 			foreach ($result as $row) {
 				sync('forum', $row['forum_id']);
 			}
@@ -62,7 +62,7 @@ function sync($type, $id = false) {
 			$sql = 'SELECT topic_id
 				FROM _forum_topics';
 			$result = sql_rowset($sql);
-			
+
 			foreach ($result as $row) {
 				sync('topic', $row['topic_id']);
 			}
@@ -114,7 +114,7 @@ function sync($type, $id = false) {
 			}
 			break;
 	}
-	
+
 	return true;
 }
 
@@ -124,7 +124,7 @@ function sync_merge($type, $id = false) {
 			$sql = 'SELECT forum_id
 				FROM _forums';
 			$result = sql_rowset($sql);
-			
+
 			foreach ($result as $row) {
 				sync_merge('forum', $row['forum_id']);
 			}
@@ -133,7 +133,7 @@ function sync_merge($type, $id = false) {
 			$sql = 'SELECT topic_id
 				FROM _forum_topics';
 			$result = sql_rowset($sql);
-			
+
 			foreach ($result as $row) {
 				sync_merge('topic', $row['topic_id']);
 			}
@@ -143,18 +143,18 @@ function sync_merge($type, $id = false) {
 				FROM _forum_posts
 				WHERE forum_id = ?';
 			$total_posts = sql_field(sql_filter($sql, $id), 'total', 0);
-			
+
 			$sql = 'SELECT topic_id
 				FROM _forum_posts
 				WHERE forum_id = ?
 				ORDER BY post_time DESC';
 			$last_topic = sql_field(sql_filter($sql, $id), 'topic_id', 0);
-			
+
 			$sql = 'SELECT COUNT(topic_id) AS total
 				FROM _forum_topics
 				WHERE forum_id = ?';
 			$total_topics = sql_field(sql_filter($sql, $id), 'total', 0);
-			
+
 			$sql = 'UPDATE _forums SET forum_last_topic_id = ?, forum_posts = ?, forum_topics = ?
 				WHERE forum_id = ?';
 			sql_query(sql_filter($sql, $last_topic, $total_posts, $total_topics, $id));
@@ -176,7 +176,7 @@ function sync_merge($type, $id = false) {
 			}
 			break;
 	}
-	
+
 	return true;
 }
 
@@ -184,13 +184,13 @@ function sync_move($id) {
 	$last_topic = 0;
 	$total_posts = 0;
 	$total_topics = 0;
-	
+
 	//
-	$sql = 'SELECT COUNT(post_id) AS total 
+	$sql = 'SELECT COUNT(post_id) AS total
 		FROM _forum_posts
 		WHERE forum_id = ?';
 	$total_posts = sql_field(sql_filter($sql, $id), 'total', 0);
-	
+
 	$sql = 'SELECT MAX(topic_id) as last_topic, COUNT(topic_id) AS total
 		FROM _forum_topics
 		WHERE forum_id = ?';
@@ -198,12 +198,12 @@ function sync_move($id) {
 		$last_topic = $row['last_topic'];
 		$total_topics = $row['total'];
 	}
-	
+
 	//
 	$sql = 'UPDATE _forums SET forum_last_topic_id = ?, forum_posts = ?, forum_topics = ?
 		WHERE forum_id = ?';
 	sql_query(sql_filter($sql, $last_topic, $total_posts, $total_topics, $id));
-	
+
 	return;
 }
 
@@ -211,13 +211,13 @@ function sync_post($id) {
 	$last_topic = 0;
 	$total_posts = 0;
 	$total_topics = 0;
-	
+
 	//
-	$sql = 'SELECT COUNT(post_id) AS total 
+	$sql = 'SELECT COUNT(post_id) AS total
 		FROM _forum_posts
 		WHERE forum_id = ?';
 	$total_posts = sql_field(sql_filter($sql, $id), 'total', 0);
-	
+
 	$sql = 'SELECT MAX(topic_id) as last_topic, COUNT(topic_id) AS total
 		FROM _forum_topics
 		WHERE forum_id = ?';
@@ -225,12 +225,12 @@ function sync_post($id) {
 		$last_topic = $row['last_topic'];
 		$total_topics = $row['total'];
 	}
-	
+
 	//
 	$sql = 'UPDATE _forums SET forum_last_topic_id = ?, forum_posts = ?, forum_topics = ?
 		WHERE forum_id = ?';
 	sql_query(sql_filter($sql, $last_topic, $total_posts, $total_topics, $id));
-	
+
 	return;
 }
 
@@ -238,13 +238,13 @@ function sync_topic($id) {
 	$last_topic = 0;
 	$total_posts = 0;
 	$total_topics = 0;
-	
+
 	//
-	$sql = 'SELECT COUNT(post_id) AS total 
+	$sql = 'SELECT COUNT(post_id) AS total
 		FROM _forum_posts
 		WHERE forum_id = ?';
 	$total_posts = sql_field(sql_filter($sql, $id), 'total', 0);
-	
+
 	$sql = 'SELECT MAX(topic_id) as last_topic, COUNT(topic_id) AS total
 		FROM _forum_topics
 		WHERE forum_id = ?';
@@ -252,13 +252,11 @@ function sync_topic($id) {
 		$last_topic = $row['last_topic'];
 		$total_topics = $row['total'];
 	}
-	
+
 	//
 	$sql = 'UPDATE _forums SET forum_last_topic_id = ?, forum_posts = ?, forum_topics = ?
 		WHERE forum_id = ?';
 	sql_query(sql_filter($sql, $last_topic, $total_posts, $total_topics, $id));
-		
+
 	return true;
 }
-
-?>

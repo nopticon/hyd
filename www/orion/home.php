@@ -42,5 +42,3 @@ $artists->thumbnails();
 $events->_nextevent();
 
 page_layout('HOME', 'home', false, false);
-
-?>

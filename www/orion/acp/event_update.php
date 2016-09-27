@@ -21,23 +21,23 @@ if (!defined('IN_APP')) exit;
 class __event_update extends mac {
 	public function __construct() {
 		parent::__construct();
-		
+
 		$this->auth('colab');
 	}
-	
+
 	public function _home() {
 		global $config, $user;
 
 		if ($this->update()) {
 			return;
 		}
-		
+
 		$sql = 'SELECT *
 			FROM _events
 			WHERE date > ?
 			ORDER BY date DESC';
 		$result = sql_rowset(sql_filter($sql, time()));
-		
+
 		foreach ($result as $row) {
 			_style('event_list', array(
 				'EVENT_ID' => $row['id'],
@@ -45,7 +45,7 @@ class __event_update extends mac {
 				'EVENT_DATE' => $user->format_date($row['date']))
 			);
 		}
-		
+
 		return;
 	}
 
@@ -60,12 +60,12 @@ class __event_update extends mac {
 		if (!$event_data = sql_fieldrow(sql_filter($sql, $v->event_id))) {
 			return;
 		}
-		
+
 		$filepath_1 = $config['events_path'] . 'future/';
 		$filepath_2 = $config['events_path'] . 'future/thumbnails/';
-		
+
 		$f = $upload->process($filepath_1, 'event_image', 'jpg');
-		
+
 		if ($upload->error) {
 			_style('error', array(
 				'MESSAGE' => parse_error($upload->error))
@@ -85,9 +85,7 @@ class __event_update extends mac {
 		$sql = 'UPDATE _events SET event_update = ?
 			WHERE id = ?';
 		sql_query(sql_filter($sql, time(), $v->event_id));
-			
+
 		return redirect(s_link('events', $event_data['event_alias']));
 	}
 }
-
-?>

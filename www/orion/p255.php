@@ -51,36 +51,34 @@ $rk = w();
 $groups = w();
 foreach ($members as $row) {
 	$part = explode('@', $row['user_email']);
-	
+
 	foreach ($fix as $fixrow) {
 		$fixpart = explode(':', $fixrow);
-		
+
 		if ($part[1] == $fixpart[0]) {
 			$_new = $part[0] . '@' . $fixpart[1];
-			
+
 			$sql = 'UPDATE _members SET user_email = ?
 				WHERE user_id = ?';
 			sql_query(sql_filter($sql, $_new, $row['user_id']));
-			
+
 			$part[1] = $fixpart[1];
 		}
 	}
-	
+
 	if (!isset($groups[$part[1]])) {
 		$groups[$part[1]] = 0;
 	}
-	
+
 	switch ($part[1]) {
 		case 'rockrepublik.net':
 		case 'rockrepublik.com':
 			$rk[$part[1]][] = $row['username'] . ' '  . $row['user_email'] . ' ' . $row['user_public_email'];
 		break;
 	}
-	
+
 	$groups[$part[1]]++;
 }
 
 _pre($rk);
 _pre($groups);
-
-?>

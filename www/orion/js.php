@@ -98,5 +98,3 @@ $code = JSMin::minify($template->vars['EXT']);
 
 echo $code;
 exit;
-
-?>

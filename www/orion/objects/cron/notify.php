@@ -38,5 +38,3 @@ $sql = 'DELETE FROM _members_unread
 sql_query(sql_filter($sql, UH_N, $start_2));
 
 _pre('Done.', true);
-
-?>

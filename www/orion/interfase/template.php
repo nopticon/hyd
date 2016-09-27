@@ -105,7 +105,7 @@ class Template {
 
 	// eXtreme Styles variables
 	public $xs_started = 0;
-	
+
 	// These handles will be parsed if pparse() is executed.
 	// Can be used to automatically include header/footer if there is any content.
 	public $preparse = '';
@@ -138,31 +138,31 @@ class Template {
 	public function __contructor() {
 		return;
 	}
-	
+
 	/**
 	 * Sets the root dir.
 	 */
 	public function set_template($root = '.') {
 		global $config;
-		
+
 		$this->vars = &$this->_tpldata['.'][0];
-		
+
 		$this->use_cache = $config['xs_use_cache'];
 		$this->cache_search = array('.', '\\', '/', '_tpl');
 		$this->cache_replace = array('_', '.', '.', '.php');
-		
+
 		$old_root = $this->root;
-		
+
 		$root = str_replace('\\', '/', $root);
 		$this->cachedir = ROOT . 'cache/';
 		$this->tpldir = ROOT . 'template/';
 		$this->tpldir_len = strlen($this->tpldir);
 		$this->root = $root;
 		$this->tpl = $this->template_name($root);
-		
+
 		// Check configuration
 		$this->get_config();
-		
+
 		if ($old_root !== $this->root) {
 			$this->files = array();
 			$this->files_cache = array();
@@ -170,7 +170,7 @@ class Template {
 			$this->compiled_code = array();
 			$this->uncompiled_code = array();
 		}
-		
+
 		return;
 	}
 
@@ -190,7 +190,7 @@ class Template {
 	public function template_name($dir) {
 		$tpl = XS_TPL_ANY; // can start at any position
 		$tpl_null = XS_TPL_START; // can start only at zero position
-		
+
 		// searching for 'templates/' and removing everything before it
 		$pos = strpos($dir, $tpl);
 		if ($pos === false) {
@@ -206,11 +206,11 @@ class Template {
 		if (!$dir) {
 			$dir = $str;
 		}
-		
+
 		if(strpos($str, $tpl) !== false) {
 			$dir = $this->template_name($str);
 		}
-		
+
 		// Check for another subdirectory
 		$pos = strpos($dir, '/');
 		if ($pos) {
@@ -229,7 +229,7 @@ class Template {
 		if (!$xs_include && isset($this->replace[$filename])) {
 			$filename = $this->replace[$filename];
 		}
-		
+
 		// Check if it's an absolute or relative path.
 		if ((substr($filename, 0, 1) !== '/') && (substr($filename, 1, 1) !== ':')) {
 			return $this->root . '/' . $filename;
@@ -248,10 +248,10 @@ class Template {
 		if(substr($file, 0, $this->tpldir_len) !== $this->tpldir || empty($this->tpl)) {
 			return $this->cachedir . XS_TPL_PREFIX2 . $str;
 		}
-		
+
 		// removing not needed part
 		$file = substr($file, $this->tpldir_len, strlen($file));
-		
+
 		// creating filename
 		return $this->cachedir . XS_TPL_PREFIX . str_replace($this->cache_search, $this->cache_replace, $file);
 	}
@@ -278,16 +278,16 @@ class Template {
 	 */
 	public function set_filename($handle, $filename, $xs_include = false, $quiet = false) {
 		global $config;
-		
+
 		$can_cache = $this->use_cache;
 		if(strpos($filename, '..') !== false) {
 			$can_cache = false;
 		}
-		
+
 		$this->files[$handle] = $this->make_filename($filename, $xs_include);
 		$this->files_cache[$handle] = '';
 		$this->files_cache2[$handle] = '';
-		
+
 		// check if we are in admin control panel and override extreme styles mod controls if needed
 		if(defined('XS_ADMIN_OVERRIDE') && XS_ADMIN_OVERRIDE === true && @function_exists('xs_admin_override')) {
 			xs_admin_override();
@@ -307,7 +307,7 @@ class Template {
 				$this->files_cache[$handle] = $this->files_cache2[$handle];
 			}
 		}
-		
+
 		// checking if tpl and/or php file exists
 		if (empty($this->files_cache[$handle]) && !@file_exists($this->files[$handle])) {
 			// trying to load alternative filename (usually subSilver)
@@ -326,11 +326,11 @@ class Template {
 				$this->tpl = $tpl_name;
 				return $res;
 			}
-			
+
 			if ($quiet) {
 				return false;
 			}
-			
+
 			if ($xs_include) {
 				if ($this->warn_includes) {
 					_pre('Template->make_filename(): Error - included template file not found: ' . $filename, true);
@@ -343,7 +343,7 @@ class Template {
 		// checking if we should recompile cache
 		if (!empty($this->files_cache[$handle]) && $this->auto_recompile) {
 			$cache_time = @filemtime($this->files_cache[$handle]);
-			if(@filemtime($this->files[$handle]) > $cache_time || $config['xs_template_time'] > $cache_time) {	
+			if(@filemtime($this->files[$handle]) > $cache_time || $config['xs_template_time'] > $cache_time) {
 				// file was changed. don't use cache file (will be recompled if configuration allowes it)
 				$this->files_cache[$handle] = '';
 			}
@@ -356,11 +356,11 @@ class Template {
 	 */
 	public function execute($filename, $code, $handle = false) {
 		global $theme, $config;
-		
+
 		$template = $theme['template_name'];
 		global $$template;
 		$theme_info = &$$template;
-		
+
 		if ($filename) {
 			require_once($filename);
 		} else {
@@ -376,44 +376,44 @@ class Template {
 	 */
 	public function pparse($handle) {
 		global $config;
-		
+
 		// Parsing header if there is one
 		if ($this->preparse || $this->postparse) {
 			$preparse = $this->preparse;
 			$postparse = $this->postparse;
 			$this->preparse = '';
 			$this->postparse = '';
-			
+
 			if ($preparse) {
 				$this->pparse($preparse);
 			}
-			
+
 			if ($postparse) {
 				$str = $handle;
 				$handle = $postparse;
 				$this->pparse($str);
 			}
 		}
-		
+
 		// checking if handle exists
 		if (empty($this->files[$handle]) && empty($this->files_cache[$handle])) {
 			_pre("Template->loadfile(): No files found for handle $handle", true);
 		}
-		
+
 		$this->xs_startup();
-		
+
 		$force_recompile = empty($this->uncompiled_code[$handle]) ? false : true;
-		
+
 		// Checking if php file exists.
 		if (!empty($this->files_cache[$handle]) && !$force_recompile) {
 			$this->execute($this->files_cache[$handle], '');
 			return true;
 		}
-		
+
 		if (!$this->loadfile($handle)) {
 			_pre("Template->pparse(): Couldn't load template file for handle $handle", true);
 		}
-		
+
 		// Actually compile the template now.
 		if (empty($this->compiled_code[$handle])) {
 			// Actually compile the code now.
@@ -423,7 +423,7 @@ class Template {
 				$this->compiled_code[$handle] = $this->compile2($this->uncompiled_code[$handle], '', '');
 			}
 		}
-		
+
 		// Run the compiled code.
 		if (empty($this->files_cache[$handle]) || $force_recompile) {
 			$this->execute('', $this->compiled_code[$handle]);
@@ -438,11 +438,11 @@ class Template {
 	 */
 	public function precompile($template, $filename) {
 		global $precompile_num, $config;
-		
+
 		if (empty($precompile_num)) {
 			$precompile_num = 0;
 		}
-		
+
 		$precompile_num ++;
 		$handle = 'precompile_' . $precompile_num;
 		// save old configuration
@@ -457,7 +457,7 @@ class Template {
 		$this->auto_compile = 1;
 		// set filename
 		$res = $this->set_filename($handle, $filename, true, true);
-		
+
 		if (!$res || !$this->files_cache2[$handle]) {
 			$this->root = $root;
 			$this->tpl = $tpl_name;
@@ -465,7 +465,7 @@ class Template {
 			$this->auto_compile = $old_autosave;
 			return false;
 		}
-		
+
 		$this->files_cache[$handle] = '';
 		// load template
 		$res = $this->loadfile($handle);
@@ -476,7 +476,7 @@ class Template {
 			$this->auto_compile = $old_autosave;
 			return false;
 		}
-		
+
 		// Compile the code
 		$this->compile2($this->uncompiled_code[$handle], $handle, $this->files_cache2[$handle]);
 		// Restore confirugation
@@ -514,15 +514,15 @@ class Template {
 			$blocks = explode('.', $blockname);
 			$blockcount = sizeof($blocks) - 1;
 
-			$str = &$this->_tpldata; 
-			for ($i = 0; $i < $blockcount; $i++) 
-			{ 
-				$str = &$str[$blocks[$i].'.']; 
-				$str = &$str[sizeof($str)-1]; 
-			} 
-			// Now we add the block that we're actually assigning to. 
-			// We're adding a new iteration to this block with the given 
-			//	variable assignments. 
+			$str = &$this->_tpldata;
+			for ($i = 0; $i < $blockcount; $i++)
+			{
+				$str = &$str[$blocks[$i].'.'];
+				$str = &$str[sizeof($str)-1];
+			}
+			// Now we add the block that we're actually assigning to.
+			// We're adding a new iteration to this block with the given
+			//	variable assignments.
 			$str[$blocks[$blockcount].'.'][] = $vararray;
 		} else {
 			// Top-level block.
@@ -551,7 +551,7 @@ class Template {
 	 */
 	public function loadfile($handle) {
 		global $config;
-		
+
 		if (!empty($this->files_cache[$handle]) || !empty($this->uncompiled_code[$handle])) {
 			return true;
 		}
@@ -606,7 +606,7 @@ class Template {
 		// Get an array of the blocks involved.
 		$blocks = explode('.', $blockname);
 		$blockcount = sizeof($blocks) - 1;
-		
+
 		if ($defop) {
 			$varref = '$this->_tpldata[\'DEFINE\']';
 			// Build up the string with everything but the last child.
@@ -621,7 +621,7 @@ class Template {
 			}
 			return $varref;
 		}
-		
+
 		if ($include_last_iterator) {
 			return '$'. $blocks[$blockcount]. '_item';
 		} else {
@@ -662,16 +662,16 @@ class Template {
 
 		// array of switches
 		$sw = array();
-		
+
 		// main loop
 		$line_count = sizeof($code_lines);
-		
+
 		for ($i = 0; $i < $line_count; $i++) {
 			$line = $code_lines[$i];
-			
+
 			// Reset keyword type
 			$keyword_type = XS_TAG_NONE;
-			
+
 			// Check if we have valid keyword in current line
 			$pos1 = strpos($line, '<!-- ');
 			if ($pos1 === false) {
@@ -679,7 +679,7 @@ class Template {
 				$compiled[] = $this->_compile_text($line);
 				continue;
 			}
-			
+
 			// Find end of html comment
 			$pos2 = strpos($line, ' -->', $pos1);
 			if ($pos2 !== false) {
@@ -687,7 +687,7 @@ class Template {
 				$pos3 = strpos($line, ' ', $pos1 + 5);
 				if ($pos3 !== false && $pos3 <= $pos2) {
 					$keyword = substr($line, $pos1 + 5, $pos3 - $pos1 - 5);
-					
+
 					// Check keyword against list of supported keywords. case-sensitive
 					if($keyword === 'BEGIN') {
 						$keyword_type = XS_TAG_BEGIN;
@@ -712,7 +712,7 @@ class Template {
 					}
 				}
 			}
-			
+
 			if (!$keyword_type) {
 				// Not valid keyword. process the rest of line
 				$compiled[] = $this->_compile_text(substr($line, 0, $pos1 + 4));
@@ -720,18 +720,18 @@ class Template {
 				$i --;
 				continue;
 			}
-			
+
 			// Remove code before keyword
 			if ($pos1 > 0) {
 				$compiled[] = $this->_compile_text(substr($line, 0, $pos1));
 			}
-			
+
 			// Remove keyword
 			$keyword_str = substr($line, $pos1, $pos2 - $pos1 + 4);
 			$params_str = $pos2 == $pos3 ? '' : substr($line, $pos3 + 1, $pos2 - $pos3 - 1);
 			$code_lines[$i] = substr($line, $pos2 + 4);
 			$i--;
-			
+
 			//
 			// Check keywords
 			//
@@ -742,7 +742,7 @@ class Template {
 			if ($keyword_type == XS_TAG_BEGIN) {
 				$params = explode(' ', $params_str);
 				$num_params = count($params);
-				
+
 				// get variable name
 				if ($num_params == 1) {
 					$var = $params[0];
@@ -783,7 +783,7 @@ class Template {
 						$sw[$found_var] = 1;
 					}
 				}
-				
+
 				// adding code
 				$block_nesting_level++;
 				$block_names[$block_nesting_level] = $var;
@@ -792,7 +792,7 @@ class Template {
 				} else {
 					$block_items[$var] = 1;
 				}
-				
+
 				if ($block_nesting_level < 2) {
 					// Block is not nested.
 					$line = '<'."?php ";
@@ -842,17 +842,17 @@ class Template {
 					$compiled[] = $keyword_str;
 					continue;
 				}
-				
-				if ($this->xs_check_switches) {	
+
+				if ($this->xs_check_switches) {
 					// checking if this switch was opened
-					if (!isset($sw[$var]) || ($sw[$var] < 1)) {	
+					if (!isset($sw[$var]) || ($sw[$var] < 1)) {
 						// there is no opening switch
 						$compiled[] = $keyword_str;
 						continue;
 					}
 					$sw[$var] --;
 				}
-				
+
 				// We have the end of a block.
 				$line = '<'."?php".' } if(isset($' . $var . '_item)) { unset($' . $var . '_item); } '."?".">";
 				if (isset($block_items[$var])) {
@@ -910,7 +910,7 @@ class Template {
 				}
 				continue;
 			}
-			
+
 			/*
 			* <!-- ELSE -->
 			*/
@@ -949,7 +949,7 @@ class Template {
 				}
 			}
 		}
-		
+
 		// bring it back into a single string.
 		$code_header = '';
 		$code_footer = '';
@@ -968,7 +968,7 @@ class Template {
 		// This one will handle varrefs WITH namespaces
 		$varrefs = array();
 		preg_match_all('#\{(([a-z0-9\-_]+?\.)+?)([a-z0-9\-_]+?)\}#is', $code, $varrefs);
-		
+
 		$varcount = sizeof($varrefs[1]);
 		$search = array();
 		$replace = array();
@@ -979,15 +979,15 @@ class Template {
 			$search[] = $varrefs[0][$i];
 			$replace[] = $new;
 		}
-		
+
 		if (count($search) > 0) {
 			$code = str_replace($search, $replace, $code);
 		}
-		
+
 		if (isset($this->files['body']) && strpos($this->files['body'], '.js') !== false) {
 			$this->replace_vars = false;
 		}
-		
+
 		// This will handle the remaining root-level varrefs
 		if ($this->replace_vars) {
 			$code = preg_replace('#\{([a-z0-9\-_]*?)\}#is', '<'.'?php echo isset($this->vars[\'\1\']) ? $this->vars[\'\1\'] : $this->lang(\'\1\'); ?'.'>', $code);
@@ -1007,10 +1007,10 @@ class Template {
 			\'[^\'\\\\]*(?:\\\\.[^\'\\\\]*)*\'     |
 			[(),]                                  |
 			[^\s(),]+)/x', $tag_args, $match);
-		
+
 		$tokens = $match[0];
 		$is_arg_stack = array();
-		
+
 		for ($i = 0; $i < count($tokens); $i++) {
 			$token = &$tokens[$i];
 
@@ -1041,7 +1041,7 @@ class Template {
 				case '*':
 				case '/':
 				case '@':
-					break;	
+					break;
 
 				case '(':
 					array_push($is_arg_stack, $i);
@@ -1064,9 +1064,9 @@ class Template {
 					break;
 			}
 		}
-		
+
 		$code = (($elseif) ? '} elseif (' : 'if (') . (implode(' ', $tokens) . ') { ');
-	
+
 		return $code;
 	}
 
@@ -1196,12 +1196,12 @@ class Template {
 	 */
 	public function write_cache($filename, $code) {
 		global $config;
-		
+
 		// check if cache is writable
 		if (!$this->cache_writable) {
 			return false;
 		}
-		
+
 		// check if filename is valid
 		if(substr($filename, 0, strlen($this->cachedir)) !== $this->cachedir) {
 			return false;
@@ -1212,7 +1212,7 @@ class Template {
 			// try to create directories
 			$dir = substr($filename, strlen($this->cachedir), strlen($filename));
 			$dirs = explode('/', $dir);
-			$path = $this->cachedir; 
+			$path = $this->cachedir;
 			@umask(0);
 			if (!@is_dir($path)) {
 				if (!@mkdir($path)) {
@@ -1222,7 +1222,7 @@ class Template {
 					_chmod($path, $config['mask']);
 				}
 			}
-			
+
 			$count = count($dirs);
 			if ($count > 0) {
 				for ($i = 0; $i < $count-1; $i++) {
@@ -1240,7 +1240,7 @@ class Template {
 					}
 				}
 			}
-			
+
 			// try to open file again after directories were created
 			$file = @fopen($filename, 'w');
 		}
@@ -1262,18 +1262,18 @@ class Template {
 		}
 
 		$this->xs_started = 1;
-		
+
 		// Adding current template
 		$tpl = $this->root . '/';
 		if(substr($tpl, 0, 2) === './') {
 			$tpl = substr($tpl, 2, strlen($tpl));
 		}
-		
+
 		$extra_template = array(
 			'TEMPLATE' => $tpl,
 			'TEMPLATE_NAME' => $this->tpl
 		);
-		
+
 		$this->vars = array_merge($this->vars, $extra_template);
 	}
 
@@ -1404,17 +1404,17 @@ class Template {
 		if(empty($tpl)) {
 			$tpl = $this->tpl;
 		}
-		
+
 		$config_name = 'xs_style_' . $tpl;
 		global $config;
-		
+
 		if (empty($config[$config_name])) {
 			if($add_config) {
 				$this->_add_config($tpl, $tpl === $this->tpl ? true : false);
 			}
 			return $this->style_config;
 		}
-		
+
 		$this->style_config = $this->_unserialize($config[$config_name]);
 		if ($tpl === $this->tpl) {
 			foreach ($this->style_config as $var => $value) {
@@ -1447,7 +1447,7 @@ class Template {
 		if (!is_array($array)) {
 			return '';
 		}
-		
+
 		$str = '';
 		foreach ($array as $var => $value) {
 			if ($str) {
@@ -1457,11 +1457,11 @@ class Template {
 		}
 		return $str;
 	}
-	
+
 	public function _unserialize($str) {
 		$array = array();
 		$list = explode('|', $str);
-		
+
 		for ($i = 0; $i < count($list); $i++) {
 			$row = explode('=', $list[$i], 2);
 			if (count($row) == 2) {
@@ -1477,5 +1477,3 @@ if (!function_exists('xs_switch')) {
 		return (isset($tpl->_tpldata[$name.'.']) && count($tpl->_tpldata[$name.'.']) > 0);
 	}
 }
-
-?>

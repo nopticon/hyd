@@ -21,22 +21,22 @@ if (!defined('IN_APP')) exit;
 class __artist_auth extends mac {
 	public function __construct() {
 		parent::__construct();
-		
+
 		$this->auth('artist');
 	}
-	
+
 	/*
 	Show all authorized users to manage artist information.
 	*/
 	public function _home() {
 		global $config, $user, $cache, $comments;
-		
+
 		$this->_artist();
-		
+
 		if ((_button() && $this->create()) || ((_button('confirm') || _button('remove')) && $this->remove())) {
 			return;
 		}
-		
+
 		$sql = 'SELECT u.user_id, u.user_type, u.username, u.username_base, u.user_avatar
 			FROM _artists_auth a, _members u
 			WHERE a.ub = ?
@@ -153,7 +153,7 @@ class __artist_auth extends mac {
 		*/
 		return redirect(s_link('acp', array('artist_auth', 'a' => $this->object['subdomain'])));
 	}
-	
+
 	/*
 	Revoke permission to manage artist's information, for selected users.
 	*/
@@ -200,7 +200,7 @@ class __artist_auth extends mac {
 						FROM _artists_auth
 						WHERE user_id = ?';
 					$total = sql_field(sql_filter($sql, $row['user_id']), 'total', 0);
-					
+
 					if ($total == 1) {
 						$update['user_auth_control'] = 0;
 
@@ -236,7 +236,7 @@ class __artist_auth extends mac {
 			Display confirm dialog
 			*/
 			$result_list = '';
-			
+
 			foreach ($result as $row) {
 				$result_list .= (($result_list != '') ? ', ' : '') . $row['username'];
 				$result_hidden .= s_hidden(array('s_members[]' => $row['user_id']));
@@ -254,9 +254,7 @@ class __artist_auth extends mac {
 		}
 
 		redirect($auth_url);
-		
+
 		return;
 	}
 }
-
-?>

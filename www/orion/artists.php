@@ -27,5 +27,3 @@ $artists = new _artists();
 $artists->run();
 
 page_layout($artists->get_title('UB'), $artists->get_template('artists'), false, $artists->ajax());
-
-?>

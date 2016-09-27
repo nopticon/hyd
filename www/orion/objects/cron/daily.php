@@ -37,7 +37,7 @@ if (count($deleted))
 	$sql = 'DELETE FROM _monetize
 		WHERE monetize_id IN (??)';
 	sql_query(sql_filter($sql, implode(',', $deleted)));
-	
+
 	$cache->delete('monetize');
 }
 
@@ -58,5 +58,3 @@ sql_query($sql);
 set_config('site_disable', 0);
 
 _pre('Done.', true);
-
-?>

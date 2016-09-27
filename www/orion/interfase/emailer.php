@@ -49,40 +49,40 @@ class emailer {
 	public function cc($address) {
 		if (strpos($address, '@') === false) {
 			global $config;
-			
+
 			$address = $config['sitename'] . ' <' . $address . '@' . array_key(explode('@', $config['board_email']), 1) . '>';
 		}
-		
+
 		$this->addresses['cc'][] = trim($address);
 	}
 
 	public function bcc($address) {
 		if (strpos($address, '@') === false) {
 			global $config;
-			
+
 			$address = $config['sitename'] . ' <' . $address . '@' . array_key(explode('@', $config['board_email']), 1) . '>';
 		}
-		
+
 		$this->addresses['bcc'][] = trim($address);
 	}
 
 	public function replyto($address) {
 		if (strpos($address, '@') === false) {
 			global $config;
-			
+
 			$address = $address . '@' . array_key(explode('@', $config['board_email']), 1);
 		}
-		
+
 		$this->reply_to = trim($address);
 	}
 
 	public function from($address) {
 		if (strpos($address, '@') === false) {
 			global $config;
-			
+
 			$address = $config['sitename'] . ' <' . $address . '@' . array_key(explode('@', $config['board_email']), 1) . '>';
 		}
-		
+
 		$this->from = trim($address);
 	}
 
@@ -143,7 +143,7 @@ class emailer {
 	    	// Escape all quotes, else the eval will fail.
 		$this->msg = str_replace ("'", "\'", $this->msg);
 		$this->msg = preg_replace('#\{([a-z0-9\-_]*?)\}#is', "' . $\\1 . '", $this->msg);
-		
+
 		// Set vars
 		reset ($this->vars);
 		while (list($key, $val) = each($this->vars)) {
@@ -186,7 +186,7 @@ class emailer {
 		$bcc = (isset($this->addresses['bcc']) && sizeof($this->addresses['bcc'])) ? implode(', ', $this->addresses['bcc']) : '';
 
 		// Build header
-		$this->extra_headers = (($this->reply_to != '') ? "Reply-to: $this->reply_to\n" : '') . (($this->from != '') ? "From: $this->from\n" : "From: " . $config['board_email'] . "\n") . "Return-Path: " . $config['board_email'] . "\nMessage-ID: <" . md5(uniqid(time())) . "@rockrepublik.net" . /*$config['server_name'] . */">\nMIME-Version: 1.0\nContent-type: text/plain; charset=" . $this->encoding . "\nContent-transfer-encoding: 8bit\nDate: " . date('r', time()) . "\nX-Priority: 3\nX-MSMail-Priority: Normal\n" . $this->extra_headers . (($cc != '') ? "Cc: $cc\n" : '')  . (($bcc != '') ? "Bcc: $bcc\n" : ''); 
+		$this->extra_headers = (($this->reply_to != '') ? "Reply-to: $this->reply_to\n" : '') . (($this->from != '') ? "From: $this->from\n" : "From: " . $config['board_email'] . "\n") . "Return-Path: " . $config['board_email'] . "\nMessage-ID: <" . md5(uniqid(time())) . "@rockrepublik.net" . /*$config['server_name'] . */">\nMIME-Version: 1.0\nContent-type: text/plain; charset=" . $this->encoding . "\nContent-transfer-encoding: 8bit\nDate: " . date('r', time()) . "\nX-Priority: 3\nX-MSMail-Priority: Normal\n" . $this->extra_headers . (($cc != '') ? "Cc: $cc\n" : '')  . (($bcc != '') ? "Bcc: $bcc\n" : '');
 
 		// Send message ... removed $this->encode() from subject for time being
 		$empty_to_header = ($to == '') ? true : false;
@@ -194,27 +194,27 @@ class emailer {
 
 		$this->subject = entity_decode($this->subject);
 		$this->msg = entity_decode($this->msg);
-		
+
 		$result = @mail($to, $this->subject, preg_replace("#(?<!\r)\n#s", "\n", $this->msg), $this->extra_headers, "-f{$config['board_email']}");
-		
+
 		if (!$result && !$config['sendmail_fix'] && $empty_to_header) {
 			$to = ' ';
-			
+
 			set_config('sendmail_fix', 1);
-			
+
 			$result = @mail($to, $this->subject, preg_replace("#(?<!\r)\n#s", "\n", $this->msg), $this->extra_headers, "-f{$config['board_email']}");
 		}
-		
+
 		if (!$result) {
 			return false;
 		}
-		
+
 		return true;
 	}
 
-	// Encodes the given string for proper display for this encoding ... nabbed 
-	// from php.net and modified. There is an alternative encoding method which 
-	// may produce lesd output but it's questionable as to its worth in this 
+	// Encodes the given string for proper display for this encoding ... nabbed
+	// from php.net and modified. There is an alternative encoding method which
+	// may produce lesd output but it's questionable as to its worth in this
 	// scenario IMO
 	public function encode($str) {
 		if ($this->encoding == '') {
@@ -324,10 +324,7 @@ class emailer {
 			$encoded = $this->myChunkSplit(base64_encode($contents));
 			fclose($fd);
 		}
-		
+
 		return $encoded;
 	}
-
-} // class emailer
-
-?>
+}

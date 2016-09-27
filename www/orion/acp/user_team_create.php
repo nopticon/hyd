@@ -21,53 +21,53 @@ if (!defined('IN_APP')) exit;
 class __user_team_create extends mac {
 	public function __construct() {
 		parent::__construct();
-		
+
 		$this->auth('founder');
 	}
-	
+
 	public function _home() {
 		global $config, $user, $cache;
-		
+
 		if (!_button()) {
 			$sql = 'SELECT *
 				FROM _team
 				ORDER BY team_name';
 			$result = sql_rowset($sql);
-			
+
 			foreach ($result as $i => $row) {
 				if (!$i) _style('team');
-				
+
 				_style('team.row', array(
 					'TEAM_ID' => $row['team_id'],
 					'TEAM_NAME' => $row['team_name'])
 				);
 			}
-			
+
 			return false;
 		}
-		
+
 		$team = request_var('team', 0);
 		$username = request_var('username', '');
 		$username = get_username_base($username);
 		$realname = request_var('realname', '');
 		$ismod = request_var('ismod', 0);
-		
+
 		$sql = 'SELECT *
 			FROM _team
 			WHERE team_id = ?';
 		if (!$teamd = sql_fieldrow(sql_filter($sql, $team))) {
 			fatal_error();
 		}
-		
+
 		$sql = 'SELECT user_id, username
 			FROM _members
 			WHERE username_base = ?';
 		if (!$userdata = sql_fieldrow(sql_filter($sql, $username))) {
 			fatal_error();
 		}
-		
+
 		$insert = true;
-		
+
 		$sql = 'SELECT *
 			FROM _team_members
 			WHERE team_id = ?
@@ -79,10 +79,10 @@ class __user_team_create extends mac {
 						AND member_id = ?';
 				sql_query(sql_filter($sql, $team, $userdata['user_id']));
 			}
-			
+
 			$insert = false;
 		}
-		
+
 		if ($insert)
 		{
 			$insert = array(
@@ -93,11 +93,9 @@ class __user_team_create extends mac {
 			);
 			sql_insert('team_members', $insert);
 		}
-		
+
 		$cache->delete('team team_all team_members team_mod team_radio team_colab');
-		
+
 		return _pre('El usuario <strong>' . $userdata['username'] . '</strong> fue agregado al grupo <strong>' . $teamd['team_name'] . '</strong>.', true);
 	}
 }
-
-?>

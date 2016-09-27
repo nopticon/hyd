@@ -27,5 +27,3 @@ $acp = new _acp();
 $acp->run();
 
 page_layout($acp->get_title('ACP'), $acp->get_template('acp'));
-
-?>

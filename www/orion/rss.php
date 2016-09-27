@@ -38,5 +38,3 @@ if (!method_exists($rss, $method)) {
 $rss->smode($mode);
 $rss->$method();
 $rss->output();
-	
-?>

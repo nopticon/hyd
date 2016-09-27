@@ -46,7 +46,7 @@ $sql = 'SELECT user_id, username, username_base, user_hideuser, user_type
 	FROM _members
 	WHERE user_type <> ?
 		AND user_lastvisit >= ?
-		AND user_lastvisit < ? 
+		AND user_lastvisit < ?
 	ORDER BY username';
 $comm->online(sql_filter($sql, USER_INACTIVE, $timetoday, ($timetoday + 86399)), 'online', 'MEMBERS_TODAY', 'MEMBERS_VISIBLE');
 
@@ -54,5 +54,3 @@ $template->set_filenames(array(
 	'body' => 'community.online.htm')
 );
 $template->pparse('body');
-
-?>

@@ -15,7 +15,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/ 
+*/
 if (!is_array($lang) || empty($lang)) {
 	$lang = array();
 }
@@ -29,7 +29,7 @@ $lang += array(
 	'ENCODING' => "utf-8",
 	'DIRECTION' => '',
 	'DATE_FORMAT' => 'j F Y',
-	
+
 	'FORUM' => 'Foro',
 	'CATEGORY' => 'Categor&iacute;a',
 	'CATEGORIES' => 'Categor&iacute;as',
@@ -85,7 +85,7 @@ $lang += array(
 	'NAVIGATION' => 'Navegaci&oacute;n',
 	'SEARCH' => 'B&uacute;squeda',
 	'HI' => 'Hola',
-	
+
 	'PAGES_PREV' => '&lt;&lt; <strong>Anteriores %d</strong>',
 	'PAGES_NEXT' => '<strong>Siguientes %d</strong> &gt;&gt;',
 	'TOPIC_PAGES_PREV' => '&lt;&lt; <strong>Anteriores %d mensajes</strong>',
@@ -97,14 +97,14 @@ $lang += array(
 	'TOPIC_FEATURED_REM' => 'Quitar tema de portada',
 	'TOPIC_POINTS_ADD' => 'Activar Arkanes',
 	'TOPIC_POINTS_REM' => 'Desactivar Arkanes',
-	
+
 	'MSN' => 'MSN Messenger',
 	'YIM' => 'Yahoo! Messenger',
-	
+
 	'POST_NEWTOPIC' => 'Publicar nuevo tema',
 	'POST_REPLY' => 'Publicar respuesta',
 	'POST_REPLY_BOX' => 'Responder al tema',
-	
+
 	'CLICK_RETURN_TOPIC' => 'Click %sAQUI%s para volver al tema',
 	'CLICK_RETURN_FORUM' => 'Click %sAQUI%s para volver al foro',
 	'CLICK_VIEW_MESSAGE' => 'Click %sAQUI%s para ver el mensaje',
@@ -114,10 +114,10 @@ $lang += array(
 	'CLICK_RETURN_HOME' => 'Click %sAQUI%s para volver a la Portada',
 	'CLICK_RETURN_LASTPAGE' => 'Click AQUI para volver a P&aacute;gina Anterior',
 	'CLICK_RETURN_LASTPAGE2' => 'P&aacute;gina Anterior',
-	
+
 	'ACP' => 'Panel de Administraci&oacute;n',
 	'CONTROL_PANEL' => 'Admin',
-	
+
 	'MEMBERS_ALL' => 'miembros registrados',
 	'MEMBERS_LASTEST' => 'Recientes',
 	'MEMBERS_ONLINE' => 'Conectados',
@@ -133,7 +133,7 @@ $lang += array(
 	'MEMBERS_TOTAL' => 'en total',
 	'MEMBERS_TOTAL2' => 'en total',
 	'NONE' => 'Ningun miembro',
-	
+
 	'LOGIN' => 'Entrar',
 	'LOGIN2' => 'Iniciar Sesi&oacute;n',
 	'LOGOUT' => 'Salir',
@@ -141,9 +141,9 @@ $lang += array(
 	'REGISTER' => 'Crea tu cuenta de usuario',
 	'PROFILE' => 'Perfil',
 	'MEMBER_OPTIONS' => 'Opciones de Usuario',
-	
+
 	'USER_IDENTITY' => 'Inicia Sesi&oacute;n / Crea tu Usuario',
-	
+
 	'SENDPASSWORD' => 'Olvid&eacute; mi contrase&ntilde;a',
 	'SENDPASSWORD2' => 'Crear contrase&ntilde;a de usuario',
 	'SENDPASSWORD_EXPLAIN' => 'Ingresa tu correo electr&oacute;nico para recibir una nueva contrase&ntilde;a.',
@@ -153,7 +153,7 @@ $lang += array(
 	'SENDPASSWORD5_EXPLAIN' => 'Las contrase&ntilde;as ingresadas no coinciden, intenta nuevamente.',
 	'SENDPASSWORD6_EXPLAIN' => 'Debes ingresar una nueva contrase&ntilde;a para tu cuenta.',
 	'PASSWORD_RESET' => 'Olvid&eacute; mis datos de usuario',
-	
+
 	'LOGIN_PAGETITLE' => 'Area para Miembros',
 	'LOGIN_PAGE' => 'Para accesar en esta secci&oacute;n, debes ser miembro registrado',
 	'LOGINBOX_PAGE' => 'Ingresa tu nombre de usuario y contrase&ntilde;a para iniciar sesi&oacute;n',
@@ -164,39 +164,39 @@ $lang += array(
 	'LOGIN_TO_CHAT' => 'Para tener acceso al chat, debes ser miembro registrado.<br /><br />Por favor <a href="#top">inicia sesi&oacute;n</a> &oacute; <a href="/my/register/">Crea tu cuenta de usuario aqui.</a>',
 	'LOGIN_BE_FAN' => 'Para agregar a tus favoritos la banda <strong>%s</strong>, debes ser miembro registrado',
 	'LOGOUT_THANKS' => 'Tu sesi&oacute;n se ha cerrado correctamente, esperamos que vuelvas pronto',
-	
+
 	'MEMBERLIST' => 'Miembros',
 	'HELP' => 'Ayuda',
 	'HELP_BACK' => 'Regresar a P&aacute;gina Principal',
 	'MODERATOR' => 'Moderador',
 	'MODERATORS' => 'Moderadores',
-	
+
 	'REGISTERED_MEMBERS' => 'Miembros: <strong>%d</strong>',
-	
+
 	'FORUM_INDEX' => 'Foro de Discusi&oacute;n',
 	'NO_POSTS' => 'No hay mensajes',
 	'NO_FORUMS' => 'No hay foros',
-	
+
 	'VIEWFORUM' => 'Ver Foro',
 	'FORUM_NOT_EXIST' => 'El foro seleccionado no existe',
 	'TOPIC_ANNOUNCEMENT' => '<strong>[^!]</strong>',
 	'TOPIC_POLL' => '<strong>[e]</strong>',
 	'NO_TOPICS' => 'No hay temas en este foro.',
-	
+
 	'VIEWTOPIC' => 'Ver Tema',
 	'GUEST' => 'Invitado',
 	'POST_TITLE' => 'T&iacute;tulo',
 	'TOPIC_TITLE' => 'T&iacute;tulo',
 	'VOTE' => 'Votar',
-	
+
 	'TOPIC_POST_NOT_EXIST' => 'El tema o mensaje solicitado no existe',
 	'NO_POSTS_TOPIC' => 'No existen mensajes para este tema',
-	
+
 	'SEND_EMAIL' => 'Enviar email a usuario',
 	'EDIT_POST' => 'Editar mensaje',
 	'VIEW_IP' => 'Ver IP',
 	'HIDE_POST' => 'Ocultar mensaje',
-	
+
 	'LOCK_TOPIC' => 'Bloquear',
 	'UNLOCK_TOPIC' => 'Desbloquear',
 	'MOVE_TOPIC' => 'Mover',
@@ -205,23 +205,23 @@ $lang += array(
 	'DELETE_TOPIC' => 'Borrar',
 	'IMPORTANT_TOPIC' => 'Importante',
 	'NORMAL_TOPIC' => 'Normal',
-	
+
 	'UNSUBSCRIBE_TOPIC' => 'Dejar de recibir notificaci&oacute;n de respuestas',
 	'SUBSCRIBE_TOPIC' => 'Recibir notificaci&oacute;n de respuestas',
 	'OLDEST_FIRST' => 'Mas antiguo primero',
 	'NEWEST_FIRST' => 'Mas reciente primero',
 	'TOPIC_ORDER' => 'Mostrar mensajes',
-	
+
 	'NO_POST_MODE' => 'Modo de mensaje incorrecto',
 	'POST_TYPE' => 'Tipo de mensaje',
 	'POST_TYPE_ANNOUNCE' => 'Anuncio',
 	'POST_TYPE_ANNOUNCES' => 'Anuncios',
 	'POST_TYPE_STICKY' => 'PostIt',
 	'POST_TYPE_NORMAL' => 'Normal',
-	
+
 	'CONFIRM_HIDE_POST' => '&iquest;Est&aacute;s seguro que quieres ocultar este mensaje?',
 	'CONFIRM_DELETE_POLL' => '&iquest;Est&aacute;s seguro que quieres borrar esta encuesta?',
-	
+
 	'FLOOD_ERROR' => 'No se puede enviar otro mensaje en este momento, por favor intenta nuevamente.',
 	'EMPTY_SUBJECT' => 'Debes escribir el t&iacute;tulo para el nuevo tema',
 	'EMPTY_MESSAGE' => 'Debes escribir tu mensaje.',
@@ -235,7 +235,7 @@ $lang += array(
 	'FEW_POLL_OPTIONS' => 'Ingresar al menos dos opciones para la encuesta',
 	'MANY_POLL_OPTIONS' => 'Hay demasiadas opciones para la encuesta',
 	'POST_HAS_NO_POLL' => 'Este tema no tiene encuesta',
-	
+
 	'ADD_POLL' => 'Agregar encuesta',
 	'POLL_QUESTION' => 'Pregunta de la Encuesta',
 	'POLL_OPTION' => 'Opciones de la Encuesta',
@@ -245,9 +245,9 @@ $lang += array(
 	'DELETE' => 'Borrar',
 	'POLL_FOR' => 'D&iacute;as para la Encuesta',
 	'DELETE_POLL' => 'Borrar encuesta',
-	
+
 	'POLL_DELETE' => 'La encuesta ha sido borrada.',
-	
+
 	'DCONVS' => 'Conversaciones',
 	'DCONVS_READ' => 'Conversaciones',
 	'DCONV_READ' => 'Conversaci&oacute;n',
@@ -273,21 +273,21 @@ $lang += array(
 	'BLOCKED_MEMBER' => 'No se puede enviar el mensaje al destinatario seleccionado.',
 	'BLOCKED_MEMBER_ADD' => 'Bloquear usuario',
 	'BLOCKED_MEMBER_REMOVE' => 'Desbloquear usuario',
-	
+
 	'EMPTY_USER' => 'Debes seleccionar el destinatario del mensaje',
 	'NO_SUCH_USER' => 'El usuario seleccionado no existe',
 	'NO_AUTO_DC' => 'No puedes iniciar una conversaci&oacute;n contigo mismo.',
-	
+
 	'START_DC' => 'Iniciar conversaci&oacute;n con...',
 	'SEND_REPLY' => 'Responder',
-	
+
 	'FIND_MEMBER' => 'Encontrar un miembro',
 	'FIND' => 'Encontrar',
 	'NO_MATCH' => 'No hay resultados',
-	
+
 	'MARK_ALL' => 'Marcar todos',
 	'UNMARK_ALL' => 'Desmarcar todos',
-	
+
 	'PREFERENCES' => 'Preferencias',
 	'UNREAD_ITEMS' => 'Actualidad',
 	'UNREAD_ITEMS_COUNT' => '%d mensajes nuevos',
@@ -296,7 +296,7 @@ $lang += array(
 	'MEMBER_INFO' => 'Informaci&oacute;n de Usuario',
 	'MEMBER_STATS' => 'Estad&iacute;sticas de Usuario',
 	'AVATAR_PANEL' => 'Panel de Avatar',
-	
+
 	'FORUM_POSTS' => 'Mensajes del foro',
 	'ARTISTS_POSTS' => 'Mensajes a bandas',
 	'DOWNLOADS_POSTS' => 'Mensajes a descargas',
@@ -316,13 +316,13 @@ $lang += array(
 	'SHOW_AVATARS' => 'Mostrar avatares en mensajes',
 	'HIDE_USER' => 'Ocultarme cuando est&eacute; conectado',
 	'EMAIL_DC' => 'Notificaci&oacute;n de conversaciones nuevas por email',
-	
+
 	'SENDPASSWORD_NO_NORMALUSER' => 'No se permite el cambio de contrase&ntilde;a del miembro seleccionado',
 	'NO_SEND_ACCOUNT_INACTIVE' => 'Lo sentimos pero tu contrase&ntilde;a no puede ser recuparada porque tu cuenta se encuentra actualmente desactivada. Por favor contacta a un Administrador de Rock Republik',
-	
+
 	'ALWAYS_NOTIFY' => 'Siempre notificarme cuando hay mensajes en el foro',
 	'ALWAYS_NOTIFY_EXPLAIN' => 'Env&iacute;a un email cuando alguien responde a un tema que has publicado.',
-	
+
 	'AGREE_TOS' => 'Acepto cumplir las <a href="http://www.rockrepublik.net/tos/" target="_blank">condiciones y t&eacute;rminos de servicio</a>',
 	'FILL_DATA' => 'Completa la informaci&oacute;n',
 	'SITE_LANG' => 'Idioma del sitio',
@@ -332,7 +332,7 @@ $lang += array(
 	'SIGNATURE' => 'Firma',
 	'SIGNATURE_EXPLAIN' => 'Texto al pie de tus mensajes',
 	'PUBLIC_EMAIL' => 'Mostar p&uacute;blicamente mi email',
-	
+
 	'CONFIRM_EMAIL' => 'Re-escribe tu email',
 	'CURRENT_PASSWORD' => 'Contrase&ntilde;a actual',
 	'NEW_PASSWORD' => 'Nueva contrase&ntilde;a',
@@ -342,22 +342,22 @@ $lang += array(
 	'PASSWORD_TO_REGISTER_EXPLAIN' => 'Debes confirmar tu contrase&ntilde;a para finalizar tu registro',
 	'PASSWORD_IF_CHANGED' => 'S&oacute;lo debes ingresar una contrase&ntilde;a si deseas cambiarla',
 	'PASSWORD_IF_CHANGED_EXPLAIN' => 'Necesitas confirmar tu contrase&ntilde;a si deseas cambiarla',
-	
+
 	'AVATAR' => 'Avatar',
 	'AVATAR_EXPLAIN' => 'Muestra imagen cuando publiques mensajes. Debe ser formato <em>gif, jpg o png</em>.',
 	'UPLOAD_AVATAR' => 'Enviar nuevo Avatar',
 	'DELETE_AVATAR' => 'Borrar Imagen',
 	'CURRENT_AVATAR' => 'Avatar actual',
-	
+
 	'USERCOLOR' => 'Color de usuario',
 	'USERCOLOR_EXPLAIN' => 'Es el color de usuario que aparecer&aacute; en tu perfil y en los mensajes que publiques en el foro, p&aacute;ginas de usuarios y en todos los lugares donde se pueda comentar.',
 	'USERCOLOR_TOO_LOW' => 'No se puede seleccionar un color muy claro, para que sea legible en el fondo gris del sitio.',
 	'USERPAGE_ERROR' => 'El color es incorrecto.',
-	
+
 	'HIDE_MEMBER' => 'Ocultar conexi&oacute;n de usuario',
 	'PROFILE_UPDATED' => 'El perfil fue actualizado',
 	'PROFILE_UPDATED_INACTIVE' => 'Tu perfil ha sido actualizado, sin embargo, has cambiado detalles importantes y tu cuenta fue desactivada. Revisa tu email para saber como reactivar tu cuenta.',
-	
+
 	'EMPTY_PASSWORD' => 'Debes especificar una contrase&ntilde;a para tu cuenta',
 	'EMPTY_PASSWORD_CONFIRM' => 'Debes re-escribir la contrase&ntilde;a para tu cuenta',
 	'EMAIL_MISMATCH' => 'Los correos ingresados no coinciden',
@@ -385,27 +385,27 @@ $lang += array(
 	'AGREETOS_ERROR' => 'Debes aceptar nuestros t&eacute;rminos de servicio para completar tu suscripci&oacute;n',
 	'RANK_TOO_LONG' => 'El rango que has ingresado es muy largo.',
 	'RANK_EXPLAIN' => 'Descripci&oacute;n de usuario',
-	
+
 	'WELCOME_SUBJECT' => 'Bienvenido a Rock Republik',
 	'NEW_ACCOUNT_SUBJECT' => 'Nueva cuenta de usuario',
 	'ACCOUNT_ACTIVATED_SUBJECT' => 'Membres&iacute;a activada',
-	
+
 	'MEMBERSHIP_ADDED' => 'Acabas de crear tu usuario en la comunidad RK.<br /><br />Hemos enviado un mensaje a tu cuenta de email para verificar tu registro y esperamos tu confirmaci&oacute;n.',
 	'MEMBERSHIP_ADDED_CONFIRM' => 'Gracias por confirmar tu correo.<br /><br />Ahora ya eres ciudadan@ de la Republik del Rock y ya puedes interactuar con todos los ciudadanos y compartir tus opiniones e informarte.<br /><br />Bienvenid@!',
 	'CLICK_PROCEED' => 'Click %AQUI%s para ir a la Portada',
-	
+
 	'MEMBERSHIP_BENEFITS' => 'Beneficios de los miembros',
 	'MEMBERSHIP_BENEFITS2' => array(
 		'Env&iacute;o de mensajes en chat, bandas, foro, art&iacute;culos, eventos, etc.',
 		'Acceso a la informaci&oacute;n de otros miembros',
 		'P&aacute;gina personal con libro de visitas'
 	),
-	
+
 	'PASSWORD_UPDATED' => 'Se ha creado una nueva contrase&ntilde;a, por favor revisa tu email por detalles sobre como activarla',
 	'NO_EMAIL_MATCH' => 'El email ingresado no pertenece a ese usuario',
 	'NEW_PASSWORD_ACTIVATION' => 'Activaci&oacute;n de nueva contrase&ntilde;a',
 	'PASSWORD_ACTIVATED' => 'Tu cuenta ha sido re-activada. Para entrar usa la contrase&ntilde;a provista en el email recibido',
-	
+
 	'SEND_EMAIL' => 'Email',
 	'NO_MEMBER_SPECIFIED' => 'Debes seleccionar un miembro',
 	'USER_PREVENT_EMAIL' => 'Este miembro no desea recibir email. Enviale un mensaje privado',
@@ -416,10 +416,10 @@ $lang += array(
 	'EMAIL_SENT' => 'El email ha sido enviado',
 	'EMPTY_EMAIL_SUBJECT' => 'Debes escribir un asunto para el email',
 	'EMPTY_EMAIL_MESSAGE' => 'Debes escribir un mensaje para el email',
-	
+
 	'VIEW_INFORMATION' => 'Ver Informaci&oacute;n',
 	'CLOSE_WINDOW' => 'Cerrar Ventana',
-	
+
 	'SORRY_AUTH_ANNOUNCE' => 'S&oacute;lo %s pueden publicar anuncios en este foro',
 	'SORRY_AUTH_STICKY' => 'S&oacute;lo %s pueden publicar PostIt en este foro',
 	'SORRY_AUTH_READ' => 'S&oacute;lo %s pueden leer temas en este foro',
@@ -428,18 +428,18 @@ $lang += array(
 	'SORRY_AUTH_EDIT' => 'S&oacute;lo %s pueden editar mensajes en este foro',
 	'SORRY_AUTH_DELETE' => 'S&oacute;lo %s pueden borrar mensajes en este foro',
 	'SORRY_AUTH_VOTE' => 'S&oacute;lo %s pueden votar en encuestas en este foro',
-	
+
 	'AUTH_ANONYMOUS_USERS' => '<b>usuarios an&oacute;nimos</b>',
 	'AUTH_REGISTERED_USERS' => '<b>usuarios registrados</b>',
 	'AUTH_USERS_GRANTED_ACCESS' => '<b>usuarios con acceso especial</b>',
 	'AUTH_MODERATORS' => '<b>moderadores</b>',
 	'AUTH_ADMINISTRATORS' => '<b>administradores</b>',
-	
+
 	'NOT_MODERATOR' => 'No eres moderador en este foro',
 	'NOT_AUTHORISED' => 'No Autorizado',
-	
+
 	'YOU_ARE_BANNED' => 'No se puede tener acceso a esta cuenta.',
-	
+
 	//
 	// MODERATOR CONTROL PANEL
 	//
@@ -452,7 +452,7 @@ $lang += array(
 	'ANNOUNCE' => 'Anuncio',
 	'ANNOUNCES' => 'Anuncios',
 	'NORMALISE' => 'Normal',
-	
+
 	'TOPICS_REMOVED' => 'Los temas seleccionados han sido removidos con &eacute;xito de la base de datos.',
 	'TOPICS_LOCKED' => 'Los temas seleccionados han sido cerrados',
 	'TOPICS_MOVED' => 'Los temas seleccionados han sido movidos',
@@ -461,15 +461,15 @@ $lang += array(
 	'TOPICS_STICKYD' => 'Los temas seleccionados ahora son Stickies',
 	'TOPICS_ANNOUNCED' => 'Los temas seleccionados ahora son Anuncios',
 	'TOPICS_NORMALISED' => 'Los temas seleccionados ahora son Normales',
-	
+
 	'CONFIRM_DELETE_TOPIC' => '&iquest;Est&aacute;s seguro que quieres eliminar el/los tema/s seleccionado/s?',
 	'CONFIRM_LOCK_TOPIC' => '&iquest;Est&aacute;s seguro que quieres cerrar el/los tema/s seleccionado/s?',
 	'CONFIRM_UNLOCK_TOPIC' => '&iquest;Est&aacute;s seguro que quieres desbloquear el/los tema/s seleccionado/s?',
 	'CONFIRM_MOVE_TOPIC' => '&iquest;Est&aacute;s seguro que quieres mover el/los tema/s seleccionado/s?',
-	
+
 	'MOVE_TO_FORUM' => 'Mover al foro',
 	'LEAVE_SHADOW_TOPIC' => 'Dejar tema sombreado en antiguo foro',
-	
+
 	'SPLIT_TOPIC_TITLE' => 'Panel de Control para Divisi&oacute;n de Temas',
 	'SPLIT_TOPIC_EXPLAIN' => 'Usando el siguiente formulario puedes dividir un tema en dos, ya sea seleccionando los mensajes individualmente o dividi&eacute;ndolo en un mensaje determinado',
 	'SPLIT_TITLE' => 'T&iacute;tulo para nuevo tema',
@@ -477,17 +477,17 @@ $lang += array(
 	'SPLIT_POSTS' => 'Dividir mensajes seleccionados',
 	'SPLIT_AFTER' => 'Dividir desde el mensaje seleccionado',
 	'SPLIT_SPLIT' => 'El tema seleccionado ha sido dividido con &eacute;xito',
-	
+
 	'TOO_MANY_ERROR' => 'Has seleccionado muchos mensajes. Solo puedes escoger un mensaje para dividir un tema a partir de &eacute;l',
 	'NONE_SELECTED' => 'No has seleccionado temas para esta operaci&oacute;n. Por favor regresa y selecciona al menos uno.',
-	
+
 	'NEW_FORUM' => 'Nuevo foro',
 	'THIS_POSTS_IP' => 'IP para este mensaje',
 	'OTHER_IP_THIS_USER' => 'Otros IPs desde los que este miembro ha publicdo mensajes',
 	'USERS_THIS_IP' => 'Usuarios publicando de este IP',
 	'IP_INFO' => 'Informaci&oacute;n IP',
 	'LOOKUP_IP' => 'Buscar por IP',
-	
+
 	'datetime' => array(
 		'Sunday'	=> 'Domingo',
 		'Monday'	=> 'Lunes',
@@ -533,7 +533,7 @@ $lang += array(
 		'TODAY'		=> 'Hoy',
 		'YESTERDAY'	=> 'Ayer',
 	),
-	
+
 	'zones'	=> array(
 		'-12.00'	=> 'GMT - 12',
 		'-11.00'	=> 'GMT - 11',
@@ -561,10 +561,10 @@ $lang += array(
 		'11.00'	=> 'GMT + 11',
 		'12.00'	=> 'GMT + 12'
 	),
-	
+
 	'VISITS_COUNT' => 'N&uacute;mero de visitas',
 	'PAGEVIEWS_COUNT' => 'P&aacute;ginas vistas',
-	
+
 	'INFORMATION' => 'Informaci&oacute;n',
 	'COMMENTS' => 'Comentarios',
 	'VIEW_COMMENTS' => 'Ver comentarios',
@@ -572,7 +572,7 @@ $lang += array(
 	'POLL' => 'Encuesta',
 	'POLL_COMMENT' => 'comentario',
 	'POLL_COMMENTS' => 'comentarios',
-	
+
 	//
 	// Comments
 	//
@@ -582,8 +582,8 @@ $lang += array(
 	'CMT_EDIT' => 'Editar',
 	'CMT_DELETE' => 'Borrar',
 	'CMT_RESTORE' => 'Restaurar',
-	
-	
+
+
 	//
 	// SITE HISTORY
 	//
@@ -607,12 +607,12 @@ $lang += array(
 	'PERCENT' => 'Porcentaje',
 	'GRAPH' => 'Gr&aacute;fica',
 	'TOP_VISITING_USERS' => 'M&aacute;ximo tiempo de usuarios',
-	
+
 	'CHECK_ALL' => 'Seleccionar todos',
 	'UNCHECK_ALL' => 'Deseleccionar todos',
-	
+
 	'NOWPLAYING' => '&iquest;Qu&eacute; canci&oacute;n est&aacute;s escuchando?',
-	
+
 	// PAGE HEADER
 	'HOME' => 'Inicio',
 	'UB' => 'Artistas',
@@ -622,7 +622,7 @@ $lang += array(
 	'TOP_FORUM' => 'Ultimos %s mensajes del Foro',
 	'ALLIES' => 'Aliados',
 	'AWARDS' => 'RK Awards 2012',
-	
+
 	'VIEW_INFO' => 'Ver Informaci&oacute;n',
 	'SEND_POST' => 'Env&iacute;a tu comentario',
 	'SEND_NEWS' => 'Env&iacute;a tu publicaci&oacute;n',
@@ -630,21 +630,21 @@ $lang += array(
 	'OF_COMM' => '\d\e',
 	'IN' => 'en',
 	'PRIVACY_POLICY' => 'Pol&iacute;tica de Privacidad y T&eacute;rminos de servicio',
-	
+
 	// SITE NOTICES
 	'NOTICE_ARTISTS' => '&iquest;Te gustar&iacute;a que tu banda obtenga el apoyo de <strong>Rock Republik</strong>?<br /><br />Env&iacute;anos el material completo a info&#64;rockrepublik.net para tener su propio espacio!',
 	'NOTICE_EVENTS' => '&iquest;Te gustar&iacute;a anunciar un evento o actividad en esta secci&oacute;n?<br /><br />Env&iacute;anos el afiche a info&#64;rockrepublik.net y lo publicaremos. Agradeceremos que incluyas <a href="http://www.rockrepublik.net/home/downloads/logo.zip">nuestro logo</a> en la publicidad del evento.',
-	
+
 	// ALLIES
 	'ALLIES_DESCRIPTION' => '&iquest;Te gustar&iacute;a formar parte de los Aliados de Rock Republik?<br /><br />Env&iacute;anos la informaci&oacute;n de tu sitio web a: <a href="mailto:info&#64;rockrepublik.net">info&#64;rockrepublik.net</a>',
-	
+
 	// NEWS
 	'NEWS' => 'Art&iacute;culos',
 	'LATEST_NEWS' => '&Uacute;ltimas noticias',
 	'NEWS2' => 'Art&iacute;culo',
 	'NEWS_LOCAL' => 'Nacional',
 	'NEWS_NON_LOCAL' => 'Internacional',
-	
+
 	// UNREAD MESSAGE CENTER
 	'THENEW' => 'Actualidad',
 	'NEW_MARK' => 'Marcar como leidos autom&aacute;ticamente',
@@ -654,7 +654,7 @@ $lang += array(
 	'NO_NEW_ITEMS' => 'No hay informaci&oacute;n nueva desde tu &uacute;ltima visita!',
 	'NEW_ITEMS' => 'elementos no le&iacute;dos',
 	'NEW_ITEM' => 'elemento no le&iacute;do',
-	
+
 	'NEW_FORUM' => 'Mensajes del Foro',
 	'NEW_UB_MSG' => 'Mensajes a Bandas',
 	'NEW_DL_MSG' => 'Mensajes a Descargas',
@@ -663,28 +663,28 @@ $lang += array(
 	'NEW_FRIEND' => 'te agreg&oacute; a sus amigos.',
 	'NEW_USERPAGE_MESSAGE' => ' ha escrito en tu perfil.',
 	'USERPAGE_UNREAD_MESSAGES' => 'Mensajes en tu perfil',
-	
+
 	// MEDIA
 	'AUDIO' => 'M&uacute;sica',
 	'VIDEO' => 'Videos',
 	'PLAY_FILE' => 'Reproducir archivo',
 	'DOWNLOADS' => 'Descargas',
-	
+
 	// ARTISTS
 	'ARTISTS' => 'Artistas',
-	
+
 	// BROADCAST
 	'BROADCAST' => 'Radio',
-	
+
 	// INDEX STATS
 	'UB_TOP_DATETIME' => 'Nueva',
 	'UB_TOP_VIEWS' => 'M&aacute;s visitada',
 	'UB_TOP_VOTES' => 'M&aacute;s votada',
 	'UB_TOP_POSTS' => 'M&aacute;s mensajes',
 	'UB_TOP_U_UD' => 'M&aacute;s descargas',
-	
+
 	'RAND_A' => 'Mostrar 10 al azar',
-	
+
 	'NO_ARTIST_EXIST' => 'La banda seleccionada no existe.<br /><br /><a href="%s">Click AQUI</a> para ir al men&uacute; de bandas.',
 	'ARTIST_INACTIVE' => 'Banda inactiva',
 	'ARTIST_INACTIVE_DESC' => 'Si tienes informaci&oacute;n env&iacute;alo a <a href="/community/">nuestro correo electr&oacute;nico</a>.',
@@ -695,13 +695,13 @@ $lang += array(
 	'UB_NO_GUEST_POSTING' => '<strong>%s</strong> s&oacute;lo permite comentarios de miembros registrados.<br /><br />Por favor <a href="#top"><i>inicia sesi&oacute;n</i></a> &oacute; <a href="%s">suscribete</a>.<br />',
 	'UB_MANAGE_MODS' => 'Administrar Miembros',
 	'A_NEWS_CREATE' => 'Publicar art&iacute;culo',
-	
+
 	'LOCAL_ARTISTS' => 'Guatemala',
 	'NON_LOCAL_ARTISTS' => 'Internacionales',
 	'VIEW_ALL_ARTISTS' => 'Ver lista completa',
 	'SEARCH_ARTISTS' => 'Buscar bandas',
 	'SELECTED_LETTER' => 'Letra seleccionada',
-	
+
 	'UB_NOT_DEF' => 'No definido',
 	'UB_ORDER_BY' => 'Ordenar bandas por',
 	'UB_ORDER_NAME' => 'Nombre',
@@ -711,7 +711,7 @@ $lang += array(
 	'UB_ORDER_POSTS' => 'Cantidad de mensajes',
 	'UB_ORDER_VOTES' => 'Votos',
 	'UB_IMAGES' => 'Fotograf&iacute;as de bandas',
-	
+
 	'UB_NEWS' => 'Art&iacute;culos',
 	'UB_GENRE' => 'G&eacute;nero',
 	'UB_RATE' => 'Calificar Banda',
@@ -720,9 +720,9 @@ $lang += array(
 	'UB_RECENT_F' => 'Fans Recientes',
 	'UB_RECENT_V' => 'Visitantes Recientes',
 	'UB_AUTH_MEMBERS' => 'Autorizados',
-	
+
 	'DL_FAV' => 'Agregar a mis Favoritos',
-	
+
 	// NAVBAR
 	'UB_L01' => 'Portada',
 	'UB_L02' => 'Biograf&iacute;a',
@@ -733,7 +733,7 @@ $lang += array(
 	'UB_L07' => 'Entrevistas',
 	'UB_L08' => 'Club de Fans',
 	'UB_L17' => 'Videos',
-	
+
 	// POLL
 	'UB_VC1' => 'Excelente',
 	'UB_VC2' => 'Muy Buena',
@@ -741,18 +741,18 @@ $lang += array(
 	'UB_VC4' => 'No la he oido',
 	'UB_VC5' => 'Debe Mejorar',
 	'UB_VC6' => 'No me gusta',
-	
+
 	'UB_UDV1' => 'Excelente',
 	'UB_UDV2' => 'Muy Buena',
 	'UB_UDV3' => 'Buena',
 	'UB_UDV4' => 'Podr&iacute;a ser mejor',
 	'UB_UDV5' => 'No me gusta',
-	
+
 	'UB_UD_RATE' => 'Opini&oacute;n de usuarios',
 	'UB_UD_RATEPOLL' => 'Valoraci&oacute;n',
 	'VIEW' => 'Visita',
 	'DL' => 'Descarga',
-	
+
 	//
 	// CHAT
 	//
@@ -769,7 +769,7 @@ $lang += array(
 	'CHAT_NO_USERS' => 'Debes escribir tu nombre de usuario!',
 	'CHAT_FOR_USERS' => 'Debes iniciar sesi&oacute;n para entrar!',
 	'CHATTERS' => 'miembros chateando!',
-	
+
 	// EVENTS
 	'EVENTS_NEXT' => 'Pr&oacute;ximos Eventos',
 	'UE' => 'Eventos',
@@ -786,15 +786,15 @@ $lang += array(
 	'UE_NO_DATA' => 'No hay afiche del evento, pronto ser&aacute; publicado.',
 	'UE_NO_IMAGES' => 'No hay fotos del evento, pronto ser&aacute;n publicadas.<br /><br />Mientras tanto escribe tu opini&oacute;n!',
 	'UE_PHOTOS' => 'fotograf&iacute;as',
-	
+
 	'RSVP_FUTURE' => '&iexcl;Si asistir&eacute;!',
 	'RSVP_PAST' => '&iexcl;Estuve presente!',
-	
+
 	'RSVP_FUTURE_ONE' => 'persona asistir&aacute; al evento.',
 	'RSVP_FUTURE_MORE' => 'personas asistir&aacute;n al evento.',
 	'RSVP_PAST_ONE' => 'persona asisti&oacute; al evento.',
 	'RSVP_PAST_MORE' => 'personas asistieron al evento.',
-	
+
 	'EVENT_ASSIST' => '&iquest;Asistir&aacute;s?',
 	'EVENT_AFTER' => 'Programado para el %s',
 	'EVENT_BEFORE' => 'Se realiz&oacute; el %s',
@@ -803,7 +803,7 @@ $lang += array(
 	'EVENT_YESTERDAY' => 'Se realiz&oacute; <strong>ayer</strong>',
 	'EVENT_PHOTO_THANKS' => 'Fotos gracias a:',
 	'EVENT_PHOTOS_SHARE' => '&iquest;Tienes fotos del evento? Comp&aacute;rtelas',
-	
+
 	'UE_CORRESP' => 'Corresponsales',
 	'UE_SEND_PHOTOS' => 'Enviar Fotos',
 	'UE_SEND_FILES' => 'Enviar Archivos',
@@ -826,10 +826,10 @@ $lang += array(
 	'UE_CANT_VIEW' => 'No se puede visualizar el archivo seleccionado.',
 	'UE_CANT_DELETE' => 'No se puede eliminar el archivo seleccionado. (<b>%s</b>)',
 	'UE_DELETED' => 'El archivo <b>%s</b> fue eliminado correctamente.',
-	
+
 	// SOCIAL NETWORKS
 	'SOCIAL_NETWORKS' => 'Redes sociales',
-	
+
 	// USER PAGES
 	'BIRTHDAY' => 'Cumplea&ntilde;os',
 	'ONLINE' => 'Conectado',
@@ -846,7 +846,7 @@ $lang += array(
 	'YEARS' => 'a&ntilde;os',
 	'FRIENDS_ADD' => 'Agregar a mis Amigos',
 	'FRIENDS_DEL' => 'Borrar de mis Amigos',
-	
+
 	// COMMUNITY
 	'ONLINE_MEMBERS' => 'Miembros conectados',
 	'TOS' => 'T&eacute;rminos de Servicio',
@@ -854,7 +854,7 @@ $lang += array(
 	'COMM_CONTACT' => 'Cont&aacute;ctanos',
 	'COMM_ADMIN' => 'Administrador',
 	'COMM_TEAM' => 'Equipo Rock Republik',
-	
+
 	// USERPAGE
 	'USERPAGE_MAIN' => 'Perfil',
 	'USERPAGE_DC' => 'Conversaciones',
@@ -865,18 +865,18 @@ $lang += array(
 	'USERPAGE_STATS' => 'Estad&iacute;sticas',
 	'USERPAGE_MOD' => 'Miembro Autorizado',
 	'USERPAGE_AFAVS' => 'Bandas favoritas',
-	
+
 	// UPLOAD
 	'UPLOAD_FAILED' => 'Error al enviar el archivo',
 	'UPLOAD_INVALID_EXT' => 'La extensi&oacute;n del archivo es incorrecta',
 	'UPLOAD_TOO_BIG' => 'El tama&ntilde;o de archivo que est&aacute;s enviando es mayor al m&aacute;ximo permitido',
 	'UPLOAD_IMAGE_ERROR' => 'Error en el archivo de imagen',
-	
+
 	// WEBSITES
 	'IMAGES' => 'Im&aacute;genes',
 	'BOARD_LATEST' => 'Temas recientes',
 	'BOARD_EVENTS' => 'Eventos recientes',
-	
+
 	'RSS' => 'RSS',
 	'RSS_ARTISTS' => 'Rock Republik: Artistas',
 	'RSS_EVENTS' => 'Rock Republik: Eventos',
@@ -884,13 +884,13 @@ $lang += array(
 	'RSS_DESC_ARTISTS' => '&Uacute;ltimos artistas registrados en Rock Republik.',
 	'RSS_DESC_EVENTS' => 'Archivo de fotograf&iacute;as de &uacute;ltimos eventos.',
 	'RSS_DESC_NEWS' => 'Art&iacute;culos de Rock Republik',
-	
+
 	'DIS_INVALID' => 'Algunas imagenes del paquete no cumplen con el tama&ntilde;o requerido (600x#) o (#x600), corregir dimensiones de imagen.<br /><br />',
 	'AP_PROGRAM_FIELD' => '&iquest;D&oacute;nde conociste a Rock Republik?',
 	'AP_PROGRAM_VALUE' => 'Nombre',
 	'AP_POINT' => '%d Arkane',
 	'AP_POINTS' => '%d Arkanes',
-	
+
 	// ACP KEYS
 	'ACP_ARTIST_GALLERY_CREATE' => 'Agregar fotos',
 	'ACP_ARTIST_GALLERY_MODIFY' => 'Editar fotos',
@@ -971,5 +971,3 @@ $lang += array(
 	'ACP_ARTIST_AUTH_DELETE' => '&iquest;Deseas eliminar los siguientes usuarios autorizados de %s?: <b>%s</b>',
 	'ACP_ARTIST_AUTH_DELETE2' => '&iquest;Deseas eliminar el siguiente usuario autorizado de %s?: <b>%s</b>'
 );
-
-?>
