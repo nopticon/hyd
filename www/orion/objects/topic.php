@@ -303,7 +303,7 @@ class topic {
 				FROM _forum_topics_fav
 				WHERE topic_id = ?
 					AND user_id = ?';
-			if (!sql_field(sql_filter($sql, $topic_id, $user->d('user_id')))) {
+			if (!sql_field(sql_filter($sql, $topic_id, $user->d('user_id')), 'notify_status')) {
 				if (_button('watch')) {
 					$sql_insert = array(
 						'user_id' => $user->d('user_id'),
@@ -352,7 +352,7 @@ class topic {
 				FROM _forum_posts p, _members u
 				WHERE p.topic_id = ?
 					AND u.user_id = p.poster_id';
-			if ($total = sql_field(sql_filter($sql, $topic_id))) {
+			if ($total = sql_field(sql_filter($sql, $topic_id), 'total')) {
 				$topic_data['topic_replies2'] = $total - 1;
 			}
 		}

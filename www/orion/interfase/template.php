@@ -1065,6 +1065,10 @@ class Template {
 			}
 		}
 
+		if (isset($tokens[0]) && strpos($tokens[0], '$') !== false) {
+			array_unshift($tokens, 'isset(' . $tokens[0] . ')', '&&');
+		}
+
 		$code = (($elseif) ? '} elseif (' : 'if (') . (implode(' ', $tokens) . ') { ');
 
 		return $code;

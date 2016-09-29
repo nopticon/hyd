@@ -2344,6 +2344,27 @@ function validate_email($email) {
 	return array('error' => true, 'error_msg' => lang('email_invalid'));
 }
 
+function get_user_avatar($name, $user_id = GUEST, $format = '', $abs_path = false) {
+	global $config;
+
+	switch ($user_id) {
+		case GUEST:
+			$value = 'style/avatar.gif';
+			break;
+		default:
+			if (empty($name)) {
+				$name = 'avatar.gif';
+			}
+
+			$value = 'avatars/' . $name . $format;
+			break;
+	}
+
+	$path = $abs_path ? $config['assets_path'] : $config['assets_url'];
+
+	return $path . $value;
+}
+
 //
 // Does supplementary validation of optional profile fields. This expects common stuff like trim() and strip_tags()
 // to have already been run. Params are passed by-ref, so we can set them to the empty string if they fail.
