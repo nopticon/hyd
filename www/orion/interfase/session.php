@@ -1463,6 +1463,10 @@ class auth {
 							$auth_user[$f_forum_id][$a_key . '_type'] = lang('auth_registered_users');
 							break;
 						case AUTH_ACL:
+							if (!isset($u_access[$f_forum_id])) {
+								$u_access[$f_forum_id] = array();
+							}
+
 							$auth_user[$f_forum_id][$a_key] = ($user->is('member')) ? $this->check_user(AUTH_ACL, $a_key, $u_access[$f_forum_id], $custom_mod) : false;
 							$auth_user[$f_forum_id][$a_key . '_type'] = lang('auth_users_granted_access');
 							break;
