@@ -74,7 +74,8 @@ class _comments {
 	public function store() {
 		global $user, $config;
 
-		$this->param = array_splice(explode('/', array_key(explode('//', $this->ref), 1)), 1, -1);
+		$this->param = explode('/', array_key(explode('//', $this->ref), 1));
+		$this->param = array_splice($this->param, 1, -1);
 
 		$sql = '';
 		$id = (isset($this->param[3])) ? (int) $this->param[3] : 0;
@@ -463,17 +464,7 @@ class _comments {
 						$data[$key] = ($value != '') ? '<div' . ((isset($row['post_id'])) ? ' id="_sig_' . $row['post_id'] . '" ' : '') . 'class="lsig">' . $this->parse_message($value, $a_class) . '</div>' : '';
 						break;
 					case 'user_avatar':
-						if ($row['user_id'] != GUEST) {
-							if ($value != '') {
-								$value = $config['assets_url'] . 'avatars/' . $value;
-							} else {
-								$value = $config['assets_url'] . 'style/avatar.gif';
-							}
-						} else {
-							$value = $config['assets_url'] . 'style/avatar.gif';
-						}
-
-						$data[$key] = $value;
+						$data[$key] = get_user_avatar($value, $row['user_id']);
 						break;
 					case 'user_rank':
 						if (!isset($all_ranks)) {
@@ -1014,13 +1005,18 @@ class _comments {
 			$orig = $repl = w();
 			$formats = w('.jpg .gif .png');
 
+			$avatar_format = '<a href="%s" title="%s"><img src="%s" /></a>';
+
 			foreach ($match[1] as $orig_member) {
 				$member = get_username_base($orig_member);
+
 				if (!isset($this->options['icons'][$member])) {
-					for ($i = 0, $end = sizeof($formats); $i < $end; $i++) {
-						$icon_file = $config['avatar_path'] . '/' . $member . $formats[$i];
-						if (@file_exists('..' . $icon_file)) {
-							$this->options['icons'][$member] = '<a href="' . s_link('m', $member) . '" title="' . $orig_member . '"><img src="' . $icon_file . '" /></a>';
+					foreach ($formats as $format) {
+						$icon_file = get_user_avatar($member, 2, $format);
+						$abs_user_avatar = get_user_avatar($member, 2, $format, true);
+
+						if (@file_exists($abs_user_avatar)) {
+							$this->options['icons'][$member] = sprintf($avatar_format, s_link('m', $member), $orig_member, $icon_file);
 							break;
 						}
 					}
