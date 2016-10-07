@@ -1,0 +1,38 @@
+{
+  "dependencies": {
+    "main.js": {
+      "files": [
+      	"scripts/j.value.js",
+		"scripts/j.periodic.js",
+		"scripts/j.url.js",
+		"scripts/j.textarea.js",
+		"scripts/j.social.js",
+		"scripts/j.search.js",
+		"scripts/j.check.js",
+		"scripts/j.scroll.js",
+		"scripts/j.wheel.js",
+		"scripts/j.fancy.js",
+		"scripts/j.slider.js",
+		"scripts/j.filestyle.js",
+		"scripts/j.faq.js",
+		"scripts/j.area.js",
+		"scripts/png.js",
+		"scripts/g.js"
+      ],
+      "main": true
+    },
+    "main.css": {
+      "files": [
+        "styles/main.styl"
+      ],
+      "main": true
+    }
+  },
+  "paths": {
+    "source": "www/orion/template/assets/",
+    "dist": "www/dist/"
+  },
+  "config": {
+    "devUrl": "http://rockrepublik.net"
+  }
+}

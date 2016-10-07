@@ -7,3 +7,9 @@ podcast/
 sftp-config*.json
 .DS_Store
 .htda
+*.log
+
+dist
+bower_components
+node_modules
+vendor

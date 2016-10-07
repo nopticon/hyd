@@ -1,36 +1,27 @@
 <div class="page">
-	
+
 	<div class="header">
 		<div class="brand">
 			<h1><a href="{U_HOME}" title="{L_APPLICATION}">{L_APPLICATION}</a></h1>
 			<h2>{L_APPLICATION_DESC}</h2>
 		</div>
-		
-		<!-- IF S_MEMBER -->
-		<div id="search">
-			<form id="searchForm" method="post">
-				<fieldset>
-					<input id="s" type="text" title="Buscar en Rock Republik">
-					<input id="sb" type="submit" value=" &gt; " />
-				</fieldset>
-			</form>
-		</div>	
-		<!-- ELSE -->
+
+		<!-- IF ! S_MEMBER -->
 		<div id="sign">
 			<ul>
 				<li><a id="signup" href="{U_SESSION}">{L_USER_IDENTITY}</a></li>
 			</ul>
 		</div>
 		<!-- ENDIF -->
-		
+
 		<span class="clear"></span>
-		
+
 		<div id="menu">
 			<ul>
 				<!-- IF S_MEMBER -->
 				<li>&nbsp; <a class="expand" id="account" href="{U_PROFILE}">&#9660;</a>
 					<ul id="expand_account">
-						
+
 						<li><a href="{U_DC}">{L_USERPAGE_DC}</a></li>
 						<li><a href="{U_EDITPROFILE}">{L_PREFERENCES}</a></li>
 						<li><a href="{U_SESSION}">{L_LOGOUT2}</a></li>
@@ -67,18 +58,18 @@
 				<!-- END hide -->
 			</ul>
 		</div>
-		
+
 		<div class="soc ls_inline">
 			<ul>
 				<li><a id="facebook" href="//www.facebook.com/rockrepublik" target="_facebook">Facebook</a></li>
 				<li><a id="twitter" href="//www.twitter.com/rockrepublik" target="_twitter">Twitter</a></li>
 			</ul>
 		</div>
-		
+
 		<span class="clear"></span>
 	</div>
-	
+
 	<hr />
 	<div id="search_result"></div>
-	
+
 	<div id="content">

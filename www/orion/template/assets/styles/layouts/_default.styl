@@ -1,0 +1,770 @@
+html
+	background url($img-path/bg/wood-explosion-fire-hot.jpg) no-repeat center center fixed
+	-webkit-background-size cover
+	-moz-background-size cover
+	-o-background-size cover
+	background-size cover
+
+body
+	margin 0
+	padding 0
+
+p, div, span, input, textarea, select, a, optgroup, h1, h2, h3
+	margin 0
+	font-family $font
+	font-size $normal-font
+	text-decoration none
+	cursor default
+	color #d0ced1
+
+h1, h2, h3
+	font-size $large-font
+
+select, optgroup
+	color #eee
+
+optgroup
+	background #eee
+
+a
+	color #c3c2c4
+	&:hover
+		text-decoration underline
+
+form, img
+	margin 0
+	padding 0
+	border 0
+	vertical-align middle
+
+img
+	max-width 100%
+
+input, button, textarea, select
+	background #41413E
+	border 0
+	padding 2px
+
+hr
+	display block
+	clear both
+	visibility hidden
+	margin 0
+	height 0.1em
+	line-height 0.1em
+
+#content
+	padding 10px
+	clear both
+	border 1px solid #111
+	background rgba(0,0,0,0.7)
+	border-radius 10px
+
+.page
+	width 1170px
+	margin 0 auto
+
+.header
+	display block
+	width 100%
+	margin 5px 0 5px 0
+	overflow hidden
+
+.brand
+	width 70%
+	float left
+	h1
+		width 300px
+		height 51px
+		a
+			display block
+			width 300px
+			height 47px
+			background url($img-path/header.gif) no-repeat
+			text-indent 100%
+			white-space nowrap
+			overflow hidden
+			&:hover
+				background-position 0 -47px
+	h2
+		display none
+
+#footer
+	padding 22px 0 50px 0
+
+#menu
+	display block
+	clear both
+	float left
+	margin-top 3px
+	ul
+		list-style none
+		margin 0
+		padding 0
+		border 0
+		li
+			float left
+			margin-right 8px
+			a
+				margin 5px
+				display inline
+
+#sign
+	float right
+	margin 8px 0 0 0
+	ul
+		margin 0
+		padding 0
+		li
+			float left
+			margin-top 0
+			margin-left 15px
+			list-style none
+			a
+				padding 4px
+				background #F5B800
+				color #000
+				border 1px solid #DBA400
+				border-radius 5px
+				&:hover
+					text-decoration none
+					background #DBA400
+			ul
+				display none
+
+#search
+	width 30%
+	float right
+	position relative
+	padding 0
+	left 0
+	top 0
+	fieldset
+		margin-top 3px
+		border 0
+		text-align right
+	input
+		background #444
+		border 0px solid #383838
+		box-shadow 0 !important
+		color #d0ced1
+		margin 0 3px 0 5px
+		padding 1px
+		&.submit
+			padding 1px
+			font-weight normal
+
+#search_result
+	display none
+	margin 10px 0 15px 0
+	color #EEE
+	padding 10px
+	overflow auto
+	border 1px solid #111
+	background rgba(0,0,0,0.8)
+	border-radius 10px
+	input
+		padding 4px
+		border-radius 4px
+		background #5DA209
+		color #fff
+
+.webResult
+	h2
+		width 100%
+		background-color #5D6F7B
+		font-weight bold
+		border-radius 3px
+		height auto !important
+		text-indent 0 !important
+		a
+			color #fff
+			padding 4px
+			margin 0
+	p
+		padding 5px
+		b
+			color #FFF
+	a
+		color #919FAC
+		display block
+		margin 0 0 10px 5px
+
+.soc
+	margin 3px 0 0 0
+	float right
+	position relative
+
+.defaultInput
+	color #BBB !important
+
+.flying
+	display none
+	background rgba(0,0,0,0.8)
+	position absolute
+	padding 3px
+	overflow auto
+	border-right 1px solid #161C26
+	border-left 1px solid #161C26
+	border-bottom 1px solid #161C26
+	border-top-left-radius 10px
+	border-bottom-right-radius 10px
+	li
+		float none !important
+		margin 15px
+		a
+			color #7AD40C
+
+#facebook
+	color #65A8D0
+
+#twitter
+	color #9AE4E8
+
+.share
+	float left
+	a
+		display block
+		width 32px
+		height 32px
+		background url($img-path/share.png)
+	span
+		display block
+		width 32px
+		margin-top 5px
+		text-align center
+
+.h
+	margin 5px 0 10px 0
+	h3
+		display inline
+		margin 10px 10px 0 10px
+		// border-bottom 1px solid #F5B800
+		padding-bottom 3px
+		font-size $large-font
+		font-weight 300
+		color #F5B800
+		a
+			color #F5B800
+			&:hover
+				text-decoration none
+
+.b
+	h3
+		a
+			padding 5px
+			border-radius 5px
+			background #222
+			&:hover
+				background #111
+
+.hg
+	font-weight bold
+
+.w
+	width 50%
+	margin 20px auto
+	padding 10px
+	border-radius 5px
+	background rgba(200,200,0,0.2)
+	text-align center
+
+.w h3, .w p
+	margin 0
+	text-align center
+
+.z
+	display none !important
+
+.profile
+	margin 0 0 8px
+	h3
+		display inline
+		margin 0
+		border-bottom 1px solid #F5B800
+		padding-bottom 3px
+		color #F5B800
+
+.smile
+	font-size $large-font
+	&:hover
+		text-decoration none
+		color #A4DB00
+
+.ln ul, .ls_inline ul
+	list-style none
+	margin 0
+	padding 0
+	border 0
+
+.ls_inline
+	ul
+		li
+			float left
+			margin-left 25px
+
+.ls
+	ul
+		margin 0 0 5px 25px
+		padding 0
+		border 0
+		ul
+			list-style none
+			margin 0
+			padding 0px
+		li
+			padding 5px 0 5px 0
+			li
+				padding 0
+
+.l2
+	ul
+		li
+			margin 3px 0 0 5px
+			width 49%
+			float left
+
+.l2 ul li ul li, .l3 ul li ul li, .l4 ul li ul li, .l6 ul li ul li
+	margin 0
+	width 100%
+	float none
+	overflow visible
+	height auto
+
+.l2 ._, .lc ._, .l3 ._, .l3 ._, .l6 ._
+	margin 5px 0 5px 5px
+
+.l2 .__, .lc .__, .l3 .__, .l4 .__, .l6 .__
+	margin 5px 0 5px 0
+
+.lc
+	ul
+		li
+			margin-bottom 10px
+			ul
+				li
+					margin-bottom 0
+					text-align center
+
+.l3
+	ul
+		li
+			margin 10px 0 0 5px
+			width 32%
+			float left
+
+.l4
+	ul
+		li
+			margin 10px 0 0 5px
+			width 24%
+			float left
+
+.l6
+	ul
+		li
+			margin 0px 0 0 5px
+			width 16%
+			height 100px
+			float left
+			overflow hidden
+
+.lf
+	ul
+		li
+			height 140px
+
+.lf2
+	ul
+		li
+			height 110px
+
+.lf ul li ul li, .lf2 ul li ul li
+	height auto
+
+.el_left
+	float left
+
+.el_right
+	float right
+
+.is_left
+	width 73%
+	float left
+
+.is_right
+	width 25%
+	float right
+
+.is_left_i
+	width 25%
+	float left
+
+.is_right_i
+	width 75%
+	float right
+
+.is_mid
+	width 50%
+	float left
+
+.pad_left
+	margin-left 10px
+
+.pad_right
+	margin-right 10px
+
+.pad_top
+	margin-top 10px
+
+.x2
+	margin-top 20px
+
+.x3
+	margin-top 30px
+
+.in_right
+	padding-right 10px
+
+.a_left
+	text-align left
+
+.a_right
+	text-align right
+
+.a_mid
+	text-align center
+
+.i input, .i textarea
+	width 100%
+
+._, ._ a, .__, .__ a
+	color #9F9FA2 !important
+	font-size $small-font
+
+.ctl_lf
+	margin 15px 0 0 43px
+
+.ctl_lw
+	margin 25px 0 0 33px
+
+.ctl
+	ul
+		list-style none
+		margin 0 0 0 0
+		padding 0
+		border 0
+		li
+			float left
+			margin-right 25px
+			a
+				&:hover
+					text-decoration none
+					background #518c08
+
+.ctl ul li a, .ctl ul li strong, .ctl ul li span, .ctl input, .ctl ul li small, input.ctl
+	padding 4px
+	border-radius 4px
+	background #5DA209
+	color #fff
+
+.ctl ul li span, .ctl ul li strong
+	border 1px solid #999
+
+.p
+	margin 15px 0 15px 0
+	text-align center
+	padding 4px
+	ul
+		list-style none
+		margin 0
+		padding 0
+		border 0
+		li
+			float left
+			margin-right 15px
+
+.p strong, .p a
+	line-height 30px
+	text-decoration none
+	padding 5px
+	border-radius 4px
+	background #202837
+
+.p strong, .p a:hover
+	text-decoration none
+	background #5d8812
+
+.publish
+	margin 0 auto
+	form
+		padding 8px
+	input
+		display block
+		margin 10px 0 0 0
+		padding 4px 8px 4px 8px
+		border-radius 4px
+		background #5DA209
+		color #fff
+	textarea
+		margin 0 auto
+		display block
+		width 100%
+		border-radius 4px
+	label
+		padding 10px 0 0 0
+		margin 0 10px 0 0
+	.f
+		display inline
+		width 25%
+	.ff
+		margin 0 0 10px 0
+
+.publish textarea, .publish input.f
+	background rgba(150,150,150,0.3)
+
+.tt
+	background #fff
+
+.submit
+	display block
+	margin 10px 0 0 0
+	padding 4px 8px 4px 8px
+	border-radius 4px
+	background #5DA209
+	color #fff
+
+.remove
+	display block
+	margin 10px 0 0 0
+	padding 4px 8px 4px 8px
+	border-radius 4px
+	background #C23000
+	color #fff
+
+.nowrapcell
+	white-space nowrap
+
+.nowraptext
+	overflow auto
+	a
+		color #66CC33
+
+.comments
+	display block
+	clear both
+	margin 0 2%
+	h3
+		position relative
+		float left
+		width 20%
+		margin 1em 0 0 0
+		padding 1.5em 0 0 0
+		font-size 1em
+		border-top 1px solid #111
+		text-align center
+		span
+			position absolute
+			left -9999px
+			text-align left
+		strong
+			display none
+			position absolute
+			left 0
+			top -0.6em
+			padding 0 0.2em 0 14px
+			font 300 1.5em/1em arial,sans-serif
+			color #b0b0a6
+		em
+			display block
+			text-align center
+			font-size 0.95em
+			font-style normal
+			color #fff
+			img
+				padding 1px
+		cite
+			display block
+			font-style normal
+			margin 4px 0 5px 0
+	blockquote
+		position relative
+		float right
+		width 77%
+		margin 1em 0 0 0
+		padding 1.5em 0
+		border-top 1px solid #222
+		p
+			&.dtposted
+				position absolute
+				top -0.6em
+				right 0
+				margin 0
+				font-size 7.5pt
+				line-height auto
+				text-align right
+				background #161C26
+				a
+					padding-left 14px
+		div
+			line-height 1.8em
+			color #d0ced1
+		blockquote
+			overflow hidden
+			margin 1em 0
+			padding 0.2em 1.25em 0.2em 24px
+			background rgba(0,0,0,0.6)
+			color #d0ced1
+			float none
+			width auto
+			margin 1em 0
+			border 0
+
+.thumbnail_view
+	width 275px
+	height 150px
+	border 1px solid #e5e5e5
+	overflow hidden
+	margin 10px auto
+	img
+		position relative
+
+.poll
+	.bar
+		display block
+		border 1px solid #161C26
+		height 5px
+		div
+			display block
+			height 5px
+			line-height 5px
+			background #70a416
+			border-right 1px solid #161C26
+
+.clear
+	clear both
+	display block
+
+.clearfix
+	zoom 1
+	&:after
+		clear both
+
+.clearfix:before, .clearfix:after
+	content "\0020"
+	display block
+	height 0
+	overflow hidden
+
+html, body
+	height 100%
+
+#ps_hover
+	left 0
+	top 0
+	position absolute
+	z-index 1000
+
+.ps_hd,.ps_bd,.ps_ft
+	position relative
+	z-index 1000
+
+.ps_hd .ps_c,.ps_ft .ps_c
+	font-size 1px
+	height 8px
+
+#ps_title
+	background url($img-path/tt_r.png) top right no-repeat
+	padding 0 5px 0 0
+	font-weight normal
+	left 8px
+	position absolute
+	top 0
+	z-index 999
+	.ps_tt_l
+		background url($img-path/tt_l.png) top left no-repeat
+		line-height 20px
+		padding 0 0 0 5px
+
+#ps_tooltip
+	left 0
+	position absolute
+	top 0
+	width 250px
+	z-index 1010
+	p
+		margin 0
+	strong
+		font-size 1.2em
+
+#ps_websites
+	left 50%
+	position absolute
+	top 50%
+	z-index 1005
+	.ps_label
+		color #fff
+		display none
+		font-size 2em
+		left 0
+		position absolute
+		top 0
+		white-space nowrap
+	ul
+		list-style none
+		position relative
+		z-index 1010
+		width 400px
+	li
+		display block
+		float left
+		margin 0 30px 40px 0
+	a
+		display block
+
+#ps_overlay
+	background #000
+	height 100%
+	left 0
+	position absolute
+	top 0
+	width 100%
+	z-index 1005
+
+.cb-enable, .cb-disable, .cb-enable span, .cb-disable span
+	background url($img-path/switch.gif) repeat-x
+	display block
+	float left
+
+.cb-enable span, .cb-disable span
+	line-height 30px
+	display block
+	background-repeat no-repeat
+	font-weight bold
+
+.cb-enable
+	span
+		background-position left -90px
+		padding 0 10px
+	&.selected
+		background-position 0 -60px
+		span
+			background-position left -150px
+			color #fff
+
+.cb-disable
+	span
+		background-position right -180px
+		padding 0 10px
+	&.selected
+		background-position 0 -30px
+		span
+			background-position right -210px
+			color #fff
+
+.switch
+	label
+		cursor pointer
+	input
+		display none
+

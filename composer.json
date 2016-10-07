@@ -1,0 +1,25 @@
+{
+	"name": "nopticon/rock-republik",
+	"type": "package",
+	"license": "MIT",
+	"description": "Rock community",
+	"homepage": "http://rockrepublik.net/",
+	"authors": [
+		{
+			"name": "Guillermo Psychopsia",
+			"email": "info@rockrepublik.net",
+			"homepage": "https://github.com/nopticon"
+		}
+	],
+	"keywords": [
+		"rock-republik"
+	],
+	"support": {
+		"issues": "https://github.com/nopticon/rockr/issues",
+		"forum": "http://rockrepublik.net"
+	},
+	"require": {
+		"php": ">=5.6.0",
+		"composer/installers": "~1.0"
+	}
+}

@@ -399,7 +399,7 @@ function array_dir($path) {
 function parse_error($error) {
 	global $user;
 
-	return implode('<br />', preg_replace('#^([A-Z_]+)$#e', "(!empty(\$user->lang['\\1'])) ? \$user->lang['\\1'] : '\\1'", $error));
+	return implode('<br />', preg_replace('#^([A-Z_]+)$#is', "(!empty(\$user->lang['\\1'])) ? \$user->lang['\\1'] : '\\1'", $error));
 }
 
 //
@@ -514,19 +514,21 @@ function s_link() {
 			break;
 	}
 
-	$url = 'http://';
+	// $url = 'http://';
+	$url = '';
 	$is_a = is_array($data);
-	if (v_server('REMOTE_ADDR') != '127.0.0.1' && $module == 'a' && $data !== false && ((!$is_a && !preg_match('/^_(\d+)$/i', $data)) || ($is_a && $count_data == 2))) {
-		$subdomain = ($is_a) ? $data[0] : $data;
-		// $url .= str_replace('www', $subdomain, $config['server_name']) . '/';
-		$url .= $subdomain . '.' . $config['server_name'] . '/';
+	// if (v_server('REMOTE_ADDR') != '127.0.0.1' && $module == 'a' && $data !== false && ((!$is_a && !preg_match('/^_(\d+)$/i', $data)) || ($is_a && $count_data == 2))) {
+	// 	$subdomain = ($is_a) ? $data[0] : $data;
+	// 	$url .= str_replace('www', $subdomain, $config['server_name']) . '/';
+	// 	// $url .= $subdomain . '.' . $config['server_name'] . '/';
 
-		if ($is_a) array_shift($data);
+	// 	if ($is_a) array_shift($data);
 
-		if (!$is_a || ($is_a && !count($data))) $data = false;
-	} else {
-		$url .= $config['server_name'] . '/' . (($module != '') ? $module . '/' : '');
-	}
+	// 	if (!$is_a || ($is_a && !count($data))) $data = false;
+	// } else {
+		// $url .= $config['server_name'] . '/' . (($module != '') ? $module . '/' : '');
+		$url .= '/' . (($module != '') ? $module . '/' : '');
+	// }
 
 	if ($data !== false) {
 		if (is_array($data)) {
@@ -1779,47 +1781,48 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 	}
 
 	$common_vars = array(
-		'PAGE_TITLE' => lang($page_title, $page_title),
-		'_SELF' => _page(),
+		'PAGE_TITLE'    => lang($page_title, $page_title),
+		'_SELF'         => _page(),
 
-		'U_REGISTER' => s_link('signup'),
-		'U_SESSION' => s_link('sign' . $u_session),
-		'U_PROFILE' => s_link('m', $user->d('username_base')),
+		'U_REGISTER'    => s_link('signup'),
+		'U_SESSION'     => s_link('sign' . $u_session),
+		'U_PROFILE'     => s_link('m', $user->d('username_base')),
 		'U_EDITPROFILE' => s_link('my profile'),
-		'U_PASSWORD' => s_link('signr'),
-		'U_DC' => s_link('my dc'),
+		'U_PASSWORD'    => s_link('signr'),
+		'U_DC'          => s_link('my dc'),
 
-		'U_HOME' => s_link(),
-		'U_FAQ' => s_link('faq'),
-		'U_WHATS_NEW' => s_link('today'),
-		'U_ARTISTS'	=> s_link('a'),
-		'U_AWARDS' => s_link('awards'),
-		'U_RADIO' => s_link('radio'),
-		'U_BROADCAST' => s_link('broadcast'),
-		'U_NEWS' => s_link('news'),
-		'U_EVENTS' => s_link('events'),
-		'U_FORUM' => s_link('board'),
-		'U_COMMUNITY'	=> s_link('community'),
-		'U_ALLIES'	=> s_link('allies'),
-		'U_TOS' => s_link('tos'),
-		'U_HELP' => s_link('help'),
-		'U_RSS_NEWS' => s_link('rss', 'news'),
+		'U_HOME'        => s_link(),
+		'U_FAQ'         => s_link('faq'),
+		'U_WHATS_NEW'   => s_link('today'),
+		'U_ARTISTS'	    => s_link('a'),
+		'U_AWARDS'      => s_link('awards'),
+		'U_RADIO'       => s_link('radio'),
+		'U_BROADCAST'   => s_link('broadcast'),
+		'U_NEWS'        => s_link('news'),
+		'U_EVENTS'      => s_link('events'),
+		'U_FORUM'       => s_link('board'),
+		'U_COMMUNITY'   => s_link('community'),
+		'U_ALLIES'      => s_link('allies'),
+		'U_TOS'         => s_link('tos'),
+		'U_HELP'        => s_link('help'),
+		'U_RSS_NEWS'    => s_link('rss', 'news'),
 		'U_RSS_ARTISTS' => s_link('rss', 'artists'),
-		'U_COMMENTS' => s_link('comments'),
-		'U_EMOTICONS' => s_link('emoticons'),
-		'U_ACP' => (isset($template->vars['U_ACP'])) ? $template->vars['U_ACP'] : ($user->is('artist') || $user->is('mod') ? s_link('acp') : ''),
+		'U_COMMENTS'    => s_link('comments'),
+		'U_EMOTICONS'   => s_link('emoticons'),
+		'U_ACP'         => (isset($template->vars['U_ACP'])) ? $template->vars['U_ACP'] : ($user->is('artist') || $user->is('mod') ? s_link('acp') : ''),
 
-		'S_YEAR' => date('Y'),
-		'S_UPLOAD' => upload_maxsize(),
-		'S_GIT' => $config['git_push_time'],
-		'S_KEYWORDS' => $config['meta_keys'],
+		'S_YEAR'        => date('Y'),
+		'S_UPLOAD'      => upload_maxsize(),
+		'S_GIT'         => $config['git_push_time'],
+		'S_KEYWORDS'    => $config['meta_keys'],
 		'S_DESCRIPTION' => $config['meta_desc'],
-		'S_SERVER' => '//' . $config['server_name'],
-		'S_ASSETS' => $config['assets_url'],
-		'S_SQL' => ($user->d('is_founder')) ? sql_queries() . 'q | ' : '',
-		'S_REDIRECT' => $user->d('session_page'),
-		'S_USERNAME' => $user->d('username'),
-		'S_MEMBER' => $user->is('member'),
+		'S_SERVER'      => '//' . $config['server_name'],
+		'S_ASSETS'      => $config['assets_url'],
+		'S_DIST'        => '/dist/',
+		'S_SQL'         => ($user->d('is_founder')) ? sql_queries() . 'q | ' : '',
+		'S_REDIRECT'    => $user->d('session_page'),
+		'S_USERNAME'    => $user->d('username'),
+		'S_MEMBER'      => $user->is('member'),
 		'S_TODAY_COUNT' => (($today_count == 1) ? sprintf(lang('unread_item_count'), $today_count) : sprintf(lang('unread_items_count'), $today_count))
 	);
 

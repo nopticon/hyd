@@ -1,0 +1,307 @@
+.slider
+	margin 50px auto
+	height 400px
+	.caption
+		ul
+			padding-left 20px
+
+#custom_controls
+	width 210px
+	margin 0px auto
+
+.advanced-slider
+	position relative
+	overflow visible
+	font-family Arial, Helvetica, sans-serif
+	*
+		margin 0px
+		padding 0px
+	.slide-wrapper
+		position absolute
+		overflow visible
+		z-index 2
+	.slide
+		position absolute
+		width 100%
+		height 100%
+		z-index 10
+	.slice
+		display block
+		position absolute
+	.preloader
+		position absolute
+		z-index 15
+	.navigation-arrows
+		a
+			position absolute
+			z-index 30
+			cursor pointer
+	.slideshow-controls
+		position absolute
+		z-index 40
+		cursor pointer
+	.shadow
+		position absolute
+		z-index 1
+	.timer-animation
+		position absolute
+		z-index 60
+	.caption
+		overflow hidden
+		position absolute
+		z-index 20
+		.wrapper
+			position absolute
+		.background
+			position absolute
+			z-index 10
+			width 100%
+			height 100%
+		.content
+			position absolute
+			z-index 20
+	.thumbnail
+		position relative
+		overflow hidden
+		background #ff0000
+		.caption
+			position absolute
+			width 100%
+			.background
+				position absolute
+				width 100%
+				height 100%
+				z-index 10
+			.content
+				position absolute
+				width 100%
+				z-index 20
+	.navigation-buttons
+		position absolute
+		z-index 50
+	.buttons
+		a
+			position relative
+			cursor pointer
+			float left
+		.thumbnail
+			position absolute
+	.navigation-thumbnails
+		position absolute
+		z-index 3
+		.visible-container
+			position absolute
+			overflow hidden
+		.container
+			position absolute
+			top 0px
+			left 0px
+		.thumbnail
+			cursor pointer
+			position absolute
+		.arrows
+			a
+				position absolute
+				cursor pointer
+		.buttons
+			position absolute
+			a
+				position absolute
+				cursor pointer
+	.tooltip
+		position absolute
+		z-index 9999
+
+.slider-item
+	position absolute
+	left -9999px
+
+.advanced-slider .shadow .shadow-left, .advanced-slider .shadow .shadow-right, .advanced-slider .shadow .shadow-middle
+	float left
+
+.advanced-slider .navigation-buttons .left, .advanced-slider .navigation-buttons .right, .advanced-slider .navigation-buttons .middle
+	float left
+
+.pixel
+	.slide-wrapper
+		background-color #FFF
+		border 4px solid #FFF
+		-moz-box-shadow 0px 0px 10px #CCC
+		-webkit-box-shadow 0px 0px 10px #CCC
+		box-shadow 0px 0px 10px #CCC
+	.preloader
+		background url(style/preloader2.gif) no-repeat
+		width 62px
+		height 14px
+	.navigation-arrows
+		a
+			background url(style/arrows.png) no-repeat
+			width 38px
+			height 38px
+			top 50%
+			margin-top -19px
+			&.previous
+				left 20px
+			&.next
+				right 20px
+				background-position -38px 0px
+	.slideshow-controls
+		background url(style/playpause.png) no-repeat
+		width 38px
+		height 38px
+		top 50%
+		left 50%
+		margin-top -19px
+		margin-left -19px
+		&.pause
+			background-position 0px 0px
+		&.play
+			background-position -38px 0px
+	.shadow
+		height 94px
+		margin-top -50px
+		.shadow-left
+			background url(style/shadow_left.png)
+		.shadow-right
+			background url(style/shadow_right.png)
+		.shadow-middle
+			background url(style/shadow_middle.png) repeat-x
+			height 94px
+	.timer-animation
+		top 20px
+		right 20px
+	.caption
+		.background
+			background-color #000
+			width 100%
+			height 100%
+		.content
+			color #FFF
+			margin 0px
+			padding 8px
+			font-size 16px
+			line-height 18px
+	.navigation-buttons
+		bottom -50px
+		.buttons
+			a
+				background url(style/buttons.png) no-repeat
+				background-position 0px 0px
+				cursor pointer
+				width 14px
+				height 14px
+				margin 0px 2px
+				text-align center
+				&.over
+					background-position -14px 0px
+					.number
+						font-size 8px
+						color #FFF
+				&.select
+					background-position -28px 0px
+					.number
+						font-size 8px
+						color #FFF
+				.number
+					margin-top 2px
+					font-size 9px
+					line-height 11px
+					color #666
+			.thumbnail
+				margin-bottom 10px
+	.thumbnail
+		background-image url(style/preloader.gif)
+		background-color #FFF
+		background-position center
+		background-repeat no-repeat
+		border solid 3px #FFF
+		-moz-box-shadow 0px 0px 10px #AAA
+		-webkit-box-shadow 0px 0px 10px #AAA
+		box-shadow 0px 0px 10px #AAA
+
+		.caption
+			.background
+				background-color #000
+				opacity 0.5
+			.content
+				color #FFF
+				font-size 12px
+				line-height 14px
+				text-align center
+				padding 2px 0px
+				margin 0px
+	.navigation-thumbnails
+		&.horizontal
+			margin-top 50px
+			padding 0px 20px
+			.arrows
+				a
+					&.previous
+						left 0px
+					&.next
+						right 0px
+			.buttons
+				margin-top 0px
+			.scrollbar
+				margin-top 30px
+		&.vertical
+			margin-left 50px
+			padding 20px 0px
+			.arrows
+				a
+					background url(style/arrows_v.png) no-repeat
+					&.previous
+						top 0px
+					&.next
+						bottom 0px
+			.buttons
+				margin-left 0px
+			.scrollbar
+				margin-left 30px
+		.thumbnail
+			cursor pointer
+			margin 10px 5px
+			&.over
+				border solid 3px #FFF
+				-moz-box-shadow 0px 0px 10px #555
+				-webkit-box-shadow 0px 0px 10px #555
+				box-shadow 0px 0px 10px #555
+			&.select
+				border solid 3px #FFF
+				-moz-box-shadow 0px 0px 10px #555
+				-webkit-box-shadow 0px 0px 10px #555
+				box-shadow 0px 0px 10px #555
+		.arrows
+			a
+				background url(style/arrows.png) no-repeat
+				width 38px
+				height 38px
+				&.next
+					background-position -38px 0px
+		.buttons
+			a
+				background url(style/buttons_small.png) no-repeat
+				background-position 0px 0px
+				width 10px
+				height 10px
+				margin 2px
+				&.over
+					background-position -10px 0px
+				&.select
+					background-position -20px 0px
+	.tooltip
+		background-color #DDD
+		margin-bottom 20px
+		border #EEE solid 4px
+		border-radius 8px
+		-moz-border-radius 8px
+		-webkit-border-radius 8px
+		.content
+			color #999
+			padding 10px
+			margin 0px
+
+.pixel .shadow .shadow-left, .pixel .shadow .shadow-right
+	width 200px
+	height 94px
+
