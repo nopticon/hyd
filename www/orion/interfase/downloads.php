@@ -144,7 +144,7 @@ class downloads {
 			_style('ud_poll.results');
 
 			for ($i = 0, $end = sizeof($this->voting['ud']); $i < $end; $i++) {
-				$vote_result = (isset($results[$this->voting['ub'][$i]])) ? (int) $results[$this->voting['ub'][$i]] : 0;
+				$vote_result = (isset($this->voting['ub'][$i]) && isset($results[$this->voting['ub'][$i]])) ? (int) $results[$this->voting['ub'][$i]] : 0;
 				$vote_percent = ($this->dl_data['votes'] > 0) ? $vote_result / $this->dl_data['votes'] : 0;
 
 				_style('ud_poll.results.item', array(

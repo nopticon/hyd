@@ -125,6 +125,10 @@ class _artists extends downloads {
 						$user_profile[$uid] = $comments->user_profile($row);
 					}
 
+					if (!isset($row['post_id'])) {
+						$row['post_id'] = 0;
+					}
+
 					$row_data = array(
 						'POST_ID' => $row['post_id'],
 						'DATETIME' => $user->format_date($row['post_time']),
@@ -1220,7 +1224,11 @@ class _artists extends downloads {
 		}
 
 		foreach ($selected_artists as $ub => $data) {
-			$image = $ub . '/thumbnails/' . $random_images[$ub] . '.jpg';
+			$image = '';
+
+			if (isset($random_images[$ub])) {
+				$image = $ub . '/thumbnails/' . $random_images[$ub] . '.jpg';
+			}
 
 			_style('row', array(
 				'NAME' => $data['name'],

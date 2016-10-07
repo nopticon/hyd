@@ -1,7 +1,5 @@
 <!-- INCLUDE page.header.htm -->
 
-<div class="share">&nbsp;</div>
-
 <div class="is_left">
 	<div class="h"><h3>{POST_SUBJECT}</h3></div>
 	<div class="pad_top pad_left _"><a href="{CAT_URL}">{CAT_NAME}</a></div>
@@ -30,20 +28,21 @@
 </div>
 
 <div class="comments">
-<!-- BEGIN posts -->
-<div class="rows5_top">
-<!-- BEGIN item -->
-<a name="{item.POST_ID}"></a>
-<div id="comment-{item.S_ROW_COUNT}">
-<h3><strong>{item.S_ROW_COUNT}</strong><span>.</span> <em><!-- BEGIN username --><a href="{item.PROFILE}"><!-- END username --><img src="{item.USER_AVATAR}" alt="{item.USERNAME}'s Avatar" /><!-- BEGIN username --></a><!-- END username --></em><cite><!-- BEGIN username --><a href="{item.PROFILE}"><!-- END username -->{item.USERNAME}<!-- BEGIN username --></a><!-- END username --></cite> <span>dijo:</span></h3>
-<blockquote>
-<div class="col_fr nowraptext">{item.MESSAGE}</div>
-<p class="dtposted">{item.DATETIME}</p>
-</blockquote>
-<hr /></div>
-<!-- END item -->
-</div>
-<!-- END posts -->
+	<!-- BEGIN posts -->
+	<div class="rows5_top">
+		<!-- BEGIN item -->
+		<a name="{item.POST_ID}"></a>
+		<div id="comment-{item.S_ROW_COUNT}">
+			<h3><strong>{item.S_ROW_COUNT}</strong><span>.</span> <em><!-- BEGIN username --><a href="{item.PROFILE}"><!-- END username --><img src="{item.USER_AVATAR}" alt="{item.USERNAME}'s Avatar" /><!-- BEGIN username --></a><!-- END username --></em><cite><!-- BEGIN username --><a href="{item.PROFILE}"><!-- END username -->{item.USERNAME}<!-- BEGIN username --></a><!-- END username --></cite> <span>dijo:</span></h3>
+			<blockquote>
+				<div class="col_fr nowraptext">{item.MESSAGE}</div>
+				<p class="dtposted">{item.DATETIME}</p>
+			</blockquote>
+			<hr />
+		</div>
+		<!-- END item -->
+	</div>
+	<!-- END posts -->
 </div>
 
 <!-- IF PAGES_NUMS != '' -->

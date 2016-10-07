@@ -5,7 +5,7 @@
 //<![CDATA[
 $(function() {
 	$('#submit_photos_box').hide();
-	
+
 	$('#submit_photos').click(function() {
 		$('#submit_photos_box').toggle('slow');
 	});
@@ -14,18 +14,16 @@ $(function() {
 </script>
 <!-- END hide -->
 
-<div class="share">Arrastra y comparte</div>
-
 <div class="is_left">
 	<div class="h"><h3>{EVENT_NAME}</h3></div>
 	<div class="pad_top pad_left _">{EVENT_DATE}</div>
-	
+
 	<!-- BEGIN collab -->
 	<div class="pad_top pad_left _">{L_EVENT_PHOTO_THANKS}
 		<!-- BEGIN row --><!-- IF row.S_ROW_COUNT --><!-- IF row.S_NUM_ROWS == (row.S_ROW_COUNT + 1) --> y <!-- ELSE -->, <!-- ENDIF --><!-- ENDIF --><a href="{row.PROFILE}">{row.USERNAME}</a><!-- END row -->
 	</div>
 	<!-- END collab -->
-	
+
 	<!-- BEGIN poll -->
 	<div class="poll pad_left pad_top ctl">
 	<!-- BEGIN results -->
@@ -33,7 +31,7 @@ $(function() {
 	<!-- IF item.S_ROW_COUNT -->, <!-- ENDIF -->{item.RESULT} {item.CAPTION}
 	<!-- END item -->
 	<!-- END results -->
-	
+
 	<!-- BEGIN options -->
 	<form action="{options.S_VOTE_ACTION}" method="post" id="event_poll" name="event_poll">
 	<!-- BEGIN item -->
@@ -54,9 +52,9 @@ $(function() {
 
 <div id="submit_photos_box">
 	Envianos las fotos que hayas tomado en el evento para compartirlas en la comunidad.
-	
+
 	<form action="" method="post" enctype="multipart/form-data">
-		
+
 	</form>
 </div>
 <!-- END hide -->
@@ -83,15 +81,15 @@ $(function() {
 </form>
 
 <script type="text/javascript">
-	function preview(img, selection) { 
-		var scaleX = {thumbnail.THUMB_WIDTH} / selection.width; 
-		var scaleY = {thumbnail.THUMB_HEIGHT} / selection.height; 
-		
-		$('.thumbnail_view img').css({ 
-			width: Math.round(scaleX * {thumbnail.LARGE_WIDTH}) + 'px', 
+	function preview(img, selection) {
+		var scaleX = {thumbnail.THUMB_WIDTH} / selection.width;
+		var scaleY = {thumbnail.THUMB_HEIGHT} / selection.height;
+
+		$('.thumbnail_view img').css({
+			width: Math.round(scaleX * {thumbnail.LARGE_WIDTH}) + 'px',
 			height: Math.round(scaleY * {thumbnail.LARGE_HEIGHT}) + 'px',
-			marginLeft: '-' + Math.round(scaleX * selection.x1) + 'px', 
-			marginTop: '-' + Math.round(scaleY * selection.y1) + 'px' 
+			marginLeft: '-' + Math.round(scaleX * selection.x1) + 'px',
+			marginTop: '-' + Math.round(scaleY * selection.y1) + 'px'
 		});
 
 		$('#x1').val(selection.x1);
@@ -101,12 +99,12 @@ $(function() {
 		$('#w').val(selection.width);
 		$('#h').val(selection.height);
 	}
-	$(function () { 
+	$(function () {
 		$('#save_thumb').click(save_thumb);
-	}); 
+	});
 
-	$(window).load(function () { 
-		$('#thumbnail').imgAreaSelect({ aspectRatio: '1:{thumbnail.SCALE}', onSelectChange: preview, show: true, handles: true, hide: false }); 
+	$(window).load(function () {
+		$('#thumbnail').imgAreaSelect({ aspectRatio: '1:{thumbnail.SCALE}', onSelectChange: preview, show: true, handles: true, hide: false });
 	});
 </script>
 <!-- END thumbnail -->

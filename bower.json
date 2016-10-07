@@ -1,0 +1,12 @@
+{
+	"name": "rock-republik",
+	"homepage": "http://rockrepublik.net/",
+	"authors": [
+		"Guillermo Psychopsia <info@rockrepublik.net>"
+	],
+	"license": "MIT",
+	"private": true,
+	"dependencies": {
+		"bootstrap": "git://github.com/twbs/bootstrap.git#v4.0.0-alpha.4"
+	}
+}
