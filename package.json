@@ -20,10 +20,10 @@
   "scripts": {
     "build": "bower install && gulp",
     "jshint": "gulp jshint",
-    "jscs": "jscs gulpfile.js assets/scripts/*.js"
+    "jscs": "jscs gulpfile.js www/orion/template/assets/scripts/*.js"
   },
   "engines": {
-    "node": ">= 4.5"
+    "node": ">= 4.6"
   },
   "devDependencies": {
     "asset-builder": "^1.1.0",
