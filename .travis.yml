@@ -2,6 +2,8 @@ sudo: false
 language: php
 php:
   - 7.0
+node_js:
+  - 6.7
 
 matrix:
   allow_failures:
@@ -11,12 +13,6 @@ cache:
   directories:
     - bower_components
     - node_modules
-
-before_install:
-  - rm -rf ~/.nvm
-  - curl https://raw.github.com/creationix/nvm/master/install.sh | sh
-  - source ~/.nvm/nvm.sh
-  - nvm install ${TRAVIS_NODE_VERSION}
 
 install:
   - npm install -g npm@latest
