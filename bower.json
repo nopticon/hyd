@@ -1,12 +1,17 @@
 {
-	"name": "rock-republik",
-	"homepage": "http://rockrepublik.net/",
-	"authors": [
-		"Guillermo Psychopsia <info@rockrepublik.net>"
-	],
-	"license": "MIT",
-	"private": true,
-	"dependencies": {
-		"bootstrap": "git://github.com/twbs/bootstrap.git#v4.0.0-alpha.4"
-	}
+  "name": "rock-republik",
+  "homepage": "http://rockrepublik.net/",
+  "authors": [
+    "Guillermo Psychopsia <info@rockrepublik.net>"
+  ],
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "bootstrap": "git://github.com/twbs/bootstrap.git#v4.0.0-alpha.4",
+    "js-url": "^2.3.0",
+    "autosize": "^3.0.17",
+    "jquery.scrollTo": "^2.1.2",
+    "fancybox": "^2.1.5",
+    "cropperjs": "^0.8.1"
+  }
 }

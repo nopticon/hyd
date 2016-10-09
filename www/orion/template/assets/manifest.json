@@ -2,21 +2,12 @@
   "dependencies": {
     "main.js": {
       "files": [
-      	"scripts/j.value.js",
-		"scripts/j.periodic.js",
-		"scripts/j.url.js",
-		"scripts/j.textarea.js",
-		"scripts/j.social.js",
-		"scripts/j.search.js",
-		"scripts/j.check.js",
-		"scripts/j.scroll.js",
-		"scripts/j.wheel.js",
-		"scripts/j.fancy.js",
-		"scripts/j.slider.js",
-		"scripts/j.filestyle.js",
-		"scripts/j.faq.js",
-		"scripts/j.area.js",
-		"scripts/png.js",
+      	"../../../bower_components/js-url/url.js",
+		"../../../bower_components/autosize/dist/autosize.js",
+		"../../../bower_components/jquery.scrollTo/jquery.scrollTo.js",
+		"../../../bower_components/fancybox/jquery.fancybox.js",
+		"../../../bower_components/cropperjs/dist/cropper.js",
+
 		"scripts/g.js"
       ],
       "main": true

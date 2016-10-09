@@ -93,7 +93,9 @@ var cssTasks = function(filename) {
 			return gulpif('*.less', less());
 		})
 		.pipe(function() {
-			return gulpif('*.styl', stylus({ use: nib() }) );
+			return gulpif('*.styl', stylus({
+				use: nib()
+			}));
 		})
 		.pipe(function() {
 			return gulpif('*.scss', sass({

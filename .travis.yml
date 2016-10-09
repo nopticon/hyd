@@ -1,5 +1,8 @@
 sudo: false
 language: php
+dist: xenial
+group: stable
+os: linux
 php:
   - 7.0
 
@@ -9,20 +12,24 @@ matrix:
 
 cache:
   directories:
+    - $HOME/.composer/cache
     - bower_components
     - node_modules
+    - vendor
 
 before_install:
   - curl -s -o $HOME/.nvm/nvm.sh https://raw.githubusercontent.com/creationix/nvm/v0.31.0/nvm.sh
   - source $HOME/.nvm/nvm.sh
   - nvm install stable
   - node --version
+  - composer self-update
 
 install:
-  - npm install -g npm@latest
-  - npm install -g bower gulp jscs
-  - npm install
-  - composer self-update && composer --version
+  - travis_retry npm install -g npm@latest
+  - travis_retry npm install -g bower gulp jscs
+  - npm rebuild
+  - travis_retry npm install
+  - npm prune
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
   - composer global require squizlabs/php_codesniffer
 

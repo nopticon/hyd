@@ -1,7 +1,11 @@
 var _;
 
 function popup(url, name, width, height) {
-	var win = window.open(url, name, 'toolbar = 0, scrollbars = 1, location = 0, statusbar = 0, menubar = 0, resizable = 1, width=' + width + ', height=' + height);
+	var parameters = 'toolbar = 0, scrollbars = 1, location = 0, ';
+	parameters += 'statusbar = 0, menubar = 0, resizable = 1, ';
+	parameters += 'width=' + width + ', height=' + height;
+
+	var win = window.open(url, name, parameters);
 	return false;
 }
 
@@ -14,7 +18,7 @@ function save_thumb() {
 	var h = $('#h').val();
 
 	if (x1 === '' || y1 === '' || x2 === '' || y2 === '' || w === '' || h === '') {
-		alert("Select area first");
+		alert('Select area first');
 		return false;
 	} else {
 		return true;
@@ -49,11 +53,14 @@ $(function() {
 
 	$('ul[id^="expand_"]').hide().addClass('flying');
 
-	$('.expand').click(function(event) {
+	$('.expand').on('click', function(event) {
+		var position, v_position;
+
 		event.preventDefault();
 
 		position = $(this).position();
-		$('#expand_' + $(this).attr('id')).css('top', position.top + $(this).height() + 9);
+		v_position = position.top + $(this).height() + 9;
+		$('#expand_' + $(this).attr('id')).css('top', v_position);
 		$('#expand_' + $(this).attr('id')).css('left', position.left + 1);
 
 		$('#expand_' + $(this).attr('id')).slideToggle('medium');
@@ -70,47 +77,31 @@ $(function() {
 		limit: 250
 	});
 
-	$('.w_broadcast a').click(function(event) {
+	$('.w_broadcast a').on('click', function(event) {
 		event.preventDefault();
 
 		popup($(this).attr('href'), '_broadcast', 400, 500);
 	});
 
-	$('.pub').click(function(event) {
+	$('.pub').on('click', function(event) {
 		event.preventDefault();
 		$.scrollTo('.publish');
 	});
 
-	$('.share').each(function() {
-		if (docurl && doctitle) {
-			$(this).html('<a rel="prettySociable" href="' + docurl + '"></a><span>Arrastra<br />y comparte</span>');
-		}
-	});
-
-	$.prettySociable({
-		share_on_label: 'Compartir en ',
-		share_label: 'Comparte',
-		hover_padding: 0,
-		tooltip: {
-			offsetTop:500,
-			offsetLeft: 0
-		}
-	});
-
-	$("input[type=file]").filestyle({
-		image: "//assets.rockrepublik.net/style/file.png",
+	$('input[type=file]').filestyle({
+		image: '//assets.rockrepublik.net/style/file.png',
 		imagewidth : 90,
 		imageheight : 20,
 		width : 250
 	});
 
-	$(".vcheck").vchecks();
-	$(".fancy").fancybox();
+	$('.vcheck').vchecks();
+	$('.fancy').fancybox();
 
 	$('.smile').each(function() {
 		$(this).html('&#8594;&#9786;');
 		$(this).attr('title', 'Mostrar emociones');
-	}).click(function() {
+	}).on('click', function() {
 		popup($(this).attr('href'), '_emoticons', 300, 450);
 		return false;
 	});
