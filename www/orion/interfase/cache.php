@@ -1,116 +1,100 @@
 <?php
-/*
-<Orion, a web development framework for RK.>
-Copyright (C) <2011>  <Orion>
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+namespace App;
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+class Cache {
+    public $cache = array();
+    public $use = true;
 
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-if (!defined('IN_APP')) exit;
+    public function __construct() {
+        if (!defined('USE_CACHE')) {
+            $this->use = false;
+        }
+    }
 
-class cache {
-	public $cache = array();
-	public $use = true;
+    public function config() {
+        $sql = 'SELECT *
+            FROM _application';
+        $config = sql_rowset($sql, 'config_name', 'config_value');
 
-	public function __construct() {
-		if (!defined('USE_CACHE')) {
-			$this->use = false;
-		}
-	}
+        return $config;
+    }
 
-	public function config() {
-		$sql = 'SELECT *
-			FROM _application';
-		$config = sql_rowset($sql, 'config_name', 'config_value');
+    public function get($var) {
+        if (!$this->use) {
+            return false;
+        }
 
-		return $config;
-	}
+        $filename = ROOT . 'cache/' . $var . '.php';
 
-	public function get($var) {
-		if (!$this->use) {
-			return false;
-		}
+        if (@file_exists($filename)) {
+            if (!@include_once $filename) {
+                $this->delete($var);
+                return;
+            }
 
-		$filename = ROOT . 'cache/' . $var . '.php';
+            if (!empty($this->cache[$var])) {
+                return $this->cache[$var];
+            }
 
-		if (@file_exists($filename)) {
-			if (!@require_once($filename)) {
-				$this->delete($var);
-				return;
-			}
+            return true;
+        }
 
-			if (!empty($this->cache[$var])) {
-				return $this->cache[$var];
-			}
+        return;
+    }
 
-			return true;
-		}
+    public function save($var, &$data) {
+        global $config;
 
-		return;
-	}
+        if (!$this->use) {
+            return;
+        }
 
-	public function save($var, &$data) {
-		global $config;
+        $filename = ROOT . 'cache/' . $var . '.php';
 
-		if (!$this->use) {
-			return;
-		}
+        $fp = @fopen($filename, 'w');
+        if ($fp) {
+            $file_buffer = '<?php $' . 'this->cache[\'' . $var . '\'] = ' . ((is_array($data)) ? $this->format($data) : "'" . str_replace("'", "\\'", str_replace('\\', '\\\\', $data)) . "'") . '; ?>';
 
-		$filename = ROOT . 'cache/' . $var . '.php';
+            @flock($fp, LOCK_EX);
+            fputs($fp, $file_buffer);
+            @flock($fp, LOCK_UN);
+            fclose($fp);
 
-		$fp = @fopen($filename, 'w');
-		if ($fp) {
-			$file_buffer = '<?php $' . 'this->cache[\'' . $var . '\'] = ' . ((is_array($data)) ? $this->format($data) : "'" . str_replace("'", "\\'", str_replace('\\', '\\\\', $data)) . "'") . '; ?>';
+            _chmod($filename, $config['mask']);
+        }
 
-			@flock($fp, LOCK_EX);
-			fputs($fp, $file_buffer);
-			@flock($fp, LOCK_UN);
-			fclose($fp);
+        return $data;
+    }
 
-			_chmod($filename, $config['mask']);
-		}
+    public function delete($list) {
+        if (!$this->use) {
+            return;
+        }
 
-		return $data;
-	}
+        foreach (w($list) as $var) {
+            $cache_filename = ROOT . 'cache/' . $var . '.php';
+            if (file_exists($cache_filename)) {
+                _rm($cache_filename);
+            }
+        }
 
-	public function delete($list) {
-		if (!$this->use) {
-			return;
-		}
+        return;
+    }
 
-		foreach (w($list) as $var) {
-			$cache_filename = ROOT . 'cache/' . $var . '.php';
-			if (file_exists($cache_filename)) {
-				_rm($cache_filename);
-			}
-		}
-
-		return;
-	}
-
-	public function format($data) {
-		$lines = w();
-		foreach ($data as $k => $v) {
-			if (is_array($v)) {
-				$lines[] = "'$k'=>" . $this->format($v);
-			} elseif (is_int($v)) {
-				$lines[] = "'$k'=>$v";
-			} elseif (is_bool($v)) {
-				$lines[] = "'$k'=>" . (($v) ? 'true' : 'false');
-			} else {
-				$lines[] = "'$k'=>'" . str_replace("'", "\\'", str_replace('\\', '\\\\', $v)) . "'";
-			}
-		}
-		return 'array(' . implode(',', $lines) . ')';
-	}
+    public function format($data) {
+        $lines = w();
+        foreach ($data as $k => $v) {
+            if (is_array($v)) {
+                $lines[] = "'$k'=>" . $this->format($v);
+            } elseif (is_int($v)) {
+                $lines[] = "'$k'=>$v";
+            } elseif (is_bool($v)) {
+                $lines[] = "'$k'=>" . (($v) ? 'true' : 'false');
+            } else {
+                $lines[] = "'$k'=>'" . str_replace("'", "\\'", str_replace('\\', '\\\\', $v)) . "'";
+            }
+        }
+        return 'array(' . implode(',', $lines) . ')';
+    }
 }

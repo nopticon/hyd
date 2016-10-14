@@ -20,7 +20,9 @@
   "scripts": {
     "build": "bower install && gulp",
     "jshint": "gulp jshint",
-    "jscs": "jscs gulpfile.js www/orion/template/assets/scripts/*.js"
+    "jscs": "jscs gulpfile.js www/orion/template/assets/scripts/*.js",
+    "phpcs": "phpcs --standard=ruleset.xml --extensions=php -n -s .",
+    "phpcbf": "phpcbf --standard=ruleset.xml --extensions=php -n -s ."
   },
   "engines": {
     "node": ">= 4.6"

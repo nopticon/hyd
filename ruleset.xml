@@ -8,6 +8,13 @@
 		<exclude name="Squiz.Functions.MultiLineFunctionDeclaration.BraceOnSameLine"/>
 		<exclude name="PSR2.Classes.ClassDeclaration.OpenBraceNewLine"/>
 		<exclude name="Squiz.WhiteSpace.ScopeClosingBrace"/>
+        <exclude name="Generic.WhiteSpace.ScopeIndent.Incorrect" />
+		<exclude name="Generic.WhiteSpace.ScopeIndent.IncorrectExact"/>
+
+        <exclude name="Squiz.Commenting.ClassComment"/>
+		<exclude name="Squiz.Commenting.FileComment"/>
+		<exclude name="Squiz.Commenting.FunctionComment"/>
+		<exclude name="Squiz.Commenting.VariableComment"/>
 
 		<!-- Disable newline after opening brace -->
 		<exclude name="Squiz.ControlStructures.ControlSignature.NewlineAfterOpenBrace"/>
@@ -25,21 +32,11 @@
 		<exclude-pattern>templates/*</exclude-pattern>
 	</rule>
 
-	<!-- Allow PHP closing tags on templates -->
-	<rule ref="PSR2.Files.ClosingTag.NotAllowed">
-		<exclude-pattern>templates/*</exclude-pattern>
-		<exclude-pattern>404.php</exclude-pattern>
-		<exclude-pattern>index.php</exclude-pattern>
-		<exclude-pattern>page.php</exclude-pattern>
-		<exclude-pattern>single.php</exclude-pattern>
-		<exclude-pattern>template-custom.php</exclude-pattern>
-	</rule>
-
 	<!-- Force 2 spaces indentation -->
 	<rule ref="Generic.WhiteSpace.ScopeIndent">
 		<properties>
 			<property name="indent" value="2"/>
-			<property name="tabIndent" value="false"/>
+			<property name="tabIndent" value="true"/>
 		</properties>
 	</rule>
 

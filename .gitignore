@@ -5,6 +5,7 @@ www/data/*
 podcast/
 
 sftp-config*.json
+.remote-sync.json
 .DS_Store
 .htda
 *.log
