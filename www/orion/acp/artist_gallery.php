@@ -1,179 +1,198 @@
 <?php
-
-if (!defined('IN_APP')) exit;
+namespace App;
 
 class __artist_gallery extends mac {
-	public function __construct() {
-		parent::__construct();
+    public function __construct() {
+        parent::__construct();
 
-		$this->auth('artist');
-	}
+        $this->auth('artist');
+    }
 
-	/*
-	List all images associated to this artist.
-	*/
-	public function _home() {
-		global $config, $user, $cache;
+    /*
+    List all images associated to this artist.
+    */
+    public function _home() {
+        global $config, $user, $cache;
 
-		$this->_artist();
+        $this->_artist();
 
-		if ((_button() && $this->upload()) || (_button('remove') && $this->remove())) {
-			return;
-		}
+        if ((_button() && $this->upload()) || (_button('remove') && $this->remove())) {
+            return;
+        }
 
-		$sql = 'SELECT g.*
-			FROM _artists a, _artists_images g
-			WHERE a.ub = ?
-				AND a.ub = g.ub
-			ORDER BY image ASC';
-		$result = sql_rowset(sql_filter($sql, $this->object['ub']));
+        $sql = 'SELECT g.*
+            FROM _artists a, _artists_images g
+            WHERE a.ub = ?
+                AND a.ub = g.ub
+            ORDER BY image ASC';
+        $result = sql_rowset(sql_filter($sql, $this->object['ub']));
 
-		foreach ($result as $i => $row) {
-			if (!$i) _style('gallery');
+        foreach ($result as $i => $row) {
+            if (!$i) {
+                _style('gallery');
+            }
 
-			_style('gallery.row', array(
-				'ITEM' => $row['image'],
-				'URL' => s_link('a', $this->object['subdomain'], 4, $row['image'], 'view'),
-				'U_FOOTER' => s_link('acp', array('artist_gallery', 'a' => $this->object['subdomain'], 'footer' => $row['image'])),
-				'IMAGE' => $config['artists_url'] . $this->object['ub'] . '/thumbnails/' . $row['image'] . '.jpg',
-				'RIMAGE' => get_a_imagepath($config['artists_url'] . $this->object['ub'], $row['image'] . '.jpg', w('x1 gallery')),
-				'WIDTH' => $row['width'],
-				'HEIGHT' => $row['height'],
-				'TFOOTER' => $row['image_footer'])
-			);
-		}
+            $footer    = s_link(
+                'acp',
+                array(
+                    'artist_gallery',
+                    'a' => $this->object['subdomain'],
+                    'footer' => $row['image']
+                )
+            );
+            
+            $image  = $config['artists_url'] . $this->object['ub'] . '/thumbnails/' . $row['image'] . '.jpg';
+            $rimage = $config['artists_url'] . $this->object['ub'], $row['image'] . '.jpg', w('x1 gallery');
 
-		return;
-	}
+            _style(
+                'gallery.row',
+                array(
+                    'ITEM'     => $row['image'],
+                    'URL'      => s_link('a', $this->object['subdomain'], 4, $row['image'], 'view'),
+                    'U_FOOTER' => $footer,
+                    'IMAGE'    => $image,
+                    'RIMAGE'   => get_a_imagepath($rimage),
+                    'WIDTH'    => $row['width'],
+                    'HEIGHT'   => $row['height'],
+                    'TFOOTER'  => $row['image_footer']
+                )
+            );
+        }
 
-	/*
-	Upload images to artist's gallery.
-	*/
-	private function upload() {
-		global $config, $upload;
+        return;
+    }
 
-		$a_1 = artist_check($this->object['ub'] . ' x1');
-		$a_2 = artist_check($this->object['ub'] . ' gallery');
-		$a_3 = artist_check($this->object['ub'] . ' thumbnails');
+    /*
+    Upload images to artist's gallery.
+    */
+    private function upload() {
+        global $config, $upload;
 
-		if (!$a_1 || !$a_2 || !$a_3) {
-			return;
-		}
+        $a_1 = artist_check($this->object['ub'] . ' x1');
+        $a_2 = artist_check($this->object['ub'] . ' gallery');
+        $a_3 = artist_check($this->object['ub'] . ' thumbnails');
 
-		$filepath = $config['artists_path'] . $this->object['ub'] . '/';
-		$filepath_1 = $filepath . 'x1/';
-		$filepath_2 = $filepath . 'gallery/';
-		$filepath_3 = $filepath . 'thumbnails/';
+        if (!$a_1 || !$a_2 || !$a_3) {
+            return;
+        }
 
-		$f = $upload->process($filepath_1, 'add_image', 'jpg');
+        $filepath = $config['artists_path'] . $this->object['ub'] . '/';
+        $filepath_1 = $filepath . 'x1/';
+        $filepath_2 = $filepath . 'gallery/';
+        $filepath_3 = $filepath . 'thumbnails/';
 
-		if (!sizeof($upload->error) && $f !== false) {
-			$sql = 'SELECT MAX(image) AS total
-				FROM _artists_images
-				WHERE ub = ?';
-			$img = sql_field(sql_filter($sql, $this->object['ub']), 'total', 0);
+        $f = $upload->process($filepath_1, 'add_image', 'jpg');
 
-			$a = 0;
-			foreach ($f as $row) {
-				$img++;
+        if (!sizeof($upload->error) && $f !== false) {
+            $sql = 'SELECT MAX(image) AS total
+                FROM _artists_images
+                WHERE ub = ?';
+            $img = sql_field(sql_filter($sql, $this->object['ub']), 'total', 0);
 
-				$xa = $upload->resize($row, $filepath_1, $filepath_1, $img, array(600, 400), false, false, true);
-				if ($xa === false) {
-					continue;
-				}
+            $a = 0;
+            foreach ($f as $row) {
+                $img++;
 
-				$xb = $upload->resize($row, $filepath_1, $filepath_2, $img, array(300, 225), false, false);
-				$xc = $upload->resize($row, $filepath_2, $filepath_3, $img, array(100, 75), false, false);
+                $xa = $upload->resize($row, $filepath_1, $filepath_1, $img, array(600, 400), false, false, true);
+                if ($xa === false) {
+                    continue;
+                }
 
-				$insert = array(
-					'ub' => (int) $this->object['ub'],
-					'image' => (int) $img,
-					'width' => $xa->width,
-					'height' => $xa->height
-				);
-				sql_insert('artists_images', $insert);
+                $xb = $upload->resize($row, $filepath_1, $filepath_2, $img, array(300, 225), false, false);
+                $xc = $upload->resize($row, $filepath_2, $filepath_3, $img, array(100, 75), false, false);
 
-				$a++;
-			}
+                $insert = array(
+                    'ub' => (int) $this->object['ub'],
+                    'image' => (int) $img,
+                    'width' => $xa->width,
+                    'height' => $xa->height
+                );
+                sql_insert('artists_images', $insert);
 
-			if ($a) {
-				$sql = 'UPDATE _artists SET images = images + ??
-					WHERE ub = ?';
-				sql_query(sql_filter($sql, $a, $this->object['ub']));
-			}
+                $a++;
+            }
 
-			redirect(s_link('acp', array('artist_gallery', 'a' => $this->object['subdomain'])));
-		}
+            if ($a) {
+                $sql = 'UPDATE _artists SET images = images + ??
+                    WHERE ub = ?';
+                sql_query(sql_filter($sql, $a, $this->object['ub']));
+            }
 
-		_style('error', array(
-			'MESSAGE' => parse_error($upload->error))
-		);
+            redirect(s_link('acp', array('artist_gallery', 'a' => $this->object['subdomain'])));
+        }
 
-		return;
-	}
+        _style(
+            'error',
+            array(
+                'MESSAGE' => parse_error($upload->error)
+            )
+        );
 
-	/*
-	Remove selected images from artist's gallery.
-	*/
-	private function remove() {
-		global $config;
+        return;
+    }
 
-		$s_images = request_var('ls_images', array(0));
-		if (sizeof($s_images)) {
-			$common_path = $config['artists_path'] . $this->object['ub'] . '/';
-			$path = array(
-				$common_path . 'x1/',
-				$common_path . 'gallery/',
-				$common_path . 'thumbnails/',
-			);
+    /*
+    Remove selected images from artist's gallery.
+    */
+    private function remove() {
+        global $config;
 
-			$sql = 'SELECT *
-				FROM _artists_images
-				WHERE ub = ?
-					AND image IN (??)
-				ORDER BY image';
-			$result = sql_rowset(sql_filter($sql, $this->object['ub'], implode(',', $s_images)));
+        $s_images = request_var('ls_images', array(0));
+        if (sizeof($s_images)) {
+            $common_path = $config['artists_path'] . $this->object['ub'] . '/';
+            $path = array(
+                $common_path . 'x1/',
+                $common_path . 'gallery/',
+                $common_path . 'thumbnails/',
+            );
 
-			$affected = w();
-			foreach ($result as $row) {
-				foreach ($path as $path_row) {
-					$filepath = $path_row . $row['image'] . '.jpg';
-					_rm($filepath);
-				}
-				$affected[] = $row['image'];
-			}
+            $sql = 'SELECT *
+                FROM _artists_images
+                WHERE ub = ?
+                    AND image IN (??)
+                ORDER BY image';
+            $result = sql_rowset(sql_filter($sql, $this->object['ub'], implode(',', $s_images)));
 
-			if (count($affected)) {
-				$sql = 'DELETE FROM _artists_images
-					WHERE ub = ?
-						AND image IN (??)';
-				sql_query(sql_filter($sql, $this->object['ub'], implode(',', $affected)));
+            $affected = w();
+            foreach ($result as $row) {
+                foreach ($path as $path_row) {
+                    $filepath = $path_row . $row['image'] . '.jpg';
+                    _rm($filepath);
+                }
+                $affected[] = $row['image'];
+            }
 
-				$sql = 'UPDATE _artists SET images = images - ??
-					WHERE ub = ?';
-				sql_query(sql_filter($sql, sql_affectedrows(), $this->object['ub']));
-			}
-		}
+            if (count($affected)) {
+                $sql = 'DELETE FROM _artists_images
+                    WHERE ub = ?
+                        AND image IN (??)';
+                sql_query(sql_filter($sql, $this->object['ub'], implode(',', $affected)));
 
-		return redirect(s_link('acp', array('artist_gallery', 'a' => $this->object['subdomain'])));
-	}
+                $sql = 'UPDATE _artists SET images = images - ??
+                    WHERE ub = ?';
+                sql_query(sql_filter($sql, sql_affectedrows(), $this->object['ub']));
+            }
+        }
 
-	private function footer() {
-		$v = _request_var(array('image' => '', 'value' => ''));
+        return redirect(s_link('acp', array('artist_gallery', 'a' => $this->object['subdomain'])));
+    }
 
-		$sql = 'SELECT *
-			FROM _artists_images
-			WHERE ub = ?
-				AND image = ?';
-		if (!$row = sql_fieldrow(sql_filter($sql, $this->object['ub'], $v->image))) {
-			fatal_error();
-		}
+    private function footer() {
+        $v = _request_var(array('image' => '', 'value' => ''));
 
-		$sql = 'UPDATE _artists_images SET image_footer = ?
-			WHERE ub = ?
-				AND image = ?';
-		sql_query(sql_filter($sql, $v->value, $this->object['ub'], $v->image));
+        $sql = 'SELECT *
+            FROM _artists_images
+            WHERE ub = ?
+                AND image = ?';
+        if (!$row = sql_fieldrow(sql_filter($sql, $this->object['ub'], $v->image))) {
+            fatal_error();
+        }
 
-		$this->e($v->value);
-	}
+        $sql = 'UPDATE _artists_images SET image_footer = ?
+            WHERE ub = ?
+                AND image = ?';
+        sql_query(sql_filter($sql, $v->value, $this->object['ub'], $v->image));
+
+        $this->e($v->value);
+    }
 }

@@ -1,7 +1,7 @@
 <?php
 
 require_once './interfase/common.php';
-header('Content-type: text/html; charset=utf-8');
+// header('Content-type: text/html; charset=utf-8');
 
 $user->init();
 $user->setup();

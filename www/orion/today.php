@@ -128,12 +128,12 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
             _style(
                 'items.notes.item',
                 array(
-                    'S_MARK_ID' => $row['parent_id'],
-                    'U_READ' => s_link('my dc read', $row['last_msg_id']) . '#' . $row['last_msg_id'],
-                    'SUBJECT' => $dc_subject,
-                    'DATETIME' => $user->format_date($row['privmsgs_date']),
-                    'USER_ID' => $row['user_id'],
-                    'USERNAME' => $row['username'],
+                    'S_MARK_ID'  => $row['parent_id'],
+                    'U_READ'     => s_link('my dc read', $row['last_msg_id']) . '#' . $row['last_msg_id'],
+                    'SUBJECT'    => $dc_subject,
+                    'DATETIME'   => $user->format_date($row['privmsgs_date']),
+                    'USER_ID'    => $row['user_id'],
+                    'USERNAME'   => $row['username'],
                     'U_USERNAME' => $user_profile['profile']
                 )
             );
@@ -167,7 +167,7 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
                     'S_MARK_ID' => $row['user_id'],
                     'U_PROFILE' => s_link('m', $row['username_base']),
                     'POST_TIME' => $user->format_date($row['datetime']),
-                    'USERNAME' => $row['username']
+                    'USERNAME'  => $row['username']
                 )
             );
         }
@@ -201,7 +201,7 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
                     'S_MARK_ID' => $row['post_id'],
                     'U_PROFILE' => s_link('m', $user->d('username_base')),
                     'POST_TIME' => $user->format_date($row['datetime']),
-                    'USERNAME' => $row['username']
+                    'USERNAME'  => $row['username']
                 )
             );
         }
@@ -232,10 +232,10 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
             _style(
                 'items.a_news.item',
                 array(
-                    'S_MARK_ID' => $row['topic_id'],
-                    'POST_URL' => s_link('topic', $row['topic_id']),
+                    'S_MARK_ID'  => $row['topic_id'],
+                    'POST_URL'   => s_link('topic', $row['topic_id']),
                     'POST_TITLE' => $row['topic_title'],
-                    'POST_TIME' => $user->format_date($row['topic_time'])
+                    'POST_TIME'  => $user->format_date($row['topic_time'])
                 )
             );
         }
@@ -263,11 +263,11 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
             _style(
                 'items.news.item',
                 array(
-                    'S_MARK_ID' => $row['news_id'],
+                    'S_MARK_ID'  => $row['news_id'],
 
-                    'POST_URL' => s_link('news', $row['news_alias']),
+                    'POST_URL'   => s_link('news', $row['news_alias']),
                     'POST_TITLE' => $row['post_subject'],
-                    'POST_TIME' => $user->format_date($row['post_time'])
+                    'POST_TIME'  => $user->format_date($row['post_time'])
                 )
             );
         }
@@ -299,8 +299,8 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
                 'items.artists.item',
                 array(
                     'S_MARK_ID' => $row['ub'],
-                    'UB_URL' => s_link('a', $row['subdomain']),
-                    'NAME' => $row['name'],
+                    'UB_URL'    => s_link('a', $row['subdomain']),
+                    'NAME'      => $row['name'],
                     'POST_TIME' => $user->format_date($row['datetime'])
                 )
             );
@@ -334,12 +334,12 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
                 'items.downloads.item',
                 array(
                     'S_MARK_ID' => $row['id'],
-                    'UB_URL' => s_link('a', $row['subdomain']),
-                    'UD_URL' => s_link('a', $row['subdomain'], 9, $row['id']),
-                    'UD_TYPE' => array_key($downloads->dl_type($row['ud_type']), 'av'),
-                    'DATETIME' => $user->format_date($row['date']),
-                    'UB' => $row['name'],
-                    'UD' => $row['title']
+                    'UB_URL'    => s_link('a', $row['subdomain']),
+                    'UD_URL'    => s_link('a', $row['subdomain'], 9, $row['id']),
+                    'UD_TYPE'   => array_key($downloads->dl_type($row['ud_type']), 'av'),
+                    'DATETIME'  => $user->format_date($row['date']),
+                    'UB'        => $row['name'],
+                    'UD'        => $row['title']
                 )
             );
         }
@@ -349,7 +349,8 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
     // Forum Topics
     //
     if (isset($items[UH_T])) {
-        $sql = 'SELECT t.*, f.forum_alias, f.forum_id, f.forum_name, p.post_id, p.post_username, p.post_time, m.user_id, m.username, m.username_base
+        $sql = 'SELECT t.*, f.forum_alias, f.forum_id, f.forum_name, p.post_id,
+                p.post_username, p.post_time, m.user_id, m.username, m.username_base
             FROM _members_unread u, _forums f, _forum_topics t, _forum_posts p, _members m
             WHERE u.user_id = ?
                 AND f.forum_id NOT IN (??)
@@ -377,18 +378,18 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
             _style(
                 'items.forums.item',
                 array(
-                    'S_MARK_ID' => $row['topic_id'],
-                    'FOR_MODS' => in_array($row['forum_id'], forum_for_team_array()),
-                    'TOPIC_URL' => s_link('post', $row['post_id']) . '#' . $row['post_id'],
-                    'TOPIC_TITLE' => $row['topic_title'],
+                    'S_MARK_ID'     => $row['topic_id'],
+                    'FOR_MODS'      => in_array($row['forum_id'], forum_for_team_array()),
+                    'TOPIC_URL'     => s_link('post', $row['post_id']) . '#' . $row['post_id'],
+                    'TOPIC_TITLE'   => $row['topic_title'],
                     'TOPIC_REPLIES' => $row['topic_replies'],
-                    'TOPIC_COLOR' => $row['topic_color'],
-                    'FORUM_URL' => s_link('forum', $row['forum_alias']),
-                    'FORUM_NAME' => $row['forum_name'],
-                    'DATETIME' => $user->format_date($row['post_time']),
-                    'USER_ID' => $row['user_id'],
-                    'USER_PROFILE' => $user_profile['profile'],
-                    'USERNAME' => $user_profile['username']
+                    'TOPIC_COLOR'   => $row['topic_color'],
+                    'FORUM_URL'     => s_link('forum', $row['forum_alias']),
+                    'FORUM_NAME'    => $row['forum_name'],
+                    'DATETIME'      => $user->format_date($row['post_time']),
+                    'USER_ID'       => $row['user_id'],
+                    'USER_PROFILE'  => $user_profile['profile'],
+                    'USERNAME'      => $user_profile['username']
                 )
             );
         }
@@ -424,14 +425,14 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
             _style(
                 'items.a_messages.item',
                 array(
-                    'S_MARK_ID' => $row['post_id'],
-                    'ITEM_URL' => s_link('a', $row['subdomain'], 12, $row['post_id']),
-                    'UB_URL' => s_link('a', $row['subdomain']),
-                    'UB' => $row['name'],
-                    'DATETIME' => $user->format_date($row['post_time']),
-                    'USER_ID' => $row['user_id'],
+                    'S_MARK_ID'    => $row['post_id'],
+                    'ITEM_URL'     => s_link('a', $row['subdomain'], 12, $row['post_id']),
+                    'UB_URL'       => s_link('a', $row['subdomain']),
+                    'UB'           => $row['name'],
+                    'DATETIME'     => $user->format_date($row['post_time']),
+                    'USER_ID'      => $row['user_id'],
                     'USER_PROFILE' => $user_profile['profile'],
-                    'USERNAME' => $user_profile['username']
+                    'USERNAME'     => $user_profile['username']
                 )
             );
         }
@@ -441,7 +442,8 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
     // Downloads comments
     //
     if (isset($items[UH_M])) {
-        $sql = "SELECT b.ub, b.subdomain, b.name, d.id AS dl_id, d.ud AS ud_type, d.title, m.*, u.user_id, u.username, u.username_base
+        $sql = "SELECT b.ub, b.subdomain, b.name, d.id AS dl_id, d.ud AS ud_type,
+                d.title, m.*, u.user_id, u.username, u.username_base
             FROM _members_unread ur, _artists b, _dl d, _dl_posts m, _members u
             WHERE ur.user_id = " . $user->data['user_id'] . "
                 AND ur.element = " . UH_M . "
@@ -469,17 +471,17 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
             _style(
                 'items.d_messages.item',
                 array(
-                    'S_MARK_ID' => $row['post_id'],
-                    'ITEM_URL' => s_link('a', $row['subdomain'], 9, $row['dl_id']),
-                    'UB_URL' => s_link('a', $row['subdomain']),
-                    'UD_URL' => s_link('a', $row['subdomain'], 9, $row['dl_id']),
-                    'UD_TYPE' => $download_type['av'],
-                    'UB' => $row['name'],
-                    'UD' => $row['title'],
-                    'POST_TIME' => $user->format_date($row['post_time']),
-                    'USER_ID' => $row['user_id'],
+                    'S_MARK_ID'    => $row['post_id'],
+                    'ITEM_URL'     => s_link('a', $row['subdomain'], 9, $row['dl_id']),
+                    'UB_URL'       => s_link('a', $row['subdomain']),
+                    'UD_URL'       => s_link('a', $row['subdomain'], 9, $row['dl_id']),
+                    'UD_TYPE'      => $download_type['av'],
+                    'UB'           => $row['name'],
+                    'UD'           => $row['title'],
+                    'POST_TIME'    => $user->format_date($row['post_time']),
+                    'USER_ID'      => $row['user_id'],
                     'USER_PROFILE' => $user_profile['profile'],
-                    'USERNAME' => $user_profile['username']
+                    'USERNAME'     => $user_profile['username']
                 )
             );
         }
@@ -520,14 +522,14 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
             _style(
                 'items.a_fav.item',
                 array(
-                    'S_MARK_ID' => $row['fan_id'],
-                    'ITEM_URL' => s_link('m', $row['username_base']),
-                    'UB_URL' => s_link('a', $row['subdomain']),
-                    'UB' => $row['name'],
-                    'POST_TIME' => $user->format_date($row['joined']),
-                    'USER_ID' => $row['user_id'],
+                    'S_MARK_ID'    => $row['fan_id'],
+                    'ITEM_URL'     => s_link('m', $row['username_base']),
+                    'UB_URL'       => s_link('a', $row['subdomain']),
+                    'UB'           => $row['name'],
+                    'POST_TIME'    => $user->format_date($row['joined']),
+                    'USER_ID'      => $row['user_id'],
                     'USER_PROFILE' => $user_profile['profile'],
-                    'USERNAME' => $user_profile['username']
+                    'USERNAME'     => $user_profile['username']
                 )
             );
         }
@@ -561,10 +563,10 @@ if ($result = sql_rowset(sql_filter($sql, $user->data['user_id']))) {
             _style(
                 'items.users.item',
                 array(
-                    'S_MARK_ID' => $row['user_id'],
+                    'S_MARK_ID'    => $row['user_id'],
                     'USER_PROFILE' => $user_profile['profile'],
-                    'USERNAME' => $user_profile['username'],
-                    'DATETIME' => $user->format_date($row['user_regdate'])
+                    'USERNAME'     => $user_profile['username'],
+                    'DATETIME'     => $user->format_date($row['user_regdate'])
                 )
             );
         }
@@ -598,8 +600,8 @@ foreach ($result as $row) {
         'downloads',
         array(
             'URL' => s_link('a', $row['subdomain'], 9, $row['id']),
-            'A' => $row['name'],
-            'T' => $row['title']
+            'A'   => $row['name'],
+            'T'   => $row['title']
         )
     );
 }

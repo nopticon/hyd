@@ -10,9 +10,9 @@ $user->setup();
 
 srand((double) microtime() * 1000000);
 
-$home = new _home();
+$home    = new _home();
 $artists = new Artists();
-$events = new _events(true);
+$events  = new _events(true);
 
 $home->news();
 $home->board_general();

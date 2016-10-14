@@ -2430,6 +2430,25 @@ function validate_optional_fields(&$msnm, &$yim, &$website, &$location, &$occupa
     return;
 }
 
+function show_exception($name) {
+    $file_content = @file('./template/exceptions/' . $name . '.htm');
+
+    $matches = array(
+        '<!--#echo var="HTTP_HOST" -->' => v_server('HTTP_HOST'),
+        '<!--#echo var="REQUEST_URI" -->' => v_server('REQUEST_URI')
+    );
+
+    $orig = $repl = array();
+
+    foreach ($matches as $row_k => $row_v) {
+        $orig[] = $row_k;
+        $repl[] = $row_v;
+    }
+
+    echo str_replace($orig, $repl, implode('', $file_content));
+    exit;
+}
+
 if (!function_exists('bcdiv')) {
     function bcdiv($first, $second, $scale = 0) {
         $res = $first / $second;

@@ -8,7 +8,100 @@ $user->setup();
 
 $known = w('gmail.com hotmail.com hotmail.es starmedia.com latinmail.com nopticon.com');
 
-$fix = w('yahoo.es.com:yahoo.com hotamil.com:hotmail.com htomail.com:hotmail.com ahoo.es:yahoo.com hotmmail.com:hotmail.com hayoo.es:yahoo.com hotamail.es:hotmail.es hotmail.com.es:hotmail.es hotmail.com.com:hotmail.com gmai.com:gmail.com hotmail.co:hotmail.com yahoo.om:yahoo.com yahoo.co:yahoo.com hotmail.yahoo:hotmail.com hotmail.cim:hotmail.com yahho.com:yahoo.com eotmail.com:hotmail.com googlemail.com:gmail.com yohoo.es:yahoo.com uahoo.com:yahoo.com yahoo.cl:yahoo.com gmaill.com:gmail.com homtmail.com:hotmail.com hotmail.cl:hotmail.com hotmali.com:hotmail.com 18hotmail.com:hotmail.com totmail.com:hotmail.com hotail.com:hotmail.com hotmail.bom:hotmail.com hotmail.org:hotmail.com gmil.com:gmail.com gmal.com:gmail.com hotmile.com:hotmail.com yahoo.e:yahoo.es hotmail.cm:hotmail.com hootmail.com:hotmail.com gyahoo.es:yahoo.es 25hotmail.com:hotmail.com hptmail.com:hotmail.com gamail.com:gmail.com hhotmail.com:hotmail.com hortmail.com:hotmail.com h0tmail.com:hotmail.com hotmai.es:hotmail.es hotmail.cokm:hotmail.com 1005hotmail.com:hotmail.com hotmailmail.com:hotmail.com 1975yahoo.com:yahoo.com hotmail.live:hotmail.com gamil.com:gmail.com homail.es:hotmail.es uahoo.es:yahoo.es yahoo.de:yahoo.com gmial.com:gmail.com gmail.es:gmail.com gmail.c:gmail.com hotmail.com.mx:hotmail.com hotmail.esz:hotmail.es htomauil.com:hotmail.com hotamil.es:hotmail.es yahoo.mx:yahoo.com yahu.com:yahoo.com yaoo.es:yahoo.es hotrmail.com:hotmail.com yaju.es:yahoo.es hotmail.con:hotmail.com 29msn.com:msn.com yahoomail.com:yahoo.com hotmail.net:hotmail.com otmail.com:hotmail.com hotmsil.com:hotmail.com yaho.com.mx:yahoo.com hormail.com:hotmail.com yohoo.com:yahoo.com yaho.es:yahoo.es ahoo.com:yahoo.com hoitmail.com:hotmail.com rockpublik.net:rockrepublik.net gmeil.com:gmail.com yaho.com:yahoo.com hitmail.com:hotmail.com hotmail.c:hotmail.com hoymail.com:hotmail.com yahool.com:yahoo.com hotmai.com:hotmail.com hotmal.com:hotmail.com 541hotmail.com:hotmail.com hotmail.com.ar:hotmail.com hotmeil.com:hotmail.com htmail.com:hotmail.com hotmailo.com:hotmail.com htoamil.com:hotmail.com');
+$fix = [
+    'yahoo.es.com:yahoo.com',
+    'hotamil.com:hotmail.com',
+    'htomail.com:hotmail.com',
+    'ahoo.es:yahoo.com',
+    'hotmmail.com:hotmail.com',
+    'hayoo.es:yahoo.com',
+    'hotamail.es:hotmail.es',
+    'hotmail.com.es:hotmail.es',
+    'hotmail.com.com:hotmail.com',
+    'gmai.com:gmail.com',
+    'hotmail.co:hotmail.com',
+    'yahoo.om:yahoo.com',
+    'yahoo.co:yahoo.com',
+    'hotmail.yahoo:hotmail.com',
+    'hotmail.cim:hotmail.com',
+    'yahho.com:yahoo.com',
+    'eotmail.com:hotmail.com',
+    'googlemail.com:gmail.com',
+    'yohoo.es:yahoo.com',
+    'uahoo.com:yahoo.com',
+    'yahoo.cl:yahoo.com',
+    'gmaill.com:gmail.com',
+    'homtmail.com:hotmail.com',
+    'hotmail.cl:hotmail.com',
+    'hotmali.com:hotmail.com',
+    '18hotmail.com:hotmail.com',
+    'totmail.com:hotmail.com',
+    'hotail.com:hotmail.com',
+    'hotmail.bom:hotmail.com',
+    'hotmail.org:hotmail.com',
+    'gmil.com:gmail.com',
+    'gmal.com:gmail.com',
+    'hotmile.com:hotmail.com',
+    'yahoo.e:yahoo.es',
+    'hotmail.cm:hotmail.com',
+    'hootmail.com:hotmail.com',
+    'gyahoo.es:yahoo.es',
+    '25hotmail.com:hotmail.com',
+    'hptmail.com:hotmail.com',
+    'gamail.com:gmail.com',
+    'hhotmail.com:hotmail.com',
+    'hortmail.com:hotmail.com',
+    'h0tmail.com:hotmail.com',
+    'hotmai.es:hotmail.es',
+    'hotmail.cokm:hotmail.com',
+    '1005hotmail.com:hotmail.com',
+    'hotmailmail.com:hotmail.com',
+    '1975yahoo.com:yahoo.com',
+    'hotmail.live:hotmail.com',
+    'gamil.com:gmail.com',
+    'homail.es:hotmail.es',
+    'uahoo.es:yahoo.es',
+    'yahoo.de:yahoo.com',
+    'gmial.com:gmail.com',
+    'gmail.es:gmail.com',
+    'gmail.c:gmail.com',
+    'hotmail.com.mx:hotmail.com',
+    'hotmail.esz:hotmail.es',
+    'htomauil.com:hotmail.com',
+    'hotamil.es:hotmail.es',
+    'yahoo.mx:yahoo.com',
+    'yahu.com:yahoo.com',
+    'yaoo.es:yahoo.es',
+    'hotrmail.com:hotmail.com',
+    'yaju.es:yahoo.es',
+    'hotmail.con:hotmail.com',
+    '29msn.com:msn.com',
+    'yahoomail.com:yahoo.com',
+    'hotmail.net:hotmail.com',
+    'otmail.com:hotmail.com',
+    'hotmsil.com:hotmail.com',
+    'yaho.com.mx:yahoo.com',
+    'hormail.com:hotmail.com',
+    'yohoo.com:yahoo.com',
+    'yaho.es:yahoo.es',
+    'ahoo.com:yahoo.com',
+    'hoitmail.com:hotmail.com',
+    'rockpublik.net:rockrepublik.net',
+    'gmeil.com:gmail.com',
+    'yaho.com:yahoo.com',
+    'hitmail.com:hotmail.com',
+    'hotmail.c:hotmail.com',
+    'hoymail.com:hotmail.com',
+    'yahool.com:yahoo.com',
+    'hotmai.com:hotmail.com',
+    'hotmal.com:hotmail.com',
+    '541hotmail.com:hotmail.com',
+    'hotmail.com.ar:hotmail.com',
+    'hotmeil.com:hotmail.com',
+    'htmail.com:hotmail.com',
+    'hotmailo.com:hotmail.com',
+    'htoamil.com:hotmail.com',
+];
 
 /*$sql = 'SELECT user_id, username, user_email, user_public_email
     FROM _members
@@ -54,10 +147,10 @@ foreach ($members as $row) {
     }
 
     switch ($part[1]) {
-    case 'rockrepublik.net':
-    case 'rockrepublik.com':
-        $rk[$part[1]][] = $row['username'] . ' '  . $row['user_email'] . ' ' . $row['user_public_email'];
-        break;
+        case 'rockrepublik.net':
+        case 'rockrepublik.com':
+            $rk[$part[1]][] = $row['username'] . ' '  . $row['user_email'] . ' ' . $row['user_public_email'];
+            break;
     }
 
     $groups[$part[1]]++;
