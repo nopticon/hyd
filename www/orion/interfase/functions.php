@@ -2449,6 +2449,14 @@ function show_exception($name) {
     exit;
 }
 
+function setAppCookie($name, $value, $expires = 0) {
+    setcookie($config['cookie_name'] . '_' . $name, $value, $expires, $config['cookie_path'], $config['cookie_domain']);
+}
+
+function guestUsername($username) {
+    return '*' . !empty($username) ? $username : lang('guest');
+}
+
 if (!function_exists('bcdiv')) {
     function bcdiv($first, $second, $scale = 0) {
         $res = $first / $second;

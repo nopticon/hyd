@@ -1,4 +1,5 @@
 <?php
+namespace App;
 
 class dcom {
     protected $connect;
@@ -8,16 +9,15 @@ class dcom {
     protected $rowset;
     protected $queries;
     protected $noerror;
+    protected $login = array();
 
-    protected $_access = array();
-
-    final protected function access($d) {
+    final protected function login($d) {
         if ($d === false) {
             $d = decode_ht('.htda');
         }
 
         foreach (w('server login secret database') as $i => $k) {
-            $this->_access[$k] = _decode($d[$i]);
+            $this->login[$k] = _decode($d[$i]);
         }
         unset($d);
 

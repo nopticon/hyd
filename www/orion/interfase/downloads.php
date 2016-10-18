@@ -60,7 +60,9 @@ class Downloads {
 
         $stats_text = '';
         foreach (array('views' => 'VIEW', 'downloads' => 'DL') as $item => $stats_lang) {
-            $stats_text .= (($stats_text != '') ? ', ' : '') . '<strong>' . $this->dl_data[$item] . '</strong> ' . lang($stats_lang) . (($this->dl_data[$item] > 1) ? 's' : '');
+            $stats_text .= ($stats_text ? ', ' : '');
+            $stats_text .= '<strong>' . $this->dl_data[$item] . '</strong> ';
+            $stats_text .= lang($stats_lang) . (($this->dl_data[$item] > 1) ? 's' : '');
         }
 
         v_style(
@@ -128,7 +130,12 @@ class Downloads {
             _style('ud_poll.results');
 
             for ($i = 0, $end = sizeof($this->voting['ud']); $i < $end; $i++) {
-                $vote_result = (isset($this->voting['ub'][$i]) && isset($results[$this->voting['ub'][$i]])) ? (int) $results[$this->voting['ub'][$i]] : 0;
+                $vote_result = 0;
+
+                if (isset($this->voting['ub'][$i]) && isset($results[$this->voting['ub'][$i]])) {
+                    $vote_result = (int) $results[$this->voting['ub'][$i]];
+                }
+
                 $vote_percent = ($this->dl_data['votes'] > 0) ? $vote_result / $this->dl_data['votes'] : 0;
 
                 _style(
@@ -207,19 +214,43 @@ class Downloads {
 
                 if ($this->auth['adm'] && $user->is('founder')) {
                     $comments->data['CONTROL']['auth']['EDIT'] = array(
-                        'URL' => s_link('acp', array('artist_message', 'a' => $this->data['subdomain'], 'id' => '%d', 'action' => 'modify')),
+                        'URL' => s_link(
+                            'acp',
+                            array('artist_message',
+                                'a' => $this->data['subdomain'],
+                                'id' => '%d',
+                                'action' => 'modify'
+                            )
+                        ),
                         'ID'  => 'post_id'
                     );
                 }
 
                 $comments->data['CONTROL']['auth']['DELETE'] = array(
-                    'URL' => s_link('acp', array('artist_message', 'a' => $this->data['subdomain'], 'id' => '%d', 'action' => 'remove')),
+                    'URL' => s_link(
+                        'acp',
+                        array(
+                            'artist_message',
+                            'a' => $this->data['subdomain'],
+                            'id' => '%d',
+                            'action' => 'remove'
+                        )
+                    ),
                     'ID'  => 'post_id'
                 );
             }
 
             //
-            $comments->view($start, 'dps', $this->dl_data['posts'], $config['s_posts'], 'ud_posts', 'DMSG_', 'TOPIC_', false);
+            $comments->view(
+                $start,
+                'dps',
+                $this->dl_data['posts'],
+                $config['s_posts'],
+                'ud_posts',
+                'DMSG_',
+                'TOPIC_',
+                false
+            );
         }
 
         if ($this->auth['post']) {
@@ -263,8 +294,12 @@ class Downloads {
         $orig = array('&ntilde;', '&Ntilde;', '.');
         $repl = array('n', 'N', '');
 
-        $this->filename = str_replace($orig, $repl, $this->data['name']) . '_' . str_replace($orig, $repl, $this->dl_data['title']) . '.' . $this->dl_data['extension'];
-        $this->filepath = 'data/artists/' . $this->data['ub'] . '/media/' . $this->dl_data['id'] . '.' . $this->dl_data['extension'];
+        $this->filename  = str_replace($orig, $repl, $this->data['name']) . '_';
+        $this->filename .= str_replace($orig, $repl, $this->dl_data['title']) . '.' . $this->dl_data['extension'];
+
+        $this->filepath  = 'data/artists/' . $this->data['ub'] . '/media/';
+        $this->filepath .= $this->dl_data['id'] . '.' . $this->dl_data['extension'];
+
         $this->generateDownload();
 
         return;
@@ -363,8 +398,16 @@ class Downloads {
         return redirect($url);
     }
 
-    public function generateDownload($name = '', $path = '', $data = '', $content_type = 'application/octet-stream', $disposition = 'attachment') {
+    public function generateDownload($name = '', $path = '', $data = '', $content_type = 0, $disposition = 0) {
         sql_close();
+
+        if (!$content_type) {
+            $content_type = 'application/octet-stream';
+        }
+
+        if (!$disposition) {
+            $disposition = 'attachment';
+        }
 
         $bad_chars = array("'", "\\", ' ', '/', ':', '*', '?', '"', '<', '>', '|');
 

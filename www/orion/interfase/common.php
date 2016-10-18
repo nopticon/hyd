@@ -1,4 +1,5 @@
 <?php
+namespace App;
 
 $starttime = explode(' ', microtime());
 $starttime = $starttime[1] + $starttime[0];
@@ -42,6 +43,7 @@ if (@ini_get('register_globals') == '1' || strtolower(@ini_get('register_globals
 
 require_once ROOT . 'interfase/constants.php';
 require_once ROOT . 'interfase/functions.php';
+require_once(ROOT . 'interfase/db.call.php');
 require_once ROOT . 'interfase/db.mysqli.php';
 require_once ROOT . 'interfase/template.php';
 require_once ROOT . 'interfase/session.php';

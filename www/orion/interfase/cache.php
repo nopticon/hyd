@@ -53,7 +53,10 @@ class Cache {
 
         $fp = @fopen($filename, 'w');
         if ($fp) {
-            $file_buffer = '<?php $' . 'this->cache[\'' . $var . '\'] = ' . ((is_array($data)) ? $this->format($data) : "'" . str_replace("'", "\\'", str_replace('\\', '\\\\', $data)) . "'") . '; ?>';
+            $format = '<?php $' . "this->cache['%s'] = %s; ?>";
+            $var_data = is_array($data) ? $this->format($data) : "'" . $this->cleanUp($data) . "'";
+
+            $file_buffer = sprintf($format, $var, $var_data);
 
             @flock($fp, LOCK_EX);
             fputs($fp, $file_buffer);
@@ -81,6 +84,10 @@ class Cache {
         return;
     }
 
+    public function cleanUp($str) {
+        return str_replace("'", "\\'", str_replace('\\', '\\\\', $str));
+    }
+
     public function format($data) {
         $lines = w();
         foreach ($data as $k => $v) {
@@ -91,7 +98,7 @@ class Cache {
             } elseif (is_bool($v)) {
                 $lines[] = "'$k'=>" . (($v) ? 'true' : 'false');
             } else {
-                $lines[] = "'$k'=>'" . str_replace("'", "\\'", str_replace('\\', '\\\\', $v)) . "'";
+                $lines[] = "'$k'=>'" . $this->cleanUp($v) . "'";
             }
         }
         return 'array(' . implode(',', $lines) . ')';
