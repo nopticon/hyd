@@ -1520,7 +1520,9 @@ class Artists extends Downloads {
 
                     $_ps = request_var('ps', 0);
 
-                    if ((($this->auth['user'] && $update_views) || (!$this->auth['user'] && $this->data['layout'] == 1)) && !$_ps) {
+                    $user_update_views = $this->auth['user'] && $update_views;
+
+                    if (($user_update_views || (!$this->auth['user'] && $this->data['layout'] == 1)) && !$_ps) {
                         $sql = 'UPDATE _artists SET views = views + 1
                             WHERE ub = ?';
                         sql_query(sql_filter($sql, $this->data['ub']));

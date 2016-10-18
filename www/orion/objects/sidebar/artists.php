@@ -1,6 +1,5 @@
 <?php
-
-if (!defined('IN_APP')) exit;
+namespace App;
 
 require_once(ROOT . 'objects/artists.php');
 

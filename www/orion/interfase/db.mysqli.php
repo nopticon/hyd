@@ -1,7 +1,7 @@
 <?php
 namespace App;
 
-class database extends dcom {
+class Database extends DatabaseCommon {
     public function __construct($d = false) {
         $this->access($d);
 

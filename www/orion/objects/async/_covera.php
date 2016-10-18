@@ -1,6 +1,5 @@
 <?php
-
-if (!defined('IN_APP')) exit;
+namespace App;
 
 require_once(ROOT . 'interfase/artists.php');
 
@@ -9,38 +8,46 @@ $artists->get_data();
 
 $a_ary = array();
 for ($i = 0; $i < 4; $i++) {
-	$_a = array_rand($artists->adata);
-	if (!$artists->adata[$_a]['images'] || isset($a_ary[$_a])) {
-		$i--;
-		continue;
-	}
-	$a_ary[$_a] = $artists->adata[$_a];
+    $_a = array_rand($artists->adata);
+    if (!$artists->adata[$_a]['images'] || isset($a_ary[$_a])) {
+        $i--;
+        continue;
+    }
+    $a_ary[$_a] = $artists->adata[$_a];
 }
 
-if (sizeof($a_ary))
-{
-	$sql = 'SELECT *
-		FROM _artists_images
-		WHERE ub IN (??)
-		ORDER BY RAND()';
-	$result = sql_rowset(sql_filter($sql, implode(',', array_keys($a_ary))));
+if (sizeof($a_ary)) {
+    $sql = 'SELECT *
+        FROM _artists_images
+        WHERE ub IN (??)
+        ORDER BY RAND()';
+    $result = sql_rowset(sql_filter($sql, implode(',', array_keys($a_ary))));
 
-	$random_images = array();
-	foreach ($result as $row) {
-		if (!isset($random_images[$row['ub']])) {
-			$random_images[$row['ub']] = $row['image'];
-		}
-	}
+    $random_images = array();
+    foreach ($result as $row) {
+        if (!isset($random_images[$row['ub']])) {
+            $random_images[$row['ub']] = $row['image'];
+        }
+    }
 
-	$return_string = '<table width="100%" class="t-collapse"><tr>';
+    $response = '<table width="100%" class="t-collapse"><tr>';
 
-	$i = 0;
-	foreach ($a_ary as $ub => $data) {
-		$url = s_link('a', $data['subdomain']);
-		$return_string .= '<td class="' . (($i % 2) ? 'dark-color' : '') . ' pad6"><a href="' . $url . '">' . $data['name'] . '</a><br/ ><small>' . (($data['local']) ? 'Guatemala' : $data['location']) . '</small><br /><div class="sep2-top"><a href="' . $url . '"><img class="box" src="/data/artists/' . $ub . '/thumbnails/' . $random_images[$ub] . '.jpg" title="' . $data['genre'] . '" /></a></div></td>';
-		$i++;
-	}
+    $format  = '<td class="%s pad6"><a href="%s">%s</a><br/ ><small>%s</small>';
+    $format .= '<br /><div class="sep2-top"><a href="%s"><img class="box" ';
+    $format .= 'src="/data/artists/%s" title="%s" /></a></div></td>';
 
-	$return_string .= '</tr></table>';
-	echo rawurlencode($return_string);
+
+    $i = 0;
+    foreach ($a_ary as $ub => $data) {
+        $url = s_link('a', $data['subdomain']);
+        $class = ($i % 2) ? 'dark-color' : '';
+        $location = $data['local'] ? 'Guatemala' : $data['location'];
+        $image = $config['artists_url'] . $ub . '/thumbnails/' . $random_images[$ub] . '.jpg';
+
+        $response .= sprintf($format, $class, $url, $data['name'], $location, $url, $image, $data['genre']);
+        $i++;
+    }
+
+    $response .= '</tr></table>';
+    echo rawurlencode($response);
 }

@@ -1,5 +1,4 @@
 <?php
-
-if (!defined('IN_APP')) exit;
+namespace App;
 
 exit;

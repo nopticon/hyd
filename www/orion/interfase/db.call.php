@@ -1,7 +1,7 @@
 <?php
 namespace App;
 
-class dcom {
+class DatabaseCommon {
     protected $connect;
     protected $result;
     protected $history;

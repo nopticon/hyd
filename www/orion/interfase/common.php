@@ -55,12 +55,12 @@ require_once ROOT . 'interfase/downloads.php';
 
 set_error_handler('msg_handler');
 
-$db       = new database();
-$user     = new user();
-$auth     = new auth();
-$cache    = new cache();
-$template = new template();
-$comments = new _comments();
-$upload   = new upload();
+$db       = new Database();
+$user     = new User();
+$auth     = new Auth();
+$cache    = new Cache();
+$template = new Template();
+$comments = new Comments();
+$upload   = new Upload();
 
 $config   = $cache->config();

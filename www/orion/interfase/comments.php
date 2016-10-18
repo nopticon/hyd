@@ -1,7 +1,7 @@
 <?php
 namespace App;
 
-class _comments {
+class Comments {
     public $ref;
     public $mesage;
     public $param;
@@ -603,7 +603,7 @@ class _comments {
     }
 
     public function remove_quotes($message) {
-        if (strstr($message, '<blockquote>')) {
+        if (strpos($message, '<blockquote>') !== false) {
             $mesage  = preg_replace("#<blockquote>.*?blockquote>(.*?)#is", '\\1', $message);
             $message = preg_replace('#^<br />#is', '', $message);
             $message = trim($message);
@@ -922,7 +922,7 @@ class _comments {
         }
 
         $this->message = preg_replace($this->options['url']['orig'], $this->options['url']['repl'], $this->message);
-        
+
         return;
     }
 

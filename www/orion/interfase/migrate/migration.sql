@@ -99,3 +99,7 @@ INSERT INTO _partners (partner_name, partner_url, partner_image, partner_order) 
 	('Rock Stage Rumania', 'http://www.rockstage.ro/', 'rockstage.jpg', 12),
 	('Sangre Chapina', 'http://www.sangrechapina.com/', 'sangrechapina.jpg', 13),
 	('The Metal Room', 'http://www.elcuartodelmetal.co.cc/', 'themetalroom.jpg', 14);
+
+ALTER TABLE  `_news` ADD  `news_fbid` VARCHAR( 100 ) NOT NULL AFTER  `news_id`;
+
+ALTER TABLE _events ADD event_alias VARCHAR(255) NOT NULL DEFAULT '' AFTER id;

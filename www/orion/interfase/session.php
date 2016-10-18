@@ -1,7 +1,7 @@
 <?php
 namespace App;
 
-class session {
+class Session {
     public $session_id = '';
     public $cookie_data = array();
     public $data = array();
@@ -489,7 +489,7 @@ class session {
 * This is the overarching class which contains (through session extend)
 * all methods utilised for user functionality during a session.
 */
-class user extends session {
+class User extends Session {
     public $lang = array();
     public $help = array();
     public $theme = array();
@@ -1279,7 +1279,7 @@ class user extends session {
     }
 }
 
-class auth {
+class Auth {
     public $founder = false;
     public $data = array();
 
