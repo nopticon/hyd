@@ -1,7 +1,7 @@
 <?php
 namespace App;
 
-class _awards {
+class Awards {
     public function __construct() {
         return;
     }

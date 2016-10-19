@@ -6,7 +6,7 @@ require_once ROOT . 'objects/board.php';
 $user->init();
 $user->setup();
 
-$board = new board();
+$board = new Board();
 $board->run();
 
 page_layout('FORUM_INDEX', 'board');
