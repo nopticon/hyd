@@ -8,8 +8,8 @@ class __user_address extends mac {
         $this->auth('founder');
     }
 
-    public function _home() {
-        global $config, $user, $cache;
+    public function home() {
+        global $user, $cache;
 
         $limit = 225;
         $steps = 0;

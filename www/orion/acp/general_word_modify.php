@@ -8,8 +8,8 @@ class __general_word_modify extends mac {
         $this->auth('founder');
     }
 
-    public function _home() {
-        global $config, $user, $cache;
+    public function home() {
+        global $user, $cache;
 
         if (!_button()) {
             return false;

@@ -11,10 +11,10 @@ class __event_artist_delete extends mac {
     /*
     Show all events associated to this artist.
     */
-    public function _home() {
-        global $config, $user, $cache;
+    public function home() {
+        global $user, $cache;
 
-        $this->_artist();
+        $this->isArtist();
 
         if ($this->remove()) {
             return;

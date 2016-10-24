@@ -19,7 +19,7 @@ foreach ($smilies as $smile_url => $data) {
         'smilies_row',
         array(
             'CODE'  => $data['code'],
-            'IMAGE' => $config['assets_url'] . '/emoticon/' . $data['smile_url'],
+            'IMAGE' => config('assets_url') . '/emoticon/' . $data['smile_url'],
             'DESC'  => $data['emoticon']
         )
     );

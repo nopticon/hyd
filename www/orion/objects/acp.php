@@ -32,7 +32,7 @@ class mac {
         return $this->_access;
     }
 
-    public function _artist() {
+    public function isArtist() {
         global $user;
 
         if ($user->is('artist')) {
@@ -128,7 +128,7 @@ class _acp {
         $module->url = s_link() . substr(v_server('REQUEST_URI'), 1);
         $module->alias = $this->module;
 
-        $module->_home();
+        $module->home();
 
         if (!isset($module->template)) {
             $module->template = 'acp/' . $this->module;

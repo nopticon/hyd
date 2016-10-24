@@ -29,10 +29,8 @@ class emailer {
 
     public function cc($address) {
         if (strpos($address, '@') === false) {
-            global $config;
-
             $format = '%s <%s@%s>';
-            $address = sprintf($config['sitename'], $address, array_key(explode('@', $config['board_email']), 1));
+            $address = sprintf(config('sitename'), $address, array_key(explode('@', config('board_email')), 1));
         }
 
         $this->addresses['cc'][] = trim($address);
@@ -40,10 +38,8 @@ class emailer {
 
     public function bcc($address) {
         if (strpos($address, '@') === false) {
-            global $config;
-
             $format = '%s <%s@%s>';
-            $address = sprintf($config['sitename'], $address, array_key(explode('@', $config['board_email']), 1));
+            $address = sprintf(config('sitename'), $address, array_key(explode('@', config('board_email')), 1));
         }
 
         $this->addresses['bcc'][] = trim($address);
@@ -51,9 +47,7 @@ class emailer {
 
     public function replyto($address) {
         if (strpos($address, '@') === false) {
-            global $config;
-
-            $address = $address . '@' . array_key(explode('@', $config['board_email']), 1);
+            $address = $address . '@' . array_key(explode('@', config('board_email')), 1);
         }
 
         $this->reply_to = trim($address);
@@ -61,10 +55,8 @@ class emailer {
 
     public function from($address) {
         if (strpos($address, '@') === false) {
-            global $config;
-
             $format = '%s <%s@%s>';
-            $address = sprintf($config['sitename'], $address, array_key(explode('@', $config['board_email']), 1));
+            $address = sprintf(config('sitename'), $address, array_key(explode('@', config('board_email')), 1));
         }
 
         $this->from = trim($address);
@@ -81,21 +73,19 @@ class emailer {
     }
 
     public function use_template($template_file, $template_lang = '') {
-        global $config;
-
         if (trim($template_file) == '') {
             trigger_error('No template file set');
         }
 
         if (trim($template_lang) == '') {
-            $template_lang = $config['default_lang'];
+            $template_lang = config('default_lang');
         }
 
         if (empty($this->tpl_msg[$template_lang . $template_file])) {
             $tpl_file = ROOT.'language/' . $template_lang . '/email/' . $template_file . '.tpl';
 
             if (!@file_exists(@realpath($tpl_file))) {
-                $tpl_file = ROOT.'language/' . $config['default_lang'] . '/email/' . $template_file . '.tpl';
+                $tpl_file = ROOT.'language/' . config('default_lang') . '/email/' . $template_file . '.tpl';
 
                 if (!@file_exists(@realpath($tpl_file))) {
                     trigger_error('Could not find email template file :: ' . $template_file);
@@ -122,7 +112,7 @@ class emailer {
 
     // Send the mail out to the recipients set previously in var $this->address
     public function send() {
-        global $config, $user;
+        global $user;
 
             // Escape all quotes, else the eval will fail.
         $this->msg = str_replace("'", "\'", $this->msg);
@@ -170,23 +160,23 @@ class emailer {
         $bcc = isset($this->addresses['bcc']) ? implode(', ', $this->addresses['bcc']) : '';
 
         if (empty($this->from)) {
-            $this->from = $config['board_email'];
+            $this->from = config('board_email');
         }
 
         // Build header
         $extra_headers = array(
-            'Reply-to' => $this->reply_to,
-            'From' => $this->from,
-            'Return-Path' => $config['board_email'],
-            'Message-ID' => '<' . md5(uniqid(time())) . '@rockrepublik.net>',
-            'MIME-Version' => '1.0',
-            'Content-type' => 'text/plain; charset=' . $this->encoding,
+            'Reply-to'                  => $this->reply_to,
+            'From'                      => $this->from,
+            'Return-Path'               => config('board_email'),
+            'Message-ID'                => '<' . md5(uniqid(time())) . '@rockrepublik.net>',
+            'MIME-Version'              => '1.0',
+            'Content-type'              => 'text/plain; charset=' . $this->encoding,
             'Content-transfer-encoding' => '8bit',
-            'Date' => date('r', time()),
-            'X-Priority' => '3',
-            'X-MSMail-Priority' => 'Normal',
-            'Cc' => $cc,
-            'Bcc' => $bcc
+            'Date'                      => date('r', time()),
+            'X-Priority'                => '3',
+            'X-MSMail-Priority'         => 'Normal',
+            'Cc'                        => $cc,
+            'Bcc'                       => $bcc
         );
 
         $extra_headers = array_filter($extra_headers);
@@ -194,20 +184,20 @@ class emailer {
 
         // Send message ... removed $this->encode() from subject for time being
         $empty_to_header = ($to == '') ? true : false;
-        $to = ($to == '') ? (($config['sendmail_fix']) ? ' ' : 'Undisclosed-recipients:;') : $to;
+        $to = ($to == '') ? (config('sendmail_fix') ? ' ' : 'Undisclosed-recipients:;') : $to;
 
         $this->subject = entity_decode($this->subject);
         $this->msg = entity_decode($this->msg);
 
         $message = preg_replace("#(?<!\r)\n#s", "\n", $this->msg);
-        $result = @mail($to, $this->subject, $message, $this->extra_headers, "-f{$config['board_email']}");
+        $result = @mail($to, $this->subject, $message, $this->extra_headers, "-f" . config('board_email'));
 
-        if (!$result && !$config['sendmail_fix'] && $empty_to_header) {
+        if (!$result && !config('sendmail_fix') && $empty_to_header) {
             $to = ' ';
 
             set_config('sendmail_fix', 1);
 
-            $result = @mail($to, $this->subject, $message, $this->extra_headers, "-f{$config['board_email']}");
+            $result = @mail($to, $this->subject, $message, $this->extra_headers, "-f" . config('board_email'));
         }
 
         if (!$result) {

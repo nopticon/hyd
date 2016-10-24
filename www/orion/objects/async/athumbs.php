@@ -1,10 +1,6 @@
 <?php
 namespace App;
 
-require_once(ROOT . 'interfase/artists.php');
-
-$artists = new _artists();
-
 $sql = 'SELECT *
     FROM _artists
     WHERE images > 0
@@ -32,7 +28,7 @@ foreach ($selected_artists as $ub => $data) {
         'row',
         array(
             'NAME'     => $data['name'],
-            'IMAGE'    => $config['artists_url'] . $ub . '/thumbnails/' . $random_images[$ub] . '.jpg',
+            'IMAGE'    => config('artists_url') . $ub . '/thumbnails/' . $random_images[$ub] . '.jpg',
             'URL'      => s_link('a', $data['subdomain']),
             'LOCATION' => $data['local'] ? 'Guatemala' : $data['location'],
             'GENRE'    => $data['genre']

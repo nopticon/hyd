@@ -8,8 +8,8 @@ class __forums_alias_modify extends mac {
         $this->auth('founder');
     }
 
-    public function _home() {
-        global $config, $user, $cache;
+    public function home() {
+        global $user, $cache;
 
         if (_button()) {
             $forum_id = request_var('fid', 0);
@@ -35,7 +35,7 @@ class __forums_alias_modify extends mac {
             _style(
                 'forums.row',
                 array(
-                    'FORUM_ID' => $row['forum_id'],
+                    'FORUM_ID'   => $row['forum_id'],
                     'FORUM_NAME' => $row['forum_name']
                 )
             );

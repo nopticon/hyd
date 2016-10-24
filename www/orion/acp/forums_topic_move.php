@@ -11,8 +11,8 @@ class __forums_topic_move extends mac {
         $this->auth('mod');
     }
 
-    public function _home() {
-        global $config, $user, $cache;
+    public function home() {
+        global $user, $cache;
 
         if (!_button()) {
             $sql = 'SELECT forum_id, forum_name
@@ -83,10 +83,9 @@ class __forums_topic_move extends mac {
     }
 }
 
-function sync_topic_move($id)
-{
-    $last_topic = 0;
-    $total_posts = 0;
+function sync_topic_move($id) {
+    $last_topic   = 0;
+    $total_posts  = 0;
     $total_topics = 0;
 
     //

@@ -8,8 +8,8 @@ class __news_category_move extends mac {
         $this->auth('colab');
     }
 
-    public function _home() {
-        global $config, $cache, $user;
+    public function home() {
+        global $cache, $user;
 
         if (!_button()) {
             $sql = 'SELECT cat_id, cat_name

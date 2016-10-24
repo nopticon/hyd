@@ -7,7 +7,9 @@
 		<!-- Allow opening and closing braces for functions and classes to be on the same line -->
 		<exclude name="Squiz.Functions.MultiLineFunctionDeclaration.BraceOnSameLine"/>
 		<exclude name="PSR2.Classes.ClassDeclaration.OpenBraceNewLine"/>
+		<exclude name="PSR2.Methods.MethodDeclaration.Underscore"/>
 		<exclude name="Squiz.WhiteSpace.ScopeClosingBrace"/>
+		<exclude name="Squiz.Classes.ValidClassName.NotCamelCaps"/>
         <exclude name="Generic.WhiteSpace.ScopeIndent.Incorrect" />
 		<exclude name="Generic.WhiteSpace.ScopeIndent.IncorrectExact"/>
 

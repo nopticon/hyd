@@ -8,8 +8,8 @@ class __event_delete extends mac {
         $this->auth('colab_admin');
     }
 
-    public function _home() {
-        global $config, $user, $cache;
+    public function home() {
+        global $user, $cache;
 
         if (!_button()) {
             return;

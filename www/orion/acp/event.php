@@ -8,13 +8,13 @@ class __event extends mac {
         $this->auth('colab');
     }
 
-    public function _home() {
-        global $config, $user, $cache, $upload;
+    public function home() {
+        global $user, $cache, $upload;
 
         $error = w();
 
         if (_button()) {
-            $filepath = $config['events_path'];
+            $filepath   = config('events_path');
             $filepath_1 = $filepath . 'future/';
             $filepath_2 = $filepath_1 . 'thumbnails/';
 
@@ -78,7 +78,7 @@ class __event extends mac {
                     }
 
                     // Alice: Create topic
-                    $event_url = $config['events_url'] . 'future/' . $img  . '.jpg';
+                    $event_url = config('events_url') . 'future/' . $img  . '.jpg';
 
                     $post_message = 'Evento publicado';
                     $post_time = time();

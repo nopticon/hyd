@@ -8,8 +8,8 @@ class __forums_post_delete extends mac {
         $this->auth('mod');
     }
 
-    public function _home() {
-        global $config, $user, $cache;
+    public function home() {
+        global $user, $cache;
 
         $post_id = request_var('msg_id', 0);
 
@@ -32,11 +32,11 @@ class __forums_post_delete extends mac {
         $topic_id = $post_info['topic_id'];
 
         $post_data = array(
-            'poster_post' => ($post_info['poster_id'] == $userdata['user_id']) ? true : false,
-            'first_post' => ($post_info['topic_first_post_id'] == $post_id) ? true : false,
-            'last_post' => ($post_info['topic_last_post_id'] == $post_id) ? true : false,
-            'last_topic' => ($post_info['forum_last_topic_id'] == $topic_id) ? true : false,
-            'has_poll' => ($post_info['topic_vote']) ? true : false
+            'poster_post' => ($post_info['poster_id'] == $userdata['user_id']),
+            'first_post'  => ($post_info['topic_first_post_id'] == $post_id),
+            'last_post'   => ($post_info['topic_last_post_id'] == $post_id),
+            'last_topic'  => ($post_info['forum_last_topic_id'] == $topic_id),
+            'has_poll'    => ($post_info['topic_vote'])
         );
 
         if ($post_data['first_post'] && $post_data['has_poll']) {
@@ -127,8 +127,8 @@ class __forums_post_delete extends mac {
 }
 
 function sync_post_delete($id) {
-    $last_topic = 0;
-    $total_posts = 0;
+    $last_topic   = 0;
+    $total_posts  = 0;
     $total_topics = 0;
 
     //
@@ -141,7 +141,7 @@ function sync_post_delete($id) {
         FROM _forum_topics
         WHERE forum_id = ?';
     if ($row = sql_fieldrow(sql_filter($sql, $id))) {
-        $last_topic = $row['last_topic'];
+        $last_topic   = $row['last_topic'];
         $total_topics = $row['total'];
     }
 

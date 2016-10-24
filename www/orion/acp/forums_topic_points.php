@@ -10,8 +10,8 @@ class __forums_topic_points extends mac {
         $this->auth('mod');
     }
 
-    public function _home() {
-        global $config, $user, $cache;
+    public function home() {
+        global $user, $cache;
 
         $this->id = request_var('msg_id', 0);
 
@@ -28,12 +28,12 @@ class __forums_topic_points extends mac {
         topic_arkane($this->id, $this->object->new_value);
 
         $sql_insert = array(
-            'bio' => $user->d('user_id'),
-            'time' => time(),
-            'ip' => $user->ip,
+            'bio'    => $user->d('user_id'),
+            'time'   => time(),
+            'ip'     => $user->ip,
             'action' => 'points',
-            'old' => $this->object->topic_points,
-            'new' => $this->object->new_value
+            'old'    => $this->object->topic_points,
+            'new'    => $this->object->new_value
         );
         sql_insert('log_mod', $sql_insert);
 

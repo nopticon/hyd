@@ -8,10 +8,10 @@ class __artist_biography extends mac {
         $this->auth('artist');
     }
 
-    public function _home() {
-        global $config, $user, $comments;
+    public function home() {
+        global $user, $comments;
 
-        $this->_artist();
+        $this->isArtist();
 
         if (_button()) {
             $message = request_var('message', '');

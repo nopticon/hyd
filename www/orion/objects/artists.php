@@ -44,7 +44,7 @@ class Artists extends Downloads {
             return true;
         }
 
-        global $user, $config, $comments;
+        global $user, $comments;
 
         //
         // Gallery
@@ -106,7 +106,7 @@ class Artists extends Downloads {
                 ORDER BY p.post_time DESC
                 LIMIT ??, ??)
                 ORDER BY post_time DESC";
-            $sql = sql_filter($sql, 'news', $config['ub_fans_f'], $this->data['ub'], 'post', $this->data['ub'], 0, 10);
+            $sql = sql_filter($sql, 'news', config('ub_fans_f'), $this->data['ub'], 'post', $this->data['ub'], 0, 10);
 
             if ($result = sql_rowset($sql)) {
                 _style('news');
@@ -188,14 +188,14 @@ class Artists extends Downloads {
     // Layout to show artist's biography
     //
     public function artistBio() {
-        global $config, $comments;
+        global $comments;
 
         if ($this->make) {
             return ($this->data['bio']);
         }
 
         if ($this->data['featured_image']) {
-            $image = $config['artists_url'] . $this->data['ub'] . '/gallery/' . $this->data['featured_image'] . '.jpg';
+            $image = config('artists_url') . $this->data['ub'] . '/gallery/' . $this->data['featured_image'] . '.jpg';
 
             _style(
                 'featured_image',
@@ -233,8 +233,6 @@ class Artists extends Downloads {
     Show all pictures associated to this artist.
     */
     public function artistGallery() {
-        global $config;
-
         if ($this->make) {
             return ($this->data['images'] > 1);
         }
@@ -282,7 +280,7 @@ class Artists extends Downloads {
                         sql_query(sql_filter($sql, $this->data['ub'], $imagedata['image']));
                     }
 
-                    $image = $config['artists_url'] . $this->data['ub'] . '/gallery/' . $imagedata['image'] . '.jpg';
+                    $image = config('artists_url') . $this->data['ub'] . '/gallery/' . $imagedata['image'] . '.jpg';
 
                     _style(
                         'selected',
@@ -322,11 +320,11 @@ class Artists extends Downloads {
                         _style('thumbnails');
                     }
 
-                    $image = $config['artists_url'] . $this->data['ub'] . '/thumbnails/' . $row['image'] . '.jpg';
+                    $image = config('artists_url') . $this->data['ub'] . '/thumbnails/' . $row['image'] . '.jpg';
 
                     $rimage = get_a_imagepath(
-                        $config['artists_path'],
-                        $config['artists_url'],
+                        config('artists_path'),
+                        config('artists_url'),
                         $this->data['ub'],
                         $row['image'] . '.jpg',
                         w('x1 gallery')
@@ -369,7 +367,7 @@ class Artists extends Downloads {
             return ($this->data['lirics'] > 0);
         }
 
-        global $config, $lang;
+        global $lang;
 
         $mode = request_var('mode', '');
         $download_id = request_var('download_id', 0);
@@ -496,7 +494,7 @@ class Artists extends Downloads {
             do_login();
         }
 
-        global $user, $config;
+        global $user;
 
         $error_msg = '';
         $subject = '';
@@ -516,7 +514,7 @@ class Artists extends Downloads {
                     WHERE ub = ?';
                 sql_query(sql_filter($sql, $current_time, $user->d('user_id'), $this->data['ub']));
 
-                $emailer = new emailer($config['smtp_delivery']);
+                $emailer = new emailer(config('smtp_delivery'));
 
                 $emailer->from($user->d('user_email'));
 
@@ -524,15 +522,15 @@ class Artists extends Downloads {
                 $email_headers .= 'X-AntiAbuse: Username - ' . $user->d('username') . nr();
                 $email_headers .= 'X-AntiAbuse: User IP - ' . $user->ip . nr();
 
-                $emailer->use_template('mmg_send_email', $config['default_lang']);
+                $emailer->use_template('mmg_send_email', config('default_lang'));
                 $emailer->email_address($this->data['email']);
                 $emailer->set_subject($subject);
                 $emailer->extra_headers($email_headers);
 
                 $emailer->assign_vars(
                     array(
-                        'SITENAME'      => $config['sitename'],
-                        'BOARD_EMAIL'   => $config['board_email'],
+                        'SITENAME'      => config('sitename'),
+                        'BOARD_EMAIL'   => config('board_email'),
                         'FROM_USERNAME' => $user->d('username'),
                         'UB_NAME'       => $this->data['name'],
                         'MESSAGE'       => $message
@@ -597,7 +595,7 @@ class Artists extends Downloads {
         global $user;
 
         if (!$this->auth['user']) {
-            do_login(sprintf(lang('login_be_fan'), $this->data['name']));
+            do_login();
         }
 
         $url = s_link('a', $this->data['subdomain']);
@@ -921,7 +919,7 @@ class Artists extends Downloads {
     }
 
     public function lastRecords() {
-        global $user, $config, $cache;
+        global $user, $cache;
 
         if (!$a_records = $cache->get('a_records')) {
             $sql = 'SELECT ub, subdomain, name, genre
@@ -966,7 +964,7 @@ class Artists extends Downloads {
             if (isset($ai_records[$row['ub']])) {
                 $ai_select = array_rand($ai_records[$row['ub']]);
 
-                $image  = $config['artists_url'];
+                $image  = config('artists_url');
                 $image .= $row['ub'] . '/thumbnails/' . $ai_records[$row['ub']][$ai_select] . '.jpg';
 
                 _style(
@@ -1003,7 +1001,7 @@ class Artists extends Downloads {
     }
 
     public function topStats() {
-        global $user, $config;
+        global $user;
 
         _style('a_stats');
 
@@ -1026,7 +1024,7 @@ class Artists extends Downloads {
             if (sizeof($a_random)) {
                 $selected_image = array_rand($a_random);
                 if (isset($a_random[$selected_image])) {
-                    $image  = $config['artists_url'];
+                    $image  = config('artists_url');
                     $image .= $all_data['datetime']['ub'] . '/thumbnails/' . $a_random[$selected_image] . '.jpg';
 
                     _style(
@@ -1059,7 +1057,7 @@ class Artists extends Downloads {
     }
 
     public function thumbnails() {
-        global $cache, $config;
+        global $cache;
 
         if (!$a_recent = $cache->get('a_recent')) {
             $sql = 'SELECT ub
@@ -1116,7 +1114,7 @@ class Artists extends Downloads {
                     'thumbnails.item',
                     array(
                         'NAME'     => $data['name'],
-                        'IMAGE'    => $config['artists_url'] . $ub . '/thumbnails/' . $random_images[$ub] . '.jpg',
+                        'IMAGE'    => config('artists_url') . $ub . '/thumbnails/' . $random_images[$ub] . '.jpg',
                         'URL'      => s_link('a', $data['subdomain']),
                         'LOCATION' => ($data['local']) ? 'Guatemala' : $data['location'],
                         'GENRE'    => $data['genre']
@@ -1132,8 +1130,6 @@ class Artists extends Downloads {
         if ($this->images) {
             return;
         }
-
-        global $config;
 
         if ($mainframe) {
             $sql = 'SELECT i.*
@@ -1154,7 +1150,7 @@ class Artists extends Downloads {
         if ($ub && !$mainframe) {
             if ($row = sql_fieldrow($sql)) {
                 $this->images[$row['ub']][$row['image']] = array(
-                    'path'     => $config['artists_url'] . $row['ub'] . '/gallery/' . $row['image'] . '.jpg',
+                    'path'     => config('artists_url') . $row['ub'] . '/gallery/' . $row['image'] . '.jpg',
                     'image'    => $row['image'],
                     'allow_dl' => $row['allow_dl']
                 );
@@ -1167,7 +1163,7 @@ class Artists extends Downloads {
 
         foreach ($result as $row) {
             $this->images[$row['ub']][$row['image']] = array(
-                'path'     => $config['artists_url'] . $row['ub'] . '/gallery/' . $row['image'] . '.jpg',
+                'path'     => config('artists_url') . $row['ub'] . '/gallery/' . $row['image'] . '.jpg',
                 'image'    => $row['image'],
                 'allow_dl' => $row['allow_dl']
             );
@@ -1177,8 +1173,6 @@ class Artists extends Downloads {
     }
 
     public function downloads() {
-        global $config;
-
         $sql = 'SELECT *
             FROM _dl';
         $this->ud_song = sql_rowset($sql, 'ud', false, true);
@@ -1192,7 +1186,8 @@ class Artists extends Downloads {
                 continue;
             }
 
-            $ud_size = ($dl_size > $config['main_dl']) ? $config['main_dl'] : $dl_size;
+            $main_dl = (int) config('main_dl');
+            $ud_size = ($dl_size > $main_dl) ? $main_dl : $dl_size;
             $download_type = $this->downloadType($ud);
 
             _style(
@@ -1235,7 +1230,7 @@ class Artists extends Downloads {
     }
 
     public function list() {
-        global $user, $config;
+        global $user;
 
         $sql = 'SELECT *
             FROM _artists
@@ -1315,7 +1310,7 @@ class Artists extends Downloads {
                 'row',
                 array(
                     'NAME'     => $data['name'],
-                    'IMAGE'    => $config['artists_url'] . $image,
+                    'IMAGE'    => config('artists_url') . $image,
                     'URL'      => s_link('a', $data['subdomain']),
                     'LOCATION' => ($data['local']) ? 'Guatemala' : $data['location'],
                     'GENRE'    => $data['genre']
@@ -1337,7 +1332,7 @@ class Artists extends Downloads {
 
         v_style(
             array(
-                'TOTAL_A'         => $config['max_artists'],
+                'TOTAL_A'         => config('max_artists'),
                 'SELECTED_LETTER' => $selected_char ? strtoupper($selected_char) : ''
             )
         );
@@ -1346,7 +1341,7 @@ class Artists extends Downloads {
     }
 
     public function panel() {
-        global $user, $config, $template;
+        global $user, $template;
 
         $this->data['layout'] = request_var('layout', '');
         $this->_auth();
@@ -1499,7 +1494,7 @@ class Artists extends Downloads {
                 //
                 // Own events
                 //
-                $timezone = $config['board_timezone'] * 3600;
+                $timezone = config('board_timezone') * 3600;
 
                 list($d, $m, $y) = explode(' ', gmdate('j n Y', time() + $user->timezone + $user->dst));
                 $midnight        = gmmktime(0, 0, 0, $m, $d, $y) - $user->timezone - $user->dst;
@@ -1569,8 +1564,8 @@ class Artists extends Downloads {
                                     'ITEM_ID'   => $item['id'],
                                     'TITLE'     => $item['title'],
                                     'DATE'      => $user->format_date($item['date']),
-                                    'THUMBNAIL' => $config['events_url'] . 'future/thumbnails/' . $item['id'] . '.jpg',
-                                    'SRC'       => $config['events_url'] . 'future/' . $item['id'] . '.jpg'
+                                    'THUMBNAIL' => config('events_url') . 'future/thumbnails/' . $item['id'] . '.jpg',
+                                    'SRC'       => config('events_url') . 'future/' . $item['id'] . '.jpg'
                                 )
                             );
                         }
@@ -1732,8 +1727,6 @@ class Artists extends Downloads {
     }
 
     public function sidebar() {
-        global $config;
-
         $sql = 'SELECT *
             FROM _artists a, _artists_images i
             WHERE a.ub = i.ub
@@ -1744,7 +1737,7 @@ class Artists extends Downloads {
                 'random_a',
                 array(
                     'NAME'  => $row['name'],
-                    'IMAGE' => $config['artists_url'] . $row['ub'] . '/thumbnails/' . $row['image'] . '.jpg',
+                    'IMAGE' => config('artists_url') . $row['ub'] . '/thumbnails/' . $row['image'] . '.jpg',
                     'URL'   => s_link('a', $row['subdomain']),
                     'GENRE' => $row['genre']
                 )

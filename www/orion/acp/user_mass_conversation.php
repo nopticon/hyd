@@ -8,8 +8,8 @@ class __user_mass_conversation extends mac {
         $this->auth('founder');
     }
 
-    public function _home() {
-        global $config, $user, $cache, $comments;
+    public function home() {
+        global $user, $cache, $comments;
 
         if (!_button()) {
             return false;

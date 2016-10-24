@@ -10,8 +10,8 @@ class __user_post_delete extends mac {
         $this->auth('user');
     }
 
-    public function _home() {
-        global $config, $user, $cache;
+    public function home() {
+        global $user, $cache;
 
         $this->id = request_var('msg_id', 0);
 

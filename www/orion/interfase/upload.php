@@ -35,11 +35,9 @@ class Upload {
     }
 
     public function rename($a, $b) {
-        global $config;
-
         $filename = str_replace($a->random, $b, $a->filepath);
         @rename($a->filepath, $filename);
-        _chmod($filename, $config['mask']);
+        _chmod($filename, config('mask'));
 
         return $filename;
     }
@@ -58,7 +56,7 @@ class Upload {
     }
 
     public function remote($filepath, $locations, $extension, $filesize = false, $safe = true) {
-        global $user, $config;
+        global $user;
 
         $files = w();
         $umask = umask(0);
@@ -89,7 +87,7 @@ class Upload {
                 continue;
             }
 
-            _chmod($row->filepath, $config['mask']);
+            _chmod($row->filepath, config('mask'));
 
             $files[] = $row;
         }
@@ -99,9 +97,9 @@ class Upload {
     }
 
     public function avatar_process($alias, &$_fields, &$error) {
-        global $config, $user;
+        global $user;
 
-        $path = $config['assets_path'] . 'avatars/';
+        $path = config('assets_path') . 'avatars/';
 
         $send = $this->process($path, 'avatar');
 
@@ -129,7 +127,7 @@ class Upload {
     }
 
     public function process($filepath, $files, $extension = 'gif png jpg jpeg', $filesize = false, $safe = true) {
-        global $user, $config;
+        global $user;
 
         if (!is_array($files)) {
             $files = request_var('files:' . $files);
@@ -203,7 +201,7 @@ class Upload {
                 continue;
             }
 
-            _chmod($row['filepath'], $config['mask']);
+            _chmod($row['filepath'], config('mask'));
 
             if (@filesize($r->filepath) > $filesize) {
                 _rm($r->filepath);
@@ -231,8 +229,6 @@ class Upload {
         $remove = false,
         $watermark_file = false
     ) {
-        global $config;
-
         $t = (object) array(
             'filename' => $filename . '.' . $row->extension,
             'source' => $folder_a . $row->filename
@@ -302,7 +298,7 @@ class Upload {
         // Watermark
         if ($watermark) {
             if ($watermark_file === false) {
-                $watermark_file = $config['watermark'];
+                $watermark_file = config('watermark');
             }
 
             if (!empty($watermark_file)) {
@@ -336,7 +332,7 @@ class Upload {
             return false;
         }
 
-        _chmod($t->destination, $config['mask']);
+        _chmod($t->destination, config('mask'));
         imagedestroy($thumb);
         imagedestroy($image);
 

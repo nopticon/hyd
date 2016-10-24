@@ -50,7 +50,7 @@ class Downloads {
     }
 
     public function downloadView() {
-        global $user, $config, $comments;
+        global $user, $comments;
 
         if (!$this->auth['adm'] && !$this->auth['mod']) {
             $sql = 'UPDATE _dl SET views = views + 1
@@ -188,7 +188,7 @@ class Downloads {
                 LIMIT ??, ??';
 
             $comments->data = array(
-                'SQL' => sql_filter($sql, $this->dl_data['id'], $this->data['ub'], $start, $config['s_posts'])
+                'SQL' => sql_filter($sql, $this->dl_data['id'], $this->data['ub'], $start, config('s_posts'))
             );
 
             if ($this->auth['user']) {
@@ -245,7 +245,7 @@ class Downloads {
                 $start,
                 'dps',
                 $this->dl_data['posts'],
-                $config['s_posts'],
+                config('s_posts'),
                 'ud_posts',
                 'DMSG_',
                 'TOPIC_',

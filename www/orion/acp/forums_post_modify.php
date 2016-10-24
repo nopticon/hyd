@@ -8,8 +8,8 @@ class __forums_post_modify extends mac {
         $this->auth('mod');
     }
 
-    public function _home() {
-        global $config, $user, $cache, $comments;
+    public function home() {
+        global $user, $cache, $comments;
 
         $this->id = request_var('msg_id', 0);
 
@@ -57,9 +57,9 @@ class __forums_post_modify extends mac {
 
                 $rev = array(
                     'rev_post' => $this->id,
-                    'rev_uid' => $user->d('user_id'),
+                    'rev_uid'  => $user->d('user_id'),
                     'rev_time' => time(),
-                    'rev_ip' => $user->ip,
+                    'rev_ip'   => $user->ip,
                     'rev_text' => $this->object->post->post_text
                 );
                 sql_insert('forum_posts_rev', $rev);
@@ -70,11 +70,11 @@ class __forums_post_modify extends mac {
 
         v_style(
             array(
-                'V_TOPIC' => ($user->is('founder')) ? $this->object->topic->topic_title : '',
+                'V_TOPIC'   => ($user->is('founder')) ? $this->object->topic->topic_title : '',
                 'V_MESSAGE' => $this->object->post->post_text
             )
         );
-        
+
         //return page_layout('Editar', 'modcp.edit', $tv);
     }
 }

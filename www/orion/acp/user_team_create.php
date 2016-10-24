@@ -8,8 +8,8 @@ class __user_team_create extends mac {
         $this->auth('founder');
     }
 
-    public function _home() {
-        global $config, $user, $cache;
+    public function home() {
+        global $user, $cache;
 
         if (!_button()) {
             $sql = 'SELECT *
@@ -25,7 +25,7 @@ class __user_team_create extends mac {
                 _style(
                     'team.row',
                     array(
-                        'TEAM_ID' => $row['team_id'],
+                        'TEAM_ID'   => $row['team_id'],
                         'TEAM_NAME' => $row['team_name']
                     )
                 );
@@ -34,11 +34,11 @@ class __user_team_create extends mac {
             return false;
         }
 
-        $team = request_var('team', 0);
+        $team     = request_var('team', 0);
         $username = request_var('username', '');
         $username = get_username_base($username);
         $realname = request_var('realname', '');
-        $ismod = request_var('ismod', 0);
+        $ismod    = request_var('ismod', 0);
 
         $sql = 'SELECT *
             FROM _team
@@ -73,9 +73,9 @@ class __user_team_create extends mac {
 
         if ($insert) {
             $insert = array(
-                'team_id' => $team,
-                'member_id' => $userdata['user_id'],
-                'real_name' => $realname,
+                'team_id'    => $team,
+                'member_id'  => $userdata['user_id'],
+                'real_name'  => $realname,
                 'member_mod' => $ismod
             );
             sql_insert('team_members', $insert);

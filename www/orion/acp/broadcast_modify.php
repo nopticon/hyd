@@ -1,8 +1,6 @@
 <?php
 namespace App;
 
-require_once(ROOT . 'interfase/ftp.php');
-
 class __broadcast_modify extends mac {
     public function __construct() {
         parent::__construct();
@@ -10,16 +8,16 @@ class __broadcast_modify extends mac {
         $this->auth('founder');
     }
 
-    public function _home() {
-        global $config, $user, $cache;
+    public function home() {
+        global $user, $cache;
 
         $ftp = new ftp();
 
-        if (!$ftp->ftp_connect($config['broadcast_host'])) {
+        if (!$ftp->ftp_connect(config('broadcast_host'))) {
             _pre('Can not connect', true);
         }
 
-        if (!$ftp->ftp_login($config['broadcast_username'], $config['broadcast_password'])) {
+        if (!$ftp->ftp_login(config('broadcast_username'), config('broadcast_password'))) {
             $ftp->ftp_quit();
             _pre('Can not login', true);
         }
@@ -41,7 +39,7 @@ class __broadcast_modify extends mac {
                 @flock($fp, LOCK_UN);
                 fclose($fp);
 
-                _chmod($cds_file, $config['mask']);
+                _chmod($cds_file, config('mask'));
 
                 if ($ftp->ftp_put('/Schedule/schedule_playlist.txt', $cds_file)) {
                     echo '<h1>El archivo fue procesado correctamente.</h1>';
@@ -72,7 +70,7 @@ class __broadcast_modify extends mac {
             if (!empty($e_item[0])) {
                 $format = '%s <input type="text" name="hours[%s]" value="%s" size="100" %s /><br />%s';
                 $oclock = oclock($e_item[0]) ? 'class="highlight"' : '';
-                
+
                 echo sprintf(sumhour($e_item[0]), $e_item[0], $e_item[1], $oclock, nr();
             }
         }

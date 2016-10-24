@@ -11,10 +11,10 @@ class __artist_gallery extends mac {
     /*
     List all images associated to this artist.
     */
-    public function _home() {
-        global $config, $user, $cache;
+    public function home() {
+        global $user, $cache;
 
-        $this->_artist();
+        $this->isArtist();
 
         if ((_button() && $this->upload()) || (_button('remove') && $this->remove())) {
             return;
@@ -40,9 +40,9 @@ class __artist_gallery extends mac {
                     'footer' => $row['image']
                 )
             );
-            
-            $image  = $config['artists_url'] . $this->object['ub'] . '/thumbnails/' . $row['image'] . '.jpg';
-            $rimage = $config['artists_url'] . $this->object['ub'], $row['image'] . '.jpg', w('x1 gallery');
+
+            $image  = config('artists_url') . $this->object['ub'] . '/thumbnails/' . $row['image'] . '.jpg';
+            $rimage = config('artists_url') . $this->object['ub'], $row['image'] . '.jpg', w('x1 gallery');
 
             _style(
                 'gallery.row',
@@ -66,7 +66,7 @@ class __artist_gallery extends mac {
     Upload images to artist's gallery.
     */
     private function upload() {
-        global $config, $upload;
+        global $upload;
 
         $a_1 = artist_check($this->object['ub'] . ' x1');
         $a_2 = artist_check($this->object['ub'] . ' gallery');
@@ -76,7 +76,7 @@ class __artist_gallery extends mac {
             return;
         }
 
-        $filepath = $config['artists_path'] . $this->object['ub'] . '/';
+        $filepath = config('artists_path') . $this->object['ub'] . '/';
         $filepath_1 = $filepath . 'x1/';
         $filepath_2 = $filepath . 'gallery/';
         $filepath_3 = $filepath . 'thumbnails/';
@@ -135,11 +135,10 @@ class __artist_gallery extends mac {
     Remove selected images from artist's gallery.
     */
     private function remove() {
-        global $config;
-
         $s_images = request_var('ls_images', array(0));
+
         if (sizeof($s_images)) {
-            $common_path = $config['artists_path'] . $this->object['ub'] . '/';
+            $common_path = config('artists_path') . $this->object['ub'] . '/';
             $path = array(
                 $common_path . 'x1/',
                 $common_path . 'gallery/',

@@ -8,21 +8,21 @@ class __broadcast_program_create extends mac {
         $this->auth('founder');
     }
 
-    public function _home() {
-        global $config, $user, $cache;
+    public function home() {
+        global $user, $cache;
 
         if (!_button()) {
             return;
         }
 
         $v = _request(array(
-            'name' => '',
-            'base' => '',
+            'name'  => '',
+            'base'  => '',
             'genre' => '',
             'start' => 0,
-            'end' => 0,
-            'day' => 0,
-            'dj' => ''
+            'end'   => 0,
+            'day'   => 0,
+            'dj'    => ''
         ));
 
         $sql = 'SELECT show_id
@@ -33,10 +33,10 @@ class __broadcast_program_create extends mac {
         }
 
         $time_start = mktime($v->start - $user->d('user_timezone'), 0, 0, 0, 0, 0);
-        $time_end = mktime($v->end - $user->d('user_timezone'), 0, 0, 0, 0, 0);
+        $time_end   = mktime($v->end - $user->d('user_timezone'), 0, 0, 0, 0, 0);
 
         $v->start = date('H', $time_start);
-        $v->end = date('H', $time_end);
+        $v->end   = date('H', $time_end);
 
         $dj_list = $v->dj;
         unset($v->dj);
@@ -58,7 +58,7 @@ class __broadcast_program_create extends mac {
             if ($row = sql_fieldrow(sql_filter($sql, $rowu))) {
                 $sql_insert = array(
                     'dj_show' => $show_id,
-                    'dj_uid' => $row['user_id']
+                    'dj_uid'  => $row['user_id']
                 );
                 sql_insert('radio_dj', $sql_insert);
 
@@ -68,9 +68,9 @@ class __broadcast_program_create extends mac {
                         AND member_id = ?';
                 if (!$row2 = sql_fieldrow(sql_filter($sql, $row['user_id']))) {
                     $sql_insert = array(
-                        'team_id' => 4,
-                        'member_id' => $row['user_id'],
-                        'real_name' => '',
+                        'team_id'    => 4,
+                        'member_id'  => $row['user_id'],
+                        'real_name'  => '',
                         'member_mod' => 0
                     );
                     sql_insert('team_members', $sql_insert);

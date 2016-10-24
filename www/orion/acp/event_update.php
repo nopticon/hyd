@@ -8,8 +8,8 @@ class __event_update extends mac {
         $this->auth('colab');
     }
 
-    public function _home() {
-        global $config, $user;
+    public function home() {
+        global $user;
 
         if ($this->update()) {
             return;
@@ -36,7 +36,7 @@ class __event_update extends mac {
     }
 
     private function update() {
-        global $config, $upload;
+        global $upload;
 
         $v = _request(array('event_id' => 0));
 
@@ -47,8 +47,8 @@ class __event_update extends mac {
             return;
         }
 
-        $filepath_1 = $config['events_path'] . 'future/';
-        $filepath_2 = $config['events_path'] . 'future/thumbnails/';
+        $filepath_1 = config('events_path') . 'future/';
+        $filepath_2 = config('events_path') . 'future/thumbnails/';
 
         $f = $upload->process($filepath_1, 'event_image', 'jpg');
 

@@ -11,10 +11,10 @@ class __event_artist_create extends mac {
     /*
     Show form listing all event available to this artist.
     */
-    public function _home() {
-        global $config, $user, $cache;
+    public function home() {
+        global $user, $cache;
 
-        $this->_artist();
+        $this->isArtist();
 
         if ($this->create()) {
             return;
@@ -50,9 +50,9 @@ class __event_artist_create extends mac {
             _style(
                 'events.month.row',
                 array(
-                    'ID' => $row['id'],
+                    'ID'    => $row['id'],
                     'TITLE' => $row['title'],
-                    'DATE' => $user->format_date($row['date'])
+                    'DATE'  => $user->format_date($row['date'])
                 )
             );
         }

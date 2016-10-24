@@ -6,7 +6,7 @@ require_once ROOT . 'objects/userpage.php';
 $user->init();
 $user->setup();
 
-$userpage = new userpage();
+$userpage = new Userpage();
 $userpage->run();
 
-page_layout($userpage->get_title(), $userpage->get_template());
+page_layout($userpage->getTitle(), $userpage->getTemplate());

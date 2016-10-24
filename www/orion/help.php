@@ -6,7 +6,7 @@ require_once ROOT . 'objects/help.php';
 $user->init();
 $user->setup();
 
-$help = new _help();
+$help = new Help();
 $help->run();
 
-page_layout($help->get_title('HELP'), $help->get_template('help'));
+page_layout($help->getTitle('HELP'), $help->getTemplate('help'));

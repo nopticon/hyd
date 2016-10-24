@@ -11,10 +11,10 @@ class __artist_auth extends mac {
     /*
     Show all authorized users to manage artist information.
     */
-    public function _home() {
-        global $config, $user, $cache, $comments;
+    public function home() {
+        global $user, $cache, $comments;
 
-        $this->_artist();
+        $this->isArtist();
 
         if ((_button() && $this->create()) || ((_button('confirm') || _button('remove')) && $this->remove())) {
             return;
@@ -35,7 +35,8 @@ class __artist_auth extends mac {
 
                 $prof = $comments->user_profile($row);
 
-                $delete = ($total > 1 && $prof['user_id'] != $user->d('user_id')) || ($user->is('founder') && $prof['user_id'] != $user->d('user_id'));
+                $delete = ($total > 1 && $prof['user_id'] != $user->d('user_id'));
+                $delete = $delete || ($user->is('founder') && $prof['user_id'] != $user->d('user_id'));
 
                 _style(
                     'members.row',
@@ -113,7 +114,7 @@ class __artist_auth extends mac {
         Authorize the selected user to this artist.
         */
         $sql_insert = array(
-            'ub' => $this->object['ub'],
+            'ub'      => $this->object['ub'],
             'user_id' => $member['user_id']
         );
         sql_insert('artists_auth', $sql_insert);
@@ -127,7 +128,7 @@ class __artist_auth extends mac {
         );
 
         if (!$member['user_rank']) {
-            $update['user_rank'] = $config['default_a_rank'];
+            $update['user_rank'] = config('default_a_rank');
         }
 
         $sql = 'UPDATE _members SET ??
@@ -155,7 +156,7 @@ class __artist_auth extends mac {
     Revoke permission to manage artist's information, for selected users.
     */
     private function remove() {
-        global $config, $user;
+        global $user;
 
         $auth_url = s_link('acp', array('artist_auth', 'a' => $this->object['subdomain']));
 
@@ -210,7 +211,7 @@ class __artist_auth extends mac {
                         $update['user_auth_control'] = 0;
 
                         $user_type = USER_NORMAL;
-                        if ($item['user_rank'] == $config['default_a_rank']) {
+                        if ($item['user_rank'] == config('default_a_rank')) {
                             $update['user_rank'] = 0;
                         }
 
@@ -250,9 +251,9 @@ class __artist_auth extends mac {
             $message = count($result) == 1 ? '2' : '';
 
             $layout_vars = array(
-                'MESSAGE_TEXT' => sprintf(lang('acp_artist_auth_delete' . $message), $this->object['name'], $list),
+                'MESSAGE_TEXT'     => sprintf(lang('acp_artist_auth_delete' . $message), $this->object['name'], $list),
                 'S_CONFIRM_ACTION' => s_link('acp', array('artist_auth', 'a' => $this->object['subdomain'])),
-                'S_HIDDEN_FIELDS' => $result_hidden
+                'S_HIDDEN_FIELDS'  => $result_hidden
             );
 
             page_layout('ACP_ARTIST_AUTH', 'confirm', $layout_vars);

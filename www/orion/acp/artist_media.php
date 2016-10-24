@@ -8,10 +8,10 @@ class __artist_media extends mac {
         $this->auth('artist');
     }
 
-    public function _home() {
-        global $config, $user, $comments;
+    public function home() {
+        global $user, $comments;
 
-        $this->_artist();
+        $this->isArtist();
 
         if (_button()) {
             $this->upload();
@@ -34,13 +34,13 @@ class __artist_media extends mac {
                 _style(
                     'media.row',
                     array(
-                        'ITEM' => $row['id'],
-                        'URL' => s_link('a', $this->object['subdomain'], 9, $row['id']),
-                        'POSTS_URL' => s_link('a', $this->object['subdomain'], 9, $row['id']) . '#dpf',
-                        'IMAGE_TYPE' => $downloads_type[$row['ud']],
+                        'ITEM'           => $row['id'],
+                        'URL'            => s_link('a', $this->object['subdomain'], 9, $row['id']),
+                        'POSTS_URL'      => s_link('a', $this->object['subdomain'], 9, $row['id']) . '#dpf',
+                        'IMAGE_TYPE'     => $downloads_type[$row['ud']],
                         'DOWNLOAD_TITLE' => $row['title'],
-                        'VIEWS' => $row['views'],
-                        'DOWNLOADS' => $row['downloads']
+                        'VIEWS'          => $row['views'],
+                        'DOWNLOADS'      => $row['downloads']
                     )
                 );
             }
@@ -50,11 +50,11 @@ class __artist_media extends mac {
     }
 
     private function upload() {
-        global $config, $user, $cache, $upload;
+        global $user, $cache, $upload;
 
         $limit = set_time_limit(0);
 
-        $filepath = $config['artists_path'] . $this->object['ub'] . '/';
+        $filepath = config('artists_path') . $this->object['ub'] . '/';
         $filepath_1 = $filepath . 'media/';
 
         $check = artist_check($this->object['ub'] . ' media');
@@ -119,7 +119,7 @@ class __artist_media extends mac {
     }
 
     private function remove() {
-        global $config, $cache;
+        global $cache;
 
         $remove = request_var('s_downloads', array(0));
 

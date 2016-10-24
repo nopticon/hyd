@@ -10,8 +10,8 @@ class __forums_topic_feature extends mac {
         $this->auth('mod');
     }
 
-    public function _home() {
-        global $config, $user, $cache;
+    public function home() {
+        global $user, $cache;
 
         if (!_button()) {
             return;
@@ -32,12 +32,12 @@ class __forums_topic_feature extends mac {
         topic_feature($this->id, $this->object->new_value);
 
         $sql_insert = array(
-            'bio' => $user->d('user_id'),
-            'time' => time(),
-            'ip' => $user->ip,
+            'bio'    => $user->d('user_id'),
+            'time'   => time(),
+            'ip'     => $user->ip,
             'action' => 'feature',
-            'old' => $this->object->topic_featured,
-            'new' => $this->object->new_value
+            'old'    => $this->object->topic_featured,
+            'new'    => $this->object->new_value
         );
         sql_insert('log_mod', $sql_insert);
 

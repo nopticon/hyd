@@ -8,8 +8,8 @@ class __user_ip_report extends mac {
         $this->auth('founder');
     }
 
-    public function _home() {
-        global $config, $user, $cache;
+    public function home() {
+        global $user, $cache;
 
         $username = request_var('username', '');
         $ip = request_var('ip', '');
@@ -48,7 +48,7 @@ class __user_ip_report extends mac {
                         'UID'      => $row['log_user_id'],
                         'USERNAME' => $row['username'],
                         'TIME'     => $user->format_date($row['log_time']),
-                        'ENDTIME'  => (($row['log_endtime']) ? $user->format_date($row['log_endtime']) : '&nbsp;'),
+                        'ENDTIME'  => ($row['log_endtime']) ? $user->format_date($row['log_endtime']) : '&nbsp;',
                         'DIFFTIME' => $difftime,
                         'IP'       => $row['log_ip'],
                         'AGENT'    => $row['log_agent']
@@ -86,9 +86,9 @@ function timeDiff($timestamp, $now = 0, $detailed = false, $n = 0) {
             continue;
         }
 
-        $val = floor($diff / $item);
-        $diff -= ($val * $item);
-        $result[] = $val . $periods[($i - 1)];
+        $val       = floor($diff / $item);
+        $diff     -= ($val * $item);
+        $result[]  = $val . $periods[($i - 1)];
 
         if (!$detailed) {
             $i = 0;
@@ -96,5 +96,5 @@ function timeDiff($timestamp, $now = 0, $detailed = false, $n = 0) {
         $i--;
     }
 
-    return (count($result)) ? $result : false;
+    return count($result) ? $result : false;
 }

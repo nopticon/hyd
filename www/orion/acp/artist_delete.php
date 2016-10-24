@@ -8,8 +8,8 @@ class __artist_delete extends mac {
         return $this->auth('founder');
     }
 
-    public function _home() {
-        global $config, $cache;
+    public function home() {
+        global $cache;
 
         if (!_button()) {
             $sql = 'SELECT ub, name
@@ -95,7 +95,7 @@ class __artist_delete extends mac {
             $d_sql = array_merge($d_sql, sql_filter($ary_sql, _implode(',', $downloads)));
         }
 
-        if (!_rm($config['artists_path'] . $a_data['ub'])) {
+        if (!_rm(config('artists_path') . $a_data['ub'])) {
             _pre('Error al eliminar directorio de artista.', true);
         }
 

@@ -8,8 +8,8 @@ class __unread_topics_mod extends mac {
         $this->auth('founder');
     }
 
-    public function _home() {
-        global $config, $user, $cache;
+    public function home() {
+        global $user, $cache;
 
         $auth = array(16 => 'radio', 17 => 'mod');
 

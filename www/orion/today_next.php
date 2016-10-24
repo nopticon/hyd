@@ -20,7 +20,7 @@ $select = request_var('select', array(0 => 0));
 $select_all = request_var('select_all', 0);
 
 if ($select_all) {
-    $today->clear_all();
+    $today->clearAll();
 }
 
 if (count($select)) {

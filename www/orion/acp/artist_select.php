@@ -8,8 +8,8 @@ class __artist_select extends mac {
         $this->auth('artist');
     }
 
-    public function _home() {
-        global $config, $user, $cache;
+    public function home() {
+        global $user, $cache;
 
         $artist = request_var('a', '');
         $redirect = request_var('r', '');

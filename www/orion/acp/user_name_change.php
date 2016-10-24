@@ -8,8 +8,8 @@ class __user_name_change extends mac {
         $this->auth('founder');
     }
 
-    public function _home() {
-        global $config, $user, $cache;
+    public function home() {
+        global $user, $cache;
 
         if (!_button()) {
             return false;
@@ -46,7 +46,7 @@ class __user_name_change extends mac {
         $emailer = new emailer();
 
         $emailer->from('info');
-        $emailer->use_template('username_change', $config['default_lang']);
+        $emailer->use_template('username_change', config('default_lang'));
         $emailer->email_address($userdata['user_email']);
 
         $emailer->assign_vars(

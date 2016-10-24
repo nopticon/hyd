@@ -41,17 +41,21 @@ if (@ini_get('register_globals') == '1' || strtolower(@ini_get('register_globals
     unset($input);
 }
 
-require_once ROOT . 'interfase/constants.php';
-require_once ROOT . 'interfase/functions.php';
-require_once(ROOT . 'interfase/db.call.php');
-require_once ROOT . 'interfase/db.mysqli.php';
-require_once ROOT . 'interfase/template.php';
-require_once ROOT . 'interfase/session.php';
-require_once ROOT . 'interfase/cache.php';
-require_once ROOT . 'interfase/comments.php';
-require_once ROOT . 'interfase/emailer.php';
-require_once ROOT . 'interfase/upload.php';
-require_once ROOT . 'interfase/downloads.php';
+require_once ROOT . 'interfase/Constants.php';
+require_once ROOT . 'interfase/Functions.php';
+require_once ROOT . 'interfase/Database.php';
+require_once ROOT . 'interfase/Mysqli.php';
+require_once ROOT . 'interfase/Template.php';
+require_once ROOT . 'interfase/Session.php';
+require_once ROOT . 'interfase/User.php';
+require_once ROOT . 'interfase/Auth.php';
+require_once ROOT . 'interfase/Cache.php';
+require_once ROOT . 'interfase/Comments.php';
+require_once ROOT . 'interfase/Emailer.php';
+require_once ROOT . 'interfase/Upload.php';
+require_once ROOT . 'interfase/Downloads.php';
+require_once ROOT . 'interfase/Ftp.php';
+require_once ROOT . 'interfase/Zip.php';
 
 set_error_handler('msg_handler');
 

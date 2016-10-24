@@ -8,10 +8,10 @@ class __artist_stats extends mac {
         $this->auth('founder');
     }
 
-    public function _home() {
-        global $config, $user, $comments;
+    public function home() {
+        global $user, $comments;
 
-        $this->_artist();
+        $this->isArtist();
 
         $sql = 'SELECT *, SUM(members + guests) AS total
             FROM _artists_stats
@@ -60,22 +60,23 @@ class __artist_stats extends mac {
             }
 
             for ($i = 1; $i < 13; $i++) {
-                $month = (($i < 10) ? '0' : '') . $i;
-                $monthdata = (isset($stats[$year . $month])) ? $stats[$year . $month] : w();
-                $monthdata['total'] = isset($monthdata['total']) ? $monthdata['total'] : 0;
+                $month                = (($i < 10) ? '0' : '') . $i;
+                $monthdata            = (isset($stats[$year . $month])) ? $stats[$year . $month] : w();
+                $monthdata['total']   = isset($monthdata['total']) ? $monthdata['total'] : 0;
                 $monthdata['percent'] = ($years_sum[$year] > 0) ? $monthdata['total'] / $years_sum[$year] : 0;
                 $monthdata['members'] = isset($monthdata['members']) ? $monthdata['members'] : 0;
-                $monthdata['guests'] = isset($monthdata['guests']) ? $monthdata['guests'] : 0;
-                $monthdata['unix'] = gmmktime(0, 0, 0, $i, 1, $year) - $user->timezone - $user->dst;
+                $monthdata['guests']  = isset($monthdata['guests']) ? $monthdata['guests'] : 0;
+                $monthdata['unix']    = gmmktime(0, 0, 0, $i, 1, $year) - $user->timezone - $user->dst;
+
                 $total_graph += $monthdata['total'];
 
                 _style(
                     'year.month',
                     array(
-                        'NAME' => $user->format_date($monthdata['unix'], 'F'),
-                        'TOTAL' => $monthdata['total'],
+                        'NAME'    => $user->format_date($monthdata['unix'], 'F'),
+                        'TOTAL'   => $monthdata['total'],
                         'MEMBERS' => $monthdata['members'],
-                        'GUESTS' => $monthdata['guests'],
+                        'GUESTS'  => $monthdata['guests'],
                         'PERCENT' => sprintf("%.1d", ($monthdata['percent'] * 100))
                     )
                 );
@@ -84,7 +85,7 @@ class __artist_stats extends mac {
 
         v_style(
             array(
-                'BEFORE_VIEWS' => number_format($this->object['views']),
+                'BEFORE_VIEWS'      => number_format($this->object['views']),
                 'SHOW_VIEWS_LEGEND' => ($this->object['views'] > $total_graph)
             )
         );

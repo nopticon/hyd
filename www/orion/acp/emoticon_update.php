@@ -8,12 +8,12 @@ class __emoticon_update extends mac {
         $this->auth('founder');
     }
 
-    public function _home() {
-        global $config, $user, $cache;
+    public function home() {
+        global $user, $cache;
 
         sql_truncate('_smilies');
 
-        $emoticon_path = $config['assets_path'] . 'emoticon/';
+        $emoticon_path = config('assets_path') . 'emoticon/';
         $process = 0;
 
         $fp = @opendir($emoticon_path);

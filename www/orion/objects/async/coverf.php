@@ -14,7 +14,7 @@ $sql = 'SELECT t.topic_id, t.topic_title, t.forum_id, t.topic_replies,
         AND p.poster_id = u.user_id
     ORDER BY p.post_id DESC
     LIMIT ??';
-if (!$result = sql_rowset(sql_filter($sql, $config['ub_fans_f'], $config['main_topics']))) {
+if (!$result = sql_rowset(sql_filter($sql, config('ub_fans_f'), config('main_topics')))) {
     exit;
 }
 

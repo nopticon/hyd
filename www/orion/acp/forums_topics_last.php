@@ -8,8 +8,8 @@ class __forums_topics_last extends mac {
         $this->auth('mod');
     }
 
-    public function _home() {
-        global $config, $user, $cache;
+    public function home() {
+        global $user, $cache;
 
         $sql = 'SELECT e.event_topic, f.forum_name, t.topic_id, t.topic_title, t.topic_views, t.topic_replies
             FROM _forum_topics t
@@ -28,11 +28,11 @@ class __forums_topics_last extends mac {
             _style(
                 'topics.row',
                 array(
-                    'TOPIC_ID' => s_link('topic', $row['topic_id']),
-                    'TOPIC_FORUM' => $row['forum_name'],
-                    'TOPIC_EVENT' => $row['event_topic'],
-                    'TOPIC_TITLE' => $row['topic_title'],
-                    'TOPIC_VIEWS' => $row['topic_views'],
+                    'TOPIC_ID'      => s_link('topic', $row['topic_id']),
+                    'TOPIC_FORUM'   => $row['forum_name'],
+                    'TOPIC_EVENT'   => $row['event_topic'],
+                    'TOPIC_TITLE'   => $row['topic_title'],
+                    'TOPIC_VIEWS'   => $row['topic_views'],
                     'TOPIC_REPLIES' => $row['topic_replies']
                 )
             );

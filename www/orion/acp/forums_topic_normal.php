@@ -8,8 +8,8 @@ class __forums_topic_normal extends mac {
         $this->auth('mod');
     }
 
-    public function _home() {
-        global $config, $user, $cache;
+    public function home() {
+        global $user, $cache;
 
         if (_button()) {
             $topic = request_var('topic', 0);
@@ -57,7 +57,7 @@ class __forums_topic_normal extends mac {
             _style(
                 'topics.forum.row',
                 array(
-                    'TOPIC_ID' => $row['topic_id'],
+                    'TOPIC_ID'    => $row['topic_id'],
                     'TOPIC_TITLE' => $row['topic_title']
                 )
             );

@@ -8,8 +8,8 @@ class __unread_topics_delete extends mac {
         $this->auth('founder');
     }
 
-    public function _home() {
-        global $config, $user, $cache, $comments;
+    public function home() {
+        global $user, $cache, $comments;
 
         $sql = 'SELECT *
             FROM _members_unread

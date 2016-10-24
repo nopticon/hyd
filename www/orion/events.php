@@ -6,7 +6,7 @@ require_once ROOT . 'objects/events.php';
 $user->init();
 $user->setup();
 
-$events = new _events();
+$events = new Events();
 $events->run();
 
-page_layout($events->get_title('UE'), $events->get_template('events'));
+page_layout($events->getTitle('UE'), $events->getTemplate('events'));

@@ -8,8 +8,8 @@ class __artist extends mac {
         $this->auth('founder');
     }
 
-    public function _home() {
-        global $config, $user, $cache;
+    public function home() {
+        global $user, $cache;
 
         if (!_button()) {
             return false;
@@ -45,7 +45,7 @@ class __artist extends mac {
 
         // Cache
         $cache->delete('ub_list a_records ai_records a_recent');
-        set_config('max_artists', $config['max_artists'] + 1);
+        set_config('max_artists', config('max_artists') + 1);
 
         // Create directories
         artist_check($artist_id);
@@ -82,7 +82,7 @@ class __artist extends mac {
                 $update = array('user_type' => USER_ARTIST, 'user_auth_control' => 1);
 
                 if (!$info['user_rank']) {
-                    $update['user_rank'] = (int) $config['default_a_rank'];
+                    $update['user_rank'] = (int) config('default_a_rank');
                 }
 
                 $sql = 'UPDATE _members SET ??

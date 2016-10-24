@@ -8,8 +8,8 @@ class __news_images extends mac {
         $this->auth('all');
     }
 
-    public function _home() {
-        global $config, $user, $cache, $upload;
+    public function home() {
+        global $user, $cache, $upload;
 
         if (_button()) {
             $news_id = request_var('news_id', 0);
@@ -21,7 +21,7 @@ class __news_images extends mac {
                 fatal_error();
             }
 
-            $filepath_1 = $config['news_path'];
+            $filepath_1 = config('news_path');
 
             $f = $upload->process($filepath_1, 'add_image', 'jpg');
 

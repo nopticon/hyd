@@ -8,8 +8,8 @@ class __user_ban extends mac {
         $this->auth('founder');
     }
 
-    public function _home() {
-        global $config, $user, $cache;
+    public function home() {
+        global $user, $cache;
 
         if ($this->create()) {
             return;

@@ -6,7 +6,7 @@ require_once ROOT . 'objects/news.php';
 $user->init();
 $user->setup();
 
-$news = new _news();
+$news = new News();
 $news->run();
 
-page_layout($news->get_title('NEWS'), $news->get_template('news'));
+page_layout($news->getTitle('NEWS'), $news->getTemplate('news'));

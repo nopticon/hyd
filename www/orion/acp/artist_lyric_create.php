@@ -8,10 +8,10 @@ class __artist_lyric_create extends mac {
         $this->auth('artist');
     }
 
-    public function _home() {
-        global $config, $user, $cache;
+    public function home() {
+        global $user, $cache;
 
-        $this->_artist();
+        $this->isArtist();
 
         if ($this->create()) {
             return;

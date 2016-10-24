@@ -1,8 +1,6 @@
 <?php
 namespace App;
 
-require_once(ROOT . 'interfase/zip.php');
-
 class __event_images extends mac {
     public function __construct() {
         parent::__construct();
@@ -10,14 +8,15 @@ class __event_images extends mac {
         $this->auth('colab');
     }
 
-    public function _home() {
-        global $config, $user, $cache, $upload;
+    public function home() {
+        global $user, $cache, $upload;
 
         if (_button()) {
             $event_id = request_var('event_id', 0);
 
-            $filepath_1 = $config['events_path'] . 'tmp/';
-            $filepath_2 = $config['events_path'] . 'gallery/';
+            $filepath_1 = config('events_path') . 'tmp/';
+            $filepath_2 = config('events_path') . 'gallery/';
+
             $filepath_3 = $filepath_1 . $event_id . '/';
             $filepath_4 = $filepath_3 . 'thumbnails/';
 

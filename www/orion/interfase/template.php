@@ -126,11 +126,9 @@ class Template {
      * Sets the root dir.
      */
     public function set_template($root = '.') {
-        global $config;
-
         $this->vars = &$this->tpldata['.'][0];
 
-        $this->use_cache = $config['xs_use_cache'];
+        $this->use_cache = config('xs_use_cache');
         $this->cache_search = array('.', '\\', '/', '_tpl');
         $this->cache_replace = array('_', '.', '.', '.php');
 
@@ -260,8 +258,6 @@ class Template {
      * Assigns template filename for handle.
      */
     public function set_filename($handle, $filename, $xs_include = false, $quiet = false) {
-        global $config;
-
         $can_cache = $this->use_cache;
         if (strpos($filename, '..') !== false) {
             $can_cache = false;
@@ -326,7 +322,7 @@ class Template {
         // checking if we should recompile cache
         if (!empty($this->files_cache[$handle]) && $this->auto_recompile) {
             $cache_time = @filemtime($this->files_cache[$handle]);
-            if (@filemtime($this->files[$handle]) > $cache_time || $config['xs_template_time'] > $cache_time) {
+            if (@filemtime($this->files[$handle]) > $cache_time || (int) config('xs_template_time') > $cache_time) {
                 // file was changed. don't use cache file (will be recompled if configuration allowes it)
                 $this->files_cache[$handle] = '';
             }
@@ -338,7 +334,7 @@ class Template {
      * includes file or executes code
      */
     public function execute($filename, $code, $handle = false) {
-        global $theme, $config;
+        global $theme;
 
         $template = $theme['template_name'];
         global $$template;
@@ -358,8 +354,6 @@ class Template {
      * the results of executing the template.
      */
     public function pparse($handle) {
-        global $config;
-
         // Parsing header if there is one
         if ($this->preparse || $this->postparse) {
             $preparse = $this->preparse;
@@ -424,7 +418,7 @@ class Template {
      * Precompile file
      */
     public function precompile($template, $filename) {
-        global $precompile_num, $config;
+        global $precompile_num;
 
         if (empty($precompile_num)) {
             $precompile_num = 0;
@@ -537,8 +531,6 @@ class Template {
      * the uncompiled_code[] hash with its code. Do not compile.
      */
     public function loadfile($handle) {
-        global $config;
-
         if (!empty($this->files_cache[$handle]) || !empty($this->uncompiled_code[$handle])) {
             return true;
         }
@@ -1212,8 +1204,6 @@ class Template {
      * Write cache to disk
      */
     public function write_cache($filename, $code) {
-        global $config;
-
         // check if cache is writable
         if (!$this->cache_writable) {
             return false;
@@ -1236,7 +1226,7 @@ class Template {
                     $this->cache_writable = 0;
                     return false;
                 } else {
-                    _chmod($path, $config['mask']);
+                    _chmod($path, config('mask'));
                 }
             }
 
@@ -1253,7 +1243,7 @@ class Template {
                             $this->cache_writable = 0;
                             return false;
                         } else {
-                            _chmod($path, $config['mask']);
+                            _chmod($path, config('mask'));
                         }
                     }
                 }
@@ -1269,7 +1259,7 @@ class Template {
         fputs($file, "<?php\n\n// Generated on " . date('r') . " (time=" . time() . ")\n\n?>");
         fputs($file, $code);
         fclose($file);
-        _chmod($filename, $config['mask']);
+        _chmod($filename, config('mask'));
 
         return true;
     }
@@ -1380,14 +1370,13 @@ class Template {
     }
 
     public function add_config($tpl) {
-        global $config;
-
-        $config_name = 'xs_style_' . $tpl;
+        $name = 'xs_style_' . $tpl;
         $result = false;
 
-        if (empty($config[$config_name])) {
-            $old = $this->style_config;
+        if (!config($name)) {
+            $old    = $this->style_config;
             $result = $this->_add_config($tpl, false);
+
             $this->style_config = $old;
         }
 
@@ -1426,16 +1415,15 @@ class Template {
         }
 
         $config_name = 'xs_style_' . $tpl;
-        global $config;
 
-        if (empty($config[$config_name])) {
+        if (!config($config_name)) {
             if ($add_config) {
                 $this->_add_config($tpl, $tpl === $this->tpl ? true : false);
             }
             return $this->style_config;
         }
 
-        $this->style_config = $this->_unserialize($config[$config_name]);
+        $this->style_config = $this->_unserialize(config($config_name));
         if ($tpl === $this->tpl) {
             foreach ($this->style_config as $var => $value) {
                 $this->vars['TPL_CFG_' . strtoupper($var)] = $value;
@@ -1453,8 +1441,10 @@ class Template {
             return $this->style_config;
         } else {
             $old_config = $this->style_config;
-            $result = $this->_get_config($tpl, $add_config);
+            $result     = $this->_get_config($tpl, $add_config);
+
             $this->style_config = $old_config;
+
             return $result;
         }
     }

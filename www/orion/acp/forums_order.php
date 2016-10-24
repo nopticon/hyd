@@ -8,8 +8,8 @@ class __forum_order extends mac {
         $this->auth('founder');
     }
 
-    public function _home() {
-        global $config, $user, $cache;
+    public function home() {
+        global $user, $cache;
 
         if (!_button()) {
             $sql = 'SELECT forum_id, forum_name
@@ -25,7 +25,7 @@ class __forum_order extends mac {
                 _style(
                     'forums.row',
                     array(
-                        'FORUM_ID' => $row['forum_id'],
+                        'FORUM_ID'   => $row['forum_id'],
                         'FORUM_NAME' => $row['forum_name']
                     )
                 );

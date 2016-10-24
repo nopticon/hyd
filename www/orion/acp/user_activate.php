@@ -8,13 +8,13 @@ class __user_activate extends mac {
         $this->auth('founder');
     }
 
-    public function _home() {
-        global $config, $user, $cache;
+    public function home() {
+        global $user, $cache;
 
         $user_id = request_var('uid', 0);
 
         if (_button() || $user_id) {
-            $username = request_var('username', '');
+            $username   = request_var('username', '');
             $user_email = request_var('user_email', '');
 
             if ($user_id) {

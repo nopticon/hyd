@@ -15,6 +15,8 @@ if (!defined('REQC')) {
     define('REQC', strpos(ini_get('request_order'), 'C') === false);
 }
 
+define('YEAR', date('Y'));
+
 // User Levels
 define('GUEST', 1);
 define('USER_NORMAL', 0);

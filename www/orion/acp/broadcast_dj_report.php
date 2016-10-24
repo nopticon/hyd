@@ -8,8 +8,8 @@ class __broadcast_dj_report extends mac {
         $this->auth('founder');
     }
 
-    public function _home() {
-        global $config, $user, $cache;
+    public function home() {
+        global $user, $cache;
 
         $sql = 'SELECT d.*, m.username, m.username_base
             FROM _radio_dj_log d, _members m

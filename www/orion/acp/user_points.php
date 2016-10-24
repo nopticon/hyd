@@ -8,8 +8,8 @@ class __user_points extends mac {
         $this->auth('founder');
     }
 
-    public function _home() {
-        global $config, $user, $cache;
+    public function home() {
+        global $user, $cache;
 
         $sql = 'SELECT user_id, username, username_base, user_points
             FROM _members

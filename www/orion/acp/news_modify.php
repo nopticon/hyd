@@ -8,8 +8,8 @@ class __news_modify extends mac {
         $this->auth('founder');
     }
 
-    public function _home() {
-        global $config, $user, $cache;
+    public function home() {
+        global $user, $cache;
 
         $submit2 = _button('submit2');
 
@@ -25,7 +25,7 @@ class __news_modify extends mac {
 
             if ($submit2) {
                 $post_subject = request_var('post_subject', '');
-                $post_desc = request_var('post_desc', '', true);
+                $post_desc    = request_var('post_desc', '', true);
                 $post_message = request_var('post_text', '', true);
 
                 if (empty($post_desc) || empty($post_message)) {
@@ -35,7 +35,7 @@ class __news_modify extends mac {
                 $comments = new _comments();
 
                 $post_message = $comments->prepare($post_message);
-                $post_desc = $comments->prepare($post_desc);
+                $post_desc    = $comments->prepare($post_desc);
 
                 //
                 $sql = 'UPDATE _news SET post_subject = ?, post_desc = ?, post_text = ?

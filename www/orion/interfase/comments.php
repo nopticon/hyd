@@ -27,7 +27,7 @@ class Comments {
     }
 
     public function receive() {
-        global $config, $user;
+        global $user;
 
         if (request_method() != 'post') {
             redirect(s_link());
@@ -55,7 +55,7 @@ class Comments {
     // Store members comments for (all) comment systems
     //
     public function store() {
-        global $user, $config;
+        global $user;
 
         $this->param = explode('/', array_key(explode('//', $this->ref), 1));
         $this->param = array_splice($this->param, 1, -1);
@@ -353,7 +353,7 @@ class Comments {
         $pag_lang_prefix = '',
         $simple_pagination = false
     ) {
-        global $config, $user;
+        global $user;
 
         if ($tpl_prefix == '') {
             $tpl_prefix = 'posts';
@@ -450,7 +450,7 @@ class Comments {
     // Get formatted member profile fields
     //
     public function user_profile(&$row, $a_class = '', $unset_fields = false) {
-        global $user, $config;
+        global $user;
         static $all_ranks;
 
         if (!isset($this->users[$row['user_id']]) || $row['user_id'] == GUEST) {
@@ -545,7 +545,7 @@ class Comments {
     // entry into the database.
     //
     public function prepare($message) {
-        global $config, $user;
+        global $user;
 
         // Do some general 'cleanup' first before processing message,
         // e.g. remove excessive newlines(?), smilies(?)
@@ -893,10 +893,10 @@ class Comments {
     }
 
     public function parse_url() {
-        global $config, $user;
+        global $user;
 
         if (!isset($this->options['url'])) {
-            $quote = preg_quote('http://' . $config['server_name'], '#');
+            $quote = preg_quote('http://' . config('server_name'), '#');
 
             $this->options['url'] = array(
                 'orig' => array(
@@ -927,8 +927,6 @@ class Comments {
     }
 
     public function parse_smilies() {
-        global $config;
-
         if (!isset($this->options['smilies'])) {
             global $cache;
 
@@ -944,7 +942,7 @@ class Comments {
             if (is_array($smilies)) {
                 foreach ($smilies as $row) {
                     $format = ' <img src="%s" alt="%s" />';
-                    $path   = $config['assets_url'] . '/emoticon/' . $row['smile_url'];
+                    $path   = config('assets_url') . '/emoticon/' . $row['smile_url'];
 
                     $this->options['smilies']['orig'][] = '#(^|[\n ]|\.|\()' . preg_quote($row['code'], '#') . '#';
                     $this->options['smilies']['repl'][] = sprintf($format, $path, $row['emoticon']);
@@ -1073,8 +1071,6 @@ class Comments {
     }
 
     public function members_icon() {
-        global $config;
-
         if (preg_match_all('#\:i([0-9a-zA-Z\_\- ]+)\:#si', $this->message, $match)) {
             $orig = $repl = w();
             $formats = w('.jpg .gif .png');

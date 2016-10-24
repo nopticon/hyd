@@ -8,8 +8,8 @@ class __forums_topic_delete extends mac {
         $this->auth('mod');
     }
 
-    public function _home() {
-        global $config, $user, $cache;
+    public function home() {
+        global $user, $cache;
 
         if (!_button()) {
             return false;
@@ -27,7 +27,7 @@ class __forums_topic_delete extends mac {
 
         foreach ($result as $row) {
             $forums_id_sql[] = (int) $row['forum_id'];
-            $topics_id[] = (int) $row['topic_id'];
+            $topics_id[]     = (int) $row['topic_id'];
         }
 
         $topic_id_sql = _implode(',', $topics_id);
@@ -115,8 +115,8 @@ class __forums_topic_delete extends mac {
 }
 
 function sync_topic_delete($id) {
-    $last_topic = 0;
-    $total_posts = 0;
+    $last_topic   = 0;
+    $total_posts  = 0;
     $total_topics = 0;
 
     //

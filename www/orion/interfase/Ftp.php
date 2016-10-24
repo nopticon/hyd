@@ -1,13 +1,11 @@
 <?php
 namespace App;
 
-class ftp {
+class Ftp {
     private $conn_id;
     private $def = array();
 
     public function __construct() {
-        global $config;
-
         // Decode file
         if (@file_exists(ROOT . '.htfda') && $a = @file(ROOT . '.htfda')) {
             // server.user.pwd.folder

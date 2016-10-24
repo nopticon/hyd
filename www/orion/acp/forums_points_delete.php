@@ -8,8 +8,8 @@ class __forims_points_delete extends mac {
         $this->auth('founder');
     }
 
-    public function _home() {
-        global $config, $user, $cache;
+    public function home() {
+        global $user, $cache;
 
         $sql = 'SELECT *
             FROM _forum_topics_nopoints

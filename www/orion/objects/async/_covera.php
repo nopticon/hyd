@@ -42,7 +42,7 @@ if (sizeof($a_ary)) {
         $url = s_link('a', $data['subdomain']);
         $class = ($i % 2) ? 'dark-color' : '';
         $location = $data['local'] ? 'Guatemala' : $data['location'];
-        $image = $config['artists_url'] . $ub . '/thumbnails/' . $random_images[$ub] . '.jpg';
+        $image = config('artists_url') . $ub . '/thumbnails/' . $random_images[$ub] . '.jpg';
 
         $response .= sprintf($format, $class, $url, $data['name'], $location, $url, $image, $data['genre']);
         $i++;

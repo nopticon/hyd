@@ -11,10 +11,10 @@ class __artist_video extends mac {
     /*
     Show all videos added to the artist.
     */
-    public function _home() {
-        global $config, $user, $comments;
+    public function home() {
+        global $user, $comments;
 
-        $this->_artist();
+        $this->isArtist();
 
         if ((_button() && $this->create()) || (_button('remove') && $this->remove())) {
             return;
@@ -34,7 +34,7 @@ class __artist_video extends mac {
             _style(
                 'video.row',
                 array(
-                    'ID' => $row['video_id'],
+                    'ID'   => $row['video_id'],
                     'CODE' => $row['video_code'],
                     'NAME' => $row['video_name'],
                     'TIME' => $user->format_date($row['video_added'])
@@ -49,7 +49,7 @@ class __artist_video extends mac {
     Create video for this artist.
     */
     private function create() {
-        $code = request_var('code', '');
+        $code  = request_var('code', '');
         $vname = request_var('vname', '');
 
         if (!empty($code)) {
@@ -68,9 +68,9 @@ class __artist_video extends mac {
 
         if (!empty($code)) {
             $insert = array(
-                'video_a' => $this->object['ub'],
-                'video_name' => $vname,
-                'video_code' => $code,
+                'video_a'     => $this->object['ub'],
+                'video_name'  => $vname,
+                'video_code'  => $code,
                 'video_added' => time()
             );
             sql_insert('artists_video', $insert);

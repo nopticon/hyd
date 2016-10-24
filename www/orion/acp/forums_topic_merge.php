@@ -8,8 +8,8 @@ class __forums_topic_merge extends mac {
         $this->auth('mod');
     }
 
-    public function _home() {
-        global $config, $user, $cache;
+    public function home() {
+        global $user, $cache;
 
         if (!_button()) {
             return false;
@@ -37,9 +37,9 @@ class __forums_topic_merge extends mac {
         }
 
         $from_forum_id = (int) $row['forum_id'];
-        $from_poll = (int) $row['topic_vote'];
-        $to_forum_id = (int) $row['forum_id'];
-        $to_poll = (int) $row['topic_vote'];
+        $from_poll     = (int) $row['topic_vote'];
+        $to_forum_id   = (int) $row['forum_id'];
+        $to_poll       = (int) $row['topic_vote'];
 
         if ($from_poll) {
             if ($to_poll) {
