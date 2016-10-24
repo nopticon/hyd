@@ -162,6 +162,8 @@ class Session {
             $this->data = sql_fieldrow(sql_filter($sql, $this->cookie_data['u']));
         }
 
+        $s_lastvisit = 'session_last_visit';
+
         if ($this->data['user_id'] != 1) {
             $sql = 'SELECT session_time, session_id
                 FROM _sessions
@@ -173,8 +175,6 @@ class Session {
                 unset($sdata);
                 $this->session_id = $this->data['session_id'];
             }
-
-            $s_lastvisit = 'session_last_visit';
 
             if (isset($this->data['session_time']) && $this->data['session_time']) {
                 $this->data[$s_lastvisit] = $this->data['session_time'];
@@ -210,13 +210,13 @@ class Session {
 
         // Create or update the session
         $sql_ary = array(
-            'session_user_id' => (int) $this->data['user_id'],
-            'session_start' => (int) $this->time,
+            'session_user_id'    => (int) $this->data['user_id'],
+            'session_start'      => (int) $this->time,
             'session_last_visit' => (int) $this->data['session_last_visit'],
-            'session_time' => (int) $this->time,
-            'session_browser' => (string) $this->browser,
-            'session_ip' => (string) $this->ip,
-            'session_admin' => ($set_admin) ? 1 : 0
+            'session_time'       => (int) $this->time,
+            'session_browser'    => (string) $this->browser,
+            'session_ip'         => (string) $this->ip,
+            'session_admin'      => ($set_admin) ? 1 : 0
         );
 
         if ($update_page) {
@@ -412,7 +412,7 @@ class Session {
 
             $ban   = !empty($row['ban_userid']) && ((int) $row['ban_userid'] == $user_id);
             $ip    = !empty($row['ban_ip']) && preg_match('#^' . $row['ban_ip'] . '$#i', $user_ip);
-            $email = !empty($row['ban_email']) && preg_match('#^' . $row['ban_email'] . '$#i', $user_email)));
+            $email = !empty($row['ban_email']) && preg_match('#^' . $row['ban_email'] . '$#i', $user_email);
 
 
             if ($ban || $ip || $email) {

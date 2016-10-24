@@ -5,17 +5,24 @@ class Home {
     private $default_title = 'HOME';
     private $default_view = 'home';
 
+    public function getTitle() {
+        return !empty($this->title) ? $this->title : $this->default_title;
+    }
+
+    public function getTemplate() {
+        return !empty($this->template) ? $this->template : $this->default_view;
+    }
+
     public function run() {
         srand((double) microtime() * 1000000);
 
-        $home    = new _home();
         $artists = new Artists();
-        $events  = new _events(true);
+        $events  = new Events();
 
-        $home->news();
-        $home->board_general();
-        $home->board_events();
-        $home->poll();
+        $this->news();
+        $this->board_general();
+        $this->board_events();
+        $this->poll();
 
         $artists->getData();
         $artists->thumbnails();

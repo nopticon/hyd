@@ -133,7 +133,7 @@ class Upload {
             $files = request_var('files:' . $files);
 
             if ($files === false) {
-                return false;''
+                return false;
             }
         }
 

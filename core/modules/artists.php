@@ -1267,7 +1267,7 @@ class Artists extends Downloads {
         }
 
         if ($s_alphabet) {
-            $sql_where = (($selected_char == '#') ? "name NOT RLIKE '^[a-z]'" : '';
+            $sql_where = ($selected_char == '#') ? "name NOT RLIKE '^[a-z]'" : '';
             $sql_where = $sql_where ?: sql_filter('name LIKE ?', $selected_char . '%');
         } else {
             $sql_where = 'images > 1';

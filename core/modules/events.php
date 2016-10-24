@@ -1,8 +1,6 @@
 <?php
 namespace App;
 
-require_once(ROOT . 'interfase/downloads.php');
-
 class Events extends downloads {
     public $data = array();
     public $images = array();
@@ -14,11 +12,7 @@ class Events extends downloads {
     private $template;
     private $title;
 
-    public function __construct($get_timetoday = false) {
-        if (!$get_timetoday) {
-            return;
-        }
-
+    public function __construct() {
         global $user;
 
         $current_time    = time();

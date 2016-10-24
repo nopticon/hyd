@@ -135,7 +135,7 @@ class Template {
         $old_root = $this->root;
 
         $root = str_replace('\\', '/', $root);
-        $this->cachedir = ROOT . 'cache/';
+        $this->cachedir = config('cache_path');
         $this->tpldir = ROOT . 'template/';
         $this->tpldir_len = strlen($this->tpldir);
         $this->root = $root;
@@ -1148,7 +1148,7 @@ class Template {
             $result = $this->generate_block_data_ref(substr($match[1], 0, -1), true, true) . '[\'' . $match[3] . '\']';
         }
 
-        $result = $result ?: '$this->tpldata[\'DEFINE\'][\'.\'][\'' . $match[3] . '\']') . ' = ' . $match[5] . ';'
+        $result = $result ?: '$this->tpldata[\'DEFINE\'][\'.\'][\'' . $match[3] . '\']' . ' = ' . $match[5] . ';';
 
         return $result;
     }

@@ -3,9 +3,9 @@ namespace App;
 
 class Database extends DatabaseCommon {
     public function __construct($d = false) {
-        $this->access($d);
+        $this->login($d);
 
-        $this->connect = new mysqli(
+        $this->connect = new \mysqli(
             $this->login['server'],
             $this->login['login'],
             $this->login['secret'],

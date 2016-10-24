@@ -52,14 +52,14 @@ class User extends Session {
                     // Set correct format ... guess full xx_YY form
                     $accept_lang = substr($accept_lang, 0, 2) . '_' . strtoupper(substr($accept_lang, 3, 2));
                     if (file_exists(ROOT.'language/' . $accept_lang . "/main.php")) {
-                        $this->lang_name = config('default_lang') = $accept_lang;
+                        $this->lang_name = $accept_lang;
                         $this->lang_path = ROOT.'language/' . $accept_lang . '/';
                         break;
                     } else {
                         // No match on xx_YY so try xx
                         $accept_lang = substr($accept_lang, 0, 2);
                         if (file_exists(ROOT . 'language/' . $accept_lang . "/main.php")) {
-                            $this->lang_name = config('default_lang') = $accept_lang;
+                            $this->lang_name = $accept_lang;
                             $this->lang_path = ROOT.'language/' . $accept_lang . '/';
                             break;
                         }
@@ -487,11 +487,11 @@ class User extends Session {
                         AND user_lastvisit > ?
                     ORDER BY user_id';
                 $sql = sql_filter(
-                    $sql
-                    USER_FOUNDER
-                    USER_ADMIN
-                    USER_INACTIVE
-                    $this->data['user_id']
+                    $sql,
+                    USER_FOUNDER,
+                    USER_ADMIN,
+                    USER_INACTIVE,
+                    $this->data['user_id'],
                     $from_lastvisit
                 );
                 break;

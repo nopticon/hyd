@@ -1,4 +1,5 @@
 <?php
+namespace App;
 
 class Tos {
     private $default_title = 'PRIVACY_POLICY';

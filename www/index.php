@@ -1,7 +1,10 @@
 <?php
+namespace App;
 
 require_once '../core/classes/Constants.php';
-require_once '../core/classes/common.php';
+require_once '../core/classes/Common.php';
+
+$config['cache_path'] = '/var/www/prd/rock-republik/cache/';
 
 $user->init();
 $user->setup();
@@ -48,12 +51,15 @@ if (isset($pages[$pagename])) {
 
     switch ($pagename) {
         case 'home':
-            require_once '../core/artists.php';
-            require_once '../core/events.php';
+            require_once ROOT . 'modules/artists.php';
+            require_once ROOT . 'modules/events.php';
+            break;
+        case 'events':
+            require_once ROOT . 'modules/downloads.php';
             break;
     }
 
-    $classname = $pages[$pagename];
+    $classname = __NAMESPACE__ . '\\' . $pages[$pagename];
 
     $instance = new $classname();
     $instance->run();

@@ -24,7 +24,7 @@ class Cache {
             return false;
         }
 
-        $filename = ROOT . 'cache/' . $var . '.php';
+        $filename = config('cache_path') . $var . '.php';
 
         if (@file_exists($filename)) {
             if (!@include_once $filename) {
@@ -47,7 +47,7 @@ class Cache {
             return;
         }
 
-        $filename = ROOT . 'cache/' . $var . '.php';
+        $filename = config('cache_path') . $var . '.php';
 
         $fp = @fopen($filename, 'w');
         if ($fp) {
@@ -73,7 +73,7 @@ class Cache {
         }
 
         foreach (w($list) as $var) {
-            $cache_filename = ROOT . 'cache/' . $var . '.php';
+            $cache_filename = config('cache_path') . $var . '.php';
             if (file_exists($cache_filename)) {
                 _rm($cache_filename);
             }

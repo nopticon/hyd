@@ -879,7 +879,7 @@ $lang += array(
 
     'ACP_ARTIST_AUTH_DESC'         => 'Administra los usuarios que pueden crear, modificar y eliminar contenido.',
     'ACP_ARTIST_AUTH_DELETE'       => '&iquest;Deseas eliminar los siguientes usuarios autorizados de %s?: <b>%s</b>',
-    'ACP_ARTIST_AUTH_DELETE2'      => '&iquest;Deseas eliminar el siguiente usuario autorizado de %s?: <b>%s</b>'
+    'ACP_ARTIST_AUTH_DELETE2'      => '&iquest;Deseas eliminar el siguiente usuario autorizado de %s?: <b>%s</b>',
 
     'datetime' => array(
         'Sunday'    => 'Domingo',

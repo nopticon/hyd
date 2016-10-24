@@ -1,4 +1,5 @@
 <?php
+namespace App;
 
 class Async {
     public $no_layout = true;

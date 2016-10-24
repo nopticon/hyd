@@ -1,4 +1,5 @@
 <?php
+namespace App;
 
 class Broadcast {
     private $default_title = 'BROADCAST';

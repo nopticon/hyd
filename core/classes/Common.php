@@ -62,7 +62,7 @@ foreach ($includes as $row) {
     require_once ROOT . 'classes/' . $row . '.php';
 }
 
-set_error_handler('msg_handler');
+set_error_handler(__NAMESPACE__ . '\\msg_handler');
 
 $db       = new Database();
 $user     = new User();
