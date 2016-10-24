@@ -1,5 +1,6 @@
 <?php
 
+require_once '../core/classes/Constants.php';
 require_once '../core/classes/common.php';
 
 $user->init();
@@ -43,7 +44,7 @@ if (isset($pages[$pagename])) {
             exit;
     }
 
-    require_once '../core/modules/' . $pagename . '.php';
+    require_once ROOT . 'modules/' . $pagename . '.php';
 
     switch ($pagename) {
         case 'home':

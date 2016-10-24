@@ -42,7 +42,6 @@ if (@ini_get('register_globals') == '1' || strtolower(@ini_get('register_globals
 }
 
 $includes = array(
-    'Constants',
     'Functions',
     'Database',
     'Mysqli',
@@ -60,7 +59,7 @@ $includes = array(
 );
 
 foreach ($includes as $row) {
-    require_once './interfase/' . $row . '.php';
+    require_once ROOT . 'classes/' . $row . '.php';
 }
 
 set_error_handler('msg_handler');

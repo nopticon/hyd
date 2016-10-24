@@ -3,7 +3,7 @@
 //
 // Set the root path
 if (!defined('ROOT')) {
-    define('ROOT', './');
+    define('ROOT', '../core/');
 }
 
 //
