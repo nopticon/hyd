@@ -69,15 +69,16 @@ function request_var($var_name, $default = false, $multibyte = false) {
         }
 
         $_REQUEST[$var_part[1]] = $_FILES[$var_part[1]];
+
         $var_name = $var_part[1];
-        $default = array('' => '');
+        $default  = array('' => '');
     }
 
     $array_default = is_array($default);
-    $array_var     = is_array($_REQUEST[$var_name]);
+    $array_var     = isset($_REQUEST[$var_name]) && is_array($_REQUEST[$var_name]);
 
     if (!isset($_REQUEST[$var_name]) || ($array_var && !$array_default) || ($array_default && !$array_var)) {
-        return (is_array($default)) ? w() : $default;
+        return is_array($default) ? w() : $default;
     }
 
     $var = $_REQUEST[$var_name];

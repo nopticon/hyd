@@ -88,6 +88,8 @@ class Auth {
     }
 
     public function action() {
+        global $user;
+
         if (empty($user->data)) {
             $user->init(false);
         }
@@ -403,6 +405,8 @@ class Auth {
     }
 
     public function signin() {
+        global $user;
+
         if ($user->is('member') && !_button('admin')) {
             redirect(s_link());
         }
