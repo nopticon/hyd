@@ -12,9 +12,9 @@ class __news_create extends mac {
         global $user, $cache, $upload, $comments;
 
         if (_button()) {
-            $cat_id = request_var('cat_id', 0);
+            $cat_id       = request_var('cat_id', 0);
             $post_subject = request_var('post_subject', '');
-            $post_desc = request_var('post_desc', '', true);
+            $post_desc    = request_var('post_desc', '', true);
             $post_message = request_var('post_text', '', true);
 
             if (empty($post_desc) || empty($post_message)) {
@@ -91,7 +91,7 @@ class __news_create extends mac {
             _style(
                 'cat.row',
                 array(
-                    'CAT_ID' => $row['cat_id'],
+                    'CAT_ID'   => $row['cat_id'],
                     'CAT_NAME' => $row['cat_name']
                 )
             );

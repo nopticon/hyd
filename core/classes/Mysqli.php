@@ -303,10 +303,10 @@ class Database extends DatabaseCommon {
             $sid = md5(unique_id());
 
             $insert = array(
-                'cache_sid' => $sid,
+                'cache_sid'   => $sid,
                 'cache_query' => $a_sql,
-                'cache_uid' => $user->d('user_id'),
-                'cache_time' => time()
+                'cache_uid'   => $user->d('user_id'),
+                'cache_time'  => time()
             );
             $sql = 'INSERT INTO _search_cache' . $this->build('INSERT', $insert);
             $this->query($sql);
@@ -396,7 +396,7 @@ class Database extends DatabaseCommon {
                 }
 
                 $all = array(
-                    'set' => array_map('trim', explode(',', $s_action[2])),
+                    'set'   => array_map('trim', explode(',', $s_action[2])),
                     'where' => array_map('trim', explode('AND', $s_action[3]))
                 );
 
@@ -411,7 +411,7 @@ class Database extends DatabaseCommon {
 
                 $query = array(
                     'table' => $s_action[1],
-                    'set' => $all['set'],
+                    'set'   => $all['set'],
                     'where' => $all['where']
                 );
                 break;
@@ -441,9 +441,9 @@ class Database extends DatabaseCommon {
         global $user;
 
         $sql_insert = array(
-            'time' => time(),
-            'uid' => $user->d('user_id'),
-            'method' => $method,
+            'time'    => time(),
+            'uid'     => $user->d('user_id'),
+            'method'  => $method,
             'actions' => json_encode($query)
         );
         $sql = 'INSERT INTO _log' . $this->build('INSERT', prefix('log', $sql_insert));

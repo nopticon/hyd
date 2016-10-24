@@ -50,7 +50,7 @@ class __news_images extends mac {
             _style(
                 'news_list',
                 array(
-                    'NEWS_ID' => $row['news_id'],
+                    'NEWS_ID'    => $row['news_id'],
                     'NEWS_TITLE' => $row['post_subject']
                 )
             );

@@ -1,6 +1,6 @@
-!www/orion/cache/.gitkeep
+!cache/.gitkeep
 !www/data/.gitkeep
-www/orion/cache/*
+cache/*
 www/data/*
 podcast/
 

@@ -163,9 +163,9 @@ class Board {
                 'top_posters.item',
                 array(
                     'USERNAME' => $profile['username'],
-                    'PROFILE' => $profile['profile'],
-                    'AVATAR' => $profile['user_avatar'],
-                    'POSTS' => $profile['user_posts']
+                    'PROFILE'  => $profile['profile'],
+                    'AVATAR'   => $profile['user_avatar'],
+                    'POSTS'    => $profile['user_posts']
                 )
             );
         }

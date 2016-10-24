@@ -364,12 +364,12 @@ class _chat {
         }
 
         $insert_data = array(
-            'session_id' => md5(unique_id()),
-            'session_member' => (int) $user->d('user_id'),
-            'session_ch_id' => (int) $this->data['ch_id'],
-            'session_ip' => $user->ip,
-            'session_start' => (int) $ttime,
-            'session_time' => (int) $ttime,
+            'session_id'       => md5(unique_id()),
+            'session_member'   => (int) $user->d('user_id'),
+            'session_ch_id'    => (int) $this->data['ch_id'],
+            'session_ip'       => $user->ip,
+            'session_start'    => (int) $ttime,
+            'session_time'     => (int) $ttime,
             'session_last_msg' => 0
         );
         sql_insert('chat_sessions', $insert_data);
@@ -390,12 +390,12 @@ class _chat {
         global $user, $comments;
 
         $insert_data = array(
-            'msg_ch' => (int) $ch,
-            'msg_ignore' => (int) $ignore,
+            'msg_ch'        => (int) $ch,
+            'msg_ignore'    => (int) $ignore,
             'msg_member_id' => (int) $user->d('user_id'),
-            'msg_text' => (string) $comments->prepare($message),
-            'msg_time' => (int) time(),
-            'msg_ip' => $user->ip
+            'msg_text'      => (string) $comments->prepare($message),
+            'msg_time'      => (int) time(),
+            'msg_ip'        => $user->ip
         );
         sql_insert('chat_msg', $insert_data);
 

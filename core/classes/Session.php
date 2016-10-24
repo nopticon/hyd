@@ -255,9 +255,9 @@ class Session {
         $insert = array(
             'log_user_id' => (int) $this->data['user_id'],
             'log_session' => $this->session_id,
-            'log_ip' => $this->ip,
-            'log_agent' => $this->browser,
-            'log_time' => (int) $this->time,
+            'log_ip'      => $this->ip,
+            'log_agent'   => $this->browser,
+            'log_time'    => (int) $this->time,
             'log_endtime' => 0
         );
         sql_insert('members_iplog', $insert);
@@ -444,8 +444,8 @@ class Session {
     public function d($d = false, $v = false) {
         if ($d === false) {
             if ($v !== false) {
-                $v['is_member'] = ($v['user_id'] != 1);
-                $v['is_bot'] = false;
+                $v['is_member']  = ($v['user_id'] != 1);
+                $v['is_bot']     = false;
                 $v['is_founder'] = ($v['is_member'] && $v['user_type'] == USER_FOUNDER && !$v['is_bot']) ? true : false;
 
                 $this->data = $v;

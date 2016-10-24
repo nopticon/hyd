@@ -76,8 +76,8 @@ class Events extends downloads {
                 _style('next_event');
             }
 
-            $event_mini = config('events_path') . 'mini/' . $row['id'] . '.jpg';
-            $event_image = (@file_exists($event_mini)) ? 'mini/' : 'future/';
+            $event_mini  = config('events_path') . 'mini/' . $row['id'] . '.jpg';
+            $event_image = @file_exists($event_mini) ? 'mini/' : 'future/';
 
             _style(
                 'next_event.row',

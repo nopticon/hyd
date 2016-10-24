@@ -17,6 +17,7 @@ class __user_name_change extends mac {
 
         $username1 = request_var('username1', '');
         $username2 = request_var('username2', '');
+
         if (empty($username1) || empty($username2)) {
             fatal_error();
         }

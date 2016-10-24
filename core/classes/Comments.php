@@ -76,7 +76,7 @@ class Comments {
                     $this->data = array(
                         'DATA_TABLE' => '_dl',
                         'POST_TABLE' => 'dl_posts',
-                        'HISTORY' => UH_M
+                        'HISTORY'    => UH_M
                     );
                 } else {
                     $sql = 'SELECT *
@@ -87,7 +87,7 @@ class Comments {
                     $this->data = array(
                         'DATA_TABLE' => '_artists',
                         'POST_TABLE' => 'artists_posts',
-                        'HISTORY' => UH_C
+                        'HISTORY'    => UH_C
                     );
                 }
                 break;
@@ -102,7 +102,7 @@ class Comments {
                 $this->data = array(
                     'DATA_TABLE' => '_events',
                     'POST_TABLE' => 'events_posts',
-                    'HISTORY' => UH_EP
+                    'HISTORY'    => UH_EP
                 );
                 break;
             case 'news':
@@ -114,7 +114,7 @@ class Comments {
                 $this->data = array(
                     'DATA_TABLE' => '_news',
                     'POST_TABLE' => 'news_posts',
-                    'HISTORY' => UH_NP
+                    'HISTORY'    => UH_NP
                 );
                 break;
             case 'art':
@@ -126,7 +126,7 @@ class Comments {
                 $this->data = array(
                     'DATA_TABLE' => '_art',
                     'POST_TABLE' => 'art_posts',
-                    'HISTORY' => UH_W
+                    'HISTORY'    => UH_W
                 );
                 break;
             case 'm':
@@ -138,7 +138,7 @@ class Comments {
                 $this->data = array(
                     'DATA_TABLE' => '_members',
                     'POST_TABLE' => 'members_posts',
-                    'HISTORY' => UH_UPM
+                    'HISTORY'    => UH_UPM
                 );
                 break;
             default:
@@ -160,7 +160,7 @@ class Comments {
         $current_time = time();
 
         $this->auth['user'] = $user->is('member');
-        $this->auth['adm'] = $user->is('founder');
+        $this->auth['adm']  = $user->is('founder');
 
         /*
         //
@@ -202,12 +202,12 @@ class Comments {
             $message = $this->prepare($message);
 
             $insert_data = array(
-                'post_reply' => (int) $post_reply,
+                'post_reply'  => (int) $post_reply,
                 'post_active' => 1,
-                'poster_id' => (int) $user->d('user_id'),
-                'post_ip' => (string) $user->ip,
-                'post_time' => (int) $current_time,
-                'post_text' => (string) $message
+                'poster_id'   => (int) $user->d('user_id'),
+                'post_ip'     => (string) $user->ip,
+                'post_time'   => (int) $current_time,
+                'post_text'   => (string) $message
             );
 
             switch ($this->param[0]) {
@@ -407,11 +407,11 @@ class Comments {
             }
 
             $data = array(
-                'POST_ID' => $row['post_id'],
+                'POST_ID'  => $row['post_id'],
                 'DATETIME' => $user->format_date($row['post_time']),
-                'SUBJECT' => $topic_title,
-                'MESSAGE' => $this->parse_message($row['post_text'], $this->data['A_LINKS_CLASS']),
-                'REPLIES' => ($this->data['ARTISTS_NEWS']) ? $row['topic_replies'] : 0,
+                'SUBJECT'  => $topic_title,
+                'MESSAGE'  => $this->parse_message($row['post_text'], $this->data['A_LINKS_CLASS']),
+                'REPLIES'  => ($this->data['ARTISTS_NEWS']) ? $row['topic_replies'] : 0,
                 'S_DELETE' => false
             );
 
@@ -624,23 +624,23 @@ class Comments {
 
         if ($mode == 'reply') {
             $insert = array(
-                'parent_id' => (int) $to['parent_id'],
-                'privmsgs_type' => PRIVMSGS_NEW_MAIL,
+                'parent_id'            => (int) $to['parent_id'],
+                'privmsgs_type'        => PRIVMSGS_NEW_MAIL,
                 'privmsgs_from_userid' => (int) $from['user_id'],
-                'privmsgs_to_userid' => (int) $to['user_id'],
+                'privmsgs_to_userid'   => (int) $to['user_id'],
             );
         } else {
             $insert = array(
-                'privmsgs_type' => PRIVMSGS_NEW_MAIL,
-                'privmsgs_subject' => $subject,
+                'privmsgs_type'        => PRIVMSGS_NEW_MAIL,
+                'privmsgs_subject'     => $subject,
                 'privmsgs_from_userid' => (int) $from['user_id'],
-                'privmsgs_to_userid' => (int) $to['user_id']
+                'privmsgs_to_userid'   => (int) $to['user_id']
             );
         }
 
         $insert += array(
             'privmsgs_date' => time(),
-            'msg_ip' => $user->ip,
+            'msg_ip'        => $user->ip,
             'privmsgs_text' => $this->prepare($message),
             'msg_can_reply' => (int) $can_reply
         );
@@ -681,8 +681,8 @@ class Comments {
             $emailer->assign_vars(
                 array(
                     'USERNAME' => $to['username'],
-                    'SENT_BY' => $from['username'],
-                    'DC_URL' => $dc_url
+                    'SENT_BY'  => $from['username'],
+                    'DC_URL'   => $dc_url
                 )
             );
             $emailer->send();

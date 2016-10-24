@@ -57,7 +57,7 @@ class today {
 
             redirect(s_link('today'));
         } elseif (isset($_POST['options'])) {
-            $mark_option = (isset($_POST['mark_read_option'])) ? $_POST['mark_read_option'] : $user->data['user_mark_items'];
+            $mark_option = isset($_POST['mark_read_option']) ? $_POST['mark_read_option'] : $user->data['user_mark_items'];
             $mark_option = intval($mark_option);
 
             if ($user->data['user_mark_items'] != $mark_option) {
@@ -636,9 +636,9 @@ class today {
         $today = new today();
 
         $element = request_var('element', 0);
-        $object = request_var('object', 0);
+        $object  = request_var('object', 0);
 
-        $select = request_var('select', array(0 => 0));
+        $select     = request_var('select', array(0 => 0));
         $select_all = request_var('select_all', 0);
 
         if ($select_all) {

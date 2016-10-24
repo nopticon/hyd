@@ -102,9 +102,9 @@ class __artist_gallery extends mac {
                 $xc = $upload->resize($row, $filepath_2, $filepath_3, $img, array(100, 75), false, false);
 
                 $insert = array(
-                    'ub' => (int) $this->object['ub'],
-                    'image' => (int) $img,
-                    'width' => $xa->width,
+                    'ub'     => (int) $this->object['ub'],
+                    'image'  => (int) $img,
+                    'width'  => $xa->width,
                     'height' => $xa->height
                 );
                 sql_insert('artists_images', $insert);

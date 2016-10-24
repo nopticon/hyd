@@ -43,12 +43,12 @@ function twitter() {
         $message = str_replace(array('&lt;', '&gt;'), array('<', '>'), $message);
 
         $sql_insert = array(
-            'status' => (string) $status->id,
-            'time' => $created_date,
-            'message' => $message,
-            'name' => (string) $status->user->screen_name,
+            'status'    => (string) $status->id,
+            'time'      => $created_date,
+            'message'   => $message,
+            'name'      => (string) $status->user->screen_name,
             'followers' => (int) $status->user->followers_count,
-            'friends' => (int) $status->user->friends_count
+            'friends'   => (int) $status->user->friends_count
         );
 
         echo '<pre>';

@@ -1412,8 +1412,8 @@ class Artists extends Downloads {
                 // Update stats
                 //
                 if (!$this->auth['mod']) {
-                    $update_views = false;
-                    $current_time = time();
+                    $update_views  = false;
+                    $current_time  = time();
                     $current_month = date('Ym', $current_time);
 
                     if ($this->auth['user']) {
@@ -1487,7 +1487,7 @@ class Artists extends Downloads {
                             if (!sql_affectedrows()) {
                                 $sql_insert = array(
                                     'members' => 0,
-                                    'guests' => 1
+                                    'guests'  => 1
                                 );
                                 sql_insert('artists_stats', $sql_stats + $sql_insert);
                             }
@@ -1686,7 +1686,7 @@ class Artists extends Downloads {
                     _style(
                         'make_fans',
                         array(
-                            'FAV_URL' => s_link('a', $this->data['subdomain'], 'favorites'),
+                            'FAV_URL'  => s_link('a', $this->data['subdomain'], 'favorites'),
                             'FAV_LANG' => ($this->auth['fav']) ? '' : lang('ub_fav_add')
                         )
                     );

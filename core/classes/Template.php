@@ -128,27 +128,27 @@ class Template {
     public function set_template($root = '.') {
         $this->vars = &$this->tpldata['.'][0];
 
-        $this->use_cache = config('xs_use_cache');
-        $this->cache_search = array('.', '\\', '/', '_tpl');
+        $this->use_cache     = config('xs_use_cache');
+        $this->cache_search  = array('.', '\\', '/', '_tpl');
         $this->cache_replace = array('_', '.', '.', '.php');
 
         $old_root = $this->root;
 
-        $root = str_replace('\\', '/', $root);
-        $this->cachedir = config('cache_path');
-        $this->tpldir = ROOT . 'template/';
+        $root             = str_replace('\\', '/', $root);
+        $this->cachedir   = config('cache_path');
+        $this->tpldir     = ROOT . 'template/';
         $this->tpldir_len = strlen($this->tpldir);
-        $this->root = $root;
-        $this->tpl = $this->template_name($root);
+        $this->root       = $root;
+        $this->tpl        = $this->template_name($root);
 
         // Check configuration
         $this->get_config();
 
         if ($old_root !== $this->root) {
-            $this->files = array();
-            $this->files_cache = array();
-            $this->files_cache2 = array();
-            $this->compiled_code = array();
+            $this->files           = array();
+            $this->files_cache     = array();
+            $this->files_cache2    = array();
+            $this->compiled_code   = array();
             $this->uncompiled_code = array();
         }
 
@@ -263,8 +263,8 @@ class Template {
             $can_cache = false;
         }
 
-        $this->files[$handle] = $this->make_filename($filename, $xs_include);
-        $this->files_cache[$handle] = '';
+        $this->files[$handle]        = $this->make_filename($filename, $xs_include);
+        $this->files_cache[$handle]  = '';
         $this->files_cache2[$handle] = '';
 
         // check if we are in admin control panel and override extreme styles mod controls if needed
@@ -425,24 +425,24 @@ class Template {
         }
 
         $precompile_num ++;
-        $handle = 'precompile_' . $precompile_num;
+        $handle             = 'precompile_' . $precompile_num;
         // save old configuration
-        $root = $this->root;
-        $tpl_name = $this->tpl;
-        $old_config = $this->use_cache;
-        $old_autosave = $this->auto_compile;
+        $root               = $this->root;
+        $tpl_name           = $this->tpl;
+        $old_config         = $this->use_cache;
+        $old_autosave       = $this->auto_compile;
         // set temporary configuration
-        $this->root = $this->tpldir . $template;
-        $this->tpl = $template;
-        $this->use_cache = 1;
+        $this->root         = $this->tpldir . $template;
+        $this->tpl          = $template;
+        $this->use_cache    = 1;
         $this->auto_compile = 1;
         // set filename
-        $res = $this->set_filename($handle, $filename, true, true);
+        $res                = $this->set_filename($handle, $filename, true, true);
 
         if (!$res || !$this->files_cache2[$handle]) {
-            $this->root = $root;
-            $this->tpl = $tpl_name;
-            $this->use_cache = $old_config;
+            $this->root         = $root;
+            $this->tpl          = $tpl_name;
+            $this->use_cache    = $old_config;
             $this->auto_compile = $old_autosave;
             return false;
         }
@@ -451,9 +451,9 @@ class Template {
         // load template
         $res = $this->loadfile($handle);
         if (!$res || empty($this->uncompiled_code[$handle])) {
-            $this->root = $root;
-            $this->tpl = $tpl_name;
-            $this->use_cache = $old_config;
+            $this->root         = $root;
+            $this->tpl          = $tpl_name;
+            $this->use_cache    = $old_config;
             $this->auto_compile = $old_autosave;
             return false;
         }
@@ -461,9 +461,9 @@ class Template {
         // Compile the code
         $this->compile2($this->uncompiled_code[$handle], $handle, $this->files_cache2[$handle]);
         // Restore confirugation
-        $this->root = $root;
-        $this->tpl = $tpl_name;
-        $this->use_cache = $old_config;
+        $this->root         = $root;
+        $this->tpl          = $tpl_name;
+        $this->use_cache    = $old_config;
         $this->auto_compile = $old_autosave;
         return true;
     }
@@ -629,13 +629,13 @@ class Template {
         }
 
         $block_nesting_level = 0;
-        $block_names = array();
-        $block_names[0] = '.';
-        $block_items = array();
-        $count_if = 0;
+        $block_names         = array();
+        $block_names[0]      = '.';
+        $block_items         = array();
+        $count_if            = 0;
 
         // prepare array for compiled code
-        $compiled = array();
+        $compiled   = array();
         $count_bugs = sizeof($this->bugs);
 
         // array of switches
@@ -956,9 +956,9 @@ class Template {
         $replace = array();
         for ($i = 0; $i < $varcount; $i++) {
             $namespace = $varrefs[1][$i];
-            $varname = $varrefs[3][$i];
-            $new = $this->generate_block_varref($namespace, $varname);
-            $search[] = $varrefs[0][$i];
+            $varname   = $varrefs[3][$i];
+            $new       = $this->generate_block_varref($namespace, $varname);
+            $search[]  = $varrefs[0][$i];
             $replace[] = $new;
         }
 

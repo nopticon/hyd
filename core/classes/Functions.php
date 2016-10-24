@@ -690,7 +690,7 @@ function build_num_pagination($url_format, $total_items, $per_page, $offset, $pr
         return;
     }
 
-    $on_page = floor($offset / $per_page) + 1;
+    $on_page    = floor($offset / $per_page) + 1;
     $pages_prev = lang($lang_prefix . 'pages_prev');
     $pages_next = lang($lang_prefix . 'pages_next');
 

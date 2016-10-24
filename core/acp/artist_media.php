@@ -81,20 +81,20 @@ class __artist_media extends mac {
                 }
 
                 $sql_insert = array(
-                    'ud' => 1,
-                    'ub' => $this->object['ub'],
-                    'alias' => friendly($mt->title),
-                    'title' => $mt->title,
-                    'views' => 0,
+                    'ud'        => 1,
+                    'ub'        => $this->object['ub'],
+                    'alias'     => friendly($mt->title),
+                    'title'     => $mt->title,
+                    'views'     => 0,
                     'downloads' => 0,
-                    'votes' => 0,
-                    'posts' => 0,
-                    'date' => time(),
-                    'filesize' => @filesize($filename),
-                    'duration' => $tags['playtime_string'],
-                    'genre' => $mt->genre,
-                    'album' => $mt->album,
-                    'year' => $mt->year
+                    'votes'     => 0,
+                    'posts'     => 0,
+                    'date'      => time(),
+                    'filesize'  => @filesize($filename),
+                    'duration'  => $tags['playtime_string'],
+                    'genre'     => $mt->genre,
+                    'album'     => $mt->album,
+                    'year'      => $mt->year
                 );
                 $media_id = sql_insert('dl', $sql_insert);
             }

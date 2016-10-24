@@ -20,7 +20,7 @@
     }
   },
   "paths": {
-    "source": "www/orion/template/assets/",
+    "source": "core/template/assets/",
     "dist": "www/dist/"
   },
   "config": {

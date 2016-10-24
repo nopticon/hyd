@@ -31,15 +31,15 @@ class __artist extends mac {
         }
 
         $sql_insert = array(
-            'a_active' => 1,
+            'a_active'  => 1,
             'subdomain' => $request->subdomain,
-            'name' => $request->name,
-            'local' => (int) $request->local,
-            'datetime' => time(),
-            'location' => $request->location,
-            'genre' => $requeset->genre,
-            'email' => $request->email,
-            'www' => str_replace('http://', '', $request->www)
+            'name'      => $request->name,
+            'local'     => (int) $request->local,
+            'datetime'  => time(),
+            'location'  => $request->location,
+            'genre'     => $requeset->genre,
+            'email'     => $request->email,
+            'www'       => str_replace('http://', '', $request->www)
         );
         $artist_id = sql_insert('artists', $sql_insert);
 

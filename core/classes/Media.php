@@ -27,10 +27,10 @@ class Media extends common {
                 AND d.ub = a.ub';
         if ($songd = $this->_fieldrow($sql)) {
             $spaths = '/data/artists/' . $songd['ub'] . '/media/';
-            $spath = '/var/www/vhosts/rockrepublik.net/httpdocs' . $spaths;
+            $spath  = '/var/www/vhosts/rockrepublik.net/httpdocs' . $spaths;
             $songid = $songd['id'];
-            $fwma = $spath . $songid . '.wma';
-            $fmp3 = $spath . $songid . '.mp3';
+            $fwma   = $spath . $songid . '.wma';
+            $fmp3   = $spath . $songid . '.mp3';
 
             $path_wma = '.' . $spaths . $songid . '.wma';
             $path_mp3 = '.' . $spaths . $songid . '.mp3';
@@ -52,6 +52,7 @@ class Media extends common {
                 $tagwriter->overwrite_tags = true;
                 $tagwriter->tag_encoding = $tag_format;
                 $tagwriter->remove_other_tags = true;
+
                 $tag_comment = 'Visita www.rockrepublik.net';
 
                 $songd['album'] = (!empty($songd['album'])) ? $songd['album'] : 'Single';
@@ -63,12 +64,12 @@ class Media extends common {
                 }
 
                 $tagwriter->tag_data = array(
-                    'title' => array($songd['title']),
-                    'artist' => array($songd['name']),
-                    'album' => array($songd['album']),
-                    'year' => array(getid3_lib::SafeStripSlashes($songd['year'])),
-                    'genre' => array($songd['genre']),
-                    'comment' => array(getid3_lib::SafeStripSlashes($tag_comment)),
+                    'title'       => array($songd['title']),
+                    'artist'      => array($songd['name']),
+                    'album'       => array($songd['album']),
+                    'year'        => array(getid3_lib::SafeStripSlashes($songd['year'])),
+                    'genre'       => array($songd['genre']),
+                    'comment'     => array(getid3_lib::SafeStripSlashes($tag_comment)),
                     'tracknumber' => array('')
                 );
                 $tagwriter->WriteTags();

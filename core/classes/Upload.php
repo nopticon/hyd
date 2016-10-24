@@ -45,8 +45,8 @@ class Upload {
     public function _row($filepath, $filename) {
         $row = (object) array(
             'extension' => extension($filename),
-            'name' => strtolower($filename),
-            'random' => time() . '_' . substr(md5(unique_id()), 0, 10)
+            'name'      => strtolower($filename),
+            'random'    => time() . '_' . substr(md5(unique_id()), 0, 10)
         );
 
         $row->filename = $row->random . '.' . $row->extension;
@@ -400,10 +400,11 @@ class Upload {
 
     public function resizeImage($image, $width, $height, $scale) {
         list($imagewidth, $imageheight, $imageType) = getimagesize($image);
-        $imageType = image_type_to_mime_type($imageType);
-        $newImageWidth = ceil($width * $scale);
+
+        $imageType      = image_type_to_mime_type($imageType);
+        $newImageWidth  = ceil($width * $scale);
         $newImageHeight = ceil($height * $scale);
-        $newImage = imagecreatetruecolor($newImageWidth, $newImageHeight);
+        $newImage       = imagecreatetruecolor($newImageWidth, $newImageHeight);
 
         switch ($imageType) {
             case "image/gif":
@@ -453,9 +454,9 @@ class Upload {
         list($imagewidth, $imageheight, $imageType) = getimagesize($image);
         $imageType = image_type_to_mime_type($imageType);
 
-        $newImageWidth = ceil($width * $scale);
+        $newImageWidth  = ceil($width * $scale);
         $newImageHeight = ceil($height * $scale);
-        $newImage = imagecreatetruecolor($newImageWidth, $newImageHeight);
+        $newImage       = imagecreatetruecolor($newImageWidth, $newImageHeight);
 
         switch ($imageType) {
             case 'image/gif':

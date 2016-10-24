@@ -20,7 +20,7 @@ class __emoticon_update extends mac {
         while ($file = @readdir($fp)) {
             if (preg_match('#([a-z0-9]+)\.(gif|png)#is', $file, $part)) {
                 $insert = array(
-                    'code' => ':' . $part[1] . ':',
+                    'code'      => ':' . $part[1] . ':',
                     'smile_url' => $part[0]
                 );
                 sql_insert('smilies', $insert);

@@ -34,7 +34,7 @@ class topic {
         // Get topic data
         //
         if ($post_id) {
-            $sql_from = ', _forum_posts p, _forum_posts p2, _members m ';
+            $sql_from  = ', _forum_posts p, _forum_posts p2, _members m ';
             $sql_where = sql_filter('p.post_id = ? AND p.poster_id = m.user_id AND t.topic_id = p.topic_id AND p2.topic_id = p.topic_id AND p2.post_id <= ?', $post_id, $post_id);
             $sql_count = ', p.post_text, m.username AS reply_username, COUNT(p2.post_id) AS prev_posts, p.post_deleted';
             $sql_order = ' GROUP BY p.post_id, t.topic_id, t.topic_title, t.topic_locked, t.topic_replies, t.topic_time, t.topic_important, t.topic_vote, t.topic_last_post_id, f.forum_name, f.forum_locked, f.forum_id, f.auth_view, f.auth_read, f.auth_post, f.auth_reply, f.auth_announce, f.auth_pollcreate, f.auth_vote ORDER BY p.post_id ASC';
@@ -74,19 +74,19 @@ class topic {
         //
         // Init vars
         //
-        $forum_id = (int) $topic_data['forum_id'];
-        $topic_id = (int) $topic_data['topic_id'];
+        $forum_id  = (int) $topic_data['forum_id'];
+        $topic_id  = (int) $topic_data['topic_id'];
         $topic_url = s_link('topic', $topic_id);
 
-        $reply = request_var('reply', 0);
-        $start = request_var('offset', 0);
+        $reply        = request_var('reply', 0);
+        $start        = request_var('offset', 0);
         $submit_reply = _button('post');
-        $submit_vote = _button('vote');
+        $submit_vote  = _button('vote');
 
-        $post_message = '';
+        $post_message       = '';
         $post_reply_message = '';
-        $post_np = '';
-        $current_time = time();
+        $post_np            = '';
+        $current_time       = time();
 
         $error = $is_auth = w();
 
@@ -212,13 +212,13 @@ class topic {
                         }
 
                         $insert_data = array(
-                            'topic_id' => (int) $topic_id,
-                            'forum_id' => (int) $forum_id,
+                            'topic_id'  => (int) $topic_id,
+                            'forum_id'  => (int) $forum_id,
                             'poster_id' => (int) $user->d('user_id'),
                             'post_time' => (int) $current_time,
                             'poster_ip' => $user->ip,
                             'post_text' => $post_message,
-                            'post_np' => $post_np
+                            'post_np'   => $post_np
                         );
                         if ($reply) {
                             $insert_data['post_reply'] = $post_id;
@@ -387,7 +387,7 @@ class topic {
 
                         _style('poll.results.item', array(
                             'CAPTION' => $row['vote_option_text'],
-                            'RESULT' => $row['vote_result'],
+                            'RESULT'  => $row['vote_result'],
                             'PERCENT' => sprintf("%.1d", ($vote_percent * 100)))
                         );
                     }
@@ -398,7 +398,7 @@ class topic {
 
                     foreach ($vote_info as $row) {
                         _style('poll.options.item', array(
-                            'POLL_OPTION_ID' => $row['vote_option_id'],
+                            'POLL_OPTION_ID'      => $row['vote_option_id'],
                             'POLL_OPTION_CAPTION' => $row['vote_option_text'])
                         );
                     }
@@ -430,12 +430,12 @@ class topic {
             $user_profile[$row['user_id']] = $comments->user_profile($row, '', $unset_user_profile);
 
             $data = array(
-                'POST_ID' => $row['post_id'],
+                'POST_ID'   => $row['post_id'],
                 'POST_DATE' => $user->format_date($row['post_time']),
-                'MESSAGE' => $comments->parse_message($row['post_text']),
-                'PLAYING' => $row['post_np'],
-                'DELETED' => $row['post_deleted'],
-                'UNREAD' => 0
+                'MESSAGE'   => $comments->parse_message($row['post_text']),
+                'PLAYING'   => $row['post_np'],
+                'DELETED'   => $row['post_deleted'],
+                'UNREAD'    => 0
             );
 
             foreach ($user_profile[$row['user_id']] as $key => $value) {

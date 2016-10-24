@@ -15,9 +15,10 @@ class __user_view extends mac {
             return false;
         }
 
-        $userid = request_var('uid', 0);
+        $userid   = request_var('uid', 0);
         $username = request_var('username', '');
-        $email = request_var('email', '');
+        $email    = request_var('email', '');
+
         if (empty($username) && empty($email) && !$userid) {
             fatal_error();
         }

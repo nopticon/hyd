@@ -37,8 +37,8 @@ class User extends Session {
             $this->lang_path = ROOT.'language/' . $this->lang_name . '/';
 
             $this->date_format = $this->data['user_dateformat'];
-            $this->timezone = $this->data['user_timezone'] * 3600;
-            $this->dst = $this->data['user_dst'] * 3600;
+            $this->timezone    = $this->data['user_timezone'] * 3600;
+            $this->dst         = $this->data['user_dst'] * 3600;
         } else {
             $this->lang_name   = config('default_lang');
             $this->lang_path   = ROOT.'language/' . $this->lang_name . '/';
@@ -378,10 +378,10 @@ class User extends Session {
                         AND object_relation = ?';
                 if (!sql_field(sql_filter($sql, $to, $type, $list), 'object_id', 0)) {
                     $sql_insert = array(
-                        'object_bio' => $to,
-                        'object_type' => $type,
+                        'object_bio'      => $to,
+                        'object_type'     => $type,
                         'object_relation' => $list,
-                        'object_time' => time()
+                        'object_time'     => time()
                     );
                     sql_insert('today_objects', $sql_insert);
                 }
@@ -554,9 +554,9 @@ class User extends Session {
 
     public function insert_unread($uid, $cat, $el) {
         $row = array(
-            'user_id' => (int) $uid,
-            'element' => (int) $cat,
-            'item' => (int) $el,
+            'user_id'  => (int) $uid,
+            'element'  => (int) $cat,
+            'item'     => (int) $el,
             'datetime' => (int) $this->time
         );
         $sql = 'INSERT LOW_PRIORITY INTO _members_unread' . sql_build('INSERT', $row);
@@ -721,9 +721,9 @@ class User extends Session {
         $request = $this->clean_value(v_server('REQUEST_URI'));
         $auto_block = ($auto_block) ? 1 : 0;
 
-        $insert = true;
-        $update = false;
-        $banned = false;
+        $insert   = true;
+        $update   = false;
+        $banned   = false;
         $group_id = '';
         $datetime = time();
 
@@ -766,15 +766,15 @@ class User extends Session {
             }
 
             $sql_insert = array(
-                'group_id' => $group_id,
-                'domain' => $domain,
-                'url' => $url,
-                'request' => $request,
-                'banned' => $auto_block,
-                'views' => 1,
-                'datetime' => $datetime,
+                'group_id'      => $group_id,
+                'domain'        => $domain,
+                'url'           => $url,
+                'request'       => $request,
+                'banned'        => $auto_block,
+                'views'         => 1,
+                'datetime'      => $datetime,
                 'last_datetime' => $datetime,
-                'last_ip' => $user_ip
+                'last_ip'       => $user_ip
             );
             sql_insert('ref', $sql_insert);
         }

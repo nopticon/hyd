@@ -257,7 +257,7 @@ class emailer {
         $fd = fopen($filename, "r");
         $contents = fread($fd, filesize($filename));
 
-        $this->mimeOut = "--" . $mime_boundary . "\n";
+        $this->mimeOut  = "--" . $mime_boundary . "\n";
         $this->mimeOut .= "Content-Type: " . $mimetype . ";\n\tname=\"$szFilenameToDisplay\"\n";
         $this->mimeOut .= "Content-Transfer-Encoding: quoted-printable\n";
         $this->mimeOut .= "Content-Disposition: attachment;\n\tfilename=\"$szFilenameToDisplay\"\n\n";
@@ -285,7 +285,7 @@ class emailer {
             $filename = $mime_filename;
         }
 
-        $out = "MIME-Version: 1.0\n";
+        $out  = "MIME-Version: 1.0\n";
         $out .= "Content-Type: multipart/mixed;\n\tboundary=\"$mime_boundary\"\n\n";
         $out .= "This message is in MIME format. Since your mail reader does not understand\n";
         $out .= "this format, some or all of this message may not be legible.";

@@ -28,7 +28,7 @@ class __forums_topic_move extends mac {
                 _style(
                     'forums.row',
                     array(
-                        'FORUM_ID' => $row['forum_id'],
+                        'FORUM_ID'   => $row['forum_id'],
                         'FORUM_NAME' => $row['forum_name']
                     )
                 );

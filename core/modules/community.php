@@ -82,8 +82,8 @@ class community {
             _style('founders', array(
                 'REALNAME' => $data['username'],
                 'USERNAME' => $data['username'],
-                'AVATAR' => $data['user_avatar'],
-                'PROFILE' => $data['profile'])
+                'AVATAR'   => $data['user_avatar'],
+                'PROFILE'  => $data['profile'])
             );
         }
 
@@ -125,8 +125,8 @@ class community {
             _style('team.row', array(
                 'USERNAME' => $profile['username'],
                 'REALNAME' => $profile['real_name'],
-                'PROFILE' => $profile['profile'],
-                'AVATAR' => $profile['user_avatar'])
+                'PROFILE'  => $profile['profile'],
+                'AVATAR'   => $profile['user_avatar'])
             );
         }
 
@@ -179,7 +179,7 @@ class community {
                     if (((!$row['user_hideuser'] || $is_founder) && !$is_bot) || ($is_bot && $is_founder)) {
                         _style($block . '.members.item', array(
                             'USERNAME' => $username,
-                            'PROFILE' => s_link('m', $row['username_base']))
+                            'PROFILE'  => s_link('m', $row['username_base']))
                         );
                     }
                 }
@@ -203,11 +203,11 @@ class community {
         _style($block . '.legend');
 
         $online_ary = array(
-            'MEMBERS_TOTAL' => $users_total,
+            'MEMBERS_TOTAL'   => $users_total,
             'MEMBERS_VISIBLE' => $users_visible,
-            'MEMBERS_GUESTS' => $users_guests,
-            'MEMBERS_HIDDEN' => $users_hidden,
-            'MEMBERS_BOT' => $users_bots
+            'MEMBERS_GUESTS'  => $users_guests,
+            'MEMBERS_HIDDEN'  => $users_hidden,
+            'MEMBERS_BOT'     => $users_bots
         );
 
         if ($unset_legend !== false) {
@@ -220,7 +220,7 @@ class community {
             }
 
             _style($block . '.legend.item', array(
-                'L_MEMBERS' => lang($lk . (($vk != 1) ? '2' : '')),
+                'L_MEMBERS'    => lang($lk . (($vk != 1) ? '2' : '')),
                 'ONLINE_VALUE' => $vk)
             );
         }
@@ -247,8 +247,8 @@ class community {
 
             _style('birthday.row', array(
                 'USERNAME' => $profile['username'],
-                'PROFILE' => $profile['profile'],
-                'AVATAR' => $profile['user_avatar'])
+                'PROFILE'  => $profile['profile'],
+                'AVATAR'   => $profile['user_avatar'])
             );
         }
 
@@ -270,7 +270,7 @@ class community {
 
             _style('recent_members.item', array(
                 'USERNAME' => $row['username'],
-                'PROFILE' => s_link('m', $row['username_base']))
+                'PROFILE'  => s_link('m', $row['username_base']))
             );
         }
 

@@ -1,15 +1,15 @@
 {
-  "name": "sage",
-  "version": "8.5.0",
-  "author": "Ben Word <ben@benword.com>",
-  "homepage": "https://roots.io/sage/",
+  "name": "rock-republik",
+  "version": "16.10.0",
+  "author": "Guillermo Azurdia <info@nopticon.com>",
+  "homepage": "https://rockrepublik.net/",
   "private": true,
   "repository": {
     "type": "git",
-    "url": "git://github.com/roots/sage.git"
+    "url": "git://github.com/nopticon/rockr.git"
   },
   "bugs": {
-    "url": "https://github.com/roots/sage/issues"
+    "url": "https://github.com/nopticon/rockr/issues"
   },
   "licenses": [
     {
@@ -20,7 +20,7 @@
   "scripts": {
     "build": "bower install && gulp",
     "jshint": "gulp jshint",
-    "jscs": "jscs gulpfile.js www/orion/template/assets/scripts/*.js",
+    "jscs": "jscs gulpfile.js core/template/assets/scripts/*.js",
     "phpcs": "phpcs --standard=ruleset.xml --extensions=php -n -s .",
     "phpcbf": "phpcbf --standard=ruleset.xml --extensions=php -n -s ."
   },

@@ -47,7 +47,7 @@ class mac {
 
         $artist = request_var('a', '');
         $module = request_var('module', '');
-        $url = s_link('acp', array('artist_select', 'r' => $module));
+        $url    = s_link('acp', array('artist_select', 'r' => $module));
 
         if (empty($artist)) {
             redirect($url);
@@ -60,7 +60,7 @@ class mac {
         v_style(
             array(
                 'ARTIST_SELECT' => $url,
-                'ARTIST_NAME' => $this->object['name']
+                'ARTIST_NAME'   => $this->object['name']
             )
         );
 

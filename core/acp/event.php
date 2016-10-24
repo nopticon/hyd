@@ -24,13 +24,13 @@ class __event extends mac {
                 $img = sql_total('_events');
 
                 // Create vars
-                $event_name = request_var('event_name', '');
-                $event_artists = request_var('event_artists', '', true);
-                $event_year = request_var('event_year', 0);
-                $event_month = request_var('event_month', 0);
-                $event_day = request_var('event_day', 0);
-                $event_hours = request_var('event_hours', 0);
-                $event_minutes = request_var('event_minutes', 0);
+                $event_name          = request_var('event_name', '');
+                $event_artists       = request_var('event_artists', '', true);
+                $event_year          = request_var('event_year', 0);
+                $event_month         = request_var('event_month', 0);
+                $event_day           = request_var('event_day', 0);
+                $event_hours         = request_var('event_hours', 0);
+                $event_minutes       = request_var('event_minutes', 0);
                 $event_current_topic = request_var('event_current_topic', 0);
 
                 $time_c = $user->timezone - $user->dst;
@@ -90,16 +90,16 @@ class __event extends mac {
                         WHERE topic_id = ?';
                     if (!$row_current_topic = sql_fieldrow(sql_filter($sql, $event_current_topic))) {
                         $insert = array(
-                            'topic_title' => $event_name,
-                            'topic_poster' => $poster_id,
-                            'topic_time' => $post_time,
-                            'forum_id' => $forum_id,
-                            'topic_locked' => 0,
-                            'topic_announce' => 0,
+                            'topic_title'     => $event_name,
+                            'topic_poster'    => $poster_id,
+                            'topic_time'      => $post_time,
+                            'forum_id'        => $forum_id,
+                            'topic_locked'    => 0,
+                            'topic_announce'  => 0,
                             'topic_important' => 0,
-                            'topic_vote' => 1,
-                            'topic_featured' => 1,
-                            'topic_points' => 1
+                            'topic_vote'      => 1,
+                            'topic_featured'  => 1,
+                            'topic_points'    => 1
                         );
                         $topic_id = sql_insert('forum_topics', $insert);
 
@@ -117,13 +117,13 @@ class __event extends mac {
                     $post_message .= '.';
 
                     $insert = array(
-                        'topic_id' => (int) $topic_id,
-                        'forum_id' => $forum_id,
+                        'topic_id'  => (int) $topic_id,
+                        'forum_id'  => $forum_id,
                         'poster_id' => $poster_id,
                         'post_time' => $post_time,
                         'poster_ip' => $user->ip,
                         'post_text' => $post_message,
-                        'post_np' => ''
+                        'post_np'   => ''
                     );
                     $post_id = sql_insert('forum_posts', $insert);
 
@@ -143,10 +143,10 @@ class __event extends mac {
 
                     foreach ($poll_options as $option_id => $option_text) {
                         $sql_insert = array(
-                            'vote_id' => (int) $poll_id,
-                            'vote_option_id' => (int) $option_id,
+                            'vote_id'          => (int) $poll_id,
+                            'vote_option_id'   => (int) $option_id,
                             'vote_option_text' => $option_text,
-                            'vote_result' => 0
+                            'vote_result'      => 0
                         );
                         sql_insert('poll_results', $sql_insert);
 
@@ -199,7 +199,7 @@ class __event extends mac {
             _style(
                 'topics.row',
                 array(
-                    'TOPIC_ID' => $row['topic_id'],
+                    'TOPIC_ID'    => $row['topic_id'],
                     'TOPIC_TITLE' => $row['topic_title']
                 )
             );
