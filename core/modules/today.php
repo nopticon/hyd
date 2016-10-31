@@ -32,6 +32,8 @@ class today {
     }
 
     public function run() {
+        global $user, $comments;
+
         if (!$user->is('member')) {
             do_login();
         }

@@ -79,9 +79,8 @@ class Auth {
 
         if (isset($map[$name])) {
             $method = $map[$name];
-            $this->$method();
 
-            return true;
+            return $this->$method();
         }
 
         return false;
@@ -98,7 +97,7 @@ class Auth {
         }
 
         if ($user->is('bot')) {
-            redirect(s_link());
+            redirect();
         }
 
         $this->isInvited();
@@ -120,10 +119,12 @@ class Auth {
             $user->session_kill();
         }
 
-        redirect(s_link());
+        redirect();
     }
 
     public function signup() {
+        global $user;
+
         if ($user->is('member')) {
             redirect(s_link('my profile'));
         }
@@ -408,7 +409,7 @@ class Auth {
         global $user;
 
         if ($user->is('member') && !_button('admin')) {
-            redirect(s_link());
+            redirect();
         }
 
         if (_button('login') && (!$user->is('member') || _button('admin'))) {
@@ -453,6 +454,8 @@ class Auth {
     }
 
     public function recover() {
+        global $user;
+
         if ($user->is('member')) {
             redirect(s_link('my profile'));
         }
@@ -460,7 +463,7 @@ class Auth {
         $code = request_var('code', '');
 
         if (request_var('r', 0)) {
-            redirect(s_link());
+            redirect();
         }
 
         if (!empty($code)) {
@@ -598,6 +601,7 @@ class Auth {
         // Signup data
         //
         showError($this->errorList());
+
 
         $months = array(
             1  => 'January',

@@ -5,6 +5,7 @@ require_once '../core/classes/Constants.php';
 require_once '../core/classes/Common.php';
 
 $config['cache_path'] = '/var/www/prd/rock-republik/cache/';
+$config['assets_url'] = '/dist/images/';
 
 $user->init();
 $user->setup();
@@ -41,10 +42,10 @@ if (isset($pages[$pagename])) {
     switch ($pagename) {
         case 'comments':
             $comments->receive();
-            exit;
+            break;
         case 'sign':
             do_login();
-            exit;
+            break;
     }
 
     require_once ROOT . 'modules/' . $pagename . '.php';
@@ -55,7 +56,7 @@ if (isset($pages[$pagename])) {
             require_once ROOT . 'modules/events.php';
             break;
         case 'events':
-            require_once ROOT . 'modules/downloads.php';
+            require_once ROOT . 'classes/Downloads.php';
             break;
     }
 

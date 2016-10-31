@@ -189,6 +189,7 @@ class topic {
                             $update_topic['topic_announce'] = $topic_announce;
                         }
 
+                        $topic_locked = 0;
                         if (strstr($post_message, '-Cerrado-') && $user->is('mod')) {
                             $topic_locked = 1;
                             $post_message = str_replace('-Cerrado-', '', $post_message);

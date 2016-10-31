@@ -431,7 +431,7 @@ class Userpage {
         $fields = w($fields);
         $length_ary = w('location sig msnm yim website occ interests os fav_genres fav_artists');
 
-        $_fields = new stdClass;
+        $_fields = new \stdClass;
         foreach ($fields as $field) {
             $_fields->$field = $user->d('user_' . $field);
         }
@@ -1141,22 +1141,21 @@ class Userpage {
         }
 
         $gender = lang($gender);
-        $epbi2 = false;
 
         $joined = '';
-        $logon = '';
+        $last_visit = '';
 
-        if ($this->data['user_regdate'] && (!$this->data['user_hideuser'] || $epbi2)) {
+        if ($this->data['user_regdate']) {
             $joined = $user->format_date($this->data['user_regdate']) . sprintf(lang('joined_since'), $memberdays);
         }
 
-        if ($this->data['user_lastvisit'] && (!$this->data['user_hideuser'] || $epbi2)) {
-            $logon = $user->format_date($this->data['user_lastvisit']);
+        if ($this->data['user_lastvisit'] && (!$this->data['user_hideuser'] || $user->is('founder'))) {
+            $last_visit = $user->format_date($this->data['user_lastvisit']);
         }
 
         $user_fields = array(
             'JOINED'     => $joined,
-            'LAST_LOGON' => $logon,
+            'LAST_LOGON' => $last_visit,
             'GENDER'     => $gender,
             'AGE'        => $age,
             'BIRTHDAY'   => $birthday,

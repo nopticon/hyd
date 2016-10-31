@@ -42,7 +42,7 @@ class __artist_gallery extends mac {
             );
 
             $image  = config('artists_url') . $this->object['ub'] . '/thumbnails/' . $row['image'] . '.jpg';
-            $rimage = config('artists_url') . $this->object['ub'], $row['image'] . '.jpg', w('x1 gallery');
+            $rimage = get_a_imagepath(config('artists_url') . $this->object['ub'], $row['image'] . '.jpg', w('x1 gallery'));
 
             _style(
                 'gallery.row',

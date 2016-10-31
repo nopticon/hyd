@@ -9,7 +9,7 @@ require_once(ROOT . 'interfase/facebook.php');
 
 $d = decode_ht('.htf_');
 
-$fbd = new stdClass();
+$fbd = new \stdClass();
 foreach (w('page appid secret token') as $i => $k) {
     $fbd->$k = _decode($d[$i]);
 }

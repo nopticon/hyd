@@ -30,7 +30,7 @@ class __news_images extends mac {
                     $xa = $upload->resize($row, $filepath_1, $filepath_1, $news_id, array(100, 75), false, false, true);
                 }
 
-                redirect(s_link());
+                redirect();
             }
 
             _style(

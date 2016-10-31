@@ -18,20 +18,19 @@ class Artists extends Downloads {
     private $default_title = 'UB';
     private $default_view = 'artists';
 
-
     public function __construct() {
         $this->layout = array(
-            '_01' => array('code' => 1, 'text' => 'UB_L01', 'tpl' => 'main'),
-            '_02' => array('code' => 2, 'text' => 'UB_L02', 'tpl' => 'bio'),
-            '_03' => array('code' => 3, 'text' => 'UB_L03', 'tpl' => 'albums'),
-            '_04' => array('code' => 4, 'text' => 'UB_L04', 'tpl' => 'gallery'),
-            '_05' => array('code' => 5, 'text' => 'UB_L05', 'tpl' => 'tabs'),
-            '_06' => array('code' => 6, 'text' => 'UB_L06', 'tpl' => 'lyrics'),
-            '_07' => array('code' => 7, 'text' => 'UB_L07', 'tpl' => 'interviews'),
-            '_09' => array('code' => 9, 'text' => 'DOWNLOADS', 'tpl' => 'downloads'),
-            '_13' => array('code' => 13, 'text' => '', 'tpl' => 'email'),
-            '_16' => array('code' => 16, 'text' => '', 'tpl' => 'news'),
-            '_18' => array('code' => 18, 'text' => 'UB_L17', 'tpl' => 'video')
+            '_01' => array('code' => 1, 'text' => 'UB_L01', 'tpl' => 'main', 'method' => 'Main'),
+            '_02' => array('code' => 2, 'text' => 'UB_L02', 'tpl' => 'bio', 'method' => 'Bio'),
+            '_03' => array('code' => 3, 'text' => 'UB_L03', 'tpl' => 'albums', 'method' => 'Albums'),
+            '_04' => array('code' => 4, 'text' => 'UB_L04', 'tpl' => 'gallery', 'method' => 'Gallery'),
+            '_05' => array('code' => 5, 'text' => 'UB_L05', 'tpl' => 'tabs', 'method' => 'Tabs'),
+            '_06' => array('code' => 6, 'text' => 'UB_L06', 'tpl' => 'lyrics', 'method' => 'Lyrics'),
+            '_07' => array('code' => 7, 'text' => 'UB_L07', 'tpl' => 'interviews', 'method' => 'Interviews'),
+            '_09' => array('code' => 9, 'text' => 'DOWNLOADS', 'tpl' => 'downloads', 'method' => 'Downloads'),
+            '_13' => array('code' => 13, 'text' => '', 'tpl' => 'email', 'method' => 'Email'),
+            '_16' => array('code' => 16, 'text' => '', 'tpl' => 'news', 'method' => 'News'),
+            '_18' => array('code' => 18, 'text' => 'UB_L17', 'tpl' => 'video', 'method' => 'Video')
         );
 
         $this->voting = array(
@@ -43,7 +42,7 @@ class Artists extends Downloads {
     /*
     Default layout for artist.
     */
-    public function main() {
+    public function artistMain() {
         if ($this->make) {
             return true;
         }
@@ -806,6 +805,7 @@ class Artists extends Downloads {
         global $user;
 
         $_a = request_var('id', '');
+
         if (!empty($_a)) {
             if (preg_match('/([0-9a-zA-Z]+)/', $_a)) {
                 $sql = 'SELECT *
@@ -1050,7 +1050,7 @@ class Artists extends Downloads {
                         'LANG'     => lang('ub_top_' . strtoupper($id)),
                         'URL'      => s_link('a', $data['subdomain']),
                         'NAME'     => $data['name'],
-                        'LOCATION' => ($data['local']) ? 'Guatemala' : $data['location'],
+                        'LOCATION' => $data['local'] ? 'Guatemala' : $data['location'],
                         'GENRE'    => $data['genre']
                     )
                 );
@@ -1120,7 +1120,7 @@ class Artists extends Downloads {
                         'NAME'     => $data['name'],
                         'IMAGE'    => config('artists_url') . $ub . '/thumbnails/' . $random_images[$ub] . '.jpg',
                         'URL'      => s_link('a', $data['subdomain']),
-                        'LOCATION' => ($data['local']) ? 'Guatemala' : $data['location'],
+                        'LOCATION' => $data['local'] ? 'Guatemala' : $data['location'],
                         'GENRE'    => $data['genre']
                     )
                 );
@@ -1316,7 +1316,7 @@ class Artists extends Downloads {
                     'NAME'     => $data['name'],
                     'IMAGE'    => config('artists_url') . $image,
                     'URL'      => s_link('a', $data['subdomain']),
-                    'LOCATION' => ($data['local']) ? 'Guatemala' : $data['location'],
+                    'LOCATION' => $data['local'] ? 'Guatemala' : $data['location'],
                     'GENRE'    => $data['genre']
                 )
             );
@@ -1348,7 +1348,7 @@ class Artists extends Downloads {
         global $user, $template;
 
         $this->data['layout'] = request_var('layout', '');
-        $this->_auth();
+        $this->artistAuth();
 
         if (!$this->data['layout']) {
             $this->data['layout'] = 'main';
@@ -1372,7 +1372,9 @@ class Artists extends Downloads {
                         $this->data['template'] = $row['tpl'];
                     }
 
-                    if ($this->{'_' . $row['tpl']}()) {
+                    $method = 'artist' . $row['method'];
+
+                    if ($this->$method()) {
                         $available[$row['tpl']] = true;
 
                         _style(
@@ -1401,12 +1403,12 @@ class Artists extends Downloads {
                     redirect(s_link('a', $this->data['subdomain']));
                 }
 
-                $this->_make();
+                $this->make();
 
                 //
                 // Call selected layout
                 //
-                $this->call_layout();
+                $this->callLayout();
 
                 //
                 // Update stats
@@ -1477,7 +1479,7 @@ class Artists extends Downloads {
 
                         if ((!$this->auth['user'] && $this->data['layout'] == 1) && !$_ps) {
                             $sql_stats = array(
-                                'ub' => (int) $this->data['ub'],
+                                'ub'   => (int) $this->data['ub'],
                                 'date' => (int) $current_month
                             );
                             $sql = 'UPDATE _artists_stats SET guests = guests + 1
@@ -1503,8 +1505,13 @@ class Artists extends Downloads {
                 list($d, $m, $y) = explode(' ', gmdate('j n Y', time() + $user->timezone + $user->dst));
                 $midnight        = gmmktime(0, 0, 0, $m, $d, $y) - $user->timezone - $user->dst;
 
-                $g = getdate($midnight);
+                $g    = getdate($midnight);
                 $week = mktime(0, 0, 0, $m, ($d + (7 - ($g['wday'] - 1)) - (!$g['wday'] ? 7 : 0)), $y) - $timezone;
+                $sec  = 86400;
+                $sec2 = $sec * 2;
+
+                $today_1 = $midnight + $sec;
+                $today_2 = $midnight + $sec2;
 
                 $sql = 'SELECT *
                     FROM _events e, _artists_events ae
@@ -1516,18 +1523,20 @@ class Artists extends Downloads {
                 $events = w();
                 foreach ($result as $row) {
                     if ($row['date'] >= $midnight) {
-                        if ($row['date'] >= $midnight && $row['date'] < $midnight + 86400) {
-                            $events['is_today'][] = $row;
-                        } elseif ($row['date'] >= $midnight + 86400 && $row['date'] < $midnight + (86400 * 2)) {
-                            $events['is_tomorrow'][] = $row;
-                        } elseif ($row['date'] >= $midnight + (86400 * 2) && $row['date'] < $week) {
-                            $events['is_week'][] = $row;
+                        if ($row['date'] >= $midnight && $row['date'] < $today_1) {
+                            $event_type = 'today';
+                        } elseif ($row['date'] >= $today_1 && $row['date'] < $today_2) {
+                            $event_type = 'tomorrow';
+                        } elseif ($row['date'] >= $today_2 && $row['date'] < $week) {
+                            $event_type = 'week';
                         } else {
-                            $events['is_future'][] = $row;
+                            $event_type = 'future';
                         }
                     } elseif ($row['images']) {
-                        $events['is_gallery'][] = $row;
+                        $event_type = 'gallery';
                     }
+
+                    $events['is_' . $event_type][] = $row;
                 }
 
                 if (isset($events['is_gallery']) && sizeof($events['is_gallery'])) {

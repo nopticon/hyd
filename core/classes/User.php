@@ -134,8 +134,8 @@ class User extends Session {
 
         $format = (!$format) ? $this->date_format : $format;
 
-        $current_year = date('Y');
-        $this_year = date('Y', $gmepoch);
+        $current_year = YEAR;
+        $this_year    = date('Y', $gmepoch);
 
         if ($current_year == $this_year) {
             $format = str_replace(' Y', ((strpos($format, 'H') !== false) ? '\, ' : ''), $format);
@@ -165,22 +165,6 @@ class User extends Session {
 
             return str_replace('||', $this->lang['datetime']['YESTERDAY'], $format);
         }
-    }
-
-    public function get_iso_lang_id() {
-        if (isset($this->lang_id)) {
-            return $this->lang_id;
-        }
-
-        if (!$this->lang_name) {
-            $this->lang_name = config('default_lang');
-        }
-
-        $sql = 'SELECT lang_id
-            FROM _lang
-            WHERE lang_iso = ?';
-
-        return (int) sql_field(sql_filter($sql, $this->lang_name), 'lang_id', 0);
     }
 
     public function is($name, $user_id = false, $artist = false) {
@@ -678,8 +662,9 @@ class User extends Session {
     //
 
     public function check_ref($block_ud = false, $auto_block = false) {
-        $url = (getenv('HTTP_REFERER')) ? trim(getenv('HTTP_REFERER')) : v_server('HTTP_REFERER');
+        $url = getenv('HTTP_REFERER') ? trim(getenv('HTTP_REFERER')) : v_server('HTTP_REFERER');
         $url = $this->clean_value($url);
+
         if ($url == '') {
             return;
         }
@@ -785,7 +770,7 @@ class User extends Session {
             }
 
             if ($block_ud) {
-                redirect(s_link());
+                redirect();
             }
         }
 

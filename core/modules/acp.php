@@ -121,7 +121,7 @@ class _acp {
 
         require_once($this->filepath);
 
-        $_object = '__' . $this->module;
+        $_object = __NAMESPACE__ . '\\__' . $this->module;
         if (!class_exists($_object)) {
             fatal_error();
         }
@@ -166,7 +166,7 @@ class _acp {
 
             $acp_alias = $part[1];
             $acp_upper = strtoupper($acp_alias);
-            $object_name = '__' . $acp_alias;
+            $object_name = __NAMESPACE__ . '\\__' . $acp_alias;
 
             if (!class_exists($object_name)) {
                 continue;

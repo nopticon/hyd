@@ -19,28 +19,26 @@
 		<div id="menu">
 			<ul>
 				<!-- IF S_MEMBER -->
-				<li>&nbsp; <a class="expand" id="account" href="{U_PROFILE}">&#9660;</a>
-					<ul id="expand_account">
-
-						<li><a href="{U_DC}">{L_USERPAGE_DC}</a></li>
-						<li><a href="{U_EDITPROFILE}">{L_PREFERENCES}</a></li>
-						<li><a href="{U_SESSION}">{L_LOGOUT2}</a></li>
-					</ul>
-				</li>
-				<li class="mb"><a href="{U_PROFILE}" title="{S_USERNAME}"><i class="icon-user"></i> {S_USERNAME}</a>
-				<li class="mb"><a href="{U_WHATS_NEW}" title="{S_TODAY_COUNT}"><i class="icon-star"></i> {L_THENEW}</a></li>
+                <li class="mb"><a href="{U_PROFILE}" title="{S_USERNAME}">{S_USERNAME}</a>
+                <li><a href="{U_EDITPROFILE}">{L_PREFERENCES}</a></li>
+                <!-- BEGIN hide -->
+				<li class="mb"><a href="{U_WHATS_NEW}" title="{S_TODAY_COUNT}">{L_THENEW}</a></li>
+                <!-- END hide -->
 				<!-- ENDIF -->
-				<li class="mb"><a href="{U_ARTISTS}" title="{L_UB}"><i class="icon-fire"></i> {L_UB}</a></li>
-				<li class="mb mb-events"><a href="{U_EVENTS}" title="{L_UE}"><i class="icon-camera"></i> {L_UE}</a></li>
-				<li class="mb mb-forum"><a href="{U_FORUM}" title="{L_FORUM}"><i class="icon-th-list"></i> {L_FORUM}</a></li>
-				<li class="mb mb-broadcast"><a href="{U_BROADCAST}" title="{L_BROADCAST}"><i class="icon-volume-up"></i> {L_BROADCAST}</a></li>
-				<li class="mb mb-community"><a href="{U_COMMUNITY}" title="{L_COMMUNITY}"><i class="icon-th"></i> {L_COMMUNITY}</a></li>
+				<li class="mb"><a href="{U_ARTISTS}" title="{L_UB}">{L_UB}</a></li>
+				<li class="mb mb-events"><a href="{U_EVENTS}" title="{L_UE}">{L_UE}</a></li>
+				<li class="mb mb-forum"><a href="{U_FORUM}" title="{L_FORUM}">{L_FORUM}</a></li>
+				<li class="mb mb-broadcast"><a href="{U_BROADCAST}" title="{L_BROADCAST}">{L_BROADCAST}</a></li>
+				<li class="mb mb-community"><a href="{U_COMMUNITY}" title="{L_COMMUNITY}">{L_COMMUNITY}</a></li>
 				<!-- BEGIN hide -->
 				<li><a href="{U_ALLIES}" title="{L_ALLIES}">{L_ALLIES}</a></li>
 				<li><a href="{U_AWARDS}" title="{L_AWARDS}">{L_AWARDS}</a></li>
 				<!-- END hide -->
 				<!-- IF U_ACP != '' -->
-				<li class="mb mb-acp"><a href="{U_ACP}"><i class="icon-share"></i> {L_CONTROL_PANEL}</a></li>
+				<li class="mb mb-acp"><a href="{U_ACP}">{L_CONTROL_PANEL}</a></li>
+				<!-- ENDIF -->
+                <!-- IF S_MEMBER -->
+                <li><a href="{U_SESSION}">{L_LOGOUT2}</a></li>
 				<!-- ENDIF -->
 				<!-- BEGIN hide -->
 				<li><a id="facebook" href="//www.facebook.com/rockrepublik" target="_facebook">Facebook</a>

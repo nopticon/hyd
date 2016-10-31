@@ -71,7 +71,7 @@ class __broadcast_modify extends mac {
                 $format = '%s <input type="text" name="hours[%s]" value="%s" size="100" %s /><br />%s';
                 $oclock = oclock($e_item[0]) ? 'class="highlight"' : '';
 
-                echo sprintf(sumhour($e_item[0]), $e_item[0], $e_item[1], $oclock, nr();
+                echo sprintf(sumhour($e_item[0]), $e_item[0], $e_item[1], $oclock, nr());
             }
         }
 

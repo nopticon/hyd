@@ -269,8 +269,8 @@ class topics {
 
         $topics_count = ($forum_row['forum_topics']) ? $forum_row['forum_topics'] : 1;
 
-        $topics = new stdClass();
-        $total = new stdClass();
+        $topics = new \stdClass();
+        $total = new \stdClass();
 
         //
         // All announcement data

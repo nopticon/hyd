@@ -22,7 +22,7 @@ class Session {
         }
 
         if (!empty($this->ip) && $bypass_empty_ip) {
-            //redirect(s_link());
+            // redirect();
         }
 
         $this->cookie_data = w();

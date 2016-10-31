@@ -75,7 +75,7 @@ class __artist_media extends mac {
                 $tags = $getID3->analyze($filename);
                 $a++;
 
-                $mt = new stdClass();
+                $mt = new \stdClass();
                 foreach (w('title genre album year') as $w) {
                     $mt->$w = (isset($tags['tags']['id3v1'][$w][0])) ? htmlencode($tags['tags']['id3v1'][$w][0]) : '';
                 }

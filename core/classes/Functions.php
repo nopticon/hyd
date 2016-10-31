@@ -24,7 +24,7 @@ function set_var(&$result, $var, $type, $multibyte = false) {
 }
 
 function _request($ary) {
-    $response = new stdClass();
+    $response = new \stdClass();
 
     foreach ($ary as $ary_k => $ary_v) {
         $response->$ary_k = request_var($ary_k, $ary_v);
@@ -220,7 +220,8 @@ function config($name, $default = '') {
 function do_login() {
     global $auth;
 
-    return $auth->action();
+    $auth->action();
+    exit;
 }
 
 function monetize() {
@@ -556,7 +557,7 @@ function s_link() {
     $url      = '';
     $is_a     = is_array($data);
     $is_local = v_server('REMOTE_ADDR') === '127.0.0.1';
-    $is_dash  = preg_match('/^_(\d+)$/i', $data);
+    // $is_dash  = is_string($data) && preg_match('/^_(\d+)$/i', $data);
 
     // if (!$is_local && $module == 'a' && $data !== false && ((!$is_a && !$is_dash) || ($is_a && $count_data == 2))) {
     //     $subdomain = ($is_a) ? $data[0] : $data;
@@ -1038,13 +1039,17 @@ function lang($key, $default = '') {
     return lang_key($key, false, $default);
 }
 
+function lang_count($one, $more, $count) {
+    return ($count == 1) ? lang($one) : lang($more);
+}
+
 function fatal_error($mode = '404', $bp_message = '') {
     global $user;
 
-    $current_page = _page();
+    $current_page = parse_url(_page());
+    $current_page = isset($current_page['path']) ? $current_page['path'] : '/';
     $error        = 'La p&aacute;gina <strong>' . $current_page . '</strong> ';
-
-    $username    = (@method_exists($user, 'd')) ? $user->d('username') : '';
+    $username    = @method_exists($user, 'd') ? $user->d('username') : '';
     $bp_message .= nr(false, 2) . $current_page . nr(false, 2) . $username;
 
     switch ($mode) {
@@ -1086,8 +1091,9 @@ function fatal_error($mode = '404', $bp_message = '') {
 
             $log = '[php client %s %s] File does not exist: %s';
             $user = $user->d('username') ? ' - ' . $user->d('username') : '';
+            $ip = isset($user->ip) ? $user->ip : '';
 
-            @error_log(sprintf($log, $user->ip, $user, $current_page), 0);
+            @error_log(sprintf($log, $ip, $user, $current_page), 0);
             break;
     }
 
@@ -1155,8 +1161,12 @@ function msg_handler($errno, $msg_text, $errfile, $errline) {
     }
 }
 
-function redirect($url, $moved = false) {
+function redirect($url = false, $moved = false) {
     sql_close();
+
+    if ($url === false) {
+        $url = s_link();
+    }
 
     // If relative path, prepend application url
     if (strpos($url, '//') === false) {
@@ -1264,7 +1274,7 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
         'U_EMOTICONS'   => s_link('emoticons'),
         'U_ACP'         => $acp,
 
-        'S_YEAR'        => date('Y'),
+        'S_YEAR'        => YEAR,
         'S_UPLOAD'      => upload_maxsize(),
         'S_GIT'         => config('git_push_time'),
         'S_KEYWORDS'    => config('meta_keys'),
@@ -1300,15 +1310,18 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 }
 
 function sidebar() {
-    $sfiles = func_get_args();
-    if (!is_array($sfiles) || !sizeof($sfiles)) {
-        return;
-    }
+    $arg = func_get_args();
 
-    foreach ($sfiles as $each_file) {
-        $include_file = ROOT . 'objects/sidebar/' . $each_file . '.php';
-        if (file_exists($include_file)) {
-            @require_once($include_file);
+    foreach ($arg as $row) {
+        switch ($row) {
+            case 'artists':
+                $artists = new Artists();
+                $artists->sidebar();
+                break;
+            case 'events':
+                $events = new Events();
+                $events->sidebar();
+                break;
         }
     }
 

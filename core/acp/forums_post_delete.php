@@ -32,7 +32,7 @@ class __forums_post_delete extends mac {
         $topic_id = $post_info['topic_id'];
 
         $post_data = array(
-            'poster_post' => ($post_info['poster_id'] == $userdata['user_id']),
+            'poster_post' => ($post_info['poster_id'] == $user->d('user_id')),
             'first_post'  => ($post_info['topic_first_post_id'] == $post_id),
             'last_post'   => ($post_info['topic_last_post_id'] == $post_id),
             'last_topic'  => ($post_info['forum_last_topic_id'] == $topic_id),

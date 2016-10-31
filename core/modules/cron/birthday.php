@@ -14,7 +14,7 @@ $sql = "SELECT *
         AND user_birthday_last < ?
     ORDER BY username
     LIMIT ??";
-$result = sql_rowset(sql_filter($sql, USER_INACTIVE, date('md'), date('Y'), $max_email));
+$result = sql_rowset(sql_filter($sql, USER_INACTIVE, date('md'), YEAR, $max_email));
 
 $done = array();
 $usernames = array();
@@ -42,7 +42,7 @@ foreach ($result as $row) {
 if (count($done)) {
     $sql = 'UPDATE _members SET user_birthday_last = ?
         WHERE user_id IN (??)';
-    sql_query(sql_filter($sql, date('Y'), implode(',', $done)));
+    sql_query(sql_filter($sql, YEAR, implode(',', $done)));
 }
 
 _pre('Done. @ ' . implode(', ', $usernames), true);

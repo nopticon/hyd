@@ -43,7 +43,7 @@ class __artist_stats extends mac {
         if (sizeof($years)) {
             rsort($years);
         } else {
-            $years[] = date('Y');
+            $years[] = YEAR;
         }
 
         $total_graph = 0;

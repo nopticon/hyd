@@ -112,7 +112,7 @@ class Events extends downloads {
                 array(
                     'URL'   => s_link('events', $row['event_alias']),
                     'TITLE' => $row['title'],
-                    'IMAGE' => config('events_url') . 'gallery/' . $row['id'] . '/thumbnails/' . $row2['image'] . '.jpg?u=' . $row['event_update']
+                    'IMAGE' => config('events_url') . 'gallery/' . $row['id'] . '/thumbnails/' . $row2['image'] . '.jpg'
                 )
             );
         }
@@ -278,18 +278,24 @@ class Events extends downloads {
                             AND image = ?';
                     sql_query(sql_filter($sql, $this->v('id'), $imagedata['image']));
 
-                    _style('selected', array(
-                        'IMAGE'  => config('events_url') . 'gallery/' . $this->v('id') . '/' . $imagedata['image'] . '.jpg',
-                        'WIDTH'  => $imagedata['width'],
-                        'HEIGHT' => $imagedata['height'],
-                        'FOOTER' => $imagedata['image_footer'])
+                    _style(
+                        'selected',
+                        array(
+                            'IMAGE'  => config('events_url') . 'gallery/' . $this->v('id') . '/' . $imagedata['image'] . '.jpg',
+                            'WIDTH'  => $imagedata['width'],
+                            'HEIGHT' => $imagedata['height'],
+                            'FOOTER' => $imagedata['image_footer']
+                        )
                     );
 
                     if ($user->is('founder')) {
-                        _style('selected.update', array(
-                            'URL' => s_link('async eif'),
-                            'EID' => $this->v('id'),
-                            'PID' => $imagedata['image'])
+                        _style(
+                            'selected.update',
+                            array(
+                                'URL' => s_link('async eif'),
+                                'EID' => $this->v('id'),
+                                'PID' => $imagedata['image']
+                            )
                         );
                     }
 
@@ -306,8 +312,11 @@ class Events extends downloads {
                     }
 
                     if (!$is_fav || !$user->is('member')) {
-                        _style('selected.fav', array(
-                            'URL' => s_link('events', $this->v('id'), $imagedata['image'], 'fav'))
+                        _style(
+                            'selected.fav',
+                            array(
+                                'URL' => s_link('events', $this->v('id'), $imagedata['image'], 'fav')
+                            )
                         );
                     }
                 } else {
@@ -318,7 +327,10 @@ class Events extends downloads {
                     }
                 }
 
-                $sql = 'SELECT t.topic_id, t.topictitle, t.topic_locked, t.topic_replies, t.topic_time, t.topic_important, t.topic_vote, t.topic_featured, t.topic_points, t.topic_last_post_id, f.forum_alias, f.forum_name, f.forum_locked, f.forum_id, f.auth_view, f.auth_read, f.auth_post, f.auth_reply, f.auth_announce, f.auth_pollcreate, f.auth_vote
+                $sql = 'SELECT t.topic_id, t.topic_title, t.topic_locked, t.topic_replies, t.topic_time,
+                        t.topic_important, t.topic_vote, t.topic_featured, t.topic_points, t.topic_last_post_id,
+                        f.forum_alias, f.forum_name, f.forum_locked, f.forum_id, f.auth_view, f.auth_read,
+                        f.auth_post, f.auth_reply, f.auth_announce, f.auth_pollcreate, f.auth_vote
                     FROM _forum_topics t, _forums f
                     WHERE t.topic_id = ?
                         AND f.forum_id = t.forum_id';
@@ -407,6 +419,7 @@ class Events extends downloads {
                         $update_topic['topic_announce'] = $topic_announce;
                     }
 
+                    $topic_locked = 0;
                     if (strstr($post_message, '-Cerrado-') && $user->is('mod')) {
                         $topic_locked = 1;
                         $post_message = str_replace('-Cerrado-', '', $post_message);
@@ -495,7 +508,7 @@ class Events extends downloads {
                 }
 
                 if ($this->v('images')) {
-                    $exception_sql = (isset($download_id) && $download_id) ? sql_filter(' AND g.image <> ? ', $download_id) : '';
+                    $exception_sql = $download_id ? sql_filter(' AND g.image <> ? ', $download_id) : '';
 
                     $sql = 'SELECT g.*
                         FROM _events e, _events_images g
@@ -512,14 +525,19 @@ class Events extends downloads {
 
                     _style('thumbnails');
 
+                    $image_id = config('events_url') . 'gallery/' . $this->v('id') . '/';
+
                     foreach ($result as $row) {
-                        _style('thumbnails.item', array(
-                            'URL'    => s_link('events', $this->v('event_alias'), $row['image'], 'view'),
-                            'IMAGE'  => config('events_url') . 'gallery/' . $this->v('id') . '/thumbnails/' . $row['image'] . '.jpg',
-                            'RIMAGE' => config('events_url') . 'gallery/' . $this->v('id') . '/' . $row['image'] . '.jpg',
-                            'FOOTER' => $row['image_footer'],
-                            'WIDTH'  => $row['width'],
-                            'HEIGHT' => $row['height'])
+                        _style(
+                            'thumbnails.item',
+                            array(
+                                'URL'    => s_link('events', $this->v('event_alias'), $row['image'], 'view'),
+                                'IMAGE'  => $image_id . 'thumbnails/' . $row['image'] . '.jpg',
+                                'RIMAGE' => $image_id . $row['image'] . '.jpg',
+                                'FOOTER' => $row['image_footer'],
+                                'WIDTH'  => $row['width'],
+                                'HEIGHT' => $row['height']
+                            )
                         );
                     }
 
@@ -555,14 +573,17 @@ class Events extends downloads {
                     if ($user->is('colab') && !$this->v('images') && !@file_exists($location_mini)) {
                         $large_filepath = config('events_path') . 'future/' . $this->v('id') . '.jpg';
 
-                        _style('event_flyer.thumbnail', array(
-                            'ACTION'       => $u_event_alias,
-                            'SCALE'        => (config('events_thumb_height') / config('events_thumb_width')),
-                            'THUMB_WIDTH'  => config('events_thumb_width'),
-                            'THUMB_HEIGHT' => config('events_thumb_height'),
-                            'LARGE_WIDTH'  => $upload->getWidth($large_filepath),
-                            'LARGE_HEIGHT' => $upload->getHeight($large_filepath)
-                        ));
+                        _style(
+                            'event_flyer.thumbnail',
+                            array(
+                                'ACTION'       => $u_event_alias,
+                                'SCALE'        => (config('events_thumb_height') / config('events_thumb_width')),
+                                'THUMB_WIDTH'  => config('events_thumb_width'),
+                                'THUMB_HEIGHT' => config('events_thumb_height'),
+                                'LARGE_WIDTH'  => $upload->getWidth($large_filepath),
+                                'LARGE_HEIGHT' => $upload->getHeight($large_filepath)
+                            )
+                        );
                     }
                 }
 
@@ -587,11 +608,13 @@ class Events extends downloads {
                     }
                 }
 
-                v_style(array(
-                    'EVENT_NAME'    => $this->v('title'),
-                    'EVENT_DATE'    => $event_date_format,
-                    'EVENT_URL'     => $u_event_alias,
-                    'EVENT_PUBLISH' => $u_event_publish)
+                v_style(
+                    array(
+                        'EVENT_NAME'    => $this->v('title'),
+                        'EVENT_DATE'    => $event_date_format,
+                        'EVENT_URL'     => $u_event_alias,
+                        'EVENT_PUBLISH' => $u_event_publish
+                    )
                 );
 
                 $posts_offset = request_var('ps', 0);
@@ -612,8 +635,11 @@ class Events extends downloads {
                         $user_voted   = sql_field(sql_filter($sql, $vote_info[0]['vote_id'], $user->d('user_id')), 'vote_id', 0);
                         $poll_expired = ($vote_info[0]['vote_length']) ? (($vote_info[0]['vote_start'] + $vote_info[0]['vote_length'] < time()) ? true : false) : false;
 
-                        _style('poll', array(
-                            'POLL_TITLE' => $vote_info[0]['vote_text'])
+                        _style(
+                            'poll',
+                            array(
+                                'POLL_TITLE' => $vote_info[0]['vote_text']
+                            )
                         );
 
                         if ($user_voted || $poll_expired) {
@@ -621,28 +647,37 @@ class Events extends downloads {
 
                             foreach ($vote_info as $row) {
                                 if ($this->v('date') >= $midnight) {
-                                    $caption = ($row['vote_result'] == 1) ? lang('rsvp_future_one') : lang('rsvp_future_more');
+                                    $caption = lang_count('rsvp_future_one', 'rsvp_future_more', $row['vote_result']);
                                 } else {
-                                    $caption = ($row['vote_result'] == 1) ? lang('rsvp_past_one') : lang('rsvp_past_more');
+                                    $caption = lang_count('rsvp_past_one', 'rsvp_past_more', $row['vote_result']);
                                 }
 
-                                _style('poll.results.item', array(
-                                    'CAPTION' => $caption,
-                                    'RESULT'  => $row['vote_result'])
+                                _style(
+                                    'poll.results.item',
+                                    array(
+                                        'CAPTION' => $caption,
+                                        'RESULT'  => $row['vote_result']
+                                    )
                                 );
                                 break;
                             }
                         } else {
-                            _style('poll.options', array(
-                                'S_VOTE_ACTION' => s_link('events', $this->v('event_alias'), 1, 'rsvp'))
+                            _style(
+                                'poll.options',
+                                array(
+                                    'S_VOTE_ACTION' => s_link('events', $this->v('event_alias'), 1, 'rsvp')
+                                )
                             );
 
                             foreach ($vote_info as $row) {
                                 $caption = ($this->v('date') >= $midnight) ? lang('rsvp_future') : lang('rsvp_past');
 
-                                _style('poll.options.item', array(
-                                    'ID' => $row['vote_option_id'],
-                                    'CAPTION' => $caption)
+                                _style(
+                                    'poll.options.item',
+                                    array(
+                                        'ID' => $row['vote_option_id'],
+                                        'CAPTION' => $caption
+                                    )
                                 );
                                 break;
                             }
@@ -651,7 +686,8 @@ class Events extends downloads {
                 }
                 // END RSVP
 
-                $sql = 'SELECT p.*, u.user_id, u.username, u.username_base, u.user_avatar, u.user_posts, u.user_gender, u.user_rank
+                $sql = 'SELECT p.*, u.user_id, u.username, u.username_base, u.user_avatar, u.user_posts,
+                        u.user_gender, u.user_rank
                     FROM _forum_posts p, _members u
                     WHERE p.topic_id = ?
                         AND u.user_id = p.poster_id
@@ -705,8 +741,11 @@ class Events extends downloads {
                         _style('messages.row.controls');
 
                         foreach ($controls[$row['post_id']] as $item => $url) {
-                            _style('messages.row.controls.' . $item, array(
-                                'URL' => $url)
+                            _style(
+                                'messages.row.controls.' . $item,
+                                array(
+                                    'URL' => $url
+                                )
                             );
                         }
                     }
@@ -720,8 +759,11 @@ class Events extends downloads {
 
                 // Posting box
                 if ($user->is('member')) {
-                    _style('publish', array(
-                        'REF' => $publish_ref)
+                    _style(
+                        'publish',
+                        array(
+                            'REF' => $publish_ref
+                        )
                     );
 
                     if ($reply) {
@@ -730,7 +772,12 @@ class Events extends downloads {
                         }
 
                         if (!empty($post_reply_message)) {
-                            $rx = array('#(^|[\n ]|\()(http|https|ftp)://([a-z0-9\-\.,\?!%\*_:;~\\&$@/=\+]+)(gif|jpg|jpeg|png)#is', '#\[yt:[0-9a-zA-Z\-\=\_]+\]#is', '#\[sb\]#is', '#\[\/sb\]#is');
+                            $rx = array(
+                                '#(^|[\n ]|\()(http|https|ftp)://([a-z0-9\-\.,\?!%\*_:;~\\&$@/=\+]+)(gif|jpg|jpeg|png)#is',
+                                '#\[yt:[0-9a-zA-Z\-\=\_]+\]#is',
+                                '#\[sb\]#is',
+                                '#\[\/sb\]#is'
+                            );
                             $post_reply_message = preg_replace($rx, '', $post_reply_message);
                         }
 
@@ -738,8 +785,11 @@ class Events extends downloads {
                             $post_reply_message = '...';
                         }
 
-                        _style('publish.reply', array(
-                            'MESSAGE' => $post_reply_message)
+                        _style(
+                            'publish.reply',
+                            array(
+                                'MESSAGE' => $post_reply_message
+                            )
                         );
                     }
                 }
@@ -775,9 +825,9 @@ class Events extends downloads {
             if ($row['date'] >= $midnight && !$row['images']) {
                 if ($row['date'] >= $midnight && $row['date'] < $midnight + 86400) {
                     $this->data['is_today'][] = $row;
-                } else if ($row['date'] >= $midnight + 86400 && $row['date'] < $midnight + (86400 * 2)) {
+                } elseif ($row['date'] >= $midnight + 86400 && $row['date'] < $midnight + (86400 * 2)) {
                     $this->data['is_tomorrow'][] = $row;
-                } else if ($row['date'] >= $midnight + (86400 * 2) && $row['date'] < $week) {
+                } elseif ($row['date'] >= $midnight + (86400 * 2) && $row['date'] < $week) {
                     $this->data['is_week'][] = $row;
                 } else {
                     $this->data['is_future'][] = $row;
@@ -815,16 +865,22 @@ class Events extends downloads {
                 $random_images[$row['event_id']] = $row['image'];
             }
 
-            _style('gallery', array(
-                'EVENTS' => $total_gallery)
+            _style(
+                'gallery',
+                array(
+                    'EVENTS' => $total_gallery
+                )
             );
 
             foreach ($gallery as $item) {
-                _style('gallery.item', array(
-                    'URL'      => s_link('events', $item['event_alias']),
-                    'TITLE'    => $item['title'],
-                    'IMAGE'    => config('events_url') . 'gallery/' . $item['id'] . '/thumbnails/' . $random_images[$item['id']] . '.jpg',
-                    'DATETIME' => $user->format_date($item['date'], lang('date_format')))
+                _style(
+                    'gallery.item',
+                    array(
+                        'URL'      => s_link('events', $item['event_alias']),
+                        'TITLE'    => $item['title'],
+                        'IMAGE'    => config('events_url') . 'gallery/' . $item['id'] . '/thumbnails/' . $random_images[$item['id']] . '.jpg',
+                        'DATETIME' => $user->format_date($item['date'], lang('date_format'))
+                    )
                 );
             }
 
@@ -840,8 +896,11 @@ class Events extends downloads {
         _style('future');
 
         foreach ($this->data as $is_date => $data) {
-            _style('future.set', array(
-                'L_TITLE' => lang('ue_' . $is_date))
+            _style(
+                'future.set',
+                array(
+                    'L_TITLE' => lang('ue_' . $is_date)
+                )
             );
 
             foreach ($data as $item) {
@@ -853,17 +912,25 @@ class Events extends downloads {
                     $event_image = config('events_url') . 'future/';
                 }
 
-                _style('future.set.item', array(
-                    'ITEM_ID'   => $item['id'],
-                    'TITLE'     => $item['title'],
-                    'DATE'      => $user->format_date($item['date'], lang('date_format')),
-                    'THUMBNAIL' => $event_image . $item['id'] . '.jpg',
-                    'SRC'       => $event_image . $item['id'] . '.jpg?u=' . $item['event_update'],
-                    'U_TOPIC'   => s_link('events', $item['event_alias']))
+                _style(
+                    'future.set.item',
+                    array(
+                        'ITEM_ID'   => $item['id'],
+                        'TITLE'     => $item['title'],
+                        'DATE'      => $user->format_date($item['date'], lang('date_format')),
+                        'THUMBNAIL' => $event_image . $item['id'] . '.jpg',
+                        'SRC'       => $event_image . $item['id'] . '.jpg?u=' . $item['event_update'],
+                        'U_TOPIC'   => s_link('events', $item['event_alias'])
+                    )
                 );
             }
         }
 
+        return;
+    }
+
+    public function sidebar() {
+        $this->_lastevent();
         return;
     }
 }

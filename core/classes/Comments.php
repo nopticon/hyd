@@ -30,7 +30,7 @@ class Comments {
         global $user;
 
         if (request_method() != 'post') {
-            redirect(s_link());
+            redirect();
         }
 
         // Init member
@@ -57,11 +57,16 @@ class Comments {
     public function store() {
         global $user;
 
-        $this->param = explode('/', array_key(explode('//', $this->ref), 1));
+        $ref = $this->ref;
+        if (strpos($ref, '//') !== false) {
+            $ref = array_key(explode('//', $this->ref), 1);
+        }
+
+        $this->param = explode('/', $ref);
         $this->param = array_splice($this->param, 1, -1);
 
         $sql = '';
-        $id = (isset($this->param[3])) ? (int) $this->param[3] : 0;
+        $id = isset($this->param[3]) ? (int) $this->param[3] : 0;
 
         switch ($this->param[0]) {
             case 'a':
@@ -440,7 +445,8 @@ class Comments {
             }
         }
 
-        $f_pagination = ($simple_pagination) ? 'build_pagination' : 'build_num_pagination';
+        $f_pagination = __NAMESPACE__;
+        $f_pagination .= ($simple_pagination) ? '\\build_pagination' : '\\build_num_pagination';
         $f_pagination($ref . $start_field . '%d/', $total_items, $items_pp, $start, $pag_prefix, $pag_lang_prefix);
 
         return true;
