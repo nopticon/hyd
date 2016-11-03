@@ -1,8 +1,6 @@
 <?php
 namespace App;
 
-require_once(ROOT . 'interfase/artists.php');
-
 $user->setup();
 
 $sql = 'SELECT t.topic_id, t.topic_title, t.forum_id, t.topic_replies,

@@ -22,7 +22,7 @@ var uglify       = require('gulp-uglify');
 var stylus       = require('gulp-stylus');
 var nib          = require('nib');
 
-var assets = 'www/orion/template/assets';
+var assets = 'core/template/assets';
 
 // See https://github.com/austinpray/asset-builder
 var manifest = require('asset-builder')(assets + '/manifest.json');

@@ -54,7 +54,7 @@ class __user_name_change extends mac {
             array(
                 'USERNAME'     => $userdata['username'],
                 'NEW_USERNAME' => $username2,
-                'U_USERNAME'   => s_link('m', $username_base2)
+                'U_USERNAME'   => s_link('@m', $username_base2)
             )
         );
         $emailer->send();

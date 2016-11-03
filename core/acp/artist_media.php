@@ -67,8 +67,7 @@ class __artist_media extends mac {
 
             foreach ($f as $i => $row) {
                 if (!$i) {
-                    require_once(ROOT . 'interfase/getid3/getid3.php');
-                    $getID3 = new getID3;
+                    $getID3 = new \getID3;
                 }
 
                 $filename = $upload->rename($row, $a);

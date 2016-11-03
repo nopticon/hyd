@@ -2,10 +2,10 @@
 
 <div class="is_mid">
 	<div class="h"><h3>{L_LOGIN_PAGETITLE}</h3></div>
-	
+
 	<form action="{U_SESSION}" method="post">
 	<input type="hidden" name="ref" value="{S_REDIRECT}" />{S_HIDDEN_FIELDS}
-	
+
 	<!-- BEGIN error -->
 	<div class="pad_top ls">
 		<div class="h"><h3>{L_ERROR}</h3></div>
@@ -14,7 +14,7 @@
 		</ul>
 	</div>
 	<!-- END error -->
-	
+
 	<div class="pad_top a_mid">
 		<!-- IF IS_NEED_AUTH -->
 		{L_LOGIN_ADM}
@@ -25,28 +25,28 @@
 		<!-- ELSE  -->
 		<!-- ENDIF -->
 	</div>
-	
+
 	<span class="clear"></span>
-	
+
 	<div class="pad_top x3">
 		<div class="is_mid a_right"><label for="username" class="in_right">{L_USERNAME}</label></div>
 		<div class="is_mid"><input type="text" id="username" name="username" size="20" maxlength="20" /></div>
 	</div>
-	
+
 	<span class="clear"></span>
-	
+
 	<div class="pad_top">
 		<div class="is_mid a_right"><label for="password" class="in_right">{L_PASSWORD}</label></div>
 		<div class="is_mid"><input type="password" id="password" name="password" size="20" maxlength="32" value="" /></div>
 	</div>
-	
+
 	<span class="clear"></span>
-	
+
 	<div class="pad_top a_mid ctl"><input type="submit" name="login" value="{L_LOGIN}" /></div>
 	</form>
-	
+
 	<div class="h x3"><h3>{L_PASSWORD_RESET}</h3></div>
-	
+
 	<form action="{U_PASSWORD}" method="post">
 		<input type="hidden" id="code" name="code" value="{S_CODE}" />
 		<div class="pad_top a_mid x2">
@@ -65,10 +65,10 @@
 			{L_SENDPASSWORD3_EXPLAIN}
 			<!-- ENDIF -->
 		</div>
-	
+
 		<span class="clear"></span>
-		
-		<!-- IF PAGE_MODE == 'verify' || PAGE_MODE == 'nomatch' || PAGE_MODE == 'nokey' -->
+
+        <!-- IF PAGE_MODE == 'verify' || PAGE_MODE == 'nomatch' || PAGE_MODE == 'nokey' -->
 		<div class="pad_top">
 			<div class="is_mid a_right"><label for="newkey" class="in_right">{L_NEW_PASSWORD}</label></div>
 			<div class="is_mid"><input type="password" id="newkey" name="newkey" size="20" maxlength="100" value="" /></div>
@@ -86,54 +86,54 @@
 			<div class="is_mid"><input type="text" id="address" name="address" size="20" maxlength="100" value="" /></div>
 		</div>
 		<!-- ENDIF -->
-		
+
 		<span class="clear"></span>
-		
+
 		<div class="pad_top a_mid ctl"><input type="submit" name="submit" value="{L_CONTINUE}" /></div>
 	</form>
 </div>
 
 <div class="is_mid">
 	<div class="h"><h3>{L_NEW_ACCOUNT_SUBJECT}</h3></div>
-	
+
 	<form action="{U_REGISTER}" method="post">
 		{S_HIDDEN_FIELDS}
-		
+
 		<div class="pad_top x3">
 			<div class="is_mid a_right"><label for="username" class="in_right">{L_USERNAME2}</label></div>
 			<div class="is_mid"><input<!-- IF E_USERNAME --> class="error"<!-- ENDIF --> type="text" id="username" name="username" size="20" autocomplete="off" maxlength="32" value="{V_USERNAME}" /></div>
 		</div>
-		
+
 		<span class="clear"></span>
-		
+
 		<div class="pad_top">
 			<div class="is_mid a_right"><label for="email" class="in_right">{L_EMAIL}</label></div>
 			<div class="is_mid"><input<!-- IF E_EMAIL --> class="error"<!-- ENDIF --> type="text" id="email" name="email" size="20" autocomplete="off" maxlength="32" value="{V_EMAIL}" /></div>
 		</div>
-		
+
 		<span class="clear"></span>
-		
+
 		<div class="pad_top">
 			<div class="is_mid a_right"><label for="email_confirm" class="in_right">{L_CONFIRM_EMAIL}</label></div>
 			<div class="is_mid"><input<!-- IF E_EMAIL_CONFIRM --> class="error"<!-- ENDIF --> type="text" id="email_confirm" name="email_confirm" size="20" autocomplete="off" maxlength="32" value="{V_EMAIL_CONFIRM}" /></div>
 		</div>
-		
+
 		<span class="clear"></span>
-		
+
 		<div class="pad_top">
 			<div class="is_mid a_right"><label for="key" class="in_right">{L_PASSWORD}</label></div>
 			<div class="is_mid"><input<!-- IF E_KEY --> class="error"<!-- ENDIF --> type="password" id="key" name="key" size="20" autocomplete="off" maxlength="32" value="{V_KEY}" /></div>
 		</div>
-		
+
 		<span class="clear"></span>
-		
+
 		<div class="pad_top">
 			<div class="is_mid a_right"><label for="key_confirm" class="in_right">{L_CONFIRM_PASSWORD}</label></div>
 			<div class="is_mid"><input<!-- IF E_KEY_CONFIRM --> class="error"<!-- ENDIF --> type="password" id="key_confirm" name="key_confirm" size="20" autocomplete="off" maxlength="32" value="{V_KEY_CONFIRM}" /></div>
 		</div>
-		
+
 		<span class="clear"></span>
-		
+
 		<div class="pad_top">
 			<div class="is_mid a_right"><label for="gender" class="in_right">{L_GENDER}</label></div>
 			<div class="is_mid">
@@ -143,42 +143,42 @@
 				</select>
 			</div>
 		</div>
-		
+
 		<span class="clear"></span>
-		
+
 		<div class="pad_top">
 			<div class="is_mid a_right"><label for="birthday_day" class="in_right">{L_BIRTHDAY} (D&iacute;a, Mes, A&ntilde;o)</label></div>
 			<div class="is_mid">
 				<select<!-- IF E_BIRTHDAY --> class="error"<!-- ENDIF --> name="birthday_day">
 					<option value=""></option>
 					{V_BIRTHDAY_DAY}
-				</select> 
+				</select>
 				<select<!-- IF E_BIRTHDAY --> class="error"<!-- ENDIF --> name="birthday_month">
 					<option value=""></option>
 					{V_BIRTHDAY_MONTH}
-				</select> 
+				</select>
 				<select<!-- IF E_BIRTHDAY --> class="error"<!-- ENDIF --> name="birthday_year">
 					<option value=""></option>
 					{V_BIRTHDAY_YEAR}
 				</select>
 			</div>
 		</div>
-		
+
 		<span class="clear"></span>
-		
+
 		<div class="pad_top">
 			<div class="is_mid a_right"><label for="ref" class="in_right">{L_AP_PROGRAM_FIELD}</label></div>
 			<div class="is_mid"><input<!-- IF E_REF --> class="error"<!-- ENDIF --> type="text" id="ref" name="ref" size="20" autocomplete="off" maxlength="255" value="{V_REF}" /></div>
 		</div>
-		
+
 		<span class="clear"></span>
-		
+
 		<div class="pad_top">
 			<div class="a_mid"><label for="agreetos"><input class="none" type="checkbox" id="tos" name="tos" value="1"{V_TOS}>&nbsp;<span<!-- IF E_TOS --> class="error"<!-- ENDIF -->>{L_AGREE_TOS}</span></label></div>
 		</div>
-		
+
 		<span class="clear"></span>
-	
+
 		<div class="pad_top a_mid ctl"><input type="submit" name="submit" value="{L_CONTINUE}" /></div>
 	</form>
 </div>

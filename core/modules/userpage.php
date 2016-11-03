@@ -1146,7 +1146,8 @@ class Userpage {
         $last_visit = '';
 
         if ($this->data['user_regdate']) {
-            $joined = $user->format_date($this->data['user_regdate']) . sprintf(lang('joined_since'), $memberdays);
+            // $joined = $user->format_date($this->data['user_regdate']) . sprintf(lang('joined_since'), $memberdays);
+            $joined = $user->format_date($this->data['user_regdate']);
         }
 
         if ($this->data['user_lastvisit'] && (!$this->data['user_hideuser'] || $user->is('founder'))) {

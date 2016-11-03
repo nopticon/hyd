@@ -9,7 +9,7 @@ class Async {
             $module = request_var('module', '');
 
             if (!empty($module) && preg_match('#^([a-z\_]+)$#i', $module)) {
-                $module_path = ROOT . 'objects/async/' . $module . '.php';
+                $module_path = ROOT . 'modules/async/' . $module . '.php';
 
                 if (@file_exists($module_path)) {
                     $user->init(false);

@@ -371,7 +371,7 @@ class Auth {
                                 array(
                                     'INVITED'    => $invite_user[0],
                                     'USERNAME'   => $this->field('username'),
-                                    'U_REGISTER' => s_link('my register a', $invite_code)
+                                    'U_REGISTER' => s_link('@my register a', $invite_code)
                                 )
                             );
                             $emailer->send();
@@ -388,7 +388,7 @@ class Auth {
                 $emailer->assign_vars(
                     array(
                         'USERNAME'   => $this->field('username'),
-                        'U_ACTIVATE' => 'http:' . s_link('signup', $verification_code)
+                        'U_ACTIVATE' => s_link('@signup', $verification_code)
                     )
                 );
                 $emailer->send();
@@ -506,7 +506,7 @@ class Auth {
                             array(
                                 'USERNAME'  => $crypt_data['username'],
                                 'PASSWORD'  => $password,
-                                'U_PROFILE' => s_link('m', $crypt_data['username_base'])
+                                'U_PROFILE' => s_link('@m', $crypt_data['username_base'])
                             )
                         );
                         $emailer->send();
@@ -545,7 +545,7 @@ class Auth {
         } elseif (_button()) {
             $email = request_var('address', '');
             if (empty($email) || !email_format($email)) {
-                fatal_error();
+                redirect();
             }
 
             $sql = 'SELECT *
@@ -584,13 +584,19 @@ class Auth {
             $emailer->assign_vars(
                 array(
                     'USERNAME'   => $userdata['username'],
-                    'U_ACTIVATE' => s_link('signr', $verification_code)
+                    'U_ACTIVATE' => s_link('@signr', $verification_code)
                 )
             );
             $emailer->send();
             $emailer->reset();
 
-            _style('reset_complete');
+            v_style(
+                array(
+                    'PAGE_MODE' => 'submit'
+                )
+            );
+
+            // _style('reset_complete');
         }
 
         return;
@@ -640,7 +646,6 @@ class Auth {
         }
 
         $layout_vars = array(
-            'PAGE_MODE'        => '',
             'IS_NEED_AUTH'     => _button('admin'),
             'IS_LOGIN'         => _button('login'),
             'S_HIDDEN_FIELDS'  => s_hidden($s_hidden),
@@ -662,6 +667,10 @@ class Auth {
             'V_BIRTHDAY_MONTH' => $select_birth_month,
             'V_BIRTHDAY_YEAR'  => $select_birth_year
         );
+
+        if (!isset_template_var('PAGE_MODE')) {
+            $layout_vars['PAGE_MODE'] = '';
+        }
 
         foreach ($this->fields as $name => $v) {
             $layout_vars['E_' . $name] = $this->error($name);

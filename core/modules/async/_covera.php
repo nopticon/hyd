@@ -1,9 +1,7 @@
 <?php
 namespace App;
 
-require_once(ROOT . 'interfase/artists.php');
-
-$artists = new _artists();
+$artists = new Artists();
 $artists->get_data();
 
 $a_ary = array();

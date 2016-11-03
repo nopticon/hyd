@@ -1,8 +1,12 @@
 <?php
 namespace App;
 
+require_once '../vendor/autoload.php';
 require_once '../core/classes/Constants.php';
 require_once '../core/classes/Common.php';
+
+$config['mailgun_key'] = 'key-c1bac79ed8fdb0a81502deae8fe94d90';
+$config['mailgun_domain'] = 'rockrepublik.net';
 
 $config['cache_path'] = '/var/www/prd/rock-republik/cache/';
 $config['assets_url'] = '/dist/images/';

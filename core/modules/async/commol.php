@@ -1,11 +1,9 @@
 <?php
 namespace App;
 
-require_once(ROOT . 'objects/community.php');
-
 $user->setup();
 
-$comm = new community();
+$comm = new Community();
 $comm->recent_members();
 $current_time = time();
 

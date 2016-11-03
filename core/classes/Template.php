@@ -526,6 +526,10 @@ class Template {
         return true;
     }
 
+    public function isset_var($name) {
+        return isset($this->vars[$name]);
+    }
+
     /**
      * If not already done, load the file for the given handle and populate
      * the uncompiled_code[] hash with its code. Do not compile.

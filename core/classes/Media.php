@@ -41,12 +41,12 @@ class Media extends common {
                 // MP3 tags
                 $tag_format = 'UTF-8';
 
-                include_once(SROOT . 'core/getid3/getid3.php');
-                $getID3 = new getID3;
+                $getID3 = new \getID3;
+
                 $getID3->setOption(array('encoding' => $tag_format));
                 getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'write.php', __FILE__, true);
 
-                $tagwriter = new getid3_writetags;
+                $tagwriter = new \getid3_writetags;
                 $tagwriter->filename = getid3_lib::SafeStripSlashes($fmp3);
                 $tagwriter->tagformats = array('id3v1');
                 $tagwriter->overwrite_tags = true;

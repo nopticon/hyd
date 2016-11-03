@@ -301,7 +301,7 @@ class Comments {
                             'USERNAME_TO'   => $post_data['username'],
                             'USERNAME_FROM' => $user->d('username'),
                             'USER_MESSAGE'  => entity_decode($message),
-                            'U_PROFILE'     => s_link('m', $user->d('username_base'))
+                            'U_PROFILE'     => s_link('@m', $user->d('username_base'))
                         )
                     );
                     $emailer->send();
@@ -682,13 +682,11 @@ class Comments {
             $emailer->use_template('dc_email');
             $emailer->email_address($to['user_email']);
 
-            $dc_url = s_link('my dc read', $dc_id);
-
             $emailer->assign_vars(
                 array(
                     'USERNAME' => $to['username'],
                     'SENT_BY'  => $from['username'],
-                    'DC_URL'   => $dc_url
+                    'DC_URL'   => s_link('@my dc read', $dc_id)
                 )
             );
             $emailer->send();
@@ -1104,11 +1102,11 @@ class Comments {
                     }
                 }
 
-                $repl = isset($this->options['icons'][$member]) ? $this->options['icons'][$member] : 0;
-                $repl = $repl ?: '<a href="' . s_link('m', get_username_base($o_member)) . '">' . $o_member . '</a>';
+                $str_repl = isset($this->options['icons'][$member]) ? $this->options['icons'][$member] : 0;
+                $str_repl = $str_repl ?: '<a href="' . s_link('m', get_username_base($o_member)) . '">' . $o_member . '</a>';
 
                 $orig[] = ':i' . $o_member . ':';
-                $repl[] = $repl;
+                $repl[] = $str_repl;
             }
 
             $this->message = str_replace($orig, $repl, $this->message);

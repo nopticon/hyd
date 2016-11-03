@@ -8,7 +8,7 @@ class Cron {
         $module = request_var('module', '');
 
         if (!empty($module) && preg_match('#^([a-z\_]+)$#i', $module)) {
-            $module_path = ROOT . 'objects/cron/' . $module . '.php';
+            $module_path = ROOT . 'modules/cron/' . $module . '.php';
 
             if (@file_exists($module_path)) {
                 $user->setup();

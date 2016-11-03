@@ -553,8 +553,15 @@ function s_link() {
             break;
     }
 
+    $url = '';
+
+    if (strpos($module, '@') !== false) {
+        $module = substr($module, 1);
+        $url = get_protocol() . config('server_name');
+    }
+
+
     // $url = 'http://';
-    $url      = '';
     $is_a     = is_array($data);
     $is_local = v_server('REMOTE_ADDR') === '127.0.0.1';
     // $is_dash  = is_string($data) && preg_match('/^_(\d+)$/i', $data);
@@ -1061,7 +1068,7 @@ function fatal_error($mode = '404', $bp_message = '') {
                 $emailer->from('info');
                 $emailer->set_subject('MySQL error');
                 $emailer->use_template('mcp_delete', config('default_lang'));
-                $emailer->email_address('info@rockrepublik.net');
+                $emailer->email_address('info');
 
                 $emailer->assign_vars(
                     array(
@@ -1201,6 +1208,12 @@ function topic_arkane($topic_id, $value) {
     sql_query(sql_filter($sql, $value, $topic_id));
 
     return;
+}
+
+function isset_template_var($name) {
+    global $template;
+
+    return $template->isset_var(strtoupper($name));
 }
 
 function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive = true) {

@@ -332,7 +332,7 @@ class Session {
     */
     public function session_gc() {
         // Get expired sessions, only most recent for each user
-        $sql = 'SELECT ANY_VALUE(session_id), session_user_id, session_page, MAX(session_time) AS recent_time
+        $sql = 'SELECT session_id, session_user_id, session_page, MAX(session_time) AS recent_time
             FROM _sessions
             WHERE session_time < ?
             GROUP BY session_user_id, session_page
