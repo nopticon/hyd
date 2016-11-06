@@ -22,7 +22,13 @@ class Upload {
             }
         }
 
-        $check = array('name' => '', 'name' => 'none', 'size' => 0, 'error' => 4);
+        $check = array(
+            'name'  => '',
+            'name'  => 'none',
+            'size'  => 0,
+            'error' => 4
+        );
+
         foreach ($file_ary as $i => $row) {
             foreach ($check as $k => $v) {
                 if ($row[$k] === $v) {
@@ -37,8 +43,8 @@ class Upload {
     public function rename($a, $b) {
         $filename = str_replace($a->random, $b, $a->filepath);
         @rename($a->filepath, $filename);
-        _chmod($filename, config('mask'));
 
+        _chmod($filename);
         return $filename;
     }
 
@@ -87,7 +93,7 @@ class Upload {
                 continue;
             }
 
-            _chmod($row->filepath, config('mask'));
+            _chmod($row->filepath);
 
             $files[] = $row;
         }
@@ -99,7 +105,7 @@ class Upload {
     public function avatar_process($alias, &$_fields, &$error) {
         global $user;
 
-        $path = config('assets_path') . 'avatars/';
+        $path = config('avatar_path');
 
         $send = $this->process($path, 'avatar');
 
@@ -201,7 +207,10 @@ class Upload {
                 continue;
             }
 
-            _chmod($row['filepath'], config('mask'));
+            // _pre($r);
+            // _pre($row, true);
+
+            _chmod($r->filepath);
 
             if (@filesize($r->filepath) > $filesize) {
                 _rm($r->filepath);
@@ -321,7 +330,7 @@ class Upload {
             }
         }
 
-        if ($type == IMG_JPG) {
+        if ($dim[2] == IMG_JPG) {
             $created = @$image_g($thumb, $t->destination, 85);
         } else {
             $created = @$image_g($thumb, $t->destination);
@@ -332,9 +341,10 @@ class Upload {
             return false;
         }
 
-        _chmod($t->destination, config('mask'));
+        _chmod($t->destination);
+
         imagedestroy($thumb);
-        imagedestroy($image);
+        imagedestroy($generated);
 
         if ($remove && file_exists($t->source)) {
             _rm($t->source);
@@ -438,7 +448,7 @@ class Upload {
                 break;
         }
 
-        chmod($image, 0777);
+        _chmod($image);
         return $image;
     }
 
@@ -488,12 +498,12 @@ class Upload {
 
         switch ($imageType) {
             case "image/gif":
-                  imagegif($newImage, $thumb_image_name);
+                imagegif($newImage, $thumb_image_name);
                 break;
-              case "image/pjpeg":
+            case "image/pjpeg":
             case "image/jpeg":
             case "image/jpg":
-                  imagejpeg($newImage, $thumb_image_name, 90);
+                imagejpeg($newImage, $thumb_image_name, 90);
                 break;
             case "image/png":
             case "image/x-png":
@@ -501,7 +511,7 @@ class Upload {
                 break;
         }
 
-        chmod($thumb_image_name, 0777);
+        _chmod($thumb_image_name);
         return $thumb_image_name;
     }
 

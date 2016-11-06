@@ -805,7 +805,7 @@ function _md($parent, $childs = false) {
         if (!@mkdir($parent, octdec(config('mask')), true)) {
             return false;
         }
-        _chmod($parent, config('mask'));
+        _chmod($parent);
 
         umask($oldumask);
     }
@@ -824,7 +824,11 @@ function _md($parent, $childs = false) {
     return true;
 }
 
-function _chmod($filepath, $mask) {
+function _chmod($filepath, $mask = false) {
+    if ($mask === false) {
+        $mask = config('mask');
+    }
+
     if (is_string($mask)) {
         $mask = octdec($mask);
     }
@@ -1630,7 +1634,7 @@ function artist_check($ary) {
             if (!_md($fullpath)) {
                 return false;
             }
-            _chmod($fullpath, config('mask'));
+            _chmod($fullpath);
         }
     }
 
@@ -1824,22 +1828,25 @@ function validate_email($email) {
 }
 
 function get_user_avatar($name, $user_id = GUEST, $format = '', $abs_path = false) {
+    $path_1 = $abs_path ? config('avatar_path') : config('avatar_url');
+    $path_2 = $abs_path ? config('assets_path') : config('assets_url');
+
     switch ($user_id) {
         case GUEST:
-            $value = 'style/avatar.gif';
+            $path_1 = $path_2;
+            $value = 'avatar.gif';
             break;
         default:
             if (empty($name)) {
+                $path_1 = $path_2;
                 $name = 'avatar.gif';
             }
 
-            $value = 'avatars/' . $name . $format;
+            $value = $name . $format;
             break;
     }
 
-    $path = $abs_path ? config('assets_path') : config('assets_url');
-
-    return $path . $value;
+    return $path_1 . $value;
 }
 
 function etag($filename, $quote = true) {

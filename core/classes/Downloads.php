@@ -297,7 +297,7 @@ class Downloads {
         $this->filename  = str_replace($orig, $repl, $this->data['name']) . '_';
         $this->filename .= str_replace($orig, $repl, $this->dl_data['title']) . '.' . $this->dl_data['extension'];
 
-        $this->filepath  = 'data/artists/' . $this->data['ub'] . '/media/';
+        $this->filepath  = config('data_path') . 'artists/' . $this->data['ub'] . '/media/';
         $this->filepath .= $this->dl_data['id'] . '.' . $this->dl_data['extension'];
 
         $this->generateDownload();
@@ -427,8 +427,6 @@ class Downloads {
         header('Content-transfer-encoding: binary');
 
         if ($data == '') {
-            $this->filepath = '../' . $this->filepath;
-
             header('Content-length: ' . @filesize($this->filepath));
             @readfile($this->filepath);
         } else {

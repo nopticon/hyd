@@ -61,7 +61,7 @@ class Cache {
             @flock($fp, LOCK_UN);
             fclose($fp);
 
-            _chmod($filename, config('mask'));
+            _chmod($filename);
         }
 
         return $data;

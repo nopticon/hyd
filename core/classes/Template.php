@@ -1230,7 +1230,7 @@ class Template {
                     $this->cache_writable = 0;
                     return false;
                 } else {
-                    _chmod($path, config('mask'));
+                    _chmod($path);
                 }
             }
 
@@ -1247,7 +1247,7 @@ class Template {
                             $this->cache_writable = 0;
                             return false;
                         } else {
-                            _chmod($path, config('mask'));
+                            _chmod($path);
                         }
                     }
                 }
@@ -1263,7 +1263,7 @@ class Template {
         fputs($file, "<?php\n\n// Generated on " . date('r') . " (time=" . time() . ")\n\n?>");
         fputs($file, $code);
         fclose($file);
-        _chmod($filename, config('mask'));
+        _chmod($filename);
 
         return true;
     }

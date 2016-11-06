@@ -600,7 +600,7 @@ class Userpage {
             _style(
                 'current_avatar',
                 array(
-                    'IMAGE' => config('assets_url') . 'avatars/' . $user->d('user_avatar')
+                    'IMAGE' => get_user_avatar($user->d('user_avatar'), $user->d('user_id'))
                 )
             );
         }
