@@ -84,7 +84,7 @@ function request_var($var_name, $default = false, $multibyte = false) {
     $var = $_REQUEST[$var_name];
     if (!is_array($default)) {
         $type = gettype($default);
-        _utf8($var);
+        // _utf8($var);
     } else {
         list($key_type, $type) = each($default);
         $type = gettype($type);

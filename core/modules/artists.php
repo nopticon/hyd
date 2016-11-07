@@ -89,7 +89,7 @@ class Artists extends Downloads {
         }
 
         if ($this->data['news'] || $this->data['posts']) {
-            $sql = "(SELECT ?, p.topic_id, p.post_text, t.topic_time as post_time, m.user_id,
+            $sql = "(SELECT ?, p.topic_id, p.post_text, p.post_username, t.topic_time as post_time, m.user_id,
                     m.username, m.username_base, m.user_avatar
                 FROM _forum_topics t, _forum_posts p, _members m
                 WHERE t.forum_id = ?
@@ -99,7 +99,7 @@ class Artists extends Downloads {
                     AND t.topic_important = 0
                 ORDER BY t.topic_time DESC)
                     UNION ALL
-                (SELECT ?, p.post_id, p.post_text, p.post_time, m.user_id, m.username,
+                (SELECT ?, p.post_id, p.post_text, p.post_username, p.post_time, m.user_id, m.username,
                     m.username_base, m.user_avatar
                 FROM _artists a, _artists_posts p, _members m
                 WHERE p.post_ub = ?
@@ -330,7 +330,7 @@ class Artists extends Downloads {
                         config('artists_url'),
                         $this->data['ub'],
                         $row['image'] . '.jpg',
-                        w('x1 gallery')
+                        w('gallery x1')
                     );
 
                     _style(
@@ -1522,6 +1522,7 @@ class Artists extends Downloads {
 
                 $events = w();
                 foreach ($result as $row) {
+                    $event_type = '';
                     if ($row['date'] >= $midnight) {
                         if ($row['date'] >= $midnight && $row['date'] < $today_1) {
                             $event_type = 'today';
@@ -1536,7 +1537,9 @@ class Artists extends Downloads {
                         $event_type = 'gallery';
                     }
 
-                    $events['is_' . $event_type][] = $row;
+                    if ($event_type) {
+                        $events['is_' . $event_type][] = $row;
+                    }
                 }
 
                 if (isset($events['is_gallery']) && sizeof($events['is_gallery'])) {

@@ -630,15 +630,13 @@ class Auth {
             return lang($row);
         });
 
-        $select_birth_day = build_options(range(1, 31), $this->field('birthday_day'), function ($row) {
-            return lang_key('datetime', $row);
-        }, true);
+        $select_birth_day = build_options(range(1, 31), $this->field('birthday_day'), false, true);
 
         $select_birth_month = build_options($months, $this->field('birthday_month'), function ($row) {
             return lang_key('datetime', $row);
         });
 
-        $select_birth_year = build_options(range(YEAR, YEAR - 100), $this->field('birthday_year'), false, true);
+        $select_birth_year = build_options(range(YEAR - 5, YEAR - 100), $this->field('birthday_year'), false, true);
 
         $s_hidden = w();
         if (_button('admin')) {

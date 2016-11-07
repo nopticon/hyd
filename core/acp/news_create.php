@@ -50,11 +50,6 @@ class __news_create extends mac {
 
             $send = $upload->process(config('news_path'), 'thumbnail');
 
-            if (count($this->error)) {
-                $error = array_merge($error, $this->error);
-                return;
-            }
-
             if ($send !== false) {
                 foreach ($send as $row) {
                     $resize = $upload->resize(

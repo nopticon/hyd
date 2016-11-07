@@ -44,6 +44,14 @@ input, button, textarea, select
 	background #41413E
 	border 0
 	padding 2px
+	@media $sm
+		width 100%
+		padding 10px 0
+		text-indent 10px
+
+@media $sm
+	select[name="birthday_day"], select[name="birthday_month"], select[name="birthday_year"]
+		width 32.6%
 
 hr
 	display block
@@ -59,16 +67,28 @@ hr
 	border 1px solid #111
 	background rgba(0,0,0,0.7)
 	border-radius 10px
+	@media $sm
+		border-radius 0
+		background rgba(0,0,0,0)
 
 .page
 	width 1170px
 	margin 0 auto
+	@media $xs
+		width 100%
+	@media $sm
+		width 100%
+		background rgba(0,0,0,0.7)
+	@media $ipad-landscape
+		width 100%
 
 .header
 	display block
 	width 100%
 	margin 5px 0 5px 0
 	overflow hidden
+	@media $sm
+		margin 0
 
 .brand
 	width 70%
@@ -76,6 +96,8 @@ hr
 	h1
 		width 300px
 		height 51px
+		@media $sm
+			margin 10px
 		a
 			display block
 			width 300px
@@ -105,6 +127,8 @@ hr
 		li
 			float left
 			margin-right 8px
+			@media $sm
+				background rgba(0,0,0,0.7)
 			a
 				margin 5px
 				display inline
@@ -112,6 +136,9 @@ hr
 #sign
 	float right
 	margin 8px 0 0 0
+	@media $sm
+		float none
+		width 100%
 	ul
 		margin 0
 		padding 0
@@ -126,6 +153,9 @@ hr
 				color #000
 				border 1px solid #DBA400
 				border-radius 5px
+				@media $sm
+					margin 0 0 10px
+					display block
 				&:hover
 					text-decoration none
 					background #DBA400
@@ -194,6 +224,8 @@ hr
 	margin 3px 0 0 0
 	float right
 	position relative
+	@media $sm
+		margin 3px 10px
 
 .defaultInput
 	color #BBB !important
@@ -324,6 +356,9 @@ hr
 			width 49%
 			float left
 			height 200px
+			@media $sm
+				width 100%
+				height auto
 
 .l2 ul li ul li, .l3 ul li ul li, .l4 ul li ul li, .l6 ul li ul li
 	margin 0
@@ -353,6 +388,8 @@ hr
 			margin 10px 0 0 5px
 			width 32%
 			float left
+			@media $sm
+				width 100%
 
 .l4
 	ul
@@ -360,6 +397,8 @@ hr
 			margin 10px 0 0 5px
 			width 24%
 			float left
+			@media $sm
+				width 48%
 
 .l6
 	ul
@@ -369,11 +408,15 @@ hr
 			height 100px
 			float left
 			overflow hidden
+			@media $sm
+				width 32%
 
 .lf
 	ul
 		li
 			height 140px
+			@media $sm
+				height 155px
 
 .lf2
 	ul
@@ -392,22 +435,32 @@ hr
 .is_left
 	width 73%
 	float left
+	@media $sm
+		width 100%
 
 .is_right
 	width 25%
 	float right
+	@media $sm
+		width 100%
 
 .is_left_i
 	width 25%
 	float left
+	@media $sm
+		width 100%
 
 .is_right_i
 	width 75%
 	float right
+	@media $sm
+		width 100%
 
 .is_mid
 	width 50%
 	float left
+	@media $sm
+		width 100%
 
 .pad_left
 	margin-left 10px
@@ -432,6 +485,8 @@ hr
 
 .a_right
 	text-align right
+	@media $sm
+		text-align left
 
 .a_mid
 	text-align center
@@ -464,10 +519,12 @@ hr
 					background #518c08
 
 .ctl ul li a, .ctl ul li strong, .ctl ul li span, .ctl input, .ctl ul li small, input.ctl
-	padding 4px
+	padding 10px
 	border-radius 4px
 	background #5DA209
 	color #fff
+	max-width 200px
+	font-weight bold
 
 .ctl ul li span, .ctl ul li strong
 	border 1px solid #999

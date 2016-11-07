@@ -270,6 +270,7 @@ class Events extends downloads {
                 * Normal operations
                 */
                 $t_offset = request_var('offset', 0);
+                $download_id = 0;
 
                 if ($mode == 'view') {
                     $sql = 'UPDATE _events_images

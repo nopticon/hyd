@@ -468,6 +468,7 @@ class Comments {
 
                 switch ($key) {
                     case 'username':
+                        $row['post_username'] = isset($row['post_username']) ? $row['post_username'] : '';
                         $data['username'] = ($row['user_id'] != GUEST) ? $value : guestUsername($row['post_username']);
                         break;
                     case 'username_base':
@@ -840,24 +841,20 @@ class Comments {
     }
 
     public function parse_youtube() {
-        $format  = '%s<div id="yt_%s">Youtube video: http://www.youtube.com/watch?v=%s</div>';
-        $format .= '<script type="text/javascript">';
-        $format .= 'swfobject.embedSWF("http://www.youtube.com/v/%s", "yt_$2", "425", "350", "8.0.0"';
-        $format .= ', "expressInstall.swf");</script>';
+        $format = '<iframe width="560" height="315" src="%s" frameborder="0" allowfullscreen></iframe>';
+        $embed = 'https://www.youtube.com/embed/';
 
         $search = '/https?:\/\/(?:www\.)?youtu(?:\.be|be\.com)\/watch(?:\?(.*?)&|\?)v=([a-zA-Z0-9_\-]+)(\S*)/i';
 
         if (preg_match_all($search, $this->message, $match)) {
             foreach ($match[0] as $i => $row) {
-                $replace = sprintf($format, '', $match[2][$i], $match[2][$i], $match[2][$i], $match[2][$i]);
+                $replace = sprintf($format, $embed . $match[2][$i]);
                 $this->message = str_replace($row, $replace, $this->message);
             }
         }
 
         if (preg_match_all('#(^|[\n ]|\()\[yt\:([0-9a-zA_Z\-\=\_\&]+)\]#i', $this->message, $match)) {
-            $format  = '$1<div id="yt_$2">Youtube video: http://www.youtube.com/watch?v=$2</div>';
-            $format .= '<script type="text/javascript"> swfobject.embedSWF("http://www.youtube.com/v/$2"';
-            $format .= ', "yt_$2", "425", "350", "8.0.0", "expressInstall.swf"); </script>';
+            $format = sprintf($format, $embed . '$2');
 
             $this->message = preg_replace('#(^|[\n ]|\()\[yt\:([0-9a-zA_Z\-\=\_\&]+)\]#i', $format, $this->message);
         }

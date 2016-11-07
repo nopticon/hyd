@@ -49,7 +49,7 @@ $(function() {
 	var docurl = window.location.href;
 	var window_size = $(window).width();
 
-	$('#searchForm').jQLiteID();
+	// $('#searchForm').jQLiteID();
 
 	$('ul[id^="expand_"]').hide().addClass('flying');
 
@@ -67,15 +67,15 @@ $(function() {
 		return false;
 	});
 
-	$('textarea').autoResize({
-		onReize: function() {
-			$(this).css({opacity: 0.8});
-		},
-		animateCallback: function() {
-			$(this).css({opacity: 1});
-		},
-		limit: 250
-	});
+	// $('textarea').autoResize({
+	// 	onReize: function() {
+	// 		$(this).css({opacity: 0.8});
+	// 	},
+	// 	animateCallback: function() {
+	// 		$(this).css({opacity: 1});
+	// 	},
+	// 	limit: 250
+	// });
 
 	$('.w_broadcast a').on('click', function(event) {
 		event.preventDefault();
@@ -88,15 +88,15 @@ $(function() {
 		$.scrollTo('.publish');
 	});
 
-	$('input[type=file]').filestyle({
-		image: '//assets.rockrepublik.net/style/file.png',
-		imagewidth : 90,
-		imageheight : 20,
-		width : 250
-	});
+	// $('input[type=file]').filestyle({
+	// 	image: '//assets.rockrepublik.net/style/file.png',
+	// 	imagewidth : 90,
+	// 	imageheight : 20,
+	// 	width : 250
+	// });
 
-	$('.vcheck').vchecks();
-	$('.fancy').fancybox();
+	// $('.vcheck').vchecks();
+	// $('.fancy').fancybox();
 
 	$('.smile').each(function() {
 		$(this).html('&#8594;&#9786;');
@@ -106,58 +106,58 @@ $(function() {
 		return false;
 	});
 
-	if ($.url.segment() > 0) {
-		switch ($.url.segment(0)) {
-			case 'my':
-				switch ($.url.segment(1)) {
-					case 'register':
-						$('#refop').change(function() {
-							switch (this.value) {
-								case '1':
-									text = 'E-mail de tu amigo';
-									break;
-								case '8':
-									text = 'Detalles';
-									break;
-								default:
-									text = 'Nombre';
-									break;
-							}
-							$('#tag_refby').html(text);
-							$('#refby').focus();
-						});
-						break;
-				}
-				break;
-			case 'topic':
-			case 'post':
-				$('.lsig').each(function() {
-					if ($(this).height() > 275) {
-						$(this).addClass('sig-of');
-					}
-				});
-				break;
-			case 'a':
-				if (!$.url.segment(1)) {
-					xka = false;
-					_.call('athumbs', 'ajx-thumbnails', 30);
-				}
-				break;
-			case 'community':
-				xka = false;
-				_.call('commol', 'online', 10);
-				break;
-		}
-	}
+	// if ($.url.segment() > 0) {
+	// 	switch ($.url.segment(0)) {
+	// 		// case 'my':
+	// 		// 	switch ($.url.segment(1)) {
+	// 		// 		case 'register':
+	// 		// 			$('#refop').change(function() {
+	// 		// 				switch (this.value) {
+	// 		// 					case '1':
+	// 		// 						text = 'E-mail de tu amigo';
+	// 		// 						break;
+	// 		// 					case '8':
+	// 		// 						text = 'Detalles';
+	// 		// 						break;
+	// 		// 					default:
+	// 		// 						text = 'Nombre';
+	// 		// 						break;
+	// 		// 				}
+	// 		// 				$('#tag_refby').html(text);
+	// 		// 				$('#refby').focus();
+	// 		// 			});
+	// 		// 			break;
+	// 		// 	}
+	// 		// 	break;
+	// 		case 'topic':
+	// 		case 'post':
+	// 			$('.lsig').each(function() {
+	// 				if ($(this).height() > 275) {
+	// 					$(this).addClass('sig-of');
+	// 				}
+	// 			});
+	// 			break;
+	// 		// case 'a':
+	// 		// 	if (!$.url.segment(1)) {
+	// 		// 		xka = false;
+	// 		// 		_.call('athumbs', 'ajx-thumbnails', 30);
+	// 		// 	}
+	// 		// 	break;
+	// 		// case 'community':
+	// 		// 	xka = false;
+	// 		// 	_.call('commol', 'online', 10);
+	// 		// 	break;
+	// 	}
+	// }
 
 	if (xka) {
 		// Keep alive
-		$.PeriodicalUpdater('/async/ka/', {
-			method: 'post',
-			data: {ajax: '1'},
-			minTimeout: 10000,
-			maxTimeout: 15000
-		});
+		// $.PeriodicalUpdater('/async/ka/', {
+		// 	method: 'post',
+		// 	data: {ajax: '1'},
+		// 	minTimeout: 10000,
+		// 	maxTimeout: 15000
+		// });
 	}
 
 	$('div[id^="hse_"]').each(function() {

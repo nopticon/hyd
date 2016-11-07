@@ -18,6 +18,8 @@ class Emoticons {
     }
 
     public function run() {
+        global $cache;
+
         if (!$smilies = $cache->get('smilies')) {
             $sql = 'SELECT *
                 FROM _smilies

@@ -94,11 +94,11 @@ class _acp {
         return;
     }
 
-    public function getTitle($default = '') {
+    public function getTitle() {
         return !empty($this->title) ? $this->title : $this->default_title;
     }
 
-    public function getTemplate($default = '') {
+    public function getTemplate() {
         return !empty($this->template) ? $this->template : $this->default_view;
     }
 
@@ -145,8 +145,14 @@ class _acp {
             $local_tv = array_merge($local_tv, $module->tv);
         }
 
-        $this->_title = $this->module;
-        $this->_template = $module->template;
+        $this->title = $this->module;
+        $this->template = $module->template;
+
+        // v_style($local_tv);
+        //
+        // _pre($this->getTemplate(), true);
+        //
+        // page_layout($this->getTitle(), $this->getTemplate());
 
         return v_style($local_tv);
     }
