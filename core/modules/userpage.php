@@ -575,6 +575,10 @@ class Userpage {
                     }
                 }
 
+                if (empty($member_data['user_rank'])) {
+                    $member_data['user_rank'] = 0;
+                }
+
                 if (sizeof($member_data)) {
                     $sql = 'UPDATE _members SET ' . sql_build('UPDATE', $member_data) . sql_filter('
                         WHERE user_id = ?', $user->d('user_id'));
