@@ -595,9 +595,9 @@ class today {
             _style(
                 'mark_item',
                 array(
-                    'ITEM' => $i,
-                    'NAME' => $user->lang[$mark_item],
-                    'SELECTED' => (($i == $user->data['user_mark_items']) ? ' selected="selected"' : '')
+                    'ITEM'     => $i,
+                    'NAME'     => $user->lang[$mark_item],
+                    'SELECTED' => selected($user->data['user_mark_items'], $i)
                 )
             );
         }

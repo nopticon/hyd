@@ -29,7 +29,7 @@ class Userpage {
         }
 
         $userpage = request_var('member', '');
-        $page = request_var('page', '');
+        $page     = request_var('page', '');
 
         switch ($page) {
             case 'dc':
@@ -176,6 +176,7 @@ class Userpage {
                 //
                 if (!$submit) {
                     $member = request_var('member', '');
+
                     if (!empty($member)) {
                         $member = get_username_base($member);
 
@@ -311,7 +312,7 @@ class Userpage {
                     foreach ($result as $row) {
                         $dc_with = ($user->d('user_id') == $row['user_id']) ? '2' : '';
                         if (!$row['last_msg_id']) {
-                            $row['last_msg_id'] = $row['msg_id'];
+                            $row['last_msg_id']        = $row['msg_id'];
                             $row['last_privmsgs_date'] = $row['privmsgs_date'];
                         }
 
@@ -407,10 +408,9 @@ class Userpage {
                 // Output to template
                 //
                 $layout_vars = array(
-                    'MESSAGE_TEXT' => (sizeof($mark) == 1) ? lang('confirm_delete_pm') : lang('confirm_delete_pms'),
-
+                    'MESSAGE_TEXT'     => lang_count('confirm_delete_pm', 'confirm_delete_pms', count($mark)),
                     'S_CONFIRM_ACTION' => s_link('my dc'),
-                    'S_HIDDEN_FIELDS' => s_hidden($s_hidden)
+                    'S_HIDDEN_FIELDS'  => s_hidden($s_hidden)
                 );
                 page_layout('DCONVS', 'confirm', $layout_vars);
             }
@@ -452,6 +452,7 @@ class Userpage {
 
             $_fields->password1 = request_var('password1', '');
             $_fields->password2 = request_var('password2', '');
+
             $_fields->hideuser  = _button('hideuser');
             $_fields->email_dc  = _button('email_dc');
 
@@ -619,23 +620,28 @@ class Userpage {
             )
         );
 
-        $s_day_select = '';
-        for ($i = 1; $i < 32; $i++) {
-            $s_day_select .= sprintf($format, $i, selected($_fields->birthday_day, $i), $i);
-        }
+        $months = array(
+            1  => 'January',
+            2  => 'February',
+            3  => 'March',
+            4  => 'April',
+            5  => 'May',
+            6  => 'June',
+            7  => 'July',
+            8  => 'August',
+            9  => 'September',
+            10 => 'October',
+            11 => 'November',
+            12 => 'December'
+        );
 
-        $s_month_select = '';
-        $months = w('January February March April May June July August September October November December');
-        foreach ($months as $id => $value) {
-            $mon = $id + 1;
-            $selected = selected($_fields->birthday_month, $mon);
-            $s_month_select .= sprintf($format, $mon, $selected, lang_key('datetime', $value));
-        }
+        $s_day_select = build_options(range(1, 31), $_fields->birthday_day, false, true);
 
-        $s_year_select = '';
-        for ($i = 2005; $i > 1899; $i--) {
-            $s_year_select .= sprintf($format, $i, selected($_fields->birthday_year, $i), $i);
-        }
+        $s_month_select = build_options($months, $_fields->birthday_month, function ($row) {
+            return lang_key('datetime', $row);
+        });
+
+        $s_year_select = build_options(range(YEAR - 5, YEAR - 100), $_fields->birthday_year, false, true);
 
         _style(
             'birthday',
@@ -680,7 +686,7 @@ class Userpage {
         }
         v_style($output_vars);
 
-        $this->title = 'MEMBER_OPTIONS';
+        $this->title    = 'MEMBER_OPTIONS';
         $this->template = 'profile';
 
         return;
@@ -703,7 +709,7 @@ class Userpage {
                     $is_blocked = true;
                 }
 
-                $banned_lang = ($is_blocked) ? 'REMOVE' : 'ADD';
+                $banned_lang = $is_blocked ? 'REMOVE' : 'ADD';
 
                 _style(
                     'block_member',
@@ -720,22 +726,22 @@ class Userpage {
         switch ($mode) {
             case 'friend':
                 $this->friend_add();
-            break;
+                break;
             case 'ban':
                 $this->user_ban();
-            break;
+                break;
             case 'favs':
-            break;
+                break;
             case 'friends':
                 $this->friend_list();
-            break;
+                break;
             case 'stats':
                 $this->user_stats();
-            break;
+                break;
             case 'main':
             default:
                 $this->user_main();
-            break;
+                break;
         }
 
         $panel_selection = array(

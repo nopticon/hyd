@@ -26,6 +26,11 @@ class emailer {
 
     // Sets an email address to send to
     public function email_address($address) {
+        if (strpos($address, '@') === false) {
+            $format = '%s <%s@%s>';
+            $address = sprintf($format, config('sitename'), $address, array_key(explode('@', config('board_email')), 1));
+        }
+
         $this->addresses['to'] = trim($address);
     }
 

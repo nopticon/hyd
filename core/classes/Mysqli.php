@@ -465,7 +465,8 @@ class Database extends DatabaseCommon {
         $sql_errno = $this->connect->errno;
 
         if (!$this->noerror) {
-            fatal_error('mysql', $sql . '<br /><br />' . $sql_error . '<br /><br />' . $sql_errno);
+            $br = "\n\n";
+            fatal_error('mysql', $sql . $br . $sql_error . $br . $sql_errno);
         }
 
         return array('message' => $sql_error, 'code' => $sql_errno);

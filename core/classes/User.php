@@ -127,8 +127,11 @@ class User extends Session {
         static $lang_dates, $midnight;
 
         if (empty($lang_dates)) {
-            foreach ($this->lang['datetime'] as $match => $replace) {
-                $lang_dates[$match] = $replace;
+            $lang_dates = array();
+            if ($this->lang) {
+                foreach ($this->lang['datetime'] as $match => $replace) {
+                    $lang_dates[$match] = $replace;
+                }
             }
         }
 

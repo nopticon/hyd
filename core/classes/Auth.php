@@ -608,7 +608,6 @@ class Auth {
         //
         showError($this->errorList());
 
-
         $months = array(
             1  => 'January',
             2  => 'February',

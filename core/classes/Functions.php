@@ -1054,14 +1054,15 @@ function lang_count($one, $more, $count) {
     return ($count == 1) ? lang($one) : lang($more);
 }
 
-function fatal_error($mode = '404', $bp_message = '') {
+function fatal_error($mode = '404', $message = '') {
     global $user;
 
     $current_page = parse_url(_page());
     $current_page = isset($current_page['path']) ? $current_page['path'] : '/';
+
     $error        = 'La p&aacute;gina <strong>' . $current_page . '</strong> ';
-    $username    = @method_exists($user, 'd') ? $user->d('username') : '';
-    $bp_message .= nr(false, 2) . $current_page . nr(false, 2) . $username;
+    $username     = @method_exists($user, 'd') ? $user->d('username') : '';
+    $message     .= nr(false, 2) . $current_page . nr(false, 2) . $username;
 
     switch ($mode) {
         case 'mysql':
@@ -1076,11 +1077,11 @@ function fatal_error($mode = '404', $bp_message = '') {
 
                 $emailer->assign_vars(
                     array(
-                        'MESSAGE' => $bp_message,
+                        'MESSAGE' => $message,
                         'TIME'    => $user->format_date(time(), 'r')
                     )
                 );
-                //$emailer->send();
+                $emailer->send();
                 $emailer->reset();
             }
 
@@ -1096,7 +1097,7 @@ function fatal_error($mode = '404', $bp_message = '') {
         default:
             $title       = 'Archivo no encontrado';
             $error      .= 'no existe';
-            $bp_message  = '';
+            $message  = '';
 
             status("404 Not Found");
 
@@ -1111,9 +1112,9 @@ function fatal_error($mode = '404', $bp_message = '') {
     if ($mode != '600') {
         $error .= ', puedes regresar a<br /><a href="/">p&aacute;gina de inicio de Rock Republik</a>.';
 
-        if (!empty($bp_message)) {
-            $error .= '<br /><br />' . $bp_message;
-        }
+        // if (!empty($message)) {
+        //     $error .= '<br /><br />' . $message;
+        // }
     }
 
     sql_close();
@@ -1705,7 +1706,7 @@ function language_select($default, $select_name = 'language', $dirname = 'langua
 
     $lang_select = '<select name="' . $select_name . '">';
     foreach ($lang as $displayname => $filename) {
-        $selected = (strtolower($default) == strtolower($filename)) ? ' selected="selected"' : '';
+        $selected = selected(strtolower($default), strtolower($filename));
         $lang_select .= '<option value="' . $filename . '"' . $selected . '>' . ucwords($displayname) . '</option>';
     }
     $lang_select .= '</select>';
@@ -1722,7 +1723,7 @@ function tz_select($default, $select_name = 'timezone') {
     $tz_select = '<select name="' . $select_name . '">';
 
     foreach ($lang['tz'] as $offset => $zone) {
-        $selected = ($offset == $default) ? ' selected="selected"' : '';
+        $selected = selected($default, $offset);
         $tz_select .= '<option value="' . $offset . '"' . $selected . '>' . $zone . '</option>';
     }
     $tz_select .= '</select>';
