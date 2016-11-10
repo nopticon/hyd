@@ -2,8 +2,12 @@
 namespace App;
 
 class __forums_post_modify extends mac {
+    protected $object;
+
     public function __construct() {
         parent::__construct();
+
+        $this->object = new \stdClass;
 
         $this->auth('mod');
     }
@@ -16,16 +20,16 @@ class __forums_post_modify extends mac {
         $sql = 'SELECT *
             FROM _forum_posts
             WHERE post_id = ?';
-        if (!$this->object->post = sql_fieldrow(sql_filter($sql, $this->id))) {
+        if (!$post = sql_fieldrow(sql_filter($sql, $this->id))) {
             fatal_error();
         }
 
-        $this->object->post = (object) $this->object->post;
+        $this->object->post = (object) $post;
 
         $sql = 'SELECT *
             FROM _forum_topics
             WHERE topic_id = ?';
-        if (!$this->object->topic = sql_fieldrow(sql_filter($sql, $this->object->post->topic_id))) {
+        if (!$topic = sql_fieldrow(sql_filter($sql, $this->object->post->topic_id))) {
             fatal_error();
         }
 
