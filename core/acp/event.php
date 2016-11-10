@@ -81,9 +81,9 @@ class __event extends mac {
                     $event_url = config('events_url') . 'future/' . $img  . '.jpg';
 
                     $post_message = 'Evento publicado';
-                    $post_time = time();
-                    $forum_id = 21;
-                    $poster_id = 1433;
+                    $post_time    = time();
+                    $forum_id     = 21;
+                    $poster_id    = 1433;
 
                     $sql = 'SELECT *
                         FROM _forum_topics
