@@ -68,6 +68,10 @@ class Comments {
         $sql = '';
         $id = isset($this->param[3]) ? (int) $this->param[3] : 0;
 
+        if (!isset($this->param[2])) {
+            $this->param[2] = 0;
+        }
+
         switch ($this->param[0]) {
             case 'a':
                 if ($this->param[2] == 9) {
@@ -214,6 +218,10 @@ class Comments {
                 'post_time'   => (int) $current_time,
                 'post_text'   => (string) $message
             );
+
+            if (!isset($this->param[2])) {
+                $this->param[2] = 0;
+            }
 
             switch ($this->param[0]) {
                 case 'a':
