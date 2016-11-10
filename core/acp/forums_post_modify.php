@@ -72,8 +72,6 @@ class __forums_post_modify extends mac {
             redirect(s_link('post', $this->id));
         }
 
-        _pre($this->object->topic);
-
         v_style(
             array(
                 'V_TOPIC'   => ($user->is('founder') && isset($this->object->topic->topic_title)) ? $this->object->topic->topic_title : '',
