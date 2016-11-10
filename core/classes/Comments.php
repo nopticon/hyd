@@ -910,16 +910,16 @@ class Comments {
                 'repl' => array(
                     '\\1&#058;',
                     '$1<a href="$2/$3">$2/$3</a>',
-                    "'\$1<a href=\"\$2\" target=\"_blank\">$2</a>'",
-                    "'\$1<a href=\"http://\$2\" target=\"_blank\">$2</a>'",
-                    "'\$1<a href=\"mailto:\$2\">$2</a>'"
+                    '$1<a href="$2" target="_blank">$2</a>',
+                    '$1<a href="http://$2" target="_blank">$2</a>',
+                    '$1<a href="mailto:$2">$2</a>'
                 )
             );
 
-            if (!$user->is('member')) {
-                $this->options['url']['orig'][4] = '#(^|[\n ]|\()(([a-z0-9&\-_.]+?@)([\w\-]+\.([\w\-\.]+\.)?[\w]+))#s';
-                $this->options['url']['repl'][4] = "'\$1<span class=\"red\">$3'.substr('$4', 0, 4).'...</span>'";
-            }
+            // if (!$user->is('member')) {
+            //     $this->options['url']['orig'][4] = '#(^|[\n ]|\()(([a-z0-9&\-_.]+?@)([\w\-]+\.([\w\-\.]+\.)?[\w]+))#s';
+            //     $this->options['url']['repl'][4] = "\$1<span class=\"red\">$3'.substr('$4', 0, 4).'...</span>";
+            // }
         }
 
         $this->message = preg_replace($this->options['url']['orig'], $this->options['url']['repl'], $this->message);
