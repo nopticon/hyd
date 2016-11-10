@@ -436,6 +436,10 @@ class Comments {
                 $row[$this->data['USER_ID_FIELD']] = 0;
             }
 
+            if (!isset($this->data['S_DELETE_URL'])) {
+                $this->data['S_DELETE_URL'] = '';
+            }
+
             $identical_user = $user->d('user_id') === $row[$this->data['USER_ID_FIELD']];
 
             if (isset($this->data['USER_ID_FIELD']) && ($user->is('founder') || $identical_user)) {
