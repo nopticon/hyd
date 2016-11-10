@@ -117,7 +117,7 @@ class Comments {
             case 'news':
                 $sql = 'SELECT *
                     FROM _news
-                    WHERE news_id = ?';
+                    WHERE news_alias = ?';
                 $sql = sql_filter($sql, $this->param[1]);
 
                 $this->data = array(
