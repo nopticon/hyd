@@ -33,7 +33,7 @@ class __forums_post_modify extends mac {
             fatal_error();
         }
 
-        $this->object->topic = (object) $this->object->topic;
+        $this->object->topic = (object) $topic;
 
         if (_button()) {
             $topic_title = request_var('topic_title', '');
@@ -72,9 +72,11 @@ class __forums_post_modify extends mac {
             redirect(s_link('post', $this->id));
         }
 
+        _pre($this->object->topic);
+
         v_style(
             array(
-                'V_TOPIC'   => ($user->is('founder')) ? $this->object->topic->topic_title : '',
+                'V_TOPIC'   => ($user->is('founder') && isset($this->object->topic->topic_title)) ? $this->object->topic->topic_title : '',
                 'V_MESSAGE' => $this->object->post->post_text
             )
         );
