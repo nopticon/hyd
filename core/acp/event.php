@@ -115,6 +115,7 @@ class __event extends mac {
                     }
 
                     $post_message .= '.';
+                    $poll_length   = 0;
 
                     $insert = array(
                         'topic_id'  => (int) $topic_id,
@@ -132,9 +133,9 @@ class __event extends mac {
                     sql_query(sql_filter($sql, $topic_id, $event_id));
 
                     $insert = array(
-                        'topic_id' => (int) $topic_id,
-                        'vote_text' => '&iquest;Asistir&aacute;s a ' . $event_name . '?',
-                        'vote_start' => time(),
+                        'topic_id'    => (int) $topic_id,
+                        'vote_text'   => '&iquest;Asistir&aacute;s a ' . $event_name . '?',
+                        'vote_start'  => time(),
                         'vote_length' => (int) ($poll_length * 86400)
                     );
                     $poll_id = sql_insert('poll_options', $insert);
@@ -149,15 +150,13 @@ class __event extends mac {
                             'vote_result'      => 0
                         );
                         sql_insert('poll_results', $sql_insert);
-
-                        $poll_option_id++;
                     }
 
-                    $sql = 'UPDATE _forums
-                        SET forum_posts = forum_posts + 1, forum_last_topic_id = ? %s
-                        WHERE forum_id = ?';
-                    $sql = sprintf($sql ((!$event_current_topic) ? ', forum_topics = forum_topics + 1 ' : ''));
+                    $forum_plus = !$event_current_topic ? ', forum_topics = forum_topics + 1 ' : '';
 
+                    $sql = 'UPDATE _forums
+                        SET forum_posts = forum_posts + 1, forum_last_topic_id = ?' . $forum_plus . '
+                        WHERE forum_id = ?';
                     sql_query(sql_filter($sql, $topic_id, $forum_id));
 
                     $sql = 'UPDATE _forum_topics SET topic_first_post_id = ?, topic_last_post_id = ?
