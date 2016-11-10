@@ -428,6 +428,14 @@ class Comments {
                 'S_DELETE' => false
             );
 
+            if (!isset($this->data['USER_ID_FIELD'])) {
+                $this->data['USER_ID_FIELD'] = 'poster_id';
+            }
+
+            if (!isset($row[$this->data['USER_ID_FIELD']])) {
+                $row[$this->data['USER_ID_FIELD']] = 0;
+            }
+
             $identical_user = $user->d('user_id') === $row[$this->data['USER_ID_FIELD']];
 
             if (isset($this->data['USER_ID_FIELD']) && ($user->is('founder') || $identical_user)) {
