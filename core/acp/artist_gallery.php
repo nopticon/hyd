@@ -46,7 +46,7 @@ class __artist_gallery extends mac {
             $rimage = get_a_imagepath(
                 config('artists_path'),
                 config('artists_url'),
-                $this->data['ub'],
+                $this->object['ub'],
                 $row['image'] . '.jpg',
                 w('gallery x1')
             );
