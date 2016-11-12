@@ -16,13 +16,13 @@ class __artist extends mac {
         }
 
         $request = _request(array(
-            'name' => '',
-            'local' => 0,
+            'name'     => '',
+            'local'    => 0,
             'location' => '',
-            'genre' => '',
-            'email' => '',
-            'www' => '',
-            'mods' => ''
+            'genre'    => '',
+            'email'    => '',
+            'www'      => '',
+            'mods'     => ''
         ));
         $request->subdomain = get_subdomain($request->name);
 
@@ -37,7 +37,7 @@ class __artist extends mac {
             'local'     => (int) $request->local,
             'datetime'  => time(),
             'location'  => $request->location,
-            'genre'     => $requeset->genre,
+            'genre'     => $request->genre,
             'email'     => $request->email,
             'www'       => str_replace('http://', '', $request->www)
         );
@@ -45,6 +45,7 @@ class __artist extends mac {
 
         // Cache
         $cache->delete('ub_list a_records ai_records a_recent');
+
         set_config('max_artists', config('max_artists') + 1);
 
         // Create directories
@@ -73,7 +74,7 @@ class __artist extends mac {
                 }
 
                 $sql_insert = array(
-                    'ub' => $artist_id,
+                    'ub'      => $artist_id,
                     'user_id' => $info['user_id']
                 );
                 sql_insert('artists_auth', $sql_insert);
