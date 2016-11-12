@@ -39,7 +39,8 @@ class __artist extends mac {
             'location'  => $request->location,
             'genre'     => $request->genre,
             'email'     => $request->email,
-            'www'       => str_replace('http://', '', $request->www)
+            'www'       => str_replace('http://', '', $request->www),
+            'bio'       => ''
         );
         $artist_id = sql_insert('artists', $sql_insert);
 
