@@ -42,7 +42,14 @@ class __artist_gallery extends mac {
             );
 
             $image  = config('artists_url') . $this->object['ub'] . '/thumbnails/' . $row['image'] . '.jpg';
-            $rimage = get_a_imagepath(config('artists_url') . $this->object['ub'], $row['image'] . '.jpg', w('x1 gallery'));
+
+            $rimage = get_a_imagepath(
+                config('artists_path'),
+                config('artists_url'),
+                $this->data['ub'],
+                $row['image'] . '.jpg',
+                w('gallery x1')
+            );
 
             _style(
                 'gallery.row',
@@ -51,7 +58,7 @@ class __artist_gallery extends mac {
                     'URL'      => s_link('a', $this->object['subdomain'], 4, $row['image'], 'view'),
                     'U_FOOTER' => $footer,
                     'IMAGE'    => $image,
-                    'RIMAGE'   => get_a_imagepath($rimage),
+                    'RIMAGE'   => $rimage,
                     'WIDTH'    => $row['width'],
                     'HEIGHT'   => $row['height'],
                     'TFOOTER'  => $row['image_footer']
