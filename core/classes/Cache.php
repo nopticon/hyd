@@ -35,8 +35,6 @@ class Cache {
             if (!empty($this->cache[$var])) {
                 return $this->cache[$var];
             }
-
-            return true;
         }
 
         return;
