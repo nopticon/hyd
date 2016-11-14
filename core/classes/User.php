@@ -228,6 +228,8 @@ class User extends Session {
     public function _team_auth_list($mode = '') {
         global $cache;
 
+        $response = false;
+
         switch ($mode) {
             case 'founder':
                 if (!$response = $cache->get('team_founder')) {
