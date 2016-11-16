@@ -16,7 +16,7 @@ class __artist_auth extends mac {
 
         $this->isArtist();
 
-        if ((_button() && $this->create()) || ((_button('confirm') || _button('remove')) && $this->remove())) {
+        if ((_button() && $this->create()) || ((_button('confirm', 'remove')) && $this->remove())) {
             return;
         }
 
@@ -242,7 +242,6 @@ class __artist_auth extends mac {
             Display confirm dialog
             */
             $list = '';
-
             foreach ($result as $row) {
                 $list .= (($list != '') ? ', ' : '') . $row['username'];
                 $result_hidden .= s_hidden(array('s_members[]' => $row['user_id']));

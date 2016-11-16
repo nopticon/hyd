@@ -84,7 +84,6 @@ function request_var($var_name, $default = false, $multibyte = false) {
     $var = $_REQUEST[$var_name];
     if (!is_array($default)) {
         $type = gettype($default);
-        // _utf8($var);
     } else {
         list($key_type, $type) = each($default);
         $type = gettype($type);
@@ -103,7 +102,7 @@ function request_var($var_name, $default = false, $multibyte = false) {
                     set_var($var[$k][$_k], $_v, $type, $multibyte);
                 }
             } else {
-                set_var($k, $k, $key_type);
+                set_var($k, $k, $key_type);]]
                 set_var($var[$k], $v, $type, $multibyte);
             }
         }
@@ -115,23 +114,14 @@ function request_var($var_name, $default = false, $multibyte = false) {
 }
 
 function get_real_ip() {
-    $_SERVER['HTTP_X_FORWARDED_FOR'] = v_server('HTTP_X_FORWARDED_FOR');
-    $_SERVER['REMOTE_ADDR']          = v_server('REMOTE_ADDR');
-    $_ENV['REMOTE_ADDR']             = v_server('REMOTE_ADDR');
+    $server = v_server('REMOTE_ADDR');
+    $env    = v_server('REMOTE_ADDR');
+    $fwd    = v_server('HTTP_X_FORWARDED_FOR');
 
-    $server = $_SERVER['REMOTE_ADDR'];
-    $env    = $_ENV['REMOTE_ADDR'];
+    $client_ip = $server ?: $env;
 
-    $client_ip = !empty($server) ? $server : (!empty($env) ? $env : '');
-
-    if (v_server('HTTP_X_FORWARDED_FOR')) {
-        // Los proxys van añadiendo al final de esta cabecera
-        // las direcciones ip que van "ocultando". Para localizar la ip real
-        // del usuario se comienza a mirar por el principio hasta encontrar
-        // una dirección ip que no sea del rango privado. En caso de no
-        // encontrarse ninguna se toma como valor el REMOTE_ADDR
-
-        $entries = explode(',', str_replace(' ', '', $_SERVER['HTTP_X_FORWARDED_FOR']));
+    if ($fwd) {
+        $entries = explode(',', str_replace(' ', '', $fwd));
 
         $private_ip = array(
             '/^0\./',
@@ -269,24 +259,25 @@ function monetize() {
 }
 
 function leading_zero($number) {
-    return (($number < 10) ? '0' : '') . $number;
+    return sprintf("%02d", $number);
 }
 
 function forum_for_team($forum_id) {
+    $list = array(
+        'mod',
+        'radio',
+        'colab',
+        'all'
+    );
+
     $response = '';
-    switch ($forum_id) {
-        case config('forum_for_mod'):
-            $response = 'mod';
+    foreach ($list as $row) {
+        $config = (int) config('forum_for_' . $row);
+
+        if ($forum_id === $config) {
+            $response = $row;
             break;
-        case config('forum_for_radio'):
-            $response = 'radio';
-            break;
-        case config('forum_for_colab'):
-            $response = 'colab';
-            break;
-        case config('forum_for_all'):
-            $response = 'all';
-            break;
+        }
     }
 
     return $response;
@@ -295,23 +286,24 @@ function forum_for_team($forum_id) {
 function forum_for_team_list($forum_id) {
     global $user;
 
-    $a_list = w();
-    switch ($forum_id) {
-        case config('forum_for_mod'):
-            $a_list = $user->_team_auth_list('mod');
+    $list = array(
+        'mod',
+        'radio',
+        'colab',
+        'all'
+    );
+
+    $response = '';
+    foreach ($list as $row) {
+        $config = (int) config('forum_for_' . $row);
+
+        if ($forum_id === $config) {
+            $response = $user->_team_auth_list($row)
             break;
-        case config('forum_for_radio'):
-            $a_list = $user->_team_auth_list('radio');
-            break;
-        case config('forum_for_colab'):
-            $a_list = $user->_team_auth_list('colab');
-            break;
-        case config('forum_for_all'):
-            $a_list = $user->_team_auth_list('all');
-            break;
+        }
     }
 
-    return $a_list;
+    return $response;
 }
 
 function forum_for_team_not() {
@@ -497,11 +489,11 @@ function get_username_base($username, $check_match = false) {
 }
 
 function get_subdomain($str) {
-    $str = trim($str);
-    $str = str_replace(' ', '', $str);
+    $str = str_replace(' ', '', trim($str));
 
     $str = preg_replace('#&([a-zA-Z]+)acute;#is', '\\1', $str);
     $str = strtolower($str);
+
     return $str;
 }
 
@@ -561,23 +553,10 @@ function s_link() {
     }
 
 
-    // $url = 'http://';
     $is_a     = is_array($data);
     $is_local = v_server('REMOTE_ADDR') === '127.0.0.1';
-    // $is_dash  = is_string($data) && preg_match('/^_(\d+)$/i', $data);
 
-    // if (!$is_local && $module == 'a' && $data !== false && ((!$is_a && !$is_dash) || ($is_a && $count_data == 2))) {
-    //     $subdomain = ($is_a) ? $data[0] : $data;
-    //     $url .= str_replace('www', $subdomain, config('server_name')) . '/';
-    //     // $url .= $subdomain . '.' . config('server_name') . '/';
-
-    //     if ($is_a) array_shift($data);
-
-    //     if (!$is_a || ($is_a && !count($data))) $data = false;
-    // } else {
-        // $url .= config('server_name') . '/' . (($module != '') ? $module . '/' : '');
-        $url .= '/' . ($module ? $module . '/' : '');
-    // }
+    $url .= '/' . ($module ? $module . '/' : '');
 
     if ($data !== false) {
         if (is_array($data)) {
@@ -794,8 +773,22 @@ function obtain_bots(&$bots) {
     return;
 }
 
-function _button($name = 'submit') {
-    return isset($_POST[$name]);
+function _button() {
+    $list = func_get_args();
+
+    if (!$list) {
+        $name = array('submit');
+    }
+
+    $response = false;
+    foreach ($list as $row) {
+        if (isset($_POST[$row])) {
+            $response = true;
+            break;
+        }
+    }
+
+    return $response;
 }
 
 function _md($parent, $childs = false) {
