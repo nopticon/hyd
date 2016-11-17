@@ -5,6 +5,8 @@ class Cron {
     public $no_layout = true;
 
     public function run() {
+        global $user;
+
         $module = request_var('module', '');
 
         if (!empty($module) && preg_match('#^([a-z\_]+)$#i', $module)) {

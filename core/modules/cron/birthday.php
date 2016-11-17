@@ -23,6 +23,7 @@ foreach ($result as $row) {
     $emailer->from('notify');
     $emailer->use_template('user_birthday');
     $emailer->email_address($row['user_email']);
+
     if (!empty($row['user_public_email']) && $row['user_email'] != $row['user_public_email']) {
         $emailer->cc($row['user_public_email']);
     }
