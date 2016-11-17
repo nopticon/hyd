@@ -102,7 +102,7 @@ function request_var($var_name, $default = false, $multibyte = false) {
                     set_var($var[$k][$_k], $_v, $type, $multibyte);
                 }
             } else {
-                set_var($k, $k, $key_type);]]
+                set_var($k, $k, $key_type);
                 set_var($var[$k], $v, $type, $multibyte);
             }
         }
