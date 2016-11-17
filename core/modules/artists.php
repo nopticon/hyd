@@ -793,6 +793,8 @@ class Artists extends Downloads {
     }
 
     public function getData() {
+        global $cache;
+
         if (!$this->adata = $cache->get('artists_list')) {
             $sql = 'SELECT *
                 FROM _artists
