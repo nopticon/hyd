@@ -793,10 +793,14 @@ class Artists extends Downloads {
     }
 
     public function getData() {
-        $sql = 'SELECT *
-            FROM _artists
-            ORDER BY name ASC';
-        $this->adata = sql_rowset($sql, 'ub');
+        if (!$this->adata = $cache->get('artists_list')) {
+            $sql = 'SELECT *
+                FROM _artists
+                ORDER BY name ASC';
+            $this->adata = sql_rowset($sql, 'ub');
+
+            $cache->save('artists_list', $this->adata);
+        }
 
         return;
     }
