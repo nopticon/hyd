@@ -298,7 +298,7 @@ function forum_for_team_list($forum_id) {
         $config = (int) config('forum_for_' . $row);
 
         if ($forum_id === $config) {
-            $response = $user->_team_auth_list($row)
+            $response = $user->_team_auth_list($row);
             break;
         }
     }
