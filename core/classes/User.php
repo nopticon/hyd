@@ -415,7 +415,7 @@ class User extends Session {
                     AND item = ?
                     AND user_id = ?
                 ORDER BY user_id';
-            if (!sql_field(sql_filter($sql, $element, $item, $reply_to))) {
+            if (!sql_field(sql_filter($sql, $element, $item, $reply_to), 'user_id', 0)) {
                 $this->insert_unread($reply_to, $element, $item);
             }
 
