@@ -5,6 +5,8 @@ class Async {
     public $no_layout = true;
 
     public function run() {
+        global $user;
+
         if (strtolower($_SERVER['REQUEST_METHOD']) === 'post') {
             $module = request_var('module', '');
 
