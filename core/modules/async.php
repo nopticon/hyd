@@ -23,20 +23,6 @@ class Async {
             }
         }
 
-        $file_content = @file('./template/exceptions/missing.htm');
-
-        $matches = array(
-            '<!--#echo var="HTTP_HOST" -->' => $_SERVER['HTTP_HOST'],
-            '<!--#echo var="REQUEST_URI" -->' => $_SERVER['REQUEST_URI']
-        );
-
-        $orig = $repl = array();
-        foreach ($matches as $row_k => $row_v) {
-            $orig[] = $row_k;
-            $repl[] = $row_v;
-        }
-
-        echo str_replace($orig, $repl, implode('', $file_content));
-        exit;
+        show_exception('missing');
     }
 }
