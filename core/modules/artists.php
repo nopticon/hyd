@@ -1240,12 +1240,16 @@ class Artists extends Downloads {
     }
 
     public function list() {
-        global $user;
+        global $user, $cache;
 
-        $sql = 'SELECT *
-            FROM _artists
-            ORDER BY local DESC, name ASC';
-        $result = sql_rowset($sql);
+        if (!$result = $cache->get('artists_list')) {
+            $sql = 'SELECT *
+                FROM _artists
+                ORDER BY local DESC, name ASC';
+            $result = sql_rowset($sql);
+
+            $cache->save('artists_local', $result);
+        }
 
         $alphabet = w();
         foreach ($result as $row) {

@@ -7,21 +7,21 @@ $start_2 = mktime(0, 0, 0, $d['mon'], ($d['mday'] - 14), $d['year']);
 
 //
 // Banners
-$banner_end = mktime(23, 59, 0, $d['mon'], $d['mday'], $d['year']);
-
-$sql = 'SELECT *
-    FROM _monetize
-    WHERE monetize_end > ' . (int) $_end . '
-    ORDER BY monetize_end';
-$deleted = sql_rowset(sql_filter($sql, $_end), false, 'monetize_id');
-
-if (count($deleted)) {
-    $sql = 'DELETE FROM _monetize
-        WHERE monetize_id IN (??)';
-    sql_query(sql_filter($sql, implode(',', $deleted)));
-
-    $cache->delete('monetize');
-}
+// $banner_end = mktime(23, 59, 0, $d['mon'], $d['mday'], $d['year']);
+//
+// $sql = 'SELECT *
+//     FROM _monetize
+//     WHERE monetize_end > ' . (int) $banner_end . '
+//     ORDER BY monetize_end';
+// $deleted = sql_rowset(sql_filter($sql, $banner_end), false, 'monetize_id');
+//
+// if (count($deleted)) {
+//     $sql = 'DELETE FROM _monetize
+//         WHERE monetize_id IN (??)';
+//     sql_query(sql_filter($sql, implode(',', $deleted)));
+//
+//     $cache->delete('monetize');
+// }
 
 //
 // Optimize
