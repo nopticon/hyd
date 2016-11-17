@@ -11,5 +11,5 @@ http://www.rockrepublik.net/ y http://www.rockrepublik.net/help/10/
 
 Atentamente,
 
-Rock Republik Networks
+Rock Republik Net
 http://www.rockrepublik.net/

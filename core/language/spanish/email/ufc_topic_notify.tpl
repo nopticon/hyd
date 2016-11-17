@@ -13,5 +13,5 @@ Si quieres escribir tu comentario, visita el siguiente enlace:
 
 Atentamente,
 
-Rock Republik Networks
+Rock Republik Net
 http://www.rockrepublik.net/

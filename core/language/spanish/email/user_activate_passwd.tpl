@@ -12,5 +12,5 @@ Si realmente deseas cambiar tu contrase&ntilde;a, visita el siguiente enlace:
 
 Atentamente,
 
-Rock Republik Networks
+Rock Republik Net
 http://www.rockrepublik.net/

@@ -11,5 +11,5 @@ Antes de utilizar tu usuario debes confirmar el registro visitando el siguiente 
 
 Atentamente,
 
-Rock Republik Networks
+Rock Republik Net
 http://www.rockrepublik.net/

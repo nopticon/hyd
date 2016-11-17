@@ -10,5 +10,5 @@ Para reactivar tu acceso visita el siguiente enlace:
 
 Atentamente,
 
-Rock Republik Network
+Rock Republik Net
 http://www.rockrepublik.net/

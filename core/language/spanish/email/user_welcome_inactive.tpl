@@ -21,5 +21,5 @@ Muchas gracias por formar parte de nuestra comunidad Rock Republik.
 
 Atentamente,
 
-Rock Republik Networks
+Rock Republik Net
 http://www.rockrepublik.net/

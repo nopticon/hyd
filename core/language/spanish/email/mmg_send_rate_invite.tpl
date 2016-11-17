@@ -12,5 +12,5 @@ Si est&aacute;s de acuerdo, visita el siguiente enlace e ingresa los datos de tu
 
 Atentamente,
 
-Rock Republik Networks
+Rock Republik Net
 http://www.rockrepublik.net/

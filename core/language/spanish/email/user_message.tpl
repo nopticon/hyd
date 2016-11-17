@@ -12,5 +12,5 @@ Para responder ingresa a la siguiente direccion:
 
 Atentamente,
 
-Rock Republik Networks
+Rock Republik Net
 http://www.rockrepublik.net/

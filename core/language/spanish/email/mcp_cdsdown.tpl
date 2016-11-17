@@ -4,5 +4,5 @@ Charset: iso-8859-1
 
 Atentamente,
 
-Rock Republik Networks
+Rock Republik Net
 http://www.rockrepublik.net/

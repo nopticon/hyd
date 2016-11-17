@@ -13,5 +13,5 @@ La direcci&oacute;n de tu perfil es:
 
 Atentamente,
 
-Rock Republik Networks
+Rock Republik Net
 http://www.rockrepublik.net/

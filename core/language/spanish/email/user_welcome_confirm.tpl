@@ -7,5 +7,5 @@ Tu cuenta de Rock Republik ha sido confirmada y ahora puedes entrar con tu usuar
 
 Atentamente,
 
-Rock Republik Networks
+Rock Republik Net
 http://www.rockrepublik.net/

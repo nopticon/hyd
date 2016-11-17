@@ -6,5 +6,5 @@ Hola {USERNAME},
 
 Atentamente,
 
-Rock Republik Networks
+Rock Republik Net
 http://www.rockrepublik.net/

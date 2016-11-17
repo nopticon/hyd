@@ -8,5 +8,5 @@ Un administrador de Rock Republik (www.rockrepublik.net) te ha enviado el siguie
 
 Atentamente,
 
-Rock Republik Networks
+Rock Republik Net
 http://www.rockrepublik.net/

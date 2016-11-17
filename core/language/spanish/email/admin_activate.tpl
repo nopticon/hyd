@@ -9,5 +9,5 @@ La cuenta de "{USERNAME}" ha sido desactivada o creada hace poco tiempo, puedes 
 
 Atentamente,
 
-Rock Republik Networks
+Rock Republik Net
 http://www.rockrepublik.net/

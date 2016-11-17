@@ -7,5 +7,5 @@ Tu cuenta en Rock Republik est&aacute; activada, puedes iniciar sesi&oacute;n us
 
 Atentamente,
 
-Rock Republik Networks
+Rock Republik Net
 http://www.rockrepublik.net/
