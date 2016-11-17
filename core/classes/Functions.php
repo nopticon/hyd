@@ -293,7 +293,7 @@ function forum_for_team_list($forum_id) {
         'all'
     );
 
-    $response = '';
+    $response = array();
     foreach ($list as $row) {
         $config = (int) config('forum_for_' . $row);
 
