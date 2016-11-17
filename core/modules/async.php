@@ -24,5 +24,7 @@ class Async {
         }
 
         show_exception('missing');
+
+        return;
     }
 }
