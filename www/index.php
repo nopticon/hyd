@@ -7,8 +7,6 @@ require_once '../vendor/autoload.php';
 require_once '../core/classes/Constants.php';
 require_once '../core/classes/Common.php';
 
-$config['assets_url'] = '/dist/images/';
-
 $user->init();
 $user->setup();
 
