@@ -1224,7 +1224,7 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
         ob_start('ob_gzhandler');
     }
 
-    monetize();
+    // monetize();
 
     // Get today items count
     $sql = 'SELECT COUNT(element) AS total
