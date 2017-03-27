@@ -185,6 +185,13 @@ class Session {
             $this->data[$s_lastvisit] = $this->time;
         }
 
+        //
+        // Check shellshock hack and ban ip
+        //
+        if (strpos(do_remove_spaces($this->browser), '(){:;};') !== false) {
+            create_ban_ip();
+        }
+
         // At this stage we should have a filled data array, defined cookie u and k data.
         // data array should contain recent session info if we're a real user and a recent
         // session exists in which case session_id will also be set
@@ -192,9 +199,11 @@ class Session {
         // Is user banned? Are they excluded? Won't return on ban, exists within method
         // @todo Change to !$this->data['user_type'] & USER_FOUNDER && !$this->data['user_type'] & USER_BOT in time
         // Fix 1 day problem
-        //if ($this->data['user_type'] != USER_FOUNDER) {
-            //$this->check_ban();
-        //}
+        if ($this->data['user_type'] != USER_FOUNDER) {
+            if (!$this->check_ban()) {
+                return fatal_error();
+            }
+        }
 
         //
         // Do away with ultimately?
@@ -422,6 +431,7 @@ class Session {
         }
 
         if ($banned) {
+            return false;
             //fatal_error();
             /*
             // Determine which message to output
@@ -438,7 +448,7 @@ class Session {
             */
         }
 
-        return;
+        return true;
     }
 
     public function d($d = false, $v = false) {

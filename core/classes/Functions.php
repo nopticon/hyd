@@ -121,7 +121,7 @@ function get_real_ip() {
     $client_ip = $server ?: $env;
 
     if ($fwd) {
-        $entries = explode(',', str_replace(' ', '', $fwd));
+        $entries = explode(',', do_remove_spaces($fwd));
 
         $private_ip = array(
             '/^0\./',
@@ -480,16 +480,20 @@ function ValidatePassword($password, $correctHash) {
     return $testHash === $validHash;
 }
 
+function do_remove_spaces($str) {
+    return str_replace(' ', '', trim($str));
+}
+
 function get_username_base($username, $check_match = false) {
     if ($check_match && !preg_match('#^([A-Za-z0-9\-\_\ ]+)$#is', $username)) {
         return false;
     }
 
-    return str_replace(' ', '', strtolower(trim($username)));
+    return do_remove_spaces(strtolower($username));
 }
 
 function get_subdomain($str) {
-    $str = str_replace(' ', '', trim($str));
+    $str = do_remove_spaces($str);
 
     $str = preg_replace('#&([a-zA-Z]+)acute;#is', '\\1', $str);
     $str = strtolower($str);
@@ -777,7 +781,7 @@ function _button() {
     $list = func_get_args();
 
     if (!$list) {
-        $name = array('submit');
+        $list = array('submit');
     }
 
     $response = false;
@@ -1952,4 +1956,52 @@ function a_thumbnails($selected_artists, $random_images, $lang_key, $block, $ite
     }
 
     return true;
+}
+
+function create_ban_ip($ip = false) {
+    global $user;
+
+    $ip = $ip ?: $user->ip;
+
+    $sql = 'SELECT ban_id
+        FROM _banlist
+        WHERE ban_ip = ?';
+    if (!$row = sql_fieldrow(sql_filter($sql, $ip))) {
+        $sql_insert = array(
+            'ban_ip' => $ip
+        );
+        sql_insert('banlist', $sql_insert);
+
+        return true;
+    }
+
+    return false;
+}
+
+function create_ban_user($user_id = false) {
+    global $user;
+
+    $user_id = $user_id ?: $user->d('user_id');
+
+    $sql = 'SELECT *
+        FROM _banlist
+        WHERE ban_userid = ?';
+    if (!$ban = sql_fieldrow(sql_filter($sql, $user_id))) {
+        $insert = array(
+            'ban_userid' => $user_id
+        );
+        sql_insert('banlist', $insert);
+
+        $sql = 'UPDATE _members SET user_type = ?, user_active = ?
+            WHERE user_id = ?';
+        sql_query(sql_filter($sql, USER_INACTIVE, 0, $user_id));
+
+        $sql = 'DELETE FROM _sessions
+            WHERE session_user_id = ?';
+        sql_query(sql_filter($sql, $user_id));
+
+        return true;
+    }
+
+    return false;
 }

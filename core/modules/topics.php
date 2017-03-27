@@ -233,16 +233,16 @@ class topics {
                         //$user->points_add(2);
                     }
 
-                    $a_list = forum_for_team_list($forum_id);
-                    if (count($a_list)) {
+                    $a_list = implode(', ', forum_for_team_list($forum_id));
+                    if (!empty($a_list)) {
                         $sql_delete_unread = 'DELETE FROM _members_unread
                             WHERE element = ?
                                 AND item = ?
                                 AND user_id NOT IN (??)';
-                        sql_query(sql_filter($sql_delete_unread, 8, $topic_id, implode(', ', $a_list)));
+                        sql_query(sql_filter($sql_delete_unread, 8, $topic_id, $a_list));
                     }
 
-                    if (count($a_list) || in_array($forum_id, array(20, 39))) {
+                    if (!empty($a_list) || in_array($forum_id, array(20, 39))) {
                         topic_feature($topic_id, 0);
                         topic_arkane($topic_id, 0);
                     }

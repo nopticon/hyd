@@ -34,19 +34,7 @@ class __user_ban extends mac {
             return;
         }
 
-        $sql = 'SELECT *
-            FROM _banlist
-            WHERE ban_userid = ?';
-        if (!$ban = sql_fieldrow(sql_filter($sql, $result['user_id']))) {
-            $insert = array(
-                'ban_userid' => $result['user_id']
-            );
-            sql_insert('banlist', $insert);
-
-            $sql = 'DELETE FROM _sessions
-                WHERE session_user_id = ?';
-            sql_query(sql_filter($sql, $result['user_id']));
-
+        if (create_ban_user($result['user_id'])) {
             echo 'El usuario ' . $result['username'] . ' fue bloqueado.';
         }
 

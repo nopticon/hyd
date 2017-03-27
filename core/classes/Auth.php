@@ -428,7 +428,7 @@ class Auth {
                     $exclude_type = array(USER_INACTIVE);
                     $valid_password = ValidatePassword($password, $row['user_password']);
 
-                    if ($valid_password && (!in_array($row['user_type'], $exclude_type))) {
+                    if ($valid_password && !in_array($row['user_type'], $exclude_type)) {
                         $user->session_create($row['user_id'], _button('admin'));
 
                         $ask_fill_profile = array('country', 'location', 'gender', 'birthday', 'avatar');

@@ -18,7 +18,7 @@ class __forums_post_delete extends mac {
         }
 
         $sql = 'SELECT f.*, t.topic_id, t.topic_first_post_id, t.topic_last_post_id,
-                t.topic_vote, p.post_id, p.poster_id, m.user_id
+                t.topic_vote, p.post_id, p.poster_id, m.user_id, m.user_posts
             FROM _forum_posts p, _forum_topics t, _forums f, _members m
             WHERE p.post_id = ?
                 AND t.topic_id = p.topic_id
@@ -118,9 +118,11 @@ class __forums_post_delete extends mac {
             sql_query(sql_filter($sql, $topic_id));
         }
 
-        $sql = 'UPDATE _members SET user_posts = user_posts - 1
-            WHERE user_id = ?';
-        sql_query(sql_filter($sql, $post_info['poster_id']));
+        if ($post_info['user_posts']) {
+            $sql = 'UPDATE _members SET user_posts = user_posts - 1
+                WHERE user_id = ?';
+            sql_query(sql_filter($sql, $post_info['poster_id']));
+        }
 
         redirect(s_link('topic', $topic_id));
     }

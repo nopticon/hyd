@@ -212,6 +212,11 @@ class topic {
                             $reply = 0;
                         }
 
+                        if (strlen($post_message) > 65534) {
+                            create_ban_user();
+                            redirect();
+                        }
+
                         $insert_data = array(
                             'topic_id'  => (int) $topic_id,
                             'forum_id'  => (int) $forum_id,
@@ -219,7 +224,7 @@ class topic {
                             'post_time' => (int) $current_time,
                             'poster_ip' => $user->ip,
                             'post_text' => $post_message,
-                            'post_np'   => $post_np
+                            'post_np'   => substr($post_np, 0, 255)
                         );
                         if ($reply) {
                             $insert_data['post_reply'] = $post_id;
@@ -235,13 +240,13 @@ class topic {
                         }
 
                         //
-                        $a_list = forum_for_team_list($forum_id);
-                        if (count($a_list)) {
+                        $a_list = implode(', ', forum_for_team_list($forum_id));
+                        if (!empty($a_list)) {
                             $sql_delete_unread = 'DELETE FROM _members_unread
                                 WHERE element = ?
                                     AND item = ?
                                     AND user_id NOT IN (??)';
-                            sql_query(sql_filter($sql_delete_unread, 8, $topic_id, implode(', ', $a_list)));
+                            sql_query(sql_filter($sql_delete_unread, 8, $topic_id, $a_list));
                         }
 
                         $update_topic['topic_last_post_id'] = $post_id;
@@ -324,7 +329,7 @@ class topic {
             ((!$reply) ? ' LIMIT ' . (int) $start . ', ' . (int) config('posts_per_page') : '');
         if (!$messages = sql_rowset($sql)) {
             if ($topic_data['topic_replies'] + 1) {
-                fatal_error();
+                // fatal_error();
             }
 
             redirect(s_link('topic', $topic_id));

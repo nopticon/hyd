@@ -208,7 +208,12 @@ class Comments {
         if (!sizeof($error)) {
             $update_sql = '';
             $post_reply = (isset($this->param[4]) && $this->param[4] == 'reply') ? $id : 0;
-            $message = $this->prepare($message);
+            $message    = $this->prepare($message);
+
+            if (strlen($message) > 65534) {
+                create_ban_user();
+                redirect();
+            }
 
             $insert_data = array(
                 'post_reply'  => (int) $post_reply,
