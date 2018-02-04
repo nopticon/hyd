@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class __forums_alias_modify extends mac {
     public function __construct() {
@@ -32,13 +31,10 @@ class __forums_alias_modify extends mac {
                 _style('forums');
             }
 
-            _style(
-                'forums.row',
-                array(
-                    'FORUM_ID'   => $row['forum_id'],
-                    'FORUM_NAME' => $row['forum_name']
-                )
-            );
+            _style('forums.row', [
+                'FORUM_ID'   => $row['forum_id'],
+                'FORUM_NAME' => $row['forum_name']
+            ]);
         }
 
         return;

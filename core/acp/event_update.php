@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class __event_update extends mac {
     public function __construct() {
@@ -22,14 +21,11 @@ class __event_update extends mac {
         $result = sql_rowset(sql_filter($sql, time()));
 
         foreach ($result as $row) {
-            _style(
-                'event_list',
-                array(
-                    'EVENT_ID'    => $row['id'],
-                    'EVENT_TITLE' => $row['title'],
-                    'EVENT_DATE'  => $user->format_date($row['date'])
-                )
-            );
+            _style('event_list', [
+                'EVENT_ID'    => $row['id'],
+                'EVENT_TITLE' => $row['title'],
+                'EVENT_DATE'  => $user->format_date($row['date'])
+            ]);
         }
 
         return;
@@ -38,7 +34,9 @@ class __event_update extends mac {
     private function update() {
         global $upload;
 
-        $v = _request(array('event_id' => 0));
+        $v = _request([
+            'event_id' => 0
+        ]);
 
         $sql = 'SELECT *
             FROM _events
@@ -53,22 +51,19 @@ class __event_update extends mac {
         $f = $upload->process($filepath_1, 'event_image', 'jpg');
 
         if ($upload->error) {
-            _style(
-                'error',
-                array(
-                    'MESSAGE' => parse_error($upload->error)
-                )
-            );
+            _style('error', [
+                'MESSAGE' => parse_error($upload->error)
+            ]);
 
             return;
         }
 
         foreach ($f as $row) {
-            $xa = $upload->resize($row, $filepath_1, $filepath_1, $v->event_id, array(600, 400), false, false, true);
+            $xa = $upload->resize($row, $filepath_1, $filepath_1, $v->event_id, [600, 400], false, false, true);
             if ($xa === false) {
                 continue;
             }
-            $xb = $upload->resize($row, $filepath_1, $filepath_2, $v->event_id, array(100, 75), false, false);
+            $xb = $upload->resize($row, $filepath_1, $filepath_2, $v->event_id, [100, 75], false, false);
         }
 
         $sql = 'UPDATE _events SET event_update = ?

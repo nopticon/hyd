@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class __unread_topics_mod extends mac {
     public function __construct() {
@@ -11,7 +10,10 @@ class __unread_topics_mod extends mac {
     public function home() {
         global $user, $cache;
 
-        $auth = array(16 => 'radio', 17 => 'mod');
+        $auth = [
+            16 => 'radio',
+            17 => 'mod'
+        ];
 
         $sql = 'SELECT *
             FROM _members_unread
@@ -24,7 +26,7 @@ class __unread_topics_mod extends mac {
 
             $t = search_topic($row['item']);
             if ($t !== false) {
-                if (in_array($t['forum_id'], array(16, 17))) {
+                if (in_array($t['forum_id'], array_keys($auth))) {
                     $a = $user->is($auth[$t['forum_id']], $row['user_id']);
                     if (!$a) {
                         $delete = true;

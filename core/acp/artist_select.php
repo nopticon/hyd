@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class __artist_select extends mac {
     public function __construct() {
@@ -15,7 +14,7 @@ class __artist_select extends mac {
         $redirect = request_var('r', '');
 
         if (!empty($artist)) {
-            redirect(s_link('acp', array($redirect, 'a' => $artist)));
+            redirect(s_link('acp', [$redirect, 'a' => $artist]));
         }
 
         $artist_select = '';
@@ -38,13 +37,10 @@ class __artist_select extends mac {
                 _style('artist_list');
             }
 
-            _style(
-                'artist_list.row',
-                array(
-                    'URL'  => s_link('acp', array($redirect, 'a' => $row['subdomain'])),
-                    'NAME' => $row['name']
-                )
-            );
+            _style('artist_list.row', [
+                'URL'  => s_link('acp', [$redirect, 'a' => $row['subdomain']]),
+                'NAME' => $row['name']
+            ]);
         }
 
         return;

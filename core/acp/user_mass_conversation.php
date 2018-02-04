@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class __user_mass_conversation extends mac {
     public function __construct() {
@@ -71,7 +70,7 @@ class __user_mass_conversation extends mac {
         foreach ($result as $row) {
             $row_message = str_replace('[username]', $row['username'], $post_message);
 
-            $insert = array(
+            $insert = [
                 'privmsgs_subject'     => $post_subject,
                 'privmsgs_from_userid' => (int) $user->d('user_id'),
                 'privmsgs_to_userid'   => (int) $row['user_id'],
@@ -80,7 +79,7 @@ class __user_mass_conversation extends mac {
                 'msg_can_reply'        => (int) $post_reply,
                 'privmsgs_mass'        => 1,
                 'privmsgs_text'        => $row_message
-            );
+            ];
             $dc_id = sql_insert('dc', $insert);
 
             $sql = 'UPDATE _dc SET parent_id = ?, last_msg_id = ?, msg_deleted = ?

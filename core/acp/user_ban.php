@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class __user_ban extends mac {
     public function __construct() {
@@ -19,7 +18,9 @@ class __user_ban extends mac {
     }
 
     private function create() {
-        $v = _request(array('username' => ''));
+        $v = _request([
+            'username' => ''
+        ]);
 
         if (_empty($v)) {
             return;

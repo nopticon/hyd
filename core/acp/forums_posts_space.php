@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class __forums_posts_space extends mac {
     public function __construct() {

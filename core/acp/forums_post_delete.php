@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class __forums_post_delete extends mac {
     public function __construct() {
@@ -31,13 +30,13 @@ class __forums_post_delete extends mac {
         $forum_id = $post_info['forum_id'];
         $topic_id = $post_info['topic_id'];
 
-        $post_data = array(
+        $post_data = [
             'poster_post' => ($post_info['poster_id'] == $user->d('user_id')),
             'first_post'  => ($post_info['topic_first_post_id'] == $post_id),
             'last_post'   => ($post_info['topic_last_post_id'] == $post_id),
             'last_topic'  => ($post_info['forum_last_topic_id'] == $topic_id),
-            'has_poll'    => ($post_info['topic_vote'])
-        );
+            'has_poll'    => $post_info['topic_vote']
+        ];
 
         if ($post_data['first_post'] && $post_data['has_poll']) {
             $sql = 'SELECT *

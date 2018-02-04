@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class Broadcast {
     private $default_title = 'BROADCAST';
@@ -47,17 +46,14 @@ class Broadcast {
                 $title  = htmlentities(utf8_encode($row['post_title']), ENT_COMPAT, 'utf-8');
                 $artist = htmlentities(utf8_encode($row['name']), ENT_COMPAT, 'utf-8');
 
-                _style(
-                    'podcast.row',
-                    array(
-                        'MP3'      => $dmedia['URI'],
-                        'OGG'      => '',
-                        'TITLE'    => $title,
-                        'ARTIST'   => $artist,
-                        'COVER'    => $row['slug'],
-                        'DURATION' => $dmedia['duration']
-                    )
-                );
+                _style('podcast.row', [
+                    'MP3'      => $dmedia['URI'],
+                    'OGG'      => '',
+                    'TITLE'    => $title,
+                    'ARTIST'   => $artist,
+                    'COVER'    => $row['slug'],
+                    'DURATION' => $dmedia['duration']
+                ]);
             }
 
             $str = utf8_encode($term_category['name']);
@@ -73,13 +69,10 @@ class Broadcast {
                 _style('programs');
             }
 
-            _style(
-                'programs.row',
-                array(
-                    'IMAGE' => $row,
-                    'URL' => s_link('broadcast', $row)
-                )
-            );
+            _style('programs.row', [
+                'IMAGE' => $row,
+                'URL'   => s_link('broadcast', $row)
+            ]);
         }
 
         $sql = 'SELECT *
@@ -99,15 +92,12 @@ class Broadcast {
 
             $title = htmlentities(utf8_encode($row['post_title']), ENT_COMPAT, 'utf-8');
 
-            _style(
-                'podcast.row',
-                array(
-                    'POST_DATE'    => $row['post_date'],
-                    'POST_URL'     => s_link('broadcast', $row['slug']),
-                    'POST_CONTENT' => $row['post_content'],
-                    'POST_TITLE'   => $title
-                )
-            );
+            _style('podcast.row', [
+                'POST_DATE'    => $row['post_date'],
+                'POST_URL'     => s_link('broadcast', $row['slug']),
+                'POST_CONTENT' => $row['post_content'],
+                'POST_TITLE'   => $title
+            ]);
         }
 
         return;

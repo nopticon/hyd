@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class __broadcast_modify extends mac {
     public function __construct() {
@@ -26,7 +25,7 @@ class __broadcast_modify extends mac {
 
         // Submit
         if (_button()) {
-            $hours = request_var('hours', array('' => ''));
+            $hours = request_var('hours', ['' => '']);
 
             $build = '';
             foreach ($hours as $hour => $play) {

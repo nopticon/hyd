@@ -1,13 +1,12 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class Board {
-    public $cat_data = array();
-    public $forum_data = array();
+    private $default_title = 'FORUM_INDEX';
+    private $default_view  = 'board';
+    public $cat_data       = [];
+    public $forum_data     = [];
     public $msg;
 
-    private $default_title = 'FORUM_INDEX';
-    private $default_view = 'board';
 
     public function __construct() {
         return;
@@ -109,28 +108,22 @@ class Board {
                     }
 
                     if (!$no_catdata) {
-                        _style(
-                            'category',
-                            array(
-                                'DESCRIPTION' => $c_data['cat_title']
-                            )
-                        );
+                        _style('category', [
+                            'DESCRIPTION' => $c_data['cat_title']
+                        ]);
                         $no_catdata = true;
                     }
 
-                    _style(
-                        'category.forums',
-                        array(
-                            'FORUM_NAME'     => $f_data['forum_name'],
-                            'FORUM_DESC'     => $f_data['forum_desc'],
-                            'POSTS'          => $f_data['forum_posts'],
-                            'TOPICS'         => $f_data['forum_topics'],
-                            'LAST_TOPIC'     => $last_topic,
-                            'LAST_POSTER'    => $last_poster,
-                            'LAST_POST_TIME' => $last_post_time,
-                            'U_FORUM'        => s_link('forum', $f_data['forum_alias'])
-                        )
-                    );
+                    _style('category.forums', [
+                        'FORUM_NAME'     => $f_data['forum_name'],
+                        'FORUM_DESC'     => $f_data['forum_desc'],
+                        'POSTS'          => $f_data['forum_posts'],
+                        'TOPICS'         => $f_data['forum_topics'],
+                        'LAST_TOPIC'     => $last_topic,
+                        'LAST_POSTER'    => $last_poster,
+                        'LAST_POST_TIME' => $last_post_time,
+                        'U_FORUM'        => s_link('forum', $f_data['forum_alias'])
+                    ]);
                 }
             }
         }
@@ -159,15 +152,12 @@ class Board {
 
             $profile = $comments->user_profile($row);
 
-            _style(
-                'top_posters.item',
-                array(
-                    'USERNAME' => $profile['username'],
-                    'PROFILE'  => $profile['profile'],
-                    'AVATAR'   => $profile['user_avatar'],
-                    'POSTS'    => $profile['user_posts']
-                )
-            );
+            _style('top_posters.item', [
+                'USERNAME' => $profile['username'],
+                'PROFILE'  => $profile['profile'],
+                'AVATAR'   => $profile['user_avatar'],
+                'POSTS'    => $profile['user_posts']
+            ]);
         }
 
         return true;

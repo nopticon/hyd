@@ -1,18 +1,19 @@
-<?php
-namespace App;
+<?php namespace App;
 
-header('Content-Type: text/html; charset=utf-8');
-
+require_once '../.env.php';
 require_once '../vendor/autoload.php';
+require_once '../core/classes/Sentry.php';
 require_once '../core/classes/Constants.php';
 require_once '../core/classes/Common.php';
+
+header('Content-Type: text/html; charset=utf-8');
 
 $user->init();
 $user->setup();
 
 $pagename = request_var('pagename', '');
 
-$pages = array(
+$pages = [
     'acp'       => '_acp',
     'artists'   => 'Artists',
     'async'     => 'Async',
@@ -36,7 +37,7 @@ $pages = array(
     'tos'       => 'Tos',
     'userpage'  => 'Userpage',
     'win'       => 'Win'
-);
+];
 
 if (isset($pages[$pagename])) {
     switch ($pagename) {

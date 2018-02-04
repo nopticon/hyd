@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class __event_images extends mac {
     public function __construct() {
@@ -100,7 +99,7 @@ class __event_images extends mac {
                             $filepath_3,
                             $filepath_3,
                             $img,
-                            array(600, 450),
+                            [600, 450],
                             false,
                             true,
                             true,
@@ -110,15 +109,15 @@ class __event_images extends mac {
                         if ($xa === false) {
                             continue;
                         }
-                        $xb = $upload->resize($row, $filepath_3, $filepath_4, $img, array(100, 75), false, false);
+                        $xb = $upload->resize($row, $filepath_3, $filepath_4, $img, [100, 75], false, false);
 
-                        $insert = array(
+                        $insert = [
                             'event_id' => (int) $event_id,
-                            'image' => (int) $img,
-                            'width' => (int) $xa['width'],
-                            'height' => (int) $xa['height'],
+                            'image'    => (int) $img,
+                            'width'    => (int) $xa['width'],
+                            'height'   => (int) $xa['height'],
                             'allow_dl' => 1
-                        );
+                        ];
                         sql_insert('events_images', $insert);
 
                         $count_images++;
@@ -152,10 +151,10 @@ class __event_images extends mac {
                     WHERE colab_event = ?
                         AND colab_uid = ?';
                 if (!$row = sql_fieldrow(sql_filter($sql, $event_ud, $user->d('user_id')))) {
-                    $sql_insert = array(
+                    $sql_insert = [
                         'colab_event' => $event_id,
-                        'colab_uid' => $user->d('user_id')
-                    );
+                        'colab_uid'   => $user->d('user_id')
+                    ];
                     sql_insert('events_colab', $sql_insert);
                 }
 
@@ -173,12 +172,9 @@ class __event_images extends mac {
                 redirect(s_link('events', $event_id));
             }
 
-            _style(
-                'error',
-                array(
-                    'MESSAGE' => parse_error($upload->error)
-                )
-            );
+            _style('error', [
+                'MESSAGE' => parse_error($upload->error)
+            ]);
         }
 
         $sql = 'SELECT *
@@ -188,14 +184,11 @@ class __event_images extends mac {
         $result = sql_rowset(sql_filter($sql, (time() + 86400)));
 
         foreach ($result as $row) {
-            _style(
-                'event_list',
-                array(
-                    'EVENT_ID'    => $row['id'],
-                    'EVENT_TITLE' => (($row['images']) ? '* ' : '') . $row['title'],
-                    'EVENT_DATE'  => $user->format_date($row['date'])
-                )
-            );
+            _style('event_list', [
+                'EVENT_ID'    => $row['id'],
+                'EVENT_TITLE' => (($row['images']) ? '* ' : '') . $row['title'],
+                'EVENT_DATE'  => $user->format_date($row['date'])
+            ]);
         }
 
         return;

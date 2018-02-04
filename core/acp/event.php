@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class __event extends mac {
     public function __construct() {
@@ -37,21 +36,21 @@ class __event extends mac {
                 $v_date = gmmktime($event_hours, $event_minutes, 0, $event_month, $event_day, $event_year) - $time_c;
 
                 foreach ($f as $row) {
-                    $xa = $upload->resize($row, $filepath_1, $filepath_1, $img, array(600, 400), false, false, true);
+                    $xa = $upload->resize($row, $filepath_1, $filepath_1, $img, [600, 400], false, false, true);
                     if ($xa === false) {
                         continue;
                     }
-                    $xb = $upload->resize($row, $filepath_1, $filepath_2, $img, array(100, 75), false, false);
+                    $xb = $upload->resize($row, $filepath_1, $filepath_2, $img, [100, 75], false, false);
 
                     $event_alias = friendly($event_name);
 
-                    $insert = array(
-                        'event_alias' => $event_alias,
-                        'title' => $event_name,
-                        'archive' => '',
-                        'date' => (int) $v_date,
+                    $insert = [
+                        'event_alias'  => $event_alias,
+                        'title'        => $event_name,
+                        'archive'      => '',
+                        'date'         => (int) $v_date,
                         'event_update' => time()
-                    );
+                    ];
                     $event_id = sql_insert('events', $insert);
 
                     //
@@ -68,10 +67,10 @@ class __event extends mac {
                                 WHERE a_artist = ?
                                     AND a_event = ?';
                             if (!sql_fieldrow(sql_filter($sql, $a_row['ub'], $event_id))) {
-                                $sql_insert = array(
+                                $sql_insert = [
                                     'a_artist' => $a_row['ub'],
-                                    'a_event' => $event_id
-                                );
+                                    'a_event'  => $event_id
+                                ];
                                 sql_insert('artists_events', $sql_insert);
                             }
                         }
@@ -89,7 +88,7 @@ class __event extends mac {
                         FROM _forum_topics
                         WHERE topic_id = ?';
                     if (!$row_current_topic = sql_fieldrow(sql_filter($sql, $event_current_topic))) {
-                        $insert = array(
+                        $insert = [
                             'topic_title'     => $event_name,
                             'topic_poster'    => $poster_id,
                             'topic_time'      => $post_time,
@@ -100,7 +99,7 @@ class __event extends mac {
                             'topic_vote'      => 1,
                             'topic_featured'  => 1,
                             'topic_points'    => 1
-                        );
+                        ];
                         $topic_id = sql_insert('forum_topics', $insert);
 
                         $event_current_topic = 0;
@@ -117,7 +116,7 @@ class __event extends mac {
                     $post_message .= '.';
                     $poll_length   = 0;
 
-                    $insert = array(
+                    $insert = [
                         'topic_id'  => (int) $topic_id,
                         'forum_id'  => $forum_id,
                         'poster_id' => $poster_id,
@@ -125,30 +124,32 @@ class __event extends mac {
                         'poster_ip' => $user->ip,
                         'post_text' => $post_message,
                         'post_np'   => ''
-                    );
+                    ];
                     $post_id = sql_insert('forum_posts', $insert);
 
                     $sql = 'UPDATE _events SET event_topic = ?
                         WHERE id = ?';
                     sql_query(sql_filter($sql, $topic_id, $event_id));
 
-                    $insert = array(
+                    $insert = [
                         'topic_id'    => (int) $topic_id,
                         'vote_text'   => '&iquest;Asistir&aacute;s a ' . $event_name . '?',
                         'vote_start'  => time(),
                         'vote_length' => (int) ($poll_length * 86400)
-                    );
+                    ];
                     $poll_id = sql_insert('poll_options', $insert);
 
-                    $poll_options = array(1 => 'Si asistir&eacute;');
+                    $poll_options = [
+                        1 => 'Si asistir&eacute;'
+                    ];
 
                     foreach ($poll_options as $option_id => $option_text) {
-                        $sql_insert = array(
+                        $sql_insert = [
                             'vote_id'          => (int) $poll_id,
                             'vote_option_id'   => (int) $option_id,
                             'vote_option_text' => $option_text,
                             'vote_result'      => 0
-                        );
+                        ];
                         sql_insert('poll_results', $sql_insert);
                     }
 
@@ -174,12 +175,9 @@ class __event extends mac {
                 }
             }
 
-            _style(
-                'error',
-                array(
-                    'MESSAGE' => parse_error($upload->error)
-                )
-            );
+            _style('error', [
+                'MESSAGE' => parse_error($upload->error)
+            ]);
         }
 
         $sql = 'SELECT topic_id, topic_title
@@ -195,13 +193,10 @@ class __event extends mac {
                 _style('topics');
             }
 
-            _style(
-                'topics.row',
-                array(
-                    'TOPIC_ID'    => $row['topic_id'],
-                    'TOPIC_TITLE' => $row['topic_title']
-                )
-            );
+            _style('topics.row', [
+                'TOPIC_ID'    => $row['topic_id'],
+                'TOPIC_TITLE' => $row['topic_title']
+            ]);
         }
 
         return;

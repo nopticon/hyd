@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class __broadcast_program_create extends mac {
     public function __construct() {
@@ -15,7 +14,7 @@ class __broadcast_program_create extends mac {
             return;
         }
 
-        $v = _request(array(
+        $v = _request([
             'name'  => '',
             'base'  => '',
             'genre' => '',
@@ -23,7 +22,7 @@ class __broadcast_program_create extends mac {
             'end'   => 0,
             'day'   => 0,
             'dj'    => ''
-        ));
+        ]);
 
         $sql = 'SELECT show_id
             FROM _radio
@@ -56,10 +55,10 @@ class __broadcast_program_create extends mac {
                 FROM _members
                 WHERE username = ?';
             if ($row = sql_fieldrow(sql_filter($sql, $rowu))) {
-                $sql_insert = array(
+                $sql_insert = [
                     'dj_show' => $show_id,
                     'dj_uid'  => $row['user_id']
-                );
+                ];
                 sql_insert('radio_dj', $sql_insert);
 
                 $sql = 'SELECT *
@@ -67,12 +66,12 @@ class __broadcast_program_create extends mac {
                     WHERE team_id = 4
                         AND member_id = ?';
                 if (!$row2 = sql_fieldrow(sql_filter($sql, $row['user_id']))) {
-                    $sql_insert = array(
+                    $sql_insert = [
                         'team_id'    => 4,
                         'member_id'  => $row['user_id'],
                         'real_name'  => '',
                         'member_mod' => 0
-                    );
+                    ];
                     sql_insert('team_members', $sql_insert);
                 }
             }

@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class __user_post_delete extends mac {
     private $id;

@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class topics {
     private $title;
@@ -158,7 +157,7 @@ class topics {
                     $topic_announce = 0;
                     $topic_locked = 0;
 
-                    if ((strstr($post_message, '-Anuncio-') && $user->is('all')) || in_array($forum_id, array(15, 16, 17))) {
+                    if ((strstr($post_message, '-Anuncio-') && $user->is('all')) || in_array($forum_id, [15, 16, 17])) {
                         $topic_announce = 1;
                         $post_message = str_replace('-Anuncio-', '', $post_message);
                     }
@@ -175,7 +174,7 @@ class topics {
                         $post_title = strnoupper($post_title);
                     }
 
-                    $insert_data['TOPIC'] = array(
+                    $insert_data['TOPIC'] = [
                         'topic_title'     => $post_title,
                         'topic_poster'    => (int) $user->d('user_id'),
                         'topic_time'      => (int) $current_time,
@@ -186,10 +185,10 @@ class topics {
                         'topic_vote'      => (int) $topic_vote,
                         'topic_featured'  => 1,
                         'topic_points'    => 1
-                    );
+                    ];
                     $topic_id = sql_insert('forum_topics', $insert_data['TOPIC']);
 
-                    $insert_data['POST'] = array(
+                    $insert_data['POST'] = [
                         'topic_id'  => (int) $topic_id,
                         'forum_id'  => (int) $forum_id,
                         'poster_id' => (int) $user->d('user_id'),
@@ -197,26 +196,26 @@ class topics {
                         'poster_ip' => $user->ip,
                         'post_text' => $post_message,
                         'post_np'   => $post_np
-                    );
+                    ];
                     $post_id = sql_insert('forum_posts', $insert_data['POST']);
 
                     if ($topic_vote) {
-                        $insert_data['POLL'] = array(
+                        $insert_data['POLL'] = [
                             'topic_id'    => (int) $topic_id,
                             'vote_text'   => $poll_title,
                             'vote_start'  => (int) $current_time,
                             'vote_length' => (int) ($poll_length * 86400)
-                        );
+                        ];
                         $poll_id = sql_insert('poll_options', $insert_data['POLL']);
 
                         $poll_option_id = 1;
                         foreach ($real_poll_options as $option) {
-                            $insert_data['POLLRESULTS'] = array(
+                            $insert_data['POLLRESULTS'] = [
                                 'vote_id'          => (int) $poll_id,
                                 'vote_option_id'   => (int) $poll_option_id,
                                 'vote_option_text' => $option,
                                 'vote_result'      => 0
-                            );
+                            ];
                             sql_insert('poll_results', $insert_data['POLLRESULTS']);
 
                             $poll_option_id++;
@@ -230,7 +229,7 @@ class topics {
                     $user->save_unread(UH_T, $topic_id);
 
                     if (!in_array($forum_id, forum_for_team_array())) {
-                        //$user->points_add(2);
+                        // $user->points_add(2);
                     }
 
                     $a_list = implode(', ', forum_for_team_list($forum_id));
@@ -242,7 +241,7 @@ class topics {
                         sql_query(sql_filter($sql_delete_unread, 8, $topic_id, $a_list));
                     }
 
-                    if (!empty($a_list) || in_array($forum_id, array(20, 39))) {
+                    if (!empty($a_list) || in_array($forum_id, [20, 39])) {
                         topic_feature($topic_id, 0);
                         topic_arkane($topic_id, 0);
                     }
@@ -284,7 +283,7 @@ class topics {
                 AND t.topic_announce = 1
             ORDER BY t.topic_last_post_id DESC';
         $topics->important = sql_rowset(sql_filter($sql, $forum_id));
-        $total->important = (is_array($topics->important)) ? count($topics->important) : 0;
+        $total->important = is_array($topics->important) ? count($topics->important) : 0;
 
         //
         // Grab all the topics data for this forum
@@ -300,7 +299,7 @@ class topics {
             ORDER BY t.topic_important DESC, /*t.topic_last_post_id*/p2.post_time DESC
             LIMIT ??, ??';
         $topics->normal = sql_rowset(sql_filter($sql, $forum_id, $start, config('topics_per_page')));
-        $total->normal = (is_array($topics->normal)) ? count($topics->normal) : 0;
+        $total->normal = is_array($topics->normal) ? count($topics->normal) : 0;
 
         //
         // Total topics ...
@@ -312,24 +311,19 @@ class topics {
         // Post URL generation for templating vars
         //
         if ($is_auth['auth_post'] || $is_auth['auth_mod']) {
-            _style(
-                'topic_create',
-                array(
-                    'L_POST_NEW_TOPIC' => ($forum_row['forum_locked']) ? lang('forum_locked') : lang('post_newtopic')
-                )
-            );
+            _style('topic_create', [
+                'L_POST_NEW_TOPIC' => ($forum_row['forum_locked']) ? lang('forum_locked') : lang('post_newtopic')
+            ]);
         }
 
         //
         // Dump out the page header and load viewforum template
         //
-        v_style(
-            array(
-                'FORUM_ID'     => $forum_id,
-                'FORUM_NAME'   => $forum_row['forum_name'],
-                'U_VIEW_FORUM' => s_link('forum', $forum_row['forum_alias'])
-            )
-        );
+        v_style([
+            'FORUM_ID'     => $forum_id,
+            'FORUM_NAME'   => $forum_row['forum_name'],
+            'U_VIEW_FORUM' => s_link('forum', $forum_row['forum_alias'])
+        ]);
         //
         // End header
         //
@@ -349,10 +343,10 @@ class topics {
                 }
 
                 if (!$j) {
-                    _style('topics.alias', array(
+                    _style('topics.alias', [
                         'NAME' => lang('topic_' . $alias),
-                        'SHOW' => ($total->important && $total->normal > 1))
-                    );
+                        'SHOW' => ($total->important && $total->normal > 1)
+                    ]);
                 }
 
                 $row = (object) $row;
@@ -369,7 +363,7 @@ class topics {
                     $row->poster = '<span>*' . (($row->post_username2 != '') ? $row->post_username2 : lang('guest')) . '</span>';
                 }
 
-                _style('topics.alias.row', array(
+                _style('topics.alias.row', [
                     'FORUM_ID'            => $forum_id,
                     'TOPIC_ID'            => $row->topic_id,
                     'TOPIC_AUTHOR'        => $row->author,
@@ -379,8 +373,8 @@ class topics {
                     'TOPIC_CREATION_TIME' => $user->format_date($row->topic_time),
                     'LAST_POST_TIME'      => $user->format_date($row->post_time),
                     'LAST_POST_AUTHOR'    => $row->poster,
-                    'U_TOPIC'             => s_link('topic', $row->topic_id))
-                );
+                    'U_TOPIC'             => s_link('topic', $row->topic_id)
+                ]);
 
                 $i++;
             }
@@ -402,15 +396,15 @@ class topics {
                     $poll_options = implode(nr(), $poll_options);
                 }
 
-                _style('publish', array(
+                _style('publish', [
                     'S_POST_ACTION' => s_link('forum', $forum_row['forum_alias']),
                     'TOPIC_TITLE'   => $post_title,
                     'MESSAGE'       => $post_message,
                     'NP'            => $post_np,
                     'POLL_TITLE'    => $poll_title,
                     'POLL_OPTIONS'  => $poll_options,
-                    'POLL_LENGTH'   => $poll_length)
-                );
+                    'POLL_LENGTH'   => $poll_length
+                ]);
 
                 if ($is_auth['auth_pollcreate']) {
                     _style('publish.poll');
@@ -422,9 +416,9 @@ class topics {
             }
 
             if (!empty($error_msg)) {
-                _style('publish.alert', array(
-                    'MESSAGE' => $error_msg)
-                );
+                _style('publish.alert', [
+                    'MESSAGE' => $error_msg
+                ]);
             }
         }
 

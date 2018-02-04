@@ -1,10 +1,9 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class _chat {
-    public $data = array();
-    public $rooms = array();
-    public $users = array();
+    public $data  = [];
+    public $rooms = [];
+    public $users = [];
 
     public function __construct() {
         return;
@@ -29,12 +28,9 @@ class _chat {
         _style('chat');
 
         foreach ($cat as $cat_data) {
-            _style(
-                'chat.cat',
-                array(
-                    'LABEL' => $cat_data['cat_name']
-                )
-            );
+            _style('chat.cat', [
+                'LABEL' => $cat_data['cat_name']
+            ]);
 
             $rooms = 0;
             foreach ($this->rooms as $channel) {
@@ -44,14 +40,11 @@ class _chat {
 
                 $ch_auth = ($channel['ch_auth']) ? '* ' : '';
 
-                _style(
-                    'chat.cat.channel',
-                    array(
-                        'VALUE'    => $channel['ch_int_name'],
-                        'LABEL'    => $ch_auth . $channel['ch_name'],
-                        'SELECTED' => $channel['ch_def'] ? ' selected' : ''
-                    )
-                );
+                _style('chat.cat.channel', [
+                    'VALUE'    => $channel['ch_int_name'],
+                    'LABEL'    => $ch_auth . $channel['ch_name'],
+                    'SELECTED' => $channel['ch_def'] ? ' selected' : ''
+                ]);
                 $rooms++;
             }
 
@@ -76,12 +69,9 @@ class _chat {
 
         $chatters = 0;
         foreach ($cat as $cat_data) {
-            _style(
-                'cat',
-                array(
-                    'NAME' => $cat_data['cat_name']
-                )
-            );
+            _style('cat', [
+                'NAME' => $cat_data['cat_name']
+            ]);
 
             $rooms = 0;
             foreach ($ch as $ch_data) {
@@ -91,17 +81,14 @@ class _chat {
 
                 $chatters += $ch_data['ch_users'];
 
-                _style(
-                    'cat.item',
-                    array(
-                        'U_CHANNEL'  => s_link('chat', $ch_data['ch_int_name']),
-                        'CH_NAME'    => $ch_data['ch_name'],
-                        'CH_DESC'    => $ch_data['ch_desc'],
-                        'CH_USERS'   => $ch_data['ch_users'],
-                        'USERNAME'   => $ch_data['username'],
-                        'U_USERNAME' => s_link('m', $ch_data['username_base'])
-                    )
-                );
+                _style('cat.item', [
+                    'U_CHANNEL'  => s_link('chat', $ch_data['ch_int_name']),
+                    'CH_NAME'    => $ch_data['ch_name'],
+                    'CH_DESC'    => $ch_data['ch_desc'],
+                    'CH_USERS'   => $ch_data['ch_users'],
+                    'USERNAME'   => $ch_data['username'],
+                    'U_USERNAME' => s_link('m', $ch_data['username_base'])
+                ]);
                 $rooms++;
             }
 
@@ -363,7 +350,7 @@ class _chat {
             return true;
         }
 
-        $insert_data = array(
+        $insert_data = [
             'session_id'       => md5(unique_id()),
             'session_member'   => (int) $user->d('user_id'),
             'session_ch_id'    => (int) $this->data['ch_id'],
@@ -371,7 +358,7 @@ class _chat {
             'session_start'    => (int) $ttime,
             'session_time'     => (int) $ttime,
             'session_last_msg' => 0
-        );
+        ];
         sql_insert('chat_sessions', $insert_data);
 
         $sql = 'UPDATE _chat_ch SET ch_users = ch_users + 1
@@ -389,14 +376,14 @@ class _chat {
     public function _message($ch, $ignore, $message) {
         global $user, $comments;
 
-        $insert_data = array(
+        $insert_data = [
             'msg_ch'        => (int) $ch,
             'msg_ignore'    => (int) $ignore,
             'msg_member_id' => (int) $user->d('user_id'),
             'msg_text'      => (string) $comments->prepare($message),
             'msg_time'      => (int) time(),
             'msg_ip'        => $user->ip
-        );
+        ];
         sql_insert('chat_msg', $insert_data);
 
         return $insert_data;
@@ -405,13 +392,11 @@ class _chat {
     public function window() {
         global $user;
 
-        v_style(
-            array(
-                'CH_SID'      => $this->data['session_id'],
-                'CH_INT_NAME' => $this->data['ch_int_name'],
-                'CH_NAME'     => $this->data['ch_name']
-            )
-        );
+        v_style([
+            'CH_SID'      => $this->data['session_id'],
+            'CH_INT_NAME' => $this->data['ch_int_name'],
+            'CH_NAME'     => $this->data['ch_name']
+        ]);
 
         if ($user->d('user_id') === $this->data['ch_founder']) {
             // TEMP

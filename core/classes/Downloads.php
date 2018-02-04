@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class Downloads {
     public $ud;
@@ -297,7 +296,7 @@ class Downloads {
         $this->filename  = str_replace($orig, $repl, $this->data['name']) . '_';
         $this->filename .= str_replace($orig, $repl, $this->dl_data['title']) . '.' . $this->dl_data['extension'];
 
-        $this->filepath  = config('data_path') . 'artists/' . $this->data['ub'] . '/media/';
+        $this->filepath  = config('artists_path') . $this->data['ub'] . '/media/';
         $this->filepath .= $this->dl_data['id'] . '.' . $this->dl_data['extension'];
 
         $this->generateDownload();

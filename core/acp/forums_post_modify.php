@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class __forums_post_modify extends mac {
     protected $object;
@@ -59,25 +58,23 @@ class __forums_post_modify extends mac {
                     WHERE post_id = ?';
                 sql_query(sql_filter($sql, $post_message, $this->id));
 
-                $rev = array(
+                $rev = [
                     'rev_post' => $this->id,
                     'rev_uid'  => $user->d('user_id'),
                     'rev_time' => time(),
                     'rev_ip'   => $user->ip,
                     'rev_text' => $this->object->post->post_text
-                );
+                ];
                 sql_insert('forum_posts_rev', $rev);
             }
 
             redirect(s_link('post', $this->id));
         }
 
-        v_style(
-            array(
-                'V_TOPIC'   => ($user->is('founder') && isset($this->object->topic->topic_title)) ? $this->object->topic->topic_title : '',
-                'V_MESSAGE' => $this->object->post->post_text
-            )
-        );
+        v_style([
+            'V_TOPIC'   => ($user->is('founder') && isset($this->object->topic->topic_title)) ? $this->object->topic->topic_title : '',
+            'V_MESSAGE' => $this->object->post->post_text
+        ]);
 
         //return page_layout('Editar', 'modcp.edit', $tv);
     }

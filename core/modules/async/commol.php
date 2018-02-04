@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 $user->setup();
 
@@ -38,9 +37,7 @@ $sql = sql_filter($sql, USER_INACTIVE, $timetoday, ($timetoday + 86399));
 
 $comm->online($sql, 'online', 'MEMBERS_TODAY', 'MEMBERS_VISIBLE');
 
-$template->set_filenames(
-    array(
-        'body' => 'community.online.htm'
-    )
-);
+$template->set_filenames([
+    'body' => 'community.online.htm'
+]);
 $template->pparse('body');

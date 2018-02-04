@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 $sql = 'SELECT *
     FROM _artists
@@ -16,7 +15,7 @@ $sql = 'SELECT *
     ORDER BY RAND()';
 $result = sql_rowset(sql_filter($sql, implode(',', array_keys($selected_artists))));
 
-$random_images = array();
+$random_images = [];
 foreach ($result as $row) {
     if (!isset($random_images[$row['ub']])) {
         $random_images[$row['ub']] = $row['image'];
@@ -24,23 +23,18 @@ foreach ($result as $row) {
 }
 
 foreach ($selected_artists as $ub => $data) {
-    _style(
-        'row',
-        array(
-            'NAME'     => $data['name'],
-            'IMAGE'    => config('artists_url') . $ub . '/thumbnails/' . $random_images[$ub] . '.jpg',
-            'URL'      => s_link('a', $data['subdomain']),
-            'LOCATION' => $data['local'] ? 'Guatemala' : $data['location'],
-            'GENRE'    => $data['genre']
-        )
-    );
+    _style('row', [
+        'NAME'     => $data['name'],
+        'IMAGE'    => config('artists_url') . $ub . '/thumbnails/' . $random_images[$ub] . '.jpg',
+        'URL'      => s_link('a', $data['subdomain']),
+        'LOCATION' => $data['local'] ? 'Guatemala' : $data['location'],
+        'GENRE'    => $data['genre']
+    ]);
 }
 
-$template->set_filenames(
-    array(
-        'body' => 'artists.thumbs.htm'
-    )
-);
+$template->set_filenames([
+    'body' => 'artists.thumbs.htm'
+]);
 $template->pparse('body');
 
 sql_close();

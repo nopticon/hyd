@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class __user_address extends mac {
     public function __construct() {
@@ -39,21 +38,15 @@ class __user_address extends mac {
                 $items = 0;
                 $steps++;
 
-                _style(
-                    'step',
-                    array(
-                        'STEPS' => $steps
-                    )
-                );
+                _style('step', [
+                    'STEPS' => $steps
+                ]);
             }
 
-            _style(
-                'step.item',
-                array(
-                    'USERNAME'   => $row['username'],
-                    'USER_EMAIL' => $row['user_email']
-                )
-            );
+            _style('step.item', [
+                'USERNAME'   => $row['username'],
+                'USER_EMAIL' => $row['user_email']
+            ]);
 
             $items++;
         }

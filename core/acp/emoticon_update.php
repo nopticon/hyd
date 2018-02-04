@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class __emoticon_update extends mac {
     public function __construct() {
@@ -19,10 +18,10 @@ class __emoticon_update extends mac {
         $fp = @opendir($emoticon_path);
         while ($file = @readdir($fp)) {
             if (preg_match('#([a-z0-9]+)\.(gif|png)#is', $file, $part)) {
-                $insert = array(
+                $insert = [
                     'code'      => ':' . $part[1] . ':',
                     'smile_url' => $part[0]
-                );
+                ];
                 sql_insert('smilies', $insert);
 
                 $process++;

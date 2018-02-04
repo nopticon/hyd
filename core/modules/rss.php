@@ -1,10 +1,9 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class Rss {
     public $no_layout = true;
+    public $xml       = [];
     public $mode;
-    public $xml = array();
 
     public function __construct() {
         return;
@@ -43,13 +42,13 @@ class Rss {
         $result = sql_rowset($sql);
 
         foreach ($result as $row) {
-            $this->xml[] = array(
+            $this->xml[] = [
                 'title'       => $row['post_subject'],
                 'link'        => s_link('news', $row['news_id']),
                 'description' => $row['post_desc'],
                 'pubdate'     => $row['post_time'],
                 'author'      => $row['username']
-            );
+            ];
         }
 
         return;
@@ -67,12 +66,12 @@ class Rss {
         $result = sql_rowset($sql);
 
         foreach ($result as $row) {
-            $this->xml[] = array(
+            $this->xml[] = [
                 'title'       => $row['name'],
                 'link'        => s_link('a', $row['subdomain']),
                 'description' => ($row['genre'] . "<br />" . ($row['local'] ? 'Guatemala' : $row['location'])),
                 'pubdate'     => $row['datetime']
-            );
+            ];
         }
 
         return;

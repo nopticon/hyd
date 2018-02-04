@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class __forums_topic_merge extends mac {
     public function __construct() {
@@ -47,11 +46,11 @@ class __forums_topic_merge extends mac {
                     FROM _poll_options
                     WHERE topic_id = ?';
                 if ($vote_id = sql_field(sql_filter($sql, $from_topic), 'vote_id', 0)) {
-                    $sql = array(
+                    $sql = [
                         sql_filter('DELETE FROM _poll_voters WHERE vote_id = ?', $vote_id),
                         sql_filter('DELETE FROM _poll_results WHERE vote_id = ?', $vote_id),
                         sql_filter('DELETE FROM _poll_options WHERE vote_id = ?', $vote_id)
-                    );
+                    ];
                     sql_query($sql);
                 }
             } else {
@@ -83,13 +82,13 @@ class __forums_topic_merge extends mac {
         $update_1 = 'UPDATE _forum_topics_fav SET topic_id = ? WHERE topic_id = ?';
         $update_2 = 'UPDATE _forum_posts SET forum_id = ?, topic_id = ? WHERE topic_id = ?';
 
-        $sql = array(
+        $sql = [
             sql_filter($update_1, $to_topic, $from_topic) . $sql_user,
             sql_filter('DELETE FROM _forum_topics_fav WHERE topic_id = ?', $from_topic),
             sql_filter($update_2, $to_forum_id, $to_topic, $from_topic),
             sql_filter('DELETE FROM _forum_topics WHERE topic_id = ?', $from_topic),
-            sql_filter('DELETE FROM _members_unread WHERE element = ? AND item = ?', UH_T, $from_topic),
-        );
+            sql_filter('DELETE FROM _members_unread WHERE element = ? AND item = ?', UH_T, $from_topic)
+        ];
 
         if ($from_poll && !$to_poll) {
             $sql[] = sql_filter('UPDATE _forum_topics SET topic_vote = 1 WHERE topic_id = ?', $to_topic);
@@ -98,7 +97,7 @@ class __forums_topic_merge extends mac {
 
         $user->save_unread(UH_T, $to_topic);
 
-        if (in_array($to_forum_id, array(20, 39))) {
+        if (in_array($to_forum_id, [20, 39])) {
             topic_feature($to_topic, 0);
             topic_arkane($to_topic, 0);
         }

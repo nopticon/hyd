@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class __artist_stats extends mac {
     public function __construct() {
@@ -48,12 +47,9 @@ class __artist_stats extends mac {
 
         $total_graph = 0;
         foreach ($years as $year) {
-            _style(
-                'year',
-                array(
-                    'YEAR' => $year
-                )
-            );
+            _style('year', [
+                'YEAR' => $year
+            ]);
 
             if (!isset($years_sum[$year])) {
                 $years_sum[$year] = 0;
@@ -70,25 +66,20 @@ class __artist_stats extends mac {
 
                 $total_graph += $monthdata['total'];
 
-                _style(
-                    'year.month',
-                    array(
-                        'NAME'    => $user->format_date($monthdata['unix'], 'F'),
-                        'TOTAL'   => $monthdata['total'],
-                        'MEMBERS' => $monthdata['members'],
-                        'GUESTS'  => $monthdata['guests'],
-                        'PERCENT' => sprintf("%.1d", ($monthdata['percent'] * 100))
-                    )
-                );
+                _style('year.month', [
+                    'NAME'    => $user->format_date($monthdata['unix'], 'F'),
+                    'TOTAL'   => $monthdata['total'],
+                    'MEMBERS' => $monthdata['members'],
+                    'GUESTS'  => $monthdata['guests'],
+                    'PERCENT' => sprintf("%.1d", ($monthdata['percent'] * 100))
+                ]);
             }
         }
 
-        v_style(
-            array(
-                'BEFORE_VIEWS'      => number_format($this->object['views']),
-                'SHOW_VIEWS_LEGEND' => ($this->object['views'] > $total_graph)
-            )
-        );
+        v_style([
+            'BEFORE_VIEWS'      => number_format($this->object['views']),
+            'SHOW_VIEWS_LEGEND' => ($this->object['views'] > $total_graph)
+        ]);
 
         return;
     }

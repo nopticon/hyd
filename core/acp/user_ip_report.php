@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class __user_ip_report extends mac {
     public function __construct() {
@@ -42,18 +41,15 @@ class __user_ip_report extends mac {
                 $difftime = $row['log_endtime'] ? false : '&nbsp;';
                 $difftime = $difftime ?: _implode(' ', timeDiff($row['log_endtime'], $row['log_time'], true, 1));
 
-                _style(
-                    'log.row',
-                    array(
-                        'UID'      => $row['log_user_id'],
-                        'USERNAME' => $row['username'],
-                        'TIME'     => $user->format_date($row['log_time']),
-                        'ENDTIME'  => ($row['log_endtime']) ? $user->format_date($row['log_endtime']) : '&nbsp;',
-                        'DIFFTIME' => $difftime,
-                        'IP'       => $row['log_ip'],
-                        'AGENT'    => $row['log_agent']
-                    )
-                );
+                _style('log.row', [
+                    'UID'      => $row['log_user_id'],
+                    'USERNAME' => $row['username'],
+                    'TIME'     => $user->format_date($row['log_time']),
+                    'ENDTIME'  => ($row['log_endtime']) ? $user->format_date($row['log_endtime']) : '&nbsp;',
+                    'DIFFTIME' => $difftime,
+                    'IP'       => $row['log_ip'],
+                    'AGENT'    => $row['log_agent']
+                ]);
             }
         }
 
@@ -71,8 +67,12 @@ function timeDiff($timestamp, $now = 0, $detailed = false, $n = 0) {
     $diff = ($action == 'away' ? $timestamp - $now : $now - $timestamp);
 
     // Set the periods of time
-    $periods = array('s', 'm', 'h', 'd', 's', 'm', 'a');
-    $lengths = array(1, 60, 3600, 86400, 604800, 2630880, 31570560);
+    $periods = [
+        's', 'm', 'h', 'd', 's', 'm', 'a'
+    ];
+    $lengths = [
+        1, 60, 3600, 86400, 604800, 2630880, 31570560
+    ];
 
     // Go from decades backwards to seconds
     $result = w();

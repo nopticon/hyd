@@ -1,9 +1,8 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class Tos {
     private $default_title = 'PRIVACY_POLICY';
-    private $default_view = 'tos';
+    private $default_view  = 'tos';
 
     public function __construct() {
         return;

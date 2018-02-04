@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class __artist_gallery extends mac {
     public function __construct() {
@@ -32,14 +31,11 @@ class __artist_gallery extends mac {
                 _style('gallery');
             }
 
-            $footer    = s_link(
-                'acp',
-                array(
-                    'artist_gallery',
-                    'a' => $this->object['subdomain'],
-                    'footer' => $row['image']
-                )
-            );
+            $footer = s_link('acp', [
+                'artist_gallery',
+                'a'      => $this->object['subdomain'],
+                'footer' => $row['image']
+            ]);
 
             $image  = config('artists_url') . $this->object['ub'] . '/thumbnails/' . $row['image'] . '.jpg';
 
@@ -51,19 +47,16 @@ class __artist_gallery extends mac {
                 w('gallery x1')
             );
 
-            _style(
-                'gallery.row',
-                array(
-                    'ITEM'     => $row['image'],
-                    'URL'      => s_link('a', $this->object['subdomain'], 4, $row['image'], 'view'),
-                    'U_FOOTER' => $footer,
-                    'IMAGE'    => $image,
-                    'RIMAGE'   => $rimage,
-                    'WIDTH'    => $row['width'],
-                    'HEIGHT'   => $row['height'],
-                    'TFOOTER'  => $row['image_footer']
-                )
-            );
+            _style('gallery.row', [
+                'ITEM'     => $row['image'],
+                'URL'      => s_link('a', $this->object['subdomain'], 4, $row['image'], 'view'),
+                'U_FOOTER' => $footer,
+                'IMAGE'    => $image,
+                'RIMAGE'   => $rimage,
+                'WIDTH'    => $row['width'],
+                'HEIGHT'   => $row['height'],
+                'TFOOTER'  => $row['image_footer']
+            ]);
         }
 
         return;
@@ -100,20 +93,20 @@ class __artist_gallery extends mac {
             foreach ($f as $row) {
                 $img++;
 
-                $xa = $upload->resize($row, $filepath_1, $filepath_1, $img, array(600, 400), false, false, true);
+                $xa = $upload->resize($row, $filepath_1, $filepath_1, $img, [600, 400], false, false, true);
                 if ($xa === false) {
                     continue;
                 }
 
-                $xb = $upload->resize($row, $filepath_1, $filepath_2, $img, array(300, 225), false, false);
-                $xc = $upload->resize($row, $filepath_2, $filepath_3, $img, array(100, 75), false, false);
+                $xb = $upload->resize($row, $filepath_1, $filepath_2, $img, [300, 225], false, false);
+                $xc = $upload->resize($row, $filepath_2, $filepath_3, $img, [100, 75], false, false);
 
-                $insert = array(
+                $insert = [
                     'ub'     => (int) $this->object['ub'],
                     'image'  => (int) $img,
                     'width'  => $xa->width,
                     'height' => $xa->height
-                );
+                ];
                 sql_insert('artists_images', $insert);
 
                 $a++;
@@ -125,15 +118,12 @@ class __artist_gallery extends mac {
                 sql_query(sql_filter($sql, $a, $this->object['ub']));
             }
 
-            redirect(s_link('acp', array('artist_gallery', 'a' => $this->object['subdomain'])));
+            redirect(s_link('acp', ['artist_gallery', 'a' => $this->object['subdomain']]));
         }
 
-        _style(
-            'error',
-            array(
-                'MESSAGE' => parse_error($upload->error)
-            )
-        );
+        _style('error', [
+            'MESSAGE' => parse_error($upload->error)
+        ]);
 
         return;
     }
@@ -142,15 +132,15 @@ class __artist_gallery extends mac {
     Remove selected images from artist's gallery.
     */
     private function remove() {
-        $s_images = request_var('ls_images', array(0));
+        $s_images = request_var('ls_images', [0]);
 
         if (sizeof($s_images)) {
             $common_path = config('artists_path') . $this->object['ub'] . '/';
-            $path = array(
+            $path = [
                 $common_path . 'x1/',
                 $common_path . 'gallery/',
-                $common_path . 'thumbnails/',
-            );
+                $common_path . 'thumbnails/'
+            ];
 
             $sql = 'SELECT *
                 FROM _artists_images
@@ -180,11 +170,14 @@ class __artist_gallery extends mac {
             }
         }
 
-        return redirect(s_link('acp', array('artist_gallery', 'a' => $this->object['subdomain'])));
+        return redirect(s_link('acp', ['artist_gallery', 'a' => $this->object['subdomain']]));
     }
 
     private function footer() {
-        $v = _request_var(array('image' => '', 'value' => ''));
+        $v = _request_var([
+            'image' => '',
+            'value' => ''
+        ]);
 
         $sql = 'SELECT *
             FROM _artists_images

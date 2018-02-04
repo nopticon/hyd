@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class __artist_video extends mac {
     public function __construct() {
@@ -31,15 +30,12 @@ class __artist_video extends mac {
                 _style('video');
             }
 
-            _style(
-                'video.row',
-                array(
-                    'ID'   => $row['video_id'],
-                    'CODE' => $row['video_code'],
-                    'NAME' => $row['video_name'],
-                    'TIME' => $user->format_date($row['video_added'])
-                )
-            );
+            _style('video.row', [
+                'ID'   => $row['video_id'],
+                'CODE' => $row['video_code'],
+                'NAME' => $row['video_name'],
+                'TIME' => $user->format_date($row['video_added'])
+            ]);
         }
 
         return;
@@ -67,12 +63,12 @@ class __artist_video extends mac {
         }
 
         if (!empty($code)) {
-            $insert = array(
+            $insert = [
                 'video_a'     => $this->object['ub'],
                 'video_name'  => $vname,
                 'video_code'  => $code,
                 'video_added' => time()
-            );
+            ];
             sql_insert('artists_video', $insert);
 
             $sql = 'UPDATE _artists SET a_video = a_video + 1
@@ -87,7 +83,7 @@ class __artist_video extends mac {
     Remove selected videos from the artist.
     */
     private function remove() {
-        $v = _request(array('group' => array(0)));
+        $v = _request(['group' => [0]]);
 
         if (!$v->group) {
             return;
@@ -108,6 +104,6 @@ class __artist_video extends mac {
                 AND video_a = ?';
         sql_query(sql_filter($sql, implode(',', $result), $this->object['ub']));
 
-        return redirect(s_link('acp', array('artist_video', 'a' => $this->object['subdomain'])));
+        return redirect(s_link('acp', ['artist_video', 'a' => $this->object['subdomain']]));
     }
 }

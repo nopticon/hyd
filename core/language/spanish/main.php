@@ -1,10 +1,10 @@
 <?php
 
 if (!is_array($lang) || empty($lang)) {
-    $lang = array();
+    $lang = [];
 }
 
-$lang += array(
+$lang += [
     'APPLICATION'                  => 'Rock Republik',
     'APPLICATION_FULL'             => 'Rock Republik Networks',
     'APPLICATION_DESC'             => 'La comunidad m&aacute;s grande de Rock en Guatemala',
@@ -379,11 +379,11 @@ $lang += array(
     'CLICK_PROCEED'                => 'Click %AQUI%s para ir a la Portada',
 
     'MEMBERSHIP_BENEFITS'          => 'Beneficios de los miembros',
-    'MEMBERSHIP_BENEFITS2'         => array(
+    'MEMBERSHIP_BENEFITS2'         => [
         'Env&iacute;o de mensajes en chat, bandas, foro, art&iacute;culos, eventos, etc.',
         'Acceso a la informaci&oacute;n de otros miembros',
         'P&aacute;gina personal con libro de visitas'
-    ),
+    ],
 
     'PASSWORD_UPDATED'             => 'Se ha creado una nueva contrase&ntilde;a, por favor revisa tu email por detalles sobre como activarla',
     'NO_EMAIL_MATCH'               => 'El email ingresado no pertenece a ese usuario',
@@ -881,7 +881,7 @@ $lang += array(
     'ACP_ARTIST_AUTH_DELETE'       => '&iquest;Deseas eliminar los siguientes usuarios autorizados de %s?: <b>%s</b>',
     'ACP_ARTIST_AUTH_DELETE2'      => '&iquest;Deseas eliminar el siguiente usuario autorizado de %s?: <b>%s</b>',
 
-    'datetime' => array(
+    'datetime' => [
         'Sunday'    => 'Domingo',
         'Monday'    => 'Lunes',
         'Tuesday'   => 'Martes',
@@ -925,9 +925,9 @@ $lang += array(
 
         'TODAY'     => 'Hoy',
         'YESTERDAY' => 'Ayer',
-    ),
+    ],
 
-    'zones'    => array(
+    'zones'    => [
         '-12.00' => 'GMT - 12',
         '-11.00' => 'GMT - 11',
         '-10.00' => 'GMT - 10',
@@ -953,5 +953,5 @@ $lang += array(
         '10.00'  => 'GMT + 10',
         '11.00'  => 'GMT + 11',
         '12.00'  => 'GMT + 12'
-    )
-);
+    ]
+];

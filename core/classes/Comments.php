@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class Comments {
     public $ref;
@@ -8,7 +7,7 @@ class Comments {
     public $data;
     public $auth;
     public $users;
-    public $options = array();
+    public $options = [];
 
     public function __construct() {
         $this->ref = '';
@@ -82,22 +81,22 @@ class Comments {
                             AND d.ub = a.ub';
                     $sql = sql_filter($sql, $id, $this->param[1]);
 
-                    $this->data = array(
+                    $this->data = [
                         'DATA_TABLE' => '_dl',
                         'POST_TABLE' => 'dl_posts',
                         'HISTORY'    => UH_M
-                    );
+                    ];
                 } else {
                     $sql = 'SELECT *
                         FROM _artists
                         WHERE subdomain = ?';
                     $sql = sql_filter($sql, $this->param[1]);
 
-                    $this->data = array(
+                    $this->data = [
                         'DATA_TABLE' => '_artists',
                         'POST_TABLE' => 'artists_posts',
                         'HISTORY'    => UH_C
-                    );
+                    ];
                 }
                 break;
             case 'events':
@@ -108,11 +107,11 @@ class Comments {
                     WHERE ?? = ?';
                 $sql = sql_filter($sql, $event_field, $this->param[1]);
 
-                $this->data = array(
+                $this->data = [
                     'DATA_TABLE' => '_events',
                     'POST_TABLE' => 'events_posts',
                     'HISTORY'    => UH_EP
-                );
+                ];
                 break;
             case 'news':
                 $sql = 'SELECT *
@@ -120,11 +119,11 @@ class Comments {
                     WHERE news_alias = ?';
                 $sql = sql_filter($sql, $this->param[1]);
 
-                $this->data = array(
+                $this->data = [
                     'DATA_TABLE' => '_news',
                     'POST_TABLE' => 'news_posts',
                     'HISTORY'    => UH_NP
-                );
+                ];
                 break;
             case 'art':
                 $sql = 'SELECT *
@@ -132,11 +131,11 @@ class Comments {
                     WHERE art_id = ?';
                 $sql = sql_filter($sql, $this->param[1]);
 
-                $this->data = array(
+                $this->data = [
                     'DATA_TABLE' => '_art',
                     'POST_TABLE' => 'art_posts',
                     'HISTORY'    => UH_W
-                );
+                ];
                 break;
             case 'm':
                 $sql = 'SELECT *
@@ -144,11 +143,11 @@ class Comments {
                     WHERE username_base = ?';
                 $sql = sql_filter($sql, $this->param[1]);
 
-                $this->data = array(
+                $this->data = [
                     'DATA_TABLE' => '_members',
                     'POST_TABLE' => 'members_posts',
                     'HISTORY'    => UH_UPM
-                );
+                ];
                 break;
             default:
                 fatal_error();
@@ -163,37 +162,33 @@ class Comments {
             fatal_error();
         }
 
-        $post_reply = 0;
-        $error = w();
-        $update_sql = '';
+        $post_reply   = 0;
+        $error        = w();
+        $update_sql   = '';
         $current_time = time();
 
         $this->auth['user'] = $user->is('member');
         $this->auth['adm']  = $user->is('founder');
 
-        /*
         //
         // Flood control
         //
-        if (!$this->auth['adm'] && !$this->auth['mod'])
-        {
-            $where_sql = (!$this->auth['user']) ? "post_ip = '$user_ip'" : "poster_id = " . $userdata['user_id'];
-            $sql = "SELECT MAX(post_time) AS last_datetime
-                FROM " . $this->data['POST_TABLE'] . "
-                WHERE $where_sql";
-         if ($row = sql_fieldrow($sql)) {
-             if ((intval($row['last_datetime']) > 0) && ($current_time - intval($row['last_datetime'])) < 10)
-            {
-                $error[] = 'CHAT_FLOOD_CONTROL';
-            }
-         }
-        }
-        */
+        // if (!$this->auth['adm'] && !$this->auth['mod']) {
+        //     $where_sql = (!$this->auth['user']) ? "post_ip = '$user_ip'" : "poster_id = " . $userdata['user_id'];
+        //     $sql = "SELECT MAX(post_time) AS last_datetime
+        //         FROM " . $this->data['POST_TABLE'] . "
+        //         WHERE $where_sql";
+        //     if ($row = sql_fieldrow($sql)) {
+        //         if ((intval($row['last_datetime']) > 0) && ($current_time - intval($row['last_datetime'])) < 10) {
+        //             $error[] = 'CHAT_FLOOD_CONTROL';
+        //         }
+        //     }
+        // }
 
         //
         // Check if message is empty
         //
-        if (!sizeof($error)) {
+        if (!count($error)) {
             $message = request_var('message', '', true);
 
             // Check message
@@ -205,7 +200,7 @@ class Comments {
         //
         // Insert processed data
         //
-        if (!sizeof($error)) {
+        if (!count($error)) {
             $update_sql = '';
             $post_reply = (isset($this->param[4]) && $this->param[4] == 'reply') ? $id : 0;
             $message    = $this->prepare($message);
@@ -215,14 +210,14 @@ class Comments {
                 redirect();
             }
 
-            $insert_data = array(
+            $insert_data = [
                 'post_reply'  => (int) $post_reply,
                 'post_active' => 1,
                 'poster_id'   => (int) $user->d('user_id'),
                 'post_ip'     => (string) $user->ip,
                 'post_time'   => (int) $current_time,
                 'post_text'   => (string) $message
-            );
+            ];
 
             if (!isset($this->param[2])) {
                 $this->param[2] = 0;
@@ -309,14 +304,12 @@ class Comments {
                     $emailer->email_address($post_data['user_email']);
                     $emailer->set_subject($user->d('username') . ' te envio un mensaje en Rock Republik');
 
-                    $emailer->assign_vars(
-                        array(
-                            'USERNAME_TO'   => $post_data['username'],
-                            'USERNAME_FROM' => $user->d('username'),
-                            'USER_MESSAGE'  => entity_decode($message),
-                            'U_PROFILE'     => s_link('@m', $user->d('username_base'))
-                        )
-                    );
+                    $emailer->assign_vars([
+                        'USERNAME_TO'   => $post_data['username'],
+                        'USERNAME_FROM' => $user->d('username'),
+                        'USER_MESSAGE'  => entity_decode($message),
+                        'U_PROFILE'     => s_link('@m', $user->d('username_base'))
+                    ]);
                     $emailer->send();
                     $emailer->reset();
 
@@ -366,9 +359,9 @@ class Comments {
         $start_field,
         $total_items,
         $items_pp,
-        $tpl_prefix = '',
-        $pag_prefix = '',
-        $pag_lang_prefix = '',
+        $tpl_prefix        = '',
+        $pag_prefix        = '',
+        $pag_lang_prefix   = '',
         $simple_pagination = false
     ) {
         global $user;
@@ -377,10 +370,10 @@ class Comments {
             $tpl_prefix = 'posts';
         }
 
-        $ref = $this->ref;
-        $this->ref = preg_replace('#^/?(.*?)/?$#', '\1', $this->ref);
+        $ref         = $this->ref;
+        $this->ref   = preg_replace('#^/?(.*?)/?$#', '\1', $this->ref);
         $this->param = explode('/', $this->ref);
-        $this->ref = $ref;
+        $this->ref   = $ref;
 
         if (!isset($start)) {
             $start = request_var($start_field, 0);
@@ -406,7 +399,7 @@ class Comments {
         _style($tpl_prefix);
 
         $controls_data = w();
-        $user_profile = w();
+        $user_profile  = w();
 
         foreach ($result as $row) {
             $uid = $row['user_id'];
@@ -424,14 +417,14 @@ class Comments {
                 $topic_title = $this->data['ARTISTS_NEWS'] ? preg_replace($prf, '\\2', $topic_title) : $topic_title;
             }
 
-            $data = array(
+            $data = [
                 'POST_ID'  => $row['post_id'],
                 'DATETIME' => $user->format_date($row['post_time']),
                 'SUBJECT'  => $topic_title,
                 'MESSAGE'  => $this->parse_message($row['post_text'], $this->data['A_LINKS_CLASS']),
                 'REPLIES'  => ($this->data['ARTISTS_NEWS']) ? $row['topic_replies'] : 0,
                 'S_DELETE' => false
-            );
+            ];
 
             if (!isset($this->data['USER_ID_FIELD'])) {
                 $this->data['USER_ID_FIELD'] = 'poster_id';
@@ -486,6 +479,7 @@ class Comments {
 
         if (!isset($this->users[$row['user_id']]) || $row['user_id'] == GUEST) {
             $data = w();
+
             foreach ($row as $key => $value) {
                 if (strpos($key, 'user') === false && $key != 'post_id') {
                     continue;
@@ -514,7 +508,7 @@ class Comments {
                         break;
                     case 'user_rank':
                         if (!isset($all_ranks)) {
-                            $all_ranks = $user->init_ranks();
+                            $all_ranks = $user->init_ranks() ?: [];
                         }
 
                         if ($row['user_id'] == GUEST) {
@@ -582,14 +576,14 @@ class Comments {
         // Do some general 'cleanup' first before processing message,
         // e.g. remove excessive newlines(?), smilies(?)
         // Transform \r\n and \r into \n
-        $match   = array(
+        $match   = [
             '#\r\n?#',
             '#sid=[a-z0-9]*?&amp;?#',
             "#([\n][\s]+){3,}#",
             "#(\.){3,}#",
             '#(script|about|applet|activex|chrome):#i'
-        );
-        $replace = array(nr(), '', nr(false, 2), '...', "\\1&#058;");
+        ];
+        $replace = [nr(), '', nr(false, 2), '...', "\\1&#058;"];
 
         $message = preg_replace($match, $replace, trim($message));
         $message = preg_replace('/(.)\1{10,}/', "$1$1", $message);
@@ -622,7 +616,7 @@ class Comments {
 
         if ($is_mod) {
             if (preg_match_all('#&lt;(' . $ptags . ') (.*?)&gt;#is', $message, $in_quotes)) {
-                $repl = array('&lt;' => '<', '&gt;' => '>', '&quot;' => '"');
+                $repl = ['&lt;' => '<', '&gt;' => '>', '&quot;' => '"'];
 
                 foreach ($in_quotes[0] as $item) {
                     $replace = str_replace(array_keys($repl), array_values($repl), $item);
@@ -645,7 +639,7 @@ class Comments {
     }
 
     //
-    // | Conversations System
+    // Start Conversations System
     //
 
     //
@@ -655,27 +649,27 @@ class Comments {
         global $user;
 
         if ($mode == 'reply') {
-            $insert = array(
+            $insert = [
                 'parent_id'            => (int) $to['parent_id'],
                 'privmsgs_type'        => PRIVMSGS_NEW_MAIL,
                 'privmsgs_from_userid' => (int) $from['user_id'],
                 'privmsgs_to_userid'   => (int) $to['user_id'],
-            );
+            ];
         } else {
-            $insert = array(
+            $insert = [
                 'privmsgs_type'        => PRIVMSGS_NEW_MAIL,
                 'privmsgs_subject'     => $subject,
                 'privmsgs_from_userid' => (int) $from['user_id'],
                 'privmsgs_to_userid'   => (int) $to['user_id']
-            );
+            ];
         }
 
-        $insert += array(
+        $insert += [
             'privmsgs_date' => time(),
             'msg_ip'        => $user->ip,
             'privmsgs_text' => $this->prepare($message),
             'msg_can_reply' => (int) $can_reply
-        );
+        ];
 
         $dc_id = sql_insert('dc', $insert);
 
@@ -708,13 +702,11 @@ class Comments {
             $emailer->use_template('dc_email');
             $emailer->email_address($to['user_email']);
 
-            $emailer->assign_vars(
-                array(
+            $emailer->assign_vars([
                     'USERNAME' => $to['username'],
                     'SENT_BY'  => $from['username'],
                     'DC_URL'   => s_link('@my dc read', $dc_id)
-                )
-            );
+            ]);
             $emailer->send();
             $emailer->reset();
         }
@@ -784,7 +776,7 @@ class Comments {
         $this->message = ' ' . $message . ' ';
         unset($message);
 
-        $this->parse_flash();
+        // $this->parse_flash();
         $this->parse_youtube();
         $this->parse_images();
         $this->parse_url();
@@ -794,19 +786,19 @@ class Comments {
         $this->d_links();
         $this->members_profile();
         $this->members_icon();
-        $this->replace_blockquote();
+        // $this->replace_blockquote();
 
         return str_replace(nr(), '<br />', substr($this->message, 1, -1));
     }
 
     public function replace_blockquote() {
         if (strstr($this->message, '<blockquote>')) {
-            // $orig = array('<blockquote>', '</blockquote>');
-            // $repl_1 = array('<div class="msg-bq pad4 sub-color box2">', '</div><br />');
-            // $repl_2 = array('<blockquote>', '</blockquote>');
+            $orig   = ['<blockquote>', '</blockquote>'];
+            $repl_1 = ['<div class="msg-bq pad4 sub-color box2">', '</div><br />'];
+            $repl_2 = ['<blockquote>', '</blockquote>'];
 
-            // $this->message = str_replace($orig, $repl_1, $this->message);
-            // $this->message = str_replace($orig, $repl_2, $this->message);
+            $this->message = str_replace($orig, $repl_1, $this->message);
+            $this->message = str_replace($orig, $repl_2, $this->message);
         }
     }
 
@@ -859,8 +851,8 @@ class Comments {
     }
 
     public function parse_bbcode() {
-        $orig = array('[sb]', '[/sb]');
-        $repl = array('<blockquote>', '</blockquote>');
+        $orig = ['[sb]', '[/sb]'];
+        $repl = ['<blockquote>', '</blockquote>'];
 
         $this->message = str_replace($orig, $repl, $this->message);
     }
@@ -922,24 +914,24 @@ class Comments {
         global $user;
 
         if (!isset($this->options['url'])) {
-            $quote = preg_quote('http://' . config('server_name'), '#');
+            $quote = preg_quote(get_protocol() . config('server_name'), '#');
 
-            $this->options['url'] = array(
-                'orig' => array(
+            $this->options['url'] = [
+                'orig' => [
                     '#(script|about|applet|activex|chrome):#is',
                     '#(^|[\n ]|\()(' . $quote . ')/(.*?([^ \t\n\r<"\'\)]*)?)#is',
                     '#(^|[\n ]|\()([\w]+?://.*?([^ \t\n\r<"\'\)]*)?)#i',
                     '#(^|[\n ]|\()(www\.[\w\-]+\.[\w\-.\~]+(?:/[^ \t\n\r<"\'\)]*)?)#i',
                     '#(^|[\n ]|\()([a-z0-9&\-_.]+?@[\w\-]+\.([\w\-\.]+\.)?[\w]+)#i'
-                ),
-                'repl' => array(
+                ],
+                'repl' => [
                     '\\1&#058;',
                     '$1<a href="$2/$3">$2/$3</a>',
                     '$1<a href="$2" target="_blank">$2</a>',
                     '$1<a href="http://$2" target="_blank">$2</a>',
                     '$1<a href="mailto:$2">$2</a>'
-                )
-            );
+                ]
+            ];
 
             // if (!$user->is('member')) {
             //     $this->options['url']['orig'][4] = '#(^|[\n ]|\()(([a-z0-9&\-_.]+?@)([\w\-]+\.([\w\-\.]+\.)?[\w]+))#s';
@@ -976,7 +968,7 @@ class Comments {
             }
         }
 
-        if (sizeof($this->options['smilies'])) {
+        if (count($this->options['smilies'])) {
             $this->message = preg_replace(
                 $this->options['smilies']['orig'],
                 $this->options['smilies']['repl'],
@@ -1008,7 +1000,8 @@ class Comments {
         if (preg_match_all('#\b(' . implode('|', $this->options['a']['match']) . ')\b#i', $this->message, $match)) {
             foreach ($match[1] as $n) {
                 $m = strtolower($n);
-                $k = str_replace(array(' ', '_'), '', $m);
+                $k = str_replace([' ', '_'], '', $m);
+
                 if (!isset($this->options['a']['data'][$k])) {
                     $this->options['a']['data'][$k] = ucwords($m);
                 }
@@ -1069,7 +1062,7 @@ class Comments {
                 }
             }
 
-            if (sizeof($orig)) {
+            if (count($orig)) {
                 $this->message = str_replace($orig, $repl, $this->message);
             }
         }

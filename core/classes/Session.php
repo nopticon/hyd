@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class Session {
     public $session_id = '';

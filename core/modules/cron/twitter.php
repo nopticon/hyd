@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 function twitter() {
     header('Content-type: text/html; charset=utf-8');
@@ -40,16 +39,16 @@ function twitter() {
 
         $created_date = gmmktime($at['hour'], $at['minute'], $at['second'], $at['month'], $at['day'], $at['year']);
         $message = htmlentities(Twitter::clickable($status->text), ENT_NOQUOTES, 'UTF-8');
-        $message = str_replace(array('&lt;', '&gt;'), array('<', '>'), $message);
+        $message = str_replace(['&lt;', '&gt;'], ['<', '>'], $message);
 
-        $sql_insert = array(
+        $sql_insert = [
             'status'    => (string) $status->id,
             'time'      => $created_date,
             'message'   => $message,
             'name'      => (string) $status->user->screen_name,
             'followers' => (int) $status->user->followers_count,
             'friends'   => (int) $status->user->friends_count
-        );
+        ];
 
         echo '<pre>';
         print_r($sql_insert);

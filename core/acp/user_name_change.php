@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class __user_name_change extends mac {
     public function __construct() {
@@ -50,13 +49,11 @@ class __user_name_change extends mac {
         $emailer->use_template('username_change', config('default_lang'));
         $emailer->email_address($userdata['user_email']);
 
-        $emailer->assign_vars(
-            array(
-                'USERNAME'     => $userdata['username'],
-                'NEW_USERNAME' => $username2,
-                'U_USERNAME'   => s_link('@m', $username_base2)
-            )
-        );
+        $emailer->assign_vars([
+            'USERNAME'     => $userdata['username'],
+            'NEW_USERNAME' => $username2,
+            'U_USERNAME'   => s_link('@m', $username_base2)
+        ]);
         $emailer->send();
         $emailer->reset();
 

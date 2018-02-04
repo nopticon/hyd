@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class Win {
     private $object;
@@ -49,10 +48,7 @@ class Win {
                 _style('win');
             }
 
-            _style(
-                'win.row',
-                array()
-            );
+            _style('win.row', []);
         }
         return;
     }

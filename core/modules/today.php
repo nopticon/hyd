@@ -1,8 +1,7 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class today {
-    private $type = array();
+    private $type = [];
     private $elements;
     public $downloads;
 
@@ -106,12 +105,9 @@ class today {
                 $downloads = new downloads();
             }
 
-            _style(
-                'items',
-                array(
-                    'TOTAL_ITEMS' => count($result)
-                )
-            );
+            _style('items', [
+                'TOTAL_ITEMS' => count($result)
+            ]);
 
             //
             // Notes (PM)
@@ -129,29 +125,23 @@ class today {
 
                 foreach ($result as $i => $row) {
                     if (!$i) {
-                        _style(
-                            'items.notes',
-                            array(
-                                'ELEMENT' => UH_NOTE
-                            )
-                        );
+                        _style('items.notes', [
+                            'ELEMENT' => UH_NOTE
+                        ]);
                     }
 
                     $user_profile = $comments->user_profile($row);
                     $dc_subject = 'Conversaci&oacute;n con ' . $row['username'];
 
-                    _style(
-                        'items.notes.item',
-                        array(
-                            'S_MARK_ID'  => $row['parent_id'],
-                            'U_READ'     => s_link('my dc read', $row['last_msg_id']) . '#' . $row['last_msg_id'],
-                            'SUBJECT'    => $dc_subject,
-                            'DATETIME'   => $user->format_date($row['privmsgs_date']),
-                            'USER_ID'    => $row['user_id'],
-                            'USERNAME'   => $row['username'],
-                            'U_USERNAME' => $user_profile['profile']
-                        )
-                    );
+                    _style('items.notes.item', [
+                        'S_MARK_ID'  => $row['parent_id'],
+                        'U_READ'     => s_link('my dc read', $row['last_msg_id']) . '#' . $row['last_msg_id'],
+                        'SUBJECT'    => $dc_subject,
+                        'DATETIME'   => $user->format_date($row['privmsgs_date']),
+                        'USER_ID'    => $row['user_id'],
+                        'USERNAME'   => $row['username'],
+                        'U_USERNAME' => $user_profile['profile']
+                    ]);
                 }
             }
 
@@ -166,25 +156,19 @@ class today {
 
                 foreach ($result as $i => $row) {
                     if (!$i) {
-                        _style(
-                            'items.friends',
-                            array(
-                                'ELEMENT' => UH_FRIEND
-                            )
-                        );
+                        _style('items.friends', [
+                            'ELEMENT' => UH_FRIEND
+                        ]);
                     }
 
                     $user_profile = $comments->user_profile($row);
 
-                    _style(
-                        'items.friends.item',
-                        array(
-                            'S_MARK_ID' => $row['user_id'],
-                            'U_PROFILE' => s_link('m', $row['username_base']),
-                            'POST_TIME' => $user->format_date($row['datetime']),
-                            'USERNAME'  => $row['username']
-                        )
-                    );
+                    _style('items.friends.item', [
+                        'S_MARK_ID' => $row['user_id'],
+                        'U_PROFILE' => s_link('m', $row['username_base']),
+                        'POST_TIME' => $user->format_date($row['datetime']),
+                        'USERNAME'  => $row['username']
+                    ]);
                 }
             }
 
@@ -200,25 +184,19 @@ class today {
 
                 foreach ($result as $i => $row) {
                     if (!$i) {
-                        _style(
-                            'items.userpagem',
-                            array(
-                                'ELEMENT' => UH_UPM
-                            )
-                        );
+                        _style('items.userpagem', [
+                            'ELEMENT' => UH_UPM
+                        ]);
                     }
 
                     $user_profile = $comments->user_profile($row);
 
-                    _style(
-                        'items.userpagem.item',
-                        array(
-                            'S_MARK_ID' => $row['post_id'],
-                            'U_PROFILE' => s_link('m', $user->d('username_base')),
-                            'POST_TIME' => $user->format_date($row['datetime']),
-                            'USERNAME'  => $row['username']
-                        )
-                    );
+                    _style('items.userpagem.item', [
+                        'S_MARK_ID' => $row['post_id'],
+                        'U_PROFILE' => s_link('m', $user->d('username_base')),
+                        'POST_TIME' => $user->format_date($row['datetime']),
+                        'USERNAME'  => $row['username']
+                    ]);
                 }
             }
 
@@ -236,23 +214,17 @@ class today {
 
                 foreach ($result as $i => $row) {
                     if (!$i) {
-                        _style(
-                            'items.a_news',
-                            array(
-                                'ELEMENT' => UH_N
-                            )
-                        );
+                        _style('items.a_news', [
+                            'ELEMENT' => UH_N
+                        ]);
                     }
 
-                    _style(
-                        'items.a_news.item',
-                        array(
-                            'S_MARK_ID'  => $row['topic_id'],
-                            'POST_URL'   => s_link('topic', $row['topic_id']),
-                            'POST_TITLE' => $row['topic_title'],
-                            'POST_TIME'  => $user->format_date($row['topic_time'])
-                        )
-                    );
+                    _style('items.a_news.item', [
+                        'S_MARK_ID'  => $row['topic_id'],
+                        'POST_URL'   => s_link('topic', $row['topic_id']),
+                        'POST_TITLE' => $row['topic_title'],
+                        'POST_TIME'  => $user->format_date($row['topic_time'])
+                    ]);
                 }
             }
 
@@ -267,24 +239,17 @@ class today {
 
                 foreach ($result as $i => $row) {
                     if (!$i) {
-                        _style(
-                            'items.news',
-                            array(
-                                'ELEMENT' => UH_GN
-                            )
-                        );
+                        _style('items.news', [
+                            'ELEMENT' => UH_GN
+                        ]);
                     }
 
-                    _style(
-                        'items.news.item',
-                        array(
-                            'S_MARK_ID'  => $row['news_id'],
-
-                            'POST_URL'   => s_link('news', $row['news_alias']),
-                            'POST_TITLE' => $row['post_subject'],
-                            'POST_TIME'  => $user->format_date($row['post_time'])
-                        )
-                    );
+                    _style('items.news.item', [
+                        'S_MARK_ID'  => $row['news_id'],
+                        'POST_URL'   => s_link('news', $row['news_alias']),
+                        'POST_TITLE' => $row['post_subject'],
+                        'POST_TIME'  => $user->format_date($row['post_time'])
+                    ]);
                 }
             }
 
@@ -302,23 +267,17 @@ class today {
 
                 foreach ($result as $i => $row) {
                     if (!$i) {
-                        _style(
-                            'items.artists',
-                            array(
-                                'ELEMENT' => UH_A
-                            )
-                        );
+                        _style('items.artists', [
+                            'ELEMENT' => UH_A
+                        ]);
                     }
 
-                    _style(
-                        'items.artists.item',
-                        array(
-                            'S_MARK_ID' => $row['ub'],
-                            'UB_URL'    => s_link('a', $row['subdomain']),
-                            'NAME'      => $row['name'],
-                            'POST_TIME' => $user->format_date($row['datetime'])
-                        )
-                    );
+                    _style('items.artists.item', [
+                        'S_MARK_ID' => $row['ub'],
+                        'UB_URL'    => s_link('a', $row['subdomain']),
+                        'NAME'      => $row['name'],
+                        'POST_TIME' => $user->format_date($row['datetime'])
+                    ]);
                 }
             }
 
@@ -337,26 +296,20 @@ class today {
 
                 foreach ($result as $i => $row) {
                     if (!$i) {
-                        _style(
-                            'items.downloads',
-                            array(
-                                'ELEMENT' => UH_D
-                            )
-                        );
+                        _style('items.downloads', [
+                            'ELEMENT' => UH_D
+                        ]);
                     }
 
-                    _style(
-                        'items.downloads.item',
-                        array(
-                            'S_MARK_ID' => $row['id'],
-                            'UB_URL'    => s_link('a', $row['subdomain']),
-                            'UD_URL'    => s_link('a', $row['subdomain'], 9, $row['id']),
-                            'UD_TYPE'   => array_key($downloads->dl_type($row['ud_type']), 'av'),
-                            'DATETIME'  => $user->format_date($row['date']),
-                            'UB'        => $row['name'],
-                            'UD'        => $row['title']
-                        )
-                    );
+                    _style('items.downloads.item', [
+                        'S_MARK_ID' => $row['id'],
+                        'UB_URL'    => s_link('a', $row['subdomain']),
+                        'UD_URL'    => s_link('a', $row['subdomain'], 9, $row['id']),
+                        'UD_TYPE'   => array_key($downloads->dl_type($row['ud_type']), 'av'),
+                        'DATETIME'  => $user->format_date($row['date']),
+                        'UB'        => $row['name'],
+                        'UD'        => $row['title']
+                    ]);
                 }
             }
 
@@ -380,33 +333,27 @@ class today {
 
                 foreach ($result as $i => $row) {
                     if (!$i) {
-                        _style(
-                            'items.forums',
-                            array(
-                                'ELEMENT' => UH_T
-                            )
-                        );
+                        _style('items.forums', [
+                            'ELEMENT' => UH_T
+                        ]);
                     }
 
                     $user_profile = $comments->user_profile($row);
 
-                    _style(
-                        'items.forums.item',
-                        array(
-                            'S_MARK_ID'     => $row['topic_id'],
-                            'FOR_MODS'      => in_array($row['forum_id'], forum_for_team_array()),
-                            'TOPIC_URL'     => s_link('post', $row['post_id']) . '#' . $row['post_id'],
-                            'TOPIC_TITLE'   => $row['topic_title'],
-                            'TOPIC_REPLIES' => $row['topic_replies'],
-                            'TOPIC_COLOR'   => $row['topic_color'],
-                            'FORUM_URL'     => s_link('forum', $row['forum_alias']),
-                            'FORUM_NAME'    => $row['forum_name'],
-                            'DATETIME'      => $user->format_date($row['post_time']),
-                            'USER_ID'       => $row['user_id'],
-                            'USER_PROFILE'  => $user_profile['profile'],
-                            'USERNAME'      => $user_profile['username']
-                        )
-                    );
+                    _style('items.forums.item', [
+                        'S_MARK_ID'     => $row['topic_id'],
+                        'FOR_MODS'      => in_array($row['forum_id'], forum_for_team_array()),
+                        'TOPIC_URL'     => s_link('post', $row['post_id']) . '#' . $row['post_id'],
+                        'TOPIC_TITLE'   => $row['topic_title'],
+                        'TOPIC_REPLIES' => $row['topic_replies'],
+                        'TOPIC_COLOR'   => $row['topic_color'],
+                        'FORUM_URL'     => s_link('forum', $row['forum_alias']),
+                        'FORUM_NAME'    => $row['forum_name'],
+                        'DATETIME'      => $user->format_date($row['post_time']),
+                        'USER_ID'       => $row['user_id'],
+                        'USER_PROFILE'  => $user_profile['profile'],
+                        'USERNAME'      => $user_profile['username']
+                    ]);
                 }
             }
 
@@ -427,29 +374,23 @@ class today {
 
                 foreach ($result as $i => $row) {
                     if (!$i) {
-                        _style(
-                            'items.a_messages',
-                            array(
-                                'ELEMENT' => UH_C
-                            )
-                        );
+                        _style('items.a_messages', [
+                            'ELEMENT' => UH_C
+                        ]);
                     }
 
                     $user_profile = $comments->user_profile($row);
 
-                    _style(
-                        'items.a_messages.item',
-                        array(
-                            'S_MARK_ID'    => $row['post_id'],
-                            'ITEM_URL'     => s_link('a', $row['subdomain'], 12, $row['post_id']),
-                            'UB_URL'       => s_link('a', $row['subdomain']),
-                            'UB'           => $row['name'],
-                            'DATETIME'     => $user->format_date($row['post_time']),
-                            'USER_ID'      => $row['user_id'],
-                            'USER_PROFILE' => $user_profile['profile'],
-                            'USERNAME'     => $user_profile['username']
-                        )
-                    );
+                    _style('items.a_messages.item', [
+                        'S_MARK_ID'    => $row['post_id'],
+                        'ITEM_URL'     => s_link('a', $row['subdomain'], 12, $row['post_id']),
+                        'UB_URL'       => s_link('a', $row['subdomain']),
+                        'UB'           => $row['name'],
+                        'DATETIME'     => $user->format_date($row['post_time']),
+                        'USER_ID'      => $row['user_id'],
+                        'USER_PROFILE' => $user_profile['profile'],
+                        'USERNAME'     => $user_profile['username']
+                    ]);
                 }
             }
 
@@ -472,33 +413,27 @@ class today {
 
                 foreach ($result as $i => $row) {
                     if (!$i) {
-                        _style(
-                            'items.d_messages',
-                            array(
-                                'ELEMENT' => UH_M
-                            )
-                        );
+                        _style('items.d_messages', [
+                            'ELEMENT' => UH_M
+                        ]);
                     }
 
                     $download_type = $downloads->dl_type($row['ud_type']);
                     $user_profile = $comments->user_profile($row);
 
-                    _style(
-                        'items.d_messages.item',
-                        array(
-                            'S_MARK_ID'    => $row['post_id'],
-                            'ITEM_URL'     => s_link('a', $row['subdomain'], 9, $row['dl_id']),
-                            'UB_URL'       => s_link('a', $row['subdomain']),
-                            'UD_URL'       => s_link('a', $row['subdomain'], 9, $row['dl_id']),
-                            'UD_TYPE'      => $download_type['av'],
-                            'UB'           => $row['name'],
-                            'UD'           => $row['title'],
-                            'POST_TIME'    => $user->format_date($row['post_time']),
-                            'USER_ID'      => $row['user_id'],
-                            'USER_PROFILE' => $user_profile['profile'],
-                            'USERNAME'     => $user_profile['username']
-                        )
-                    );
+                    _style('items.d_messages.item', [
+                        'S_MARK_ID'    => $row['post_id'],
+                        'ITEM_URL'     => s_link('a', $row['subdomain'], 9, $row['dl_id']),
+                        'UB_URL'       => s_link('a', $row['subdomain']),
+                        'UD_URL'       => s_link('a', $row['subdomain'], 9, $row['dl_id']),
+                        'UD_TYPE'      => $download_type['av'],
+                        'UB'           => $row['name'],
+                        'UD'           => $row['title'],
+                        'POST_TIME'    => $user->format_date($row['post_time']),
+                        'USER_ID'      => $row['user_id'],
+                        'USER_PROFILE' => $user_profile['profile'],
+                        'USERNAME'     => $user_profile['username']
+                    ]);
                 }
             }
 
@@ -524,29 +459,23 @@ class today {
 
                 foreach ($result as $i => $row) {
                     if (!$i) {
-                        _style(
-                            'items.a_fav',
-                            array(
-                                'ELEMENT' => UH_AF
-                            )
-                        );
+                        _style('items.a_fav', [
+                            'ELEMENT' => UH_AF
+                        ]);
                     }
 
                     $user_profile = $comments->user_profile($row);
 
-                    _style(
-                        'items.a_fav.item',
-                        array(
-                            'S_MARK_ID'    => $row['fan_id'],
-                            'ITEM_URL'     => s_link('m', $row['username_base']),
-                            'UB_URL'       => s_link('a', $row['subdomain']),
-                            'UB'           => $row['name'],
-                            'POST_TIME'    => $user->format_date($row['joined']),
-                            'USER_ID'      => $row['user_id'],
-                            'USER_PROFILE' => $user_profile['profile'],
-                            'USERNAME'     => $user_profile['username']
-                        )
-                    );
+                    _style('items.a_fav.item', [
+                        'S_MARK_ID'    => $row['fan_id'],
+                        'ITEM_URL'     => s_link('m', $row['username_base']),
+                        'UB_URL'       => s_link('a', $row['subdomain']),
+                        'UB'           => $row['name'],
+                        'POST_TIME'    => $user->format_date($row['joined']),
+                        'USER_ID'      => $row['user_id'],
+                        'USER_PROFILE' => $user_profile['profile'],
+                        'USERNAME'     => $user_profile['username']
+                    ]);
                 }
             }
 
@@ -565,41 +494,32 @@ class today {
 
                 foreach ($result as $i => $row) {
                     if (!$i) {
-                        _style(
-                            'items.users',
-                            array(
-                                'ELEMENT' => UH_U
-                            )
-                        );
+                        _style('items.users', [
+                            'ELEMENT' => UH_U
+                        ]);
                     }
 
                     $user_profile = $comments->user_profile($row);
 
-                    _style(
-                        'items.users.item',
-                        array(
-                            'S_MARK_ID'    => $row['user_id'],
-                            'USER_PROFILE' => $user_profile['profile'],
-                            'USERNAME'     => $user_profile['username'],
-                            'DATETIME'     => $user->format_date($row['user_regdate'])
-                        )
-                    );
+                    _style('items.users.item', [
+                        'S_MARK_ID'    => $row['user_id'],
+                        'USER_PROFILE' => $user_profile['profile'],
+                        'USERNAME'     => $user_profile['username'],
+                        'DATETIME'     => $user->format_date($row['user_regdate'])
+                    ]);
                 }
             }
         } else {
             _style('no_items');
         }
 
-        $mark_options = array('NEW_MARK_NEVER', 'NEW_MARK_ALWAYS');
+        $mark_options = ['NEW_MARK_NEVER', 'NEW_MARK_ALWAYS'];
         foreach ($mark_options as $i => $mark_item) {
-            _style(
-                'mark_item',
-                array(
-                    'ITEM'     => $i,
-                    'NAME'     => $user->lang[$mark_item],
-                    'SELECTED' => selected($user->data['user_mark_items'], $i)
-                )
-            );
+            _style('mark_item', [
+                'ITEM'     => $i,
+                'NAME'     => $user->lang[$mark_item],
+                'SELECTED' => selected($user->data['user_mark_items'], $i)
+            ]);
         }
 
         $sql = 'SELECT d.id, d.title, a.subdomain, a.name
@@ -611,21 +531,16 @@ class today {
         $result = sql_rowset($sql);
 
         foreach ($result as $row) {
-            _style(
-                'downloads',
-                array(
-                    'URL' => s_link('a', $row['subdomain'], 9, $row['id']),
-                    'A'   => $row['name'],
-                    'T'   => $row['title']
-                )
-            );
+            _style('downloads', [
+                'URL' => s_link('a', $row['subdomain'], 9, $row['id']),
+                'A'   => $row['name'],
+                'T'   => $row['title']
+            ]);
         }
 
-        v_style(
-            array(
-                'S_UNREAD_ACTION' => s_link('today')
-            )
-        );
+        v_style([
+            'S_UNREAD_ACTION' => s_link('today')
+        ]);
 
         return;
     }
@@ -640,7 +555,7 @@ class today {
         $element = request_var('element', 0);
         $object  = request_var('object', 0);
 
-        $select     = request_var('select', array(0 => 0));
+        $select     = request_var('select', [0 => 0]);
         $select_all = request_var('select_all', 0);
 
         if ($select_all) {
@@ -648,7 +563,7 @@ class today {
         }
 
         if (count($select)) {
-            $delete = request_var('delete', array(0 => 0));
+            $delete = request_var('delete', [0 => 0]);
 
             foreach ($select as $select_element => $void) {
                 if (isset($delete[$select_element])) {
@@ -682,12 +597,9 @@ class today {
 
         foreach ($elements as $row) {
             if ($response = $this->{$row['type_alias']}()) {
-                _style(
-                    $row['type_alias'],
-                    array(
-                        'ID' => $row['type_id']
-                    )
-                );
+                _style($row['type_alias'], [
+                    'ID' => $row['type_id']
+                ]);
 
                 foreach ($response as $_row) {
                     _style($row['type_alias'] . '.row', $_row);
@@ -727,7 +639,7 @@ class today {
         foreach ($result as $i => $row) {
             $user_profile = $comments->user_profile($row);
 
-            $response[] = array(
+            $response[] = [
                 'S_MARK_ID'  => $row['parent_id'],
                 'U_READ'     => s_link('my dc read', $row['last_msg_id']),
                 'SUBJECT'    => $row['privmsgs_subject'],
@@ -735,7 +647,7 @@ class today {
                 'USER_ID'    => $row['user_id'],
                 'USERNAME'   => $row['username'],
                 'U_USERNAME' => $user_profile['profile']
-            );
+            ];
         }
 
         return $response;
@@ -762,7 +674,7 @@ class today {
         foreach ($result as $i => $row) {
             $user_profile = $comments->user_profile($row);
 
-            $response[] = array(
+            $response[] = [
                 'S_MARK_ID'     => $row['topic_id'],
                 'FOR_MODS'      => in_array($row['forum_id'], forum_for_team_array()),
                 'TOPIC_URL'     => s_link('post', $row['post_id']) . '#' . $row['post_id'],
@@ -775,7 +687,7 @@ class today {
                 'USER_ID'       => $row['user_id'],
                 'USER_PROFILE'  => $user_profile['profile'],
                 'USERNAME'      => $user_profile['username']
-            );
+            ];
         }
 
         return $response;

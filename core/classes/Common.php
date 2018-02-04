@@ -1,11 +1,10 @@
-<?php
-namespace App;
-
-$starttime = explode(' ', microtime());
-$starttime = $starttime[1] + $starttime[0];
+<?php namespace App;
 
 //error_reporting(E_ERROR | E_WARNING | E_PARSE);
 error_reporting(E_ALL);
+
+$starttime = explode(' ', microtime());
+$starttime = $starttime[1] + $starttime[0];
 
 // Protect against GLOBALS tricks
 if (isset($_REQUEST['GLOBALS']) || isset($_FILES['GLOBALS'])) {
@@ -41,7 +40,7 @@ if (@ini_get('register_globals') == '1' || strtolower(@ini_get('register_globals
     unset($input);
 }
 
-$includes = array(
+$includes = [
     'Functions',
     'Database',
     'Mysqli',
@@ -56,7 +55,7 @@ $includes = array(
     'Downloads',
     'Ftp',
     'Zip'
-);
+];
 
 foreach ($includes as $row) {
     require_once ROOT . 'classes/' . $row . '.php';

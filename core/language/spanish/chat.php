@@ -1,10 +1,10 @@
 <?php
 
 if (!is_array($lang) || empty($lang)) {
-    $lang = array();
+    $lang = [];
 }
 
-$lang += array(
+$lang += [
     'CHAT_NOW'                 => 'Chatear Ahora!',
     'CHAT_CREATE'              => 'Crear Canal',
     'CHAT_CHANNEL_LISTING'     => 'Lista de Canales',
@@ -26,4 +26,4 @@ $lang += array(
     'CHAT_MEMBER_LOGOUT'       => '<strong>%s</strong> sali&oacute; del canal.',
     'CHAT_MEMBER_TIMEOUT'      => '<strong>%s</strong> sali&oacute; del canal por inactividad.',
     'CHAT_LOGOUT'              => 'Salir del chat'
-);
+];

@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class __user_points extends mac {
     public function __construct() {
@@ -22,14 +21,11 @@ class __user_points extends mac {
                 _style('members');
             }
 
-            _style(
-                'members.row',
-                array(
-                    'BASE'     => s_link('m', $row['username_base']),
-                    'USERNAME' => $row['username'],
-                    'POINTS'   => $row['user_points']
-                )
-            );
+            _style('members.row', [
+                'BASE'     => s_link('m', $row['username_base']),
+                'USERNAME' => $row['username'],
+                'POINTS'   => $row['user_points']
+            ]);
         }
 
         return;

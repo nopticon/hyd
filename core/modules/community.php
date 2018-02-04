@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class community {
     private $default_title = 'COMMUNITY';
@@ -25,11 +24,9 @@ class community {
         $this->recent_members();
         $this->birthdays();
 
-        v_style(
-            array(
-                'MEMBERS_COUNT' => number_format(config('max_users'))
-            )
-        );
+        v_style([
+            'MEMBERS_COUNT' => number_format(config('max_users'))
+        ]);
 
         //
         // Online
@@ -61,17 +58,16 @@ class community {
     public function founders() {
         global $cache, $user, $comments;
 
-        if (!$founders = $cache->get('founders')) {
+        if (!$founders = $cache->get('founders', [])) {
             $sql = 'SELECT user_id, username, username_base, user_avatar
                 FROM _members
                 WHERE user_type = ?
+                    AND username_base <> ?
                 ORDER BY user_id';
-            $result = sql_rowset(sql_filter($sql, USER_FOUNDER));
+            $result = sql_rowset(sql_filter($sql, USER_FOUNDER, 'rockrepublik'));
 
             $founders = w();
             foreach ($result as $row) {
-                if ($row['username_base'] == 'rockrepublik') continue;
-
                 $founders[$row['user_id']] = $comments->user_profile($row);
             }
 
@@ -79,12 +75,12 @@ class community {
         }
 
         foreach ($founders as $user_id => $data) {
-            _style('founders', array(
+            _style('founders', [
                 'REALNAME' => $data['username'],
                 'USERNAME' => $data['username'],
                 'AVATAR'   => $data['user_avatar'],
-                'PROFILE'  => $data['profile'])
-            );
+                'PROFILE'  => $data['profile']
+            ]);
         }
 
         return;
@@ -93,7 +89,7 @@ class community {
     public function team() {
         global $cache, $comments;
 
-        if (!$teams = $cache->get('team')) {
+        if (!$teams = $cache->get('team', [])) {
             $sql = 'SELECT *
                 FROM _team
                 WHERE team_show = 1
@@ -103,7 +99,7 @@ class community {
             }
         }
 
-        if (!$team = $cache->get('team_members')) {
+        if (!$team = $cache->get('team_members', [])) {
             $sql = 'SELECT DISTINCT t.*, m.user_id, m.username, m.username_base, m.user_avatar
                 FROM _team_members t, _members m
                 WHERE t.member_id = m.user_id
@@ -122,12 +118,12 @@ class community {
                 $profile['real_name'] = '';
             }
 
-            _style('team.row', array(
+            _style('team.row', [
                 'USERNAME' => $profile['username'],
                 'REALNAME' => $profile['real_name'],
                 'PROFILE'  => $profile['profile'],
-                'AVATAR'   => $profile['user_avatar'])
-            );
+                'AVATAR'   => $profile['user_avatar']
+            ]);
         }
 
         return;
@@ -150,9 +146,9 @@ class community {
             ${$v} = 0;
         }
 
-        _style($block, array(
-            'L_TITLE' => lang($block_title))
-        );
+        _style($block, [
+            'L_TITLE' => lang($block_title)
+        ]);
         _style($block . '.members');
 
         $is_founder = $user->is('founder');
@@ -177,10 +173,10 @@ class community {
                     }
 
                     if (((!$row['user_hideuser'] || $is_founder) && !$is_bot) || ($is_bot && $is_founder)) {
-                        _style($block . '.members.item', array(
+                        _style($block . '.members.item', [
                             'USERNAME' => $username,
-                            'PROFILE'  => s_link('m', $row['username_base']))
-                        );
+                            'PROFILE'  => s_link('m', $row['username_base'])
+                        ]);
                     }
                 }
 
@@ -202,13 +198,13 @@ class community {
 
         _style($block . '.legend');
 
-        $online_ary = array(
+        $online_ary = [
             'MEMBERS_TOTAL'   => $users_total,
             'MEMBERS_VISIBLE' => $users_visible,
             'MEMBERS_GUESTS'  => $users_guests,
             'MEMBERS_HIDDEN'  => $users_hidden,
             'MEMBERS_BOT'     => $users_bots
-        );
+        ];
 
         if ($unset_legend !== false) {
             unset($online_ary[$unset_legend]);
@@ -219,10 +215,10 @@ class community {
                 continue;
             }
 
-            _style($block . '.legend.item', array(
+            _style($block . '.legend.item', [
                 'L_MEMBERS'    => lang($lk . (($vk != 1) ? '2' : '')),
-                'ONLINE_VALUE' => $vk)
-            );
+                'ONLINE_VALUE' => $vk
+            ]);
         }
 
         return;
@@ -245,11 +241,11 @@ class community {
 
             $profile = $comments->user_profile($row);
 
-            _style('birthday.row', array(
+            _style('birthday.row', [
                 'USERNAME' => $profile['username'],
                 'PROFILE'  => $profile['profile'],
-                'AVATAR'   => $profile['user_avatar'])
-            );
+                'AVATAR'   => $profile['user_avatar']
+            ]);
         }
 
         return true;
@@ -268,10 +264,10 @@ class community {
         foreach ($result as $i => $row) {
             if (!$i) _style('recent_members');
 
-            _style('recent_members.item', array(
+            _style('recent_members.item', [
                 'USERNAME' => $row['username'],
-                'PROFILE'  => s_link('m', $row['username_base']))
-            );
+                'PROFILE'  => s_link('m', $row['username_base'])
+            ]);
         }
 
         return true;

@@ -1,4 +1,5 @@
-<?php
+<?php namespace App;
+
 /**
  * Unzip the source_file in the destination dir
  *
@@ -10,7 +11,6 @@
  *
  * @return  boolean     Succesful or not
  */
-namespace App;
 
 function unzip($src_file, $dest_dir = false, $create_zip_name_dir = true, $overwrite = true) {
     if (!@function_exists("zip_open")) {

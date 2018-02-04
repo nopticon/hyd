@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class __artist_lyric_create extends mac {
     public function __construct() {
@@ -21,7 +20,11 @@ class __artist_lyric_create extends mac {
     }
 
     private function create() {
-        $v = _request(array('title' => '', 'author' => '', 'text' => ''));
+        $v = _request([
+            'title'  => '',
+            'author' => '',
+            'text'   => ''
+        ]);
 
         if (_empty($v)) {
             return;

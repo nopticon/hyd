@@ -1,5 +1,5 @@
-<?php
-namespace App;
+<?php namespace App;
+
 
 class Emoticons {
     private $default_title = 'EMOTICONS';
@@ -30,14 +30,11 @@ class Emoticons {
         }
 
         foreach ($smilies as $smile_url => $data) {
-            _style(
-                'smilies_row',
-                array(
-                    'CODE'  => $data['code'],
-                    'IMAGE' => config('assets_url') . '/emoticon/' . $data['smile_url'],
-                    'DESC'  => $data['emoticon']
-                )
-            );
+            _style('smilies_row', [
+                'CODE'  => $data['code'],
+                'IMAGE' => config('assets_url') . '/emoticon/' . $data['smile_url'],
+                'DESC'  => $data['emoticon']
+            ]);
         }
 
         return;

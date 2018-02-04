@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class __news_modify extends mac {
     public function __construct() {
@@ -47,15 +46,12 @@ class __news_modify extends mac {
             }
 
             if (_button()) {
-                _style(
-                    'edit',
-                    array(
-                        'ID'      => $news_data['news_id'],
-                        'SUBJECT' => $news_data['post_subject'],
-                        'DESC'    => $news_data['post_desc'],
-                        'TEXT'    => $news_data['post_text']
-                    )
-                );
+                _style('edit', [
+                    'ID'      => $news_data['news_id'],
+                    'SUBJECT' => $news_data['post_subject'],
+                    'DESC'    => $news_data['post_desc'],
+                    'TEXT'    => $news_data['post_text']
+                ]);
             }
         }
 

@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class __event_delete extends mac {
     public function __construct() {
@@ -15,7 +14,9 @@ class __event_delete extends mac {
             return;
         }
 
-        $v = _request(array('event' => 0));
+        $v = _request([
+            'event' => 0
+        ]);
 
         $sql = 'SELECT *
             FROM _events

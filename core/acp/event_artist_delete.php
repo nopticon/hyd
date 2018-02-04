@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class __event_artist_delete extends mac {
     public function __construct() {
@@ -32,14 +31,11 @@ class __event_artist_delete extends mac {
                 _style('events');
             }
 
-            _style(
-                'events.row',
-                array(
-                    'ID'    => $row['id'],
-                    'TITLE' => $row['title'],
-                    'DATE'  => $user->format_date($row['date'])
-                )
-            );
+            _style('events.row', [
+                'ID'    => $row['id'],
+                'TITLE' => $row['title'],
+                'DATE'  => $user->format_date($row['date'])
+            ]);
         }
 
         return;
@@ -49,7 +45,9 @@ class __event_artist_delete extends mac {
     Remove selected events from this artist.
     */
     private function remove() {
-        $v = _request(array('event' => 0));
+        $v = _request([
+            'event' => 0
+        ]);
 
         if (_empty($v)) {
             return;

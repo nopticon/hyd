@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class __user_mass_delete extends mac {
     public function __construct() {

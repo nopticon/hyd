@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class __artist_auth extends mac {
     public function __construct() {
@@ -38,17 +37,14 @@ class __artist_auth extends mac {
                 $delete = ($total > 1 && $prof['user_id'] != $user->d('user_id'));
                 $delete = $delete || ($user->is('founder') && $prof['user_id'] != $user->d('user_id'));
 
-                _style(
-                    'members.row',
-                    array(
-                        'USER_ID'  => $prof['user_id'],
-                        'PROFILE'  => $prof['profile'],
-                        'USERNAME' => $prof['username'],
-                        'AVATAR'   => $prof['user_avatar'],
-                        'DELETE'   => $delete,
-                        'CHECK'    => ($total == 1 && $unique)
-                    )
-                );
+                _style('members.row', [
+                    'USER_ID'  => $prof['user_id'],
+                    'PROFILE'  => $prof['profile'],
+                    'USERNAME' => $prof['username'],
+                    'AVATAR'   => $prof['user_avatar'],
+                    'DELETE'   => $delete,
+                    'CHECK'    => ($total == 1 && $unique)
+                ]);
             }
         }
 
@@ -61,15 +57,12 @@ class __artist_auth extends mac {
     private function create() {
         global $user;
 
-        $v = _request(array('s_member' => ''));
+        $v = _request(['s_member' => '']);
 
         if (!$v->s_member) {
-            _style(
-                'no_members',
-                array(
-                    'MESSAGE' => lang('control_a_auth_add_nomatch')
-                )
-            );
+            _style('no_members', [
+                'MESSAGE' => lang('control_a_auth_add_nomatch')
+            ]);
 
             return;
         }
@@ -85,12 +78,9 @@ class __artist_auth extends mac {
             WHERE username = ?
                 AND user_type NOT IN (??)';
         if (!$member = sql_fieldrow(sql_filter($sql, $v->s_member, $ignore))) {
-            _style(
-                'no_members',
-                array(
-                    'MESSAGE' => lang('control_a_auth_add_nomatch')
-                )
-            );
+            _style('no_members', [
+                'MESSAGE' => lang('control_a_auth_add_nomatch')
+            ]);
 
             return;
         }
@@ -100,12 +90,9 @@ class __artist_auth extends mac {
             WHERE ub = ?
                 AND user_id = ?';
         if (sql_field(sql_filter($sql, $this->object['ub'], $member['user_id']), 'user_id', 0)) {
-            _style(
-                'no_members',
-                array(
-                    'MESSAGE' => lang('control_a_auth_add_nomatch')
-                )
-            );
+            _style('no_members', [
+                'MESSAGE' => lang('control_a_auth_add_nomatch')
+            ]);
 
             return;
         }
@@ -113,19 +100,19 @@ class __artist_auth extends mac {
         /*
         Authorize the selected user to this artist.
         */
-        $sql_insert = array(
+        $sql_insert = [
             'ub'      => $this->object['ub'],
             'user_id' => $member['user_id']
-        );
+        ];
         sql_insert('artists_auth', $sql_insert);
 
         /*
         Update information about the user with new rank.
         */
-        $update = array(
-            'user_type' => USER_ARTIST,
+        $update = [
+            'user_type'         => USER_ARTIST,
             'user_auth_control' => 1
-        );
+        ];
 
         if (!$member['user_rank']) {
             $update['user_rank'] = config('default_a_rank');
@@ -149,7 +136,7 @@ class __artist_auth extends mac {
         /*
         Back to auth home
         */
-        return redirect(s_link('acp', array('artist_auth', 'a' => $this->object['subdomain'])));
+        return redirect(s_link('acp', ['artist_auth', 'a' => $this->object['subdomain']]));
     }
 
     /*
@@ -158,7 +145,7 @@ class __artist_auth extends mac {
     private function remove() {
         global $user;
 
-        $auth_url = s_link('acp', array('artist_auth', 'a' => $this->object['subdomain']));
+        $auth_url = s_link('acp', ['artist_auth', 'a' => $this->object['subdomain']]);
 
         if (_button('cancel')) {
             redirect($auth_url);
@@ -168,7 +155,7 @@ class __artist_auth extends mac {
         $confirm = _button('confirm');
 
         if ($submit || $confirm) {
-            $result = request_var('s_members', array(0));
+            $result = request_var('s_members', [0]);
 
             if (sizeof($result)) {
                 $sql = 'SELECT m.user_id, m.username, m.user_rank
@@ -244,16 +231,16 @@ class __artist_auth extends mac {
             $list = '';
             foreach ($result as $row) {
                 $list .= (($list != '') ? ', ' : '') . $row['username'];
-                $result_hidden .= s_hidden(array('s_members[]' => $row['user_id']));
+                $result_hidden .= s_hidden(['s_members[]' => $row['user_id']]);
             }
 
             $message = count($result) == 1 ? '2' : '';
 
-            $layout_vars = array(
+            $layout_vars = [
                 'MESSAGE_TEXT'     => sprintf(lang('acp_artist_auth_delete' . $message), $this->object['name'], $list),
-                'S_CONFIRM_ACTION' => s_link('acp', array('artist_auth', 'a' => $this->object['subdomain'])),
+                'S_CONFIRM_ACTION' => s_link('acp', ['artist_auth', 'a' => $this->object['subdomain']]),
                 'S_HIDDEN_FIELDS'  => $result_hidden
-            );
+            ];
 
             page_layout('ACP_ARTIST_AUTH', 'confirm', $layout_vars);
         }

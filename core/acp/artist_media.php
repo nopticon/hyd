@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class __artist_media extends mac {
     public function __construct() {
@@ -31,18 +30,15 @@ class __artist_media extends mac {
                     _style('media');
                 }
 
-                _style(
-                    'media.row',
-                    array(
-                        'ITEM'           => $row['id'],
-                        'URL'            => s_link('a', $this->object['subdomain'], 9, $row['id']),
-                        'POSTS_URL'      => s_link('a', $this->object['subdomain'], 9, $row['id']) . '#dpf',
-                        'IMAGE_TYPE'     => $downloads_type[$row['ud']],
-                        'DOWNLOAD_TITLE' => $row['title'],
-                        'VIEWS'          => $row['views'],
-                        'DOWNLOADS'      => $row['downloads']
-                    )
-                );
+                _style('media.row', [
+                    'ITEM'           => $row['id'],
+                    'URL'            => s_link('a', $this->object['subdomain'], 9, $row['id']),
+                    'POSTS_URL'      => s_link('a', $this->object['subdomain'], 9, $row['id']) . '#dpf',
+                    'IMAGE_TYPE'     => $downloads_type[$row['ud']],
+                    'DOWNLOAD_TITLE' => $row['title'],
+                    'VIEWS'          => $row['views'],
+                    'DOWNLOADS'      => $row['downloads']
+                ]);
             }
         }
 
@@ -79,7 +75,7 @@ class __artist_media extends mac {
                     $mt->$w = (isset($tags['tags']['id3v1'][$w][0])) ? htmlencode($tags['tags']['id3v1'][$w][0]) : '';
                 }
 
-                $sql_insert = array(
+                $sql_insert = [
                     'ud'        => 1,
                     'ub'        => $this->object['ub'],
                     'alias'     => friendly($mt->title),
@@ -94,7 +90,7 @@ class __artist_media extends mac {
                     'genre'     => $mt->genre,
                     'album'     => $mt->album,
                     'year'      => $mt->year
-                );
+                ];
                 $media_id = sql_insert('dl', $sql_insert);
             }
 
@@ -104,14 +100,11 @@ class __artist_media extends mac {
 
             $cache->delete('downloads_list');
 
-            redirect(s_link('acp', array('artist_media', 'a' => $this->object['subdomain'], 'id' => $media_id)));
+            redirect(s_link('acp', ['artist_media', 'a' => $this->object['subdomain'], 'id' => $media_id]));
         } else {
-            _style(
-                'error',
-                array(
-                    'MESSAGE' => parse_error($upload->error)
-                )
-            );
+            _style('error', [
+                'MESSAGE' => parse_error($upload->error)
+            ]);
         }
 
         return;
@@ -120,7 +113,7 @@ class __artist_media extends mac {
     private function remove() {
         global $cache;
 
-        $remove = request_var('s_downloads', array(0));
+        $remove = request_var('s_downloads', [0]);
 
         if (!count($remove)) {
             return;
@@ -143,7 +136,7 @@ class __artist_media extends mac {
                 $cache->delete('downloads_list');
             }
 
-            redirect(s_link('acp', array('artist_media', 'a' => $this->object['subdomain'])));
+            redirect(s_link('acp', ['artist_media', 'a' => $this->object['subdomain']]));
         }
 
         return;

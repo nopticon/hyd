@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class __user_delete extends mac {
     public function __construct() {
@@ -25,7 +24,7 @@ class __user_delete extends mac {
             fatal_error();
         }
 
-        $ary_sql = array(
+        $ary_sql = [
             'DELETE FROM _members WHERE user_id = ?',
             'DELETE FROM _banlist WHERE ban_userid = ?',
             'DELETE FROM _members_group WHERE user_id = ?',
@@ -45,19 +44,19 @@ class __user_delete extends mac {
             'UPDATE _events_posts SET poster_id = 1 WHERE poster_id = ?',
             'UPDATE _forum_posts SET poster_id = 1 WHERE poster_id = ?',
             'UPDATE _forum_topics SET topic_poster = 1 WHERE topic_poster = ?'
-        );
+        ];
 
         $sql = w();
         foreach ($ary_sql as $row) {
             $sql[] = sql_filter($row, $userdata['user_id']);
         }
 
-        $ary_sql = array(
+        $ary_sql = [
             'DELETE FROM _members_ban WHERE user_id = ? OR banned_user = ?',
             'DELETE FROM _members_friends WHERE user_id = ? OR buddy_id = ?',
             'DELETE FROM _members_ref_assoc WHERE ref_uid = ? OR ref_orig = ?',
-            'DELETE FROM _members_viewers WHERE viewer_id = ? OR user_id = ?',
-        );
+            'DELETE FROM _members_viewers WHERE viewer_id = ? OR user_id = ?'
+        ];
 
         foreach ($ary_sql as $row) {
             $sql[] = sql_filter($row, $userdata['user_id'], $userdata['user_id']);

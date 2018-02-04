@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 // Cache filenames prefix
 define('XS_TPL_PREFIX', 'tpl_');

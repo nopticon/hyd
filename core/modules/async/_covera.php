@@ -1,10 +1,9 @@
-<?php
-namespace App;
+<?php namespace App;
 
 $artists = new Artists();
 $artists->get_data();
 
-$a_ary = array();
+$a_ary = [];
 for ($i = 0; $i < 4; $i++) {
     $_a = array_rand($artists->adata);
     if (!$artists->adata[$_a]['images'] || isset($a_ary[$_a])) {
@@ -21,7 +20,7 @@ if (sizeof($a_ary)) {
         ORDER BY RAND()';
     $result = sql_rowset(sql_filter($sql, implode(',', array_keys($a_ary))));
 
-    $random_images = array();
+    $random_images = [];
     foreach ($result as $row) {
         if (!isset($random_images[$row['ub']])) {
             $random_images[$row['ub']] = $row['image'];

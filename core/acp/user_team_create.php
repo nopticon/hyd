@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class __user_team_create extends mac {
     public function __construct() {
@@ -22,13 +21,10 @@ class __user_team_create extends mac {
                     _style('team');
                 }
 
-                _style(
-                    'team.row',
-                    array(
-                        'TEAM_ID'   => $row['team_id'],
-                        'TEAM_NAME' => $row['team_name']
-                    )
-                );
+                _style('team.row', [
+                    'TEAM_ID'   => $row['team_id'],
+                    'TEAM_NAME' => $row['team_name']
+                ]);
             }
 
             return false;
@@ -72,12 +68,12 @@ class __user_team_create extends mac {
         }
 
         if ($insert) {
-            $insert = array(
+            $insert = [
                 'team_id'    => $team,
                 'member_id'  => $userdata['user_id'],
                 'real_name'  => $realname,
                 'member_mod' => $ismod
-            );
+            ];
             sql_insert('team_members', $insert);
         }
 

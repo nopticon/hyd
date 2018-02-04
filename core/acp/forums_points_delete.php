@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class __forims_points_delete extends mac {
     public function __construct() {
@@ -26,12 +25,9 @@ class __forims_points_delete extends mac {
                 _style('topics');
             }
 
-            _style(
-                'topics.rows',
-                array(
-                    'NAME' => $row['exclude_topic']
-                )
-            );
+            _style('topics.rows', [
+                'NAME' => $row['exclude_topic']
+            ]);
         }
 
         return;

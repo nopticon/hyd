@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class __artist_delete extends mac {
     public function __construct() {
@@ -57,7 +56,7 @@ class __artist_delete extends mac {
             $d_sql[] = sql_filter($sql, _implode(',', $mods));
         }
 
-        $ary_sql = array(
+        $ary_sql = [
             'DELETE FROM _artists WHERE ub = ?',
             'DELETE FROM _artists_auth WHERE ub = ?',
             'DELETE FROM _artists_fav WHERE ub = ?',
@@ -71,7 +70,7 @@ class __artist_delete extends mac {
             'DELETE FROM _artists_votes WHERE ub = ?',
             'DELETE FROM _forum_topics WHERE topic_ub = ?',
             'DELETE FROM _dl WHERE ub = ?'
-        );
+        ];
         $d_sql = sql_filter($ary_sql, $a_data['ub']);
 
         $sql = 'SELECT topic_id
@@ -86,12 +85,12 @@ class __artist_delete extends mac {
             FROM _dl
             WHERE ub = ?';
         if ($downloads = sql_rowset(sql_filter($sql, $a_data['ub']), false, 'id')) {
-            $ary_sql = array(
+            $ary_sql = [
                 'DELETE FROM _dl_fav WHERE dl_id IN (??)',
                 'DELETE FROM _dl_posts WHERE download_id IN (??)',
                 'DELETE FROM _dl_vote WHERE ud IN (??)',
                 'DELETE FROM _dl_voters WHERE ud IN (??)'
-            );
+            ];
             $d_sql = array_merge($d_sql, sql_filter($ary_sql, _implode(',', $downloads)));
         }
 

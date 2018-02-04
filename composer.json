@@ -25,6 +25,7 @@
 		"mailgun/mailgun-php": "^2.1",
 		"php-http/curl-client": "^1.6",
 		"guzzlehttp/psr7": "^1.3",
-		"james-heinrich/getid3": "^1.9"
+		"james-heinrich/getid3": "^1.9",
+		"sentry/sentry": "^1.9@dev"
 	}
 }

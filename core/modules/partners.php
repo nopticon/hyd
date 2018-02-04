@@ -1,9 +1,8 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class Partners {
     private $default_title = 'PARTNERS';
-    private $default_view = 'partners';
+    private $default_view  = 'partners';
 
     public function __construct() {
         return;
@@ -28,14 +27,11 @@ class Partners {
                 _style('partners');
             }
 
-            _style(
-                'partners.row',
-                array(
-                    'NAME'  => $row['partner_name'],
-                    'IMAGE' => $row['partner_image'],
-                    'URL'   => config('assets_url') . '/style/sites/' . $row['partner_url']
-                )
-            );
+            _style('partners.row', [
+                'NAME'  => $row['partner_name'],
+                'IMAGE' => $row['partner_image'],
+                'URL'   => config('assets_url') . '/style/sites/' . $row['partner_url']
+            ]);
         }
 
         return;

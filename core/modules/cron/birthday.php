@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 $max_email = 10;
 @set_time_limit(120);
@@ -16,8 +15,8 @@ $sql = "SELECT *
     LIMIT ??";
 $result = sql_rowset(sql_filter($sql, USER_INACTIVE, date('md'), YEAR, $max_email));
 
-$done = array();
-$usernames = array();
+$done      = [];
+$usernames = [];
 
 foreach ($result as $row) {
     $emailer->from('notify');
@@ -28,11 +27,10 @@ foreach ($result as $row) {
         $emailer->cc($row['user_public_email']);
     }
 
-    $emailer->assign_vars(
-        array(
-            'USERNAME' => $row['username']
-        )
-    );
+    $emailer->assign_vars([
+        'USERNAME' => $row['username']
+    ]);
+
     $emailer->send();
     $emailer->reset();
 

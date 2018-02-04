@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class Media extends common {
     public $no = true;

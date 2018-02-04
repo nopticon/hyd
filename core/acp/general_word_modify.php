@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class __general_word_modify extends mac {
     public function __construct() {

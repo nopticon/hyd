@@ -1,10 +1,9 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class mac {
     public $_access;
     public $url;
-    public $tv = array();
+    public $tv = [];
 
     protected $object;
 
@@ -47,7 +46,7 @@ class mac {
 
         $artist = request_var('a', '');
         $module = request_var('module', '');
-        $url    = s_link('acp', array('artist_select', 'r' => $module));
+        $url    = s_link('acp', ['artist_select', 'r' => $module]);
 
         if (empty($artist)) {
             redirect($url);
@@ -57,12 +56,10 @@ class mac {
             fatal_error();
         }
 
-        v_style(
-            array(
-                'ARTIST_SELECT' => $url,
-                'ARTIST_NAME'   => $this->object['name']
-            )
-        );
+        v_style([
+            'ARTIST_SELECT' => $url,
+            'ARTIST_NAME'   => $this->object['name']
+        ]);
 
         return;
     }
@@ -137,9 +134,9 @@ class _acp {
             $module->template = 'acp/' . $this->module;
         }
 
-        $local_tv = array(
+        $local_tv = [
             'MODULE_URL' => $module->url
-        );
+        ];
 
         if (isset($module->tv)) {
             $local_tv = array_merge($local_tv, $module->tv);
@@ -195,14 +192,11 @@ class _acp {
                     break;
                 }
 
-                _style(
-                    'acp_list.row',
-                    array(
-                        'URL'   => s_link('acp', $acp_alias),
-                        'NAME'  => lang('ACP_' . $acp_alias, $acp_alias),
-                        'IMAGE' => $acp_alias
-                    )
-                );
+                _style('acp_list.row', [
+                    'URL'   => s_link('acp', $acp_alias),
+                    'NAME'  => lang('ACP_' . $acp_alias, $acp_alias),
+                    'IMAGE' => $acp_alias
+                ]);
 
                 $i++;
             }

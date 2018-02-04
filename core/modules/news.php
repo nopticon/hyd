@@ -1,8 +1,7 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class News {
-    private $data = array();
+    private $data = [];
     private $template;
     private $title;
 
@@ -63,7 +62,7 @@ class News {
                     $news_text    = '';
                     $news_desc    = '';
 
-                    $sql_insert = array(
+                    $sql_insert = [
                         'news_fbid'    => 0,
                         'cat_id'       => '',
                         'news_active'  => $mews_active,
@@ -79,7 +78,7 @@ class News {
                         'post_time'    => time(),
                         'post_ip'      => $user->ip,
                         'image'        => ''
-                    );
+                    ];
                     $news_id = sql_insert('news', $sql_insert);
                 }
 
@@ -93,13 +92,10 @@ class News {
                         _style('news_cat');
                     }
 
-                    _style(
-                        'news_cat.row',
-                        array(
-                            'CAT_ID'   => $row['cat_id'],
-                            'CAT_NAME' => $row['cat_name']
-                        )
-                    );
+                    _style('news_cat.row', [
+                        'CAT_ID'   => $row['cat_id'],
+                        'CAT_NAME' => $row['cat_name']
+                    ]);
                 }
                 break;
         }
@@ -119,17 +115,14 @@ class News {
                 _style('cat');
             }
 
-            _style(
-                'cat.row',
-                array(
-                    'URL'      => s_link('news', $row['news_alias']),
-                    'SUBJECT'  => $row['post_subject'],
-                    'DESC'     => $row['post_desc'],
-                    'TIME'     => $user->format_date($row['post_time'], 'd M'),
-                    'USERNAME' => $row['username'],
-                    'PROFILE'  => s_link('m', $row['username_base'])
-                )
-            );
+            _style('cat.row', [
+                'URL'      => s_link('news', $row['news_alias']),
+                'SUBJECT'  => $row['post_subject'],
+                'DESC'     => $row['post_desc'],
+                'TIME'     => $user->format_date($row['post_time'], 'd M'),
+                'USERNAME' => $row['username'],
+                'PROFILE'  => s_link('m', $row['username_base'])
+            ]);
         }
 
         return;
@@ -146,10 +139,10 @@ class News {
             sql_query(sql_filter($sql, $this->data['news_id']));
         }
 
-        $news_main = array(
+        $news_main = [
             'MESSAGE'   => $comments->parse_message($this->data['post_text']),
             'POST_TIME' => $user->format_date($this->data['post_time'])
-        );
+        ];
 
         $sql = 'SELECT user_id, username, username_base, user_avatar, user_posts, user_gender, user_rank
             FROM _members
@@ -176,32 +169,27 @@ class News {
                 ORDER BY p.post_time DESC
                 LIMIT ??, ??';
 
-            $comments->data = array(
+            $comments->data = [
                 'SQL' => sql_filter($sql, $this->data['news_id'], $offset, config('posts_per_page'))
-            );
+            ];
 
             $comments->view($offset, 'ps', $this->data['post_replies'], config('posts_per_page'), '', '', 'TOPIC_');
         }
 
-        v_style(
-            array(
-                'CAT_URL'      => s_link('news', $this->data['cat_url']),
-                'CAT_NAME'     => $this->data['cat_name'],
-                'POST_SUBJECT' => $this->data['post_subject'],
-                'POST_REPLIES' => number_format($this->data['post_replies'])
-            )
-        );
+        v_style([
+            'CAT_URL'      => s_link('news', $this->data['cat_url']),
+            'CAT_NAME'     => $this->data['cat_name'],
+            'POST_SUBJECT' => $this->data['post_subject'],
+            'POST_REPLIES' => number_format($this->data['post_replies'])
+        ]);
 
         //
         // Posting box
         //
         if ($user->is('member')) {
-            _style(
-                'publish',
-                array(
-                    'REF' => $comments_ref
-                )
-            );
+            _style('publish', [
+                'REF' => $comments_ref
+            ]);
         }
 
         $this->template = 'news.view';

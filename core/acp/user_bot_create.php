@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class __user_bot_create extends mac {
     public function __construct() {
@@ -36,23 +35,23 @@ class __user_bot_create extends mac {
         }
 
         if ($insert) {
-            $insert_member = array(
+            $insert_member = [
                 'user_type'     => 2,
                 'user_active'   => 1,
                 'username'      => $bot_name,
                 'username_base' => $bot_base,
                 'user_timezone' => -6.00,
                 'user_lang'     => 'spanish'
-            );
+            ];
             $bot_id = sql_insert('members', $insert_member);
 
-            $insert_bot = array(
+            $insert_bot = [
                 'bot_active' => 1,
                 'bot_name'   => $bot_name,
                 'user_id'    => $bot_id,
                 'bot_agent'  => $bot_agent,
                 'bot_ip'     => $bot_ip,
-            );
+            ];
             sql_insert('bots', $insert_bot);
         }
 

@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class __news_category_move extends mac {
     public function __construct() {
@@ -22,13 +21,10 @@ class __news_category_move extends mac {
                     _style('categories');
                 }
 
-                _style(
-                    'categories.row',
-                    array(
-                        'CAT_ID'   => $row['cat_id'],
-                        'CAT_NAME' => $row['cat_name']
-                    )
-                );
+                _style('categories.row', [
+                    'CAT_ID'   => $row['cat_id'],
+                    'CAT_NAME' => $row['cat_name']
+                ]);
             }
 
             return false;

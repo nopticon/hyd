@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 /**
 * Base user class

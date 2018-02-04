@@ -1,23 +1,27 @@
-<?php
-namespace App;
+<?php namespace App;
+
+use mysqli;
+// use mysqli_sql_exception;
 
 class Database extends DatabaseCommon {
     public function __construct($d = false) {
+        global $env_config;
+
         $this->login($d);
+        // mysqli_report($env_config['sentry_errors']);
 
-        $this->connect = new \mysqli(
-            $this->login['server'],
-            $this->login['login'],
-            $this->login['secret'],
-            $this->login['database']
-        );
+        // try {
+            $this->connect = new mysqli(
+                $this->login['server'],
+                $this->login['login'],
+                $this->login['secret'],
+                $this->login['database']
+            );
+        // } catch (mysqli_sql_exception $e) {
+        //     sentry_log($e);
+        //     exit;
+        // }
 
-        if ($this->connect->connect_error) {
-            $format = 'Failed to connect to MySQL: (%s) %s<br />';
-            echo sprintf($format, $this->connect->connect_errno, $this->connect->connect_error);
-
-            exit('330');
-        }
         unset($this->login);
 
         return true;
@@ -466,7 +470,11 @@ class Database extends DatabaseCommon {
 
         if (!$this->noerror) {
             $br = "\n\n";
-            fatal_error('mysql', $sql . $br . $sql_error . $br . $sql_errno);
+            fatal_error('mysql', $sql . $br . $sql_error . $br . $sql_errno, [
+                'sql'     => $sql,
+                'message' => $sql_error,
+                'error'   => $sql_errno
+            ]);
         }
 
         return array('message' => $sql_error, 'code' => $sql_errno);

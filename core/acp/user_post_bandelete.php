@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class __user_post_bandelete extends mac {
     public function __construct() {
@@ -37,7 +36,9 @@ class __user_post_bandelete extends mac {
                 FROM _banlist
                 WHERE ban_userid = ?';
             if (!$row = sql_fieldrow(sql_filter($sql, $d['poster_id']))) {
-                sql_insert('banlist', array('ban_userid' => $d['poster_id']));
+                sql_insert('banlist', [
+                    'ban_userid' => $d['poster_id']
+                ]);
             }
         }
 
@@ -46,9 +47,9 @@ class __user_post_bandelete extends mac {
                 FROM _banlist
                 WHERE ban_ip = ?';
             if (!$row = sql_fieldrow(sql_filter($sql, $d['post_ip']))) {
-                $sql_insert = array(
+                $sql_insert = [
                     'ban_ip' => $d['post_ip']
-                );
+                ];
                 sql_insert('banlist', $sql_insert);
             }
         }

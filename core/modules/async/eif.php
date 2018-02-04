@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 $event_id = request_var('event_id', 0);
 $image_id = request_var('image_id', 0);

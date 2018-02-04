@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class __forum_order extends mac {
     public function __construct() {
@@ -22,19 +21,16 @@ class __forum_order extends mac {
                     _style('forums');
                 }
 
-                _style(
-                    'forums.row',
-                    array(
-                        'FORUM_ID'   => $row['forum_id'],
-                        'FORUM_NAME' => $row['forum_name']
-                    )
-                );
+                _style('forums.row', [
+                    'FORUM_ID'   => $row['forum_id'],
+                    'FORUM_NAME' => $row['forum_name']
+                ]);
             }
 
             return false;
         }
 
-        $list = request_var('listContainer', array(0));
+        $list = request_var('listContainer', [0]);
 
         $orderid = 10;
         foreach ($list as $catid) {

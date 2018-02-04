@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 function htmlencode($str, $multibyte = false) {
     $nr = nr();
@@ -765,7 +764,7 @@ function build_num_pagination($url_format, $total_items, $per_page, $offset, $pr
 function obtain_bots(&$bots) {
     global $cache;
 
-    if (!$bots = $cache->get('bots')) {
+    if (!$bots = $cache->get('bots', [])) {
         $sql = 'SELECT user_id, bot_agent, bot_ip
             FROM _bots
             WHERE bot_active = 1';
@@ -970,6 +969,10 @@ function _pre($a, $d = false) {
     }
 }
 
+function dd($mixed, $halt = false) {
+    return _pre($mixed, $halt);
+}
+
 function email_format($email) {
     if (preg_match('/^[a-z0-9&\'\.\-_\+]+@[a-z0-9\-]+\.([a-z0-9\-]+\.)*?[a-z]+$/is', $email)) {
         return true;
@@ -1051,77 +1054,37 @@ function lang_count($one, $more, $count) {
     return ($count == 1) ? lang($one) : lang($more);
 }
 
-function fatal_error($mode = '404', $message = '') {
+function fatal_error($mode = '404', $message = '', $extra = []) {
     global $user;
 
-    $current_page = parse_url(_page());
-    $current_page = isset($current_page['path']) ? $current_page['path'] : '/';
+    $page = parse_url(_page());
 
-    $error        = 'La p&aacute;gina <strong>' . $current_page . '</strong> ';
-    $username     = @method_exists($user, 'd') ? $user->d('username') : '';
-    $message     .= nr(false, 2) . $current_page . nr(false, 2) . $username;
+    $extra = array_merge($extra, [
+        'page'     => isset($page['path']) ? $page['path'] : '/',
+        'username' => method_exists($user, 'd') ? $user->d('username') : '',
+        'ip'       => isset($user->ip) ? $user->ip : ''
+    ]);
 
     switch ($mode) {
         case 'mysql':
-            if (config('default_lang') && isset($user->lang)) {
-                // Send email notification
-                $emailer = new emailer();
-
-                $emailer->from('info');
-                $emailer->set_subject('MySQL error');
-                $emailer->use_template('mcp_delete', config('default_lang'));
-                $emailer->email_address('info');
-
-                $emailer->assign_vars(
-                    array(
-                        'MESSAGE' => $message,
-                        'TIME'    => $user->format_date(time(), 'r')
-                    )
-                );
-                $emailer->send();
-                $emailer->reset();
-            }
-
-            $title  = 'Error del sistema';
-            $error .= 'tiene un error';
+            sentry_message($extra['message'], $extra);
             break;
         case '600':
-            $title  = 'Origen inv&aacute;lido';
-            $error .= 'no puede ser accesada porque no se reconoce su IP de origen.';
-
-            @error_log('[php client empty ip] File does not exist: ' . $current_page, 0);
+            sentry_message('Invalid IP', $extra);
             break;
         default:
-            $title       = 'Archivo no encontrado';
-            $error      .= 'no existe';
-            $message  = '';
-
-            status("404 Not Found");
-
-            $log = '[php client %s %s] File does not exist: %s';
-            $user = $user->d('username') ? ' - ' . $user->d('username') : '';
-            $ip = isset($user->ip) ? $user->ip : '';
-
-            @error_log(sprintf($log, $ip, $user, $current_page), 0);
+            status('404 Not Found');
+            sentry_message('404: ' . $extra['path'], $extra);
             break;
-    }
-
-    if ($mode != '600') {
-        $error .= ', puedes regresar a<br /><a href="/">p&aacute;gina de inicio de Rock Republik</a>.';
-
-        // if (!empty($message)) {
-        //     $error .= '<br /><br />' . $message;
-        // }
     }
 
     sql_close();
 
-    $replaces = array(
-        'PAGE_TITLE'   => $title,
-        'PAGE_MESSAGE' => $error
-    );
+    echo exception('error', [
+        'PAGE_TITLE'   => 'No disponible',
+        'PAGE_MESSAGE' => 'La p&aacute;gina no se puede mostrar en este momento.'
+    ]);
 
-    echo exception('error', $replaces);
     exit;
 }
 
@@ -1130,17 +1093,37 @@ function status($message) {
     header("Status: " . $message);
 }
 
+function sentry_log ($ex) {
+    global $sentryClient;
+
+    $sentryClient->captureException($ex);
+}
+
+function sentry_message ($message, $extra = []) {
+    global $sentryClient;
+
+    $sentryClient->captureMessage($message, ['log'], [
+        'extra' => $extra
+    ]);
+}
+
 function msg_handler($errno, $msg_text, $errfile, $errline) {
     global $template, $user, $auth, $cache, $starttime;
 
     switch ($errno) {
         case E_NOTICE:
         case E_WARNING:
-            $format = '<b>PHP Notice</b>: in file <b>%s</b> on line <b>%s</b>: <b>%s</b><br>';
-            echo sprintf($format, $errfile, $errline, $msg_text);
+            sentry_message('Notice on ' . $errfile, [
+                'message' => $msg_text,
+                'file'    => $errfile,
+                'code'    => $errno,
+                'line'    => $errline
+            ]);
             break;
         case E_USER_ERROR:
             sql_close();
+
+            sentry_message($msg_text);
 
             fatal_error('mysql', $msg_text);
             break;
@@ -1156,6 +1139,8 @@ function msg_handler($errno, $msg_text, $errfile, $errline) {
                 $template->set_template(ROOT . 'template');
             }
 
+            sentry_message($msg_text);
+
             $custom_vars = array(
                 'MESSAGE_TITLE' => lang('information'),
                 'MESSAGE_TEXT'  => lang($msg_text, $msg_text)
@@ -1164,6 +1149,7 @@ function msg_handler($errno, $msg_text, $errfile, $errline) {
             page_layout('INFORMATION', 'message', $custom_vars);
             break;
         default:
+            sentry_message($msg_text);
             // $format = '<b>Another Error</b>: in file <b>%s</b> on line <b>%s</b>: <b>%s</b><br>';
             // echo sprintf($format, basename($$errfile), $errline, $msg_text);
             break;
@@ -1225,7 +1211,7 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
     // gzip_compression
     //
     if (strstr($user->browser, 'compatible') || strstr($user->browser, 'Gecko')) {
-        ob_start('ob_gzhandler');
+        // ob_start('ob_gzhandler');
     }
 
     // monetize();
@@ -1829,22 +1815,13 @@ function get_user_avatar($name, $user_id = GUEST, $format = '', $abs_path = fals
     $path_1 = $abs_path ? config('avatar_path') : config('avatar_url');
     $path_2 = $abs_path ? config('assets_path') : config('assets_url');
 
-    switch ($user_id) {
-        case GUEST:
-            $path_1 = $path_2;
-            $value = 'avatar.gif';
-            break;
-        default:
-            if (empty($name)) {
-                $path_1 = $path_2;
-                $name = 'avatar.gif';
-            }
+    $avatar = $path_2 . 'avatar.gif';
 
-            $value = $name . $format;
-            break;
+    if ($user_id !== GUEST && !empty($name)) {
+        $avatar = $path_1 . $name . $format;
     }
 
-    return $path_1 . $value;
+    return $avatar;
 }
 
 function etag($filename, $quote = true) {
@@ -1903,7 +1880,7 @@ function show_exception($name) {
 }
 
 function setAppCookie($name, $value, $expires = 0) {
-    setcookie(config('cookie_name') . '_' . $name, $value, $expires, config('cookie_path'), config('cookie_domain'));
+    setcookie(config('cookie_name') . '_' . $name, $value, $expires, config('cookie_path'), '.' . config('server_name'));
 }
 
 function guestUsername($username) {

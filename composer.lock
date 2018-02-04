@@ -4,8 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "d06b1ad3669b3521348250f283a1dfda",
-    "content-hash": "01e205063efc749c59f8e24cb9b5396b",
+    "content-hash": "2d9b7e07a7b29551d25f12058ec47050",
     "packages": [
         {
             "name": "clue/stream-filter",
@@ -54,7 +53,7 @@
                 "stream_filter_append",
                 "stream_filter_register"
             ],
-            "time": "2015-11-08 23:41:30"
+            "time": "2015-11-08T23:41:30+00:00"
         },
         {
             "name": "composer/installers",
@@ -161,7 +160,7 @@
                 "zend",
                 "zikula"
             ],
-            "time": "2016-08-13 20:53:52"
+            "time": "2016-08-13T20:53:52+00:00"
         },
         {
             "name": "guzzlehttp/psr7",
@@ -262,7 +261,7 @@
                 "php",
                 "tags"
             ],
-            "time": "2016-03-02 13:13:30"
+            "time": "2016-03-02T13:13:30+00:00"
         },
         {
             "name": "mailgun/mailgun-php",
@@ -306,7 +305,7 @@
                 }
             ],
             "description": "The Mailgun SDK provides methods for all API functions.",
-            "time": "2016-08-10 16:58:18"
+            "time": "2016-08-10T16:58:18+00:00"
         },
         {
             "name": "php-http/curl-client",
@@ -362,7 +361,7 @@
                 "curl",
                 "http"
             ],
-            "time": "2016-09-12 14:10:21"
+            "time": "2016-09-12T14:10:21+00:00"
         },
         {
             "name": "php-http/discovery",
@@ -655,7 +654,7 @@
                 "message",
                 "stream"
             ],
-            "time": "2016-08-31 10:13:17"
+            "time": "2016-08-31T10:13:17+00:00"
         },
         {
             "name": "php-http/promise",
@@ -756,12 +755,78 @@
                 "response"
             ],
             "time": "2016-08-06 14:39:51"
+        },
+        {
+            "name": "sentry/sentry",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/getsentry/sentry-php.git",
+                "reference": "c196051d5c75c45773bb075b1f3bc761f028e2d1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/getsentry/sentry-php/zipball/c196051d5c75c45773bb075b1f3bc761f028e2d1",
+                "reference": "c196051d5c75c45773bb075b1f3bc761f028e2d1",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "php": "^5.3|^7.0"
+            },
+            "conflict": {
+                "raven/raven": "*"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^1.8.0",
+                "monolog/monolog": "*",
+                "phpunit/phpunit": "^4.8.35 || ^5.7"
+            },
+            "suggest": {
+                "ext-hash": "*",
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "monolog/monolog": "Automatically capture Monolog events as breadcrumbs"
+            },
+            "bin": [
+                "bin/sentry"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.9.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Raven_": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "David Cramer",
+                    "email": "dcramer@gmail.com"
+                }
+            ],
+            "description": "A PHP client for Sentry (http://getsentry.com)",
+            "homepage": "http://getsentry.com",
+            "keywords": [
+                "log",
+                "logging"
+            ],
+            "time": "2017-10-30 09:12:07"
         }
     ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "sentry/sentry": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

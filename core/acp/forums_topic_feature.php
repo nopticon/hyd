@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class __forums_topic_feature extends mac {
     private $id;
@@ -31,14 +30,14 @@ class __forums_topic_feature extends mac {
         $this->object->new_value = ($this->object->topic_featured) ? 0 : 1;
         topic_feature($this->id, $this->object->new_value);
 
-        $sql_insert = array(
+        $sql_insert = [
             'bio'    => $user->d('user_id'),
             'time'   => time(),
             'ip'     => $user->ip,
             'action' => 'feature',
             'old'    => $this->object->topic_featured,
             'new'    => $this->object->new_value
-        );
+        ];
         sql_insert('log_mod', $sql_insert);
 
         return redirect(s_link('topic', $this->id));

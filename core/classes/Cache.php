@@ -1,12 +1,11 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class Cache {
-    public $cache = array();
-    public $use = true;
+    public $cache = [];
+    public $use   = true;
 
     public function __construct() {
-        if (!defined('USE_CACHE')) {
+        if (defined('CACHE_NO')) {
             $this->use = false;
         }
     }
@@ -14,48 +13,42 @@ class Cache {
     public function config() {
         $sql = 'SELECT *
             FROM _application';
-        $config = sql_rowset($sql, 'config_name', 'config_value');
 
-        return $config;
+        return sql_rowset($sql, 'config_name', 'config_value');
     }
 
-    public function get($var) {
+    public function get($name, $default = []) {
         if (!$this->use) {
             return false;
         }
 
-        $filename = config('cache_path') . $var . '.php';
+        $filename = config('cache_path') . $name . '.php';
 
         if (@file_exists($filename)) {
-            if (!@include_once $filename) {
-                $this->delete($var);
-                return;
-            }
+            ob_start();
+            include_once $filename;
 
-            if (!empty($this->cache[$var])) {
-                return $this->cache[$var];
+            $content = ob_get_contents();
+            ob_end_clean();
+
+            if ($content) {
+                return json_decode($content, true);
             }
         }
 
-        return;
+        return $default;
     }
 
-    public function save($var, &$data) {
+    public function save($name, &$data) {
         if (!$this->use) {
             return;
         }
 
-        $filename = config('cache_path') . $var . '.php';
+        $filename = config('cache_path') . $name . '.php';
 
-        $fp = @fopen($filename, 'w');
-        if ($fp) {
-            $format = '<?php $' . "this->cache['%s'] = %s; ?>";
-            $var_data = is_array($data) ? $this->format($data) : "'" . $this->cleanUp($data) . "'";
-
-            $file_buffer = sprintf($format, $var, $var_data);
-
+        if ($fp = @fopen($filename, 'w')) {
             @flock($fp, LOCK_EX);
-            fputs($fp, $file_buffer);
+            fputs($fp, json_encode($data));
             @flock($fp, LOCK_UN);
             fclose($fp);
 
@@ -65,38 +58,18 @@ class Cache {
         return $data;
     }
 
-    public function delete($list) {
+    public function delete($list, $default = []) {
         if (!$this->use) {
-            return;
+            return $default;
         }
 
-        foreach (w($list) as $var) {
-            $cache_filename = config('cache_path') . $var . '.php';
+        foreach (w($list) as $name) {
+            $cache_filename = config('cache_path') . $name . '.php';
             if (file_exists($cache_filename)) {
                 _rm($cache_filename);
             }
         }
 
-        return;
-    }
-
-    public function cleanUp($str) {
-        return str_replace("'", "\\'", str_replace('\\', '\\\\', $str));
-    }
-
-    public function format($data) {
-        $lines = w();
-        foreach ($data as $k => $v) {
-            if (is_array($v)) {
-                $lines[] = "'$k'=>" . $this->format($v);
-            } elseif (is_int($v)) {
-                $lines[] = "'$k'=>$v";
-            } elseif (is_bool($v)) {
-                $lines[] = "'$k'=>" . (($v) ? 'true' : 'false');
-            } else {
-                $lines[] = "'$k'=>'" . $this->cleanUp($v) . "'";
-            }
-        }
-        return 'array(' . implode(',', $lines) . ')';
+        return $default;
     }
 }

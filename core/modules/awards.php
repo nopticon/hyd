@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class Awards {
     private $default_title = 'AWARDS';
@@ -28,13 +27,10 @@ class Awards {
         //         _style('awards');
         //     }
         //
-        //     _style(
-        //         'awards.row',
-        //         array(
-        //             'NAME' => $row['type_name'],
-        //             'DESC' => $row['type_desc']
-        //         )
-        //     );
+        //     _style('awards.row', [
+        //         'NAME' => $row['type_name'],
+        //         'DESC' => $row['type_desc']
+        //     ]);
         // }
 
         return;

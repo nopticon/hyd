@@ -1,4 +1,3 @@
-<?php
-namespace App;
+<?php namespace App;
 
 exit;

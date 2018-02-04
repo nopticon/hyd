@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 header('Content-type: text/html; charset=utf-8');
 
@@ -15,20 +14,18 @@ unset($d);
 
 $facebook_page = '48722647107';
 
-$facebook = new Facebook(
-    array(
-        'appId'  => $fbd->appid,
-        'secret' => $fbd->secret
-    )
-);
+$facebook = new Facebook([
+    'appId'  => $fbd->appid,
+    'secret' => $fbd->secret
+]);
 
 foreach (w('at') as $i => $k) {
     $htk[$k] = _decode($d[$i]);
 }
 
-$attr = array(
+$attr = [
     'access_token' => $fbd->token
-);
+];
 
 $likes = (object) $facebook->api($facebook_page);
 
@@ -41,7 +38,7 @@ $wall = $facebook->api($fbd->page . '/feed/', $attr);
 $wall_feed = array_reverse($wall['data']);
 $from_time = 1321336800;
 
-$official_posts = array();
+$official_posts = [];
 foreach ($wall_feed as $row) {
     if ($row['from']['id'] != $facebook_page) {
         continue;
@@ -72,7 +69,7 @@ foreach ($wall_feed as $row) {
             }
         }
 
-        $f = $upload->remote(config('news_path'), array($row['picture']), 'jpg png');
+        $f = $upload->remote(config('news_path'), [$row['picture']], 'jpg png');
 
         foreach ($f as $row) {
             $mini = $upload->resize(
@@ -80,7 +77,7 @@ foreach ($wall_feed as $row) {
                 config('news_path'),
                 config('news_path'),
                 1,
-                array(100, 75),
+                [100, 75],
                 false,
                 false,
                 true
@@ -94,15 +91,12 @@ foreach ($wall_feed as $row) {
         exit;
     }
 
-    /*$sql_insert = array(
-        '' => '',
-    );
-    sql_insert('news', $sql_insert);
-     *
-     * rk user (1433)
-    */
-
-
+    // $sql_insert = [
+    //     '' => '',
+    // ];
+    // sql_insert('news', $sql_insert);
+    //
+    // rk user (1433)
 
     //echo $row['created_time'] . ' ---- ' . $created_time . '<br>';
 

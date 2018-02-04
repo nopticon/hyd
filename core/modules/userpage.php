@@ -1,13 +1,11 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class Userpage {
     private $title;
     private $template;
     private $data;
-
     private $default_title = '';
-    private $default_view = '';
+    private $default_view  = '';
 
     public function __construct() {
         return;
@@ -155,19 +153,16 @@ class Userpage {
         // Start error handling
         //
         if (sizeof($error)) {
-            _style(
-                'error',
-                array(
-                    'MESSAGE' => parse_error($error)
-                )
-            );
+            _style('error', [
+                'MESSAGE' => parse_error($error)
+            ]);
 
             if ($mode == 'reply') {
                 $mode = 'read';
             }
         }
 
-        $s_hidden_fields = array();
+        $s_hidden_fields = [];
 
         switch ($mode) {
             case 'start':
@@ -188,16 +183,13 @@ class Userpage {
                     }
                 }
 
-                _style(
-                    'dc_start',
-                    array(
-                        'MEMBER'  => $member,
-                        'SUBJECT' => $dc_subject,
-                        'MESSAGE' => $dc_message
-                    )
-                );
+                _style('dc_start', [
+                    'MEMBER'  => $member,
+                    'SUBJECT' => $dc_subject,
+                    'MESSAGE' => $dc_message
+                ]);
 
-                $s_hidden_fields = array('mode' => 'start');
+                $s_hidden_fields = ['mode' => 'start'];
                 break;
             case 'read':
                 //
@@ -240,38 +232,32 @@ class Userpage {
                     WHERE user_id = ?';
                 $with_username = sql_field(sql_filter($sql, $with_user), 'username', '');
 
-                _style(
-                    'conv',
-                    array(
-                        'URL'       => s_link('my dc'),
-                        'SUBJECT'   => $with_username,
-                        'CAN_REPLY' => $result[0]['msg_can_reply']
-                    )
-                );
+                _style('conv', [
+                    'URL'       => s_link('my dc'),
+                    'SUBJECT'   => $with_username,
+                    'CAN_REPLY' => $result[0]['msg_can_reply']
+                ]);
 
                 foreach ($result as $row) {
                     $user_profile = $comments->user_profile($row);
 
-                    _style(
-                        'conv.row',
-                        array(
-                            'USERNAME'  => $user_profile['username'],
-                            'AVATAR'    => $user_profile['user_avatar'],
-                            'SIGNATURE' => $row['user_sig'] ? $comments->parse_message($row['user_sig']) : '',
-                            'PROFILE'   => $user_profile['profile'],
-                            'MESSAGE'   => $comments->parse_message($row['privmsgs_text']),
-                            'POST_ID'   => $row['msg_id'],
-                            'POST_DATE' => $user->format_date($row['privmsgs_date'])
-                        )
-                    );
+                    _style('conv.row', [
+                        'USERNAME'  => $user_profile['username'],
+                        'AVATAR'    => $user_profile['user_avatar'],
+                        'SIGNATURE' => $row['user_sig'] ? $comments->parse_message($row['user_sig']) : '',
+                        'PROFILE'   => $user_profile['profile'],
+                        'MESSAGE'   => $comments->parse_message($row['privmsgs_text']),
+                        'POST_ID'   => $row['msg_id'],
+                        'POST_DATE' => $user->format_date($row['privmsgs_date'])
+                    ]);
                 }
 
-                $s_hidden_fields = array(
+                $s_hidden_fields = [
                     'mark[]' => $msg_data['parent_id'],
                     'p'      => $msg_id,
                     'parent' => $msg_data['parent_id'],
                     'mode'   => 'reply'
-                );
+                ];
                 break;
             default:
                 //
@@ -318,18 +304,15 @@ class Userpage {
 
                         $dc_subject = 'Conversaci&oacute;n con ' . $row['username'.$dc_with];
 
-                        _style(
-                            'messages.item',
-                            array(
-                                'S_MARK_ID'   => $row['parent_id'],
-                                'SUBJECT'     => $dc_subject,
-                                'U_READ'      => s_link('my dc read', $row['last_msg_id']) . '#' . $row['last_msg_id'],
-                                'POST_DATE'   => $user->format_date($row['last_privmsgs_date'], 'j F Y \a \l\a\s H:i'),
-                                'ROOT_CONV'   => $row['root_conv'],
-                                'DC_USERNAME' => $row['username' . $dc_with],
-                                'DC_PROFILE'  => s_link('m', $row['username_base' . $dc_with])
-                            )
-                        );
+                        _style('messages.item', [
+                            'S_MARK_ID'   => $row['parent_id'],
+                            'SUBJECT'     => $dc_subject,
+                            'U_READ'      => s_link('my dc read', $row['last_msg_id']) . '#' . $row['last_msg_id'],
+                            'POST_DATE'   => $user->format_date($row['last_privmsgs_date'], 'j F Y \a \l\a\s H:i'),
+                            'ROOT_CONV'   => $row['root_conv'],
+                            'DC_USERNAME' => $row['username' . $dc_with],
+                            'DC_PROFILE'  => s_link('m', $row['username_base' . $dc_with])
+                        ]);
                     }
 
                     build_num_pagination(s_link('my dc s%d'), $total_conv, config('posts_per_page'), $offset);
@@ -339,12 +322,9 @@ class Userpage {
                     _style('no_messages');
                 }
 
-                _style(
-                    'dc_total',
-                    array(
-                        'TOTAL' => $total_conv
-                    )
-                );
+                _style('dc_total', [
+                    'TOTAL' => $total_conv
+                ]);
                 break;
         }
 
@@ -357,21 +337,15 @@ class Userpage {
                 OR (f.buddy_id = ? AND f.user_id = m.user_id)
             ORDER BY m.username';
         if ($result = sql_rowset(sql_filter($sql, $user->d('user_id'), $user->d('user_id')))) {
-            _style(
-                'sdc_friends',
-                array(
-                    'DC_START' => s_link('my dc start')
-                )
-            );
+            _style('sdc_friends', [
+                'DC_START' => s_link('my dc start')
+            ]);
 
             foreach ($result as $row) {
-                _style(
-                    'sdc_friends.item',
-                    array(
-                        'USERNAME' => $row['username'],
-                        'URL'      => s_link('my dc start', $row['username_base'])
-                    )
-                );
+                _style('sdc_friends.item', [
+                    'USERNAME' => $row['username'],
+                    'URL'      => s_link('my dc start', $row['username_base'])
+                ]);
             }
         }
 
@@ -380,11 +354,11 @@ class Userpage {
         //
         $page_title = ($mode == 'read') ? lang('dconv_read') : lang('dconvs');
 
-        $layout_vars = array(
+        $layout_vars = [
             'L_CONV'          => $page_title,
             'S_ACTION'        => s_link('my dc'),
             'S_HIDDEN_FIELDS' => s_hidden($s_hidden_fields)
-        );
+        ];
 
         page_layout($page_title, 'conversations', $layout_vars);
     }
@@ -392,26 +366,26 @@ class Userpage {
     private function conversations_delete() {
         global $comments, $user;
 
-        $mark = request_var('mark', array(0));
+        $mark = request_var('mark', [0]);
 
         if (_button('delete') && $mark) {
             if (_button('confirm')) {
                 $comments->dc_delete($mark);
             } else {
-                $s_hidden = array('delete' => true);
+                $s_hidden = ['delete' => true];
 
                 $i = 0;
                 foreach ($mark as $item) {
-                    $s_hidden += array('mark[' . $i++ . ']' => $item);
+                    $s_hidden += ['mark[' . $i++ . ']' => $item];
                 }
 
                 // Output to template
                 //
-                $layout_vars = array(
+                $layout_vars = [
                     'MESSAGE_TEXT'     => lang_count('confirm_delete_pm', 'confirm_delete_pms', count($mark)),
                     'S_CONFIRM_ACTION' => s_link('my dc'),
                     'S_HIDDEN_FIELDS'  => s_hidden($s_hidden)
-                );
+                ];
                 page_layout('DCONVS', 'confirm', $layout_vars);
             }
 
@@ -517,12 +491,12 @@ class Userpage {
                     FROM _ranks
                     WHERE rank_title = ?';
                 if (!$rank_id = sql_field(sql_filter($sql, $_fields->rank), 'rank_id', 0)) {
-                    $insert = array(
+                    $insert = [
                         'rank_title'   => $_fields->rank,
                         'rank_min'     => -1,
                         'rank_max'     => -1,
                         'rank_special' => 1
-                    );
+                    ];
                     $rank_id = sql_insert('ranks', $insert);
                 }
 
@@ -593,38 +567,29 @@ class Userpage {
         }
 
         if (sizeof($error)) {
-            _style(
-                'error',
-                array(
-                    'MESSAGE' => parse_error($error)
-                )
-            );
+            _style('error', [
+                'MESSAGE' => parse_error($error)
+            ]);
         }
 
         if ($user->d('user_avatar')) {
-            _style(
-                'current_avatar',
-                array(
-                    'IMAGE' => get_user_avatar($user->d('user_avatar'), $user->d('user_id'))
-                )
-            );
+            _style('current_avatar', [
+                'IMAGE' => get_user_avatar($user->d('user_avatar'), $user->d('user_id'))
+            ]);
         }
 
         $format = '<option value="%s"%s>%s</option>';
 
         $s_genders_select = '';
-        foreach (array(1 => 'MALE', 2 => 'FEMALE') as $id => $value) {
+        foreach ([1 => 'MALE', 2 => 'FEMALE'] as $id => $value) {
             $s_genders_select .= sprintf($format, $id, selected($_fields->gender, $id), lang($value));
         }
 
-        _style(
-            'gender',
-            array(
-                'GENDER_SELECT' => $s_genders_select
-            )
-        );
+        _style('gender', [
+            'GENDER_SELECT' => $s_genders_select
+        ]);
 
-        $months = array(
+        $months = [
             1  => 'January',
             2  => 'February',
             3  => 'March',
@@ -637,7 +602,7 @@ class Userpage {
             10 => 'October',
             11 => 'November',
             12 => 'December'
-        );
+        ];
 
         $s_day_select = build_options(range(1, 31), $_fields->birthday_day, false, true);
 
@@ -647,14 +612,11 @@ class Userpage {
 
         $s_year_select = build_options(range(YEAR - 5, YEAR - 100), $_fields->birthday_year, false, true);
 
-        _style(
-            'birthday',
-            array(
-                'DAY'   => $s_day_select,
-                'MONTH' => $s_month_select,
-                'YEAR'  => $s_year_select
-            )
-        );
+        _style('birthday', [
+            'DAY'   => $s_day_select,
+            'MONTH' => $s_month_select,
+            'YEAR'  => $s_year_select
+        ]);
 
         $dateset = w();
 
@@ -678,12 +640,12 @@ class Userpage {
             $_fields->rank = sql_field(sql_filter($sql, $user->d('rank')), 'rank_title', '--');
         }
 
-        $output_vars = array(
+        $output_vars = [
             'DATEFORMAT'        => $dateformat_select,
             'TIMEZONE'          => $timezone_select,
             'HIDEUSER_SELECTED' => checked($_fields->hideuser, true),
             'EMAIL_DC_SELECTED' => checked($_fields->email_dc, true)
-        );
+        ];
 
         foreach ($_fields as $field => $value) {
             $output_vars[strtoupper($field)] = $value;
@@ -715,13 +677,10 @@ class Userpage {
 
                 $banned_lang = $is_blocked ? 'REMOVE' : 'ADD';
 
-                _style(
-                    'block_member',
-                    array(
-                        'URL'  => s_link('m', $this->data['username_base'], 'ban'),
-                        'LANG' => lang('blocked_member_' . $banned_lang)
-                    )
-                );
+                _style('block_member', [
+                    'URL'  => s_link('m', $this->data['username_base'], 'ban'),
+                    'LANG' => lang('blocked_member_' . $banned_lang)
+                ]);
             }
         }
 
@@ -748,33 +707,30 @@ class Userpage {
                 break;
         }
 
-        $panel_selection = array(
-            'main' => array('L' => 'MAIN', 'U' => false)
-        );
+        $panel_selection = [
+            'main' => ['L' => 'MAIN', 'U' => false]
+        ];
 
         if ($user->d('user_id') != $this->data['user_id']) {
-            $panel_selection['start'] = array(
+            $panel_selection['start'] = [
                 'L' => 'DCONV_START',
                 'U' => s_link('my dc start', $this->data['username_base'])
-            );
+            ];
         } else {
-            $panel_selection['dc'] = array(
+            $panel_selection['dc'] = [
                 'L' => 'DC',
                 'U' => s_link('my dc')
-            );
+            ];
         }
 
-        $panel_selection += array(
-            'friends' => array('L' => 'FRIENDS', 'U' => false)
-        );
+        $panel_selection += [
+            'friends' => ['L' => 'FRIENDS', 'U' => false]
+        ];
 
         foreach ($panel_selection as $link => $data) {
-            _style(
-                'selected_panel',
-                array(
-                    'LANG' => lang('userpage_' . $data['L'])
-                )
-            );
+            _style('selected_panel', [
+                'LANG' => lang('userpage_' . $data['L'])
+            ]);
 
             if ($mode == $link) {
                 _style('selected_panel.strong');
@@ -783,12 +739,9 @@ class Userpage {
 
             $link = ($link != 'main') ? $link : '';
 
-            _style(
-                'selected_panel.a',
-                array(
-                    'URL' => ($data['U'] !== false) ? $data['U'] : s_link('m', $this->data['username_base'], $link)
-                )
-            );
+            _style('selected_panel.a', [
+                'URL' => ($data['U'] !== false) ? $data['U'] : s_link('m', $this->data['username_base'], $link)
+            ]);
         }
 
         //
@@ -803,13 +756,10 @@ class Userpage {
 
             $friend_add_lang = ($friend_add_lang) ? 'friends_add' : 'friends_del';
 
-            _style(
-                'friend',
-                array(
-                    'U_FRIEND'      => s_link('m', $this->data['username_base'], 'friend'),
-                    'L_FRIENDS_ADD' => lang($friend_add_lang)
-                )
-            );
+            _style('friend', [
+                'U_FRIEND'      => s_link('m', $this->data['username_base'], 'friend'),
+                'L_FRIENDS_ADD' => lang($friend_add_lang)
+            ]);
         }
 
         $online = false;
@@ -817,7 +767,7 @@ class Userpage {
         //
         // Generate page
         //
-        v_style(array(
+        v_style([
             'USERNAME'    => $this->data['username'],
             'POSTER_RANK' => $profile_fields['user_rank'],
             'AVATAR_IMG'  => $profile_fields['user_avatar'],
@@ -825,7 +775,7 @@ class Userpage {
             'PM'          => s_link('my dc start', $this->data['username_base']),
             'WEBSITE'     => $this->data['user_website'],
             'MSN'         => $this->data['user_msnm']
-        ));
+        ]);
 
         $layout_file = 'userpage';
 
@@ -870,11 +820,11 @@ class Userpage {
             redirect(s_link('m', $this->data['username_base']));
         }
 
-        $sql_insert = array(
+        $sql_insert = [
             'user_id'     => $user->d('user_id'),
             'buddy_id'    => $this->data['user_id'],
             'friend_time' => time()
-        );
+        ];
         sql_insert('members_friends', $sql_insert);
 
         $user->save_unread(UH_FRIEND, $user->d('user_id'), 0, $this->data['user_id']);
@@ -899,15 +849,12 @@ class Userpage {
             foreach ($result as $row) {
                 $friend_profile = $comments->user_profile($row);
 
-                _style(
-                    'friends.row',
-                    array(
-                        'PROFILE'  => $friend_profile['profile'],
-                        'USERNAME' => $friend_profile['username'],
-                        'AVATAR'   => $friend_profile['user_avatar'],
-                        'RANK'     => $friend_profile['user_rank']
-                    )
-                );
+                _style('friends.row', [
+                    'PROFILE'  => $friend_profile['profile'],
+                    'USERNAME' => $friend_profile['username'],
+                    'AVATAR'   => $friend_profile['user_avatar'],
+                    'RANK'     => $friend_profile['user_rank']
+                ]);
             }
         }
 
@@ -955,11 +902,11 @@ class Userpage {
             redirect(s_link('m', $this->data['username_base']));
         }
 
-        $sql_insert = array(
-            'user_id' => $user->d('user_id'),
+        $sql_insert = [
+            'user_id'     => $user->d('user_id'),
             'banned_user' => $this->data['user_id'],
-            'ban_time' => $user->time
-        );
+            'ban_time'    => $user->time
+        ];
         sql_insert('members_ban', $sql_insert);
 
         $sql = 'DELETE FROM _members_friends
@@ -981,11 +928,11 @@ class Userpage {
     }
 
     public function user_stats() {
-        $user_stats = array(
-            'VISITS_COUNT' => $this->data['user_totallogon'],
+        $user_stats = [
+            'VISITS_COUNT'    => $this->data['user_totallogon'],
             'PAGEVIEWS_COUNT' => $this->data['user_totalpages'],
-            'FORUM_POSTS' => $this->data['user_posts']
-        );
+            'FORUM_POSTS'     => $this->data['user_posts']
+        ];
 
         $m = false;
         foreach ($user_stats as $key => $value) {
@@ -998,13 +945,10 @@ class Userpage {
                 $m = true;
             }
 
-            _style(
-                'main.stats.item',
-                array(
-                    'KEY'   => lang($key),
-                    'VALUE' => $value
-                )
-            );
+            _style('main.stats.item', [
+                'KEY'   => lang($key),
+                'VALUE' => $value
+            ]);
         }
 
         return true;
@@ -1095,16 +1039,13 @@ class Userpage {
                 _style('main.lastboard');
             }
 
-            _style(
-                'main.lastboard.row',
-                array(
-                    'URL'         => s_link('post', $row['post_id']) . '#' . $row['post_id'],
-                    'TITLE'       => $row['topic_title'],
-                    'TOPIC_COLOR' => $row['topic_color'],
-                    'TIME'        => $user->format_date($row['post_time'], 'H:i'),
-                    'DATE'        => $user->format_date($row['post_time'], lang('date_format'))
-                )
-            );
+            _style('main.lastboard.row', [
+                'URL'         => s_link('post', $row['post_id']) . '#' . $row['post_id'],
+                'TITLE'       => $row['topic_title'],
+                'TOPIC_COLOR' => $row['topic_color'],
+                'TIME'        => $user->format_date($row['post_time'], 'H:i'),
+                'DATE'        => $user->format_date($row['post_time'], lang('date_format'))
+            ]);
         }
 
         //
@@ -1113,12 +1054,9 @@ class Userpage {
         $comments_ref = s_link('m', $this->data['username_base']);
 
         if ($user->is('member')) {
-            _style(
-                'main.post_comment_box',
-                array(
-                    'REF' => $comments_ref
-                )
-            );
+            _style('main.post_comment_box', [
+                'REF' => $comments_ref
+            ]);
         }
 
         //
@@ -1164,7 +1102,7 @@ class Userpage {
             $last_visit = $user->format_date($this->data['user_lastvisit']);
         }
 
-        $user_fields = array(
+        $user_fields = [
             'JOINED'     => $joined,
             'LAST_LOGON' => $last_visit,
             'GENDER'     => $gender,
@@ -1176,7 +1114,7 @@ class Userpage {
             'OCCUPATION' => $this->data['user_occ'],
             'INTERESTS'  => $this->data['user_interests'],
             'MEMBER_OS'  => $this->data['user_os']
-        );
+        ];
 
         $m = 0;
         foreach ($user_fields as $key => $value) {
@@ -1189,13 +1127,10 @@ class Userpage {
                 $m = 1;
             }
 
-            _style(
-                'main.general.item',
-                array(
-                    'KEY'   => lang($key),
-                    'VALUE' => $value
-                )
-            );
+            _style('main.general.item', [
+                'KEY'   => lang($key),
+                'VALUE' => $value
+            ]);
         }
 
         //
@@ -1215,22 +1150,19 @@ class Userpage {
                 ORDER BY p.post_time DESC
                 LIMIT 50';
 
-            $comments->data = array(
+            $comments->data = [
                 'USER_ID_FIELD' => 'userpage_id',
                 'S_DELETE_URL' => s_link('acp', 'user_post_delete', 'msg_id:%d'),
                 'SQL' => sql_filter($sql, $this->data['user_id'])
-            );
+            ];
 
             $comments->view(0, '', $this->data['userpage_posts'], $this->data['userpage_posts'], 'main.posts');
         }
 
         if ($user->is('member')) {
-            _style(
-                'main.box',
-                array(
-                    'REF' => $comments_ref
-                )
-            );
+            _style('main.box', [
+                'REF' => $comments_ref
+            ]);
         }
 
         return true;

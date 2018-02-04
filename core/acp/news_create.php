@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class __news_create extends mac {
     public function __construct() {
@@ -26,7 +25,7 @@ class __news_create extends mac {
             $news_alias = friendly($post_subject);
 
             //
-            $sql_insert = array(
+            $sql_insert = [
                 'news_fbid'    => '',
                 'cat_id'       => $cat_id,
                 'news_active'  => 1,
@@ -42,7 +41,7 @@ class __news_create extends mac {
                 'post_time'    => time(),
                 'post_ip'      => $user->ip,
                 'image'        => 0
-            );
+            ];
             $sql = 'INSERT _news' . sql_build('INSERT', $sql_insert);
             $news_id = sql_query_nextid($sql);
 
@@ -57,7 +56,7 @@ class __news_create extends mac {
                         config('news_path'),
                         config('news_path'),
                         $news_id,
-                        array(100, 100),
+                        [100, 100],
                         false,
                         false,
                         true
@@ -83,13 +82,10 @@ class __news_create extends mac {
                 _style('cat');
             }
 
-            _style(
-                'cat.row',
-                array(
-                    'CAT_ID'   => $row['cat_id'],
-                    'CAT_NAME' => $row['cat_name']
-                )
-            );
+            _style('cat.row', [
+                'CAT_ID'   => $row['cat_id'],
+                'CAT_NAME' => $row['cat_name']
+            ]);
         }
 
         return;

@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class __user_activate extends mac {
     public function __construct() {
@@ -57,11 +56,9 @@ class __user_activate extends mac {
             $emailer->use_template('user_welcome_confirm');
             $emailer->email_address($userdata['user_email']);
 
-            $emailer->assign_vars(
-                array(
-                    'USERNAME' => $userdata['username']
-                )
-            );
+            $emailer->assign_vars([
+                'USERNAME' => $userdata['username']
+            ]);
             $emailer->send();
             $emailer->reset();
 
@@ -79,16 +76,13 @@ class __user_activate extends mac {
                 _style('list');
             }
 
-            _style(
-                'list.row',
-                array(
-                    'LINK'     => s_link($this->name, $row['user_id']),
-                    'USERNAME' => $row['username'],
-                    'EMAIL'    => $row['user_email'],
-                    'DATE'     => $row['user_regdate'],
-                    'IP'       => $row['user_regip']
-                )
-            );
+            _style('list.row', [
+                'LINK'     => s_link($this->name, $row['user_id']),
+                'USERNAME' => $row['username'],
+                'EMAIL'    => $row['user_email'],
+                'DATE'     => $row['user_regdate'],
+                'IP'       => $row['user_regip']
+            ]);
         }
 
         return;

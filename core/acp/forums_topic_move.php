@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class __forums_topic_move extends mac {
     private $from;
@@ -25,13 +24,10 @@ class __forums_topic_move extends mac {
                     _style('forums');
                 }
 
-                _style(
-                    'forums.row',
-                    array(
-                        'FORUM_ID'   => $row['forum_id'],
-                        'FORUM_NAME' => $row['forum_name']
-                    )
-                );
+                _style('forums.row', [
+                    'FORUM_ID'   => $row['forum_id'],
+                    'FORUM_NAME' => $row['forum_name']
+                ]);
             }
 
             return false;
@@ -69,7 +65,7 @@ class __forums_topic_move extends mac {
             WHERE topic_id = ?';
         sql_query(sql_filter($sql, $f, $t));
 
-        if (in_array($f, array(20, 39))) {
+        if (in_array($f, [20, 39])) {
             topic_feature($t, 0);
             topic_arkane($t, 0);
         }

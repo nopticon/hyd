@@ -1,7 +1,6 @@
-<?php
-namespace App;
+<?php namespace App;
 
-$d = getdate();
+$d       = getdate();
 $start_1 = mktime(0, 0, 0, $d['mon'], ($d['mday'] - 7), $d['year']);
 $start_2 = mktime(0, 0, 0, $d['mon'], ($d['mday'] - 14), $d['year']);
 

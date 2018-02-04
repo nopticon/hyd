@@ -1,16 +1,14 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class Auth {
-    public $founder = false;
-    public $data = array();
-
-    private $error_list = array();
+    public $founder     = false;
+    public $data        = [];
+    private $error_list = [];
     private $fields;
 
     public function field($name, $set = false) {
         if (!$this->fields) {
-            $this->fields = array(
+            $this->fields = [
                 'username'       => '',
                 'email'          => '',
                 'email_confirm'  => '',
@@ -22,7 +20,7 @@ class Auth {
                 'birthday_year'  => 0,
                 'tos'            => 0,
                 'ref'            => 0
-            );
+            ];
         }
 
         if ($set !== false) {
@@ -70,12 +68,12 @@ class Auth {
     }
 
     public function url($name, $execute = false) {
-        $map = array(
+        $map = [
             'in'  => 'signin',
             'out' => 'signout',
             'up'  => 'signup',
             'r'   => 'recover'
-        );
+        ];
 
         if (isset($map[$name])) {
             $method = $map[$name];
@@ -161,11 +159,9 @@ class Auth {
             $emailer->use_template('user_welcome_confirm');
             $emailer->email_address($crypt_data['user_email']);
 
-            $emailer->assign_vars(
-                array(
-                    'USERNAME' => $crypt_data['username']
-                )
-            );
+            $emailer->assign_vars([
+                'USERNAME' => $crypt_data['username']
+            ]);
             $emailer->send();
             $emailer->reset();
 
@@ -179,11 +175,11 @@ class Auth {
                 $user->setup();
             }
 
-            $custom_vars = array(
+            $custom_vars = [
                 'S_REDIRECT'    => '',
                 'MESSAGE_TITLE' => lang('information'),
                 'MESSAGE_TEXT'  => lang('membership_added_confirm')
-            );
+            ];
             page_layout('INFORMATION', 'message', $custom_vars);
         }
 
@@ -273,13 +269,13 @@ class Auth {
                 $this->field('country', 90);
 
                 $birthday = '';
-                foreach (array('year', 'month', 'day') as $row) {
+                foreach (w('year month day') as $row) {
                     $birthday .= leading_zero($this->field('birthday_' . $row));
                 }
 
                 $this->field('birthday', $birthday);
 
-                $member_data = array(
+                $member_data = [
                     'user_type'         => USER_INACTIVE,
                     'user_active'       => 1,
                     'username'          => $this->field('username'),
@@ -314,7 +310,7 @@ class Auth {
                     'user_email_dc'     => 1,
                     'user_refop'        => 0,
                     'user_refby'        => $this->field('ref')
-                );
+                ];
                 $user_id = sql_insert('members', $member_data);
 
                 set_config('max_users', (int) config('max_users') + 1);
@@ -322,11 +318,11 @@ class Auth {
                 // Confirmation code
                 $verification_code = md5(unique_id());
 
-                $insert = array(
+                $insert = [
                     'crypt_userid' => $user_id,
                     'crypt_code'   => $verification_code,
                     'crypt_time'   => $user->time
-                );
+                ];
                 sql_insert('crypt_confirm', $insert);
 
                 // Emailer
@@ -340,40 +336,38 @@ class Auth {
                             FROM _members
                             WHERE user_email = ?';
                         if ($ref_friend = sql_field(sql_filter($sql, $this->field('ref')), 'user_id', 0)) {
-                            $sql_insert = array(
+                            $sql_insert = [
                                 'ref_uid'  => $user_id,
                                 'ref_orig' => $ref_friend
-                            );
+                            ];
                             sql_insert('members_ref_assoc', $sql_insert);
 
-                            $sql_insert = array(
+                            $sql_insert = [
                                 'user_id'     => $user_id,
                                 'buddy_id'    => $ref_friend,
                                 'friend_time' => time()
-                            );
+                            ];
                             sql_insert('members_friends', $sql_insert);
                         } else {
                             $invite_user = explode('@', $this->field('ref'));
                             $invite_code = substr(md5(unique_id()), 0, 6);
 
-                            $sql_insert = array(
+                            $sql_insert = [
                                 'invite_code'  => $invite_code,
                                 'invite_email' => $this->field('ref'),
                                 'invite_uid'   => $user_id
-                            );
+                            ];
                             sql_insert('members_ref_invite', $sql_insert);
 
                             $emailer->from('info');
                             $emailer->use_template('user_invite');
                             $emailer->email_address($this->field('ref'));
 
-                            $emailer->assign_vars(
-                                array(
-                                    'INVITED'    => $invite_user[0],
-                                    'USERNAME'   => $this->field('username'),
-                                    'U_REGISTER' => s_link('@my register a', $invite_code)
-                                )
-                            );
+                            $emailer->assign_vars([
+                                'INVITED'    => $invite_user[0],
+                                'USERNAME'   => $this->field('username'),
+                                'U_REGISTER' => s_link('@my register a', $invite_code)
+                            ]);
                             $emailer->send();
                             $emailer->reset();
                         }
@@ -385,19 +379,17 @@ class Auth {
                 $emailer->use_template('user_welcome');
                 $emailer->email_address($this->field('email'));
 
-                $emailer->assign_vars(
-                    array(
-                        'USERNAME'   => $this->field('username'),
-                        'U_ACTIVATE' => s_link('@signup', $verification_code)
-                    )
-                );
+                $emailer->assign_vars([
+                    'USERNAME'   => $this->field('username'),
+                    'U_ACTIVATE' => s_link('@signup', $verification_code)
+                ]);
                 $emailer->send();
                 $emailer->reset();
 
-                $custom_vars = array(
+                $custom_vars = [
                     'MESSAGE_TITLE' => lang('information'),
                     'MESSAGE_TEXT'  => lang('membership_added')
-                );
+                ];
                 page_layout('INFORMATION', 'message', $custom_vars);
             }
         }
@@ -425,13 +417,13 @@ class Auth {
                     FROM _members
                     WHERE username_base = ?';
                 if ($row = sql_fieldrow(sql_filter($sql, $username_base))) {
-                    $exclude_type = array(USER_INACTIVE);
+                    $exclude_type = [USER_INACTIVE];
                     $valid_password = ValidatePassword($password, $row['user_password']);
 
                     if ($valid_password && !in_array($row['user_type'], $exclude_type)) {
                         $user->session_create($row['user_id'], _button('admin'));
 
-                        $ask_fill_profile = array('country', 'location', 'gender', 'birthday', 'avatar');
+                        $ask_fill_profile = w('country location gender birthday avatar');
 
                         foreach ($ask_fill_profile as $row) {
                             if (empty($row['user_' . $row])) {
@@ -502,45 +494,34 @@ class Auth {
                         $emailer->use_template('user_confirm_passwd', config('default_lang'));
                         $emailer->email_address($crypt_data['user_email']);
 
-                        $emailer->assign_vars(
-                            array(
-                                'USERNAME'  => $crypt_data['username'],
-                                'PASSWORD'  => $password,
-                                'U_PROFILE' => s_link('@m', $crypt_data['username_base'])
-                            )
-                        );
+                        $emailer->assign_vars([
+                            'USERNAME'  => $crypt_data['username'],
+                            'PASSWORD'  => $password,
+                            'U_PROFILE' => s_link('@m', $crypt_data['username_base'])
+                        ]);
                         $emailer->send();
                         $emailer->reset();
 
-                        //
-                        v_style(
-                            array(
-                                'PAGE_MODE' => 'updated'
-                            )
-                        );
+                        v_style([
+                            'PAGE_MODE' => 'updated'
+                        ]);
                     } else {
-                        v_style(
-                            array(
-                                'PAGE_MODE' => 'nomatch',
-                                'S_CODE'    => $code
-                            )
-                        );
+                        v_style([
+                            'PAGE_MODE' => 'nomatch',
+                            'S_CODE'    => $code
+                        ]);
                     }
                 } else {
-                    v_style(
-                        array(
-                            'PAGE_MODE' => 'nokey',
-                            'S_CODE'    => $code
-                        )
-                    );
+                    v_style([
+                        'PAGE_MODE' => 'nokey',
+                        'S_CODE'    => $code
+                    ]);
                 }
             } else {
-                v_style(
-                    array(
-                        'PAGE_MODE' => 'verify',
-                        'S_CODE'    => $code
-                    )
-                );
+                v_style([
+                    'PAGE_MODE' => 'verify',
+                    'S_CODE'    => $code
+                ]);
             }
         } elseif (_button()) {
             $email = request_var('address', '');
@@ -569,11 +550,11 @@ class Auth {
                 WHERE crypt_userid = ?';
             sql_query(sql_filter($sql, $userdata['user_id']));
 
-            $insert = array(
+            $insert = [
                 'crypt_userid' => $userdata['user_id'],
                 'crypt_code'   => $verification_code,
                 'crypt_time'   => $user->time
-            );
+            ];
             sql_insert('crypt_confirm', $insert);
 
             // Send email
@@ -581,20 +562,16 @@ class Auth {
             $emailer->use_template('user_activate_passwd', config('default_lang'));
             $emailer->email_address($userdata['user_email']);
 
-            $emailer->assign_vars(
-                array(
-                    'USERNAME'   => $userdata['username'],
-                    'U_ACTIVATE' => s_link('@signr', $verification_code)
-                )
-            );
+            $emailer->assign_vars([
+                'USERNAME'   => $userdata['username'],
+                'U_ACTIVATE' => s_link('@signr', $verification_code)
+            ]);
             $emailer->send();
             $emailer->reset();
 
-            v_style(
-                array(
-                    'PAGE_MODE' => 'submit'
-                )
-            );
+            v_style([
+                'PAGE_MODE' => 'submit'
+            ]);
 
             // _style('reset_complete');
         }
@@ -608,7 +585,7 @@ class Auth {
         //
         showError($this->errorList());
 
-        $months = array(
+        $months = [
             1  => 'January',
             2  => 'February',
             3  => 'March',
@@ -621,11 +598,11 @@ class Auth {
             10 => 'October',
             11 => 'November',
             12 => 'December'
-        );
+        ];
 
         $format_option = '<option value="%s"%s>%s</option>';
 
-        $select_gender = build_options(array(1 => 'MALE', 2 => 'FEMALE'), $this->field('gender'), function ($row) {
+        $select_gender = build_options([1 => 'MALE', 2 => 'FEMALE'], $this->field('gender'), function ($row) {
             return lang($row);
         });
 
@@ -639,10 +616,10 @@ class Auth {
 
         $s_hidden = w();
         if (_button('admin')) {
-            $s_hidden = array('admin' => 1);
+            $s_hidden = ['admin' => 1];
         }
 
-        $layout_vars = array(
+        $layout_vars = [
             'IS_NEED_AUTH'     => _button('admin'),
             'IS_LOGIN'         => _button('login'),
             'S_HIDDEN_FIELDS'  => s_hidden($s_hidden),
@@ -663,7 +640,7 @@ class Auth {
             'V_BIRTHDAY_DAY'   => $select_birth_day,
             'V_BIRTHDAY_MONTH' => $select_birth_month,
             'V_BIRTHDAY_YEAR'  => $select_birth_year
-        );
+        ];
 
         if (!isset_template_var('PAGE_MODE')) {
             $layout_vars['PAGE_MODE'] = '';
@@ -676,12 +653,9 @@ class Auth {
         if (_button('login')) {
             $ref = request_var('ref', '');
 
-            _style(
-                'error',
-                array(
-                    'LASTPAGE' => $ref ?: s_link()
-                )
-            );
+            _style('error', [
+                'LASTPAGE' => $ref ?: s_link()
+            ]);
         }
 
         return page_layout('LOGIN2', 'login', $layout_vars);
@@ -764,7 +738,7 @@ class Auth {
                 $a_sql = 'a.auth_view, a.auth_read, a.auth_post, a.auth_reply, ';
                 $a_sql .= 'a.auth_announce, a.auth_vote, a.auth_pollcreate';
 
-                $auth_fields = array(
+                $auth_fields = [
                     'auth_view',
                     'auth_read',
                     'auth_post',
@@ -772,37 +746,35 @@ class Auth {
                     'auth_announce',
                     'auth_vote',
                     'auth_pollcreate'
-                );
+                ];
                 break;
             case AUTH_VIEW:
                 $a_sql = 'a.auth_view';
-                $auth_fields = array('auth_view');
+                $auth_fields = ['auth_view'];
                 break;
             case AUTH_READ:
                 $a_sql = 'a.auth_read';
-                $auth_fields = array('auth_read');
+                $auth_fields = ['auth_read'];
                 break;
             case AUTH_POST:
                 $a_sql = 'a.auth_post';
-                $auth_fields = array('auth_post');
+                $auth_fields = ['auth_post'];
                 break;
             case AUTH_REPLY:
                 $a_sql = 'a.auth_reply';
-                $auth_fields = array('auth_reply');
+                $auth_fields = ['auth_reply'];
                 break;
             case AUTH_ANNOUNCE:
                 $a_sql = 'a.auth_announce';
-                $auth_fields = array('auth_announce');
+                $auth_fields = ['auth_announce'];
                 break;
             case AUTH_POLLCREATE:
                 $a_sql = 'a.auth_pollcreate';
-                $auth_fields = array('auth_pollcreate');
+                $auth_fields = ['auth_pollcreate'];
                 break;
             case AUTH_VOTE:
                 $a_sql = 'a.auth_vote';
-                $auth_fields = array('auth_vote');
-                break;
-            default:
+                $auth_fields = ['auth_vote'];
                 break;
         }
 
@@ -917,7 +889,7 @@ class Auth {
                             break;
                         case AUTH_ACL:
                             if (!isset($u_access[$f_forum_id])) {
-                                $u_access[$f_forum_id] = array();
+                                $u_access[$f_forum_id] = [];
                             }
 
                             $mod = false;

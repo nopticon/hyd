@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class Cron {
     public $no_layout = true;

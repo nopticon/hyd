@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class __news_images extends mac {
     public function __construct() {
@@ -27,18 +26,15 @@ class __news_images extends mac {
 
             if (!sizeof($upload->error) && $f !== false) {
                 foreach ($f as $row) {
-                    $xa = $upload->resize($row, $filepath_1, $filepath_1, $news_id, array(100, 75), false, false, true);
+                    $xa = $upload->resize($row, $filepath_1, $filepath_1, $news_id, [100, 75], false, false, true);
                 }
 
                 redirect();
             }
 
-            _style(
-                'error',
-                array(
-                    'MESSAGE' => parse_error($upload->error)
-                )
-            );
+            _style('error', [
+                'MESSAGE' => parse_error($upload->error)
+            ]);
         }
 
         $sql = 'SELECT *
@@ -47,13 +43,10 @@ class __news_images extends mac {
         $result = sql_rowset($sql);
 
         foreach ($result as $row) {
-            _style(
-                'news_list',
-                array(
-                    'NEWS_ID'    => $row['news_id'],
-                    'NEWS_TITLE' => $row['post_subject']
-                )
-            );
+            _style('news_list', [
+                'NEWS_ID'    => $row['news_id'],
+                'NEWS_TITLE' => $row['post_subject']
+            ]);
         }
 
         return;

@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class __artist_biography extends mac {
     public function __construct() {
@@ -29,11 +28,9 @@ class __artist_biography extends mac {
             WHERE ub = ?';
         $bio = sql_field(sql_filter($sql, $this->object['ub']), 'bio');
 
-        v_style(
-            array(
-                'MESSAGE' => $bio
-            )
-        );
+        v_style([
+            'MESSAGE' => $bio
+        ]);
 
         return;
     }

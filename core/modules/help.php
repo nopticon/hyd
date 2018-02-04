@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class Help {
     private $object;
@@ -36,12 +35,14 @@ class Help {
             $module = sql_rowset(sql_filter($sql, $alias));
 
             foreach ($module as $i => $row) {
-                if (!$i) _style('module', array('TITLE' => $row['help_es']));
+                if (!$i) _style('module', [
+                    'TITLE' => $row['help_es']
+                ]);
 
-                _style('module.row', array(
+                _style('module.row', [
                     'QUESTION' => $row['faq_question_es'],
-                    'ANSWER'   => $comments->parse_message($row['faq_answer_es']))
-                );
+                    'ANSWER'   => $comments->parse_message($row['faq_answer_es'])
+                ]);
             }
         }
 
@@ -58,10 +59,10 @@ class Help {
         foreach ($help as $i => $row) {
             if (!$i) _style('categories');
 
-            _style('categories.row', array(
+            _style('categories.row', [
                 'URL'   => s_link('help', $row['module_name']),
-                'TITLE' => $row['help_es'])
-            );
+                'TITLE' => $row['help_es']
+            ]);
         }
 
         return;

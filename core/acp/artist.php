@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class __artist extends mac {
     public function __construct() {
@@ -15,7 +14,7 @@ class __artist extends mac {
             return false;
         }
 
-        $request = _request(array(
+        $request = _request([
             'name'     => '',
             'local'    => 0,
             'location' => '',
@@ -23,14 +22,14 @@ class __artist extends mac {
             'email'    => '',
             'www'      => '',
             'mods'     => ''
-        ));
+        ]);
         $request->subdomain = get_subdomain($request->name);
 
         if (!$request->name) {
             _pre('Ingresa el nombre del artista.', true);
         }
 
-        $sql_insert = array(
+        $sql_insert = [
             'a_active'  => 1,
             'subdomain' => $request->subdomain,
             'name'      => $request->name,
@@ -41,7 +40,7 @@ class __artist extends mac {
             'email'     => $request->email,
             'www'       => str_replace('http://', '', $request->www),
             'bio'       => ''
-        );
+        ];
         $artist_id = sql_insert('artists', $sql_insert);
 
         // Cache
@@ -74,14 +73,17 @@ class __artist extends mac {
                     continue;
                 }
 
-                $sql_insert = array(
+                $sql_insert = [
                     'ub'      => $artist_id,
                     'user_id' => $info['user_id']
-                );
+                ];
                 sql_insert('artists_auth', $sql_insert);
 
                 //
-                $update = array('user_type' => USER_ARTIST, 'user_auth_control' => 1);
+                $update = [
+                    'user_type'         => USER_ARTIST,
+                    'user_auth_control' => 1
+                ];
 
                 if (!$info['user_rank']) {
                     $update['user_rank'] = (int) config('default_a_rank');

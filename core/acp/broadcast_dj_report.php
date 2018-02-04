@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class __broadcast_dj_report extends mac {
     public function __construct() {
@@ -22,14 +21,11 @@ class __broadcast_dj_report extends mac {
                 _style('report');
             }
 
-            _style(
-                'report.row',
-                array(
-                    'LINK' => s_link('m', $row['username_base']),
-                    'NAME' => $row['username'],
-                    'TIME' => $user->format_date($row['log_time'])
-                )
-            );
+            _style('report.row', [
+                'LINK' => s_link('m', $row['username_base']),
+                'NAME' => $row['username'],
+                'TIME' => $user->format_date($row['log_time'])
+            ]);
         }
 
         return;

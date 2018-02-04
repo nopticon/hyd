@@ -1,15 +1,14 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class Artists extends Downloads {
-    public $auth = array();
-    public $data = array();
-    public $adata = array();
-    public $images = array();
-    public $layout = array();
-    public $voting = array();
-    public $msg = array();
-    public $ajx = true;
+    public $auth   = [];
+    public $data   = [];
+    public $adata  = [];
+    public $images = [];
+    public $layout = [];
+    public $voting = [];
+    public $msg    = [];
+    public $ajx    = true;
 
     private $make;
     private $template;
@@ -19,24 +18,24 @@ class Artists extends Downloads {
     private $default_view = 'artists';
 
     public function __construct() {
-        $this->layout = array(
-            '_01' => array('code' => 1, 'text' => 'UB_L01', 'tpl' => 'main', 'method' => 'Main'),
-            '_02' => array('code' => 2, 'text' => 'UB_L02', 'tpl' => 'bio', 'method' => 'Bio'),
-            '_03' => array('code' => 3, 'text' => 'UB_L03', 'tpl' => 'albums', 'method' => 'Albums'),
-            '_04' => array('code' => 4, 'text' => 'UB_L04', 'tpl' => 'gallery', 'method' => 'Gallery'),
-            '_05' => array('code' => 5, 'text' => 'UB_L05', 'tpl' => 'tabs', 'method' => 'Tabs'),
-            '_06' => array('code' => 6, 'text' => 'UB_L06', 'tpl' => 'lyrics', 'method' => 'Lyrics'),
-            '_07' => array('code' => 7, 'text' => 'UB_L07', 'tpl' => 'interviews', 'method' => 'Interviews'),
-            '_09' => array('code' => 9, 'text' => 'DOWNLOADS', 'tpl' => 'downloads', 'method' => 'Downloads'),
-            '_13' => array('code' => 13, 'text' => '', 'tpl' => 'email', 'method' => 'Email'),
-            '_16' => array('code' => 16, 'text' => '', 'tpl' => 'news', 'method' => 'News'),
-            '_18' => array('code' => 18, 'text' => 'UB_L17', 'tpl' => 'video', 'method' => 'Video')
-        );
+        $this->layout = [
+            '_01' => ['code' => 1, 'text' => 'UB_L01', 'tpl' => 'main', 'method' => 'Main'],
+            '_02' => ['code' => 2, 'text' => 'UB_L02', 'tpl' => 'bio', 'method' => 'Bio'],
+            '_03' => ['code' => 3, 'text' => 'UB_L03', 'tpl' => 'albums', 'method' => 'Albums'],
+            '_04' => ['code' => 4, 'text' => 'UB_L04', 'tpl' => 'gallery', 'method' => 'Gallery'],
+            '_05' => ['code' => 5, 'text' => 'UB_L05', 'tpl' => 'tabs', 'method' => 'Tabs'],
+            '_06' => ['code' => 6, 'text' => 'UB_L06', 'tpl' => 'lyrics', 'method' => 'Lyrics'],
+            '_07' => ['code' => 7, 'text' => 'UB_L07', 'tpl' => 'interviews', 'method' => 'Interviews'],
+            '_09' => ['code' => 9, 'text' => 'DOWNLOADS', 'tpl' => 'downloads', 'method' => 'Downloads'],
+            '_13' => ['code' => 13, 'text' => '', 'tpl' => 'email', 'method' => 'Email'],
+            '_16' => ['code' => 16, 'text' => '', 'tpl' => 'news', 'method' => 'News'],
+            '_18' => ['code' => 18, 'text' => 'UB_L17', 'tpl' => 'video', 'method' => 'Video'],
+        ];
 
-        $this->voting = array(
-            'ub' => array(1, 2, 3, 5),
-            'ud' => array(1, 2, 3, 4, 5)
-        );
+        $this->voting = [
+            'ub' => [1, 2, 3, 5],
+            'ud' => [1, 2, 3, 4, 5]
+        ];
     }
 
     /*
@@ -59,33 +58,24 @@ class Artists extends Downloads {
             $image     = $imagedata['path'];
         }
 
-        _style(
-            'ub_image',
-            array(
-                'IMAGE' => $image
-            )
-        );
+        _style('ub_image', [
+            'IMAGE' => $image
+        ]);
 
         if ($this->data['images'] > 1) {
-            _style(
-                'ub_image.view',
-                array(
-                    'URL' => s_link('a', $this->data['subdomain'], 'gallery', $imagedata['image'], 'view')
-                )
-            );
+            _style('ub_image.view', [
+                'URL' => s_link('a', $this->data['subdomain'], 'gallery', $imagedata['image'], 'view')
+            ]);
         }
 
         //
         // News
         //
         if ($this->auth['user']) {
-            _style(
-                'publish',
-                array(
-                    'TITLE' => $this->auth['mod'] ? lang('send_news') : lang('send_post'),
-                    'URL'   => s_link('a', $this->data['subdomain'])
-                )
-            );
+            _style('publish', [
+                'TITLE' => $this->auth['mod'] ? lang('send_news') : lang('send_post'),
+                'URL'   => s_link('a', $this->data['subdomain'])
+            ]);
         }
 
         if ($this->data['news'] || $this->data['posts']) {
@@ -126,12 +116,12 @@ class Artists extends Downloads {
                         $row['post_id'] = 0;
                     }
 
-                    $row_data = array(
+                    $row_data = [
                         'POST_ID'  => $row['post_id'],
                         'DATETIME' => $user->format_date($row['post_time']),
                         'MESSAGE'  => $comments->parse_message($row['post_text']),
                         'S_DELETE' => false
-                    );
+                    ];
 
                     foreach ($user_profile[$uid] as $key => $value) {
                         $row_data[strtoupper($key)] = $value;
@@ -162,24 +152,18 @@ class Artists extends Downloads {
 
                     $user_profile = $comments->user_profile($row);
 
-                    _style(
-                        'mods.item',
-                        array(
-                            'PROFILE'  => $user_profile['profile'],
-                            'USERNAME' => $user_profile['username']
-                        )
-                    );
+                    _style('mods.item', [
+                        'PROFILE'  => $user_profile['profile'],
+                        'USERNAME' => $user_profile['username']
+                    ]);
                 }
 
                 $comments->reset();
 
                 if ($this->auth['mod']) {
-                    _style(
-                        'mods.manage',
-                        array(
-                            'URL' => s_link('acp', array('artist_auth', 'a' => $this->data['subdomain']))
-                        )
-                    );
+                    _style('mods.manage', [
+                        'URL' => s_link('acp', ['artist_auth', 'a' => $this->data['subdomain']])
+                    ]);
                 }
             }
         }
@@ -200,23 +184,18 @@ class Artists extends Downloads {
         if ($this->data['featured_image']) {
             $image = config('artists_url') . $this->data['ub'] . '/gallery/' . $this->data['featured_image'] . '.jpg';
 
-            _style(
-                'featured_image',
-                array(
-                    'IMAGE' => $image,
-                    'URL'   => s_link('a', $this->data['subdomain'], 'gallery', $this->data['featured_image'], 'view')
-                )
-            );
+            _style('featured_image', [
+                'IMAGE' => $image,
+                'URL'   => s_link('a', $this->data['subdomain'], 'gallery', $this->data['featured_image'], 'view')
+            ]);
         }
 
         //
         // Parse Biography
         //
-        v_style(
-            array(
-                'UB_BIO' => $comments->parse_message($this->data['bio'])
-            )
-        );
+        v_style([
+            'UB_BIO' => $comments->parse_message($this->data['bio'])
+        ]);
 
         return;
     }
@@ -285,19 +264,16 @@ class Artists extends Downloads {
 
                     $image = config('artists_url') . $this->data['ub'] . '/gallery/' . $imagedata['image'] . '.jpg';
 
-                    _style(
-                        'selected',
-                        array(
-                            'IMAGE'  => $image,
-                            'WIDTH'  => $imagedata['width'],
-                            'HEIGHT' => $imagedata['height']
-                        )
-                    );
+                    _style('selected', [
+                        'IMAGE'  => $image,
+                        'WIDTH'  => $imagedata['width'],
+                        'HEIGHT' => $imagedata['height']
+                    ]);
 
                     /*if ($imagedata['allow_dl']) {
-                        _style('selected.download', array(
-                            'URL' => s_link('a', $this->data['subdomain'], 'gallery', $imagedata['image'], 'save'))
-                        );
+                        _style('selected.download', [
+                            'URL' => s_link('a', $this->data['subdomain'], 'gallery', $imagedata['image'], 'save')
+                        ]);
                     }*/
 
                     $this->data['images']--;
@@ -333,17 +309,14 @@ class Artists extends Downloads {
                         w('gallery x1')
                     );
 
-                    _style(
-                        'thumbnails.row',
-                        array(
-                            'URL'    => s_link('a', $this->data['subdomain'], 'gallery', $row['image'], 'view'),
-                            'IMAGE'  => $image,
-                            'RIMAGE' => $rimage,
-                            'WIDTH'  => $row['width'],
-                            'HEIGHT' => $row['height'],
-                            'FOOTER' => $row['image_footer']
-                        )
-                    );
+                    _style('thumbnails.row', [
+                        'URL'    => s_link('a', $this->data['subdomain'], 'gallery', $row['image'], 'view'),
+                        'IMAGE'  => $image,
+                        'RIMAGE' => $rimage,
+                        'WIDTH'  => $row['width'],
+                        'HEIGHT' => $row['height'],
+                        'FOOTER' => $row['image_footer']
+                    ]);
                 }
                 break;
         }
@@ -403,15 +376,12 @@ class Artists extends Downloads {
                         $lyric_data['views']++;
                     }
 
-                    _style(
-                        'read',
-                        array(
-                            'TITLE'  => $lyric_data['title'],
-                            'AUTHOR' => $lyric_data['author'],
-                            'TEXT'   => str_replace(nr(), '<br />', $lyric_data['text']),
-                            'VIEWS'  => $lyric_data['views']
-                        )
-                    );
+                    _style('read', [
+                        'TITLE'  => $lyric_data['title'],
+                        'AUTHOR' => $lyric_data['author'],
+                        'TEXT'   => str_replace(nr(), '<br />', $lyric_data['text']),
+                        'VIEWS'  => $lyric_data['views']
+                    ]);
                 }
 
                 $sql = 'SELECT l.*
@@ -426,14 +396,11 @@ class Artists extends Downloads {
                         _style('select');
                     }
 
-                    _style(
-                        'select.item',
-                        array(
-                            'URL'      => s_link('a', $this->data['subdomain'], 'lyrics', $row['id'], 'view') . '#read',
-                            'TITLE'    => $row['title'],
-                            'SELECTED' => ($download_id && $download_id == $row['id']) ? true : false
-                        )
-                    );
+                    _style('select.item', [
+                        'URL'      => s_link('a', $this->data['subdomain'], 'lyrics', $row['id'], 'view') . '#read',
+                        'TITLE'    => $row['title'],
+                        'SELECTED' => ($download_id && $download_id == $row['id']) ? true : false
+                    ]);
                 }
                 break;
         }
@@ -530,15 +497,13 @@ class Artists extends Downloads {
                 $emailer->set_subject($subject);
                 $emailer->extra_headers($email_headers);
 
-                $emailer->assign_vars(
-                    array(
-                        'SITENAME'      => config('sitename'),
-                        'BOARD_EMAIL'   => config('board_email'),
-                        'FROM_USERNAME' => $user->d('username'),
-                        'UB_NAME'       => $this->data['name'],
-                        'MESSAGE'       => $message
-                    )
-                );
+                $emailer->assign_vars([
+                    'SITENAME'      => config('sitename'),
+                    'BOARD_EMAIL'   => config('board_email'),
+                    'FROM_USERNAME' => $user->d('username'),
+                    'UB_NAME'       => $this->data['name'],
+                    'MESSAGE'       => $message
+                ]);
                 $emailer->send();
                 $emailer->reset();
 
@@ -550,13 +515,11 @@ class Artists extends Downloads {
             _style('error');
         }
 
-        v_style(
-            array(
-                'ERROR_MESSAGE' => $error_msg,
-                'SUBJECT'       => $subject,
-                'MESSAGE'       => $message
-            )
-        );
+        v_style([
+            'ERROR_MESSAGE' => $error_msg,
+            'SUBJECT'       => $subject,
+            'MESSAGE'       => $message
+        ]);
 
         return;
     }
@@ -608,10 +571,10 @@ class Artists extends Downloads {
         }
 
         if ($this->auth['fav']) {
-            $sql_member = array('user_a_favs' => $user->d('user_a_favs') - 1);
+            $sql_member = ['user_a_favs' => $user->d('user_a_favs') - 1];
 
             if ($user->d('user_a_favs') == 1 && $user->d('user_type') == USER_FAN) {
-                $sql_member += array('user_type' => USER_NORMAL);
+                $sql_member += ['user_type' => USER_NORMAL];
             }
 
             $sql = 'DELETE FROM _artists_fav
@@ -621,17 +584,17 @@ class Artists extends Downloads {
 
             $user->delete_all_unread(UH_AF, $user->d('user_id'));
         } else {
-            $sql_member = array('user_a_favs' => $user->d('user_a_favs') + 1);
+            $sql_member = ['user_a_favs' => $user->d('user_a_favs') + 1];
 
             if ($user->d('user_type') == USER_NORMAL) {
-                $sql_member += array('user_type' => USER_FAN);
+                $sql_member += ['user_type' => USER_FAN];
             }
 
-            $sql_insert = array(
-                'ub' => (int) $this->data['ub'],
+            $sql_insert = [
+                'ub'      => (int) $this->data['ub'],
                 'user_id' => (int) $user->d('user_id'),
-                'joined' => time()
-            );
+                'joined'  => time()
+            ];
             $fav_nextid = sql_insert('artists_fav', $sql_insert);
 
             $user->save_unread(UH_AF, $fav_nextid, $this->data['ub']);
@@ -693,19 +656,19 @@ class Artists extends Downloads {
         sql_query(sql_filter($sql, $this->data['ub'], $option_id));
 
         if (!sql_affectedrows()) {
-            $sql_insert = array(
-                'ub' => $this->data['ub'],
-                'option_id' => $option_id,
+            $sql_insert = [
+                'ub'          => $this->data['ub'],
+                'option_id'   => $option_id,
                 'vote_result' => 1
-            );
+            ];
             sql_insert('artists_votes', $sql_insert);
         }
 
-        $sql_insert = array(
-            'ub' => $this->data['ub'],
-            'user_id' => $user->d('user_id'),
+        $sql_insert = [
+            'ub'          => $this->data['ub'],
+            'user_id'     => $user->d('user_id'),
             'user_option' => $option_id
-        );
+        ];
         sql_insert('artists_voters', $sql_insert);
 
         $sql = 'UPDATE _artists SET votes = votes + 1
@@ -736,14 +699,11 @@ class Artists extends Downloads {
                 _style('video');
             }
 
-            _style(
-                'video.row',
-                array(
-                    'NAME' => $row['video_name'],
-                    'CODE' => $row['video_code'],
-                    'TIME' => $user->format_date($row['video_added'])
-                )
-            );
+            _style('video.row', [
+                'NAME' => $row['video_name'],
+                'CODE' => $row['video_code'],
+                'TIME' => $user->format_date($row['video_added'])
+            ]);
         }
 
         return;
@@ -962,14 +922,11 @@ class Artists extends Downloads {
         _style('a_records');
 
         foreach ($a_records as $row) {
-            _style(
-                'a_records.item',
-                array(
-                    'URL'   => s_link('a', $row['subdomain']),
-                    'NAME'  => $row['name'],
-                    'GENRE' => $row['genre']
-                )
-            );
+            _style('a_records.item', [
+                'URL'   => s_link('a', $row['subdomain']),
+                'NAME'  => $row['name'],
+                'GENRE' => $row['genre']
+            ]);
 
             if (isset($ai_records[$row['ub']])) {
                 $ai_select = array_rand($ai_records[$row['ub']]);
@@ -977,12 +934,9 @@ class Artists extends Downloads {
                 $image  = config('artists_url');
                 $image .= $row['ub'] . '/thumbnails/' . $ai_records[$row['ub']][$ai_select] . '.jpg';
 
-                _style(
-                    'a_records.item.image',
-                    array(
-                        'IMAGE' => $image
-                    )
-                );
+                _style('a_records.item.image', [
+                    'IMAGE' => $image
+                ]);
             }
         }
     }
@@ -997,14 +951,11 @@ class Artists extends Downloads {
         $result = sql_rowset($sql);
 
         foreach ($result as $row) {
-            _style(
-                'downloads',
-                array(
-                    'URL' => s_link('a', $row['subdomain'], 'downloads', $row['id']),
-                    'A'   => $row['name'],
-                    'T'   => $row['title']
-                )
-            );
+            _style('downloads', [
+                'URL' => s_link('a', $row['subdomain'], 'downloads', $row['id']),
+                'A'   => $row['name'],
+                'T'   => $row['title']
+            ]);
         }
 
         return true;
@@ -1015,7 +966,7 @@ class Artists extends Downloads {
 
         _style('a_stats');
 
-        $all_data = $this->stats(array('datetime', 'views', 'votes', 'posts'));
+        $all_data = $this->stats(['datetime', 'views', 'votes', 'posts']);
 
         if ($all_data['datetime']) {
             global $cache;
@@ -1037,29 +988,23 @@ class Artists extends Downloads {
                     $image  = config('artists_url');
                     $image .= $all_data['datetime']['ub'] . '/thumbnails/' . $a_random[$selected_image] . '.jpg';
 
-                    _style(
-                        'a_stats.gallery',
-                        array(
-                            'IMAGE' => $image,
-                            'URL'   => s_link('a', $all_data['datetime']['subdomain'])
-                        )
-                    );
+                    _style('a_stats.gallery', [
+                        'IMAGE' => $image,
+                        'URL'   => s_link('a', $all_data['datetime']['subdomain'])
+                    ]);
                 }
             }
         }
 
         foreach ($all_data as $id => $data) {
             if ($data['name'] != '') {
-                _style(
-                    'a_stats.item',
-                    array(
-                        'LANG'     => lang('ub_top_' . strtoupper($id)),
-                        'URL'      => s_link('a', $data['subdomain']),
-                        'NAME'     => $data['name'],
-                        'LOCATION' => $data['local'] ? 'Guatemala' : $data['location'],
-                        'GENRE'    => $data['genre']
-                    )
-                );
+                _style('a_stats.item', [
+                    'LANG'     => lang('ub_top_' . strtoupper($id)),
+                    'URL'      => s_link('a', $data['subdomain']),
+                    'NAME'     => $data['name'],
+                    'LOCATION' => $data['local'] ? 'Guatemala' : $data['location'],
+                    'GENRE'    => $data['genre']
+                ]);
             }
         }
 
@@ -1120,16 +1065,13 @@ class Artists extends Downloads {
             _style('thumbnails');
 
             foreach ($a_ary as $ub => $data) {
-                _style(
-                    'thumbnails.item',
-                    array(
-                        'NAME'     => $data['name'],
-                        'IMAGE'    => config('artists_url') . $ub . '/thumbnails/' . $random_images[$ub] . '.jpg',
-                        'URL'      => s_link('a', $data['subdomain']),
-                        'LOCATION' => $data['local'] ? 'Guatemala' : $data['location'],
-                        'GENRE'    => $data['genre']
-                    )
-                );
+                _style('thumbnails.item', [
+                    'NAME'     => $data['name'],
+                    'IMAGE'    => config('artists_url') . $ub . '/thumbnails/' . $random_images[$ub] . '.jpg',
+                    'URL'      => s_link('a', $data['subdomain']),
+                    'LOCATION' => $data['local'] ? 'Guatemala' : $data['location'],
+                    'GENRE'    => $data['genre']
+                ]);
             }
         }
 
@@ -1159,11 +1101,11 @@ class Artists extends Downloads {
 
         if ($ub && !$mainframe) {
             if ($row = sql_fieldrow($sql)) {
-                $this->images[$row['ub']][$row['image']] = array(
+                $this->images[$row['ub']][$row['image']] = [
                     'path'     => config('artists_url') . $row['ub'] . '/gallery/' . $row['image'] . '.jpg',
                     'image'    => $row['image'],
                     'allow_dl' => $row['allow_dl']
-                );
+                ];
             }
 
             return $row['image'];
@@ -1172,11 +1114,11 @@ class Artists extends Downloads {
         $result = sql_rowset($sql);
 
         foreach ($result as $row) {
-            $this->images[$row['ub']][$row['image']] = array(
+            $this->images[$row['ub']][$row['image']] = [
                 'path'     => config('artists_url') . $row['ub'] . '/gallery/' . $row['image'] . '.jpg',
                 'image'    => $row['image'],
                 'allow_dl' => $row['allow_dl']
-            );
+            ];
         }
 
         return;
@@ -1200,13 +1142,10 @@ class Artists extends Downloads {
             $ud_size = ($dl_size > $main_dl) ? $main_dl : $dl_size;
             $download_type = $this->downloadType($ud);
 
-            _style(
-                'downloads.panel',
-                array(
-                    'UD'          => $download_type['lang'],
-                    'TOTAL_COUNT' => $dl_size
-                )
-            );
+            _style('downloads.panel', [
+                'UD'          => $download_type['lang'],
+                'TOTAL_COUNT' => $dl_size
+            ]);
 
             for ($i = 0; $i < $ud_size; $i++) {
                 $ud_rand = array_rand($dl_data);
@@ -1225,14 +1164,11 @@ class Artists extends Downloads {
                     $dl_data[$ud_rand]['id']
                 );
 
-                _style(
-                    'downloads.panel.item',
-                    array(
-                        'UB'    => $this->adata[$dl_data[$ud_rand]['ub']]['name'],
-                        'TITLE' => $dl_data[$ud_rand]['title'],
-                        'URL'   => $url
-                    )
-                );
+                _style('downloads.panel.item', [
+                    'UB'    => $this->adata[$dl_data[$ud_rand]['ub']]['name'],
+                    'TITLE' => $dl_data[$ud_rand]['title'],
+                    'URL'   => $url
+                ]);
             }
         }
 
@@ -1320,36 +1256,28 @@ class Artists extends Downloads {
                 $image = $ub . '/thumbnails/' . $random_images[$ub] . '.jpg';
             }
 
-            _style(
-                'row',
-                array(
-                    'NAME'     => $data['name'],
-                    'IMAGE'    => config('artists_url') . $image,
-                    'URL'      => s_link('a', $data['subdomain']),
-                    'LOCATION' => $data['local'] ? 'Guatemala' : $data['location'],
-                    'GENRE'    => $data['genre']
-                )
-            );
+            _style('row', [
+                'NAME'     => $data['name'],
+                'IMAGE'    => config('artists_url') . $image,
+                'URL'      => s_link('a', $data['subdomain']),
+                'LOCATION' => $data['local'] ? 'Guatemala' : $data['location'],
+                'GENRE'    => $data['genre']
+            ]);
         }
 
         ksort($alphabet);
 
         foreach ($alphabet as $key => $null) {
-            _style(
-                'alphabet_item',
-                array(
-                    'CHAR' => strtoupper($key),
-                    'URL'  => s_link('a', '_' . decoct(ord($key)))
-                )
-            );
+            _style('alphabet_item', [
+                'CHAR' => strtoupper($key),
+                'URL'  => s_link('a', '_' . decoct(ord($key)))
+            ]);
         }
 
-        v_style(
-            array(
-                'TOTAL_A'         => config('max_artists'),
-                'SELECTED_LETTER' => $selected_char ? strtoupper($selected_char) : ''
-            )
-        );
+        v_style([
+            'TOTAL_A'         => config('max_artists'),
+            'SELECTED_LETTER' => $selected_char ? strtoupper($selected_char) : ''
+        ]);
 
         return;
     }
@@ -1387,24 +1315,18 @@ class Artists extends Downloads {
                     if ($this->$method()) {
                         $available[$row['tpl']] = true;
 
-                        _style(
-                            'nav',
-                            array(
-                                'LANG' => lang($row['text'])
-                            )
-                        );
+                        _style('nav', [
+                            'LANG' => lang($row['text'])
+                        ]);
 
                         if ($this->data['layout'] == $row['tpl']) {
                             _style('nav.strong');
                         } else {
                             $tpl = ($row['tpl'] == 'main') ? '' : $row['tpl'];
 
-                            _style(
-                                'nav.a',
-                                array(
-                                    'URL' => s_link('a', $this->data['subdomain'], $tpl)
-                                )
-                            );
+                            _style('nav.a', [
+                                'URL' => s_link('a', $this->data['subdomain'], $tpl)
+                            ]);
                         }
                     }
                 }
@@ -1429,15 +1351,15 @@ class Artists extends Downloads {
                     $current_month = date('Ym', $current_time);
 
                     if ($this->auth['user']) {
-                        $sql_viewers = array(
+                        $sql_viewers = [
                             'datetime' => (int) $current_time,
-                            'user_ip' => $user->ip
-                        );
+                            'user_ip'  => $user->ip
+                        ];
 
-                        $sql_viewers2 = array(
-                            'ub' => (int) $this->data['ub'],
+                        $sql_viewers2 = [
+                            'ub'      => (int) $this->data['ub'],
                             'user_id' => (int) $user->d('user_id')
-                        );
+                        ];
 
                         $sql = 'UPDATE _artists_viewers SET ??
                             WHERE ??';
@@ -1447,7 +1369,10 @@ class Artists extends Downloads {
 
                         if (!sql_affectedrows()) {
                             $update_views = true;
-                            $sql_stats = array('ub' => (int) $this->data['ub'], 'date' => (int) $current_month);
+                            $sql_stats = [
+                                'ub'   => (int) $this->data['ub'],
+                                'date' => (int) $current_month
+                            ];
 
                             sql_insert('artists_viewers', $sql_viewers + $sql_viewers2);
 
@@ -1456,10 +1381,10 @@ class Artists extends Downloads {
                             sql_query(sql_filter($sql, sql_build('SELECT', $sql_stats)));
 
                             if (!sql_affectedrows()) {
-                                $sql_insert = array(
+                                $sql_insert = [
                                     'members' => 1,
                                     'guests' => 0
-                                );
+                                ];
                                 sql_insert('artists_stats', $sql_stats + $sql_insert);
                             }
 
@@ -1488,19 +1413,19 @@ class Artists extends Downloads {
                         $this->data['views']++;
 
                         if ((!$this->auth['user'] && $this->data['layout'] == 1) && !$_ps) {
-                            $sql_stats = array(
+                            $sql_stats = [
                                 'ub'   => (int) $this->data['ub'],
                                 'date' => (int) $current_month
-                            );
+                            ];
                             $sql = 'UPDATE _artists_stats SET guests = guests + 1
                                 WHERE ??';
                             sql_query(sql_filter($sql, sql_build('SELECT', $sql_stats)));
 
                             if (!sql_affectedrows()) {
-                                $sql_insert = array(
+                                $sql_insert = [
                                     'members' => 0,
                                     'guests'  => 1
-                                );
+                                ];
                                 sql_insert('artists_stats', $sql_stats + $sql_insert);
                             }
                         }
@@ -1559,14 +1484,11 @@ class Artists extends Downloads {
                     _style('events_gallery');
 
                     foreach ($gallery as $row) {
-                        _style(
-                            'events_gallery.item',
-                            array(
-                                'URL'      => s_link('events', $row['event_alias']),
-                                'TITLE'    => $row['title'],
-                                'DATETIME' => $user->format_date($row['date'], lang('date_format'))
-                            )
-                        );
+                        _style('events_gallery.item', [
+                            'URL'      => s_link('events', $row['event_alias']),
+                            'TITLE'    => $row['title'],
+                            'DATETIME' => $user->format_date($row['date'], lang('date_format'))
+                        ]);
                     }
 
                     unset($events['is_gallery']);
@@ -1576,24 +1498,18 @@ class Artists extends Downloads {
                     _style('events_future');
 
                     foreach ($events as $is_date => $data) {
-                        _style(
-                            'events_future.set',
-                            array(
-                                'L_TITLE' => lang('ue_' . $is_date)
-                            )
-                        );
+                        _style('events_future.set', [
+                            'L_TITLE' => lang('ue_' . $is_date)
+                        ]);
 
                         foreach ($data as $item) {
-                            _style(
-                                'events_future.set.row',
-                                array(
-                                    'ITEM_ID'   => $item['id'],
-                                    'TITLE'     => $item['title'],
-                                    'DATE'      => $user->format_date($item['date']),
-                                    'THUMBNAIL' => config('events_url') . 'future/thumbnails/' . $item['id'] . '.jpg',
-                                    'SRC'       => config('events_url') . 'future/' . $item['id'] . '.jpg'
-                                )
-                            );
+                            _style('events_future.set.row', [
+                                'ITEM_ID'   => $item['id'],
+                                'TITLE'     => $item['title'],
+                                'DATE'      => $user->format_date($item['date']),
+                                'THUMBNAIL' => config('events_url') . 'future/thumbnails/' . $item['id'] . '.jpg',
+                                'SRC'       => config('events_url') . 'future/' . $item['id'] . '.jpg'
+                            ]);
                         }
                     }
                 }
@@ -1627,31 +1543,22 @@ class Artists extends Downloads {
                         $vote_result = (isset($results[$item])) ? intval($results[$item]) : 0;
                         $vote_percent = ($this->data['votes'] > 0) ? $vote_result / $this->data['votes'] : 0;
 
-                        _style(
-                            'ub_poll.results.item',
-                            array(
-                                'CAPTION' => lang('ub_vc' . $item),
-                                'RESULT'  => $vote_result,
-                                'PERCENT' => sprintf("%.1d", ($vote_percent * 100))
-                            )
-                        );
+                        _style('ub_poll.results.item', [
+                            'CAPTION' => lang('ub_vc' . $item),
+                            'RESULT'  => $vote_result,
+                            'PERCENT' => sprintf("%.1d", ($vote_percent * 100))
+                        ]);
                     }
                 } else {
-                    _style(
-                        'ub_poll.options',
-                        array(
-                            'S_VOTE_ACTION' => s_link('a', $this->data['subdomain'], 'vote')
-                        )
-                    );
+                    _style('ub_poll.options', [
+                        'S_VOTE_ACTION' => s_link('a', $this->data['subdomain'], 'vote')
+                    ]);
 
                     foreach ($this->voting['ub'] as $item) {
-                        _style(
-                            'ub_poll.options.item',
-                            array(
-                                'ID'      => $item,
-                                'CAPTION' => lang('ub_vc' . $item)
-                            )
-                        );
+                        _style('ub_poll.options.item', [
+                            'ID'      => $item,
+                            'CAPTION' => lang('ub_vc' . $item)
+                        ]);
                     }
                 }
 
@@ -1667,27 +1574,23 @@ class Artists extends Downloads {
 
                     foreach ($this->ud_song as $key => $data) {
                         $download_type = $this->downloadType($key);
-                        _style('ud_block', array('LANG' => $download_type['lang']));
+                        _style('ud_block', [
+                            'LANG' => $download_type['lang']
+                        ]);
 
                         foreach ($data as $song) {
-                            _style(
-                                'ud_block.item',
-                                array(
-                                    'TITLE' => $song['title']
-                                )
-                            );
+                            _style('ud_block.item', [
+                                'TITLE' => $song['title']
+                            ]);
 
                             if (isset($this->dl_data['id']) && ($song['id'] == $this->dl_data['id'])) {
                                 _style('ud_block.item.strong');
                                 continue;
                             }
 
-                            _style(
-                                'ud_block.item.a',
-                                array(
-                                    'URL' => s_link('a', $this->data['subdomain'], 'downloads', $song['id'])
-                                )
-                            );
+                            _style('ud_block.item.a', [
+                                'URL' => s_link('a', $this->data['subdomain'], 'downloads', $song['id'])
+                            ]);
                         }
                     }
                 }
@@ -1705,13 +1608,10 @@ class Artists extends Downloads {
                 // Make fans
                 //
                 if (!$this->auth['mod'] && !$this->auth['smod']) {
-                    _style(
-                        'make_fans',
-                        array(
-                            'FAV_URL'  => s_link('a', $this->data['subdomain'], 'favorites'),
-                            'FAV_LANG' => ($this->auth['fav']) ? '' : lang('ub_fav_add')
-                        )
-                    );
+                    _style('make_fans', [
+                        'FAV_URL'  => s_link('a', $this->data['subdomain'], 'favorites'),
+                        'FAV_LANG' => ($this->auth['fav']) ? '' : lang('ub_fav_add')
+                    ]);
                 }
 
                 if ($this->data['local']) {
@@ -1723,24 +1623,20 @@ class Artists extends Downloads {
                 //
                 // Set template
                 //
-                v_style(
-                    array(
-                        'INACTIVE' => !$this->data['a_active'],
-                        'UNAME'    => $this->data['name'],
-                        'GENRE'    => $this->data['genre'],
-                        'POSTS'    => number_format($this->data['posts']),
-                        'VOTES'    => number_format($this->data['votes']),
-                        'FANS'     => $fan_count,
-                        'L_FANS'   => ($fan_count == 1) ? lang('fan') : lang('fans'),
-                        'LOCATION' => $location
-                    )
-                );
+                v_style([
+                    'INACTIVE' => !$this->data['a_active'],
+                    'UNAME'    => $this->data['name'],
+                    'GENRE'    => $this->data['genre'],
+                    'POSTS'    => number_format($this->data['posts']),
+                    'VOTES'    => number_format($this->data['votes']),
+                    'FANS'     => $fan_count,
+                    'L_FANS'   => ($fan_count == 1) ? lang('fan') : lang('fans'),
+                    'LOCATION' => $location
+                ]);
 
-                $template->set_filenames(
-                    array(
-                        'a_body' => 'artists.' . $this->data['template'] . '.htm'
-                    )
-                );
+                $template->set_filenames([
+                    'a_body' => 'artists.' . $this->data['template'] . '.htm'
+                ]);
                 $template->assign_var_from_handle('UB_BODY', 'a_body');
                 break;
         }
@@ -1759,15 +1655,12 @@ class Artists extends Downloads {
             ORDER BY RAND()
             LIMIT 1';
         if ($row = sql_fieldrow($sql)) {
-            _style(
-                'random_a',
-                array(
-                    'NAME'  => $row['name'],
-                    'IMAGE' => config('artists_url') . $row['ub'] . '/thumbnails/' . $row['image'] . '.jpg',
-                    'URL'   => s_link('a', $row['subdomain']),
-                    'GENRE' => $row['genre']
-                )
-            );
+            _style('random_a', [
+                'NAME'  => $row['name'],
+                'IMAGE' => config('artists_url') . $row['ub'] . '/thumbnails/' . $row['image'] . '.jpg',
+                'URL'   => s_link('a', $row['subdomain']),
+                'GENRE' => $row['genre']
+            ]);
         }
 
         return;

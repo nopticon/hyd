@@ -1,5 +1,4 @@
-<?php
-namespace App;
+<?php namespace App;
 
 class __event_artist_create extends mac {
     public function __construct() {
@@ -39,22 +38,16 @@ class __event_artist_create extends mac {
             if ($last_month != $row_month) {
                 $last_month = $row_month;
 
-                _style(
-                    'events.month',
-                    array(
-                        'NAME' => $row_month
-                    )
-                );
+                _style('events.month', [
+                    'NAME' => $row_month
+                ]);
             }
 
-            _style(
-                'events.month.row',
-                array(
-                    'ID'    => $row['id'],
-                    'TITLE' => $row['title'],
-                    'DATE'  => $user->format_date($row['date'])
-                )
-            );
+            _style('events.month.row', [
+                'ID'    => $row['id'],
+                'TITLE' => $row['title'],
+                'DATE'  => $user->format_date($row['date'])
+            ]);
         }
 
         return;
@@ -64,7 +57,7 @@ class __event_artist_create extends mac {
     Assign an event to selected artist.
     */
     private function create() {
-        $v = _request(array('event' => 0));
+        $v = _request(['event' => 0]);
 
         if (_empty($v)) {
             return;
@@ -85,10 +78,10 @@ class __event_artist_create extends mac {
             return;
         }
 
-        $sql_insert = array(
+        $sql_insert = [
             'a_artist' => $this->object['ub'],
-            'a_event' => $event['id']
-        );
+            'a_event'  => $event['id']
+        ];
         sql_insert('artists_events', $sql_insert);
 
         return redirect(s_link('events', $event['event_alias']));
