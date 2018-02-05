@@ -1432,8 +1432,13 @@ function html_entity_decode_utf8($string) {
     static $trans_tbl;
 
     // Replace numeric entities
-    $string = preg_replace('~&#x([0-9a-f]+);~ei', 'code2utf(hexdec("\\1"))', $string);
-    $string = preg_replace('~&#(\d+);~e', 'code2utf(\\1)', $string);
+    $string preg_replace_callback('/&#x([0-9a-f]+);/i', function ($attr) {
+        return code2utf(hexdec($attr[1]));
+    }, $string);
+
+    $string preg_replace_callback('/&#(\d+);/i', function ($attr) {
+        return code2utf($attr[1]);
+    }, $string);
 
     // Replace literal entities
     if (!isset($trans_tbl)) {
@@ -1872,48 +1877,34 @@ function guestUsername($username) {
 }
 
 function decamelize($word) {
-      return $word = preg_replace_callback(
-        "/(^|[a-z])([A-Z])/",
-        function ($m) {
-            return strtolower(strlen($m[1]) ? "$m[1]_$m[2]" : "$m[2]");
-        },
-        $word
-    );
+    return preg_replace_callback("/(^|[a-z])([A-Z])/", function ($m) {
+        return strtolower(strlen($m[1]) ? "$m[1]_$m[2]" : "$m[2]");
+    }, $word);
 }
 
 function camelize($word) {
-    return $word = preg_replace_callback(
-        "/(^|_)([a-z])/",
-        function ($m) {
-            return strtoupper("$m[2]");
-        },
-        $word
-    );
+    return preg_replace_callback("/(^|_)([a-z])/", function ($m) {
+        return strtoupper("$m[2]");
+    }, $word);
 }
 
 function a_thumbnails($selected_artists, $random_images, $lang_key, $block, $item_per_col = 2) {
     global $user;
 
-    _style(
-        'main.' . $block,
-        array(
-            'L_TITLE' => lang($lang_key)
-        )
-    );
+    _style('main.' . $block, [
+        'L_TITLE' => lang($lang_key)
+    ]);
 
     foreach ($selected_artists as $ub => $data) {
         $image = $ub . '/thumbnails/' . $random_images[$ub] . '.jpg';
 
-        _style(
-            'main.' . $block . '.row',
-            array(
-                'NAME'     => $data['name'],
-                'IMAGE'    => config('artists_url') . $image,
-                'URL'      => s_link('a', $data['subdomain']),
-                'LOCATION' => $data['local'] ? 'Guatemala' : $data['location'],
-                'GENRE'    => $data['genre']
-            )
-        );
+        _style('main.' . $block . '.row', [
+            'NAME'     => $data['name'],
+            'IMAGE'    => config('artists_url') . $image,
+            'URL'      => s_link('a', $data['subdomain']),
+            'LOCATION' => $data['local'] ? 'Guatemala' : $data['location'],
+            'GENRE'    => $data['genre']
+        ]);
     }
 
     return true;
