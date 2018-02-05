@@ -661,19 +661,23 @@ class User extends Session {
         return;
     }
 
+    public function clean_value ($string) {
+        return trim($string);
+    }
+
     //
     // END - USER HISTORY FUNCTIONS
     //
 
     public function check_ref($block_ud = false, $auto_block = false) {
-        $url = getenv('HTTP_REFERER') ? trim(getenv('HTTP_REFERER')) : v_server('HTTP_REFERER');
+        $url = getenv('HTTP_REFERER') ? getenv('HTTP_REFERER') : v_server('HTTP_REFERER');
         $url = $this->clean_value($url);
 
         if ($url == '') {
             return;
         }
 
-        $domain = explode('?', str_replace(array('http://', 'https://'), '', $url));
+        $domain = explode('?', str_replace(['http://', 'https://'], '', $url));
         $domain = trim($domain[0]);
         $domain = explode('/', $domain);
         $excref = $domain[0] . '/' . $domain[1];
@@ -708,7 +712,7 @@ class User extends Session {
         }
 
         $request = $this->clean_value(v_server('REQUEST_URI'));
-        $auto_block = ($auto_block) ? 1 : 0;
+        $auto_block = (int) $auto_block;
 
         $insert   = true;
         $update   = false;
@@ -738,7 +742,7 @@ class User extends Session {
                 $insert = false;
 
                 if (!$banned) {
-                    $sql_banned = ", banned = " . intval($auto_block);
+                    $sql_banned = ', banned = ' . $auto_block;
                 }
 
                 $sql = 'UPDATE _ref

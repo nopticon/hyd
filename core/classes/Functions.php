@@ -373,8 +373,8 @@ function v_server($a) {
     return isset($_SERVER[$a]) ? $_SERVER[$a] : '';
 }
 
-function get_protocol($ssl = false) {
-    return 'http' . (($ssl !== false || v_server('SERVER_PORT') == 443) ? 's' : '') . '://';
+function get_protocol($ssl = false, $slash = true) {
+    return 'http' . (($ssl !== false || v_server('SERVER_PORT') == 443) ? 's' : '') . ($slash ? '://' : '');
 }
 
 function get_host() {
@@ -1165,11 +1165,13 @@ function redirect($url = false, $moved = false) {
 
     // If relative path, prepend application url
     if (strpos($url, '//') === false) {
-        $url = 'http://' . config('server_name') . trim($url);
+        $url = get_protocol() . config('server_name') . trim($url);
     }
 
-    if (strpos($url, 'http') === false) {
-        $url = 'http:' . $url;
+    $protocol = get_protocol(false, false);
+
+    if (strpos($url, $protocol) === false) {
+        $url = $protocol . ':' . $url;
     }
 
     if ($moved !== false) {
@@ -1400,24 +1402,6 @@ function get_a_imagepath($abs_path, $domain_path, $directory, $filename, $folder
         $a = $abs_path . $directory . '/' . $row . '/' . $filename;
         return $domain_path . $directory . '/' . $row . '/' . $filename;
     }
-    return false;
-}
-
-function check_www($url) {
-    $domain = str_replace('http://', '', $url);
-    if (strstr($domain, '?')) {
-        $domain_e = explode('/', $domain);
-        $domain = $domain_e[0];
-        if ($domain == config('server_name')) {
-            $domain .= '/' . $domain_e[1];
-        }
-    }
-
-    if ($check = @fopen('http://' . $domain, 'r')) {
-        @fclose($check);
-        return true;
-    }
-
     return false;
 }
 

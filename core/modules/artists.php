@@ -538,7 +538,7 @@ class Artists extends Downloads {
 
         global $user;
 
-        if (!$this->data['www_awc'] && !check_www($this->data['www'])) {
+        if (!$this->data['www_awc']) {
             trigger_error(sprintf(lang('links_cant_redirect'), $this->data['www']));
         }
 
