@@ -2,7 +2,7 @@
 
 function htmlencode($str, $multibyte = false) {
     $nr = nr();
-    $result = str_replace(array(nr(1), nr(true), '\xFF'), array($nr, $nr, ' '), $str);
+    $result = str_replace([nr(1), nr(true), '\xFF'], [$nr, $nr, ' '], $str);
     $result = trim(htmlentities($result));
     $result = STRIP ? stripslashes($result) : $result;
 
@@ -36,7 +36,7 @@ function _empty($ary) {
     $is_empty = true;
 
     if (!is_array($ary) && !is_object($ary)) {
-        $ary = array($ary);
+        $ary = [$ary];
     }
 
     foreach ($ary as $ary_k => $ary_v) {
@@ -70,7 +70,7 @@ function request_var($var_name, $default = false, $multibyte = false) {
         $_REQUEST[$var_part[1]] = $_FILES[$var_part[1]];
 
         $var_name = $var_part[1];
-        $default  = array('' => '');
+        $default  = ['' => ''];
     }
 
     $array_default = is_array($default);
@@ -122,13 +122,13 @@ function get_real_ip() {
     if ($fwd) {
         $entries = explode(',', do_remove_spaces($fwd));
 
-        $private_ip = array(
+        $private_ip = [
             '/^0\./',
             '/^127\.0\.0\.1/',
             '/^192\.168\..*/',
             '/^172\.((1[6-9])|(2[0-9])|(3[0-1]))\..*/',
             '/^10\..*/'
-        );
+        ];
 
         foreach ($entries as $entry) {
             if (preg_match("/^(\d+\.\d+\.\d+\.\d+)/", $entry, $ip_list)) {
@@ -184,10 +184,10 @@ function set_config($name, $value) {
     sql_query(sql_filter($sql, $value, $name));
 
     if (!sql_affectedrows() && !isset($config[$name])) {
-        $sql_insert = array(
+        $sql_insert = [
             'config_name'  => $name,
             'config_value' => $value
-        );
+        ];
         sql_insert('application', $sql_insert);
     }
 
@@ -242,14 +242,11 @@ function monetize() {
             $set_blocks[$row['monetize_position']] = true;
         }
 
-        _style(
-            'monetize.' . $row['monetize_position'] . '.row',
-            array(
-                'URL'   => $row['monetize_url'],
-                'IMAGE' => config('assets_url') . 'base/' . $row['monetize_image'],
-                'ALT'   => $row['monetize_alt']
-            )
-        );
+        _style('monetize.' . $row['monetize_position'] . '.row', [
+            'URL'   => $row['monetize_url'],
+            'IMAGE' => config('assets_url') . 'base/' . $row['monetize_image'],
+            'ALT'   => $row['monetize_alt']
+        ]);
 
         $i++;
     }
@@ -262,12 +259,7 @@ function leading_zero($number) {
 }
 
 function forum_for_team($forum_id) {
-    $list = array(
-        'mod',
-        'radio',
-        'colab',
-        'all'
-    );
+    $list = w('mod radio colab all');
 
     $response = '';
     foreach ($list as $row) {
@@ -285,14 +277,9 @@ function forum_for_team($forum_id) {
 function forum_for_team_list($forum_id) {
     global $user;
 
-    $list = array(
-        'mod',
-        'radio',
-        'colab',
-        'all'
-    );
+    $list = w('mod radio colab all');
 
-    $response = array();
+    $response = [];
     foreach ($list as $row) {
         $config = (int) config('forum_for_' . $row);
 
@@ -320,7 +307,7 @@ function forum_for_team_not() {
 }
 
 function forum_for_team_array() {
-    $ary  = array();
+    $ary  = [];
     $list = w('all mod radio colab');
 
     foreach ($list as $k) {
@@ -426,12 +413,9 @@ function showError($list) {
         return;
     }
 
-    _style(
-        'error',
-        array(
-            'MESSAGE' => parse_error($list)
-        )
-    );
+    _style('error', [
+        'MESSAGE' => parse_error($list)
+    ]);
 }
 
 //
@@ -654,13 +638,11 @@ function build_pagination($url_format, $total_items, $per_page, $offset, $prefix
         $next = sprintf($format, sprintf($url_format, ($on_page * $per_page)), sprintf($pages_next, $per_page));
     }
 
-    v_style(
-        array(
-            $prefix . 'PAGES_PREV' => $prev,
-            $prefix . 'PAGES_NEXT' => $next,
-            $prefix . 'PAGES_ON'   => sprintf(lang('pages_on'), $on_page, max(ceil($total_items / $per_page), 1))
-        )
-    );
+    v_style([
+        $prefix . 'PAGES_PREV' => $prev,
+        $prefix . 'PAGES_NEXT' => $next,
+        $prefix . 'PAGES_ON'   => sprintf(lang('pages_on'), $on_page, max(ceil($total_items / $per_page), 1))
+    ]);
 
     return;
 }
@@ -746,14 +728,12 @@ function build_num_pagination($url_format, $total_items, $per_page, $offset, $pr
         $page_string = '';
     }
 
-    v_style(
-        array(
-            $prefix . 'PAGES_NUMS' => $page_string,
-            $prefix . 'PAGES_PREV' => $prev,
-            $prefix . 'PAGES_NEXT' => $next,
-            $prefix . 'PAGES_ON'   => sprintf(lang('pages_on'), $on_page, max($total_pages, 1))
-        )
-    );
+    v_style([
+        $prefix . 'PAGES_NUMS' => $page_string,
+        $prefix . 'PAGES_PREV' => $prev,
+        $prefix . 'PAGES_NEXT' => $next,
+        $prefix . 'PAGES_ON'   => sprintf(lang('pages_on'), $on_page, max($total_pages, 1))
+    ]);
 
     return $page_string;
 }
@@ -780,7 +760,7 @@ function _button() {
     $list = func_get_args();
 
     if (!$list) {
-        $list = array('submit');
+        $list = ['submit'];
     }
 
     $response = false;
@@ -934,7 +914,7 @@ function exception($filename, $dynamics = false) {
     return $a;
 }
 
-function hook($name, $args = array(), $arr = false) {
+function hook($name, $args = [], $arr = false) {
     switch ($name) {
         case 'isset':
             eval('$a = ' . $name . '($args' . ((is_array($args)) ? '[0]' . $args[1] : '') . ');');
@@ -942,7 +922,7 @@ function hook($name, $args = array(), $arr = false) {
             break;
         case 'in_array':
             if (is_array($args[1])) {
-                if (hook('isset', array($args[1][0], $args[1][1]))) {
+                if (hook('isset', [$args[1][0], $args[1][1]])) {
                     eval('$a = ' . $name . '($args[0], $args[1][0]' . $args[1][1] . ');');
                 }
             } else {
@@ -993,7 +973,7 @@ function f($s) {
 
 function w($a = '', $d = false) {
     if (empty($a) || !is_string($a)) {
-        return array();
+        return [];
     }
 
     $e = explode(' ', $a);
@@ -1007,7 +987,7 @@ function w($a = '', $d = false) {
     return $e;
 }
 
-function sendmail($to, $from, $subject, $template = '', $vars = array()) {
+function sendmail($to, $from, $subject, $template = '', $vars = []) {
     static $emailer;
 
     if (!$emailer) {
@@ -1142,10 +1122,10 @@ function msg_handler($errno, $msg_text, $errfile, $errline) {
 
             sentry_message($msg_text);
 
-            $custom_vars = array(
+            $custom_vars = [
                 'MESSAGE_TITLE' => lang('information'),
                 'MESSAGE_TEXT'  => lang($msg_text, $msg_text)
-            );
+            ];
 
             page_layout('INFORMATION', 'message', $custom_vars);
             break;
@@ -1247,7 +1227,7 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
         $user->d('session_page', '');
     }
 
-    $common_vars = array(
+    $common_vars = [
         'PAGE_TITLE'    => lang($page_title, $page_title),
         '_SELF'         => _page(),
 
@@ -1291,7 +1271,7 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
         'S_USERNAME'    => $user->d('username'),
         'S_MEMBER'      => $user->is('member'),
         'S_TODAY_COUNT' => $today
-    );
+    ];
 
     if ($custom_vars !== false) {
         $common_vars += $custom_vars;
@@ -1302,11 +1282,9 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
 
     v_style($common_vars);
 
-    $template->set_filenames(
-        array(
-            'body' => $htmlpage . '.htm'
-        )
-    );
+    $template->set_filenames([
+        'body' => $htmlpage . '.htm'
+    ]);
     $template->pparse('body');
 
     sql_close();
@@ -1500,7 +1478,7 @@ function _style_uv($a) {
     return $b;
 }
 
-function _style($a, $b = array(), $i = false) {
+function _style($a, $b = [], $i = false) {
     if ($i !== false && $i) {
         return;
     }
@@ -1514,7 +1492,9 @@ function _style($a, $b = array(), $i = false) {
 function _style_handler($f) {
     global $template;
 
-    $template->set_filenames(array('tmp' => $f));
+    $template->set_filenames([
+        'tmp' => $f
+    ]);
     $template->assign_var_from_handle('S_TMP', 'tmp');
 
     return _style_var('S_TMP');
@@ -1543,13 +1523,13 @@ function _style_functions($arg) {
         return $arg[0];
     }
 
-    $e = explode(':', $arg[2]);
-    $f_arg = array();
+    $e     = explode(':', $arg[2]);
+    $f_arg = [];
 
     foreach ($e as $row) {
         if (preg_match('/\((.*?)\)/', $row, $reg)) {
             $_row = array_map('trim', explode(',', str_replace("'", '', $reg[1])));
-            $row = array();
+            $row = [];
 
             foreach ($_row as $each) {
                 $j = explode(' => ', $each);
@@ -1581,7 +1561,7 @@ function artist_root($alias, $check = false) {
 }
 
 function artist_path($alias, $id, $build = true, $check = false) {
-    $response = array($alias{0}, $alias{1}, $id);
+    $response = [$alias{0}, $alias{1}, $id];
 
     if ($check) {
         artist_check($response);
@@ -1625,7 +1605,7 @@ function friendly($s) {
     $s = preg_replace('`&(amp;)?#?[a-z0-9]+;`i', '-', $s);
     $s = htmlentities($s, ENT_COMPAT, 'utf-8');
     $s = preg_replace("`&([a-z])(acute|uml|circ|grave|ring|cedil|slash|tilde|caron|lig|quot|rsquo);`i", "\\1", $s);
-    $s = preg_replace(array("`[^a-z0-9]`i", "`[-]+`"), '-', $s);
+    $s = preg_replace(["`[^a-z0-9]`i", "`[-]+`"], '-', $s);
 
     return strtolower(trim($s, '-'));
 }
@@ -1659,7 +1639,7 @@ function code2utf($num) {
 }
 
 function language_select($default, $select_name = 'language', $dirname = 'language') {
-    $lang = array();
+    $lang = [];
 
     $dir = @opendir(ROOT . $dirname);
     while ($file = readdir($dir)) {
@@ -1736,7 +1716,10 @@ function validate_username($username) {
         WHERE LOWER(username_base) = ?';
     if ($userdata = sql_fieldrow(sql_filter($sql, strtolower($username)))) {
         if (($user->is('member') && $username != $userdata['username']) || !$user->is('member')) {
-            return array('error' => true, 'error_msg' => lang('username_taken'));
+            return [
+                'error'     => true,
+                'error_msg' => lang('username_taken')
+            ];
         }
     }
 
@@ -1744,7 +1727,10 @@ function validate_username($username) {
         FROM _groups
         WHERE LOWER(group_name) = ?';
     if (sql_fieldrow(sql_filter($sql, strtolower($username)))) {
-        return array('error' => true, 'error_msg' => lang('username_taken'));
+        return [
+            'error'     => true,
+            'error_msg' => lang('username_taken')
+        ];
     }
 
     $sql = 'SELECT disallow_username
@@ -1755,16 +1741,25 @@ function validate_username($username) {
         $preg_username = str_replace("\*", ".*?", preg_quote($row['disallow_username'], '#'));
 
         if (preg_match("#\b(" . $preg_username . ")\b#i", $username)) {
-            return array('error' => true, 'error_msg' => lang('username_disallowed'));
+            return [
+                'error'     => true,
+                'error_msg' => lang('username_disallowed')
+            ];
         }
     }
 
     // Don't allow " and ALT-255 in username.
     if (strstr($username, '"') || strstr($username, '&quot;') || strstr($username, chr(160))) {
-        return array('error' => true, 'error_msg' => lang('username_invalid'));
+        return [
+            'error'     => true,
+            'error_msg' => lang('username_invalid')
+        ];
     }
 
-    return array('error' => false, 'error_msg' => '');
+    return [
+        'error'     => false,
+        'error_msg' => ''
+    ];
 }
 
 //
@@ -1783,7 +1778,10 @@ function validate_email($email) {
             foreach ($result as $row) {
                 $match_email = str_replace('*', '.*?', $row['ban_email']);
                 if (preg_match('/^' . $match_email . '$/is', $email)) {
-                    return array('error' => true, 'error_msg' => lang('email_banned'));
+                    return [
+                        'error'     => true,
+                        'error_msg' => lang('email_banned')
+                    ];
                 }
             }
 
@@ -1791,14 +1789,23 @@ function validate_email($email) {
                 FROM _members
                 WHERE user_email = ?';
             if (sql_fieldrow(sql_filter($sql, $email))) {
-                return array('error' => true, 'error_msg' => lang('emailL_taken'));
+                return [
+                    'error'     => true,
+                    'error_msg' => lang('emailL_taken')
+                ];
             }
 
-            return array('error' => false, 'error_msg' => '');
+            return [
+                'error'     => false,
+                'error_msg' => ''
+            ];
         }
     }
 
-    return array('error' => true, 'error_msg' => lang('email_invalid'));
+    return [
+        'error'     => true,
+        'error_msg' => lang('email_invalid')
+    ];
 }
 
 function get_user_avatar($name, $user_id = GUEST, $format = '', $abs_path = false) {
@@ -1853,12 +1860,12 @@ function validate_optional_fields(&$msnm, &$yim, &$website, &$location, &$occupa
 function show_exception($name) {
     $file_content = @file('./template/exceptions/' . $name . '.htm');
 
-    $matches = array(
-        '<!--#echo var="HTTP_HOST" -->' => v_server('HTTP_HOST'),
+    $matches = [
+        '<!--#echo var="HTTP_HOST" -->'   => v_server('HTTP_HOST'),
         '<!--#echo var="REQUEST_URI" -->' => v_server('REQUEST_URI')
-    );
+    ];
 
-    $orig = $repl = array();
+    $orig = $repl = [];
 
     foreach ($matches as $row_k => $row_v) {
         $orig[] = $row_k;
@@ -1920,9 +1927,9 @@ function create_ban_ip($ip = false) {
         FROM _banlist
         WHERE ban_ip = ?';
     if (!$row = sql_fieldrow(sql_filter($sql, $ip))) {
-        $sql_insert = array(
+        $sql_insert = [
             'ban_ip' => $ip
-        );
+        ];
         sql_insert('banlist', $sql_insert);
 
         return true;
@@ -1940,9 +1947,9 @@ function create_ban_user($user_id = false) {
         FROM _banlist
         WHERE ban_userid = ?';
     if (!$ban = sql_fieldrow(sql_filter($sql, $user_id))) {
-        $insert = array(
+        $insert = [
             'ban_userid' => $user_id
-        );
+        ];
         sql_insert('banlist', $insert);
 
         $sql = 'UPDATE _members SET user_type = ?, user_active = ?
