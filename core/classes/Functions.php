@@ -1057,7 +1057,8 @@ function lang_count($one, $more, $count) {
 function fatal_error($mode = '404', $message = '', $extra = []) {
     global $user;
 
-    $page = parse_url(_page());
+    $on   = _page();
+    $page = parse_url($on);
 
     $extra = array_merge($extra, [
         'page'     => isset($page['path']) ? $page['path'] : '/',
@@ -1074,7 +1075,7 @@ function fatal_error($mode = '404', $message = '', $extra = []) {
             break;
         default:
             status('404 Not Found');
-            sentry_message('404: ' . $extra['path'], $extra);
+            sentry_message('404: ' . $on, $extra);
             break;
     }
 
