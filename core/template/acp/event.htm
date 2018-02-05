@@ -7,34 +7,47 @@
 	<form action="{MODULE_URL}" method="post" enctype="multipart/form-data">
 		<input type="hidden" name="MAX_FILE_SIZE" value="{S_UPLOAD}" />
 		{S_HIDDEN}
-		
+
 		<input class="f ff" type="file" name="event_image[]" />
-		
+
 		<span class="clear"></span>
-		
+
 		<label for="event_name">Nombre de evento</label>
 		<input class="f ff" id="event_name" name="event_name" value="" />
-		
+
 		<span class="clear"></span>
-		
+
+        <!-- BEGIN dates -->
 		<label for="event_day">Fecha</label>
-		<input class="f ff" type="text" name="event_day" size="2" value="" />
-		<input class="f ff" type="text" name="event_month" size="2" value="" />
-		<input class="f ff" type="text" name="event_year" size="5" value="" />
-		
+        <!-- BEGIN block -->
+        <select class="f ff" name="event_{block.NAME}">
+        <!-- BEGIN list -->
+            <option value="{list.NUMBER}">{list.NUMBER}</option>
+        <!-- END list -->
+        </select>
+        <!-- END block -->
+        <!-- END dates -->
+
 		<span class="clear"></span>
-		
+
+        <!-- BEGIN hours -->
 		<label for="event_hours">Hora (24 horas)</label>
-		<input class="f ff" type="text" name="event_hours" size="2" value="" />
-		<input class="f ff" type="text" name="event_minutes" size="2" value="" />
-		
+        <!-- BEGIN block -->
+        <select class="f ff" name="event_{block.NAME}">
+        <!-- BEGIN list -->
+            <option value="{list.NUMBER}">{list.NUMBER}</option>
+        <!-- END list -->
+        </select>
+        <!-- END block -->
+        <!-- END hours -->
+
 		<span class="clear"></span>
-		
+
 		<label for="event_artists">Artistas de Rock Republik</label>
 		<textarea id="event_artists" name="event_artists"></textarea>
-		
+
 		<span class="clear"></span>
-		
+
 		<!-- BEGIN topics -->
 		<div class="pad_top">
 			<label for="event_current_topic">Tema actual (opcional)</label>
@@ -46,7 +59,7 @@
 		</select>
 		</div>
 		<!-- END topics -->
-		
+
 		<input type="submit" name="submit" value="{L_SUBMIT}" />
 	</form>
 </div>

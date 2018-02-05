@@ -180,6 +180,46 @@ class __event extends mac {
             ]);
         }
 
+        $year  = date('Y');
+        $dates = [
+            'day'   => range(1, 31),
+            'month' => range(1, 12),
+            'year'  => range($year, $year + 3),
+        ];
+
+        _style('dates');
+
+        foreach ($dates as $name => $value) {
+            _style('dates.block', [
+                'NAME' => $name
+            ]);
+
+            foreach ($value as $name2 => $value2) {
+                _style('dates.block.list', [
+                    'NUMBER' => $value2
+                ]);
+            }
+        }
+
+        $hours = [
+            'hours'   => range(0, 23),
+            'minutes' => range(0, 59, 5),
+        ];
+
+        _style('hours');
+
+        foreach ($hours as $name => $value) {
+            _style('hours.block', [
+                'NAME' => $name
+            ]);
+
+            foreach ($value as $name2 => $value2) {
+                _style('hours.block.list', [
+                    'NUMBER' => $value2
+                ]);
+            }
+        }
+
         $sql = 'SELECT topic_id, topic_title
             FROM _forum_topics t
             LEFT OUTER JOIN _events e ON t.topic_id = e.event_topic
