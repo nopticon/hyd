@@ -1432,11 +1432,11 @@ function html_entity_decode_utf8($string) {
     static $trans_tbl;
 
     // Replace numeric entities
-    $string preg_replace_callback('/&#x([0-9a-f]+);/i', function ($attr) {
+    $string = preg_replace_callback('/&#x([0-9a-f]+);/i', function ($attr) {
         return code2utf(hexdec($attr[1]));
     }, $string);
 
-    $string preg_replace_callback('/&#(\d+);/i', function ($attr) {
+    $string = preg_replace_callback('/&#(\d+);/i', function ($attr) {
         return code2utf($attr[1]);
     }, $string);
 
