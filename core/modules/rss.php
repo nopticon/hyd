@@ -44,7 +44,7 @@ class Rss {
         foreach ($result as $row) {
             $this->xml[] = [
                 'title'       => $row['post_subject'],
-                'link'        => s_link('news', $row['news_id']),
+                'link'        => s_link('news', $row['news_alias']),
                 'description' => $row['post_desc'],
                 'pubdate'     => $row['post_time'],
                 'author'      => $row['username']
