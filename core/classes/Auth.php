@@ -425,8 +425,8 @@ class Auth {
 
                         $ask_fill_profile = w('country location gender birthday avatar');
 
-                        foreach ($ask_fill_profile as $row) {
-                            if (empty($row['user_' . $row])) {
+                        foreach ($ask_fill_profile as $row2) {
+                            if (empty($row['user_' . $row2])) {
                                 $ref = s_link('my', 'profile');
                                 break;
                             }

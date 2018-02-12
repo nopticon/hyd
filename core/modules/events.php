@@ -654,10 +654,6 @@ class Events extends downloads {
                     redirect(s_link('events', $this->v('event_alias')));
                 }
 
-                if (!$posts_offset) {
-                    //unset($messages[0]);
-                }
-
                 $i = 0;
                 foreach ($messages as $row) {
                     if (!$i) {

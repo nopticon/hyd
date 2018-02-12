@@ -50,7 +50,7 @@ class Session {
                             'session_time' => $this->time
                         );
 
-                        if ($update_page) {
+                        if ($update_page && strpos($this->page, '/signin') === false) {
                             $sql_update['session_page'] = $this->page;
                         }
 
@@ -59,7 +59,7 @@ class Session {
                         sql_query(sql_filter($sql, sql_build('UPDATE', $sql_update), $this->session_id));
                     }
 
-                    if ($update_page) {
+                    if ($update_page && strpos($this->page, '/signin') === false) {
                         $this->data['session_page'] = $this->page;
                     }
 
