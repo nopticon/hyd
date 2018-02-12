@@ -41,7 +41,10 @@ class Upload {
 
     public function rename($a, $b) {
         $filename = str_replace($a->random, $b, $a->filepath);
-        @rename($a->filepath, $filename);
+
+        if (isset($a->filepath) && @file_exists($a->filepath)) {
+            @rename($a->filepath, $filename);
+        }
 
         _chmod($filename);
         return $filename;

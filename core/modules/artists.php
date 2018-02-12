@@ -1032,7 +1032,7 @@ class Artists extends Downloads {
         $a_ary = w();
         for ($i = 0; $i < 3; $i++) {
             $_a = array_rand($a_recent);
-            if (!$this->adata[$_a]['images'] || isset($a_ary[$_a])) {
+            if (!isset($this->adata[$_a]['images']) || !$this->adata[$_a]['images'] || isset($a_ary[$_a])) {
                 $i--;
                 continue;
             }
@@ -1041,7 +1041,7 @@ class Artists extends Downloads {
 
         for ($i = 0; $i < 2; $i++) {
             $_a = array_rand($this->adata);
-            if (!$this->adata[$_a]['images'] || isset($a_ary[$_a])) {
+            if (!isset($this->adata[$_a]['images']) || !$this->adata[$_a]['images'] || isset($a_ary[$_a])) {
                 $i--;
                 continue;
             }

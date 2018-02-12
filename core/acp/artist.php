@@ -96,7 +96,7 @@ class __artist extends mac {
                 sql_query($sql);
             }
 
-            redirect(s_link('a', $subdomain));
+            redirect(s_link('a', $request->subdomain));
         }
     }
 }

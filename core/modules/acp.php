@@ -189,7 +189,6 @@ class _acp {
                 switch ($acp_alias) {
                     case 'artist_select':
                         continue 2;
-                    break;
                 }
 
                 _style('acp_list.row', [
