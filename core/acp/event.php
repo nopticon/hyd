@@ -42,7 +42,20 @@ class __event extends mac {
                     }
                     $xb = $upload->resize($row, $filepath_1, $filepath_2, $img, [100, 75], false, false);
 
-                    $event_alias = friendly($event_name);
+                    $event_alias = $event_alias2 = friendly($event_name);
+
+                    $event_count = 0;
+                    while (true) {
+                        $sql = 'SELECT id
+                            FROM _events
+                            WHERE event_alias = ?';
+                        if (!sql_fieldrow(sql_filter($sql, $event_alias))) {
+                            break;
+                        }
+
+                        $event_count++;
+                        $event_alias = $event_alias2 . '-' . $event_count;
+                    }
 
                     $insert = [
                         'event_alias'  => $event_alias,
