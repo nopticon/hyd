@@ -186,12 +186,16 @@ class _acp {
                     _style('acp_list');
                 }
 
+                if (!($i % 3)) {
+                    _style('acp_list.row');
+                }
+
                 switch ($acp_alias) {
                     case 'artist_select':
                         continue 2;
                 }
 
-                _style('acp_list.row', [
+                _style('acp_list.row.col', [
                     'URL'   => s_link('acp', $acp_alias),
                     'NAME'  => lang('ACP_' . $acp_alias, $acp_alias),
                     'IMAGE' => $acp_alias

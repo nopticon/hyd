@@ -1067,7 +1067,7 @@ class Artists extends Downloads {
             foreach ($a_ary as $ub => $data) {
                 _style('thumbnails.item', [
                     'NAME'     => $data['name'],
-                    'IMAGE'    => config('artists_url') . $ub . '/thumbnails/' . $random_images[$ub] . '.jpg',
+                    'IMAGE'    => config('artists_url') . $ub . '/gallery/' . $random_images[$ub] . '.jpg',
                     'URL'      => s_link('a', $data['subdomain']),
                     'LOCATION' => $data['local'] ? 'Guatemala' : $data['location'],
                     'GENRE'    => $data['genre']

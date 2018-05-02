@@ -1,8 +1,5 @@
 <?php namespace App;
 
-//error_reporting(E_ERROR | E_WARNING | E_PARSE);
-error_reporting(E_ALL);
-
 $starttime = explode(' ', microtime());
 $starttime = $starttime[1] + $starttime[0];
 

@@ -1,61 +1,84 @@
-<div class="page">
 
-	<div class="header">
-		<div class="brand">
-			<h1><a href="{U_HOME}" title="{L_APPLICATION}">{L_APPLICATION}</a></h1>
-			<h2>{L_APPLICATION_DESC}</h2>
-		</div>
+<nav class="navbar is-link">
+    <div class="navbar-brand">
+        <a class="navbar-item" href="{U_HOME}">
+            <img src="/dist/images/logo.jpg" alt="Rock Republik" height="28">
+        </a>
+        <div class="navbar-burger burger" data-target="navbar_menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
 
-		<!-- IF ! S_MEMBER -->
-		<div id="sign">
-			<ul>
-				<li><a id="signup" href="{U_SESSION}">{L_USER_IDENTITY}</a></li>
-			</ul>
-		</div>
-		<!-- ENDIF -->
+    <!-- BEGIN hide -->
+    <li class="mb"><a href="{U_WHATS_NEW}" title="{S_TODAY_COUNT}">{L_THENEW}</a></li>
+    <!-- END hide -->
 
-		<span class="clear"></span>
+    <!-- BEGIN hide -->
+    <li class="mb mb-broadcast"><a href="{U_BROADCAST}" title="{L_BROADCAST}">{L_BROADCAST}</a></li>
+    <!-- END hide -->
 
-		<div id="menu">
-			<ul>
-				<!-- IF S_MEMBER -->
-                <li class="mb"><a href="{U_PROFILE}" title="{S_USERNAME}">{S_USERNAME}</a>
-                <li><a href="{U_EDITPROFILE}">{L_PREFERENCES}</a></li>
-                <!-- BEGIN hide -->
-				<li class="mb"><a href="{U_WHATS_NEW}" title="{S_TODAY_COUNT}">{L_THENEW}</a></li>
-                <!-- END hide -->
-				<!-- ENDIF -->
-				<li class="mb"><a href="{U_ARTISTS}" title="{L_UB}">{L_UB}</a></li>
-				<li class="mb mb-events"><a href="{U_EVENTS}" title="{L_UE}">{L_UE}</a></li>
-				<li class="mb mb-forum"><a href="{U_FORUM}" title="{L_FORUM}">{L_FORUM}</a></li>
-                <!-- BEGIN hide -->
-				<li class="mb mb-broadcast"><a href="{U_BROADCAST}" title="{L_BROADCAST}">{L_BROADCAST}</a></li>
-                <!-- END hide -->
-				<li class="mb mb-community"><a href="{U_COMMUNITY}" title="{L_COMMUNITY}">{L_COMMUNITY}</a></li>
-				<!-- BEGIN hide -->
-				<li><a href="{U_ALLIES}" title="{L_ALLIES}">{L_ALLIES}</a></li>
-				<li><a href="{U_AWARDS}" title="{L_AWARDS}">{L_AWARDS}</a></li>
-				<!-- END hide -->
-				<!-- IF U_ACP != '' -->
-				<li class="mb mb-acp"><a href="{U_ACP}">{L_CONTROL_PANEL}</a></li>
-				<!-- ENDIF -->
-                <!-- IF S_MEMBER -->
-                <li><a href="{U_SESSION}">{L_LOGOUT2}</a></li>
-				<!-- ENDIF -->
-			</ul>
-		</div>
+    <!-- BEGIN hide -->
+    <li><a href="{U_ALLIES}" title="{L_ALLIES}">{L_ALLIES}</a></li>
+    <li><a href="{U_AWARDS}" title="{L_AWARDS}">{L_AWARDS}</a></li>
+    <!-- END hide -->
 
-		<div class="soc ls_inline">
-			<ul>
-				<li><a id="facebook" href="//www.facebook.com/rockrepublik" target="_facebook">Facebook</a></li>
-				<li><a id="twitter" href="//www.twitter.com/rockrepublik" target="_twitter">Twitter</a></li>
-			</ul>
-		</div>
+    <div id="navbar_menu" class="navbar-menu">
+        <div class="navbar-start">
+            <a class="navbar-item" href="{U_HOME}">
+                {L_APPLICATION}
+            </a>
+            <!-- IF S_MEMBER -->
+            <a class="navbar-item" href="{U_PROFILE}">
+                {S_USERNAME}
+            </a>
+            <a class="navbar-item" href="{U_EDITPROFILE}">
+                {L_PREFERENCES}
+            </a>
+            <!-- ENDIF -->
 
-		<span class="clear"></span>
-	</div>
+            <a class="navbar-item" href="{U_ARTISTS}">
+                {L_UB}
+            </a>
+            <a class="navbar-item" href="{U_EVENTS}">
+                {L_UE}
+            </a>
+            <a class="navbar-item" href="{U_FORUM}">
+                {L_FORUM}
+            </a>
+            <a class="navbar-item" href="{U_COMMUNITY}">
+                {L_COMMUNITY}
+            </a>
 
-	<hr />
-	<div id="search_result"></div>
+            <!-- IF U_ACP != '' -->
+            <a class="navbar-item" href="{U_ACP}">
+                {L_CONTROL_PANEL}
+            </a>
+            <!-- ENDIF -->
 
-	<div id="content">
+            <!-- IF S_MEMBER -->
+            <a class="navbar-item" href="{U_SESSION}">
+                {L_LOGOUT2}
+            </a>
+            <!-- ENDIF -->
+        </div>
+
+        <div class="navbar-end">
+            <!-- IF ! S_MEMBER -->
+            <a class="navbar-item" href="{U_SESSION}">
+              {L_USER_IDENTITY}
+            </a>
+            <!-- ENDIF -->
+            <a class="navbar-item" href="//www.facebook.com/rockrepublik">
+              Facebook
+            </a>
+            <a class="navbar-item" href="//www.twitter.com/rockrepublik">
+              Twitter
+            </a>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div id="content">

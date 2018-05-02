@@ -67,13 +67,18 @@ class __artist_media extends mac {
                 }
 
                 $filename = $upload->rename($row, $a);
-                $tags = $getID3->analyze($filename);
+                $tags     = $getID3->analyze($filename);
+
+                dd($tags, true);
+
                 $a++;
 
                 $mt = new \stdClass();
                 foreach (w('title genre album year') as $w) {
-                    $mt->$w = (isset($tags['tags']['id3v1'][$w][0])) ? htmlencode($tags['tags']['id3v1'][$w][0]) : '';
+                    $mt->$w = isset($tags['tags']['id3v1'][$w][0]) ? htmlencode($tags['tags']['id3v1'][$w][0]) : '';
                 }
+
+                $tags['playtime_string'] = isset($tags['playtime_string']) ? $tags['playtime_string'] : '0';
 
                 $sql_insert = [
                     'ud'        => 1,
@@ -100,7 +105,7 @@ class __artist_media extends mac {
 
             $cache->delete('downloads_list');
 
-            redirect(s_link('acp', ['artist_media', 'a' => $this->object['subdomain'], 'id' => $media_id]));
+            // redirect(s_link('acp', ['artist_media', 'a' => $this->object['subdomain'], 'id' => $media_id]));
         } else {
             _style('error', [
                 'MESSAGE' => parse_error($upload->error)

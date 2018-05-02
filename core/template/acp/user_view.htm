@@ -1,10 +1,36 @@
 <!-- INCLUDE page.header.htm -->
 
-<form action="{MODULE_URL}" method="post">
-	UID: <input type="text" name="uid" size="8" /><br />
-	Nombre de usuario: <input type="text" name="username" size="100" /><br />
-	Email: <input type="text" name="email" size="100" /><br />
-	<input type="submit" name="submit" value="Consultar" />
-</form>
+<section class="section">
+    <h1 class="title has-text-white">Visualizar usuario</h1>
+
+    <form action="{MODULE_URL}" method="post">
+        <div class="columns">
+            <div class="column field">
+                <label class="label has-text-white">UID</label>
+                <div class="control">
+                    <input class="input" type="text" name="uid" />
+                </div>
+            </div>
+
+            <div class="column field">
+                <label class="label has-text-white">Nombre de Usuario</label>
+                <div class="control">
+                    <input class="input" type="text" name="username" />
+                </div>
+            </div>
+
+            <div class="column field">
+                <label class="label has-text-white">Email</label>
+                <div class="control">
+                    <input class="input" type="text" name="email" />
+                </div>
+            </div>
+        </div>
+
+        <div class="has-text-centered">
+            <input class="button is-link is-large" type="submit" name="submit" value="Consultar" />
+        </div>
+    </form>
+</section>
 
 <!-- INCLUDE page.footer.htm -->

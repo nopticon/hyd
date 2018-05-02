@@ -1,5 +1,8 @@
 <?php namespace App;
 
+error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
+// error_reporting(E_ALL);
+
 require_once '../.env.php';
 require_once '../vendor/autoload.php';
 require_once '../core/classes/Sentry.php';

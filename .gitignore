@@ -7,7 +7,7 @@ podcast/
 .DS_Store
 .htda
 *.log
-.env.php
+# .env.php
 
 dist
 bower_components

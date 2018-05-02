@@ -20,7 +20,7 @@ class Home {
 
         $this->news();
         $this->board_general();
-        $this->board_events();
+        // $this->board_events();
         $this->poll();
 
         $artists->getData();
@@ -94,7 +94,7 @@ class Home {
                 'SUBJECT'   => $row['post_subject'],
                 'CAT'       => $row['cat_name'],
                 'U_CAT'     => s_link('news', $row['cat_url']),
-                'MESSAGE'   => $comments->parse_message($row['post_desc']),
+                'MESSAGE'   => $row['post_desc'],
                 'IMAGE'     => config('news_url') . $row['news_id'] . '.jpg'
             ]);
         }

@@ -1,20 +1,27 @@
 <!-- INCLUDE page.header.htm -->
 
-<div class="h"><h3>{L_ACP}</h3></div>
+<section class="section">
+    <h1 class="title has-text-white">{L_ACP}</h1>
+</section>
 
 <!-- BEGIN acp_list -->
-<div class="x2 ln l4">
-	<ul>
-		<!-- BEGIN row -->
-		<li class="el_left a_mid">
-			<ul>
-				<li><a href="{row.URL}"><img src="{S_DIST}images/acp/{row.IMAGE}.png" alt="{row.NAME}" /></a></li>
-				<li><a href="{row.URL}">{row.NAME}</a></li>
-			</ul>
-		</li>
-		<!-- END row -->
-	</ul>
+<!-- BEGIN row -->
+<div class="columns">
+    <!-- BEGIN col -->
+    <div class="column">
+        <div class="card">
+            <div class="card-content">
+                <div class="media">
+                    <div class="media-content">
+                        <p class="title is-5"><a href="{col.URL}">{col.NAME}</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END col -->
 </div>
+<!-- END row -->
 <!-- END acp_list -->
 
 <!-- INCLUDE page.footer.htm -->

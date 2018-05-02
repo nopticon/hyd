@@ -1083,9 +1083,9 @@ function sentry_log ($ex) {
 function sentry_message ($message, $extra = []) {
     global $sentryClient;
 
-    $sentryClient->captureMessage($message, ['log'], [
-        'extra' => $extra
-    ]);
+    // $sentryClient->captureMessage($message, ['log'], [
+    //     'extra' => $extra
+    // ]);
 }
 
 function msg_handler($errno, $msg_text, $errfile, $errline) {
