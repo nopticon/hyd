@@ -75,6 +75,8 @@ class __artist_media extends mac {
                     $mt->$w = (isset($tags['tags']['id3v1'][$w][0])) ? htmlencode($tags['tags']['id3v1'][$w][0]) : '';
                 }
 
+                $tags['playtime_string'] = isset($tags['playtime_string']) ? $tags['playtime_string'] : '0';
+
                 $sql_insert = [
                     'ud'        => 1,
                     'ub'        => $this->object['ub'],
