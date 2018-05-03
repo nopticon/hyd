@@ -2,6 +2,7 @@
 
 function htmlencode($str, $multibyte = false) {
     $nr = nr();
+
     $result = str_replace([nr(1), nr(true), '\xFF'], [$nr, $nr, ' '], $str);
     $result = trim(htmlentities($result));
     $result = STRIP ? stripslashes($result) : $result;
@@ -513,11 +514,11 @@ function _substr($a, $k, $r = '...') {
 }
 
 function s_link() {
-    $data = func_get_args();
+    $data   = func_get_args();
     $module = array_shift($data);
 
     if (strpos($module, ' ') !== false) {
-        $data = array_merge(w($module), $data);
+        $data   = array_merge(w($module), $data);
         $module = array_shift($data);
     }
 
@@ -1070,8 +1071,8 @@ function fatal_error($mode = '404', $message = '', $extra = []) {
 }
 
 function status($message) {
-    header("HTTP/1.1 " . $message);
-    header("Status: " . $message);
+    header('HTTP/1.1 ' . $message);
+    header('Status: ' . $message);
 }
 
 function sentry_log ($ex) {
@@ -1215,10 +1216,10 @@ function page_layout($page_title, $htmlpage, $custom_vars = false, $js_keepalive
     //
     // Footer
     //
-    $u_session = ($user->is('member')) ? 'out' : 'in';
+    $u_session = $user->is('member') ? 'out' : 'in';
 
     $acp = isset($template->vars['U_ACP']) ? $template->vars['U_ACP'] : 0;
-    $acp = $acp ?: ($user->is('artist') || $user->is('mod') ? s_link('acp') : '');
+    $acp = $acp ?: ($user->is('mod') ? s_link('acp') : '');
 
     $today = ($today_count == 1) ? lang('unread_item_count') : lang('unread_items_count');
     $today = sprintf($today, $today_count);
@@ -1646,7 +1647,7 @@ function language_select($default, $select_name = 'language', $dirname = 'langua
         $real_path = @realpath(ROOT.$dirname . '/' . $file);
 
         if (preg_match('#^lang_#i', $file) && !is_file($real_path) && !is_link($real_path)) {
-            $filename = trim(str_replace('lang_', '', $file));
+            $filename    = trim(str_replace('lang_', '', $file));
             $displayname = preg_replace("/^(.*?)_(.*)$/", "\\1 [ \\2 ]", $filename);
             $displayname = preg_replace("/\[(.*?)_(.*)\]/", "[ \\1 - \\2 ]", $displayname);
 
@@ -1685,8 +1686,8 @@ function tz_select($default, $select_name = 'timezone') {
 }
 
 function sumhour($a) {
-    $h = substr($a, 0, 2);
-    $m = substr($a, 2, 2);
+    $h  = substr($a, 0, 2);
+    $m  = substr($a, 2, 2);
     $mk = mktime($h - 6, $m);
 
     return date('Hi', $mk);

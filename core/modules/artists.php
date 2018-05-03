@@ -134,40 +134,6 @@ class Artists extends Downloads {
             $total_rows = $this->data['news'] + $this->data['posts'];
         }
 
-        //
-        // Auth Members
-        //
-        if ($this->auth['mod'] || $this->data['mods_legend']) {
-            $sql = 'SELECT b.ub, u.user_id, u.username, u.username_base, u.user_avatar, u.user_avatar_type
-                FROM _artists_auth a, _artists b, _members u
-                WHERE a.ub = ?
-                    AND a.ub = b.ub
-                    AND a.user_id = u.user_id
-                ORDER BY u.username';
-            if ($result = sql_rowset(sql_filter($sql, $this->data['ub']))) {
-                foreach ($result as $i => $row) {
-                    if (!$i) {
-                        _style('mods');
-                    }
-
-                    $user_profile = $comments->user_profile($row);
-
-                    _style('mods.item', [
-                        'PROFILE'  => $user_profile['profile'],
-                        'USERNAME' => $user_profile['username']
-                    ]);
-                }
-
-                $comments->reset();
-
-                if ($this->auth['mod']) {
-                    _style('mods.manage', [
-                        'URL' => s_link('acp', ['artist_auth', 'a' => $this->data['subdomain']])
-                    ]);
-                }
-            }
-        }
-
         return;
     }
 
@@ -809,7 +775,6 @@ class Artists extends Downloads {
                 WHERE a.ub = ?
                     AND a.user_id = ?
                     AND a.user_id = u.user_id
-                    AND b.ub = a.ub
                     AND b.ub = a.ub';
             if (sql_fieldrow(sql_filter($sql, $this->data['ub'], $user->d('user_id')))) {
                 $this->auth['smod'] = $this->auth['mod'] = true;
@@ -1301,6 +1266,26 @@ class Artists extends Downloads {
             default:
                 $this->make(true);
 
+                if ($this->auth['mod']) {
+                    _style('acp');
+
+                    $list = [
+                        'artist_auth'         => 'ARTIST_ACP_AUTH',
+                        'artist_biography'    => 'ARTIST_ACP_BIOGRAPHY',
+                        'artist_gallery'      => 'ARTIST_ACP_GALLERY',
+                        'artist_lyric_create' => 'ARTIST_ACP_LYRIC',
+                        'artist_media'        => 'ARTIST_ACP_MEDIA',
+                        'artist_video'        => 'ARTIST_ACP_VIDEO',
+                    ];
+
+                    foreach ($list as $name => $value) {
+                        _style('acp.action', [
+                            'URL'  => s_link('acp', [$name, 'a' => $this->data['subdomain']]),
+                            'LANG' => lang($value)
+                        ]);
+                    }
+                }
+
                 /*
                 Build nav menu
                 */
@@ -1540,7 +1525,7 @@ class Artists extends Downloads {
                     _style('ub_poll.results');
 
                     foreach ($this->voting['ub'] as $item) {
-                        $vote_result = (isset($results[$item])) ? intval($results[$item]) : 0;
+                        $vote_result  = isset($results[$item]) ? intval($results[$item]) : 0;
                         $vote_percent = ($this->data['votes'] > 0) ? $vote_result / $this->data['votes'] : 0;
 
                         _style('ub_poll.results.item', [
@@ -1629,7 +1614,7 @@ class Artists extends Downloads {
                     'GENRE'    => $this->data['genre'],
                     'POSTS'    => number_format($this->data['posts']),
                     'VOTES'    => number_format($this->data['votes']),
-                    'FANS'     => $fan_count,
+                    'FANS'     => number_format($fan_count),
                     'L_FANS'   => ($fan_count == 1) ? lang('fan') : lang('fans'),
                     'LOCATION' => $location
                 ]);

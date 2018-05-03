@@ -844,7 +844,7 @@ $lang += [
     'ACP_NEWS_CATEGORY_MOVE'       => 'Mover noticia de categor&iacute;a',
     'ACP_NEWS_IMAGES'              => 'Actualizar imagen de noticia',
     'ACP_NEWS_MODIFY'              => 'Modificar noticia',
-    'ACP_NEWS_IMAGE_ADD'           => 'Publica imagenes  para la secci&oacute;n de noticias. El formato debe ser <em>jpg</em>.',
+    'ACP_NEWS_IMAGE_ADD'           => 'Publica imagenes para la secci&oacute;n de noticias. El formato debe ser <em>jpg</em>.',
     'ACP_UNREAD_ALL_DELETE'        => 'Eliminar elementos de actualidad',
     'ACP_UNREAD_TOPICS_DELETE'     => 'Eliminar temas de actualidad',
     'ACP_UNREAD_TOPICS_MOD'        => 'Eliminar temas no moderadores de actualidad',
@@ -880,6 +880,15 @@ $lang += [
     'ACP_ARTIST_AUTH_DESC'         => 'Administra los usuarios que pueden crear, modificar y eliminar contenido.',
     'ACP_ARTIST_AUTH_DELETE'       => '&iquest;Deseas eliminar los siguientes usuarios autorizados de %s?: <b>%s</b>',
     'ACP_ARTIST_AUTH_DELETE2'      => '&iquest;Deseas eliminar el siguiente usuario autorizado de %s?: <b>%s</b>',
+
+    'ARTIST_ACP'           => 'Administrador de p&aacute;gina',
+    'ARTIST_ACP_AUTH'      => 'Miembros',
+    'ARTIST_ACP_BIOGRAPHY' => 'Biograf&iacute;a',
+    'ARTIST_ACP_MEDIA'     => 'Canciones',
+    'ARTIST_ACP_LYRIC'     => 'L&iacute;ricas',
+    'ARTIST_ACP_STATS'     => 'Estad&iacute;sticas',
+    'ARTIST_ACP_VIDEO'     => 'Videos',
+    'ARTIST_ACP_GALLERY'   => 'Fotos',
 
     'datetime' => [
         'Sunday'    => 'Domingo',
