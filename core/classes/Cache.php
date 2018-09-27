@@ -44,6 +44,10 @@ class Cache {
             return;
         }
 
+        if (!file_exists(config('cache_path'))) {
+            return;
+        }
+
         $filename = config('cache_path') . $name . '.php';
 
         @file_put_contents($filename, json_encode($data));

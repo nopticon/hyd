@@ -1213,7 +1213,7 @@ class Template {
         }
 
         // check if filename is valid
-        if (substr($filename, 0, strlen($this->cachedir)) !== $this->cachedir) {
+        if (!is_dir($this->cachedir) || substr($filename, 0, strlen($this->cachedir)) !== $this->cachedir) {
             return false;
         }
         // try to open file

@@ -308,6 +308,80 @@ class Events extends downloads {
                     }
                 }
 
+                if (!$this->v('event_topic')) {
+                    $event_name   = $this->v('title');
+                    $post_time    = $this->v('date');
+                    $post_message = 'Evento publicado.';
+                    $forum_id     = 21;
+                    $poster_id    = 1433;
+
+                    $insert = [
+                        'topic_title'     => $event_name,
+                        'topic_poster'    => $poster_id,
+                        'topic_time'      => $post_time,
+                        'forum_id'        => $forum_id,
+                        'topic_locked'    => 0,
+                        'topic_announce'  => 0,
+                        'topic_important' => 0,
+                        'topic_vote'      => 1,
+                        'topic_featured'  => 1,
+                        'topic_points'    => 1
+                    ];
+                    $topic_id = sql_insert('forum_topics', $insert);
+
+                    $insert = [
+                        'topic_id'  => (int) $topic_id,
+                        'forum_id'  => $forum_id,
+                        'poster_id' => $poster_id,
+                        'post_time' => $post_time,
+                        'poster_ip' => $user->ip,
+                        'post_text' => $post_message,
+                        'post_np'   => ''
+                    ];
+                    $post_id = sql_insert('forum_posts', $insert);
+
+                    $sql = 'UPDATE _events SET event_topic = ?
+                        WHERE id = ?';
+                    sql_query(sql_filter($sql, $topic_id, $this->v('id')));
+
+                    $insert = [
+                        'topic_id'    => (int) $topic_id,
+                        'vote_text'   => '&iquest;Asistir&aacute;s a ' . $event_name . '?',
+                        'vote_start'  => $post_time,
+                        'vote_length' => 0
+                    ];
+                    $poll_id = sql_insert('poll_options', $insert);
+
+                    $poll_options = [
+                        1 => 'Si asistir&eacute;'
+                    ];
+
+                    foreach ($poll_options as $option_id => $option_text) {
+                        $sql_insert = [
+                            'vote_id'          => (int) $poll_id,
+                            'vote_option_id'   => (int) $option_id,
+                            'vote_option_text' => $option_text,
+                            'vote_result'      => 0
+                        ];
+                        sql_insert('poll_results', $sql_insert);
+                    }
+
+                    $sql = 'UPDATE _forums
+                        SET forum_posts = forum_posts + 1, forum_topics = forum_topics + 1
+                        WHERE forum_id = ?';
+                    sql_query(sql_filter($sql, $forum_id));
+
+                    $sql = 'UPDATE _forum_topics SET topic_first_post_id = ?, topic_last_post_id = ?
+                        WHERE topic_id = ?';
+                    sql_query(sql_filter($sql, $post_id, $post_id, $topic_id));
+
+                    $sql = 'UPDATE _members SET user_posts = user_posts + 1
+                        WHERE user_id = ?';
+                    sql_query(sql_filter($sql, $poster_id));
+
+                    $this->data['event_topic'] = $topic_id;
+                }
+
                 $sql = 'SELECT t.topic_id, t.topic_title, t.topic_locked, t.topic_replies, t.topic_time,
                         t.topic_important, t.topic_vote, t.topic_featured, t.topic_points, t.topic_last_post_id,
                         f.forum_alias, f.forum_name, f.forum_locked, f.forum_id, f.auth_view, f.auth_read,
