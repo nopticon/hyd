@@ -438,6 +438,7 @@ function user_password($password) {
 // returns - the hash of the password (128 hex characters)
 function HashPassword($password, $already = false) {
     $salt = random_bytes(32);
+    $salt = bin2hex($salt);
 
     if (!$already) {
         $password = user_password($password);
