@@ -146,7 +146,7 @@ class topics {
                     $sql = 'SELECT MAX(post_time) AS last_post_time
                         FROM _forum_posts
                         WHERE poster_id = ?';
-                    if ((int) $last_post_time = sql_field(sql_filter($sql, $user->d('user_id')))) {
+                    if ((int) $last_post_time = sql_field(sql_filter($sql, $user->d('user_id')), 'last_post_time')) {
                         if ($last_post_time && ($current_time - $last_post_time) < (int) config('flood_interval')) {
                             $error_msg .= (($error_msg != '') ? '<br />' : '') . lang('flood_error');
                         }
