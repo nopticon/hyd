@@ -16,7 +16,7 @@ $sql = "SELECT *
 $result = sql_rowset(sql_filter($sql, USER_INACTIVE, date('md'), YEAR, $max_email));
 
 $done      = [];
-$usernames = [];
+$users = [];
 
 foreach ($result as $row) {
     $emailer->from('notify');
@@ -34,8 +34,8 @@ foreach ($result as $row) {
     $emailer->send();
     $emailer->reset();
 
-    $done[] = $row['user_id'];
-    $usernames[] = $row['username'];
+    $done[]  = $row['user_id'];
+    $users[] = $row['username'];
 }
 
 if (count($done)) {
@@ -44,4 +44,4 @@ if (count($done)) {
     sql_query(sql_filter($sql, YEAR, implode(',', $done)));
 }
 
-_pre('Done. @ ' . implode(', ', $usernames), true);
+_pre('Done. @ ' . implode(', ', $users), true);

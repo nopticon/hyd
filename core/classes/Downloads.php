@@ -416,6 +416,10 @@ class Downloads {
         $this->filename = rawurlencode(str_replace($bad_chars, '_', $this->filename));
         $this->filename = 'Rock_Republik__' . preg_replace("/%(\w{2})/", '_', $this->filename);
 
+        if (!file_exists($this->filepath)) {
+            fatal_error();
+        }
+
         // Headers
         header('Content-Type: ' . $content_type . '; name="' . $this->filename . '"');
         header('Content-Disposition: ' . $disposition . '; filename="' . $this->filename . '"');

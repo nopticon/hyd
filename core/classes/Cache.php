@@ -46,14 +46,7 @@ class Cache {
 
         $filename = config('cache_path') . $name . '.php';
 
-        if ($fp = @fopen($filename, 'w')) {
-            @flock($fp, LOCK_EX);
-            fputs($fp, json_encode($data));
-            @flock($fp, LOCK_UN);
-            fclose($fp);
-
-            _chmod($filename);
-        }
+        @file_put_contents($filename, json_encode($data));
 
         return $data;
     }
