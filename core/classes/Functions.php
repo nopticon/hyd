@@ -85,7 +85,7 @@ function request_var($var_name, $default = false, $multibyte = false) {
     if (!is_array($default)) {
         $type = gettype($default);
     } else {
-        list($key_type, $type) = each($default);
+        list($key_type, $type) = $default;
         $type = gettype($type);
         $key_type = gettype($key_type);
     }
@@ -1906,7 +1906,8 @@ function a_thumbnails($selected_artists, $random_images, $lang_key, $block, $ite
     ]);
 
     foreach ($selected_artists as $ub => $data) {
-        $image = $ub . '/thumbnails/' . $random_images[$ub] . '.jpg';
+        $image = isset($random_images[$ub]) ? $random_images[$ub] : '';
+        $image = $ub . '/thumbnails/' . $image . '.jpg';
 
         _style('main.' . $block . '.row', [
             'NAME'     => $data['name'],

@@ -120,21 +120,18 @@ class emailer {
     public function send() {
         global $user;
 
-            // Escape all quotes, else the eval will fail.
+        // Escape all quotes, else the eval will fail.
         $this->msg = str_replace("'", "\'", $this->msg);
         $this->msg = preg_replace('#\{([a-z0-9\-_]*?)\}#is', "' . $\\1 . '", $this->msg);
 
-        // Set vars
-        reset($this->vars);
-        while (list($key, $val) = each($this->vars)) {
+        foreach ($this->vars as $key => $val) {
             $$key = $val;
         }
 
         eval("\$this->msg = '$this->msg';");
 
         // Clear vars
-        reset($this->vars);
-        while (list($key, $val) = each($this->vars)) {
+        foreach ($this->vars as $key => $val) {
             unset($$key);
         }
 
