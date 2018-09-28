@@ -22,6 +22,8 @@ class __event extends mac {
             if (!sizeof($upload->error) && $f !== false) {
                 $img = sql_total('_events');
 
+                dd(config('events_url') . 'future/' . $img  . '.jpg', true);
+
                 // Create vars
                 $event_name          = request_var('event_name', '');
                 $event_artists       = request_var('event_artists', '', true);
