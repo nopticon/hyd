@@ -198,8 +198,10 @@ class __event extends mac {
                     curl_setopt($ch, CURLOPT_POST, 1);
                     curl_setopt($ch, CURLOPT_POSTFIELDS, $facebook_data);
                     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                    curl_exec($ch);
+                    $response = curl_exec($ch);
                     curl_close($ch);
+
+                    dd($response, true);
 
                     redirect($event_url);
                 }
