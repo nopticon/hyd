@@ -90,8 +90,6 @@ class __event extends mac {
                     }
 
                     // Alice: Create topic
-                    $event_url = config('events_url') . 'future/' . $img  . '.jpg';
-
                     $post_message = 'Evento publicado';
                     $post_time    = time();
                     $forum_id     = 21;
@@ -184,7 +182,26 @@ class __event extends mac {
                     // Notify
                     $user->save_unread(UH_T, $topic_id);
 
-                    redirect(s_link('events', $event_alias));
+                    // Post event to Facebook page
+                    $event_url    = s_link('events', $event_alias);
+                    $facebook_url = 'https://graph.facebook.com/' . config('facebook_app_id') . '/feed';
+
+                    $facebook_data = [
+                        'picture'      = config('events_url') . 'future/' . $img  . '.jpg',
+                        'link'         = $event_url,
+                        'message'      = 'Rock Republik te invita al evento ' . $event_name,
+                        'access_token' = config('facebook_access_token')
+                    ];
+
+                    $ch = curl_init();
+                    curl_setopt($ch, CURLOPT_URL, $facebook_url);
+                    curl_setopt($ch, CURLOPT_POST, 1);
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, $facebook_data);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                    curl_exec($ch);
+                    curl_close($ch);
+
+                    redirect($event_url);
                 }
             }
 
