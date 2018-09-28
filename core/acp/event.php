@@ -187,10 +187,10 @@ class __event extends mac {
                     $facebook_url = 'https://graph.facebook.com/' . config('facebook_app_id') . '/feed';
 
                     $facebook_data = [
-                        'picture'      = config('events_url') . 'future/' . $img  . '.jpg',
-                        'link'         = $event_url,
-                        'message'      = 'Rock Republik te invita al evento ' . $event_name,
-                        'access_token' = config('facebook_access_token')
+                        'picture'      => config('events_url') . 'future/' . $img  . '.jpg',
+                        'link'         => $event_url,
+                        'message'      => 'Rock Republik te invita al evento ' . $event_name,
+                        'access_token' => config('facebook_access_token')
                     ];
 
                     $ch = curl_init();
