@@ -85,9 +85,10 @@ function request_var($var_name, $default = false, $multibyte = false) {
     if (!is_array($default)) {
         $type = gettype($default);
     } else {
-        list($key_type, $type) = $default;
-        $type = gettype($type);
-        $key_type = gettype($key_type);
+        foreach ($default as $key_type => $type) {
+            $type     = gettype($type);
+            $key_type = gettype($key_type);
+        }
     }
 
     if (is_array($var)) {

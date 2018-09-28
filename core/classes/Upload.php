@@ -15,7 +15,7 @@ class Upload {
         }
 
         $a_keys = array_keys($files);
-        for ($i = 0, $end = sizeof($files['name']); $i < $end; $i++) {
+        for ($i = 0, $end = count($files['name']); $i < $end; $i++) {
             foreach ($a_keys as $k) {
                 $file_ary[$i][$k] = $files[$k][$i];
             }
@@ -108,7 +108,6 @@ class Upload {
         global $user;
 
         $path = config('avatar_path');
-
         $send = $this->process($path, 'avatar');
 
         if (count($this->error)) {
@@ -118,7 +117,7 @@ class Upload {
 
         if ($send !== false) {
             foreach ($send as $row) {
-                $size = $this->resize($row, $path, $path, _encode($alias) . time(), array(70, 70), false, false, true);
+                $size = $this->resize($row, $path, $path, _encode($alias) . time(), [70, 70], false, false, true);
                 if ($size === false) {
                     continue;
                 }
@@ -282,16 +281,19 @@ class Upload {
 
         switch ($dim[2]) {
             case IMG_JPG:
+            case IMAGETYPE_JPEG:
                 $image_f = 'imagecreatefromjpeg';
                 $image_g = 'imagejpeg';
                 $image_t = 'jpg';
                 break;
             case IMG_GIF:
+            case IMAGETYPE_GIF:
                 $image_f = 'imagecreatefromgif';
                 $image_g = 'imagegif';
                 $image_t = 'gif';
                 break;
             case IMG_PNG:
+            case IMAGETYPE_PNG:
                 $image_f = 'imagecreatefrompng';
                 $image_g = 'imagepng';
                 $image_t = 'png';
@@ -523,8 +525,7 @@ class Upload {
         }
 
         $size = @getimagesize($image);
-        $width = $size[0];
-        return $width;
+        return $size[0];
     }
 
     public function getHeight($image) {
@@ -533,7 +534,6 @@ class Upload {
         }
 
         $size = getimagesize($image);
-        $height = $size[1];
-        return $height;
+        return $size[1];
     }
 }
