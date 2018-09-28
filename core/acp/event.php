@@ -183,14 +183,15 @@ class __event extends mac {
                     $user->save_unread(UH_T, $topic_id);
 
                     // Post event to Facebook page
-                    $event_protocol = get_protocol(false, false);
+                    $event_protocol = get_protocol(false, false) . ':';
                     $event_url      = s_link('events', $event_alias);
                     $facebook_url   = 'https://graph.facebook.com/' . config('facebook_app_id') . '/feed';
+                    $facebook_msg   = 'Rock Republik te invita al ' . ((strpos($event_name, 'concierto') === false) ? 'evento ' : '');
 
                     $facebook_data = [
                         'picture'      => $event_protocol . config('events_url') . 'future/' . $img  . '.jpg',
-                        'link'         => $event_protocol . $event_url,
-                        'message'      => 'Rock Republik te invita al evento ' . $event_name,
+                        'link'         => $event_protocol . '//' . config('server_name') . $event_url,
+                        'message'      => $facebook_msg,
                         'access_token' => config('facebook_access_token')
                     ];
 
