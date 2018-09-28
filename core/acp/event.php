@@ -22,8 +22,6 @@ class __event extends mac {
             if (!sizeof($upload->error) && $f !== false) {
                 $img = sql_total('_events');
 
-                dd(config('events_url') . 'future/' . $img  . '.jpg', true);
-
                 // Create vars
                 $event_name          = request_var('event_name', '');
                 $event_artists       = request_var('event_artists', '', true);
@@ -185,12 +183,13 @@ class __event extends mac {
                     $user->save_unread(UH_T, $topic_id);
 
                     // Post event to Facebook page
-                    $event_url    = s_link('events', $event_alias);
-                    $facebook_url = 'https://graph.facebook.com/' . config('facebook_app_id') . '/feed';
+                    $event_protocol = get_protocol(false, false);
+                    $event_url      = s_link('events', $event_alias);
+                    $facebook_url   = 'https://graph.facebook.com/' . config('facebook_app_id') . '/feed';
 
                     $facebook_data = [
-                        'picture'      => config('events_url') . 'future/' . $img  . '.jpg',
-                        'link'         => $event_url,
+                        'picture'      => $event_protocol . config('events_url') . 'future/' . $img  . '.jpg',
+                        'link'         => $event_protocol . $event_url,
                         'message'      => 'Rock Republik te invita al evento ' . $event_name,
                         'access_token' => config('facebook_access_token')
                     ];
