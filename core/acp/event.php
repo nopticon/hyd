@@ -189,7 +189,7 @@ class __event extends mac {
                     $facebook_msg   = 'Rock Republik te invita al ' . ((strpos($event_name, 'concierto') === false) ? 'evento ' : '');
 
                     $facebook_data = [
-                        'picture'      => $event_protocol . config('events_url') . 'future/' . $img  . '.jpg',
+                        'full_picture' => $event_protocol . config('events_url') . 'future/' . $img  . '.jpg',
                         'link'         => $event_protocol . '//' . config('server_name') . $event_url,
                         'message'      => $facebook_msg,
                         'access_token' => config('facebook_access_token')
