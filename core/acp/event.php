@@ -192,6 +192,7 @@ class __event extends mac {
                         'full_picture' => $event_protocol . config('events_url') . 'future/' . $img  . '.jpg',
                         'link'         => $event_protocol . '//' . config('server_name') . $event_url,
                         'message'      => $facebook_msg,
+                        'type'         => 'photo',
                         'access_token' => config('facebook_access_token')
                     ];
 
