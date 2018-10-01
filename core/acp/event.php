@@ -191,7 +191,7 @@ class __event extends mac {
                     $facebook_data = [
                         'full_picture' => $event_protocol . config('events_url') . 'future/' . $img  . '.jpg',
                         'link'         => $event_protocol . '//' . config('server_name') . $event_url,
-                        'message'      => $facebook_msg,
+                        'message'      => $facebook_msg . $event_name,
                         'type'         => 'photo',
                         'access_token' => config('facebook_access_token')
                     ];
@@ -203,8 +203,6 @@ class __event extends mac {
                     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
                     $response = curl_exec($ch);
                     curl_close($ch);
-
-                    dd($response, true);
 
                     redirect($event_url);
                 }
