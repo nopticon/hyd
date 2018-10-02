@@ -65,7 +65,7 @@ class Events extends downloads {
             FROM _events
             WHERE date >= ?
             ORDER BY RAND()
-            LIMIT 3';
+            LIMIT 4';
         $result = sql_rowset(sql_filter($sql, $this->timetoday));
 
         foreach ($result as $i => $row) {
@@ -835,7 +835,7 @@ class Events extends downloads {
 
         $sql = 'SELECT *
             FROM _events
-            ORDER BY date ASC';
+            ORDER BY date';
         $result = sql_rowset($sql);
 
         foreach ($result as $row) {

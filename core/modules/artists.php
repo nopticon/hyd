@@ -976,7 +976,7 @@ class Artists extends Downloads {
         return;
     }
 
-    public function thumbnails() {
+    public function thumbnails($limit = 8) {
         global $cache;
 
         if (!$a_recent = $cache->get('a_recent')) {
@@ -995,7 +995,7 @@ class Artists extends Downloads {
         }
 
         $a_ary = w();
-        for ($i = 0; $i < 3; $i++) {
+        for ($i = 0; $i < ($limit - 2); $i++) {
             $_a = array_rand($a_recent);
             if (!isset($this->adata[$_a]['images']) || !$this->adata[$_a]['images'] || isset($a_ary[$_a])) {
                 $i--;

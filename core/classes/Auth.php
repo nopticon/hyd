@@ -539,7 +539,7 @@ class Auth {
                         FROM _banlist
                     )';
             if (!$userdata = sql_fieldrow(sql_filter($sql, $email, USER_INACTIVE, USER_FOUNDER))) {
-                fatal_error();
+                fatal_error(404, 'El correo electr&oacute;nico no est&aacute; registrado.');
             }
 
             $emailer = new emailer();

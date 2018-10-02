@@ -1066,7 +1066,7 @@ function fatal_error($mode = '404', $message = '', $extra = []) {
 
     echo exception('error', [
         'PAGE_TITLE'   => 'No disponible',
-        'PAGE_MESSAGE' => 'La p&aacute;gina no se puede mostrar en este momento.'
+        'PAGE_MESSAGE' => $message ?: 'La p&aacute;gina no se puede mostrar en este momento.'
     ]);
 
     exit;

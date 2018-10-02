@@ -18,7 +18,8 @@ class Home {
         $artists = new Artists();
         $events  = new Events();
 
-        $this->news();
+        // $this->news();
+        // $this->videos();
         $this->board_general();
         $this->board_events();
         $this->poll();
@@ -106,6 +107,29 @@ class Home {
         }
 
         return;
+    }
+
+    public function videos () {
+        $sql = 'SELECT v.*, a.subdomain, a.name
+            FROM _artists_video v
+            INNER JOIN _artists a ON v.video_a = a.ub
+            WHERE a.a_active = 1
+            ORDER BY RAND()
+            LIMIT 4';
+        $videos = sql_rowset($sql);
+
+        foreach ($videos as $i => $row) {
+            if (!$i) {
+                _style('videos');
+            }
+
+            _style('videos.row', [
+                'ARTIST_NAME' => $row['name'],
+                'ARTIST_URL'  => s_link('a', $row['subdomain'], 'video'),
+                'VIDEO_NAME' => $row['video_name'],
+                'VIDEO_IMAGE' => 'https://img.youtube.com/vi/' . $row['video_code'] . '/0.jpg'
+            ]);
+        }
     }
 
     public function board_general() {
