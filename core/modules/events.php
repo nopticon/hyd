@@ -55,6 +55,10 @@ class Events extends downloads {
             fatal_error();
         }
 
+        if ($event_field === 'id' && !empty($this->data['event_alias'])) {
+            redirect(s_link('events', $this->data['event_alias']));
+        }
+
         return $this->object();
     }
 

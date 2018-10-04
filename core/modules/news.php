@@ -36,12 +36,18 @@ class News {
             fatal_error();
         }
 
+        $news_field = !is_numb($news_alias) ? 'news_alias' : 'news_id';
+
         $sql = 'SELECT *
             FROM _news n
             INNER JOIN _news_cat c ON n.cat_id = c.cat_id
-            WHERE n.news_alias = ?';
-        if (!$this->data = sql_fieldrow(sql_filter($sql, $news_alias))) {
+            WHERE n.?? = ?';
+        if (!$this->data = sql_fieldrow(sql_filter($sql, $news_field, $news_alias))) {
             fatal_error();
+        }
+
+        if ($news_field === 'news_id' && !empty($this->data['news_alias'])) {
+            redirect(s_link('news', $this->data['news_alias']));
         }
 
         return $this->object();
