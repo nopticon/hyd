@@ -183,28 +183,15 @@ class __event extends mac {
                     $user->save_unread(UH_T, $topic_id);
 
                     // Post event to Facebook page
-                    $event_protocol = get_protocol(false, false) . ':';
-                    $event_url      = s_link('events', $event_alias);
-                    $facebook_url   = 'https://graph.facebook.com/' . config('facebook_app_id') . '/feed';
-                    $facebook_msg   = 'Rock Republik te invita al ' . ((strpos($event_name, 'concierto') === false) ? 'evento ' : '');
-
-                    $facebook_data = [
-                        'full_picture' => $event_protocol . config('events_url') . 'future/' . $img  . '.jpg',
-                        'link'         => $event_protocol . '//' . config('server_name') . $event_url,
-                        'message'      => $facebook_msg . $event_name,
-                        'type'         => 'photo',
-                        'access_token' => config('facebook_access_token')
+                    $event = [
+                        'id'          => $img,
+                        'event_alias' => $event_alias,
+                        'title'       => $event_name,
+                        'date'        => $v_date
                     ];
+                    $response = facebook_event($event);
 
-                    $ch = curl_init();
-                    curl_setopt($ch, CURLOPT_URL, $facebook_url);
-                    curl_setopt($ch, CURLOPT_POST, 1);
-                    curl_setopt($ch, CURLOPT_POSTFIELDS, $facebook_data);
-                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                    $response = curl_exec($ch);
-                    curl_close($ch);
-
-                    redirect($event_url);
+                    redirect($response['event_url']);
                 }
             }
 

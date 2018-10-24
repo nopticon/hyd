@@ -1969,3 +1969,64 @@ function create_ban_user($user_id = false) {
 
     return false;
 }
+
+function facebook_event ($event, $send = true) {
+    global $user;
+    static $midnight, $datedata, $week;
+
+    if (!$midnight) {
+        list($d, $m, $y) = explode(' ', gmdate('j n Y', time() + $user->timezone + $user->dst));
+
+        $midnight = gmmktime(0, 0, 0, $m, $d, $y) - $user->timezone - $user->dst;
+        $datedata = getdate($midnight);
+        $week     = mktime(0, 0, 0, $m, ($d + (7 - ($datedata['wday'] - 1)) - (!$datedata['wday'] ? 7 : 0)), $y) - $user->timezone;
+    }
+
+    $event_date   = getdate($event['date'] + ($user->timezone - $user->dst));
+    $event_string = $event_date['mday'] . ' de ' . $user->lang['datetime'][$event_date['month']];
+    $event_hour   = $user->format_date($event['date'], 'g');
+    $event_hours  = ' a la' . ($event_hour == 1 ? '' : 's') . ' ' . $event_hour . $user->format_date($event['date'], ':i A');
+
+    if ($event['date'] >= $midnight && $event['date'] < $midnight + 86400) {
+        $type = 'hoy' . $event_hours;
+    } elseif ($event['date'] >= $midnight + 86400 && $event['date'] < $midnight + 172800) {
+        $type = 'mañana' . $event_hours;
+    } elseif ($event['date'] >= $midnight + 172800 && $event['date'] < $week) {
+        $type = 'esta semana, ' . $user->lang['datetime'][$event_date['weekday']] . ' ' . $event_string . $event_hours;
+    } else {
+        $type = 'el ' . $event_string . $event_hours;
+    }
+
+    $event_protocol = get_protocol(false, false) . ':';
+    $event_url      = s_link('events', $event['event_alias']);
+    $event_title    = strtolower($event['title']);
+    $facebook_url   = 'https://graph.facebook.com/' . config('facebook_app_id') . '/feed';
+    $facebook_msg   = 'Rock Republik te invita a' . ((strpos($event_title, 'concierto') === false) ? 'l evento ' : ' ');
+    $facebook_text  = $facebook_msg . $event['title'] . ($type ? ', ' . $type : '') . ". \n\rCompartelo con tus amigos.";
+    $facebook_text = entity_decode($facebook_text);
+
+    $facebook_data = [
+        'full_picture' => $event_protocol . config('events_url') . 'future/' . $event['id']  . '.jpg',
+        'link'         => $event_protocol . '//' . config('server_name') . $event_url,
+        'message'      => $facebook_text,
+        'type'         => 'photo',
+        'access_token' => config('facebook_access_token')
+    ];
+
+    if (!$send) {
+        return $facebook_data;
+    }
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $facebook_url);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $facebook_data);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    $response = curl_exec($ch);
+    curl_close($ch);
+
+    return [
+        'event_url' => $event_url,
+        'response'  => json_decode($response)
+    ];
+}

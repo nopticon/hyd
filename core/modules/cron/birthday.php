@@ -15,7 +15,7 @@ $sql = "SELECT *
     LIMIT ??";
 $result = sql_rowset(sql_filter($sql, USER_INACTIVE, date('md'), YEAR, $max_email));
 
-$done      = [];
+$done  = [];
 $users = [];
 
 foreach ($result as $row) {

@@ -45,29 +45,8 @@ class __event_facebook extends mac {
             return;
         }
 
-        $event_protocol = get_protocol(false, false) . ':';
-        $event_url      = s_link('events', $event['event_alias']);
-        $facebook_url   = 'https://graph.facebook.com/' . config('facebook_app_id') . '/feed';
-        $facebook_msg   = 'Rock Republik te invita al ' . ((strpos($event['title'], 'concierto') === false) ? 'evento ' : '');
+        $response = facebook_event($event);
 
-        $facebook_data = [
-            'full_picture' => $event_protocol . config('events_url') . 'future/' . $event['id']  . '.jpg',
-            'link'         => $event_protocol . '//' . config('server_name') . $event_url,
-            'message'      => $facebook_msg . $event['title'],
-            'type'         => 'photo',
-            'access_token' => config('facebook_access_token')
-        ];
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $facebook_url);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $facebook_data);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        $response = curl_exec($ch);
-        curl_close($ch);
-
-        dd($response, true);
-
-        return redirect($event_url);
+        return redirect($response['event_url']);
     }
 }
