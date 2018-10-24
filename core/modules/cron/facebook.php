@@ -7,7 +7,7 @@ $midnight = gmmktime(0, 0, 0, $m, $d, $y) - $user->timezone - $user->dst;
 
 $when = $user->format_date(time(), 'Y-m-d');
 
-$sql = 'SELECT e.*, s.event_id, s.when
+$sql = 'SELECT e.*
     FROM _events e
     LEFT JOIN _events_share s
         ON s.event_id = e.id
