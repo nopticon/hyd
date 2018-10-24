@@ -21,6 +21,12 @@ $result = sql_rowset(sql_filter($sql, $when, $midnight));
 foreach ($result as $row) {
     $post = facebook_event($row);
 
+    $insert = [
+        'event_id' => $row['id'],
+        'when'     => $when
+    ];
+    $event_id = sql_insert('events_share', $insert);
+
     dd($post);
 }
 
