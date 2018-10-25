@@ -5,25 +5,25 @@
 list($d, $m, $y) = explode(' ', gmdate('j n Y', time() + $user->timezone + $user->dst));
 $midnight = gmmktime(0, 0, 0, $m, $d, $y) - $user->timezone - $user->dst;
 
-$when = $user->format_date(time(), 'Y-m-d');
+$created_at = $user->format_date(time(), 'Y-m-d');
 
 $sql = 'SELECT e.*
     FROM _events e
     LEFT JOIN _events_share s
         ON s.event_id = e.id
-        AND s.when = ?
+        AND s.created_at = ?
     WHERE e.date >= ?
         AND s.event_id IS NULL
     ORDER BY e.date
     LIMIT 1';
-$result = sql_rowset(sql_filter($sql, $when, $midnight));
+$result = sql_rowset(sql_filter($sql, $created_at, $midnight));
 
 foreach ($result as $row) {
     $post = facebook_event($row);
 
     $insert = [
-        'event_id' => $row['id'],
-        'when'     => $when
+        'event_id'   => $row['id'],
+        'created_at' => $created_at
     ];
     $event_id = sql_insert('events_share', $insert);
 

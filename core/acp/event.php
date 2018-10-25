@@ -192,8 +192,8 @@ class __event extends mac {
                     $response = facebook_event($event);
 
                     $insert = [
-                        'event_id' => $img,
-                        'when'     => $user->format_date(false, 'Y-m-d')
+                        'event_id'   => $img,
+                        'created_at' => $user->format_date(false, 'Y-m-d')
                     ];
                     $event_id = sql_insert('events_share', $insert);
 
