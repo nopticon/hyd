@@ -47,6 +47,12 @@ class __event_facebook extends mac {
 
         $response = facebook_event($event);
 
+        $insert = [
+            'event_id' => $event['id'],
+            'when'     => $user->format_date(false, 'Y-m-d')
+        ];
+        $event_id = sql_insert('events_share', $insert);
+
         return redirect($response['event_url']);
     }
 }

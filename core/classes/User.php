@@ -122,7 +122,7 @@ class User extends Session {
         }
     }
 
-    public function format_date($gmepoch, $format = false, $forcedate = false) {
+    public function format_date($gmepoch = false, $format = false, $forcedate = false) {
         static $lang_dates, $midnight;
 
         if (empty($lang_dates)) {
@@ -132,6 +132,10 @@ class User extends Session {
                     $lang_dates[$match] = $replace;
                 }
             }
+        }
+
+        if ($gmepoch === false) {
+            $gmepoch = time();
         }
 
         $format = (!$format) ? $this->date_format : $format;
