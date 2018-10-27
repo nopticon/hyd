@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width; initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
-<title><!-- IF PAGE_TITLE != 'Inicio' -->{PAGE_TITLE} en <!-- ENDIF -->Rock Republik<!-- IF PAGE_TITLE == 'Inicio' -->, la comunidad m&aacute;s grande de rock en Guatemala<!-- ENDIF --></title>
+<title>🥇 <!-- IF PAGE_TITLE != 'Inicio' -->{PAGE_TITLE} en <!-- ENDIF -->Rock Republik<!-- IF PAGE_TITLE == 'Inicio' -->, la comunidad m&aacute;s grande de rock en Guatemala<!-- ENDIF --></title>
 <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,600" rel="stylesheet">
 <link rel="stylesheet" href="{S_DIST}styles/main.css" />
 <link rel="shortcut icon" href="/favicon.ico" />
@@ -21,4 +21,45 @@ function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
 
 gtag('config', 'UA-1853605-2');
+</script>
+
+<script type="application/ld+json">
+    [{
+        "@context": "http://schema.org",
+        "@type": "Organization",
+        "url": "https://rockrepublik.net",
+        "name": "RockRepublik.net",
+        "email": "info@rockrepublik.net",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://rockrepublik.net/logo.jpg",
+            "width": 500,
+            "height": 500
+        },
+        "sameAs": ["https://www.facebook.com/rockrepublik", "https://www.twitter.com/rockrepublik"],
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "contactType": "customer service",
+            "email": "info@rockrepublik.net"
+        }
+    } , {
+        "@context": "http://schema.org/",
+        "@type": "WebPage",
+        "name": "🥇 RockRepublik.net Comunidad de música rock y metal en Guatemala",
+        "description": "El portal más grande de rock guatemalteco e internacional con lo mejor en artistas, eventos, musica, foros, comunidad, noticias, promociones y mucho más. ",
+        "url": "https://rockrepublik.net/",
+        "image": "https://rockrepublik.net/logo.jpg",
+        "author": {
+            "@type": "Person",
+            "name": "Guillermo Azurdia"
+        },
+        "publisher": "publisher name",
+        "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "95",
+            "bestRating": "100",
+            "worstRating": "1",
+            "ratingCount": "10"
+        }
+    }]
 </script>
