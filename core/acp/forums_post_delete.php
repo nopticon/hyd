@@ -100,7 +100,7 @@ class __forums_post_delete extends mac {
                 WHERE topic_id = ?';
             if ($first_post_id = sql_field(sql_filter($sql, $topic_id), 'first_post_id', 0)) {
                 $topic_update_sql .= 'topic_replies = topic_replies - 1,
-                    topic_first_post_id = ' . $first_post_id['first_post_id'];
+                    topic_first_post_id = ' . $first_post_id;
             }
         } else {
             $topic_update_sql .= 'topic_replies = topic_replies - 1';
