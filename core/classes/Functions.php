@@ -2002,7 +2002,7 @@ function facebook_event ($event, $send = true) {
     $event_title    = strtolower($event['title']);
     $facebook_url   = 'https://graph.facebook.com/' . config('facebook_app_id') . '/feed';
     $facebook_msg   = 'Rock Republik te invita a' . ((strpos($event_title, 'concierto') === false) ? 'l evento ' : ' ');
-    $facebook_text  = $facebook_msg . $event['title'] . ($type ? ', ' . $type : '') . ". \n\rCompartelo con tus amigos.";
+    $facebook_text  = $facebook_msg . $event['title'] . ($type ? ', ' . $type : '') . '.';
     $facebook_text = entity_decode($facebook_text);
 
     $facebook_data = [
