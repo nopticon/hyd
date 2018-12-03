@@ -14,6 +14,7 @@ $sql = 'SELECT e.*
         AND s.created_at = ?
     WHERE e.date >= ?
         AND s.event_id IS NULL
+        AND e.facebook_share = 1
     ORDER BY e.date
     LIMIT 1';
 $result = sql_rowset(sql_filter($sql, $created_at, $midnight));
